@@ -22,7 +22,7 @@ public class SpellBook extends Item {
         ItemStack item = player.getItemInHand(hand);
         FireballSpell fireball = new FireballSpell();
         if(!level.isClientSide){
-            player.sendMessage(new TextComponent("right clicked"),player.getUUID());
+            //player.sendMessage(new TextComponent("right clicked"),player.getUUID());
             fireball.onUse(this.getDefaultInstance(),level,player);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS,item);

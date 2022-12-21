@@ -1,13 +1,10 @@
 package com.example.testmod;
 
 import com.example.testmod.item.ModItems;
-import com.example.testmod.item.SpellBook;
 import com.mojang.logging.LogUtils;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -19,12 +16,8 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
-import javax.management.Attribute;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -33,14 +26,14 @@ public class TestMod {
     // Directly reference a slf4j logger
     public static final String MODID = "testmod";
     private static final Logger LOGGER = LogUtils.getLogger();
-    public static Attribute max_mana_test = new Attribute("max_mana",null);
 
-
+    public static final Attribute MAX_MANA = null;
 
     public TestMod() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModItems.register(eventBus);
-        //MinecraftForge.EVENT_BUS.register(new EventHandler().getClass());
+        AttributesRegistry.register(eventBus);
+        MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading

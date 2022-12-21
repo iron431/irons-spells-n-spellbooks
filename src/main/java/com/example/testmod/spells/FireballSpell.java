@@ -1,5 +1,6 @@
 package com.example.testmod.spells;
 
+import com.mojang.math.Vector3d;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EntityType;
@@ -21,18 +22,15 @@ public class FireballSpell extends Spell{
     }
     @Override
     public InteractionResultHolder<ItemStack> onUse(ItemStack stack, Level level, Player player){
-        Vec3 direction = player.getLookAngle();
+        double speed = 1.5;
+        Vec3 direction = player.getLookAngle().scale(speed);
         Vec3 origin = player.getEyePosition();
         Level world = player.getLevel();
         Fireball fireball = new LargeFireball(world,player,direction.x(),direction.y(),direction.z(),2);
-        fireball.setPos(origin);
+        fireball.setPos(origin.add(direction));
 
         world.addFreshEntity(fireball);
 
-        System.out.println("----fireball cast----");
-        System.out.println("location: "+origin);
-        System.out.println("world: "+world);
-        System.out.println("entity: "+fireball);
         return new InteractionResultHolder<>(InteractionResult.SUCCESS,stack);
     }
 }

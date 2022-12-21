@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -27,6 +28,7 @@ public class ManaDisplay extends GuiComponent{
     static final int IMAGE_HEIGHT = 21;
     static final int HOTBAR_HEIGHT = 25;
     static final int ICON_ROW_HEIGHT = 11;
+    static final int CHAR_WIDTH = 6;
     static int screenHeight;
     static int screenWidth;
     static int maxMana = 100;
@@ -40,10 +42,13 @@ public class ManaDisplay extends GuiComponent{
     public static void onPostRender(RenderGameOverlayEvent.PreLayer e){
         //System.out.println("success");
         var GUI = Minecraft.getInstance().gui;
+        Player player = Minecraft.getInstance().player;
+
         var stack = e.getMatrixStack();
         screenWidth = e.getWindow().getGuiScaledWidth();
         screenHeight = e.getWindow().getGuiScaledHeight();
 
+        int bubbleOffset = ((player == null || player.getAirSupply() <= 0 || player.getAirSupply() >= 300) ? 0 : 10);
         int barX,barY;
         if(centered){
             barX = screenWidth/2 - IMAGE_WIDTH/2;
@@ -51,7 +56,7 @@ public class ManaDisplay extends GuiComponent{
         }else{
             int hotbarWidth = 200;
             barX = screenWidth/2 - IMAGE_WIDTH/2 + hotbarWidth/4;
-            barY = screenHeight - HOTBAR_HEIGHT - ICON_ROW_HEIGHT*2 - IMAGE_HEIGHT/2;
+            barY = screenHeight - HOTBAR_HEIGHT - ICON_ROW_HEIGHT*2 - IMAGE_HEIGHT/2-bubbleOffset;
         }
 
         //if(key=='T')
@@ -67,11 +72,10 @@ public class ManaDisplay extends GuiComponent{
         GUI.blit(stack,barX,barY,0,IMAGE_HEIGHT, (int) (IMAGE_WIDTH*getPercentMana()),IMAGE_HEIGHT);
 
         int textX,textY;
-        int charWidth = 6;
         var textColor = colors[colorIndex];
         String manaFraction =(int)(mana) +"/"+maxMana;
-        textX = barX+IMAGE_WIDTH/2-((""+(int)mana).length()+1)*charWidth;
-        textY = (int) (screenHeight-HOTBAR_HEIGHT-ICON_ROW_HEIGHT*2.75);
+        textX = barX+IMAGE_WIDTH/2-(int)(((""+(int)mana).length()+0.5)*CHAR_WIDTH);
+        textY = (int) (barY+ICON_ROW_HEIGHT*1);
         GUI.getFont().drawShadow(stack,manaFraction,textX,textY, textColor.getColor());
         GUI.getFont().draw(stack,manaFraction,textX,textY, textColor.getColor());
         //addPercentMana(.005*Minecraft.getInstance().getDeltaFrameTime());
@@ -97,7 +101,6 @@ public class ManaDisplay extends GuiComponent{
             colorIndex++;
             if (colorIndex>=colors.length)
                 colorIndex=0;
-
         }
     }
     private static void addMana(float amount){
