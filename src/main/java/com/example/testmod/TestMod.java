@@ -26,13 +26,14 @@ public class TestMod {
     // Directly reference a slf4j logger
     public static final String MODID = "testmod";
     public static final Logger LOGGER = LogUtils.getLogger();
-
+    public static InstancedEventHandler eventHandler = new InstancedEventHandler();
     public TestMod() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ItemRegistry.register(eventBus);
         AttributeRegistry.register(eventBus);
         //AttributesRegistry.register(eventBus);
         //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
+        MinecraftForge.EVENT_BUS.register(eventHandler);
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading
