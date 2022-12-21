@@ -25,15 +25,16 @@ import java.util.stream.Collectors;
 public class TestMod {
     // Directly reference a slf4j logger
     public static final String MODID = "testmod";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final Attribute MAX_MANA = null;
 
     public TestMod() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModItems.register(eventBus);
-        AttributesRegistry.register(eventBus);
-        MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
+        AttributeRegistry.register(eventBus);
+        //AttributesRegistry.register(eventBus);
+        //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading
