@@ -1,8 +1,8 @@
 package com.example.testmod;
 
-import com.example.testmod.item.ModItems;
+import com.example.testmod.registries.AttributeRegistry;
+import com.example.testmod.registries.ItemRegistry;
 import com.mojang.logging.LogUtils;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,11 +27,9 @@ public class TestMod {
     public static final String MODID = "testmod";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final Attribute MAX_MANA = null;
-
     public TestMod() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModItems.register(eventBus);
+        ItemRegistry.register(eventBus);
         AttributeRegistry.register(eventBus);
         //AttributesRegistry.register(eventBus);
         //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());

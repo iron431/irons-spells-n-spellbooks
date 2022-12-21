@@ -1,5 +1,6 @@
-package com.example.testmod;
+package com.example.testmod.registries;
 
+import com.example.testmod.TestMod;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,17 +17,14 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 @Mod.EventBusSubscriber(modid = TestMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AttributeRegistry {
 
-    public static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, TestMod.MODID);
-    public static void register(IEventBus eventBus){
-        ATTRIBUTES.register(eventBus);
-    }
-    public static final RegistryObject<Attribute> MAX_MANA = ATTRIBUTES.register("max_mana", () -> (new RangedAttribute("attribute.name.generic.max_mana", 100.0D, 0.0D, 2048.0D).setSyncable(true)));
+    private static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, TestMod.MODID);
+    public static void register(IEventBus eventBus){ ATTRIBUTES.register(eventBus); }
+    //"attribute.testmod.max_mana" seems to be the id for the lang file
+    public static final RegistryObject<Attribute> MAX_MANA = ATTRIBUTES.register("max_mana", () -> (new RangedAttribute("attribute.testmod.max_mana", 100.0D, 0.0D, 10000.0D).setSyncable(true)));
 
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
