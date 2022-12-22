@@ -3,7 +3,8 @@
   "package": "com.example.testmod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "PlayerMixin"
+    "PlayerMixin",
+    "ItemRendererMixin"
   ],
   "client": [],
   "injectors": {

@@ -24,6 +24,7 @@ public class BurningDashSpell extends Spell {
         manaCostPerLevel=5;
         baseSpellPower=1;
         spellPowerPerLevel=1;
+        maxCooldown = 80;
     }
 
     @Override

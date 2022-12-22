@@ -20,11 +20,12 @@ public class FireballSpell extends Spell {
         manaCostPerLevel=5;
         baseSpellPower=1;
         spellPowerPerLevel=1;
+        maxCooldown = 80;
     }
 
     @Override
     public void onCast(ItemStack stack, Level world, Player player){
-        double speed = 2.5;
+        float speed = 2.5f;
         Vec3 direction = player.getLookAngle().scale(speed);
         Vec3 origin = player.getEyePosition();
         Fireball fireball = new LargeFireball(world,player,direction.x(),direction.y(),direction.z(),getSpellPower());
