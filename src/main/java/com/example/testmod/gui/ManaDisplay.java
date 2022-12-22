@@ -1,7 +1,10 @@
 package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.mana.client.ClientManaData;
 import com.example.testmod.capabilities.mana.data.PlayerManaProvider;
+import com.example.testmod.capabilities.mana.network.PacketCastSpell;
+import com.example.testmod.setup.Messages;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -36,8 +39,6 @@ public class ManaDisplay extends GuiComponent {
     static final int HUNGER_BAR_OFFSET = 50;
     static int screenHeight;
     static int screenWidth;
-    static int savedMaxMana = 100;
-    static float mana = 50f;
     static char key = ' ';
     static boolean centered = true;
     static int colorIndex = 0;
@@ -62,14 +63,10 @@ public class ManaDisplay extends GuiComponent {
             TestMod.LOGGER.info("null");
             return;
         }
-
-        var playerMana = player.getCapability(PlayerManaProvider.PLAYER_MANA);
-        playerMana.resolve().get().getMana();
-
         Gui GUI = Minecraft.getInstance().gui;
         PoseStack stack = e.getMatrixStack();
         int maxMana = (int)player.getAttributeValue(MAX_MANA.get());
-        savedMaxMana = maxMana; //just because we still handle mana in this class
+        int mana = ClientManaData.getPlayerMana();
         screenWidth = e.getWindow().getGuiScaledWidth();
         screenHeight = e.getWindow().getGuiScaledHeight();
 
@@ -84,7 +81,7 @@ public class ManaDisplay extends GuiComponent {
         RenderSystem.setShaderTexture(0, TEXTURE);
 
         GUI.blit(stack, barX, barY, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
-        GUI.blit(stack, barX, barY, 0, IMAGE_HEIGHT, (int) (IMAGE_WIDTH * getPercentMana()), IMAGE_HEIGHT);
+        GUI.blit(stack, barX, barY, 0, IMAGE_HEIGHT, (int) (IMAGE_WIDTH * Math.min((mana/(double)maxMana),1)), IMAGE_HEIGHT);
 
         int textX, textY;
         var textColor = colors[colorIndex];
@@ -96,7 +93,6 @@ public class ManaDisplay extends GuiComponent {
         GUI.getFont().drawShadow(stack, manaFraction, textX, textY, textColor.getColor());
         GUI.getFont().draw(stack, manaFraction, textX, textY, textColor.getColor());
 
-        addPercentMana(0.01f * Minecraft.getInstance().getDeltaFrameTime() / 20f);
 
     }
 
@@ -104,10 +100,9 @@ public class ManaDisplay extends GuiComponent {
     public static void onKeyPress(InputEvent.KeyInputEvent e) {
         key = (char) e.getKey();
         if (e.getKey() == (int) 'H' && e.getAction() == 1) {
-            addMana(5);
+            Messages.sendToServer(new PacketCastSpell(3));
         }
         if (e.getKey() == (int) 'G' && e.getAction() == 1) {
-            removeMana(5);
         }
         if (e.getKey() == (int) 'J' && e.getAction() == 1) {
             //System.out.println(screenWidth+"x"+screenHeight);
@@ -129,28 +124,6 @@ public class ManaDisplay extends GuiComponent {
         }
     }
 
-    private static void addMana(float amount) {
-        mana += amount;
-        clampMana();
-    }
-
-    private static void removeMana(float amount) {
-        addMana(-amount);
-    }
-
-    private static void addPercentMana(float percent) {
-        //idk why it ticks so fast
-        addMana(percent * savedMaxMana);
-    }
-
-    private static void clampMana() {
-        //manamanamanmanamanamana
-        mana = mana < 0 || mana > savedMaxMana ? mana < 0 ? 0 : savedMaxMana : mana;
-    }
-
-    private static float getPercentMana() {
-        return mana / (float) savedMaxMana;
-    }
 
     private static int getOffsetCountFromHotbar(Player player) {
         if (centered || !(player == null || player.getAirSupply() <= 0 || player.getAirSupply() >= 300))

@@ -25,9 +25,9 @@ public class AttributeRegistry {
         e.getTypes().forEach(entity -> {
             e.add(entity, MAX_MANA.get());
             //change logger back to private
-            TestMod.LOGGER.info(entity.toShortString());
 
         });
+        TestMod.LOGGER.info("modified attributes");
     }
 
 

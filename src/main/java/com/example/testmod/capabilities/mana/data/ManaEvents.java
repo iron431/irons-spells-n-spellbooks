@@ -28,6 +28,7 @@ public class ManaEvents {
                 });
             });
         }
+        TestMod.LOGGER.info("player cloned");
     }
 
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {

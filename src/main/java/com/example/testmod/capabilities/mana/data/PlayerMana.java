@@ -10,6 +10,8 @@ public class PlayerMana {
         return mana;
     }
 
+    public PlayerMana getRaw() {return this;}
+
     public void setMana(int mana) {
         this.mana = mana;
     }

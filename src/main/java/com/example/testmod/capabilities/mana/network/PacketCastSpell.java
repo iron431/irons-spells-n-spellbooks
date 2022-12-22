@@ -2,6 +2,7 @@ package com.example.testmod.capabilities.mana.network;
 
 import com.example.testmod.capabilities.mana.data.ManaManager;
 import com.example.testmod.capabilities.mana.data.PlayerManaProvider;
+import com.example.testmod.setup.Messages;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
@@ -45,6 +46,7 @@ public class PacketCastSpell {
                 player.getCapability(PlayerManaProvider.PLAYER_MANA).ifPresent(playerMana -> {
                     ManaManager.get(player.level).setMana(player, newMana);
                     playerMana.setMana(newMana);
+                    Messages.sendToPlayer(new PacketSyncManaToClient(newMana), player);
                 });
             }
         });

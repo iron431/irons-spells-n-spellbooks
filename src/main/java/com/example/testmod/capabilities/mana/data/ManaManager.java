@@ -7,6 +7,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -17,6 +18,8 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import static com.example.testmod.registries.AttributeRegistry.MAX_MANA;
 
 public class ManaManager extends SavedData {
 
@@ -54,15 +57,24 @@ public class ManaManager extends SavedData {
     public void tick(Level level) {
         counter--;
         if (counter <= 0) {
-            counter = 10;
+            counter = 20;
             // Synchronize the mana to the players in this world
             // todo expansion: keep the previous data that was sent to the player and only send if changed
             level.players().forEach(player -> {
                 if (player instanceof ServerPlayer serverPlayer) {
-                    int playerMana = serverPlayer.getCapability(PlayerManaProvider.PLAYER_MANA)
-                            .map(PlayerMana::getMana)
-                            .orElse(-1);
-                    Messages.sendToPlayer(new PacketSyncManaToClient(playerMana), serverPlayer);
+                    var playerMana = serverPlayer.getCapability(PlayerManaProvider.PLAYER_MANA).map(PlayerMana::getRaw);
+
+                    //int playerMana = serverPlayer.getCapability(PlayerManaProvider.PLAYER_MANA)
+                    //        .map(PlayerMana::getMana)
+                    //        .orElse(-1);
+                    Mana mana = ManaManager.get(player.level).getManaInternal(serverPlayer.getId());
+                    int playerMaxMana = (int)serverPlayer.getAttributeValue(MAX_MANA.get());
+                    if(mana.getMana()<playerMaxMana)
+                        mana.incrementMana((int)Math.max(playerMaxMana*.01f,1));
+                    else
+                        mana.setMana(playerMaxMana);
+                    playerMana.get().setMana(mana.getMana());
+                    Messages.sendToPlayer(new PacketSyncManaToClient(mana.getMana()), serverPlayer);
                 }
             });
         }
