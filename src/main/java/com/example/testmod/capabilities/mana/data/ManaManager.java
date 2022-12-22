@@ -20,7 +20,7 @@ import java.util.Random;
 
 public class ManaManager extends SavedData {
 
-    //private final Map<ServerPlayer, Mana> manaStorage = new HashMap<>();
+    private final Map<Integer, Mana> manaStorage = new HashMap<>();
     private final Random random = new Random();
 
     private int counter = 0;
@@ -32,6 +32,23 @@ public class ManaManager extends SavedData {
         }
         DimensionDataStorage storage = ((ServerLevel) level).getDataStorage();
         return storage.computeIfAbsent(ManaManager::new, ManaManager::new, "manamanager");
+    }
+
+    @NotNull
+    private Mana getManaInternal(int serverPlayerId) {
+        return manaStorage.computeIfAbsent(serverPlayerId, cp -> new Mana(50));
+    }
+
+    public int getMana(ServerPlayer serverPlayer) {
+        Mana mana = getManaInternal(serverPlayer.getId());
+        return mana.getMana();
+    }
+
+    public int setMana(ServerPlayer serverPlayer, int newManaValue) {
+        Mana mana = getManaInternal(serverPlayer.getId());
+        mana.setMana(newManaValue);
+        setDirty();
+        return 1;
     }
 
     public void tick(Level level) {
@@ -48,8 +65,6 @@ public class ManaManager extends SavedData {
                     Messages.sendToPlayer(new PacketSyncManaToClient(playerMana), serverPlayer);
                 }
             });
-
-            // todo expansion: here it would be possible to slowly regenerate mana in chunks
         }
     }
 

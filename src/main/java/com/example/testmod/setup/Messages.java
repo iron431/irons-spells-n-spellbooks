@@ -1,6 +1,7 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.mana.network.PacketCastSpell;
 import com.example.testmod.capabilities.mana.network.PacketSyncManaToClient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,6 +29,12 @@ public class Messages {
                 .simpleChannel();
 
         INSTANCE = net;
+
+        net.messageBuilder(PacketCastSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(PacketCastSpell::new)
+                .encoder(PacketCastSpell::toBytes)
+                .consumer(PacketCastSpell::handle)
+                .add();
 
         net.messageBuilder(PacketSyncManaToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(PacketSyncManaToClient::new)

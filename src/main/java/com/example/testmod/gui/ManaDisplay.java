@@ -1,6 +1,7 @@
 package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.mana.data.PlayerManaProvider;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -61,6 +62,10 @@ public class ManaDisplay extends GuiComponent {
             TestMod.LOGGER.info("null");
             return;
         }
+
+        var playerMana = player.getCapability(PlayerManaProvider.PLAYER_MANA);
+        playerMana.resolve().get().getMana();
+
         Gui GUI = Minecraft.getInstance().gui;
         PoseStack stack = e.getMatrixStack();
         int maxMana = (int)player.getAttributeValue(MAX_MANA.get());
