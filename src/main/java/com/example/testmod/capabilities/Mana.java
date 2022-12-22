@@ -1,6 +1,7 @@
 package com.example.testmod.capabilities;
 
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Mth;
 
 import java.sql.Ref;
 
@@ -29,8 +30,7 @@ public class Mana {
         addMana(percent*owner.getAttributeValue(MAX_MANA.get()));
     }
     private void clampMana(){
-        double maxMana = owner.getAttributeValue(MAX_MANA.get());
-        mana = mana<0||mana>maxMana?mana<0?0:maxMana:mana;
+        mana = Mth.clamp(mana,0,owner.getAttributeValue(MAX_MANA.get()));
 
     }
 

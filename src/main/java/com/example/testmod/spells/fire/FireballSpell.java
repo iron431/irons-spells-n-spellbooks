@@ -1,5 +1,6 @@
-package com.example.testmod.spells;
+package com.example.testmod.spells.fire;
 
+import com.example.testmod.spells.Spell;
 import com.mojang.math.Vector3d;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -12,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class FireballSpell extends Spell{
+public class FireballSpell extends Spell {
     public FireballSpell(){
         level=1;
         baseManaCost=20;
@@ -20,17 +21,14 @@ public class FireballSpell extends Spell{
         baseSpellPower=1;
         spellPowerPerLevel=1;
     }
+
     @Override
-    public InteractionResultHolder<ItemStack> onUse(ItemStack stack, Level level, Player player){
-        double speed = 1.5;
+    public void onCast(ItemStack stack, Level world, Player player){
+        double speed = 2.5;
         Vec3 direction = player.getLookAngle().scale(speed);
         Vec3 origin = player.getEyePosition();
-        Level world = player.getLevel();
-        Fireball fireball = new LargeFireball(world,player,direction.x(),direction.y(),direction.z(),2);
+        Fireball fireball = new LargeFireball(world,player,direction.x(),direction.y(),direction.z(),getSpellPower());
         fireball.setPos(origin.add(direction));
-
         world.addFreshEntity(fireball);
-
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS,stack);
     }
 }

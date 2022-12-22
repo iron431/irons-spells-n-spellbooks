@@ -1,6 +1,8 @@
 package com.example.testmod.item;
 
-import com.example.testmod.spells.FireballSpell;
+import com.example.testmod.spells.fire.BurningDashSpell;
+import com.example.testmod.spells.fire.FireballSpell;
+import com.example.testmod.spells.Spell;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -17,16 +19,20 @@ public class SpellBook extends Item {
         super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
     }
     boolean firstUse;
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack item = player.getItemInHand(hand);
-        FireballSpell fireball = new FireballSpell();
-        if(!level.isClientSide){
-            //player.sendMessage(new TextComponent("right clicked"),player.getUUID());
-            fireball.onUse(this.getDefaultInstance(),level,player);
-        }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS,item);
-        //return super.use(level, player, hand);
+        Spell currentSpell;
+        if(player.isCrouching())
+            currentSpell = new FireballSpell();
+        else
+            currentSpell = new BurningDashSpell();
+
+        if(currentSpell.attemptCast(this.getDefaultInstance(),level,player))
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS,item);
+
+        return super.use(level, player, hand);
     }
 
     /*

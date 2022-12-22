@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.example.testmod.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "PlayerMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
+}
