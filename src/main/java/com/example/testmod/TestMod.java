@@ -2,6 +2,7 @@ package com.example.testmod;
 
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.registries.ItemRegistry;
+import com.example.testmod.setup.ModSetup;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -26,14 +27,22 @@ public class TestMod {
     // Directly reference a slf4j logger
     public static final String MODID = "testmod";
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static InstancedEventHandler eventHandler = new InstancedEventHandler();
+
+    //public static InstancedEventHandler eventHandler = new InstancedEventHandler();
     public TestMod() {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ItemRegistry.register(eventBus);
-        AttributeRegistry.register(eventBus);
+
+        ModSetup.setup();
+
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(ModSetup::init);
+
+
+
+        ItemRegistry.register(modEventBus);
+        AttributeRegistry.register(modEventBus);
         //AttributesRegistry.register(eventBus);
         //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
-        MinecraftForge.EVENT_BUS.register(eventHandler);
+        //MinecraftForge.EVENT_BUS.register(eventHandler);
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading
@@ -46,6 +55,7 @@ public class TestMod {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
+
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
