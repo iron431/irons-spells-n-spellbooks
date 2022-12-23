@@ -2,6 +2,8 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.mana.client.ClientManaData;
+import com.example.testmod.capabilities.mana.network.PacketCastSpell;
+import com.example.testmod.setup.Messages;
 import io.netty.util.concurrent.SucceededFuture;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
@@ -35,20 +37,18 @@ public abstract class Spell {
 
     //returns true/false for success/failure to cast
     public boolean attemptCast(ItemStack stack, Level world, Player player) {
-        //fill with all casting criteria... for now just mana #
-        //boolean canCast = !isOnCooldown();// && ClientManaData.getPlayerMana() >= getManaCost() ;
+        //fill with all casting criteria
+        boolean canCast = !isOnCooldown() &&
+                ClientManaData.getPlayerMana() >= getManaCost();
 
-        //boolean canCast =true;
-        if (currentCooldown<=0) {
+        if (canCast) {
             this.onCast(stack, world, player);
-            if(!world.isClientSide())
+            if(!world.isClientSide()){
                 startCooldown(player);
+                Messages.sendToServer(new PacketCastSpell(getManaCost()));
+            }
             return true;
         } else {
-            if(world.isClientSide())
-                TestMod.LOGGER.info("failure from client");
-            if(!world.isClientSide())
-                TestMod.LOGGER.info("failure from server");
             return false;
         }
     }

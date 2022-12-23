@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,7 @@ import net.minecraft.world.level.entity.TransientEntitySectionManager;
 public class SpellBook extends Item {
     public SpellBook(){
         super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
-        tempSpell = new BurningDashSpell();
+        tempSpell = new FireballSpell();
     }
     public Spell tempSpell;
     boolean firstUse;

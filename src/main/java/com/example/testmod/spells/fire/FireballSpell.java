@@ -16,11 +16,11 @@ import net.minecraft.world.phys.Vec3;
 public class FireballSpell extends Spell {
     public FireballSpell(){
         level=1;
-        baseManaCost=20;
+        baseManaCost=40;
         manaCostPerLevel=5;
         baseSpellPower=1;
         spellPowerPerLevel=1;
-        maxCooldown = 80;
+        maxCooldown = 20;
     }
 
     @Override
