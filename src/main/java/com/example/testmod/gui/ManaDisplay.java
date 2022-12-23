@@ -5,6 +5,8 @@ import com.example.testmod.capabilities.mana.client.ClientManaData;
 import com.example.testmod.capabilities.mana.data.PlayerManaProvider;
 import com.example.testmod.capabilities.mana.network.PacketCastSpell;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.SpellType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -65,7 +67,7 @@ public class ManaDisplay extends GuiComponent {
         }
         Gui GUI = Minecraft.getInstance().gui;
         PoseStack stack = e.getMatrixStack();
-        int maxMana = (int)player.getAttributeValue(MAX_MANA.get());
+        int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
         int mana = ClientManaData.getPlayerMana();
         screenWidth = e.getWindow().getGuiScaledWidth();
         screenHeight = e.getWindow().getGuiScaledHeight();
@@ -81,13 +83,13 @@ public class ManaDisplay extends GuiComponent {
         RenderSystem.setShaderTexture(0, TEXTURE);
 
         GUI.blit(stack, barX, barY, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
-        GUI.blit(stack, barX, barY, 0, IMAGE_HEIGHT, (int) (IMAGE_WIDTH * Math.min((mana/(double)maxMana),1)), IMAGE_HEIGHT);
+        GUI.blit(stack, barX, barY, 0, IMAGE_HEIGHT, (int) (IMAGE_WIDTH * Math.min((mana / (double) maxMana), 1)), IMAGE_HEIGHT);
 
         int textX, textY;
         var textColor = colors[colorIndex];
-        String manaFraction = (int)(mana) + "/" + maxMana;
+        String manaFraction = (int) (mana) + "/" + maxMana;
 
-        textX = barX + IMAGE_WIDTH / 2 - (int) ((("" + (int)mana).length() + 0.5) * CHAR_WIDTH);
+        textX = barX + IMAGE_WIDTH / 2 - (int) ((("" + (int) mana).length() + 0.5) * CHAR_WIDTH);
         textY = barY + ICON_ROW_HEIGHT;
 
         GUI.getFont().drawShadow(stack, manaFraction, textX, textY, textColor.getColor());
@@ -100,7 +102,7 @@ public class ManaDisplay extends GuiComponent {
     public static void onKeyPress(InputEvent.KeyInputEvent e) {
         key = (char) e.getKey();
         if (e.getKey() == (int) 'H' && e.getAction() == 1) {
-            Messages.sendToServer(new PacketCastSpell(3));
+            Messages.sendToServer(new PacketCastSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1)));
         }
         if (e.getKey() == (int) 'G' && e.getAction() == 1) {
         }
@@ -117,8 +119,8 @@ public class ManaDisplay extends GuiComponent {
         }
         if (e.getKey() == (int) 'Y' && e.getAction() == 1) {
             Player player = Minecraft.getInstance().player;
-            player.sendMessage(new TextComponent("Launching "+player.getDisplayName().getString()), player.getUUID());
-            player.push(0,1,0);
+            player.sendMessage(new TextComponent("Launching " + player.getDisplayName().getString()), player.getUUID());
+            player.push(0, 1, 0);
             //player.move(MoverType.SELF, new Vec3(1,10,1));
 
         }

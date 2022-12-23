@@ -2,6 +2,8 @@ package com.example.testmod.capabilities.spellbook.data;
 
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.WimpySpellBook;
+import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,12 +31,22 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
         this.spellBookType = spellBookType;
     }
 
-    @Nonnull
     private SpellBookData createSpellbookData() {
+        return createSpellbookData(false);
+    }
+
+    @Nonnull
+    private SpellBookData createSpellbookData(boolean createWithoutSpells) {
         if (spellBookData == null) {
             spellBookData = new SpellBookData();
             switch (spellBookType) {
-                case WimpySpellBook -> spellBookData.setSpellSlots(2);
+                case WimpySpellBook -> {
+                    spellBookData.setSpellSlots(2);
+                    if (!createWithoutSpells) {
+                        spellBookData.addSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1));
+                    }
+                }
+
                 default -> System.out.println("Unknown SpellBook Type");
             }
 
@@ -60,12 +72,12 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        createSpellbookData().saveNBTData(nbt);
+        createSpellbookData(true).saveNBTData(nbt);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        createSpellbookData().loadNBTData(nbt);
+        createSpellbookData(true).loadNBTData(nbt);
     }
 }

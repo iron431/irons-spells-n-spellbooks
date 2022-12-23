@@ -1,23 +1,26 @@
 package com.example.testmod.capabilities.spellbook.data;
 
+import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.nbt.ListTag;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class SpellBookData {
-    private final ArrayList<Integer> transcribedSpells = new ArrayList<>();
-    private int activeSpellId = -1;
+    private final ArrayList<AbstractSpell> transcribedSpells = new ArrayList<>();
+    private AbstractSpell activeSpell = null;
     private int spellSlots = 0;
 
-    public int getActiveSpellId() {
-        return activeSpellId;
+    public AbstractSpell getActiveSpell() {
+        return activeSpell;
     }
 
-    public boolean setActiveSpellId(int spellId) {
-        if (transcribedSpells.contains(spellId)) {
-            this.activeSpellId = spellId;
+    public boolean setActiveSpell(AbstractSpell spell) {
+
+        var index = transcribedSpells.indexOf(spell);
+
+        if (index > -1) {
+            this.activeSpell = transcribedSpells.get(index);
             return true;
         }
         return false;
@@ -31,46 +34,71 @@ public class SpellBookData {
         this.spellSlots = numSlots;
     }
 
-    public boolean addSpell(int spellId) {
+    public boolean addSpell(AbstractSpell spell) {
         if (transcribedSpells.size() < spellSlots) {
-            transcribedSpells.add(spellId);
+            transcribedSpells.add(spell);
+
+            if (this.transcribedSpells.size() == 1) {
+                setActiveSpell(spell);
+            }
+
             return true;
         }
         return false;
     }
 
-    public boolean replaceSpell(int oldSpellId, int newSpellId) {
-        if (transcribedSpells.remove((Object) oldSpellId)) {
-            transcribedSpells.add(newSpellId);
+    public boolean replaceSpell(AbstractSpell oldSpell, AbstractSpell newSpell) {
+        if (transcribedSpells.remove(oldSpell)) {
+            transcribedSpells.add(newSpell);
             return true;
         }
         return false;
     }
 
-    public boolean removeSpell(int spellId) {
-        if (transcribedSpells.remove((Object) spellId)) {
-            return true;
-        }
-        return false;
+    public boolean removeSpell(AbstractSpell spell) {
+        return transcribedSpells.remove(spell);
     }
 
     public void saveNBTData(CompoundTag compound) {
         compound.putInt("spellSlots", spellSlots);
-        compound.putInt("activeSpellId", activeSpellId);
-        compound.putString("transcribedSpells", transcribedSpells.stream().map(Object::toString).collect(Collectors.joining(",")));
-        //compound.getList()
+
+        ListTag listTagSpells = new ListTag();
+
+        transcribedSpells.forEach(spell -> {
+            CompoundTag ct = new CompoundTag();
+            ct.putInt("id", spell.getID());
+            ct.putInt("level", spell.getLevel());
+            listTagSpells.add(ct);
+        });
+        compound.put("spells", listTagSpells);
+
+        if (this.activeSpell == null) {
+            compound.putInt("activeSpellId", -1);
+        } else {
+            compound.putInt("activeSpellId", this.activeSpell.getID());
+        }
     }
 
     public void loadNBTData(CompoundTag compound) {
         spellSlots = compound.getInt("spellSlots");
-        activeSpellId = compound.getInt("activeSpellId");
+        int activeSpellId = compound.getInt("activeSpellId");
 
-        var tmpSpellList = compound.getString("transcribedSpells");
+        ListTag listTagSpells = (ListTag) compound.get("spells");
+        if (listTagSpells != null) {
+            listTagSpells.forEach(tag -> {
+                CompoundTag t = (CompoundTag) tag;
+                int id = t.getInt("id");
+                int level = t.getInt("level");
 
-        if (!tmpSpellList.isEmpty()) {
-            for (String s : tmpSpellList.split(",")) {
-                transcribedSpells.add(Integer.parseInt(s));
-            }
+                AbstractSpell s = AbstractSpell.getSpell(id, level);
+
+                if (s != null) {
+                    transcribedSpells.add(s);
+                    if (activeSpellId == s.getID()) {
+                        setActiveSpell(s);
+                    }
+                }
+            });
         }
     }
 }

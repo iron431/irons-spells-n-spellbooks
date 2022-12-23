@@ -1,31 +1,27 @@
 package com.example.testmod.item;
 
 import com.example.testmod.spells.fire.BurningDashSpell;
-import com.example.testmod.spells.fire.FireballSpell;
-import com.example.testmod.spells.Spell;
-import net.minecraft.network.chat.TextComponent;
+import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.entity.TransientEntitySectionManager;
 
 public class SpellBook extends Item {
     public SpellBook(){
         super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
         tempSpell = new BurningDashSpell();
     }
-    public Spell tempSpell;
+    public AbstractSpell tempSpell;
     boolean firstUse;
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack item = player.getItemInHand(hand);
-        Spell currentSpell;
+        AbstractSpell currentSpell;
 
         //if(player.isCrouching())
         //    currentSpell = new FireballSpell();
