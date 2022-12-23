@@ -1,15 +1,11 @@
 package com.example.testmod.spells.fire;
 
-import com.example.testmod.mixin.PlayerMixin;
+import com.example.testmod.player.ClientPlayerData;
 import com.example.testmod.spells.Spell;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -59,5 +55,6 @@ public class BurningDashSpell extends Spell {
             soundevent = SoundEvents.TRIDENT_RIPTIDE_1;
         }
         world.playSound((Player)null, player, soundevent, SoundSource.PLAYERS, 1.0F, 1.0F);
+        ClientPlayerData.lastSpinAttack = ClientPlayerData.SpinAttackType.FIRE;
     }
 }

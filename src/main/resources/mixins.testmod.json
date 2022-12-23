@@ -3,7 +3,7 @@
   "package": "com.example.testmod.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "PlayerMixin",
+    "TridentItemMixin",
     "ItemRendererMixin",
     "SpinAttackEffectLayerMixin"
   ],
