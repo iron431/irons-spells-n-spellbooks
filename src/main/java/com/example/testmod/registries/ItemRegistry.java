@@ -2,6 +2,7 @@ package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.item.WimpySpellBook;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -15,4 +16,5 @@ public class ItemRegistry {
     }
 
     public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book", SpellBook::new);
+    public static final RegistryObject<Item> WIMPY_SPELL_BOOK = ITEMS.register("wimpy_spell_book", WimpySpellBook::new);
 }
