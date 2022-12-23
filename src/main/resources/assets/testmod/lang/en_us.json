@@ -1,5 +1,6 @@
 {
   "item.testmod.spell_book": "Spell Book",
+  "item.testmod.wimpy spell_book": "Wimpy Spell Book",
   "attribute.testmod.max_mana":"Max Mana"
 
 }
