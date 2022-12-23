@@ -7,6 +7,7 @@ import com.example.testmod.block.InscriptionTable.InscriptionTableTile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.EnchantmentTableBlockEntity;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -24,8 +25,6 @@ public class BlockRegistry {
     }
 
     public static final RegistryObject<Block> INSCRIPTION_TABLE_BLOCK = BLOCKS.register("inscription_table", InscriptionTableBlock::new);
-    public static final BlockEntityType<InscriptionTableTile> INSCRIPTION_TABLE_TILE = register("inscription_table", BlockEntityType.Builder.of(InscriptionTableTile::new, INSCRIPTION_TABLE_BLOCK.get()));
-
-
+    public static final RegistryObject<BlockEntityType<InscriptionTableTile>> INSCRIPTION_TABLE_TILE = BLOCK_ENTITIES.register("inscription_table", () -> BlockEntityType.Builder.of(InscriptionTableTile::new, INSCRIPTION_TABLE_BLOCK.get()).build(null));
 
 }
