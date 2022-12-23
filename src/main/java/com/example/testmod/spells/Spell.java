@@ -1,5 +1,6 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.StaticEventHandler;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.mana.client.ClientManaData;
 import com.example.testmod.capabilities.mana.network.PacketCastSpell;
@@ -15,9 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 
 public abstract class Spell {
-
     protected int level;
     protected int baseManaCost;
     protected int manaCostPerLevel;

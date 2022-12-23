@@ -58,6 +58,7 @@ public class SpellBookData {
         compound.putInt("spellSlots", spellSlots);
         compound.putInt("activeSpellId", activeSpellId);
         compound.putString("transcribedSpells", transcribedSpells.stream().map(Object::toString).collect(Collectors.joining(",")));
+        //compound.getList()
     }
 
     public void loadNBTData(CompoundTag compound) {

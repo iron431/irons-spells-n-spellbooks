@@ -1,6 +1,7 @@
 package com.example.testmod;
 
 import com.example.testmod.registries.AttributeRegistry;
+import com.example.testmod.registries.BlockRegistry;
 import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.setup.ModSetup;
 import com.mojang.logging.LogUtils;
@@ -40,6 +41,10 @@ public class TestMod {
 
         ItemRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
+        BlockRegistry.register(modEventBus);
+
+
+
         //AttributesRegistry.register(eventBus);
         //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
         //MinecraftForge.EVENT_BUS.register(eventHandler);
