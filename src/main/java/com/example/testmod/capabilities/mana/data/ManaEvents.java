@@ -19,17 +19,16 @@ public class ManaEvents {
         }
     }
 
-    public static void onPlayerCloned(PlayerEvent.Clone event) {
-        if (event.isWasDeath()) {
-            // We need to copyFrom the capabilities
-            event.getOriginal().getCapability(PlayerManaProvider.PLAYER_MANA).ifPresent(oldStore -> {
-                event.getPlayer().getCapability(PlayerManaProvider.PLAYER_MANA).ifPresent(newStore -> {
-                    newStore.copyFrom(oldStore);
-                });
-            });
-        }
-        TestMod.LOGGER.info("player cloned");
-    }
+//    public static void onPlayerCloned(PlayerEvent.Clone event) {
+//        if (event.isWasDeath()) {
+//            // We need to copyFrom the capabilities
+//            event.getOriginal().getCapability(PlayerManaProvider.PLAYER_MANA).ifPresent(oldStore -> {
+//                event.getPlayer().getCapability(PlayerManaProvider.PLAYER_MANA).ifPresent(newStore -> {
+//                    newStore.copyFrom(oldStore);
+//                });
+//            });
+//        }
+//    }
 
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
         event.register(PlayerMana.class);
@@ -43,6 +42,7 @@ public class ManaEvents {
         if (event.phase == TickEvent.Phase.START) {
             return;
         }
+
         ManaManager manager = ManaManager.get(event.world);
         manager.tick(event.world);
     }

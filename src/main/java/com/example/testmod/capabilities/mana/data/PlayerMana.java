@@ -10,7 +10,9 @@ public class PlayerMana {
         return mana;
     }
 
-    public PlayerMana getRaw() {return this;}
+    public PlayerMana getInstance() {
+        return this;
+    }
 
     public void setMana(int mana) {
         this.mana = mana;
@@ -23,7 +25,6 @@ public class PlayerMana {
     public void copyFrom(PlayerMana source) {
         mana = source.mana;
     }
-
 
     public void saveNBTData(CompoundTag compound) {
         compound.putInt("mana", mana);

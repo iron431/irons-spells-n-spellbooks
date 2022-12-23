@@ -1,6 +1,7 @@
 package com.example.testmod.capabilities.mana.network;
 
 import com.example.testmod.capabilities.mana.data.ManaManager;
+import com.example.testmod.capabilities.mana.data.PlayerMana;
 import com.example.testmod.capabilities.mana.data.PlayerManaProvider;
 import com.example.testmod.setup.Messages;
 import net.minecraft.ChatFormatting;
@@ -36,18 +37,19 @@ public class PacketCastSpell {
         ctx.enqueueWork(() -> {
             // Here we are server side
             ServerPlayer player = ctx.getSender();
-            int currentPlayerMana = ManaManager.get(player.level).getMana(player);
-            if (currentPlayerMana <= 0) {
-                player.sendMessage(new TranslatableComponent("Out of mana").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-            } else if (currentPlayerMana - spellId < 0) {
-                player.sendMessage(new TranslatableComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-            } else {
-                int newMana = currentPlayerMana - spellId;
-                player.getCapability(PlayerManaProvider.PLAYER_MANA).ifPresent(playerMana -> {
-                    ManaManager.get(player.level).setMana(player, newMana);
-                    playerMana.setMana(newMana);
+            if (player != null) {
+                ManaManager manaManager = ManaManager.get(player.level);
+                PlayerMana playerMana = manaManager.getFromPlayerCapability(player);
+
+                if (playerMana.getMana() <= 0) {
+                    player.sendMessage(new TranslatableComponent("Out of mana").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                } else if (playerMana.getMana() - spellId < 0) {
+                    player.sendMessage(new TranslatableComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                } else {
+                    int newMana = playerMana.getMana() - spellId;
+                    manaManager.setPlayerCurrentMana(player, newMana);
                     Messages.sendToPlayer(new PacketSyncManaToClient(newMana), player);
-                });
+                }
             }
         });
         return true;
