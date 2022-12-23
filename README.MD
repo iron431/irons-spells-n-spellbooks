@@ -1,5 +1,5 @@
-https://www.youtube.com/watch?v=prqMxqUtj-0
-
+Requirements and Concepts
+- https://docs.google.com/document/d/1IKr9KUGlv01eKqjDgKikAks-1RKGPKXncFk2uGoRORM/edit
 
 Good 1.18 tutorials
 - https://www.mcjty.eu/docs/1.18/
@@ -11,3 +11,6 @@ Capabilities
 
 Item Stack
 - https://www.youtube.com/watch?v=edcpW1zzUfk
+
+Other Random Links
+- https://www.youtube.com/watch?v=prqMxqUtj-0
