@@ -10,17 +10,14 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Fireball;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.TransientEntitySectionManager;
 
 public class SpellBook extends Item {
     public SpellBook(){
         super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
-        tempSpell = new FireballSpell();
+        tempSpell = new BurningDashSpell();
     }
     public Spell tempSpell;
     boolean firstUse;
@@ -29,14 +26,17 @@ public class SpellBook extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack item = player.getItemInHand(hand);
         Spell currentSpell;
+
         //if(player.isCrouching())
         //    currentSpell = new FireballSpell();
         //else
         //    currentSpell = new BurningDashSpell();
         currentSpell = tempSpell;
 
-        if(currentSpell.attemptCast(this.getDefaultInstance(),level,player))
+        if(currentSpell.attemptCast(this.getDefaultInstance(),level,player)){
+            player.startUsingItem(hand);
             return new InteractionResultHolder<>(InteractionResult.SUCCESS,item);
+        }
 
         return super.use(level, player, hand);
     }

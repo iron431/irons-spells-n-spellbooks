@@ -1,5 +1,6 @@
 package com.example.testmod.spells.fire;
 
+import com.example.testmod.mixin.PlayerMixin;
 import com.example.testmod.spells.Spell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
