@@ -13,8 +13,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private static final ResourceLocation TEXTURE =
             new ResourceLocation(TestMod.MODID, "textures/gui/inscription_table.png");
 
-    public InscriptionTableScreen(InscriptionTableMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
-        super(pMenu, pPlayerInventory, pTitle);
+    public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, Component title) {
+        super(menu, playerInventory, title);
+        this.imageWidth = 242;
+        this.imageHeight= 166;
     }
 
     @Override

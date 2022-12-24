@@ -32,7 +32,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
     public InscriptionTableMenu(int containerId, Inventory inv, BlockEntity entity) {
         super(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), containerId);
-        checkContainerSize(inv, 4);
+        checkContainerSize(inv, 3);
         blockEntity = ((InscriptionTableTile) entity);
         this.level = inv.player.level;
 
@@ -40,10 +40,9 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
 
         this.blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 34, 40));
-            this.addSlot(new SlotItemHandler(handler, 1, 57, 18));
-            this.addSlot(new SlotItemHandler(handler, 2, 103, 18));
-            this.addSlot(new TestSlot(handler, 3, 80, 60));
+            this.addSlot(new SlotItemHandler(handler, 0, 17, 21));
+            this.addSlot(new SlotItemHandler(handler, 1, 17, 53));
+            this.addSlot(new TestSlot(handler, 2, 201, 136));
         });
     }
 
@@ -64,7 +63,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 4;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 3;  // must be the number of slots you have!
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
@@ -108,14 +107,14 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 86 + i * 18));
+                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
             }
         }
     }
 
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 144));
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
     }
 }
