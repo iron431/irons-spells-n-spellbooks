@@ -1,18 +1,23 @@
 package com.example.testmod;
 
+import com.example.testmod.gui.InscriptionTableScreen;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.registries.BlockRegistry;
 import com.example.testmod.registries.ItemRegistry;
+import com.example.testmod.registries.MenuRegistry;
 import com.example.testmod.setup.ModSetup;
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.EventBus;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
@@ -42,9 +47,10 @@ public class TestMod {
         ItemRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);
+        MenuRegistry.register(modEventBus);
 
 
-
+        modEventBus.addListener(this::clientSetup);
         //AttributesRegistry.register(eventBus);
         //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
         //MinecraftForge.EVENT_BUS.register(eventHandler);
@@ -57,6 +63,11 @@ public class TestMod {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+    }
+    private void clientSetup(final FMLClientSetupEvent e){
+
+        MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
+
     }
 
     private void setup(final FMLCommonSetupEvent event) {

@@ -1,5 +1,6 @@
 package com.example.testmod.spells.fire;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +27,7 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public void onCast(ItemStack stack, Level world, Player player) {
+
         float speed = 2.5f;
         Vec3 direction = player.getLookAngle().scale(speed);
         Vec3 origin = player.getEyePosition();

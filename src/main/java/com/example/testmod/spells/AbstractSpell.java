@@ -1,5 +1,6 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.mana.client.ClientManaData;
 import com.example.testmod.capabilities.mana.network.PacketCastSpell;
 import com.example.testmod.setup.Messages;
@@ -77,8 +78,10 @@ public abstract class AbstractSpell {
     }
 
     public void tick() {
-        if (isOnCooldown())
+        if (isOnCooldown()){
+            TestMod.LOGGER.info(cooldownRemaining + "/" + cooldown + " ("+getPercentCooldown()*100+"%)");
             cooldownRemaining--;
+        }
     }
 
     public abstract void onCast(ItemStack stack, Level world, Player player);
@@ -93,7 +96,8 @@ public abstract class AbstractSpell {
     }
 
     public float getPercentCooldown() {
-        return Mth.clamp(cooldownRemaining / (float) cooldown, 0, 1);
+        //return 0.75f;
+        return Mth.clamp(cooldownRemaining / ((float) cooldown), 0, 1);
     }
 
     public void startCooldown(@Nullable Player caster) {
