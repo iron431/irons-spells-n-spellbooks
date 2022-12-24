@@ -53,7 +53,7 @@ public class ItemRendererMixin {
                 RenderSystem.enableDepthTest();
             }
             //TestMod.LOGGER.info("hooked: " + (f * 100) + "% cooldown");
-            TestMod.LOGGER.info(s.getActiveSpell().getLevel()+"");
+            //TestMod.LOGGER.info(s.getActiveSpell().getLevel()+"");
         }
 
     }
