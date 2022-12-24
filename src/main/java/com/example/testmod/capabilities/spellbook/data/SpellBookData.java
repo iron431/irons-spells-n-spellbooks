@@ -1,5 +1,6 @@
 package com.example.testmod.capabilities.spellbook.data;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -60,6 +61,8 @@ public class SpellBookData {
     }
 
     public void saveNBTData(CompoundTag compound) {
+        TestMod.LOGGER.info("Spellbook data: save nbt");
+
         compound.putInt("spellSlots", spellSlots);
 
         ListTag listTagSpells = new ListTag();
@@ -80,6 +83,7 @@ public class SpellBookData {
     }
 
     public void loadNBTData(CompoundTag compound) {
+        TestMod.LOGGER.info("Spellbook data: load nbt");
         spellSlots = compound.getInt("spellSlots");
         int activeSpellId = compound.getInt("activeSpellId");
 

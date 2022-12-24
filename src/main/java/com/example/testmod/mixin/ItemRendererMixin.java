@@ -38,9 +38,9 @@ public class ItemRendererMixin {
         if (item instanceof WimpySpellBook) {
             //copied from ItemRenderer renderGuiItemDecorations cooldown section
             LocalPlayer localplayer = Minecraft.getInstance().player;
-            var s = stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
-            float f = (localplayer == null||s == null) ? 0.5F : s.getActiveSpell().getPercentCooldown();
-
+            var s = stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get().getActiveSpell();
+            float f = (localplayer == null||s == null) ? 0.5F : s.getPercentCooldown();
+            f=.75f;
             if (f > 0.0F) {
                 RenderSystem.disableDepthTest();
                 RenderSystem.disableTexture();

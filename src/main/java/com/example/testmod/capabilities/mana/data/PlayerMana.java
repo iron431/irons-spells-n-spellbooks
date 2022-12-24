@@ -1,5 +1,6 @@
 package com.example.testmod.capabilities.mana.data;
 
+import com.example.testmod.TestMod;
 import net.minecraft.nbt.CompoundTag;
 
 public class PlayerMana {
@@ -27,10 +28,12 @@ public class PlayerMana {
     }
 
     public void saveNBTData(CompoundTag compound) {
+        TestMod.LOGGER.info("PlayerMana: saving nbt");
         compound.putInt("mana", mana);
     }
 
     public void loadNBTData(CompoundTag compound) {
+        TestMod.LOGGER.info("PlayerMana: loading nbt");
         mana = compound.getInt("mana");
     }
 }
