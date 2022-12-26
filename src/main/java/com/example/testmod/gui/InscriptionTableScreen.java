@@ -29,6 +29,7 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -48,8 +49,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private static final int SPELL_BG_WIDTH = 95;
     private static final int SPELL_BG_HEIGHT = 57;
 
+    private static boolean isDirty;
     private static int temp_spell_count = 5;
     protected Button inscribeButton;
+    protected ArrayList<Button> spellSlotButtons;
+    protected ArrayList<Vec2> spellSlotRelativeLocations;
     private int selectedSpellIndex;
 
     private static String temp_log;
@@ -66,28 +70,19 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     protected void init() {
         super.init();
         inscribeButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()));
-        selectedSpellIndex=-1;
+        spellSlotButtons = new ArrayList<Button>();
+        spellSlotRelativeLocations = new ArrayList<Vec2>();
+        selectedSpellIndex = -1;
+        generateSpellSlots(temp_spell_count);
+        isDirty=false;
     }
 
-    @Override
-    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+    private void generateSpellSlots(int incomingSpellCount) {
+        for (Button b : spellSlotButtons)
+            removeWidget(b);
+        spellSlotButtons.clear();
+        spellSlotRelativeLocations.clear();
 
-        this.blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-
-
-        inscribeButton.active = isValidInscription();
-        renderButtons(poseStack, mouseX, mouseY);
-
-        renderSpells(poseStack, mouseX, mouseY, temp_spell_count);
-
-    }
-
-    protected void renderSpells(PoseStack poseStack, int mouseX, int mouseY, int incomingSpellCount) {
-        //can make this more performant by only calculating on inventory changed or something
-        temp_log = "\n";
         if (incomingSpellCount > 15) {
             incomingSpellCount = 15;
         }
@@ -102,7 +97,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         int[] row3 = new int[LAYOUT[incomingSpellCount - 1][2]];
 
 
-        ArrayList<Vec2> locations = new ArrayList<Vec2>();
+        //ArrayList<Vec2> locations = new ArrayList<Vec2>();
         int[] rowWidth = {
                 boxSize * row1.length,
                 boxSize * row2.length,
@@ -115,23 +110,54 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         };
 
         int overallHeight = rowHeight[0] + rowHeight[1] + rowHeight[2];
-        temp_log += "overall height: " + overallHeight;
-        temp_log += "\t(" + (overallHeight / 2) + ")" + "\n";
-
-        Vec2 center = new Vec2(SPELL_BG_X + leftPos + SPELL_BG_WIDTH / 2, SPELL_BG_Y + topPos + SPELL_BG_HEIGHT / 2);
 
 
         int[][] display = {row1, row2, row3};
+        int index = 0;
         for (int row = 0; row < display.length; row++) {
             for (int column = 0; column < display[row].length; column++) {
                 int offset = -rowWidth[row] / 2;
                 Vec2 location = new Vec2(offset + column * boxSize, (row) * boxSize - (overallHeight / 2));
-                location = location.add(center);
-                locations.add(location);
+                location.add(-9);
+                int temp_index = index;
+                spellSlotButtons.add(this.addWidget(new Button((int) location.x, (int) location.y, boxSize, boxSize, new TextComponent(temp_index+""), (p_169820_) -> this.setSelectedIndex(temp_index))));
+                spellSlotRelativeLocations.add(location);
+                index++;
             }
         }
-        for (int i = 0;i<locations.size();i++)
-            renderSpellSlot(poseStack, i,locations[i], mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+
+        this.blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+
+
+        inscribeButton.active = isValidInscription();
+        renderButtons(poseStack, mouseX, mouseY);
+
+        renderSpells(poseStack, mouseX, mouseY);
+
+    }
+
+    protected void renderSpells(PoseStack poseStack, int mouseX, int mouseY) {
+        if(isDirty){
+            generateSpellSlots(temp_spell_count);
+            isDirty=false;
+        }
+        Vec2 center = new Vec2(SPELL_BG_X + leftPos + SPELL_BG_WIDTH / 2, SPELL_BG_Y + topPos + SPELL_BG_HEIGHT / 2);
+
+        for (int i = 0; i < spellSlotButtons.size(); i++){
+            var spellSlot = spellSlotButtons.get(i);
+            var pos = spellSlotRelativeLocations.get(i).add(center);
+            spellSlot.x = (int)pos.x;
+            spellSlot.y = (int)pos.y;
+            renderSpellSlot(poseStack,pos,mouseX,mouseY,i);
+            //spellSlot.render(poseStack,mouseX,mouseY,1f);
+        }
 
     }
 
@@ -153,12 +179,14 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             {5, 5, 5}  //15
     };
 
-    protected void renderSpellSlot(PoseStack poseStack, int index, Vec2 midpoint, int mouseX, int mouseY) {
+    protected void renderSpellSlot(PoseStack poseStack, Vec2 pos, int mouseX, int mouseY,int index) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        midpoint.add(-9);
-        this.blit(poseStack, (int) midpoint.x, (int) midpoint.y, isHovering((int) midpoint.x, (int) midpoint.y, 19, 19, mouseX, mouseY) ? 38 : 0, 166, 19, 19);
+        this.blit(poseStack, (int) pos.x, (int) pos.y, isHovering((int) pos.x, (int) pos.y, 19, 19, mouseX, mouseY) ? 38 : 0, 166, 19, 19);
+        if(index==selectedSpellIndex)
+            this.blit(poseStack, (int) pos.x, (int) pos.y, 57, 166, 19, 19);
+
     }
 
     protected void renderButtons(PoseStack poseStack, int mouseX, int mouseY) {
@@ -192,8 +220,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         TestMod.LOGGER.info("Inscribe!");
         //inscribeButton.active = false;
     }
-    public void setSelectedIndex(int index){
 
+    public void setSelectedIndex(int index) {
+        selectedSpellIndex = index;
     }
 
     private boolean isValidInscription() {
@@ -237,9 +266,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     public static void onKeyPress(InputEvent.KeyInputEvent e) {
         if (e.getKey() == (int) 'T' && e.getAction() == 1) {
             temp_spell_count--;
+            isDirty = true;
         }
         if (e.getKey() == (int) 'Y' && e.getAction() == 1) {
             temp_spell_count++;
+            isDirty = true;
         }
         if (e.getKey() == (int) 'L' && e.getAction() == 1) {
             TestMod.LOGGER.info(temp_log);
