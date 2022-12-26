@@ -6,6 +6,7 @@ import com.example.testmod.capabilities.mana.network.PacketCastSpell;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -22,9 +23,11 @@ public abstract class AbstractSpell {
     protected int spellPowerPerLevel;
     protected int cooldown;
     protected int cooldownRemaining;
+    public final TranslatableComponent displayName;
 
-    public AbstractSpell(SpellType spellEnum) {
+    public AbstractSpell(SpellType spellEnum, TranslatableComponent displayName) {
         this.spellType = spellEnum;
+        this.displayName=displayName;
     }
 
     public int getID() {

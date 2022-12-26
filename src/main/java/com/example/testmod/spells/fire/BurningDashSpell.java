@@ -3,6 +3,7 @@ package com.example.testmod.spells.fire;
 import com.example.testmod.player.ClientPlayerData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -22,7 +23,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     public BurningDashSpell(int level) {
-        super(SpellType.BURNING_DASH_SPELL);
+        super(SpellType.BURNING_DASH_SPELL, new TranslatableComponent("Burning Dash"));
         baseManaCost = 20;
         manaCostPerLevel = 5;
         baseSpellPower = 1;

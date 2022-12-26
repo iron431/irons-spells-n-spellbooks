@@ -117,13 +117,13 @@ public class ManaDisplay extends GuiComponent {
             if (colorIndex >= colors.length)
                 colorIndex = 0;
         }
-        if (e.getKey() == (int) 'Y' && e.getAction() == 1) {
-            Player player = Minecraft.getInstance().player;
-            player.sendMessage(new TextComponent("Launching " + player.getDisplayName().getString()), player.getUUID());
-            player.push(0, 1, 0);
-            //player.move(MoverType.SELF, new Vec3(1,10,1));
-
-        }
+//        if (e.getKey() == (int) 'Y' && e.getAction() == 1) {
+//            Player player = Minecraft.getInstance().player;
+//            player.sendMessage(new TextComponent("Launching " + player.getDisplayName().getString()), player.getUUID());
+//            player.push(0, 1, 0);
+//            //player.move(MoverType.SELF, new Vec3(1,10,1));
+//
+//        }
     }
 
 

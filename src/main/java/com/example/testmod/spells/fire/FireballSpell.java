@@ -3,6 +3,7 @@ package com.example.testmod.spells.fire;
 import com.example.testmod.TestMod;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.entity.projectile.LargeFireball;
@@ -16,7 +17,7 @@ public class FireballSpell extends AbstractSpell {
     }
 
     public FireballSpell(int level) {
-        super(SpellType.FIREBALL_SPELL);
+        super(SpellType.FIREBALL_SPELL, new TranslatableComponent("Fireball"));
         this.level = level;
         this.baseManaCost = 40;
         this.manaCostPerLevel = 5;
