@@ -1,11 +1,11 @@
 package com.example.testmod.capabilities.spellbook.data;
 
-import com.example.testmod.item.SpellBook;
-import com.example.testmod.item.WimpySpellBook;
+import com.example.testmod.TestMod;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -15,41 +15,45 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Type;
 
 public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
     public static Capability<SpellBookData> SPELL_BOOK_DATA = CapabilityManager.get(new CapabilityToken<>() {
     });
+    private final LazyOptional<SpellBookData> opt = LazyOptional.of(this::getOrCreateSpellbookData);
 
     private SpellBookData spellBookData = null;
-    private final LazyOptional<SpellBookData> opt = LazyOptional.of(this::createSpellbookData);
 
     private final SpellBookTypes spellBookType;
+    private final int spellSlots;
+    private ItemStack stack;
+    private CompoundTag tag;
 
-    public SpellBookDataProvider(SpellBookTypes spellBookType) {
+    public SpellBookDataProvider(SpellBookTypes spellBookType, int spellSlots, ItemStack stack, CompoundTag tag) {
         this.spellBookType = spellBookType;
-    }
 
-    private SpellBookData createSpellbookData() {
-        return createSpellbookData(false);
+        if (stack != null) {
+            this.stack = stack;
+        } else {
+            this.stack = ItemStack.EMPTY;
+        }
+
+        if (tag != null) {
+            //TODO: remove this at some point
+            TestMod.LOGGER.info(tag.toString());
+            this.tag = tag;
+        } else {
+            this.tag = new CompoundTag();
+        }
+        this.spellSlots = spellSlots;
+
+        getOrCreateSpellbookData();
     }
 
     @Nonnull
-    private SpellBookData createSpellbookData(boolean createWithoutSpells) {
+    private SpellBookData getOrCreateSpellbookData() {
         if (spellBookData == null) {
             spellBookData = new SpellBookData();
-            switch (spellBookType) {
-                case WimpySpellBook -> {
-                    spellBookData.setSpellSlots(2);
-                    if (!createWithoutSpells) {
-                        spellBookData.addSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1));
-                    }
-                }
-
-                default -> System.out.println("Unknown SpellBook Type");
-            }
-
         }
         return spellBookData;
     }
@@ -71,13 +75,11 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
-        createSpellbookData(true).saveNBTData(nbt);
-        return nbt;
+        return getOrCreateSpellbookData().saveNBTData();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        createSpellbookData(true).loadNBTData(nbt);
+        getOrCreateSpellbookData().loadNBTData(nbt);
     }
 }

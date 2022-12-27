@@ -20,7 +20,7 @@ public class ModSetup {
         bus.addListener(ManaEvents::onWorldTick);
 
         //SPELLBOOKS
-        bus.addGenericListener(ItemStack.class, SpellBookDataEvents::onAttachCapabilities);
+        //bus.addGenericListener(ItemStack.class, SpellBookDataEvents::onAttachCapabilities);
         bus.addListener(SpellBookDataEvents::onRegisterCapabilities);
     }
 

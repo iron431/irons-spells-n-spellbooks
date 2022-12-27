@@ -11,6 +11,8 @@ public class SpellBookData {
     private final ArrayList<AbstractSpell> transcribedSpells = new ArrayList<>();
     private AbstractSpell activeSpell = null;
     private int spellSlots = 0;
+    private boolean dirty = true;
+    private CompoundTag tag = new CompoundTag();
 
     public AbstractSpell getActiveSpell() {
         return activeSpell;
@@ -22,9 +24,18 @@ public class SpellBookData {
 
         if (index > -1) {
             this.activeSpell = transcribedSpells.get(index);
+            setDirty(true);
             return true;
         }
         return false;
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    private void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     public int getSpellSlots() {
@@ -32,6 +43,7 @@ public class SpellBookData {
     }
 
     public void setSpellSlots(int numSlots) {
+        setDirty(true);
         this.spellSlots = numSlots;
     }
 
@@ -42,7 +54,7 @@ public class SpellBookData {
             if (this.transcribedSpells.size() == 1) {
                 setActiveSpell(spell);
             }
-
+            setDirty(true);
             return true;
         }
         return false;
@@ -51,16 +63,26 @@ public class SpellBookData {
     public boolean replaceSpell(AbstractSpell oldSpell, AbstractSpell newSpell) {
         if (transcribedSpells.remove(oldSpell)) {
             transcribedSpells.add(newSpell);
+            setDirty(true);
             return true;
         }
         return false;
     }
 
     public boolean removeSpell(AbstractSpell spell) {
-        return transcribedSpells.remove(spell);
+        if (transcribedSpells.remove(spell)) {
+            setDirty(true);
+            return true;
+        }
+        return false;
     }
 
-    public void saveNBTData(CompoundTag compound) {
+    public CompoundTag saveNBTData() {
+        if (!dirty) {
+            return this.tag;
+        }
+
+        CompoundTag compound = new CompoundTag();
         TestMod.LOGGER.info("Spellbook data: save nbt");
 
         compound.putInt("spellSlots", spellSlots);
@@ -80,6 +102,9 @@ public class SpellBookData {
         } else {
             compound.putInt("activeSpellId", this.activeSpell.getID());
         }
+        this.tag = compound;
+        setDirty(false);
+        return (this.tag);
     }
 
     public void loadNBTData(CompoundTag compound) {
