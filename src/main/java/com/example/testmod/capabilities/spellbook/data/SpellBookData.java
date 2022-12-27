@@ -6,6 +6,14 @@ import net.minecraft.nbt.ListTag;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class SpellBookData {
+
+    public static final String SPELL_SLOTS = "spellSlots";
+    public static final String ACTIVE_SPELL_ID = "activeSpellId";
+    public static final String SPELLS = "spells";
+    public static final String ID = "id";
+    public static final String LEVEL = "level";
+    public static final String SLOT = "slot";
+
     private AbstractSpell[] transcribedSpells;
     private AbstractSpell activeSpell = null;
     private int spellSlots = 0;
@@ -125,26 +133,25 @@ public class SpellBookData {
 
         ListTag listTagSpells = new ListTag();
         CompoundTag compound = new CompoundTag();
-        compound.putInt("spellSlots", spellSlots);
+        compound.putInt(SPELL_SLOTS, spellSlots);
 
         for (int i = 0; i < transcribedSpells.length; i++) {
             var spell = transcribedSpells[i];
-            if(spell!=null){
+            if (spell != null) {
                 CompoundTag ct = new CompoundTag();
-                ct.putInt("id", spell.getID());
-                ct.putInt("level", spell.getLevel());
-                ct.putInt("slot", i);
+                ct.putInt(ID, spell.getID());
+                ct.putInt(LEVEL, spell.getLevel());
+                ct.putInt(SLOT, i);
                 listTagSpells.add(ct);
             }
-
         }
 
-        compound.put("spells", listTagSpells);
+        compound.put(SPELLS, listTagSpells);
 
         if (this.activeSpell == null) {
-            compound.putInt("activeSpellId", -1);
+            compound.putInt(ACTIVE_SPELL_ID, -1);
         } else {
-            compound.putInt("activeSpellId", this.activeSpell.getID());
+            compound.putInt(ACTIVE_SPELL_ID, this.activeSpell.getID());
         }
         this.tag = compound;
         setDirty(false);
@@ -152,17 +159,17 @@ public class SpellBookData {
     }
 
     public void loadNBTData(CompoundTag compound) {
-        spellSlots = compound.getInt("spellSlots");
+        spellSlots = compound.getInt(SPELL_SLOTS);
         transcribedSpells = new AbstractSpell[spellSlots];
-        int activeSpellId = compound.getInt("activeSpellId");
+        int activeSpellId = compound.getInt(ACTIVE_SPELL_ID);
 
-        ListTag listTagSpells = (ListTag) compound.get("spells");
+        ListTag listTagSpells = (ListTag) compound.get(SPELLS);
         if (listTagSpells != null) {
             listTagSpells.forEach(tag -> {
                 CompoundTag t = (CompoundTag) tag;
-                int id = t.getInt("id");
-                int level = t.getInt("level");
-                int index = t.getInt("slot");
+                int id = t.getInt(ID);
+                int level = t.getInt(LEVEL);
+                int index = t.getInt(SLOT);
                 AbstractSpell s = AbstractSpell.getSpell(id, level);
                 transcribedSpells[index] = s;
                 if (activeSpellId == s.getID()) {
