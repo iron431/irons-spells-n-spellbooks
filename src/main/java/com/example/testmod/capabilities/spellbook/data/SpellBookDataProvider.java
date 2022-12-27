@@ -1,8 +1,7 @@
 package com.example.testmod.capabilities.spellbook.data;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +26,6 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
     private final SpellBookTypes spellBookType;
     private final int spellSlots;
     private ItemStack stack;
-    private CompoundTag tag;
 
     public SpellBookDataProvider(SpellBookTypes spellBookType, int spellSlots, ItemStack stack, CompoundTag tag) {
         this.spellBookType = spellBookType;
@@ -38,13 +36,6 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
             this.stack = ItemStack.EMPTY;
         }
 
-        if (tag != null) {
-            //TODO: remove this at some point
-            TestMod.LOGGER.info(tag.toString());
-            this.tag = tag;
-        } else {
-            this.tag = new CompoundTag();
-        }
         this.spellSlots = spellSlots;
 
         getOrCreateSpellbookData();
@@ -54,6 +45,7 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
     private SpellBookData getOrCreateSpellbookData() {
         if (spellBookData == null) {
             spellBookData = new SpellBookData();
+            spellBookData.setSpellSlots(this.spellSlots);
         }
         return spellBookData;
     }
@@ -75,11 +67,11 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
 
     @Override
     public CompoundTag serializeNBT() {
-        return getOrCreateSpellbookData().saveNBTData();
+        return spellBookData.saveNBTData();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        getOrCreateSpellbookData().loadNBTData(nbt);
+        spellBookData.loadNBTData(nbt);
     }
 }

@@ -82,12 +82,9 @@ public class SpellBookData {
             return this.tag;
         }
 
-        CompoundTag compound = new CompoundTag();
-        TestMod.LOGGER.info("Spellbook data: save nbt");
-
-        compound.putInt("spellSlots", spellSlots);
-
         ListTag listTagSpells = new ListTag();
+        CompoundTag compound = new CompoundTag();
+        compound.putInt("spellSlots", spellSlots);
 
         transcribedSpells.forEach(spell -> {
             CompoundTag ct = new CompoundTag();
@@ -108,7 +105,6 @@ public class SpellBookData {
     }
 
     public void loadNBTData(CompoundTag compound) {
-        TestMod.LOGGER.info("Spellbook data: load nbt");
         spellSlots = compound.getInt("spellSlots");
         int activeSpellId = compound.getInt("activeSpellId");
 
@@ -120,12 +116,9 @@ public class SpellBookData {
                 int level = t.getInt("level");
 
                 AbstractSpell s = AbstractSpell.getSpell(id, level);
-
-                if (s != null) {
-                    transcribedSpells.add(s);
-                    if (activeSpellId == s.getID()) {
-                        setActiveSpell(s);
-                    }
+                transcribedSpells.add(s);
+                if (activeSpellId == s.getID()) {
+                    setActiveSpell(s);
                 }
             });
         }
