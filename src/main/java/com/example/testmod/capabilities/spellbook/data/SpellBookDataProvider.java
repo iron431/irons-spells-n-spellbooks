@@ -44,8 +44,7 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
     @Nonnull
     private SpellBookData getOrCreateSpellbookData() {
         if (spellBookData == null) {
-            spellBookData = new SpellBookData();
-            spellBookData.setSpellSlots(this.spellSlots);
+            spellBookData = new SpellBookData(this.spellSlots);
         }
         return spellBookData;
     }
