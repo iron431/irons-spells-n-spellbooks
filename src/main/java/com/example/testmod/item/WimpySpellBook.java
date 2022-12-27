@@ -1,6 +1,7 @@
 package com.example.testmod.item;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.spellbook.data.SpellBookData;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
 import com.example.testmod.capabilities.spellbook.data.SpellBookTypes;
 import com.example.testmod.spells.AbstractSpell;
@@ -15,6 +16,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
 public class WimpySpellBook extends AbstractSpellBook {
+    ItemStack stack;
     public WimpySpellBook() {
 
     }
@@ -43,7 +45,11 @@ public class WimpySpellBook extends AbstractSpellBook {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
+        this.stack = stack;
         return new SpellBookDataProvider(SpellBookTypes.WimpySpellBook, 2, stack, nbt);
+    }
+    public SpellBookData getSpellBookData(){
+        return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
     }
 
 //    @Override
