@@ -23,13 +23,10 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
 
     private SpellBookData spellBookData = null;
 
-    private final SpellBookTypes spellBookType;
     private final int spellSlots;
     private ItemStack stack;
 
-    public SpellBookDataProvider(SpellBookTypes spellBookType, int spellSlots, ItemStack stack, CompoundTag tag) {
-        this.spellBookType = spellBookType;
-
+    public SpellBookDataProvider(int spellSlots, ItemStack stack, CompoundTag tag) {
         if (stack != null) {
             this.stack = stack;
         } else {

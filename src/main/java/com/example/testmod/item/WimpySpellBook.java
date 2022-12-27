@@ -16,16 +16,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
 public class WimpySpellBook extends AbstractSpellBook {
-    ItemStack stack;
-    public WimpySpellBook() {
-
-    }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 
         ItemStack itemStack = player.getItemInHand(hand);
-        var spellData = itemStack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
+        var spellData = getSpellBookData();
 
         //TODO: remove this code once scrolls can be transcribed into a spellbook
         AbstractSpell s = spellData.getActiveSpell();
@@ -46,10 +42,7 @@ public class WimpySpellBook extends AbstractSpellBook {
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
         this.stack = stack;
-        return new SpellBookDataProvider(SpellBookTypes.WimpySpellBook, 2, stack, nbt);
-    }
-    public SpellBookData getSpellBookData(){
-        return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
+        return new SpellBookDataProvider(2, stack, nbt);
     }
 
 //    @Override
