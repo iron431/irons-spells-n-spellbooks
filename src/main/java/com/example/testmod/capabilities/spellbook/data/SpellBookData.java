@@ -129,14 +129,14 @@ public class SpellBookData {
 
         for (int i = 0; i < transcribedSpells.length; i++) {
             var spell = transcribedSpells[i];
-            CompoundTag ct = new CompoundTag();
             if(spell!=null){
+                CompoundTag ct = new CompoundTag();
                 ct.putInt("id", spell.getID());
                 ct.putInt("level", spell.getLevel());
-                ct.putInt("index", i);
+                ct.putInt("slot", i);
+                listTagSpells.add(ct);
             }
 
-            listTagSpells.add(ct);
         }
 
         compound.put("spells", listTagSpells);
@@ -162,7 +162,7 @@ public class SpellBookData {
                 CompoundTag t = (CompoundTag) tag;
                 int id = t.getInt("id");
                 int level = t.getInt("level");
-                int index = t.getInt("index");
+                int index = t.getInt("slot");
                 AbstractSpell s = AbstractSpell.getSpell(id, level);
                 transcribedSpells[index] = s;
                 if (activeSpellId == s.getID()) {
