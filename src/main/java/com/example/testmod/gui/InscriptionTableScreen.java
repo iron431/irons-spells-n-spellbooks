@@ -231,8 +231,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         //slot new spell
         var tempSpellFromScrollReplaceMe = new BurningDashSpell();
+        TestMod.LOGGER.info(spellbookStack.hashCode()+"");
         spellBookData.addSpell(tempSpellFromScrollReplaceMe,selectedSpellIndex);
-        menu.slots.get(SCROLL_SLOT).remove();
+        TestMod.LOGGER.info(spellbookStack.hashCode()+"");
+
+        menu.slots.get(SCROLL_SLOT).remove(1);
         isDirty=true;
 
     }
