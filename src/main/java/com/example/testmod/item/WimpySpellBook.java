@@ -1,6 +1,7 @@
 package com.example.testmod.item;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.spellbook.data.SpellBookData;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
 import com.example.testmod.capabilities.spellbook.data.SpellBookTypes;
 import com.example.testmod.spells.AbstractSpell;
@@ -18,8 +19,14 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
 public class WimpySpellBook extends Item {
+    private ItemStack stack;
+
     public WimpySpellBook() {
         super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
+    }
+
+    public SpellBookData getSpellBookData(){
+        return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
     }
 
     @Override
@@ -32,7 +39,8 @@ public class WimpySpellBook extends Item {
         AbstractSpell s = spellData.getActiveSpell();
         if (s == null) {
             TestMod.LOGGER.info("Adding fireball");
-            spellData.addSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1));
+            spellData.addSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1),0);
+            spellData.setActiveSpell(0);
         }
 
         if (spellData.getActiveSpell().attemptCast(itemStack, level, player))
@@ -44,6 +52,7 @@ public class WimpySpellBook extends Item {
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        this.stack = stack;
         //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
         return new SpellBookDataProvider(SpellBookTypes.WimpySpellBook, 2, stack, nbt);
     }

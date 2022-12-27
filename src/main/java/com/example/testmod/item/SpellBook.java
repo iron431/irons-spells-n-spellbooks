@@ -23,10 +23,7 @@ public class SpellBook extends Item {
         ItemStack item = player.getItemInHand(hand);
         AbstractSpell currentSpell;
 
-        //if(player.isCrouching())
-        //    currentSpell = new FireballSpell();
-        //else
-        //    currentSpell = new BurningDashSpell();
+
         currentSpell = tempSpell;
 
         if(currentSpell.attemptCast(this.getDefaultInstance(),level,player)){

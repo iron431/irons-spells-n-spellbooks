@@ -71,18 +71,20 @@ public class InscriptionTableBlock extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
-//    @Override
-//    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-//        if (pState.getBlock() != pNewState.getBlock()) {
-//            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-//            if (blockEntity instanceof InscriptionTableTile) {
-//                ((InscriptionTableTile) blockEntity).drops();
-//            }
-//        }
-//        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
-//    }
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (pState.getBlock() != pNewState.getBlock()) {
+            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+            if (blockEntity instanceof InscriptionTableTile) {
+                ((InscriptionTableTile) blockEntity).drops();
+            }
+        }
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+    }
 
     @Override
+    @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);

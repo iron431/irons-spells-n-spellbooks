@@ -118,9 +118,12 @@ public class SpellBookData {
         for (int i = 0; i < transcribedSpells.length; i++) {
             var spell = transcribedSpells[i];
             CompoundTag ct = new CompoundTag();
-            ct.putInt("id", spell.getID());
-            ct.putInt("level", spell.getLevel());
-            ct.putInt("index", i);
+            if(spell!=null){
+                ct.putInt("id", spell.getID());
+                ct.putInt("level", spell.getLevel());
+                ct.putInt("index", i);
+            }
+
             listTagSpells.add(ct);
         }
 

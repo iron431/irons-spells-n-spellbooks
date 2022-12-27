@@ -1,10 +1,7 @@
 package com.example.testmod;
 
 import com.example.testmod.gui.InscriptionTableScreen;
-import com.example.testmod.registries.AttributeRegistry;
-import com.example.testmod.registries.BlockRegistry;
-import com.example.testmod.registries.ItemRegistry;
-import com.example.testmod.registries.MenuRegistry;
+import com.example.testmod.registries.*;
 import com.example.testmod.setup.ModSetup;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -48,6 +45,7 @@ public class TestMod {
         AttributeRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);
         MenuRegistry.register(modEventBus);
+        EntityRegistry.register(modEventBus);
 
 
         modEventBus.addListener(this::clientSetup);
