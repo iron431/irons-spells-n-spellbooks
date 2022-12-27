@@ -73,6 +73,18 @@ public class SpellBookData {
         return false;
     }
 
+    public boolean addSpell(AbstractSpell spell) {
+        int index = getNextSpellIndex();
+        if (index > -1) {
+            return addSpell(spell, index);
+        }
+        return false;
+    }
+
+    private int getNextSpellIndex() {
+        return ArrayUtils.indexOf(this.transcribedSpells, null);
+    }
+
     public boolean replaceSpell(AbstractSpell oldSpell, AbstractSpell newSpell) {
         if (oldSpell != null && newSpell != null) {
             int index = ArrayUtils.indexOf(transcribedSpells, oldSpell);

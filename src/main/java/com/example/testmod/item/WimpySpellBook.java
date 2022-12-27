@@ -9,17 +9,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
-public class WimpySpellBook extends Item {
+public class WimpySpellBook extends AbstractSpellBook {
     public WimpySpellBook() {
-        super(new Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
+
     }
 
     @Override
@@ -35,8 +32,9 @@ public class WimpySpellBook extends Item {
             spellData.addSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1));
         }
 
-        if (spellData.getActiveSpell().attemptCast(itemStack, level, player))
+        if (spellData.getActiveSpell().attemptCast(itemStack, level, player)) {
             return InteractionResultHolder.success(itemStack);
+        }
 
         return InteractionResultHolder.fail(itemStack);
     }
