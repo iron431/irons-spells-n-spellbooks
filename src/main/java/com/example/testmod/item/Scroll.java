@@ -26,27 +26,12 @@ public class Scroll extends AbstractScroll {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 
-        ItemStack itemStack = player.getItemInHand(hand);
-        var spellData = itemStack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
-
-        //TODO: remove this code once scrolls can be transcribed into a spellbook
-        AbstractSpell s = spellData.getActiveSpell();
-        if (s == null) {
-            TestMod.LOGGER.info("Adding fireball");
-            spellData.addSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1));
-        }
-
-        if (spellData.getActiveSpell().attemptCast(itemStack, level, player)) {
-            return InteractionResultHolder.success(itemStack);
-        }
-
-        return InteractionResultHolder.fail(itemStack);
     }
 
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
-        return new SpellBookDataProvider(SpellBookTypes.WimpySpellBook, 2, stack, nbt);
+        return new SpellBookDataProvider( 2, stack, nbt);
     }
 }

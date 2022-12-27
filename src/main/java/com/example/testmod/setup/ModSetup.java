@@ -1,6 +1,7 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.capabilities.mana.data.ManaEvents;
+import com.example.testmod.capabilities.scroll.data.ScrollDataEvents;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +23,10 @@ public class ModSetup {
         //SPELLBOOKS
         //bus.addGenericListener(ItemStack.class, SpellBookDataEvents::onAttachCapabilities);
         bus.addListener(SpellBookDataEvents::onRegisterCapabilities);
+
+        //SCROLLS
+        bus.addListener(ScrollDataEvents::onRegisterCapabilities);
+
     }
 
     public static void init(FMLCommonSetupEvent event) {

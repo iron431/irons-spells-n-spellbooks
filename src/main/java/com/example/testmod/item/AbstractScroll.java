@@ -9,8 +9,6 @@ import net.minecraft.world.item.Rarity;
 
 public abstract class AbstractScroll extends Item {
 
-
-
     public AbstractScroll() {
         this(Rarity.UNCOMMON);
     }
@@ -18,6 +16,4 @@ public abstract class AbstractScroll extends Item {
     public AbstractScroll(Rarity rarity) {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(rarity));
     }
-
-
 }
