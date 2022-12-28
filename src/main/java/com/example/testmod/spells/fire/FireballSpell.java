@@ -24,6 +24,10 @@ public class FireballSpell extends AbstractSpell {
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.cooldown = 20;
+
+        //TODO: remove this after testing
+        this.baseManaCost = 2;
+        this.cooldown = 200;
     }
 
     @Override

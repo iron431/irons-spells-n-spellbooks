@@ -48,7 +48,7 @@ public class PlayerMagicData {
 
         ListTag listTag = (ListTag) compound.get(COOLDOWNS);
 
-        if (!listTag.isEmpty()) {
+        if (listTag != null && !listTag.isEmpty()) {
             playerCooldowns.loadNBTData(listTag);
         }
 

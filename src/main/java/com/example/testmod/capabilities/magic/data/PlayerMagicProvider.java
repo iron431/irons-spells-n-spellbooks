@@ -17,10 +17,10 @@ public class PlayerMagicProvider implements ICapabilityProvider, INBTSerializabl
     public static Capability<PlayerMagicData> PLAYER_MAGIC = CapabilityManager.get(new CapabilityToken<>(){});
 
     private PlayerMagicData playerMana = null;
-    private final LazyOptional<PlayerMagicData> opt = LazyOptional.of(this::createPlayerMana);
+    private final LazyOptional<PlayerMagicData> opt = LazyOptional.of(this::createPlayerMagicData);
 
     @Nonnull
-    private PlayerMagicData createPlayerMana() {
+    private PlayerMagicData createPlayerMagicData() {
         if (playerMana == null) {
             playerMana = new PlayerMagicData();
         }
@@ -45,12 +45,12 @@ public class PlayerMagicProvider implements ICapabilityProvider, INBTSerializabl
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
-        createPlayerMana().saveNBTData(nbt);
+        createPlayerMagicData().saveNBTData(nbt);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        createPlayerMana().loadNBTData(nbt);
+        createPlayerMagicData().loadNBTData(nbt);
     }
 }

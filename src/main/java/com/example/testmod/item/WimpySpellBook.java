@@ -1,6 +1,7 @@
 package com.example.testmod.item;
 
-import com.example.testmod.capabilities.magic.client.ClientMagicData;
+import com.example.testmod.TestMod;
+import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
 import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
@@ -21,11 +22,20 @@ public class WimpySpellBook extends AbstractSpellBook {
         AbstractSpell spell = spellBookData.getActiveSpell();
 
         if (level.isClientSide) {
-            if (spell != null && ClientMagicData.getPlayerMana() > spell.getManaCost()) {
+            TestMod.LOGGER.info("WimpySpellBook.use: client");
+            if (spell != null
+                    && ClientMagicData.getPlayerMana() > spell.getManaCost()
+                    && !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
+            ) {
+                ClientMagicData.getCooldowns().addCooldown(spell.getSpellType(), spell.getSpellCooldown());
+                TestMod.LOGGER.info("WimpySpellBook.use: success");
                 return InteractionResultHolder.success(player.getItemInHand(hand));
             }
-            return InteractionResultHolder.pass(player.getItemInHand(hand));
+            TestMod.LOGGER.info("WimpySpellBook.use: consume");
+            return InteractionResultHolder.consume(player.getItemInHand(hand));
         }
+
+        TestMod.LOGGER.info("WimpySpellBook.use: server");
 
         if (spell != null && spell.attemptCast(itemStack, level, player)) {
             return InteractionResultHolder.success(itemStack);

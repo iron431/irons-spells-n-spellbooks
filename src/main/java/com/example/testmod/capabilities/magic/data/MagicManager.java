@@ -33,7 +33,7 @@ public class MagicManager extends SavedData {
         return magicManager;
     }
 
-    public PlayerMagicData getFromPlayerCapability(ServerPlayer serverPlayer) {
+    public PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
         var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
         if (capContainer.isPresent()) {
             return capContainer.resolve().orElse(new PlayerMagicData());
@@ -42,17 +42,16 @@ public class MagicManager extends SavedData {
     }
 
     public int getPlayerCurrentMana(ServerPlayer serverPlayer) {
-        return getFromPlayerCapability(serverPlayer).getMana();
+        return getPlayerMagicData(serverPlayer).getMana();
     }
 
-    public PlayerMagicData setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
-        var playerMagicData = getFromPlayerCapability(serverPlayer);
+    public void setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
+        var playerMagicData = getPlayerMagicData(serverPlayer);
         playerMagicData.setMana(newManaValue);
-        return playerMagicData;
     }
 
     public PlayerMagicData calculateState(ServerPlayer serverPlayer) {
-        PlayerMagicData playerMagicData = getFromPlayerCapability(serverPlayer);
+        PlayerMagicData playerMagicData = getPlayerMagicData(serverPlayer);
         regenPlayerMana(serverPlayer, playerMagicData);
         playerMagicData.getPlayerCooldowns().tick(TICKS_PER_CYCLE);
         return playerMagicData;

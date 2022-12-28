@@ -1,7 +1,7 @@
 package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.client.ClientMagicData;
+import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;

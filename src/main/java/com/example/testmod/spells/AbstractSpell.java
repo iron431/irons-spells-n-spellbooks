@@ -1,7 +1,9 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
+import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
@@ -22,7 +24,6 @@ public abstract class AbstractSpell {
     protected int baseSpellPower;
     protected int spellPowerPerLevel;
     protected int cooldown;
-    protected int cooldownRemaining;
     public final TranslatableComponent displayName;
 
     public AbstractSpell(SpellType spellEnum, TranslatableComponent displayName) {
@@ -32,6 +33,10 @@ public abstract class AbstractSpell {
 
     public int getID() {
         return this.spellType.getValue();
+    }
+
+    public SpellType getSpellType() {
+        return this.spellType;
     }
 
     public int getLevel() {
@@ -44,6 +49,10 @@ public abstract class AbstractSpell {
 
     public int getSpellPower() {
         return baseSpellPower + spellPowerPerLevel * (level - 1);
+    }
+
+    public int getSpellCooldown() {
+        return this.cooldown;
     }
 
     public void setLevel(int level) {
@@ -75,18 +84,24 @@ public abstract class AbstractSpell {
         }
 
         var serverPlayer = world.getServer().getPlayerList().getPlayer(player.getUUID());
+        //TODO: add server side cooldown verification
 
         if (serverPlayer != null) {
             MagicManager magicManager = MagicManager.get(world);
-            int playerMana = magicManager.getPlayerCurrentMana(serverPlayer);
+            var playerMagicData = magicManager.getPlayerMagicData(serverPlayer);
+            int playerMana = playerMagicData.getMana();
 
             if (playerMana <= 0) {
                 player.sendMessage(new TextComponent("Out of mana").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else if (playerMana - getManaCost() < 0) {
                 player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            } else if (playerMagicData.getPlayerCooldowns().isOnCooldown(spellType)) {
+                player.sendMessage(new TextComponent(displayName + " is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else {
                 int newMana = playerMana - getManaCost();
-                var playerMagicData = magicManager.setPlayerCurrentMana(serverPlayer, newMana);
+                magicManager.setPlayerCurrentMana(serverPlayer, newMana);
+                TestMod.LOGGER.info("setting cooldown:" + cooldown);
+                playerMagicData.getPlayerCooldowns().addCooldown(spellType, cooldown);
                 onCast(stack, world, player);
                 Messages.sendToPlayer(new PacketSyncMagicDataToClient(playerMagicData), serverPlayer);
             }
@@ -96,10 +111,6 @@ public abstract class AbstractSpell {
     }
 
     public abstract void onCast(ItemStack stack, Level world, Player player);
-
-    public float getPercentCooldown() {
-        return Mth.clamp(cooldownRemaining / ((float) cooldown), 0, 1);
-    }
 
     @Override
     public boolean equals(Object obj) {

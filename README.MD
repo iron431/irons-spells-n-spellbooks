@@ -15,6 +15,11 @@ Item Stack
 Other Random Links
 - https://www.youtube.com/watch?v=prqMxqUtj-0
 
+# Helpful commands
+- ```/setblock ~ ~ ~ testmod:inscription_table```
+- ```/data get entity @s```
+- ```/data get entity @s SelectedItem```
+- ```/data get entity @s ForgeCaps```
 
 # Dimension Data Storage (from Chat GPT)
 In the context of Minecraft modding, the DimensionDataStorage class is a class that is used to store data specific to a dimension in the game. In Minecraft, dimensions are separate, self-contained worlds that can have different properties and features. The DimensionDataStorage class allows mod developers to create and store data that is specific to a particular dimension, which can be used to customize the behavior of their mod in that dimension.
