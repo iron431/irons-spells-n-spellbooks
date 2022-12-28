@@ -20,28 +20,38 @@ public class FireballScroll extends AbstractScroll {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-
-        TestMod.LOGGER.info("FireBallScroll.use: level.isClientSide:" + level.isClientSide);
-
         if (level.isClientSide) {
-            return InteractionResultHolder.pass(player.getItemInHand(hand));
+            return InteractionResultHolder.success(player.getItemInHand(hand));
         } else {
             ItemStack stack = player.getItemInHand(hand);
 
             if (stack.getItem() instanceof FireballScroll scroll) {
                 var scrollData = scroll.getScrollData();
                 scrollData.getSpell().onCast(stack, level, player);
+
+                /*
+                TestMod.LOGGER.info("scroll.stack.getItem().getDescription().getString():" + scroll.stack.getItem().getDescription().getString());
+                TestMod.LOGGER.info("scroll.stack.getItem().hashCode():" + scroll.stack.getItem().hashCode());
+                TestMod.LOGGER.info("scroll.stack.hashCode():" + scroll.stack.hashCode());
+                TestMod.LOGGER.info("stack.getItem().getDescription().getString():" + stack.getItem().getDescription().getString());
+                TestMod.LOGGER.info("stack.getItem().hashCode():" + stack.getItem().hashCode());
+                TestMod.LOGGER.info("stack.hashCode():" + stack.hashCode());
+                */
+
+                player.getInventory().removeItem(stack);
             }
         }
-        //Messages.sendToServer(new PacketUseScroll(this.spellType, this.level));
-        return InteractionResultHolder.consume(player.getItemInHand(hand));
+        return InteractionResultHolder.success(player.getItemInHand(hand));
     }
 
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
+
+        //TODO: reevaluate if saving a reference to this stack is ok.. I have a feeling this is bad
         this.stack = stack;
-        return new ScrollDataProvider(spellType, level, stack, nbt);
+
+        return new ScrollDataProvider(spellType, level);
     }
 }

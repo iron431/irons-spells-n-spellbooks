@@ -25,16 +25,12 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
     private final LazyOptional<ScrollData> opt = LazyOptional.of(this::getOrCreateScrollData);
 
     private ScrollData scrollData = null;
-    private ItemStack stack;
-    private SpellType spellType;
-    private int level;
+    private final SpellType spellType;
+    private final int level;
 
-    public ScrollDataProvider(SpellType spellType, int level, ItemStack stack, CompoundTag tag) {
+    public ScrollDataProvider(SpellType spellType, int level) {
         this.spellType = spellType;
         this.level = level;
-
-        this.stack = Objects.requireNonNullElse(stack, ItemStack.EMPTY);
-
         getOrCreateScrollData();
     }
 

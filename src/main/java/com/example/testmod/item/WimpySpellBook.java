@@ -41,7 +41,10 @@ public class WimpySpellBook extends AbstractSpellBook {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
+
+        //TODO: reevaluate if saving a reference to this stack is ok.. I have a feeling this is bad
         this.stack = stack;
+        
         return new SpellBookDataProvider(2, stack, nbt);
     }
 
