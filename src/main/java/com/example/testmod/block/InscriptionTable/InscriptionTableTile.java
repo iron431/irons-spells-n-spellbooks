@@ -1,11 +1,8 @@
 package com.example.testmod.block.InscriptionTable;
 import com.example.testmod.gui.InscriptionTableMenu;
-import com.example.testmod.gui.InscriptionTableScreen;
-import com.example.testmod.item.AbstractScroll;
+import com.example.testmod.item.Scroll;
 import com.example.testmod.item.AbstractSpellBook;
-import com.example.testmod.item.WimpySpellBook;
 import com.example.testmod.registries.BlockRegistry;
-import com.example.testmod.spells.fire.BurningDashSpell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,10 +15,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -67,7 +62,7 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
         ItemStack scrollItemStack = slots.get(scrollSlot).getItem();
 
         var spellBook = (AbstractSpellBook)spellBookItemStack.getItem();
-        var scroll = (AbstractScroll)scrollItemStack.getItem();
+        var scroll = (Scroll)scrollItemStack.getItem();
 
         var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
         var scrollData = scroll.getScrollData(scrollItemStack);

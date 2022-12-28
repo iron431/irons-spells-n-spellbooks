@@ -2,7 +2,6 @@ package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.gui.network.PacketInscribeSpell;
-import com.example.testmod.item.AbstractScroll;
 import com.example.testmod.item.AbstractSpellBook;
 import com.example.testmod.item.FireballScroll;
 import com.example.testmod.item.WimpySpellBook;

@@ -46,6 +46,7 @@ public class TestMod {
         BlockRegistry.register(modEventBus);
         MenuRegistry.register(modEventBus);
         EntityRegistry.register(modEventBus);
+        LootRegistry.register(modEventBus);
 
 
         modEventBus.addListener(this::clientSetup);
