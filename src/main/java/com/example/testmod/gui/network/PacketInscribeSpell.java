@@ -39,7 +39,7 @@ public class PacketInscribeSpell {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             // Here we are server side
-            ItemStack spellbookStack = ctx.getSender().getItemBySlot();
+            //ItemStack spellbookStack = ctx.getSender().getItemBySlot();
             ServerPlayer player = ctx.getSender();
             if (player != null) {
 //                ManaManager manaManager = ManaManager.get(player.level);
