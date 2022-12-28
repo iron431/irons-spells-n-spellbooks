@@ -49,6 +49,7 @@ public class FireballScroll extends AbstractScroll {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
+        TestMod.LOGGER.info("init capabilities on fireball scroll");
         return new ScrollDataProvider(spellType, level);
     }
 }

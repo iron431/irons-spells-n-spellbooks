@@ -17,5 +17,5 @@ public class LootRegistry {
         LOOT_FUNCTIONS.register(eventBus);
     }
 
-    public static final RegistryObject<LootItemFunctionType> RANDOMIZE_SCROLL_FUNCTION = LOOT_FUNCTIONS.register("scroll_data_function", () -> new LootItemFunctionType(new RandomizeScrollFunction.Serializer()));
+    public static final RegistryObject<LootItemFunctionType> RANDOMIZE_SCROLL_FUNCTION = LOOT_FUNCTIONS.register("randomize_scroll", () -> new LootItemFunctionType(new RandomizeScrollFunction.Serializer()));
 }
