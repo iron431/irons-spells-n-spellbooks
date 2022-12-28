@@ -16,8 +16,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.Nullable;
 
-public class FireBallScroll extends AbstractScroll {
-    public FireBallScroll(int level, Rarity rarity) {
+public class FireballScroll extends AbstractScroll {
+    public FireballScroll(int level, Rarity rarity) {
         super(SpellType.FIREBALL_SPELL, level, rarity);
     }
 
