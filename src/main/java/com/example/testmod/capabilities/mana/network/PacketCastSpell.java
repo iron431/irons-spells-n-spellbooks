@@ -7,6 +7,7 @@ import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -47,9 +48,9 @@ public class PacketCastSpell {
                 PlayerMana playerMana = manaManager.getFromPlayerCapability(player);
 
                 if (playerMana.getMana() <= 0) {
-                    player.sendMessage(new TranslatableComponent("Out of mana").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TextComponent("Out of mana").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 } else if (playerMana.getMana() - manaCost < 0) {
-                    player.sendMessage(new TranslatableComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 } else {
                     int newMana = playerMana.getMana() - manaCost;
                     manaManager.setPlayerCurrentMana(player, newMana);

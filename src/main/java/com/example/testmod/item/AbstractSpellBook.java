@@ -13,8 +13,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class AbstractSpellBook extends Item {
 
-    protected ItemStack stack;
-
     public AbstractSpellBook() {
         this(1, Rarity.UNCOMMON);
     }
@@ -23,7 +21,7 @@ public class AbstractSpellBook extends Item {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(rarity));
     }
 
-    public SpellBookData getSpellBookData() {
+    public SpellBookData getSpellBookData(ItemStack stack) {
         return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
     }
 

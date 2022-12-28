@@ -1,9 +1,8 @@
 package com.example.testmod.item;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.spellbook.data.SpellBookData;
+import com.example.testmod.capabilities.mana.client.ClientManaData;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
-import com.example.testmod.capabilities.spellbook.data.SpellBookTypes;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
@@ -19,18 +18,18 @@ public class WimpySpellBook extends AbstractSpellBook {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-
         ItemStack itemStack = player.getItemInHand(hand);
-        var spellData = getSpellBookData();
+        var spellBookData = getSpellBookData(itemStack);
+        AbstractSpell spell = spellBookData.getActiveSpell();
 
-        //TODO: remove this code once scrolls can be transcribed into a spellbook
-        AbstractSpell s = spellData.getActiveSpell();
-        if (s == null) {
-            TestMod.LOGGER.info("Adding fireball");
-            spellData.addSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1));
+        if (level.isClientSide) {
+            if (spell != null && ClientManaData.getPlayerMana() > spell.getManaCost()) {
+                return InteractionResultHolder.success(player.getItemInHand(hand));
+            }
+            return InteractionResultHolder.pass(player.getItemInHand(hand));
         }
 
-        if (spellData.getActiveSpell().attemptCast(itemStack, level, player)) {
+        if (spell.attemptCast(itemStack, level, player)) {
             return InteractionResultHolder.success(itemStack);
         }
 
@@ -41,10 +40,6 @@ public class WimpySpellBook extends AbstractSpellBook {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
-
-        //TODO: reevaluate if saving a reference to this stack is ok.. I have a feeling this is bad
-        this.stack = stack;
-        
         return new SpellBookDataProvider(2, stack, nbt);
     }
 

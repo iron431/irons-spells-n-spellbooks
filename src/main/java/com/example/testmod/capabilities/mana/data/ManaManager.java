@@ -4,6 +4,7 @@ import com.example.testmod.capabilities.mana.network.PacketSyncManaToClient;
 import com.example.testmod.setup.Messages;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;

@@ -2,17 +2,26 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.mana.client.ClientManaData;
+import com.example.testmod.capabilities.mana.data.ManaManager;
+import com.example.testmod.capabilities.mana.data.PlayerMana;
 import com.example.testmod.capabilities.mana.network.PacketCastSpell;
+import com.example.testmod.capabilities.mana.network.PacketSyncManaToClient;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeConfig;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class AbstractSpell {
     private final SpellType spellType;
@@ -27,7 +36,7 @@ public abstract class AbstractSpell {
 
     public AbstractSpell(SpellType spellEnum, TranslatableComponent displayName) {
         this.spellType = spellEnum;
-        this.displayName=displayName;
+        this.displayName = displayName;
     }
 
     public int getID() {
@@ -52,9 +61,15 @@ public abstract class AbstractSpell {
 
     public static AbstractSpell getSpell(SpellType spellType, int level) {
         switch (spellType) {
-            case BURNING_DASH_SPELL -> { return new BurningDashSpell(level); }
-            case FIREBALL_SPELL -> { return new FireballSpell(level); }
-            default -> { return new FireballSpell(level); }
+            case BURNING_DASH_SPELL -> {
+                return new BurningDashSpell(level);
+            }
+            case FIREBALL_SPELL -> {
+                return new FireballSpell(level);
+            }
+            default -> {
+                return new FireballSpell(level);
+            }
         }
     }
 
@@ -64,50 +79,46 @@ public abstract class AbstractSpell {
 
     //returns true/false for success/failure to cast
     public boolean attemptCast(ItemStack stack, Level world, Player player) {
-        //fill with all casting criteria
-        boolean canCast = !isOnCooldown() &&
-                ClientManaData.getPlayerMana() >= getManaCost();
 
-        if (canCast) {
-            this.onCast(stack, world, player);
-            if (!world.isClientSide()) {
-                startCooldown(player);
-                Messages.sendToServer(new PacketCastSpell(this));
-            }
-            return true;
-        } else {
+        if (world.isClientSide) {
             return false;
         }
-    }
+        MinecraftServer server = world.getServer();
+        List<ServerPlayer> serverPlayers = server.getPlayerList().getPlayers();
 
-    public void tick() {
-        if (isOnCooldown()){
-            TestMod.LOGGER.info(cooldownRemaining + "/" + cooldown + " ("+getPercentCooldown()*100+"%)");
-            cooldownRemaining--;
+        onCast(stack, world, player);
+
+        ServerPlayer serverPlayer = null;
+        for (ServerPlayer sp : serverPlayers) {
+            if (sp.getId() == player.getId()) {
+                serverPlayer = sp;
+                break;
+            }
         }
+
+        if (serverPlayer != null) {
+            ManaManager manaManager = ManaManager.get(world);
+            PlayerMana playerMana = manaManager.getFromPlayerCapability(serverPlayer);
+
+            if (playerMana.getMana() <= 0) {
+                player.sendMessage(new TextComponent("Out of mana").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            } else if (playerMana.getMana() - getManaCost() < 0) {
+                player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            } else {
+                int newMana = playerMana.getMana() - getManaCost();
+                manaManager.setPlayerCurrentMana(serverPlayer, newMana);
+                Messages.sendToPlayer(new PacketSyncManaToClient(newMana), serverPlayer);
+            }
+            return true;
+        }
+        return false;
     }
 
     public abstract void onCast(ItemStack stack, Level world, Player player);
 
-    public boolean isOnCooldown() {
-        return cooldownRemaining > 0;
-    }
-
-    public int getModifiedCastCooldown(Player caster) {
-        float attributeCooldownReductionPlaceholder = 1;
-        return (int) (cooldown / attributeCooldownReductionPlaceholder);
-    }
-
     public float getPercentCooldown() {
         //return 0.75f;
         return Mth.clamp(cooldownRemaining / ((float) cooldown), 0, 1);
-    }
-
-    public void startCooldown(@Nullable Player caster) {
-        if (caster == null)
-            cooldownRemaining = cooldown;
-        else
-            cooldownRemaining = getModifiedCastCooldown(caster);
     }
 
     @Override
