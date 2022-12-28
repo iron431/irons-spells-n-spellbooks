@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 public class ScrollData {
 
     public static final String SPELL_ID = "spellId";
-    public static final String LEVEL = "LEVEL";
+    public static final String LEVEL = "level";
     private AbstractSpell spell;
     private CompoundTag tag = new CompoundTag();
 
