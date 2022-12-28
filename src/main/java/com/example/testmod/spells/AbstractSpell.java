@@ -79,14 +79,12 @@ public abstract class AbstractSpell {
 
     //returns true/false for success/failure to cast
     public boolean attemptCast(ItemStack stack, Level world, Player player) {
-
         if (world.isClientSide) {
             return false;
         }
+
         MinecraftServer server = world.getServer();
         List<ServerPlayer> serverPlayers = server.getPlayerList().getPlayers();
-
-        onCast(stack, world, player);
 
         ServerPlayer serverPlayer = null;
         for (ServerPlayer sp : serverPlayers) {
@@ -105,6 +103,7 @@ public abstract class AbstractSpell {
             } else if (playerMana.getMana() - getManaCost() < 0) {
                 player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else {
+                onCast(stack, world, player);
                 int newMana = playerMana.getMana() - getManaCost();
                 manaManager.setPlayerCurrentMana(serverPlayer, newMana);
                 Messages.sendToPlayer(new PacketSyncManaToClient(newMana), serverPlayer);

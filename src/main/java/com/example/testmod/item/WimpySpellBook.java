@@ -29,7 +29,7 @@ public class WimpySpellBook extends AbstractSpellBook {
             return InteractionResultHolder.pass(player.getItemInHand(hand));
         }
 
-        if (spell.attemptCast(itemStack, level, player)) {
+        if (spell != null && spell.attemptCast(itemStack, level, player)) {
             return InteractionResultHolder.success(itemStack);
         }
 
