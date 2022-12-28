@@ -1,4 +1,4 @@
-package com.example.testmod.capabilities.mana.data;
+package com.example.testmod.capabilities.magic.data;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -12,17 +12,17 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class PlayerManaProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
+public class PlayerMagicProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-    public static Capability<PlayerMana> PLAYER_MANA = CapabilityManager.get(new CapabilityToken<>(){});
+    public static Capability<PlayerMagicData> PLAYER_MAGIC = CapabilityManager.get(new CapabilityToken<>(){});
 
-    private PlayerMana playerMana = null;
-    private final LazyOptional<PlayerMana> opt = LazyOptional.of(this::createPlayerMana);
+    private PlayerMagicData playerMana = null;
+    private final LazyOptional<PlayerMagicData> opt = LazyOptional.of(this::createPlayerMana);
 
     @Nonnull
-    private PlayerMana createPlayerMana() {
+    private PlayerMagicData createPlayerMana() {
         if (playerMana == null) {
-            playerMana = new PlayerMana();
+            playerMana = new PlayerMagicData();
         }
         return playerMana;
     }
@@ -30,7 +30,7 @@ public class PlayerManaProvider implements ICapabilityProvider, INBTSerializable
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
-        if (cap == PLAYER_MANA) {
+        if (cap == PLAYER_MAGIC) {
             return opt.cast();
         }
         return LazyOptional.empty();

@@ -1,10 +1,8 @@
 package com.example.testmod.item;
 
-import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.mana.client.ClientManaData;
+import com.example.testmod.capabilities.magic.client.ClientMagicData;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
 import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -23,7 +21,7 @@ public class WimpySpellBook extends AbstractSpellBook {
         AbstractSpell spell = spellBookData.getActiveSpell();
 
         if (level.isClientSide) {
-            if (spell != null && ClientManaData.getPlayerMana() > spell.getManaCost()) {
+            if (spell != null && ClientMagicData.getPlayerMana() > spell.getManaCost()) {
                 return InteractionResultHolder.success(player.getItemInHand(hand));
             }
             return InteractionResultHolder.pass(player.getItemInHand(hand));

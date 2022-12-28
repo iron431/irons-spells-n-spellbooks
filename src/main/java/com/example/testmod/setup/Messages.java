@@ -1,8 +1,7 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.mana.network.PacketCastSpell;
-import com.example.testmod.capabilities.mana.network.PacketSyncManaToClient;
+import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
 import com.example.testmod.capabilities.scroll.network.PacketUseScroll;
 import com.example.testmod.gui.network.PacketInscribeSpell;
 import net.minecraft.resources.ResourceLocation;
@@ -32,11 +31,11 @@ public class Messages {
 
         INSTANCE = net;
 
-        net.messageBuilder(PacketCastSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(PacketCastSpell::new)
-                .encoder(PacketCastSpell::toBytes)
-                .consumer(PacketCastSpell::handle)
-                .add();
+//        net.messageBuilder(PacketCastSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
+//                .decoder(PacketCastSpell::new)
+//                .encoder(PacketCastSpell::toBytes)
+//                .consumer(PacketCastSpell::handle)
+//                .add();
 
         net.messageBuilder(PacketUseScroll.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(PacketUseScroll::new)
@@ -44,10 +43,10 @@ public class Messages {
                 .consumer(PacketUseScroll::handle)
                 .add();
 
-        net.messageBuilder(PacketSyncManaToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PacketSyncManaToClient::new)
-                .encoder(PacketSyncManaToClient::toBytes)
-                .consumer(PacketSyncManaToClient::handle)
+        net.messageBuilder(PacketSyncMagicDataToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PacketSyncMagicDataToClient::new)
+                .encoder(PacketSyncMagicDataToClient::toBytes)
+                .consumer(PacketSyncMagicDataToClient::handle)
                 .add();
 
         net.messageBuilder(PacketInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)

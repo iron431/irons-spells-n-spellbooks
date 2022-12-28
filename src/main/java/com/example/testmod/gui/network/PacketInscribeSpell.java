@@ -1,21 +1,8 @@
 package com.example.testmod.gui.network;
 
 import com.example.testmod.block.InscriptionTable.InscriptionTableTile;
-import com.example.testmod.capabilities.mana.client.ClientManaData;
-import com.example.testmod.capabilities.mana.data.ManaManager;
-import com.example.testmod.capabilities.mana.data.PlayerMana;
-import com.example.testmod.capabilities.mana.network.PacketSyncManaToClient;
-import com.example.testmod.gui.InscriptionTableScreen;
-import com.example.testmod.item.AbstractSpellBook;
-import com.example.testmod.setup.Messages;
-import com.example.testmod.spells.fire.BurningDashSpell;
-import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;

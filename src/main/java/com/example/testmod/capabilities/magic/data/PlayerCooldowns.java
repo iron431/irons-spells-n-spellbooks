@@ -1,0 +1,81 @@
+package com.example.testmod.capabilities.magic.data;
+
+import com.example.testmod.spells.SpellType;
+import com.google.common.collect.Maps;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+
+import java.util.Map;
+
+public class PlayerCooldowns {
+    public static final String SPELL_ID = "sid";
+    public static final String SPELL_COOLDOWN = "scd";
+    public static final String COOLDOWN_REMAINING = "cdr";
+    //spell type and for how many more ticks it will be on cooldown
+    private final Map<SpellType, CooldownInstance> spellCooldowns;
+
+    public PlayerCooldowns() {
+        this(Maps.newEnumMap(SpellType.class));
+    }
+
+    public PlayerCooldowns(Map<SpellType, CooldownInstance> spellCooldowns) {
+        this.spellCooldowns = spellCooldowns;
+    }
+
+    public void tick(int actualTicks) {
+        spellCooldowns.forEach((spell, cooldown) -> {
+            if (decrementCooldown(cooldown, actualTicks))
+                spellCooldowns.remove(spell);
+        });
+    }
+
+    public boolean hasCooldownsActive() {
+        return !spellCooldowns.isEmpty();
+    }
+
+    public Map<SpellType, CooldownInstance> getSpellCooldowns() {
+        return spellCooldowns;
+    }
+
+    public void addCooldown(SpellType spell, int durationTicks) {
+        if (!spellCooldowns.containsKey(spell))
+            spellCooldowns.put(spell, new CooldownInstance(durationTicks));
+    }
+
+    public boolean isOnCooldown(SpellType spell) {
+        return spellCooldowns.containsKey(spell);
+    }
+
+    public float getCooldownPercent(SpellType spell) {
+        return spellCooldowns.getOrDefault(spell, new CooldownInstance(0)).getCooldownPercent();
+    }
+
+    private boolean decrementCooldown(CooldownInstance c, int amount) {
+        c.decrementBy(amount);
+        return c.getCooldownRemaining() <= 0;
+    }
+
+    public void saveNBTData(ListTag listTag) {
+        spellCooldowns.forEach((spell, cooldown) -> {
+            if (cooldown.getCooldownRemaining() > 0) {
+                CompoundTag ct = new CompoundTag();
+                ct.putInt(SPELL_ID, spell.getValue());
+                ct.putInt(SPELL_COOLDOWN, cooldown.getSpellCooldown());
+                ct.putInt(COOLDOWN_REMAINING, cooldown.getCooldownRemaining());
+                listTag.add(ct);
+            }
+        });
+    }
+
+    public void loadNBTData(ListTag listTag) {
+        if (listTag != null) {
+            listTag.forEach(tag -> {
+                CompoundTag t = (CompoundTag) tag;
+                SpellType spellType = SpellType.values()[t.getInt(SPELL_ID)];
+                int spellCooldown = t.getInt(SPELL_COOLDOWN);
+                int cooldownRemaining = t.getInt(COOLDOWN_REMAINING);
+                spellCooldowns.put(spellType, new CooldownInstance(spellCooldown, cooldownRemaining));
+            });
+        }
+    }
+}

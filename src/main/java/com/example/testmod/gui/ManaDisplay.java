@@ -1,9 +1,8 @@
 package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.mana.client.ClientManaData;
-import com.example.testmod.capabilities.mana.data.PlayerManaProvider;
-import com.example.testmod.capabilities.mana.network.PacketCastSpell;
+import com.example.testmod.capabilities.magic.client.ClientMagicData;
+import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -14,12 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -68,7 +63,7 @@ public class ManaDisplay extends GuiComponent {
         Gui GUI = Minecraft.getInstance().gui;
         PoseStack stack = e.getMatrixStack();
         int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
-        int mana = ClientManaData.getPlayerMana();
+        int mana = ClientMagicData.getPlayerMana();
         screenWidth = e.getWindow().getGuiScaledWidth();
         screenHeight = e.getWindow().getGuiScaledHeight();
 

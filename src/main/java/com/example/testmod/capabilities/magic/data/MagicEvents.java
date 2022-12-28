@@ -1,4 +1,4 @@
-package com.example.testmod.capabilities.mana.data;
+package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
 import net.minecraft.resources.ResourceLocation;
@@ -7,14 +7,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 
-public class ManaEvents {
+public class MagicEvents {
 
-    public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event){
+    public static final String PLAYER_MAGIC = "playerMagic";
+
+    public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player) {
-            if (!event.getObject().getCapability(PlayerManaProvider.PLAYER_MANA).isPresent()) {
-                event.addCapability(new ResourceLocation(TestMod.MODID, "playermana"), new PlayerManaProvider());
+            if (!event.getObject().getCapability(PlayerMagicProvider.PLAYER_MAGIC).isPresent()) {
+                event.addCapability(new ResourceLocation(TestMod.MODID, PLAYER_MAGIC), new PlayerMagicProvider());
             }
         }
     }
@@ -31,7 +32,7 @@ public class ManaEvents {
 //    }
 
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(PlayerMana.class);
+        event.register(PlayerMagicData.class);
     }
 
     public static void onWorldTick(TickEvent.WorldTickEvent event) {
@@ -43,7 +44,6 @@ public class ManaEvents {
             return;
         }
 
-        ManaManager manager = ManaManager.get(event.world);
-        manager.tick(event.world);
+        MagicManager.get(event.world).tick(event.world);
     }
 }

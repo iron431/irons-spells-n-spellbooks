@@ -1,10 +1,9 @@
 package com.example.testmod.setup;
 
-import com.example.testmod.capabilities.mana.data.ManaEvents;
+import com.example.testmod.capabilities.magic.data.MagicEvents;
 import com.example.testmod.capabilities.scroll.data.ScrollDataEvents;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataEvents;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -15,10 +14,10 @@ public class ModSetup {
         IEventBus bus = MinecraftForge.EVENT_BUS;
 
         //MANA
-        bus.addGenericListener(Entity.class, ManaEvents::onAttachCapabilitiesPlayer);
+        bus.addGenericListener(Entity.class, MagicEvents::onAttachCapabilitiesPlayer);
         //bus.addListener(ManaEvents::onPlayerCloned);
-        bus.addListener(ManaEvents::onRegisterCapabilities);
-        bus.addListener(ManaEvents::onWorldTick);
+        bus.addListener(MagicEvents::onRegisterCapabilities);
+        bus.addListener(MagicEvents::onWorldTick);
 
         //SPELLBOOKS
         //bus.addGenericListener(ItemStack.class, SpellBookDataEvents::onAttachCapabilities);

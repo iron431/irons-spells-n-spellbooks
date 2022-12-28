@@ -1,11 +1,7 @@
 package com.example.testmod.spells;
 
-import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.mana.client.ClientManaData;
-import com.example.testmod.capabilities.mana.data.ManaManager;
-import com.example.testmod.capabilities.mana.data.PlayerMana;
-import com.example.testmod.capabilities.mana.network.PacketCastSpell;
-import com.example.testmod.capabilities.mana.network.PacketSyncManaToClient;
+import com.example.testmod.capabilities.magic.data.MagicManager;
+import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
@@ -13,15 +9,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ForgeConfig;
-
-import java.util.List;
 
 public abstract class AbstractSpell {
     private final SpellType spellType;
@@ -86,18 +77,18 @@ public abstract class AbstractSpell {
         var serverPlayer = world.getServer().getPlayerList().getPlayer(player.getUUID());
 
         if (serverPlayer != null) {
-            ManaManager manaManager = ManaManager.get(world);
-            PlayerMana playerMana = manaManager.getFromPlayerCapability(serverPlayer);
+            MagicManager magicManager = MagicManager.get(world);
+            int playerMana = magicManager.getPlayerCurrentMana(serverPlayer);
 
-            if (playerMana.getMana() <= 0) {
+            if (playerMana <= 0) {
                 player.sendMessage(new TextComponent("Out of mana").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-            } else if (playerMana.getMana() - getManaCost() < 0) {
+            } else if (playerMana - getManaCost() < 0) {
                 player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else {
+                int newMana = playerMana - getManaCost();
+                var playerMagicData = magicManager.setPlayerCurrentMana(serverPlayer, newMana);
                 onCast(stack, world, player);
-                int newMana = playerMana.getMana() - getManaCost();
-                manaManager.setPlayerCurrentMana(serverPlayer, newMana);
-                Messages.sendToPlayer(new PacketSyncManaToClient(newMana), serverPlayer);
+                Messages.sendToPlayer(new PacketSyncMagicDataToClient(playerMagicData), serverPlayer);
             }
             return true;
         }
@@ -107,7 +98,6 @@ public abstract class AbstractSpell {
     public abstract void onCast(ItemStack stack, Level world, Player player);
 
     public float getPercentCooldown() {
-        //return 0.75f;
         return Mth.clamp(cooldownRemaining / ((float) cooldown), 0, 1);
     }
 
