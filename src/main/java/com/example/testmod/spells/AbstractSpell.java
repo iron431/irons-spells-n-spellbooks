@@ -83,16 +83,7 @@ public abstract class AbstractSpell {
             return false;
         }
 
-        MinecraftServer server = world.getServer();
-        List<ServerPlayer> serverPlayers = server.getPlayerList().getPlayers();
-
-        ServerPlayer serverPlayer = null;
-        for (ServerPlayer sp : serverPlayers) {
-            if (sp.getId() == player.getId()) {
-                serverPlayer = sp;
-                break;
-            }
-        }
+        var serverPlayer = world.getServer().getPlayerList().getPlayer(player.getUUID());
 
         if (serverPlayer != null) {
             ManaManager manaManager = ManaManager.get(world);
