@@ -1,9 +1,7 @@
 package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
-import com.example.testmod.item.Scroll;
-import com.example.testmod.item.SpellBook;
+import com.example.testmod.item.FireBallScroll;
 import com.example.testmod.item.WimpySpellBook;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
@@ -16,14 +14,9 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 
@@ -256,7 +249,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private boolean isScrollSlotted() {
         //switch to forge tags
-        return menu.slots.get(SCROLL_SLOT).hasItem() && menu.slots.get(SCROLL_SLOT).getItem().getItem() instanceof Scroll;
+        return menu.slots.get(SCROLL_SLOT).hasItem() && menu.slots.get(SCROLL_SLOT).getItem().getItem() instanceof FireBallScroll;
     }
 
     @Override

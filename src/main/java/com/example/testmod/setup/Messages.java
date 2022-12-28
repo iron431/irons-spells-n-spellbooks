@@ -3,6 +3,7 @@ package com.example.testmod.setup;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.mana.network.PacketCastSpell;
 import com.example.testmod.capabilities.mana.network.PacketSyncManaToClient;
+import com.example.testmod.capabilities.scroll.network.PacketUseScroll;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -34,6 +35,12 @@ public class Messages {
                 .decoder(PacketCastSpell::new)
                 .encoder(PacketCastSpell::toBytes)
                 .consumer(PacketCastSpell::handle)
+                .add();
+
+        net.messageBuilder(PacketUseScroll.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(PacketUseScroll::new)
+                .encoder(PacketUseScroll::toBytes)
+                .consumer(PacketUseScroll::handle)
                 .add();
 
         net.messageBuilder(PacketSyncManaToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
