@@ -1,6 +1,5 @@
 package com.example.testmod.loot;
 
-import com.example.testmod.item.Scroll;
 import com.example.testmod.registries.LootRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -28,11 +27,11 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
 
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
-        if(itemStack.getItem() instanceof Scroll scroll){
-            scroll.setSpellType(SpellType.FIREBALL_SPELL);
-            scroll.setLevel(5);
-            scroll.getScrollData(itemStack).setSpell(AbstractSpell.getSpell());
-        }
+//        if(itemStack.getItem() instanceof Scroll scroll){
+//            scroll.setSpellType(SpellType.FIREBALL_SPELL);
+//            scroll.setLevel(5);
+//            scroll.getScrollData(itemStack).setSpell(AbstractSpell.getSpell());
+//        }
         return itemStack;
     }
 
