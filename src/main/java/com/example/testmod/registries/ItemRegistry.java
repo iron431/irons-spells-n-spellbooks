@@ -1,7 +1,7 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.item.FireBallScroll;
+import com.example.testmod.item.FireballScroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.WimpySpellBook;
 import net.minecraft.world.item.Item;
@@ -20,5 +20,5 @@ public class ItemRegistry {
 
     public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book", SpellBook::new);
     public static final RegistryObject<Item> WIMPY_SPELL_BOOK = ITEMS.register("wimpy_spell_book", WimpySpellBook::new);
-    public static final RegistryObject<Item> SCROLL = ITEMS.register("fireball_scroll", () -> new FireBallScroll(1, Rarity.UNCOMMON));
+    public static final RegistryObject<Item> SCROLL = ITEMS.register("fireball_scroll", () -> new FireballScroll(1, Rarity.UNCOMMON));
 }

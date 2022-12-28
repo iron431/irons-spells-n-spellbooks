@@ -1,10 +1,11 @@
 package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.item.FireBallScroll;
+import com.example.testmod.gui.network.PacketInscribeSpell;
+import com.example.testmod.item.FireballScroll;
 import com.example.testmod.item.WimpySpellBook;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.fire.BurningDashSpell;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
@@ -48,7 +49,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-
         this.imageWidth = 256;
         this.imageHeight = 166;
 
@@ -59,6 +59,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         super.init();
         inscribeButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()));
         spellSlots = new ArrayList<SpellSlotInfo>();
+        menu.setScreen(this);
         //spellSlotButtons = new ArrayList<Button>();
         //spellSlotRelativeLocations = new ArrayList<Vec2>();
         selectedSpellIndex = -1;
@@ -208,30 +209,26 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private void onInscription() {
         //called when inscription button clicked
         TestMod.LOGGER.info("Inscribe!");
-
         ItemStack spellbookStack = menu.slots.get(SPELLBOOK_SLOT).getItem();
         ItemStack scroll = menu.slots.get(SCROLL_SLOT).getItem();
         var spellBookData = ((WimpySpellBook) spellbookStack.getItem()).getSpellBookData();
 
         //is this slot already taken?
-        if(spellSlots.get(selectedSpellIndex).hasSpell()){
+        if (spellSlots.get(selectedSpellIndex).hasSpell()) {
             TestMod.LOGGER.info("No space here");
             return;
         }
         //are we eligible? (rarity, other condidtions, etc)
-        if(false)
+        if (false) {
             return;
+        }
 
-        //slot new spell
-        var tempSpellFromScrollReplaceMe = new BurningDashSpell();
-        TestMod.LOGGER.info(spellbookStack.hashCode()+"");
-        spellBookData.addSpell(tempSpellFromScrollReplaceMe,selectedSpellIndex);
-        TestMod.LOGGER.info(spellbookStack.hashCode()+"");
-
-        menu.slots.get(SCROLL_SLOT).remove(1);
+        //good to inscribe
         isDirty=true;
-
+        var pos = menu.blockEntity.getBlockPos();
+        Messages.sendToServer(new PacketInscribeSpell(pos,SPELLBOOK_SLOT,SCROLL_SLOT,selectedSpellIndex));
     }
+
 
     private void setSelectedIndex(int index) {
         selectedSpellIndex = index;
@@ -249,7 +246,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private boolean isScrollSlotted() {
         //switch to forge tags
-        return menu.slots.get(SCROLL_SLOT).hasItem() && menu.slots.get(SCROLL_SLOT).getItem().getItem() instanceof FireBallScroll;
+        return menu.slots.get(SCROLL_SLOT).hasItem() && menu.slots.get(SCROLL_SLOT).getItem().getItem() instanceof FireballScroll;
     }
 
     @Override

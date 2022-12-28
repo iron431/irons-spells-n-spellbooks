@@ -1,6 +1,11 @@
 package com.example.testmod.block.InscriptionTable;
 import com.example.testmod.gui.InscriptionTableMenu;
+import com.example.testmod.gui.InscriptionTableScreen;
+import com.example.testmod.item.AbstractScroll;
+import com.example.testmod.item.AbstractSpellBook;
+import com.example.testmod.item.WimpySpellBook;
 import com.example.testmod.registries.BlockRegistry;
+import com.example.testmod.spells.fire.BurningDashSpell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,6 +33,7 @@ import javax.annotation.Nonnull;
 
 
 public class InscriptionTableTile extends BlockEntity implements MenuProvider {
+    private AbstractContainerMenu menu;
     private final ItemStackHandler itemHandler = new ItemStackHandler(3) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -49,7 +55,17 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new InscriptionTableMenu(containerId, inventory, this);
+        menu = new InscriptionTableMenu(containerId, inventory, this);
+        return menu;
+    }
+    public void doInscription(int spellBookSlot, int scrollSlot, int selectedIndex){
+        // All data should have been validated by now
+        var slots = this.menu.slots;
+        var spellBook = (AbstractSpellBook)slots.get(spellBookSlot).getItem().getItem();
+        var scroll = (AbstractScroll)slots.get(scrollSlot).getItem().getItem();
+
+        spellBook.getSpellBookData().addSpell(scroll.getScrollData().getSpell(),selectedIndex);
+        slots.get(scrollSlot).remove(1);
     }
 
     @Nonnull

@@ -1,8 +1,10 @@
 package com.example.testmod.gui;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.block.InscriptionTable.InscriptionTableTile;
 import com.example.testmod.gui.slot.ScrollExtractionSlot;
 import com.example.testmod.registries.MenuRegistry;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -18,9 +20,9 @@ import net.minecraftforge.items.SlotItemHandler;
 import static com.example.testmod.registries.BlockRegistry.INSCRIPTION_TABLE_BLOCK;
 
 public class InscriptionTableMenu extends AbstractContainerMenu {
-    private final InscriptionTableTile blockEntity;
+    public final InscriptionTableTile blockEntity;
     private final Level level;
-
+    private AbstractContainerScreen<InscriptionTableMenu> screen;
     public InscriptionTableMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
         this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
     }
@@ -40,7 +42,13 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             this.addSlot(new ScrollExtractionSlot(handler, 2, 208, 136));
         });
     }
+    public void setScreen(AbstractContainerScreen<InscriptionTableMenu> screen){
+        this.screen=screen;
 
+    }
+    public AbstractContainerScreen<InscriptionTableMenu> getScreen(){
+        return screen;
+    }
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.
