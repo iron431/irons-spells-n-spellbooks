@@ -1,6 +1,6 @@
 package com.example.testmod.block.InscriptionTable;
 import com.example.testmod.gui.InscriptionTableMenu;
-import com.example.testmod.item.AbstractSpellBook;
+import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
@@ -61,7 +61,7 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
         ItemStack spellBookItemStack = slots.get(spellBookSlot).getItem();
         ItemStack scrollItemStack = slots.get(scrollSlot).getItem();
 
-        var spellBook = (AbstractSpellBook)spellBookItemStack.getItem();
+        var spellBook = (SpellBook)spellBookItemStack.getItem();
         var scroll = (Scroll)scrollItemStack.getItem();
 
         var spellBookData = spellBook.getSpellBookData(spellBookItemStack);

@@ -1,9 +1,8 @@
 package com.example.testmod.mixin;
 
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.item.AbstractSpellBook;
+import com.example.testmod.item.SpellBook;
 import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.SpellType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -27,7 +26,7 @@ public class ItemRendererMixin {
     @Inject(method = "renderGuiItemDecorations", at = @At(value = "TAIL"))
     public void renderSpellbookCooldown(Font font, ItemStack stack, int one, int two, CallbackInfo ci) {
         Item item = stack.getItem();
-        if (item instanceof AbstractSpellBook spellBook) {
+        if (item instanceof SpellBook spellBook) {
 
             AbstractSpell spell = spellBook.getSpellBookData(stack).getActiveSpell();
             if (spell != null) {

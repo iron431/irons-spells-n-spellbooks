@@ -1,7 +1,6 @@
 package com.example.testmod.mixin;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.item.SpellBook;
 import com.example.testmod.player.ClientPlayerData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -11,8 +10,6 @@ import net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TridentItem;
-import net.minecraftforge.common.extensions.IForgeCommandSourceStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;

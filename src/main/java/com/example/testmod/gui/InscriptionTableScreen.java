@@ -2,9 +2,8 @@ package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.gui.network.PacketInscribeSpell;
-import com.example.testmod.item.AbstractSpellBook;
+import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
-import com.example.testmod.item.WimpySpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -79,7 +78,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var spellBookSlot = menu.slots.get(SPELLBOOK_SLOT);
         ItemStack spellBookItemStack = spellBookSlot.getItem();
 
-        var spellData = ((AbstractSpellBook) spellBookItemStack.getItem()).getSpellBookData(spellBookItemStack);
+        var spellData = ((SpellBook) spellBookItemStack.getItem()).getSpellBookData(spellBookItemStack);
         var storedSpells = spellData.getInscribedSpells();
 
         //loadedSpells=spellData.getInscribedSpells();
@@ -240,7 +239,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private boolean isSpellBookSlotted() {
         //switch to forge tags
-        return menu.slots.get(SPELLBOOK_SLOT).hasItem() && menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof WimpySpellBook;
+        return menu.slots.get(SPELLBOOK_SLOT).hasItem() && menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook;
     }
 
     private boolean isScrollSlotted() {
