@@ -6,6 +6,7 @@ import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
 import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,28 +22,29 @@ public class WimpySpellBook extends AbstractSpellBook {
         var spellBookData = getSpellBookData(itemStack);
         AbstractSpell spell = spellBookData.getActiveSpell();
 
-        if (level.isClientSide) {
-            TestMod.LOGGER.info("WimpySpellBook.use: client");
+        if (level.isClientSide()) {
+            TestMod.LOGGER.info("CLIENT: WimpySpellBook.use");
             if (spell != null
                     && ClientMagicData.getPlayerMana() > spell.getManaCost()
                     && !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
             ) {
                 ClientMagicData.getCooldowns().addCooldown(spell.getSpellType(), spell.getSpellCooldown());
-                TestMod.LOGGER.info("WimpySpellBook.use: success");
-                return InteractionResultHolder.success(player.getItemInHand(hand));
+                TestMod.LOGGER.info("CLIENT: WimpySpellBook.use: sidedSuccess");
+                return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
             }
-            TestMod.LOGGER.info("WimpySpellBook.use: consume");
-            player.stopUsingItem();
 
-            return InteractionResultHolder.consume(player.getItemInHand(hand));
+            TestMod.LOGGER.info("CLIENT: WimpySpellBook.use: fail");
+            return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
-
-        TestMod.LOGGER.info("WimpySpellBook.use: server");
-
+        TestMod.LOGGER.info("\nSERVER: WimpySpellBook.use");
         if (spell != null && spell.attemptCast(itemStack, level, player)) {
-            return InteractionResultHolder.success(itemStack);
+            TestMod.LOGGER.info("SERVER: WimpySpellBook.use: sidedSuccess");
+            TestMod.LOGGER.info("\n\n\n\n");
+            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
         }
 
+        TestMod.LOGGER.info("SERVER: WimpySpellBook.use: fail");
+        TestMod.LOGGER.info("\n\n\n\n");
         return InteractionResultHolder.fail(itemStack);
     }
 

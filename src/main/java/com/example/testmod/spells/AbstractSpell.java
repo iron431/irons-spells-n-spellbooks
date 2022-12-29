@@ -107,8 +107,8 @@ public abstract class AbstractSpell {
                 playerMagicData.getPlayerCooldowns().addCooldown(spellType, cooldown);
                 onCast(stack, world, player);
                 Messages.sendToPlayer(new PacketSyncMagicDataToClient(playerMagicData), serverPlayer);
+                return true;
             }
-            return true;
         }
         return false;
     }
