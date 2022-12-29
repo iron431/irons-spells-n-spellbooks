@@ -16,6 +16,10 @@ public class ScrollData {
         this.tag = saveNBTData();
     }
 
+    public ScrollData(CompoundTag compound) {
+        loadNBTData(compound);
+    }
+
     public AbstractSpell getSpell() {
         return this.spell;
     }

@@ -3,7 +3,7 @@ package com.example.testmod.gui;
 import com.example.testmod.TestMod;
 import com.example.testmod.gui.network.PacketInscribeSpell;
 import com.example.testmod.item.AbstractSpellBook;
-import com.example.testmod.item.FireballScroll;
+import com.example.testmod.item.Scroll;
 import com.example.testmod.item.WimpySpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -245,7 +245,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private boolean isScrollSlotted() {
         //switch to forge tags
-        return menu.slots.get(SCROLL_SLOT).hasItem() && menu.slots.get(SCROLL_SLOT).getItem().getItem() instanceof FireballScroll;
+        return menu.slots.get(SCROLL_SLOT).hasItem() && menu.slots.get(SCROLL_SLOT).getItem().getItem() instanceof Scroll;
     }
 
     @Override

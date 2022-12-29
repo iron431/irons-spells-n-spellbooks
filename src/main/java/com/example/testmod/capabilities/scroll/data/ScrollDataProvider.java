@@ -1,12 +1,8 @@
 package com.example.testmod.capabilities.scroll.data;
 
-import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.spellbook.data.SpellBookData;
 import com.example.testmod.spells.SpellType;
-import com.example.testmod.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -16,7 +12,6 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
@@ -32,6 +27,12 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
         this.spellType = spellType;
         this.level = level;
         getOrCreateScrollData();
+    }
+
+    public ScrollDataProvider(CompoundTag tag) {
+        scrollData = new ScrollData(tag);
+        this.spellType = scrollData.getSpell().getSpellType();
+        this.level = scrollData.getSpell().getLevel();
     }
 
     @Nonnull
@@ -59,6 +60,7 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
 
     @Override
     public CompoundTag serializeNBT() {
+
         return scrollData.saveNBTData();
     }
 

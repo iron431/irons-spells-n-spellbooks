@@ -1,24 +1,44 @@
 package com.example.testmod.item;
 
-import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.scroll.data.ScrollData;
 import com.example.testmod.capabilities.scroll.data.ScrollDataProvider;
-import com.example.testmod.capabilities.scroll.network.PacketUseScroll;
-import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.Nullable;
 
-public class FireballScroll extends AbstractScroll {
-    public FireballScroll(int level, Rarity rarity) {
-        super(SpellType.FIREBALL_SPELL, level, rarity);
+public class Scroll extends Item {
+
+    protected SpellType spellType;
+    protected int level;
+
+    public Scroll() {
+        super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
+    }
+
+    public void setSpellType(SpellType spellType) {
+        this.spellType = spellType;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    protected void removeScrollAfterCast(Player player, ItemStack stack) {
+        if (!player.isCreative())
+            player.getInventory().removeItem(stack);
+    }
+
+    public ScrollData getScrollData(ItemStack stack) {
+        return stack.getCapability(ScrollDataProvider.SCROLL_DATA).resolve().get();
     }
 
     @Override
@@ -48,8 +68,7 @@ public class FireballScroll extends AbstractScroll {
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
-        TestMod.LOGGER.info("init capabilities on fireball scroll");
-        return new ScrollDataProvider(spellType, level);
+        //nbt in this method is what is persisted on disk
+        return new ScrollDataProvider(nbt);
     }
 }
