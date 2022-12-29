@@ -1,5 +1,6 @@
 package com.example.testmod.item;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.scroll.data.ScrollData;
 import com.example.testmod.capabilities.scroll.data.ScrollDataProvider;
 import com.example.testmod.spells.SpellType;
@@ -22,6 +23,7 @@ public class Scroll extends Item {
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
+        TestMod.LOGGER.info("Scroll()");
     }
 
     public Scroll(SpellType spellType, int level) {
@@ -44,6 +46,7 @@ public class Scroll extends Item {
     }
 
     public ScrollData getScrollData(ItemStack stack) {
+        TestMod.LOGGER.info("Scroll.getScrollData(ItemStack stack)");
         return stack.getCapability(ScrollDataProvider.SCROLL_DATA).resolve().get();
     }
 
@@ -74,9 +77,13 @@ public class Scroll extends Item {
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        var scrollDataProvider = new ScrollDataProvider(nbt);
-        this.spellType = scrollDataProvider.getSpellType();
-        this.level = scrollDataProvider.getLevel();
-        return scrollDataProvider;
+        if (nbt != null) {
+            var scrollDataProvider = new ScrollDataProvider(nbt);
+            this.spellType = scrollDataProvider.getSpellType();
+            this.level = scrollDataProvider.getLevel();
+            return scrollDataProvider;
+        } else {
+            return new ScrollDataProvider(this.spellType, this.level);
+        }
     }
 }
