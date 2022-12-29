@@ -32,7 +32,8 @@ public class WimpySpellBook extends AbstractSpellBook {
                 return InteractionResultHolder.success(player.getItemInHand(hand));
             }
             TestMod.LOGGER.info("WimpySpellBook.use: consume");
-            //player.stopUsingItem();
+            player.stopUsingItem();
+
             return InteractionResultHolder.consume(player.getItemInHand(hand));
         }
 

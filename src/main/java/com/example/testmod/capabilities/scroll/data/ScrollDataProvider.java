@@ -29,10 +29,23 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
         getOrCreateScrollData();
     }
 
+    public SpellType getSpellType() {
+        return spellType;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public ScrollDataProvider(CompoundTag tag) {
-        scrollData = new ScrollData(tag);
-        this.spellType = scrollData.getSpell().getSpellType();
-        this.level = scrollData.getSpell().getLevel();
+        if (tag != null && !tag.isEmpty()) {
+            scrollData = new ScrollData(tag);
+            this.spellType = scrollData.getSpell().getSpellType();
+            this.level = scrollData.getSpell().getLevel();
+        } else {
+            spellType = SpellType.NONE;
+            level = 0;
+        }
     }
 
     @Nonnull

@@ -67,8 +67,11 @@ public abstract class AbstractSpell {
             case FIREBALL_SPELL -> {
                 return new FireballSpell(level);
             }
+            case NONE -> {
+                return new NoneSpell(0);
+            }
             default -> {
-                return new FireballSpell(level);
+                return new NoneSpell(0);
             }
         }
     }

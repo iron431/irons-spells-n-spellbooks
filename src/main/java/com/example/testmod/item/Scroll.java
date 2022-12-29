@@ -24,6 +24,12 @@ public class Scroll extends Item {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
     }
 
+    public Scroll(SpellType spellType, int level) {
+        super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
+        this.spellType = spellType;
+        this.level = level;
+    }
+
     public void setSpellType(SpellType spellType) {
         this.spellType = spellType;
     }
@@ -68,7 +74,9 @@ public class Scroll extends Item {
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        //nbt in this method is what is persisted on disk
-        return new ScrollDataProvider(nbt);
+        var scrollDataProvider = new ScrollDataProvider(nbt);
+        this.spellType = scrollDataProvider.getSpellType();
+        this.level = scrollDataProvider.getLevel();
+        return scrollDataProvider;
     }
 }
