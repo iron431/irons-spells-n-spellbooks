@@ -18,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class Scroll extends Item {
 
-    protected SpellType spellType;
-    protected int level;
+    protected SpellType spellType = SpellType.NONE;
+    protected int level = 0;
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));

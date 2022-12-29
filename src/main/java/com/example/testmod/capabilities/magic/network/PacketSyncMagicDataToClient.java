@@ -2,6 +2,7 @@ package com.example.testmod.capabilities.magic.network;
 
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -11,6 +12,7 @@ public class PacketSyncMagicDataToClient {
 
     private int playerMana = 0;
     private PlayerMagicData playerMagicData = null;
+
 
     public PacketSyncMagicDataToClient(PlayerMagicData playerMagicData) {
         //Server side only

@@ -41,12 +41,11 @@ public class SpellBook extends Item {
 
         if (level.isClientSide()) {
 
-            TestMod.LOGGER.info("CLIENT: WimpySpellBook.use:" + ClientPlayerEvents.ticks);
+            TestMod.LOGGER.info("CLIENT: WimpySpellBook.use:");
             if (spell != null
                     && ClientMagicData.getPlayerMana() > spell.getManaCost()
                     && !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
             ) {
-                ClientMagicData.getCooldowns().addCooldown(spell.getSpellType(), spell.getSpellCooldown());
                 TestMod.LOGGER.info("CLIENT: WimpySpellBook.use: sidedSuccess");
                 return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
             }
@@ -54,6 +53,7 @@ public class SpellBook extends Item {
             TestMod.LOGGER.info("CLIENT: WimpySpellBook.use: fail");
             return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
+
         TestMod.LOGGER.info("SERVER: WimpySpellBook.use: " + level.getServer().getTickCount() + " " + level.getServer().getAverageTickTime());
         if (spell != null && spell.attemptCast(itemStack, level, player)) {
             TestMod.LOGGER.info("SERVER: WimpySpellBook.use: sidedSuccess");

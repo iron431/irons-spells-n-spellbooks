@@ -2,6 +2,7 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
+import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
@@ -109,7 +110,7 @@ public abstract class AbstractSpell {
                 TestMod.LOGGER.info("setting cooldown:" + cooldown);
                 playerMagicData.getPlayerCooldowns().addCooldown(spellType, cooldown);
                 onCast(stack, world, player);
-                Messages.sendToPlayer(new PacketSyncMagicDataToClient(playerMagicData), serverPlayer);
+                Messages.sendToPlayer(new PacketCastSpell(getID(), getSpellCooldown(), newMana), serverPlayer);
                 return true;
             }
         }

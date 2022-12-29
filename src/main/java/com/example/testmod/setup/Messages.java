@@ -1,6 +1,7 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
 import com.example.testmod.capabilities.scroll.network.PacketUseScroll;
 import com.example.testmod.gui.network.PacketInscribeSpell;
@@ -31,11 +32,11 @@ public class Messages {
 
         INSTANCE = net;
 
-//        net.messageBuilder(PacketCastSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-//                .decoder(PacketCastSpell::new)
-//                .encoder(PacketCastSpell::toBytes)
-//                .consumer(PacketCastSpell::handle)
-//                .add();
+        net.messageBuilder(PacketCastSpell.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PacketCastSpell::new)
+                .encoder(PacketCastSpell::toBytes)
+                .consumer(PacketCastSpell::handle)
+                .add();
 
         net.messageBuilder(PacketUseScroll.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(PacketUseScroll::new)

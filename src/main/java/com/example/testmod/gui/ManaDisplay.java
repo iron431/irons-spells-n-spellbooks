@@ -97,7 +97,7 @@ public class ManaDisplay extends GuiComponent {
     public static void onKeyPress(InputEvent.KeyInputEvent e) {
         key = (char) e.getKey();
         if (e.getKey() == (int) 'H' && e.getAction() == 1) {
-            Messages.sendToServer(new PacketCastSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1)));
+            //Messages.sendToServer(new PacketCastSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1)));
         }
         if (e.getKey() == (int) 'G' && e.getAction() == 1) {
         }
