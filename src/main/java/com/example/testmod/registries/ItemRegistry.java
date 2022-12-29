@@ -4,6 +4,8 @@ import com.example.testmod.TestMod;
 import com.example.testmod.item.FireballScroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.WimpySpellBook;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,4 +23,5 @@ public class ItemRegistry {
     //public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book", SpellBook::new);
     public static final RegistryObject<Item> WIMPY_SPELL_BOOK = ITEMS.register("wimpy_spell_book", WimpySpellBook::new);
     public static final RegistryObject<Item> SCROLL = ITEMS.register("fireball_scroll", () -> new FireballScroll(1, Rarity.UNCOMMON));
+    public static final RegistryObject<Item> INSCRIPTION_TABLE_BLOCK_ITEM = ITEMS.register("inscription_table",()->new BlockItem(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(),new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
 }
