@@ -87,7 +87,6 @@ public abstract class AbstractSpell {
         }
 
         var serverPlayer = world.getServer().getPlayerList().getPlayer(player.getUUID());
-        //TODO: add server side cooldown verification
 
         if (serverPlayer != null) {
             MagicManager magicManager = MagicManager.get(world);
