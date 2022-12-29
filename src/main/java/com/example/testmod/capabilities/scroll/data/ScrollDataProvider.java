@@ -45,6 +45,7 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
         } else {
             spellType = SpellType.NONE;
             level = 0;
+            scrollData= new ScrollData(spellType, level);
         }
     }
 
