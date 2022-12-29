@@ -5,7 +5,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "testmod:fireball_scroll",
+          "name": "testmod:scroll",
           "functions": [
             {
               "function": "testmod:randomize_scroll",
