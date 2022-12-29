@@ -19,8 +19,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
@@ -32,15 +34,29 @@ public class InscriptionTableBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public InscriptionTableBlock() {
-        super(BlockBehaviour.Properties.of(WOOD).strength(1));
+        super(BlockBehaviour.Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion());
     }
 
-    //private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 8, 16);
+//    private static final VoxelShape LEG_NE = Block.box(12, 0, 12, 3, 10, 3);
+//    private static final VoxelShape LEG_NW = Block.box(1, 0, 12, 3, 10, 3);
+//    private static final VoxelShape LEG_SE = Block.box(12, 0, 1, 3, 10, 3);
+//    private static final VoxelShape LEG_SW = Block.box(1, 0, 1, 3, 10, 3);
+//    private static final VoxelShape TABLE_TOP = Block.box(0, 10, 0, 16, 4, 16);
+    //public static final VoxelShape SHAPE_COMMON = Shapes.or(SHAPE_WEST, SHAPE_POST);
+public static final VoxelShape SHAPE_TABLETOP = Block.box(0,10,0,16,14,16);
+    public static final VoxelShape SHAPE_LEG_1 = Block.box(1,0,1,4,10,4);
+    public static final VoxelShape SHAPE_LEG_2 = Block.box(12,0,1,16,10,4);
+    public static final VoxelShape SHAPE_LEG_3 = Block.box(1,0,12,4,10,15);
+    public static final VoxelShape SHAPE_LEG_4 = Block.box(12,0,12,15,10,15);
 
-//    @Override
-//    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-//        return SHAPE;
-//    }
+    public static final VoxelShape SHAPE = Shapes.or(SHAPE_LEG_1,SHAPE_LEG_2,SHAPE_LEG_3,SHAPE_LEG_4, SHAPE_TABLETOP);
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        //return Shapes.or(LEG_NE,LEG_NW,LEG_SE,LEG_SW,TABLE_TOP);
+        return SHAPE;
+    }
 
     /* FACING */
 
@@ -49,19 +65,21 @@ public class InscriptionTableBlock extends BaseEntityBlock {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
-//    @Override
-//    public BlockState rotate(BlockState pState, Rotation pRotation) {
-//        return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
-//    }
-
-//    @Override
-//    public BlockState mirror(BlockState pState, Mirror pMirror) {
-//        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
-//    }
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState rotate(BlockState pState, Rotation pRotation) {
+        return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
+    }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(FACING);
+    @SuppressWarnings("deprecation")
+    public BlockState mirror(BlockState pState, Mirror pMirror) {
+        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
     }
 
     /* BLOCK ENTITY */
