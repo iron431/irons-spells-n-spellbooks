@@ -17,6 +17,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import static com.example.testmod.registries.AttributeRegistry.COOLDOWN_REDUCTION;
+import static com.example.testmod.registries.AttributeRegistry.MAX_MANA;
+
 public abstract class AbstractSpell {
     private final SpellType spellType;
     protected int level;
@@ -58,6 +61,10 @@ public abstract class AbstractSpell {
 
     public int getSpellCooldown() {
         return this.cooldown;
+    }
+
+    private int getEffectiveSpellCooldown(double playerCooldownModifier) {
+        return (int) (cooldown * (2 - playerCooldownModifier));
     }
 
     public void setLevel(int level) {
@@ -106,11 +113,13 @@ public abstract class AbstractSpell {
                 player.sendMessage(new TextComponent(displayName.getKey() + " is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else {
                 int newMana = playerMana - getManaCost();
+                double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
+                int effectiveCooldown = getEffectiveSpellCooldown(playerCooldownModifier);
                 magicManager.setPlayerCurrentMana(serverPlayer, newMana);
-                TestMod.LOGGER.info("setting cooldown:" + cooldown);
-                playerMagicData.getPlayerCooldowns().addCooldown(spellType, cooldown);
+                TestMod.LOGGER.info("setting cooldown: spell cooldown:" + cooldown + " effective spell cooldown:" + effectiveCooldown);
+                playerMagicData.getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
                 onCast(stack, world, player);
-                Messages.sendToPlayer(new PacketCastSpell(getID(), getSpellCooldown(), newMana), serverPlayer);
+                Messages.sendToPlayer(new PacketCastSpell(getID(), effectiveCooldown, newMana), serverPlayer);
                 return true;
             }
         }
