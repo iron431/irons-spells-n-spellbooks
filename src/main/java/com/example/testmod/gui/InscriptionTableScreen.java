@@ -9,6 +9,8 @@ import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -16,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -40,6 +43,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private static final int SPELL_BG_WIDTH = 95;
     private static final int SPELL_BG_HEIGHT = 57;
 
+    private static final int LORE_PAGE_X = 176;
+    private static final int LORE_PAGE_WIDTH = 80;
     private boolean isDirty;
     protected Button inscribeButton;
     protected Button extractButton;
@@ -91,7 +96,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
 
         renderSpells(poseStack, mouseX, mouseY);
-
+        renderLorePage(poseStack);
     }
 
     private void renderSpells(PoseStack poseStack, int mouseX, int mouseY) {
@@ -223,6 +228,16 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             this.blit(poseStack, (int) pos.x, (int) pos.y, 57, 166, 19, 19);
     }
 
+    private void renderLorePage(PoseStack poseStack) {
+        TranslatableComponent title = selectedSpellIndex < 0 ? new TranslatableComponent("ui.testmod.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).containedSpell.getSpellType().getDisplayName() : new TranslatableComponent("ui.testmod.empty_slot");
+        drawTextWithShadow(this.font, poseStack, title.withStyle(ChatFormatting.UNDERLINE), leftPos + LORE_PAGE_X + (LORE_PAGE_WIDTH - font.width(title.getString())) / 2, topPos + 10, 0xFFFFFF);
+    }
+
+    private void drawTextWithShadow(Font font, PoseStack poseStack, Component text, int x, int y, int color) {
+        font.draw(poseStack, text, x, y, color);
+        font.drawShadow(poseStack, text, x, y, color);
+    }
+
     private void onSpellBookSlotChanged() {
         isDirty = true;
         selectedSpellIndex = -1;
@@ -243,11 +258,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
 
         //quick inscribe
-        if(selectedSpellIndex<0){
-            selectedSpellIndex=0;
-            for(int i = 0;i<spellSlots.size();i++){
-                if(!spellSlots.get(i).hasSpell()){
-                    selectedSpellIndex=i;
+        if (selectedSpellIndex < 0) {
+            selectedSpellIndex = 0;
+            for (int i = 0; i < spellSlots.size(); i++) {
+                if (!spellSlots.get(i).hasSpell()) {
+                    selectedSpellIndex = i;
                     break;
                 }
             }

@@ -10,7 +10,8 @@
   "tooltip.testmod.mana_cost": " %d Mana Cost",
   "tooltip.testmod.cooldown_length_seconds": " %ds Cooldown",
   "tooltip.testmod.cast_type": " %s Cast",
-  "ui.testmod.no_selection": "No Spell Selected",
+
+  "ui.testmod.no_selection": "Select a Spell",
   "ui.testmod.empty_slot": "Empty Slot",
 
   "attribute.testmod.max_mana":"Max Mana",
