@@ -67,13 +67,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         generateSpellSlots();
     }
 
-    @Override
-    public void removed() {
-        //wipe scroll
-        selectedSpellIndex = -1;
-        super.removed();
-    }
-
     private void generateSpellSlots() {
         /*
          Reset Per-Book info
@@ -246,6 +239,16 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //  Called when inscription button clicked
         //
 
+        //quick inscribe
+        if(selectedSpellIndex<0){
+            selectedSpellIndex=0;
+            for(int i = 0;i<spellSlots.size();i++){
+                if(!spellSlots.get(i).hasSpell()){
+                    selectedSpellIndex=i;
+                    break;
+                }
+            }
+        }
         //is this slot already taken?
         if (spellSlots.get(selectedSpellIndex).hasSpell()) {
             return;
@@ -267,7 +270,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private boolean isValidInscription() {
         //other checks eventually go here (enough space, high enough rarity, etc)
-        return selectedSpellIndex >= 0 && isSpellBookSlotted() && isScrollSlotted();
+        return isSpellBookSlotted() && isScrollSlotted();
     }
 
     private boolean isSpellBookSlotted() {

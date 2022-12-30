@@ -120,10 +120,6 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
     }
 
 
-    public void clearSlot(int slotIndex) {
-        this.menu.slots.get(slotIndex).set(ItemStack.EMPTY);
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
@@ -146,7 +142,6 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
         lazyItemHandler.invalidate();
     }
 
-    //Nonnull was originally "NotNull"
 
     @Override
     protected void saveAdditional(@Nonnull CompoundTag tag) {
@@ -162,7 +157,7 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
 
     public void drops() {
         SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
             inventory.setItem(i, itemHandler.getStackInSlot(i));
         }
 
