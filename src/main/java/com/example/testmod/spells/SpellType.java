@@ -22,10 +22,12 @@ public enum SpellType {
         return value;
     }
 
-    public static TranslatableComponent getDisplayName(SpellType spellType){
-        switch (spellType){
-            case FIREBALL_SPELL : return new TranslatableComponent("spell.fire.fireball");
-            default:return new TranslatableComponent("spell.none");
+    public TranslatableComponent getDisplayName() {
+        switch (this) {
+            case FIREBALL_SPELL:
+                return new TranslatableComponent("spell.fire.fireball");
+            default:
+                return new TranslatableComponent("spell.none");
         }
     }
 

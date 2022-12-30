@@ -27,7 +27,7 @@ public class Scroll extends Item {
 
     protected SpellType spellType;
     protected int level = 0;
-    protected TranslatableComponent displayName;
+
     public Scroll() {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
         setSpellType(SpellType.NONE);
@@ -38,33 +38,36 @@ public class Scroll extends Item {
         setSpellType(spellType);
         this.level = level;
     }
+
     @Override
     public Component getName(ItemStack itemStack) {
-        if(true)
-        return displayName;
-        var scrollComponent = new TranslatableComponent(this.getDescriptionId(itemStack));
-        TestMod.LOGGER.info("this class: \t\t" + this.hashCode());
-        TestMod.LOGGER.info("class of stack:\t" + itemStack.getItem().hashCode());
-        TestMod.LOGGER.info("hash of registry:\t" + ItemRegistry.SCROLL.get().hashCode());
-        TestMod.LOGGER.info("my spell:\t\t\t" + spellType);
-        TestMod.LOGGER.info("spell of stack:\t" + ((Scroll)itemStack.getItem()).spellType);
-        TestMod.LOGGER.info("hash of stack:\t" + itemStack.hashCode());
-        TestMod.LOGGER.info("this level: " + this.level);
-        TestMod.LOGGER.info("itemstack level:" + ((Scroll)itemStack.getItem()).level);
-        TestMod.LOGGER.info(Utils.GetStackTraceAsString());
-        return scrollComponent;
-    }
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        if(itemStack.getItem() instanceof Scroll scroll){
-            TranslatableComponent spellComponent = SpellType.getDisplayName(scroll.spellType);
-            var spellLevel = scroll.level;
-            lines.add(spellComponent.append(" "+spellLevel).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
-        }
-        super.appendHoverText(itemStack, level, lines, flag);
-    }
-    public void setSpellType(SpellType spellType) {
-        displayName = new TranslatableComponent(""+this.level);
+        var scrollData = getScrollData(itemStack);
+        return scrollData.getSpell().getSpellType().getDisplayName().append(new TranslatableComponent("item.testmod.scroll"));
 
+
+//        var scrollComponent = new TranslatableComponent(this.getDescriptionId(itemStack));
+//        TestMod.LOGGER.info("this class: \t\t" + this.hashCode());
+//        TestMod.LOGGER.info("class of stack:\t" + itemStack.getItem().hashCode());
+//        TestMod.LOGGER.info("hash of registry:\t" + ItemRegistry.SCROLL.get().hashCode());
+//        TestMod.LOGGER.info("my spell:\t\t\t" + spellType);
+//        TestMod.LOGGER.info("spell of stack:\t" + ((Scroll)itemStack.getItem()).spellType);
+//        TestMod.LOGGER.info("hash of stack:\t" + itemStack.hashCode());
+//        TestMod.LOGGER.info("this level: " + this.level);
+//        TestMod.LOGGER.info("itemstack level:" + ((Scroll)itemStack.getItem()).level);
+//        TestMod.LOGGER.info(Utils.GetStackTraceAsString());
+//        return scrollComponent;
+    }
+
+//    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+//        if (itemStack.getItem() instanceof Scroll scroll) {
+//            TranslatableComponent spellComponent = SpellType.getDisplayName(scroll.spellType);
+//            var spellLevel = scroll.level;
+//            lines.add(spellComponent.append(" " + spellLevel).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
+//        }
+//        super.appendHoverText(itemStack, level, lines, flag);
+//    }
+
+    public void setSpellType(SpellType spellType) {
         this.spellType = spellType;
     }
 
