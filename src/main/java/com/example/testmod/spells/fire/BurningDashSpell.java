@@ -1,9 +1,8 @@
 package com.example.testmod.spells.fire;
 
-import com.example.testmod.player.ClientPlayerData;
+import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -62,6 +61,6 @@ public class BurningDashSpell extends AbstractSpell {
             soundevent = SoundEvents.TRIDENT_RIPTIDE_1;
         }
         world.playSound((Player) null, player, soundevent, SoundSource.PLAYERS, 1.0F, 1.0F);
-        ClientPlayerData.lastSpinAttack = ClientPlayerData.SpinAttackType.FIRE;
+        ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.FIRE;
     }
 }

@@ -28,5 +28,10 @@ public class ClientMagicData {
         return playerMana;
     }
 
+    public static SpinAttackType lastSpinAttack = SpinAttackType.RIPTIDE;
 
+    public enum SpinAttackType {
+        RIPTIDE,
+        FIRE
+    }
 }

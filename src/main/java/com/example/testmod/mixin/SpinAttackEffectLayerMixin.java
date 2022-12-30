@@ -1,7 +1,7 @@
 package com.example.testmod.mixin;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.player.ClientPlayerData;
+import com.example.testmod.player.ClientMagicData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,7 +24,7 @@ public class SpinAttackEffectLayerMixin {
         //will need more refining if there become more ways to spin attack
         Item usedItem = livingEntity.getItemInHand(livingEntity.getUsedItemHand()).getItem();
         TestMod.LOGGER.info("selected item: "+ usedItem);
-        switch(ClientPlayerData.lastSpinAttack){
+        switch(ClientMagicData.lastSpinAttack){
             case FIRE:
                 return  buffer.getBuffer(RenderType.entityCutoutNoCull(FIRE_TEXTURE));
             default: return original;
