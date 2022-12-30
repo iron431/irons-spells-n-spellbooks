@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -39,41 +40,10 @@ public class Scroll extends Item {
         this.level = level;
     }
 
-    @Override
-    public Component getName(ItemStack itemStack) {
-        var scrollData = getScrollData(itemStack);
-        return scrollData.getSpell().getSpellType().getDisplayName().append(new TranslatableComponent("item.testmod.scroll"));
 
-
-//        var scrollComponent = new TranslatableComponent(this.getDescriptionId(itemStack));
-//        TestMod.LOGGER.info("this class: \t\t" + this.hashCode());
-//        TestMod.LOGGER.info("class of stack:\t" + itemStack.getItem().hashCode());
-//        TestMod.LOGGER.info("hash of registry:\t" + ItemRegistry.SCROLL.get().hashCode());
-//        TestMod.LOGGER.info("my spell:\t\t\t" + spellType);
-//        TestMod.LOGGER.info("spell of stack:\t" + ((Scroll)itemStack.getItem()).spellType);
-//        TestMod.LOGGER.info("hash of stack:\t" + itemStack.hashCode());
-//        TestMod.LOGGER.info("this level: " + this.level);
-//        TestMod.LOGGER.info("itemstack level:" + ((Scroll)itemStack.getItem()).level);
-//        TestMod.LOGGER.info(Utils.GetStackTraceAsString());
-//        return scrollComponent;
-    }
-
-//    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-//        if (itemStack.getItem() instanceof Scroll scroll) {
-//            TranslatableComponent spellComponent = SpellType.getDisplayName(scroll.spellType);
-//            var spellLevel = scroll.level;
-//            lines.add(spellComponent.append(" " + spellLevel).setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY)));
-//        }
-//        super.appendHoverText(itemStack, level, lines, flag);
-//    }
 
     public void setSpellType(SpellType spellType) {
         this.spellType = spellType;
-    }
-
-    @Override
-    public Component getHighlightTip(ItemStack item, Component displayName) {
-        return super.getHighlightTip(item, displayName);
     }
 
     public void setLevel(int level) {
@@ -86,7 +56,6 @@ public class Scroll extends Item {
     }
 
     public ScrollData getScrollData(ItemStack stack) {
-        TestMod.LOGGER.info("Scroll.getScrollData(ItemStack stack)");
         return stack.getCapability(ScrollDataProvider.SCROLL_DATA).resolve().get();
     }
 
@@ -100,20 +69,21 @@ public class Scroll extends Item {
         var scrollData = getScrollData(stack);
         scrollData.getSpell().onCast(stack, level, player);
 
-        /*
-        TestMod.LOGGER.info("scroll.stack.getItem().getDescription().getString():" + scroll.stack.getItem().getDescription().getString());
-        TestMod.LOGGER.info("scroll.stack.getItem().hashCode():" + scroll.stack.getItem().hashCode());
-        TestMod.LOGGER.info("scroll.stack.hashCode():" + scroll.stack.hashCode());
-        TestMod.LOGGER.info("stack.getItem().getDescription().getString():" + stack.getItem().getDescription().getString());
-        TestMod.LOGGER.info("stack.getItem().hashCode():" + stack.getItem().hashCode());
-        TestMod.LOGGER.info("stack.hashCode():" + stack.hashCode());
-        */
-
         removeScrollAfterCast(player, stack);
 
         return InteractionResultHolder.success(stack);
     }
+    @Override
+    public @NotNull Component getName(@NotNull ItemStack itemStack) {
+        var scrollData = getScrollData(itemStack);
+        return scrollData.getDisplayName();
 
+    }
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+        lines.addAll(getScrollData(itemStack).getHoverText());
+        super.appendHoverText(itemStack, level, lines, flag);
+    }
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {

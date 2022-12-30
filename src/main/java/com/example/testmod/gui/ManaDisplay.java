@@ -93,25 +93,18 @@ public class ManaDisplay extends GuiComponent {
 
     }
 
+    private static int getOffsetCountFromHotbar(Player player) {
+        if (centered || !(player == null || player.getAirSupply() <= 0 || player.getAirSupply() >= 300))
+            return 3;
+        else if (!player.isCreative())
+            return 2;
+        else
+            return 1;
+    }
+
     @SubscribeEvent
     public static void onKeyPress(InputEvent.KeyInputEvent e) {
         key = (char) e.getKey();
-        if (e.getKey() == (int) 'H' && e.getAction() == 1) {
-            //Messages.sendToServer(new PacketCastSpell(AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, 1)));
-        }
-        if (e.getKey() == (int) 'G' && e.getAction() == 1) {
-        }
-        if (e.getKey() == (int) 'J' && e.getAction() == 1) {
-            //System.out.println(screenWidth+"x"+screenHeight);
-            centered = !centered;
-
-            System.out.println(Minecraft.getInstance().getDeltaFrameTime()); // in ticks per frame
-        }
-        if (e.getKey() == (int) 'C' && e.getAction() == 1) {
-            colorIndex++;
-            if (colorIndex >= colors.length)
-                colorIndex = 0;
-        }
 //        if (e.getKey() == (int) 'Y' && e.getAction() == 1) {
 //            Player player = Minecraft.getInstance().player;
 //            player.sendMessage(new TextComponent("Launching " + player.getDisplayName().getString()), player.getUUID());
@@ -121,14 +114,5 @@ public class ManaDisplay extends GuiComponent {
 //        }
     }
 
-
-    private static int getOffsetCountFromHotbar(Player player) {
-        if (centered || !(player == null || player.getAirSupply() <= 0 || player.getAirSupply() >= 300))
-            return 3;
-        else if (!player.isCreative())
-            return 2;
-        else
-            return 1;
-    }
 
 }
