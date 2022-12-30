@@ -94,10 +94,11 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
         ItemStack spellBookItemStack = slots.get(SPELLBOOK_SLOT).getItem();
         SpellBook spellBook = (SpellBook) spellBookItemStack.getItem();
         var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
-        TestMod.LOGGER.info(spellBookData.getInscribedSpells().toString());
 
+        var spellId = spellBookData.getInscribedSpells()[selectedIndex].getID();
+        var spellLevel = spellBookData.getInscribedSpells()[selectedIndex].getLevel();
+        generateScroll(spellId,spellLevel);
         spellBookData.removeSpell(selectedIndex);
-        TestMod.LOGGER.info(spellBookData.getInscribedSpells().toString());
 
     }
 
