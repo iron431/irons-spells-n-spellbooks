@@ -16,19 +16,20 @@ import net.minecraftforge.registries.RegistryObject;
 public class AttributeRegistry {
 
     private static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, TestMod.MODID);
-    public static void register(IEventBus eventBus){ ATTRIBUTES.register(eventBus); }
+
+    public static void register(IEventBus eventBus) {
+        ATTRIBUTES.register(eventBus);
+    }
+
     //"attribute.testmod.max_mana" seems to be the id for the lang file
     public static final RegistryObject<Attribute> MAX_MANA = ATTRIBUTES.register("max_mana", () -> (new RangedAttribute("attribute.testmod.max_mana", 100.0D, 0.0D, 10000.0D).setSyncable(true)));
+    public static final RegistryObject<Attribute> COOLDOWN_REDUCTION = ATTRIBUTES.register("cooldown_reduction", () -> (new RangedAttribute("attribute.testmod.cooldown_reduction", 1.0D, -10.0D, 2.0D).setSyncable(true)));
 
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(entity -> {
             e.add(entity, MAX_MANA.get());
-            //change logger back to private
-
+            e.add(entity, COOLDOWN_REDUCTION.get());
         });
-        TestMod.LOGGER.info("modified attributes");
     }
-
-
 }
