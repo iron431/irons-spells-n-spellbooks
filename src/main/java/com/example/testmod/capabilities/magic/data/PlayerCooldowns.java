@@ -11,8 +11,13 @@ public class PlayerCooldowns {
     public static final String SPELL_ID = "sid";
     public static final String SPELL_COOLDOWN = "scd";
     public static final String COOLDOWN_REMAINING = "cdr";
+
     //spell type and for how many more ticks it will be on cooldown
     private final Map<SpellType, CooldownInstance> spellCooldowns;
+
+    //This is used to deal with the client and server tick's not in sync so
+    // the client has a little grace period so it's remove doesn't happen before the server's
+    private int tickBuffer = 0;
 
     public PlayerCooldowns() {
         this(Maps.newEnumMap(SpellType.class));
@@ -20,6 +25,10 @@ public class PlayerCooldowns {
 
     public PlayerCooldowns(Map<SpellType, CooldownInstance> spellCooldowns) {
         this.spellCooldowns = spellCooldowns;
+    }
+
+    public void setTickBuffer(int tickBuffer) {
+        this.tickBuffer = tickBuffer;
     }
 
     public void tick(int actualTicks) {
@@ -38,8 +47,7 @@ public class PlayerCooldowns {
     }
 
     public void addCooldown(SpellType spell, int durationTicks) {
-        if (!spellCooldowns.containsKey(spell))
-            spellCooldowns.put(spell, new CooldownInstance(durationTicks));
+        spellCooldowns.put(spell, new CooldownInstance(durationTicks));
     }
 
     public boolean isOnCooldown(SpellType spell) {
@@ -52,7 +60,7 @@ public class PlayerCooldowns {
 
     private boolean decrementCooldown(CooldownInstance c, int amount) {
         c.decrementBy(amount);
-        return c.getCooldownRemaining() <= 0;
+        return c.getCooldownRemaining() <= tickBuffer;
     }
 
     public void saveNBTData(ListTag listTag) {

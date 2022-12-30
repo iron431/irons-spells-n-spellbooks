@@ -1,5 +1,7 @@
 package com.example.testmod.capabilities.magic.data;
 
+import com.example.testmod.TestMod;
+
 public class CooldownInstance {
     private int cooldownRemaining;
     private final int spellCooldown;
@@ -27,7 +29,9 @@ public class CooldownInstance {
     }
 
     public int getCooldownRemaining() {
+        TestMod.LOGGER.info(this.hashCode() + " cooldownRemaining:" + cooldownRemaining);
         return cooldownRemaining;
+
     }
 
     public int getSpellCooldown() {

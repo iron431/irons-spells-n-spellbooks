@@ -58,7 +58,7 @@ public class SpellBook extends Item {
         if (spell != null && spell.attemptCast(itemStack, level, player)) {
             TestMod.LOGGER.info("SERVER: WimpySpellBook.use: sidedSuccess");
             TestMod.LOGGER.info("\n\n\n\n");
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
+            return InteractionResultHolder.success(player.getItemInHand(hand));
         }
 
         TestMod.LOGGER.info("SERVER: WimpySpellBook.use: fail");

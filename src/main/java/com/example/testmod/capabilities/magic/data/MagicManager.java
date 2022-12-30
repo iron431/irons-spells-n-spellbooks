@@ -50,12 +50,13 @@ public class MagicManager extends SavedData {
         playerMagicData.setMana(newManaValue);
     }
 
-    public PlayerMagicData calculateState(ServerPlayer serverPlayer) {
+    public PlayerMagicData calculateState(ServerPlayer serverPlayer, int actualTicks) {
         PlayerMagicData playerMagicData = getPlayerMagicData(serverPlayer);
         regenPlayerMana(serverPlayer, playerMagicData);
-        playerMagicData.getPlayerCooldowns().tick(TICKS_PER_CYCLE);
+        playerMagicData.getPlayerCooldowns().tick(actualTicks);
         return playerMagicData;
     }
+
 
     public void regenPlayerMana(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
@@ -78,7 +79,13 @@ public class MagicManager extends SavedData {
             // todo expansion: keep the previous data that was sent to the player and only send if changed
             level.players().forEach(player -> {
                 if (player instanceof ServerPlayer serverPlayer) {
-                    Messages.sendToPlayer(new PacketSyncMagicDataToClient(calculateState(serverPlayer)), serverPlayer);
+                    Messages.sendToPlayer(new PacketSyncMagicDataToClient(calculateState(serverPlayer, 1)), serverPlayer);
+                }
+            });
+        } else {
+            level.players().forEach(player -> {
+                if (player instanceof ServerPlayer serverPlayer) {
+                    getPlayerMagicData(serverPlayer).getPlayerCooldowns().tick(1);
                 }
             });
         }
