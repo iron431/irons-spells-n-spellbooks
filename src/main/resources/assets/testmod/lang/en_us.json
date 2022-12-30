@@ -4,6 +4,9 @@
   "item.testmod.scroll": "Scroll",
 
   "attribute.testmod.max_mana":"Max Mana",
-  "attribute.testmod.cooldown_reduction":"Cooldown Reduction"
+  "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
 
+  "spell.fire.fireball": "Fireball Spell",
+  "spell.fire.burning_dash": "Burning Dash Spell",
+  "spell.ender.teleport": "Teleport Spell"
 }

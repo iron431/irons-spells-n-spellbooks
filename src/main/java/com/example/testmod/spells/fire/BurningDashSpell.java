@@ -23,7 +23,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     public BurningDashSpell(int level) {
-        super(SpellType.BURNING_DASH_SPELL, new TranslatableComponent("Burning Dash"));
+        super(SpellType.BURNING_DASH_SPELL, new TranslatableComponent("spell.fire.burning_dash"));
         baseManaCost = 20;
         manaCostPerLevel = 5;
         baseSpellPower = 1;

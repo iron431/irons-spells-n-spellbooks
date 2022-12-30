@@ -8,7 +8,8 @@ public enum SpellType {
     NONE(0),
     FIREBALL_SPELL(1),
     BURNING_DASH_SPELL(2),
-    TEST_SPELL(3);
+    TEST_SPELL(3),
+    TELEPORT(4);
 
     private final int value;
 

@@ -3,22 +3,19 @@ package com.example.testmod.spells;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.network.PacketCastSpell;
-import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
-import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
+import com.example.testmod.spells.fire.TeleportSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import static com.example.testmod.registries.AttributeRegistry.COOLDOWN_REDUCTION;
-import static com.example.testmod.registries.AttributeRegistry.MAX_MANA;
 
 public abstract class AbstractSpell {
     private final SpellType spellType;
@@ -78,6 +75,9 @@ public abstract class AbstractSpell {
             }
             case FIREBALL_SPELL -> {
                 return new FireballSpell(level);
+            }
+            case TELEPORT -> {
+                return  new TeleportSpell(level);
             }
             case NONE -> {
                 return new NoneSpell(0);
