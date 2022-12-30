@@ -45,7 +45,7 @@ public class InscriptionTableBlock extends BaseEntityBlock {
     //public static final VoxelShape SHAPE_COMMON = Shapes.or(SHAPE_WEST, SHAPE_POST);
 public static final VoxelShape SHAPE_TABLETOP = Block.box(0,10,0,16,14,16);
     public static final VoxelShape SHAPE_LEG_1 = Block.box(1,0,1,4,10,4);
-    public static final VoxelShape SHAPE_LEG_2 = Block.box(12,0,1,16,10,4);
+    public static final VoxelShape SHAPE_LEG_2 = Block.box(12,0,1,15,10,4);
     public static final VoxelShape SHAPE_LEG_3 = Block.box(1,0,12,4,10,15);
     public static final VoxelShape SHAPE_LEG_4 = Block.box(12,0,12,15,10,15);
 

@@ -1,8 +1,13 @@
 package com.example.testmod.block.InscriptionTable;
+
+import com.example.testmod.TestMod;
 import com.example.testmod.gui.InscriptionTableMenu;
+import com.example.testmod.gui.InscriptionTableScreen;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.registries.BlockRegistry;
+import com.example.testmod.registries.ItemRegistry;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +19,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -30,6 +37,11 @@ import javax.annotation.Nonnull;
 
 public class InscriptionTableTile extends BlockEntity implements MenuProvider {
     private AbstractContainerMenu menu;
+
+    public static final int SPELLBOOK_SLOT = 36 + 0;
+    public static final int SCROLL_SLOT = 36 + 1;
+    public static final int EXTRACTION_SLOT = 36 + 2;
+
     private final ItemStackHandler itemHandler = new ItemStackHandler(3) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -54,22 +66,62 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
         menu = new InscriptionTableMenu(containerId, inventory, this);
         return menu;
     }
-    public void doInscription(int spellBookSlot, int scrollSlot, int selectedIndex){
+
+    public void doInscription(int selectedIndex) {
         // All data should have been validated by now
+        // This method is called by the inscription packet
         var slots = this.menu.slots;
 
-        ItemStack spellBookItemStack = slots.get(spellBookSlot).getItem();
-        ItemStack scrollItemStack = slots.get(scrollSlot).getItem();
+        ItemStack spellBookItemStack = slots.get(SPELLBOOK_SLOT).getItem();
+        ItemStack scrollItemStack = slots.get(SCROLL_SLOT).getItem();
 
-        var spellBook = (SpellBook)spellBookItemStack.getItem();
-        var scroll = (Scroll)scrollItemStack.getItem();
+        var spellBook = (SpellBook) spellBookItemStack.getItem();
+        var scroll = (Scroll) scrollItemStack.getItem();
 
         var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
         var scrollData = scroll.getScrollData(scrollItemStack);
 
         spellBookData.addSpell(scrollData.getSpell(), selectedIndex);
 
-        slots.get(scrollSlot).remove(1);
+        slots.get(SCROLL_SLOT).remove(1);
+    }
+
+    public void removeSelectedSpell(int selectedIndex) {
+        // All data should have been validated by now
+        TestMod.LOGGER.info("recieving request to destroy");
+        var slots = this.menu.slots;
+
+        ItemStack spellBookItemStack = slots.get(SPELLBOOK_SLOT).getItem();
+        SpellBook spellBook = (SpellBook) spellBookItemStack.getItem();
+        var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
+        TestMod.LOGGER.info(spellBookData.getInscribedSpells().toString());
+
+        spellBookData.removeSpell(selectedIndex);
+        TestMod.LOGGER.info(spellBookData.getInscribedSpells().toString());
+
+    }
+
+    public void generateScroll(int spellId, int spellLevel) {
+        // This method is called by the generate scroll packet
+
+        Slot extractionSlot = this.menu.slots.get(EXTRACTION_SLOT);
+
+        //null check (empty spell slots send as -1)
+        //if (spellId >= 0) {
+            ItemStack scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
+            Scroll scroll = (Scroll) scrollStack.getItem();
+            scroll.setSpellType(SpellType.values()[spellId]);
+            scroll.setLevel(spellLevel);
+            extractionSlot.set(scrollStack);
+        //} else {
+        //    extractionSlot.set(ItemStack.EMPTY);
+        //}
+
+    }
+
+
+    public void clearSlot(int slotIndex) {
+        this.menu.slots.get(slotIndex).set(ItemStack.EMPTY);
     }
 
     @Nonnull
@@ -89,12 +141,13 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    public void invalidateCaps()  {
+    public void invalidateCaps() {
         super.invalidateCaps();
         lazyItemHandler.invalidate();
     }
 
     //Nonnull was originally "NotNull"
+
     @Override
     protected void saveAdditional(@Nonnull CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
@@ -109,7 +162,7 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
 
     public void drops() {
         SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
+        for (int i = 0; i < 2; i++) {
             inventory.setItem(i, itemHandler.getStackInSlot(i));
         }
 

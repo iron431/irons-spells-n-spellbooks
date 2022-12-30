@@ -113,7 +113,7 @@ public class SpellBookData {
     }
 
     public boolean removeSpell(int index) {
-        if (index < transcribedSpells.length && transcribedSpells[index] == null) {
+        if (index < transcribedSpells.length && transcribedSpells[index] != null) {
             transcribedSpells[index] = null;
             spellCount--;
             if (spellCount == 0) {

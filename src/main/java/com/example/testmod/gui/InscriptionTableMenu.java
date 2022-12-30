@@ -22,15 +22,15 @@ import static com.example.testmod.registries.BlockRegistry.INSCRIPTION_TABLE_BLO
 public class InscriptionTableMenu extends AbstractContainerMenu {
     public final InscriptionTableTile blockEntity;
     private final Level level;
-    private AbstractContainerScreen<InscriptionTableMenu> screen;
     public InscriptionTableMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
         this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
     }
 
     public InscriptionTableMenu(int containerId, Inventory inv, BlockEntity entity) {
+        //exists on server and render
         super(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), containerId);
         checkContainerSize(inv, 3);
-        blockEntity = ((InscriptionTableTile) entity);
+        blockEntity = (InscriptionTableTile) entity;
         this.level = inv.player.level;
 
         addPlayerInventory(inv);
@@ -42,13 +42,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             this.addSlot(new ScrollExtractionSlot(handler, 2, 208, 136));
         });
     }
-    public void setScreen(AbstractContainerScreen<InscriptionTableMenu> screen){
-        this.screen=screen;
 
-    }
-    public AbstractContainerScreen<InscriptionTableMenu> getScreen(){
-        return screen;
-    }
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.

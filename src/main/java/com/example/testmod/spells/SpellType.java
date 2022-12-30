@@ -20,7 +20,7 @@ public enum SpellType {
         return value;
     }
 
-    public String getId() {
+    public String getIdentifier() {
         return this.toString().toLowerCase().replace("_spell", "");
     }
 }

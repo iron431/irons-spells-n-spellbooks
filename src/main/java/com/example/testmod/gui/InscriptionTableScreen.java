@@ -1,16 +1,21 @@
 package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.gui.network.PacketGenerateScroll;
 import com.example.testmod.gui.network.PacketInscribeSpell;
+import com.example.testmod.gui.network.PacketRemoveSpell;
+import com.example.testmod.gui.slot.ScrollExtractionSlot;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -26,26 +31,24 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     //button locations
     private static final int INSCRIBE_BUTTON_X = 43;
     private static final int INSCRIBE_BUTTON_Y = 35;
+    private static final int EXTRACT_BUTTON_X = 188;
+    private static final int EXTRACT_BUTTON_Y = 137;
     //slot indexes (vanilla inventory has 36 slots)
     private static final int SPELLBOOK_SLOT = 36 + 0;
     private static final int SCROLL_SLOT = 36 + 1;
     private static final int EXTRACTION_SLOT = 36 + 2;
-    //location of the space to draw spell iconsd
+    //locations to draw spell icons
     private static final int SPELL_BG_X = 67;
     private static final int SPELL_BG_Y = 15;
     private static final int SPELL_BG_WIDTH = 95;
     private static final int SPELL_BG_HEIGHT = 57;
 
-    private static boolean isDirty;
-    private static int temp_spell_count = 5;
+    private boolean isDirty;
     protected Button inscribeButton;
-    //protected ArrayList<Button> spellSlotButtons;
-    //protected ArrayList<Vec2> spellSlotRelativeLocations;
-    //private AbstractSpell[] loadedSpells;
+    protected Button extractButton;
     private ItemStack lastSpellBookItem = null;
     protected ArrayList<SpellSlotInfo> spellSlots;
     private int selectedSpellIndex;
-    private static String temp_log;
 
     public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -58,17 +61,23 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     protected void init() {
         super.init();
         inscribeButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()));
-        spellSlots = new ArrayList<SpellSlotInfo>();
-        menu.setScreen(this);
-        //spellSlotButtons = new ArrayList<Button>();
-        //spellSlotRelativeLocations = new ArrayList<Vec2>();
+        extractButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.generateRemovableScroll()));
+        spellSlots = new ArrayList<>();
         selectedSpellIndex = -1;
         generateSpellSlots();
-        isDirty = false;
+    }
+
+    @Override
+    public void removed() {
+        //wipe scroll
+        selectedSpellIndex = -1;
+        super.removed();
     }
 
     private void generateSpellSlots() {
-        //loadedSpells = null;
+        /*
+         Reset Per-Book info
+         */
         for (SpellSlotInfo s : spellSlots)
             removeWidget(s.button);
         spellSlots.clear();
@@ -76,12 +85,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             return;
 
         var spellBookSlot = menu.slots.get(SPELLBOOK_SLOT);
-        ItemStack spellBookItemStack = spellBookSlot.getItem();
-
+        var spellBookItemStack = spellBookSlot.getItem();
         var spellData = ((SpellBook) spellBookItemStack.getItem()).getSpellBookData(spellBookItemStack);
         var storedSpells = spellData.getInscribedSpells();
-
-        //loadedSpells=spellData.getInscribedSpells();
 
         int spellCount = spellData.getSpellSlots();
         if (spellCount > 15) {
@@ -90,15 +96,14 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         if (spellCount <= 0) {
             return;
         }
-        //renderSpellSlot(poseStack,center,mouseX,mouseY);
+        /*
+         Calculate and save spell slot positions on the screen
+         */
         int boxSize = 19;
-        //SpellType[] TEMP_SPELL_LIST = {SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL,SpellType.FIREBALL_SPELL};
         int[] row1 = new int[LAYOUT[spellCount - 1][0]];
         int[] row2 = new int[LAYOUT[spellCount - 1][1]];
         int[] row3 = new int[LAYOUT[spellCount - 1][2]];
 
-
-        //ArrayList<Vec2> locations = new ArrayList<Vec2>();
         int[] rowWidth = {
                 boxSize * row1.length,
                 boxSize * row2.length,
@@ -124,11 +129,13 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 spellSlots.add(new SpellSlotInfo(storedSpells[index],
                         location,
                         this.addWidget(new Button((int) location.x, (int) location.y, boxSize, boxSize, new TextComponent(temp_index + ""), (p_169820_) -> this.setSelectedIndex(temp_index)))));
-                //spellSlotButtons.add(this.addWidget(new Button((int) location.x, (int) location.y, boxSize, boxSize, new TextComponent(temp_index+""), (p_169820_) -> this.setSelectedIndex(temp_index))));
-                //spellSlotRelativeLocations.add(location);
                 index++;
             }
         }
+        /*
+         Unflag as Dirty
+         */
+        isDirty = false;
     }
 
     @Override
@@ -141,12 +148,15 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
 
         inscribeButton.active = isValidInscription();
+        extractButton.active = selectedSpellIndex >= 0 && spellSlots.get(selectedSpellIndex).hasSpell() && !menu.slots.get(EXTRACTION_SLOT).hasItem();
         renderButtons(poseStack, mouseX, mouseY);
 
         if (menu.slots.get(SPELLBOOK_SLOT).getItem() != lastSpellBookItem) {
             onSpellBookSlotChanged();
             lastSpellBookItem = menu.slots.get(SPELLBOOK_SLOT).getItem();
         }
+
+
         renderSpells(poseStack, mouseX, mouseY);
 
     }
@@ -154,7 +164,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private void renderSpells(PoseStack poseStack, int mouseX, int mouseY) {
         if (isDirty) {
             generateSpellSlots();
-            isDirty = false;
         }
         Vec2 center = new Vec2(SPELL_BG_X + leftPos + SPELL_BG_WIDTH / 2, SPELL_BG_Y + topPos + SPELL_BG_HEIGHT / 2);
 
@@ -175,6 +184,15 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         selectedSpellIndex = -1;
     }
 
+    private void generateRemovableScroll() {
+        BlockPos pos = menu.blockEntity.getBlockPos();
+        AbstractSpell spell = null;
+        if (selectedSpellIndex >= 0)
+            spell = spellSlots.get(selectedSpellIndex).containedSpell;
+        Messages.sendToServer(new PacketGenerateScroll(pos, spell));
+        Messages.sendToServer(new PacketRemoveSpell(pos, selectedSpellIndex));
+    }
+
     private void renderSpellSlot(PoseStack poseStack, Vec2 pos, int mouseX, int mouseY, int index, boolean hasSpell) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -183,12 +201,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         this.blit(poseStack, (int) pos.x, (int) pos.y, iconToDraw, 166, 19, 19);
         if (index == selectedSpellIndex)
             this.blit(poseStack, (int) pos.x, (int) pos.y, 57, 166, 19, 19);
-
     }
 
     private void renderButtons(PoseStack poseStack, int mouseX, int mouseY) {
-
-
         //
         //  Rendering inscription Button
         //
@@ -206,30 +221,48 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             //disabled
             this.blit(poseStack, inscribeButton.x, inscribeButton.y, 0, 185, 14, 14);
         }
-
+        //
+        //  Rendering extraction Button
+        //
+        extractButton.x = leftPos + EXTRACT_BUTTON_X;
+        extractButton.y = topPos + EXTRACT_BUTTON_Y;
+        if (extractButton.active) {
+            if (isHovering(extractButton.x, extractButton.y, 14, 14, mouseX, mouseY)) {
+                //highlighted
+                this.blit(poseStack, extractButton.x, extractButton.y, 28, 199, 14, 14);
+            } else {
+                //regular
+                this.blit(poseStack, extractButton.x, extractButton.y, 14, 199, 14, 14);
+            }
+        } else {
+            //disabled
+            this.blit(poseStack, extractButton.x, extractButton.y, 0, 199, 14, 14);
+        }
+        //could definitely be turned into method
     }
 
     private void onInscription() {
-        //called when inscription button clicked
-        TestMod.LOGGER.info("Inscribe!");
+        //
+        //  Called when inscription button clicked
+        //
 
         //is this slot already taken?
         if (spellSlots.get(selectedSpellIndex).hasSpell()) {
-            TestMod.LOGGER.info("No space here");
             return;
         }
+        //TODO: check if we are eligible.. (rarity, other conditions, etc)
 
-        //TODO: check if we are eligible.. (rarity, other condidtions, etc)
-
+        //
         //good to inscribe
-        isDirty = true;
-        var pos = menu.blockEntity.getBlockPos();
-        Messages.sendToServer(new PacketInscribeSpell(pos, SPELLBOOK_SLOT, SCROLL_SLOT, selectedSpellIndex));
-    }
+        //
 
+        isDirty = true;
+        Messages.sendToServer(new PacketInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
+    }
 
     private void setSelectedIndex(int index) {
         selectedSpellIndex = index;
+
     }
 
     private boolean isValidInscription() {
@@ -239,11 +272,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private boolean isSpellBookSlotted() {
         //switch to forge tags
-        return menu.slots.get(SPELLBOOK_SLOT).hasItem() && menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook;
+        return /*menu.slots.get(SPELLBOOK_SLOT).hasItem() &&*/ menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook;
     }
 
     private boolean isScrollSlotted() {
-        //switch to forge tags
+        //is "hasItem" necessary? at what point does null break this?
         return menu.slots.get(SCROLL_SLOT).hasItem() && menu.slots.get(SCROLL_SLOT).getItem().getItem() instanceof Scroll;
     }
 

@@ -1,31 +1,41 @@
 package com.example.testmod.gui.network;
 
 import com.example.testmod.block.InscriptionTable.InscriptionTableTile;
+import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketInscribeSpell {
+public class PacketGenerateScroll {
 
 
     private final BlockPos pos;
-    private final int selectedIndex;
+    private final int spellId;
+    private final int spellLevel;
 
-    public PacketInscribeSpell(BlockPos pos, int selectedIndex) {
+    public PacketGenerateScroll(BlockPos pos, AbstractSpell spell) {
         //convert objects into bytes then re-read them into objects
 
         this.pos = pos;
-        this.selectedIndex = selectedIndex;
+        if (spell == null) {
+            this.spellId = -1;
+            this.spellLevel = -1;
+        } else {
+            this.spellId = spell.getSpellType().getValue();
+            this.spellLevel = spell.getLevel();
+
+        }
     }
 
-    public PacketInscribeSpell(FriendlyByteBuf buf) {
+    public PacketGenerateScroll(FriendlyByteBuf buf) {
         int x = buf.readInt();
         int y = buf.readInt();
         int z = buf.readInt();
         pos = new BlockPos(x, y, z);
-        selectedIndex = buf.readInt();
+        spellId = buf.readInt();
+        spellLevel = buf.readInt();
 
     }
 
@@ -33,7 +43,8 @@ public class PacketInscribeSpell {
         buf.writeInt(pos.getX());
         buf.writeInt(pos.getY());
         buf.writeInt(pos.getZ());
-        buf.writeInt(selectedIndex);
+        buf.writeInt(spellId);
+        buf.writeInt(spellLevel);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
@@ -44,7 +55,7 @@ public class PacketInscribeSpell {
             // Keep in mind screen does not exist on server
             InscriptionTableTile inscriptionTable = (InscriptionTableTile) ctx.getSender().level.getBlockEntity(pos);
             if (inscriptionTable != null) {
-                inscriptionTable.doInscription(selectedIndex);
+                inscriptionTable.generateScroll(spellId, spellLevel);
             }
 
         });

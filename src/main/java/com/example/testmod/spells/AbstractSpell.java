@@ -122,6 +122,8 @@ public abstract class AbstractSpell {
     @Override
     public boolean equals(Object obj) {
         AbstractSpell o = (AbstractSpell) obj;
+        if (this == null || o == null)
+            return this == null && o == null;
         if (this.spellType == o.spellType && this.level == o.level) {
             return true;
         }

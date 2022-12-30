@@ -4,7 +4,9 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
 import com.example.testmod.capabilities.scroll.network.PacketUseScroll;
+import com.example.testmod.gui.network.PacketGenerateScroll;
 import com.example.testmod.gui.network.PacketInscribeSpell;
+import com.example.testmod.gui.network.PacketRemoveSpell;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -54,6 +56,18 @@ public class Messages {
                 .decoder(PacketInscribeSpell::new)
                 .encoder(PacketInscribeSpell::toBytes)
                 .consumer(PacketInscribeSpell::handle)
+                .add();
+
+        net.messageBuilder(PacketGenerateScroll.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(PacketGenerateScroll::new)
+                .encoder(PacketGenerateScroll::toBytes)
+                .consumer(PacketGenerateScroll::handle)
+                .add();
+
+        net.messageBuilder(PacketRemoveSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(PacketRemoveSpell::new)
+                .encoder(PacketRemoveSpell::toBytes)
+                .consumer(PacketRemoveSpell::handle)
                 .add();
     }
 
