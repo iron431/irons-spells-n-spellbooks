@@ -29,9 +29,7 @@ public class CooldownInstance {
     }
 
     public int getCooldownRemaining() {
-        TestMod.LOGGER.info(this.hashCode() + " cooldownRemaining:" + cooldownRemaining);
         return cooldownRemaining;
-
     }
 
     public int getSpellCooldown() {

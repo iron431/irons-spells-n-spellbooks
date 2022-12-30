@@ -56,10 +56,6 @@ public class SpellBookData {
         return result;
     }
 
-    public boolean isDirty() {
-        return dirty;
-    }
-
     private void setDirty(boolean dirty) {
         this.dirty = dirty;
     }

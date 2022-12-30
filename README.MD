@@ -30,4 +30,5 @@
 - ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:max_mana",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
 
 ### Notes
-Block Overlay: https://github.com/Hexeption/DarkForge/blob/master/src/main/java/uk/co/hexeption/darkforge/mod/mods/render/BlockOverlay.java****
+- Block Overlay Example: https://github.com/Hexeption/DarkForge/blob/master/src/main/java/uk/co/hexeption/darkforge/mod/mods/render/BlockOverlay.java
+- Nice rendering library: https://github.com/maruohon/malilib
