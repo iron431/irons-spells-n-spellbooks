@@ -25,11 +25,9 @@ public abstract class AbstractSpell {
     protected int baseSpellPower;
     protected int spellPowerPerLevel;
     protected int cooldown;
-    public final TranslatableComponent displayName;
 
-    public AbstractSpell(SpellType spellEnum, TranslatableComponent displayName) {
+    public AbstractSpell(SpellType spellEnum) {
         this.spellType = spellEnum;
-        this.displayName = displayName;
     }
 
     public int getID() {
@@ -42,10 +40,6 @@ public abstract class AbstractSpell {
 
     public int getLevel() {
         return this.level;
-    }
-
-    public String getSpellName() {
-        return this.displayName.getKey();
     }
 
     public int getManaCost() {
@@ -110,7 +104,7 @@ public abstract class AbstractSpell {
             } else if (playerMana - getManaCost() < 0) {
                 player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else if (playerMagicData.getPlayerCooldowns().isOnCooldown(spellType)) {
-                player.sendMessage(new TextComponent(displayName.getKey() + " is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(new TextComponent(SpellType.getDisplayName(this.spellType) + " is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else {
                 int newMana = playerMana - getManaCost();
                 double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());

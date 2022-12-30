@@ -6,7 +6,8 @@
   "attribute.testmod.max_mana":"Max Mana",
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
 
-  "spell.fire.fireball": "Fireball Spell",
-  "spell.fire.burning_dash": "Burning Dash Spell",
-  "spell.ender.teleport": "Teleport Spell"
+  "spell.none": "None",
+  "spell.fire.fireball": "Fireball",
+  "spell.fire.burning_dash": "Burning Dash",
+  "spell.ender.teleport": "Teleport"
 }

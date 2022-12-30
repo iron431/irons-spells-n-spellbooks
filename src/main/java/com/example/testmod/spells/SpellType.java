@@ -1,5 +1,6 @@
 package com.example.testmod.spells;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
@@ -19,6 +20,13 @@ public enum SpellType {
 
     public int getValue() {
         return value;
+    }
+
+    public static TranslatableComponent getDisplayName(SpellType spellType){
+        switch (spellType){
+            case FIREBALL_SPELL : return new TranslatableComponent("spell.fire.fireball");
+            default:return new TranslatableComponent("spell.none");
+        }
     }
 
     public String getIdentifier() {

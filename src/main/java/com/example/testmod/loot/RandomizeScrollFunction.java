@@ -25,10 +25,11 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         if (itemStack.getItem() instanceof Scroll scroll) {
-            //TestMod.LOGGER.info("loot table function running");
-            //TestMod.LOGGER.info("number provided: " + levelRange.getInt(lootContext));
             scroll.setLevel(levelRange.getInt(lootContext));
             scroll.setSpellType(SpellType.FIREBALL_SPELL);
+
+            TestMod.LOGGER.info("hash from loot table: "+itemStack.getItem().hashCode());
+
         }
         return itemStack;
     }

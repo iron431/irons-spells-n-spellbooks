@@ -17,7 +17,7 @@ public class FireballSpell extends AbstractSpell {
     }
 
     public FireballSpell(int level) {
-        super(SpellType.FIREBALL_SPELL, new TranslatableComponent("spell.fire.fireball"));
+        super(SpellType.FIREBALL_SPELL);
         this.level = level;
         this.baseManaCost = 40;
         this.manaCostPerLevel = 5;

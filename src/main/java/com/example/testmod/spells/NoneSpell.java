@@ -14,7 +14,7 @@ public class NoneSpell extends AbstractSpell {
     }
 
     public NoneSpell(int level) {
-        super(SpellType.NONE, new TranslatableComponent("None"));
+        super(SpellType.NONE);
         this.level = level;
         this.baseManaCost = 0;
         this.manaCostPerLevel = 0;
