@@ -8,13 +8,12 @@ import com.example.testmod.player.ClientPlayerEvents;
 import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +28,20 @@ public class SpellBook extends Item {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(rarity));
     }
 
+    @Override
+    public int getUseDuration(ItemStack p_41454_) {
+        TestMod.LOGGER.info("SpellBook.getUseDuration");
+        return 200;
+    }
+
+    @Override
+    public UseAnim getUseAnimation(ItemStack p_41452_) {
+        TestMod.LOGGER.info("SpellBook.getUseAnimation");
+        return UseAnim.BOW;
+    }
+
+
+
     public SpellBookData getSpellBookData(ItemStack stack) {
         return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
     }
@@ -40,6 +53,10 @@ public class SpellBook extends Item {
         AbstractSpell spell = spellBookData.getActiveSpell();
 
         if (level.isClientSide()) {
+            //player.setForcedPose(Pose.SWIMMING);
+//            player.startUsingItem(hand);
+//            if(true);
+//            return InteractionResultHolder.consume(itemStack);
 
             TestMod.LOGGER.info("CLIENT: WimpySpellBook.use:");
             if (spell != null
