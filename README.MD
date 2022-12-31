@@ -8,6 +8,7 @@
 - https://www.mcjty.eu/docs/1.18/
 - https://github.com/McJty/TutorialV3/tree/98b824b6adfb318c19fe96ae41f504ade7d40dcf/src/main/java/com/example/tutorialv3/manasystem
 - https://github.com/Tutorials-By-Kaupenjoe/Forge-Tutorial-1.18.1/tree/main/src/main/java/net/kaupenjoe/tutorialmod
+- https://moddingtutorials.org/1.18.2/environment-setup
 
 ### Capabilities
 - https://github.com/mickelus/tetra/search?q=capability/
@@ -18,6 +19,7 @@
 
 ### Other Random Links
 - https://www.youtube.com/watch?v=prqMxqUtj-0
+- Teleport: https://moddingtutorials.org/1.19.2/advanced-items/
 
 ### Helpful commands
 - ```/setblock ~ ~ ~ testmod:inscription_table```

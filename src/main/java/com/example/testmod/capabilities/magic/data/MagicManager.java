@@ -3,6 +3,7 @@ package com.example.testmod.capabilities.magic.data;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -76,7 +77,10 @@ public class MagicManager extends SavedData {
                 if (playerMagicData.isCasting()) {
                     playerMagicData.handleCastDuration();
                     if (!playerMagicData.isCasting()) {
-                        Messages.sendToPlayer(new PacketCastingState(0, false), serverPlayer);
+                        Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, true), serverPlayer);
+                        playerMagicData.resetCastingState();
+                        var spell = AbstractSpell.getSpell(playerMagicData.getCastingSpellId(), playerMagicData.getCastingSpellLevel());
+                        spell.finishCasting(serverPlayer.level, serverPlayer, this, playerMagicData);
                     }
                 }
 

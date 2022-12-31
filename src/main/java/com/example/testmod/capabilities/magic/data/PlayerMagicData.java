@@ -8,24 +8,60 @@ public class PlayerMagicData {
     public static final String MANA = "mana";
     public static final String COOLDOWNS = "cooldowns";
 
-    //MANA
+    /********* MANA *******************************************************/
+
     private int mana;
 
-    //COOLDOWNS
-    private final PlayerCooldowns playerCooldowns = new PlayerCooldowns();
+    public int getMana() {
+        return mana;
+    }
 
-    //CASTING
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+
+    public void addMana(int mana) {
+        this.mana += mana;
+    }
+
+    /********* CASTING *******************************************************/
+
     private boolean isCasting = false;
+    private int castingSpellId = 0;
+    private int castingSpellLevel = 0;
     private int castDurationRemaining = 0;
     private int castDuration = 0;
 
-    //CASTING
+    public void resetCastingState() {
+        isCasting = false;
+        castingSpellId = 0;
+        castingSpellLevel = 0;
+        castDurationRemaining = 0;
+        castDuration = 0;
+    }
+
     public boolean isCasting() {
         return isCasting;
     }
 
     public void setCasting(boolean casting) {
         isCasting = casting;
+    }
+
+    public void setCastingSpellId(int spellId) {
+        castingSpellId = spellId;
+    }
+
+    public int getCastingSpellId() {
+        return castingSpellId;
+    }
+
+    public void setCastingLevel(int spellLevel) {
+        castingSpellLevel = spellLevel;
+    }
+
+    public int getCastingSpellLevel() {
+        return castingSpellLevel;
     }
 
     public int getCastDurationRemaining() {
@@ -57,27 +93,16 @@ public class PlayerMagicData {
         }
     }
 
+    /********* COOLDOWNS *******************************************************/
 
-    //MANA
-    public int getMana() {
-        return mana;
-    }
+    private final PlayerCooldowns playerCooldowns = new PlayerCooldowns();
 
-    public void setMana(int mana) {
-        this.mana = mana;
-    }
-
-    public void addMana(int mana) {
-        this.mana += mana;
-    }
-
-
-    //COOLDOWNS
     public PlayerCooldowns getPlayerCooldowns() {
         return this.playerCooldowns;
     }
 
-    //SYSTEM
+    /********* SYSTEM *******************************************************/
+
     public void saveNBTData(CompoundTag compound) {
         TestMod.LOGGER.info("PlayerMagicData: saving nbt");
         compound.putInt(MANA, mana);

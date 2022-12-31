@@ -67,7 +67,7 @@ public class Scroll extends Item {
 
         ItemStack stack = player.getItemInHand(hand);
         var scrollData = getScrollData(stack);
-        scrollData.getSpell().onCast(stack, level, player);
+        scrollData.getSpell().onCast(level, player);
 
         removeScrollAfterCast(player, stack);
 

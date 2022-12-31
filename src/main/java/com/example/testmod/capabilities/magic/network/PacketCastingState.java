@@ -10,20 +10,24 @@ import java.util.function.Supplier;
 
 public class PacketCastingState {
 
+    private final int spellId;
     private final int castTime;
     private final boolean castFinished;
 
-    public PacketCastingState(int castTime, boolean castFinished) {
+    public PacketCastingState(int spellId, int castTime, boolean castFinished) {
+        this.spellId = spellId;
         this.castTime = castTime;
         this.castFinished = castFinished;
     }
 
     public PacketCastingState(FriendlyByteBuf buf) {
+        this.spellId = buf.readInt();
         this.castTime = buf.readInt();
         this.castFinished = buf.readBoolean();
     }
 
     public void toBytes(FriendlyByteBuf buf) {
+        buf.writeInt(this.spellId);
         buf.writeInt(this.castTime);
         buf.writeBoolean(this.castFinished);
     }
@@ -33,10 +37,14 @@ public class PacketCastingState {
         ctx.enqueueWork(() -> {
             TestMod.LOGGER.info("PacketCastingState: castTime:" + castTime + ", castFinished:" + castFinished);
 
-            if (this.castTime > 0) {
+            if (this.castFinished) {
+                ClientMagicData.castDurationRemaining = 0;
+                ClientMagicData.castDuration = 0;
+                ClientMagicData.isCasting = false;
+            } else {
                 ClientMagicData.castDurationRemaining = castTime;
                 ClientMagicData.castDuration = castTime;
-                ClientMagicData.isCasting = !castFinished;
+                ClientMagicData.isCasting = true;
             }
         });
         return true;

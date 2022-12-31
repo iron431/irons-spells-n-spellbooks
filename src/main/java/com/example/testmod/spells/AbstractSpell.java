@@ -2,7 +2,10 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
+import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCastSpell;
+import com.example.testmod.capabilities.magic.network.PacketCastingState;
+import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
@@ -10,6 +13,7 @@ import com.example.testmod.spells.fire.TeleportSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -109,26 +113,33 @@ public abstract class AbstractSpell {
                 player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else if (playerMagicData.getPlayerCooldowns().isOnCooldown(spellType)) {
                 player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-            } else if (/* player is casting */ false) {
-
-            } else if (/* spell has cast time */ false) {
-
+            } else if (playerMagicData.isCasting()) {
+                player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is already casting").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            } else if (castTime > 0) {
+                playerMagicData.setCasting(true);
+                playerMagicData.setCastDuration(castTime);
+                playerMagicData.setCastDurationRemaining(castTime);
+                Messages.sendToPlayer(new PacketCastingState(getID(), castTime, false), serverPlayer);
             } else {
-                int newMana = playerMana - getManaCost();
-                double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
-                int effectiveCooldown = getEffectiveSpellCooldown(playerCooldownModifier);
-                magicManager.setPlayerCurrentMana(serverPlayer, newMana);
-                TestMod.LOGGER.info("setting cooldown: spell cooldown:" + cooldown + " effective spell cooldown:" + effectiveCooldown);
-                playerMagicData.getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
-                onCast(stack, world, player);
-                Messages.sendToPlayer(new PacketCastSpell(getID(), effectiveCooldown, newMana), serverPlayer);
-                return true;
+                return finishCasting(world, serverPlayer, magicManager, playerMagicData);
             }
         }
         return false;
     }
 
-    public abstract void onCast(ItemStack stack, Level world, Player player);
+    public boolean finishCasting(Level world,ServerPlayer serverPlayer, MagicManager magicManager, PlayerMagicData playerMagicData) {
+        int newMana = playerMagicData.getMana() - getManaCost();
+        double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
+        int effectiveCooldown = getEffectiveSpellCooldown(playerCooldownModifier);
+        magicManager.setPlayerCurrentMana(serverPlayer, newMana);
+        TestMod.LOGGER.info("setting cooldown: spell cooldown:" + cooldown + " effective spell cooldown:" + effectiveCooldown);
+        playerMagicData.getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
+        onCast(world, serverPlayer);
+        Messages.sendToPlayer(new PacketCastSpell(getID(), effectiveCooldown, newMana), serverPlayer);
+        return true;
+    }
+
+    public abstract void onCast(Level world, Player player);
 
     @Override
     public boolean equals(Object obj) {
