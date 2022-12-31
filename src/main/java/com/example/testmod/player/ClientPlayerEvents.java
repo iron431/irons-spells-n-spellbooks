@@ -1,9 +1,12 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.capabilities.magic.data.PlayerMagicProvider;
 import com.example.testmod.capabilities.magic.network.PacketCancelCast;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -13,18 +16,26 @@ import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 public class ClientPlayerEvents {
 
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
+        //THIS EVENT IS SERVER SIDE ONLY
+        if (event.getEntityLiving() == null) {
+            return;
+        }
 
-        if (ClientMagicData.isCasting) {
+//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntityLiving().getName().getString());
+//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntity().getName().getString());
+//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getResult().name());
+//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getSlot().getName());
+//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getFrom().getItem().getDescription().getString());
+//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getTo().getItem().getDescription().getString());
 
-            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntityLiving().getName().getString());
-            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntity().getName().getString());
-            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getResult().name());
-            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getSlot().getName());
-            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getFrom().getItem().getDescription().getString());
-            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getTo().getItem().getDescription().getString());
+        var cap = event.getEntityLiving().getCapability(PlayerMagicProvider.PLAYER_MAGIC);
+        if (cap.isPresent()) {
+            var playerMagicData = cap.resolve().get();
 
-            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: Cancel Cast");
-            Messages.sendToServer(new PacketCancelCast());
+            if (playerMagicData.isCasting()) {
+                TestMod.LOGGER.info("onLivingEquipmentChangeEvent: Cancel Cast");
+                Messages.sendToServer(new PacketCancelCast());
+            }
         }
     }
 
