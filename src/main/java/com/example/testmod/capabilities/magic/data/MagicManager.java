@@ -1,5 +1,6 @@
 package com.example.testmod.capabilities.magic.data;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
 import com.example.testmod.setup.Messages;
@@ -77,10 +78,11 @@ public class MagicManager extends SavedData {
                 if (playerMagicData.isCasting()) {
                     playerMagicData.handleCastDuration();
                     if (!playerMagicData.isCasting()) {
+                        TestMod.LOGGER.info("MagicManager.tick: handle spell casting complete");
                         Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, true), serverPlayer);
-                        playerMagicData.resetCastingState();
                         var spell = AbstractSpell.getSpell(playerMagicData.getCastingSpellId(), playerMagicData.getCastingSpellLevel());
                         spell.finishCasting(serverPlayer.level, serverPlayer, this, playerMagicData);
+                        playerMagicData.resetCastingState();
                     }
                 }
 

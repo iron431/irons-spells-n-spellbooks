@@ -1,34 +1,50 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.network.PacketCancelCast;
 import com.example.testmod.item.SpellBook;
-import net.minecraftforge.api.distmarker.Dist;
+import com.example.testmod.setup.Messages;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 
 
 public class ClientPlayerEvents {
 
-    public static void onLivingEntityUseItemEventStart(LivingEntityUseItemEvent.Start event){
+    public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
+
+        if (ClientMagicData.isCasting) {
+
+            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntityLiving().getName().getString());
+            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntity().getName().getString());
+            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getResult().name());
+            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getSlot().getName());
+            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getFrom().getItem().getDescription().getString());
+            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getTo().getItem().getDescription().getString());
+
+            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: Cancel Cast");
+            Messages.sendToServer(new PacketCancelCast());
+        }
+    }
+
+    public static void onLivingEntityUseItemEventStart(LivingEntityUseItemEvent.Start event) {
         TestMod.LOGGER.info("onLivingEntityUseItemEventStart.1");
-        if(event.getItem().getItem() instanceof SpellBook) {
+        if (event.getItem().getItem() instanceof SpellBook) {
             TestMod.LOGGER.info("onLivingEntityUseItemEventStart");
         }
     }
 
-    public static void onLivingEntityUseItemEventFinish(LivingEntityUseItemEvent.Finish event){
+    public static void onLivingEntityUseItemEventFinish(LivingEntityUseItemEvent.Finish event) {
         TestMod.LOGGER.info("onLivingEntityUseItemEventFinish.1");
-        if(event.getItem().getItem() instanceof SpellBook) {
+        if (event.getItem().getItem() instanceof SpellBook) {
             TestMod.LOGGER.info("onLivingEntityUseItemEventFinish");
         }
     }
 
-    public static void onLivingEntityUseItemEventTick(LivingEntityUseItemEvent.Tick event){
+    public static void onLivingEntityUseItemEventTick(LivingEntityUseItemEvent.Tick event) {
         TestMod.LOGGER.info("onLivingEntityUseItemEventTick.1");
-        if(event.getItem().getItem() instanceof SpellBook) {
+        if (event.getItem().getItem() instanceof SpellBook) {
             TestMod.LOGGER.info("onLivingEntityUseItemEventTick");
         }
     }

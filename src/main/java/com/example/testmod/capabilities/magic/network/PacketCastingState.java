@@ -2,7 +2,6 @@ package com.example.testmod.capabilities.magic.network;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -35,7 +34,7 @@ public class PacketCastingState {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            TestMod.LOGGER.info("PacketCastingState: castTime:" + castTime + ", castFinished:" + castFinished);
+            TestMod.LOGGER.info("PacketCastingState: spellId: " + spellId + ", castTime: " + castTime + ", castFinished:" + castFinished);
 
             if (this.castFinished) {
                 ClientMagicData.castDurationRemaining = 0;

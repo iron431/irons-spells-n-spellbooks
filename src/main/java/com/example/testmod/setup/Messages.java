@@ -1,6 +1,7 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.network.PacketCancelCast;
 import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
@@ -50,6 +51,12 @@ public class Messages {
                 .decoder(PacketUseScroll::new)
                 .encoder(PacketUseScroll::toBytes)
                 .consumer(PacketUseScroll::handle)
+                .add();
+
+        net.messageBuilder(PacketCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(PacketCancelCast::new)
+                .encoder(PacketCancelCast::toBytes)
+                .consumer(PacketCancelCast::handle)
                 .add();
 
         net.messageBuilder(PacketSyncMagicDataToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)

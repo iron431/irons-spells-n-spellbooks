@@ -3,6 +3,7 @@ package com.example.testmod.capabilities.magic.data;
 import com.example.testmod.TestMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerPlayer;
 
 public class PlayerMagicData {
     public static final String MANA = "mana";
@@ -56,7 +57,7 @@ public class PlayerMagicData {
         return castingSpellId;
     }
 
-    public void setCastingLevel(int spellLevel) {
+    public void setCastingSpellLevel(int spellLevel) {
         castingSpellLevel = spellLevel;
     }
 
@@ -102,6 +103,14 @@ public class PlayerMagicData {
     }
 
     /********* SYSTEM *******************************************************/
+
+    public static PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
+        var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
+        if (capContainer.isPresent()) {
+            return capContainer.resolve().orElse(new PlayerMagicData());
+        }
+        return new PlayerMagicData();
+    }
 
     public void saveNBTData(CompoundTag compound) {
         TestMod.LOGGER.info("PlayerMagicData: saving nbt");

@@ -5,7 +5,6 @@ import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
-import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
@@ -117,6 +116,8 @@ public abstract class AbstractSpell {
                 player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is already casting").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else if (castTime > 0) {
                 playerMagicData.setCasting(true);
+                playerMagicData.setCastingSpellId(getID());
+                playerMagicData.setCastingSpellLevel(level);
                 playerMagicData.setCastDuration(castTime);
                 playerMagicData.setCastDurationRemaining(castTime);
                 Messages.sendToPlayer(new PacketCastingState(getID(), castTime, false), serverPlayer);

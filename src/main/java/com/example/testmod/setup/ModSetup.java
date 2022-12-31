@@ -16,6 +16,7 @@ public class ModSetup {
 
         //PLAYER
         bus.addListener(ClientPlayerEvents::onPlayerTick);
+        bus.addListener(ClientPlayerEvents::onLivingEquipmentChangeEvent);
         //bus.addListener(ClientPlayerEvents::onPlayerRenderPre);
 //        bus.addListener(ClientPlayerEvents::onLivingEntityUseItemEventStart);
 //        bus.addListener(ClientPlayerEvents::onLivingEntityUseItemEventTick);
