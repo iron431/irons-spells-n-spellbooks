@@ -229,11 +229,75 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private void renderLorePage(PoseStack poseStack) {
+        int x = leftPos + LORE_PAGE_X;
+        int y = topPos;
+        int margin = 5;
+        int textColor = ChatFormatting.WHITE.getColor();
+        int noColor = 0xFFFFFF;
+        //
+        // Title
+        //
         TranslatableComponent title = selectedSpellIndex < 0 ? new TranslatableComponent("ui.testmod.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).containedSpell.getSpellType().getDisplayName() : new TranslatableComponent("ui.testmod.empty_slot");
-        drawTextWithShadow(this.font, poseStack, title.withStyle(ChatFormatting.UNDERLINE), leftPos + LORE_PAGE_X + (LORE_PAGE_WIDTH - font.width(title.getString())) / 2, topPos + 10, 0xFFFFFF);
+        drawTextWithShadow(this.font, poseStack, title.withStyle(ChatFormatting.UNDERLINE), x + (LORE_PAGE_WIDTH - font.width(title.getString())) / 2, topPos + 10, textColor,1f);
+
+        if(selectedSpellIndex<0 || !spellSlots.get(selectedSpellIndex).hasSpell())
+            return;
+        var spell = spellSlots.get(selectedSpellIndex).containedSpell;
+        float textScale = .5f;
+        float reverseScale = 1/textScale;
+        poseStack.scale(textScale,textScale,textScale);
+        //
+        // Description
+        //
+
+        //???
+
+        int descLine = font.lineHeight*3;
+        //
+        // Level
+        //
+        var levelText = new TranslatableComponent("ui.testmod.level").withStyle(ChatFormatting.WHITE);
+        levelText.append(new TextComponent(spell.getLevel()+"").withStyle(ChatFormatting.DARK_GREEN));
+        drawTextWithShadow(font, poseStack,levelText,x+margin,y+descLine,noColor, reverseScale);
+        descLine+=font.lineHeight;
+
+        //
+        // Mana
+        //
+        var manaText = new TranslatableComponent("ui.testmod.mana_cost").withStyle(ChatFormatting.WHITE);
+        manaText.append(new TextComponent(spell.getManaCost()+"").withStyle(ChatFormatting.AQUA));
+        drawTextWithShadow(font, poseStack,manaText,x+margin,y+descLine,noColor, reverseScale);
+        descLine+=font.lineHeight;
+
+        //
+        // Cast Time
+        //
+        //TODO: replace with enum/real value
+        var castTime = 0;
+        var castTimeText = new TranslatableComponent("ui.testmod.cast_type").withStyle(ChatFormatting.WHITE);
+        castTimeText.append(new TextComponent("Instant").withStyle(ChatFormatting.GOLD));
+        drawTextWithShadow(font, poseStack,castTimeText,x+margin,y+descLine,noColor, reverseScale);
+        descLine+=font.lineHeight;
+
+        //
+        // Cooldown
+        //
+        var cooldownText = new TranslatableComponent("ui.testmod.cooldown").withStyle(ChatFormatting.WHITE);
+        cooldownText.append(new TextComponent(spell.getSpellCooldown()/20+"s").withStyle(ChatFormatting.DARK_GREEN));
+        drawTextWithShadow(font, poseStack,cooldownText,x+margin,y+descLine,noColor, reverseScale);
+        descLine+=font.lineHeight;
+
+        //TODO: add dynamic information like damage, school, etc
+        //TODO: turn each of these things into a method
+
+
+
+        poseStack.scale(reverseScale,reverseScale,reverseScale);
     }
 
-    private void drawTextWithShadow(Font font, PoseStack poseStack, Component text, int x, int y, int color) {
+    private void drawTextWithShadow(Font font, PoseStack poseStack, Component text, int x, int y, int color,float scale) {
+        x*=scale;
+        y*=scale;
         font.draw(poseStack, text, x, y, color);
         font.drawShadow(poseStack, text, x, y, color);
     }

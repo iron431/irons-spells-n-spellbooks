@@ -13,6 +13,11 @@
 
   "ui.testmod.no_selection": "Select a Spell",
   "ui.testmod.empty_slot": "Empty Slot",
+  "ui.testmod.level": "Level: %d",
+  "ui.testmod.mana_cost": "Mana Cost: %d",
+  "ui.testmod.cast_type": "Cast Type: %s",
+  "ui.testmod.cast_time": "Cast Time: %s",
+  "ui.testmod.cooldown": "Cooldown Length: %s",
 
   "attribute.testmod.max_mana":"Max Mana",
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
