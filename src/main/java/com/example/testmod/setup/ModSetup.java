@@ -17,7 +17,9 @@ public class ModSetup {
         //PLAYER
         bus.addListener(ClientPlayerEvents::onPlayerTick);
         //bus.addListener(ClientPlayerEvents::onPlayerRenderPre);
-        //bus.addListener(ClientPlayerEvents::onPlayerRenderPost);
+//        bus.addListener(ClientPlayerEvents::onLivingEntityUseItemEventStart);
+//        bus.addListener(ClientPlayerEvents::onLivingEntityUseItemEventTick);
+//        bus.addListener(ClientPlayerEvents::onLivingEntityUseItemEventFinish);
 
         //MANA
         bus.addGenericListener(Entity.class, MagicEvents::onAttachCapabilitiesPlayer);

@@ -1,16 +1,38 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.spells.SpellType;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.Mth;
+import com.example.testmod.item.SpellBook;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+
 
 public class ClientPlayerEvents {
+
+    public static void onLivingEntityUseItemEventStart(LivingEntityUseItemEvent.Start event){
+        TestMod.LOGGER.info("onLivingEntityUseItemEventStart.1");
+        if(event.getItem().getItem() instanceof SpellBook) {
+            TestMod.LOGGER.info("onLivingEntityUseItemEventStart");
+        }
+    }
+
+    public static void onLivingEntityUseItemEventFinish(LivingEntityUseItemEvent.Finish event){
+        TestMod.LOGGER.info("onLivingEntityUseItemEventFinish.1");
+        if(event.getItem().getItem() instanceof SpellBook) {
+            TestMod.LOGGER.info("onLivingEntityUseItemEventFinish");
+        }
+    }
+
+    public static void onLivingEntityUseItemEventTick(LivingEntityUseItemEvent.Tick event){
+        TestMod.LOGGER.info("onLivingEntityUseItemEventTick.1");
+        if(event.getItem().getItem() instanceof SpellBook) {
+            TestMod.LOGGER.info("onLivingEntityUseItemEventTick");
+        }
+    }
+
 
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.side.isClient() && event.phase == TickEvent.Phase.END) {
@@ -27,34 +49,51 @@ public class ClientPlayerEvents {
 
     //This one is 1.18 specific..
     //https://forums.minecraftforge.net/topic/111556-version-1182-solved-change-rendered-mobs-model-under-certain-conditions/
+
     public static void onPlayerRenderPost(RenderPlayerEvent.Pre event) {
         //TestMod.LOGGER.info("RenderPlayerEvent.Post");
-        if (ClientMagicData.getCooldowns().isOnCooldown(SpellType.FIREBALL_SPELL)) {
 
-            var player = event.getPlayer();
-            var render = event.getRenderer();
-            var model = render.getModel();
-            event.getPoseStack().clear();
-            var skinLocation = ((AbstractClientPlayer) player).getSkinTextureLocation();
+//        if(ClientMagicData.isCasting){
+//            TestMod.LOGGER.info("onPlayerRenderPost: isUsingItem:" + event.getPlayer().isUsingItem());
+//                event.getPlayer().startUsingItem(InteractionHand.MAIN_HAND);
+//        }
 
-            //event.getPoseStack().scale(8,2,8);
+//        if (ClientMagicData.getCooldowns().isOnCooldown(SpellType.FIREBALL_SPELL)) {
+//
+//            var player = event.getPlayer();
+//            var render = event.getRenderer();
+//            var model = render.getModel();
+//            event.getPoseStack().clear();
+//            var skinLocation = ((AbstractClientPlayer) player).getSkinTextureLocation();
+//
+//            //event.getPoseStack().scale(8,2,8);
+//
+//            model.leftArm.z = 0.0F;
+//            model.leftArm.x = 5.0F;
+//            model.leftArm.xRot = Mth.cos(model.leftArm.xRot * 0.6662F) * 0.25F;
+//            model.leftArm.zRot = -2.3561945F;
+//            model.leftArm.yRot = 0.0F;
+//
+//            model.rightArm.x = -5.0F;
+//            model.rightArm.xRot = Mth.cos(model.rightArm.xRot * 0.6662F) * 0.25F;
+//            model.rightArm.zRot = 2.3561945F;
+//            model.rightArm.yRot = 0.0F;
+//
+//
+//            model.leftArm.render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(model.renderType(skinLocation)), event.getPackedLight(), OverlayTexture.NO_OVERLAY);
+//            model.rightArm.render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(model.renderType(skinLocation)), event.getPackedLight(), OverlayTexture.NO_OVERLAY);
+//
+//        }
+    }
 
-            model.leftArm.z = 0.0F;
-            model.leftArm.x = 5.0F;
-            model.leftArm.xRot = Mth.cos(model.leftArm.xRot * 0.6662F) * 0.25F;
-            model.leftArm.zRot = -2.3561945F;
-            model.leftArm.yRot = 0.0F;
-
-            model.rightArm.x = -5.0F;
-            model.rightArm.xRot = Mth.cos(model.rightArm.xRot * 0.6662F) * 0.25F;
-            model.rightArm.zRot = 2.3561945F;
-            model.rightArm.yRot = 0.0F;
-
-
-            model.leftArm.render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(model.renderType(skinLocation)), event.getPackedLight(), OverlayTexture.NO_OVERLAY);
-            model.rightArm.render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(model.renderType(skinLocation)), event.getPackedLight(), OverlayTexture.NO_OVERLAY);
-
+    public static void onLivingEntityUseItemEvent(LivingEntityUseItemEvent event) {
+        TestMod.LOGGER.info("onLivingEntityUseItemEvent");
+        if (event.getItem().getItem() instanceof SpellBook) {
+            if (ClientMagicData.isCasting || ClientMagicData.getCooldowns().hasCooldownsActive()) {
+                event.setCanceled(true);
+            }
         }
+
 
     }
 

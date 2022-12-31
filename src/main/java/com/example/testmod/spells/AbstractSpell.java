@@ -109,6 +109,10 @@ public abstract class AbstractSpell {
                 player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             } else if (playerMagicData.getPlayerCooldowns().isOnCooldown(spellType)) {
                 player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            } else if (/* player is casting */ false) {
+
+            } else if (/* spell has cast time */ false) {
+
             } else {
                 int newMana = playerMana - getManaCost();
                 double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
