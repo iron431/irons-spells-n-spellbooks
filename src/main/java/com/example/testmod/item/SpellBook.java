@@ -4,14 +4,10 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.spellbook.data.SpellBookData;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.player.ClientPlayerEvents;
 import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -40,8 +36,6 @@ public class SpellBook extends Item {
         return UseAnim.BOW;
     }
 
-
-
     public SpellBookData getSpellBookData(ItemStack stack) {
         return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
     }
@@ -53,10 +47,14 @@ public class SpellBook extends Item {
         AbstractSpell spell = spellBookData.getActiveSpell();
 
         if (level.isClientSide()) {
-            //player.setForcedPose(Pose.SWIMMING);
-//            player.startUsingItem(hand);
-//            if(true);
-//            return InteractionResultHolder.consume(itemStack);
+
+            if (ClientMagicData.isCasting) {
+                player.startUsingItem(hand);
+                TestMod.LOGGER.info("CLIENT: WimpySpellBook.use: consume");
+                return InteractionResultHolder.consume(itemStack);
+            } else {
+
+            }
 
             TestMod.LOGGER.info("CLIENT: WimpySpellBook.use:");
             if (spell != null

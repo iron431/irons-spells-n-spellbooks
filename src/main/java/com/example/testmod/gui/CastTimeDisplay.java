@@ -28,11 +28,10 @@ public class CastTimeDisplay extends GuiComponent {
     @SubscribeEvent
     public static void onPostRender(RenderGameOverlayEvent.Text e) {
 
-        //
-        // Temporary showcase of animation
-        //
+        if (!ClientMagicData.isCasting)
+            return;
+
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
-        ClientMagicData.progressAnimation();
 
         if (castCompletionPercent <= 0 || castCompletionPercent >= 1)
             return;
@@ -56,9 +55,8 @@ public class CastTimeDisplay extends GuiComponent {
 
         int textX, textY;
         var textColor = ChatFormatting.WHITE;
-        var tempTotalSeconds = 5;
         var font = GUI.getFont();
-        String castTimeString = truncate((1 - castCompletionPercent) * tempTotalSeconds, 1) + "s";
+        String castTimeString = truncate((1 - castCompletionPercent) * ClientMagicData.castDuration, 1) + "s";
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;
         textY = barY + IMAGE_HEIGHT / 2 - font.lineHeight / 2 + 1;
 
@@ -73,14 +71,4 @@ public class CastTimeDisplay extends GuiComponent {
             return "" + f;
         return ("" + f).substring(0, 2 + places);
     }
-
-    @SubscribeEvent
-    public static void onKeyPress(InputEvent.KeyInputEvent e) {
-        if (e.getKey() == (int) 'G' && e.getAction() == 1) {
-            ClientMagicData.tempStartAnimation();
-
-        }
-    }
-
-
 }

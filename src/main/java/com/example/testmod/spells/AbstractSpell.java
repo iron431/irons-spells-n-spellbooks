@@ -10,7 +10,6 @@ import com.example.testmod.spells.fire.TeleportSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -23,6 +22,7 @@ public abstract class AbstractSpell {
     protected int baseManaCost;
     protected int manaCostPerLevel;
     protected int baseSpellPower;
+    protected int castTime;
     protected int spellPowerPerLevel;
     protected int cooldown;
 
@@ -52,6 +52,10 @@ public abstract class AbstractSpell {
 
     public int getSpellCooldown() {
         return this.cooldown;
+    }
+
+    public int getCastTime() {
+        return this.castTime;
     }
 
     private int getEffectiveSpellCooldown(double playerCooldownModifier) {
@@ -113,7 +117,7 @@ public abstract class AbstractSpell {
                 TestMod.LOGGER.info("setting cooldown: spell cooldown:" + cooldown + " effective spell cooldown:" + effectiveCooldown);
                 playerMagicData.getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
                 onCast(stack, world, player);
-                Messages.sendToPlayer(new PacketCastSpell(getID(), effectiveCooldown, newMana), serverPlayer);
+                Messages.sendToPlayer(new PacketCastSpell(getID(), effectiveCooldown, newMana, castTime), serverPlayer);
                 return true;
             }
         }

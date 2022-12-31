@@ -36,31 +36,12 @@ public class ClientMagicData {
         FIRE
     }
 
-    //
-    // Temporary BS to animate cast time bar
-    //
+    public static boolean isCasting = false;
+    public static int castDurationRemaining = 0;
+    public static int castDuration = 0;
 
-    private static boolean tempAnimate;
-    private static float castCompletionPercent;
-    public static float getCastCompletionPercent(){
-        return castCompletionPercent;
+    public static float getCastCompletionPercent() {
+        return 1 - (castDurationRemaining / (float) castDuration);
     }
 
-    public static void setCastCompletionPercent(float percent){
-        castCompletionPercent = percent;
-    }
-    public static void tempStartAnimation(){
-        castCompletionPercent=0f;
-        tempAnimate=true;
-    }
-    public static void progressAnimation(){
-        //this will reach 100% in 5 seconds
-        if(!tempAnimate)
-            return;
-        castCompletionPercent += Minecraft.getInstance().getDeltaFrameTime()/20/5;
-        if(castCompletionPercent>=1f){
-            castCompletionPercent=1f;
-            tempAnimate = false;
-        }
-    }
 }

@@ -15,6 +15,8 @@ public class ClientPlayerEvents {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.side.isClient() && event.phase == TickEvent.Phase.END) {
             ClientMagicData.getCooldowns().tick(1);
+            if (ClientMagicData.castDurationRemaining > 0)
+                ClientMagicData.castDurationRemaining--;
         }
     }
 
@@ -23,14 +25,19 @@ public class ClientPlayerEvents {
     //https://www.programcreek.com/java-api-examples/?code=TeamWizardry%2FWizardry%2FWizardry-master%2Fsrc%2Fmain%2Fjava%2Fcom%2Fteamwizardry%2Fwizardry%2Fclient%2Fcosmetics%2FCapeHandler.java
     //https://forums.minecraftforge.net/topic/87214-1152-rotate-player-arms-and-editremove-animation-when-holding-an-item/
 
-    public static void onPlayerRenderPost(RenderPlayerEvent.Post event) {
+    //This one is 1.18 specific..
+    //https://forums.minecraftforge.net/topic/111556-version-1182-solved-change-rendered-mobs-model-under-certain-conditions/
+    public static void onPlayerRenderPost(RenderPlayerEvent.Pre event) {
         //TestMod.LOGGER.info("RenderPlayerEvent.Post");
         if (ClientMagicData.getCooldowns().isOnCooldown(SpellType.FIREBALL_SPELL)) {
+
             var player = event.getPlayer();
             var render = event.getRenderer();
             var model = render.getModel();
-
+            event.getPoseStack().clear();
             var skinLocation = ((AbstractClientPlayer) player).getSkinTextureLocation();
+
+            //event.getPoseStack().scale(8,2,8);
 
             model.leftArm.z = 0.0F;
             model.leftArm.x = 5.0F;
@@ -42,6 +49,7 @@ public class ClientPlayerEvents {
             model.rightArm.xRot = Mth.cos(model.rightArm.xRot * 0.6662F) * 0.25F;
             model.rightArm.zRot = 2.3561945F;
             model.rightArm.yRot = 0.0F;
+
 
             model.leftArm.render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(model.renderType(skinLocation)), event.getPackedLight(), OverlayTexture.NO_OVERLAY);
             model.rightArm.render(event.getPoseStack(), event.getMultiBufferSource().getBuffer(model.renderType(skinLocation)), event.getPackedLight(), OverlayTexture.NO_OVERLAY);

@@ -1,9 +1,7 @@
 package com.example.testmod.spells.fire;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.entity.projectile.LargeFireball;
@@ -23,6 +21,7 @@ public class FireballSpell extends AbstractSpell {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
+        this.castTime = 150;
         this.cooldown = 20;
 
         //TODO: remove this after testing
