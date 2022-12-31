@@ -6,6 +6,7 @@ import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.evocation.MagicMissileSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
 import com.example.testmod.spells.fire.TeleportSpell;
@@ -80,8 +81,8 @@ public abstract class AbstractSpell {
             case TELEPORT -> {
                 return new TeleportSpell(level);
             }
-            case NONE -> {
-                return new NoneSpell(0);
+            case MAGIC_MISSILE -> {
+                return new MagicMissileSpell(level);
             }
             default -> {
                 return new NoneSpell(0);
@@ -128,7 +129,7 @@ public abstract class AbstractSpell {
         return false;
     }
 
-    public boolean finishCasting(Level world,ServerPlayer serverPlayer, MagicManager magicManager, PlayerMagicData playerMagicData) {
+    public boolean finishCasting(Level world, ServerPlayer serverPlayer, MagicManager magicManager, PlayerMagicData playerMagicData) {
         int newMana = playerMagicData.getMana() - getManaCost();
         double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
         int effectiveCooldown = getEffectiveSpellCooldown(playerCooldownModifier);

@@ -7,6 +7,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,6 +23,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.util.stream.Collectors;
@@ -40,7 +42,6 @@ public class TestMod {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(ModSetup::init);
-
 
 
         ItemRegistry.register(modEventBus);
@@ -65,7 +66,8 @@ public class TestMod {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
-    private void clientSetup(final FMLClientSetupEvent e){
+
+    private void clientSetup(final FMLClientSetupEvent e) {
 
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
 
@@ -111,5 +113,9 @@ public class TestMod {
             // Register a new block here
             LOGGER.info("HELLO from Register Block");
         }
+    }
+
+    public static ResourceLocation id(@NotNull String path) {
+        return new ResourceLocation(TestMod.MODID, path);
     }
 }
