@@ -8,13 +8,14 @@
   "tooltip.testmod.level": "Level %d",
   "tooltip.testmod.scroll_tooltip": "When in Spell Book:",
   "tooltip.testmod.mana_cost": " %d Mana Cost",
-  "tooltip.testmod.cooldown_length_seconds": " %ds Cooldown",
+  "tooltip.testmod.cooldown_length_seconds": " %d Cooldown",
   "tooltip.testmod.cast_type": " %s Cast",
 
+  "ui.testmod.no_spellbook": "No SpellBook",
   "ui.testmod.no_selection": "Select a Spell",
   "ui.testmod.empty_slot": "Empty Slot",
   "ui.testmod.level": "Level: %d",
-  "ui.testmod.mana_cost": "Mana: %d",
+  "ui.testmod.mana_cost": "Mana:  %d",
   "ui.testmod.cast_time": "Cast: %s",
   "ui.testmod.cooldown": "Cooldown: %s",
 

@@ -2,6 +2,7 @@ package com.example.testmod.capabilities.scroll.data;
 
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +56,7 @@ public class ScrollData {
             hoverText.add(TextComponent.EMPTY);
             hoverText.add(new TranslatableComponent("tooltip.testmod.scroll_tooltip").withStyle(ChatFormatting.GRAY));
             hoverText.add(new TranslatableComponent("tooltip.testmod.mana_cost",spell.getManaCost()).withStyle(ChatFormatting.BLUE));
-            hoverText.add(new TranslatableComponent("tooltip.testmod.cooldown_length_seconds",spell.getSpellCooldown()/20).withStyle(ChatFormatting.BLUE));
+            hoverText.add(new TranslatableComponent("tooltip.testmod.cooldown_length_seconds", Utils.TimeFromTicks(getSpell().getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
             //hoverText.add(new TranslatableComponent("ui.testmod.cast_type","Instant").withStyle(ChatFormatting.DARK_GREEN));
         }
         return hoverText;
