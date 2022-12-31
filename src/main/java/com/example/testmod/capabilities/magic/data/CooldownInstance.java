@@ -5,12 +5,15 @@ import com.example.testmod.TestMod;
 public class CooldownInstance {
     private int cooldownRemaining;
     private final int spellCooldown;
-    private final boolean isCasting;
 
-    public CooldownInstance(int spellCooldown, boolean isCasting) {
+    public CooldownInstance(int spellCooldown) {
         this.cooldownRemaining = spellCooldown;
         this.spellCooldown = spellCooldown;
-        this.isCasting = isCasting;
+    }
+
+    public CooldownInstance(int spellCooldown, int cooldownRemaining) {
+        this.cooldownRemaining = spellCooldown;
+        this.spellCooldown = cooldownRemaining;
     }
 
     public void decrement() {
@@ -27,10 +30,6 @@ public class CooldownInstance {
 
     public int getSpellCooldown() {
         return spellCooldown;
-    }
-
-    public boolean getIsCasting() {
-        return isCasting;
     }
 
     public float getCooldownPercent() {

@@ -2,6 +2,7 @@ package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.network.PacketCastSpell;
+import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
 import com.example.testmod.capabilities.scroll.network.PacketUseScroll;
 import com.example.testmod.gui.network.PacketInscribeSpell;
@@ -37,6 +38,12 @@ public class Messages {
                 .decoder(PacketCastSpell::new)
                 .encoder(PacketCastSpell::toBytes)
                 .consumer(PacketCastSpell::handle)
+                .add();
+
+        net.messageBuilder(PacketCastingState.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PacketCastingState::new)
+                .encoder(PacketCastingState::toBytes)
+                .consumer(PacketCastingState::handle)
                 .add();
 
         net.messageBuilder(PacketUseScroll.class, id(), NetworkDirection.PLAY_TO_SERVER)

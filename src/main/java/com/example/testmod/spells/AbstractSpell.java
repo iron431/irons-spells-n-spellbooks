@@ -121,7 +121,7 @@ public abstract class AbstractSpell {
                 TestMod.LOGGER.info("setting cooldown: spell cooldown:" + cooldown + " effective spell cooldown:" + effectiveCooldown);
                 playerMagicData.getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
                 onCast(stack, world, player);
-                Messages.sendToPlayer(new PacketCastSpell(getID(), effectiveCooldown, newMana, castTime), serverPlayer);
+                Messages.sendToPlayer(new PacketCastSpell(getID(), effectiveCooldown, newMana), serverPlayer);
                 return true;
             }
         }

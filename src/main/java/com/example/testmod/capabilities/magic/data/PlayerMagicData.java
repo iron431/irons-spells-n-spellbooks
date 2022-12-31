@@ -8,9 +8,57 @@ public class PlayerMagicData {
     public static final String MANA = "mana";
     public static final String COOLDOWNS = "cooldowns";
 
+    //MANA
     private int mana;
+
+    //COOLDOWNS
     private final PlayerCooldowns playerCooldowns = new PlayerCooldowns();
 
+    //CASTING
+    private boolean isCasting = false;
+    private int castDurationRemaining = 0;
+    private int castDuration = 0;
+
+    //CASTING
+    public boolean isCasting() {
+        return isCasting;
+    }
+
+    public void setCasting(boolean casting) {
+        isCasting = casting;
+    }
+
+    public int getCastDurationRemaining() {
+        return castDurationRemaining;
+    }
+
+    public void setCastDurationRemaining(int castDurationRemaining) {
+        this.castDurationRemaining = castDurationRemaining;
+    }
+
+    public int getCastDuration() {
+        return castDuration;
+    }
+
+    public void setCastDuration(int castDuration) {
+        this.castDuration = castDuration;
+    }
+
+    public void decrementCastDuration() {
+        castDurationRemaining--;
+    }
+
+    public void handleCastDuration() {
+        castDurationRemaining--;
+
+        if (castDurationRemaining <= 0) {
+            isCasting = false;
+            castDurationRemaining = 0;
+        }
+    }
+
+
+    //MANA
     public int getMana() {
         return mana;
     }
@@ -23,10 +71,13 @@ public class PlayerMagicData {
         this.mana += mana;
     }
 
-    public PlayerCooldowns getPlayerCooldowns(){
+
+    //COOLDOWNS
+    public PlayerCooldowns getPlayerCooldowns() {
         return this.playerCooldowns;
     }
 
+    //SYSTEM
     public void saveNBTData(CompoundTag compound) {
         TestMod.LOGGER.info("PlayerMagicData: saving nbt");
         compound.putInt(MANA, mana);
@@ -41,11 +92,8 @@ public class PlayerMagicData {
     }
 
     public void loadNBTData(CompoundTag compound) {
-        //TODO: I don't think we need to but there is a chance we need to create a new PlayerCooldowns here.
-
         TestMod.LOGGER.info("PlayerMagicData: loading nbt");
         mana = compound.getInt(MANA);
-
         ListTag listTag = (ListTag) compound.get(COOLDOWNS);
 
         if (listTag != null && !listTag.isEmpty()) {

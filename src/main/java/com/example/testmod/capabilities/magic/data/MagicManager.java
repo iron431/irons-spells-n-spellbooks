@@ -1,5 +1,6 @@
 package com.example.testmod.capabilities.magic.data;
 
+import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
 import com.example.testmod.setup.Messages;
 import net.minecraft.nbt.CompoundTag;
@@ -50,14 +51,6 @@ public class MagicManager extends SavedData {
         playerMagicData.setMana(newManaValue);
     }
 
-    public PlayerMagicData calculateState(ServerPlayer serverPlayer, int actualTicks) {
-        PlayerMagicData playerMagicData = getPlayerMagicData(serverPlayer);
-        regenPlayerMana(serverPlayer, playerMagicData);
-        playerMagicData.getPlayerCooldowns().tick(actualTicks);
-        return playerMagicData;
-    }
-
-
     public void regenPlayerMana(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
         int increment = Math.round(Math.max(playerMaxMana * .01f, 1));
@@ -73,22 +66,27 @@ public class MagicManager extends SavedData {
 
     public void tick(Level level) {
         counter--;
-        if (counter <= 0) {
-            counter = TICKS_PER_CYCLE;
-            // Synchronize the mana to the players in this world
-            // todo expansion: keep the previous data that was sent to the player and only send if changed
-            level.players().forEach(player -> {
-                if (player instanceof ServerPlayer serverPlayer) {
-                    Messages.sendToPlayer(new PacketSyncMagicDataToClient(calculateState(serverPlayer, 1)), serverPlayer);
+
+        level.players().forEach(player -> {
+            if (player instanceof ServerPlayer serverPlayer) {
+                PlayerMagicData playerMagicData = getPlayerMagicData(serverPlayer);
+
+                playerMagicData.getPlayerCooldowns().tick(1);
+
+                if (playerMagicData.isCasting()) {
+                    playerMagicData.handleCastDuration();
+                    if (!playerMagicData.isCasting()) {
+                        Messages.sendToPlayer(new PacketCastingState(0, false), serverPlayer);
+                    }
                 }
-            });
-        } else {
-            level.players().forEach(player -> {
-                if (player instanceof ServerPlayer serverPlayer) {
-                    getPlayerMagicData(serverPlayer).getPlayerCooldowns().tick(1);
+
+                if (counter <= 0) {
+                    counter = TICKS_PER_CYCLE;
+                    regenPlayerMana(serverPlayer, playerMagicData);
+                    Messages.sendToPlayer(new PacketSyncMagicDataToClient(playerMagicData), serverPlayer);
                 }
-            });
-        }
+            }
+        });
     }
 
     public MagicManager() {
