@@ -2,6 +2,7 @@ package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -58,7 +59,7 @@ public class CastTimeDisplay extends GuiComponent {
         var textColor = ChatFormatting.WHITE;
         var tempTotalSeconds = 5;
         var font = GUI.getFont();
-        String castTimeString = truncate((1 - castCompletionPercent) * tempTotalSeconds, 1) + "s";
+        String castTimeString = Utils.TimeFromTicks((1 - castCompletionPercent) * tempTotalSeconds*20, 1);
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;
         textY = barY + IMAGE_HEIGHT / 2 - font.lineHeight / 2 + 1;
 
@@ -68,11 +69,7 @@ public class CastTimeDisplay extends GuiComponent {
 
     }
 
-    private static String truncate(float f, int places) {
-        if (f % 1 == 0)
-            return "" + f;
-        return ("" + f).substring(0, 2 + places);
-    }
+
 
     @SubscribeEvent
     public static void onKeyPress(InputEvent.KeyInputEvent e) {
