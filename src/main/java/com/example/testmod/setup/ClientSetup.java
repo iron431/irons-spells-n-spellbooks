@@ -1,7 +1,9 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.entity.renderer.SlashProjectileRenderer;
 import com.example.testmod.registries.EntityRegistry;
+import net.minecraft.client.renderer.entity.DragonFireballRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
@@ -17,6 +19,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientSetup {
     @SubscribeEvent
     public static void doSetup(FMLClientSetupEvent event) {
-        EntityRenderers.register(EntityRegistry.SLASH_PROJECTILE.get(),NoopRenderer::new);
+        EntityRenderers.register(EntityRegistry.SLASH_PROJECTILE.get(), SlashProjectileRenderer::new);
     }
 }

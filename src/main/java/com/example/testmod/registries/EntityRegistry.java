@@ -16,5 +16,5 @@ public class EntityRegistry {
         ENTITIES.register(eventBus);
     }
 
-    public static final RegistryObject<EntityType<?>> SLASH_PROJECTILE = ENTITIES.register("test_projectile", () -> EntityType.Builder.of(SlashProjectile::new, MobCategory.MISC).setShouldReceiveVelocityUpdates(false).sized(6.0f, 1.0f).updateInterval(20).build("test_projectile"));
+    public static final RegistryObject<EntityType<SlashProjectile>> SLASH_PROJECTILE = ENTITIES.register("test_projectile", () -> EntityType.Builder.of(SlashProjectile::new, MobCategory.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20).build("test_projectile"));
 }
