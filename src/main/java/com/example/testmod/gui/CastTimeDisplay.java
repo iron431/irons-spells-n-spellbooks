@@ -29,14 +29,10 @@ public class CastTimeDisplay extends GuiComponent {
     @SubscribeEvent
     public static void onPostRender(RenderGameOverlayEvent.Text e) {
 
-        //
-        // Temporary showcase of animation
-        //
-        float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
-        ClientMagicData.progressAnimation();
-
-        if (castCompletionPercent <= 0 || castCompletionPercent >= 1)
+        if (!ClientMagicData.isCasting || ClientMagicData.castDurationRemaining <= 0)
             return;
+
+        float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
 
         Gui GUI = Minecraft.getInstance().gui;
         PoseStack stack = e.getMatrixStack();
@@ -47,7 +43,6 @@ public class CastTimeDisplay extends GuiComponent {
         barX = screenWidth / 2 - IMAGE_WIDTH / 2;
         barY = screenHeight / 2 + screenHeight / 8;
 
-
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, TEXTURE);
@@ -57,27 +52,12 @@ public class CastTimeDisplay extends GuiComponent {
 
         int textX, textY;
         var textColor = ChatFormatting.WHITE;
-        var tempTotalSeconds = 5;
         var font = GUI.getFont();
-        String castTimeString = Utils.TimeFromTicks((1 - castCompletionPercent) * tempTotalSeconds*20, 1);
+        String castTimeString = Utils.TimeFromTicks((1 - castCompletionPercent) * ClientMagicData.castDuration, 1);
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;
         textY = barY + IMAGE_HEIGHT / 2 - font.lineHeight / 2 + 1;
 
         //GUI.getFont().drawShadow(stack, castTimeString, textX, textY, textColor.getColor());
         GUI.getFont().draw(stack, castTimeString, textX, textY, textColor.getColor());
-
-
     }
-
-
-
-    @SubscribeEvent
-    public static void onKeyPress(InputEvent.KeyInputEvent e) {
-        if (e.getKey() == (int) 'G' && e.getAction() == 1) {
-            ClientMagicData.tempStartAnimation();
-
-        }
-    }
-
-
 }

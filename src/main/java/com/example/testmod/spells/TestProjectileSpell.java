@@ -12,7 +12,7 @@ public class TestProjectileSpell extends AbstractSpell{
     }
 
     @Override
-    public void onCast(ItemStack stack, Level world, Player player) {
+    public void onCast(Level world, Player player) {
 
     }
 }

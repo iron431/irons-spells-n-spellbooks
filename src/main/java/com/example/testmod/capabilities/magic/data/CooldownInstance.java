@@ -6,18 +6,14 @@ public class CooldownInstance {
     private int cooldownRemaining;
     private final int spellCooldown;
 
-    public static CooldownInstance createCooldownInstance(int spellCooldown, int remainingCooldown) {
-        return new CooldownInstance(spellCooldown, remainingCooldown);
-    }
-
     public CooldownInstance(int spellCooldown) {
         this.cooldownRemaining = spellCooldown;
         this.spellCooldown = spellCooldown;
     }
 
     public CooldownInstance(int spellCooldown, int cooldownRemaining) {
-        this.cooldownRemaining = cooldownRemaining;
-        this.spellCooldown = spellCooldown;
+        this.cooldownRemaining = spellCooldown;
+        this.spellCooldown = cooldownRemaining;
     }
 
     public void decrement() {

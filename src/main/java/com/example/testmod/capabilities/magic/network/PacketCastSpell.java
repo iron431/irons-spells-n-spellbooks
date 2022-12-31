@@ -35,10 +35,12 @@ public class PacketCastSpell {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
+            TestMod.LOGGER.info("PacketCastSpell:" + spellId + "," + duration);
             ClientMagicData.setMana(playerMana);
             ClientMagicData.getCooldowns().addCooldown(SpellType.values()[spellId], duration);
-            TestMod.LOGGER.info("PacketCastSpell:" + spellId + "," + duration);
-
+            ClientMagicData.isCasting = false;
+            ClientMagicData.castDuration = 0;
+            ClientMagicData.castDurationRemaining = 0;
         });
         return true;
     }

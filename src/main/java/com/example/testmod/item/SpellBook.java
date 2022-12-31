@@ -4,14 +4,11 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.spellbook.data.SpellBookData;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.player.ClientPlayerEvents;
 import com.example.testmod.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -28,19 +25,23 @@ public class SpellBook extends Item {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(rarity));
     }
 
-    @Override
-    public int getUseDuration(ItemStack p_41454_) {
-        TestMod.LOGGER.info("SpellBook.getUseDuration");
-        return 200;
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack p_41452_) {
-        TestMod.LOGGER.info("SpellBook.getUseAnimation");
-        return UseAnim.BOW;
-    }
-
-
+//    @Override
+//    public int getUseDuration(ItemStack p_41454_) {
+//        TestMod.LOGGER.info("SpellBook.getUseDuration");
+//        return 200;
+//    }
+//
+//    @Override
+//    public UseAnim getUseAnimation(ItemStack p_41452_) {
+//        TestMod.LOGGER.info("SpellBook.getUseAnimation");
+//        return UseAnim.BOW;
+//    }
+//
+//    @Override
+//    public void releaseUsing(ItemStack p_41412_, Level p_41413_, LivingEntity p_41414_, int p_41415_) {
+//        TestMod.LOGGER.info("SpellBook.releaseUsing");
+//        super.releaseUsing(p_41412_, p_41413_, p_41414_, p_41415_);
+//    }
 
     public SpellBookData getSpellBookData(ItemStack stack) {
         return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
@@ -53,29 +54,25 @@ public class SpellBook extends Item {
         AbstractSpell spell = spellBookData.getActiveSpell();
 
         if (level.isClientSide()) {
-            //player.setForcedPose(Pose.SWIMMING);
-//            player.startUsingItem(hand);
-//            if(true);
-//            return InteractionResultHolder.consume(itemStack);
-
             TestMod.LOGGER.info("CLIENT: WimpySpellBook.use:");
             if (spell != null
                     && ClientMagicData.getPlayerMana() > spell.getManaCost()
                     && !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
+                    && !ClientMagicData.isCasting
             ) {
                 TestMod.LOGGER.info("CLIENT: WimpySpellBook.use: sidedSuccess");
-                return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
+                return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
             }
 
             TestMod.LOGGER.info("CLIENT: WimpySpellBook.use: fail");
-            return InteractionResultHolder.fail(player.getItemInHand(hand));
+            return InteractionResultHolder.fail(itemStack);
         }
 
         TestMod.LOGGER.info("SERVER: WimpySpellBook.use: " + level.getServer().getTickCount() + " " + level.getServer().getAverageTickTime());
         if (spell != null && spell.attemptCast(itemStack, level, player)) {
-            TestMod.LOGGER.info("SERVER: WimpySpellBook.use: sidedSuccess");
+            TestMod.LOGGER.info("SERVER: WimpySpellBook.use: success");
             TestMod.LOGGER.info("\n\n\n\n");
-            return InteractionResultHolder.success(player.getItemInHand(hand));
+            return InteractionResultHolder.success(itemStack);
         }
 
         TestMod.LOGGER.info("SERVER: WimpySpellBook.use: fail");
