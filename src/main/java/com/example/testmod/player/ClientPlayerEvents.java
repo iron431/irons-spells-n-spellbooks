@@ -7,6 +7,7 @@ import com.example.testmod.capabilities.magic.network.PacketCancelCast;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -21,18 +22,19 @@ public class ClientPlayerEvents {
             return;
         }
 
-//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntityLiving().getName().getString());
-//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntity().getName().getString());
-//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getResult().name());
-//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getSlot().getName());
-//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getFrom().getItem().getDescription().getString());
-//        TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getTo().getItem().getDescription().getString());
-
         var cap = event.getEntityLiving().getCapability(PlayerMagicProvider.PLAYER_MAGIC);
         if (cap.isPresent()) {
             var playerMagicData = cap.resolve().get();
 
-            if (playerMagicData.isCasting()) {
+//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntityLiving().getName().getString());
+//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntity().getName().getString());
+//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getResult().name());
+//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getSlot().getName());
+//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getSlot().getIndex());
+//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getFrom().getItem().getDescription().getString());
+//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getTo().getItem().getDescription().getString());
+
+            if (playerMagicData.isCasting() && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1) && event.getFrom().getItem() instanceof SpellBook) {
                 TestMod.LOGGER.info("onLivingEquipmentChangeEvent: Cancel Cast");
                 Messages.sendToServer(new PacketCancelCast());
             }
