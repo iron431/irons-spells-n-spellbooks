@@ -180,10 +180,12 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         if(selectedSpellIndex<0 || !spellSlots.get(selectedSpellIndex).hasSpell()) {
             return;
         }
-        var colorLevel = Style.EMPTY.withColor(0x30bf30);
+        //good orange color: 0xe2701b
+        //okay green color: 0x30bf30
+        var colorLevel = Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE);
         var colorMana = Style.EMPTY.withColor(0x448fff);
-        var colorCast = Style.EMPTY.withColor(0xe2701b);
-        var colorCooldown = Style.EMPTY.withColor(0xe2701b);
+        var colorCast = textColor;
+        var colorCooldown = textColor;
         var spell = spellSlots.get(selectedSpellIndex).containedSpell;
         float textScale = 1f;
         float reverseScale = 1/textScale;
