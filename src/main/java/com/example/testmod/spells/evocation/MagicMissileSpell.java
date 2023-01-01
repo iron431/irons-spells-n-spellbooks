@@ -1,10 +1,14 @@
 package com.example.testmod.spells.evocation;
 
 import com.example.testmod.entity.MagicMissileProjectile;
+import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Fireball;
+import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class MagicMissileSpell extends AbstractSpell {
     public MagicMissileSpell() {
@@ -12,7 +16,7 @@ public class MagicMissileSpell extends AbstractSpell {
     }
 
     public MagicMissileSpell(int level) {
-        super(SpellType.MAGIC_MISSILE);
+        super(SpellType.MAGIC_MISSILE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
@@ -24,10 +28,9 @@ public class MagicMissileSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, Player player) {
-        MagicMissileProjectile projectileEntity = new MagicMissileProjectile(world, player);
-        projectileEntity.setPos(player.position().add(0, player.getEyeHeight(), 0));
-        var vec3 = player.getLookAngle();
-        projectileEntity.shouldRender(vec3.x, vec3.y, vec3.z);
-        world.addFreshEntity(projectileEntity);
+        MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), world, player);
+        magicMissileProjectile.setPos(player.position().add(0, player.getEyeHeight(), 0));
+        magicMissileProjectile.shoot(player.getLookAngle());
+        world.addFreshEntity(magicMissileProjectile);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.testmod.spells.fire;
+package com.example.testmod.spells.ender;
 
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -16,7 +16,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     public TeleportSpell(int level) {
-        super(SpellType.TELEPORT);
+        super(SpellType.TELEPORT_SPELL);
         this.level = level;
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;

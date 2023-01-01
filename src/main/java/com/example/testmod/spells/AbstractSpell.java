@@ -6,10 +6,10 @@ import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.evocation.MagicMissileSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
-import com.example.testmod.spells.fire.TeleportSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.TextComponent;
@@ -78,10 +78,10 @@ public abstract class AbstractSpell {
             case FIREBALL_SPELL -> {
                 return new FireballSpell(level);
             }
-            case TELEPORT -> {
+            case TELEPORT_SPELL -> {
                 return new TeleportSpell(level);
             }
-            case MAGIC_MISSILE -> {
+            case MAGIC_MISSILE_SPELL -> {
                 return new MagicMissileSpell(level);
             }
             default -> {

@@ -1,17 +1,19 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.TestMod;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
 
 public enum SpellType {
-    NONE(0),
+    NONE_SPELL(0),
     FIREBALL_SPELL(1),
     BURNING_DASH_SPELL(2),
     TEST_SPELL(3),
-    TELEPORT(4),
-    MAGIC_MISSILE(5);
+    TELEPORT_SPELL(4),
+    MAGIC_MISSILE_SPELL(5),
+    ELECTROCUTE_SPELL(6);
 
     private final int value;
 
@@ -24,15 +26,6 @@ public enum SpellType {
     }
 
     public TranslatableComponent getDisplayName() {
-        switch (this) {
-            case FIREBALL_SPELL:
-                return new TranslatableComponent("spell.fire.fireball");
-            default:
-                return new TranslatableComponent("spell.none");
-        }
-    }
-
-    public String getIdentifier() {
-        return this.toString().toLowerCase().replace("_spell", "");
+        return new TranslatableComponent("spell." + TestMod.MODID + "." + this.toString().toLowerCase().replace("_spell", ""));
     }
 }

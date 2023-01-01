@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 
 //https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
 //https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
@@ -42,6 +43,10 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         this(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), levelIn);
     }
 
+    public void shoot(Vec3 rotation){
+        setDeltaMovement(rotation.scale(SPEED));
+    }
+
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
@@ -58,11 +63,6 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void defineSynchedData() {
 
-    }
-
-    @Override
-    public boolean shouldRender(double p_20296_, double p_20297_, double p_20298_) {
-        return false;
     }
 
     @Override
