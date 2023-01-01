@@ -168,6 +168,7 @@ public class SpellBookData {
                 int index = t.getInt(SLOT);
                 AbstractSpell s = AbstractSpell.getSpell(id, level);
                 transcribedSpells[index] = s;
+                spellCount++;
                 if (activeSpellId == s.getID()) {
                     setActiveSpell(s);
                 }

@@ -1,4 +1,4 @@
-package com.example.testmod.spells.evocation;
+package com.example.testmod.spells.ender;
 
 import com.example.testmod.entity.ConeOfColdProjectile;
 import com.example.testmod.spells.AbstractSpell;

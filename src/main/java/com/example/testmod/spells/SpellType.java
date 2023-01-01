@@ -2,16 +2,21 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.spells.cold.ConeOfColdSpell;
+import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
-import com.example.testmod.spells.evocation.MagicMissileSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.Locale;
 
 public enum SpellType {
+    /*
+    When adding spell, add:
+        Spell Type
+        Cast Type
+        Translation
+        Abstract Spell "getSpell" entry
+        More by now
+     */
     NONE_SPELL(0),
     FIREBALL_SPELL(1),
     BURNING_DASH_SPELL(2),
@@ -56,5 +61,12 @@ public enum SpellType {
 
     public TranslatableComponent getDisplayName() {
         return new TranslatableComponent("spell." + TestMod.MODID + "." + this.toString().toLowerCase().replace("_spell", ""));
+    }
+    public CastType getCastType(){
+        return switch (this) {
+            case FIREBALL_SPELL, TELEPORT_SPELL -> CastType.LONG;
+            case ELECTROCUTE_SPELL -> CastType.CONTINUOUS;
+            default -> CastType.INSTANT;
+        };
     }
 }

@@ -2,6 +2,7 @@ package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.spells.CastType;
 import com.example.testmod.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -28,11 +29,14 @@ public class CastTimeDisplay extends GuiComponent {
 
     @SubscribeEvent
     public static void onPostRender(RenderGameOverlayEvent.Text e) {
-
         if (!ClientMagicData.isCasting || ClientMagicData.castDurationRemaining <= 0)
             return;
 
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
+        String castTimeString = Utils.TimeFromTicks((1 - castCompletionPercent) * ClientMagicData.castDuration, 1);
+        if(ClientMagicData.castType != CastType.LONG) {
+            castCompletionPercent = 1 - castCompletionPercent;
+        }
 
         Gui GUI = Minecraft.getInstance().gui;
         PoseStack stack = e.getMatrixStack();
@@ -53,11 +57,9 @@ public class CastTimeDisplay extends GuiComponent {
         int textX, textY;
         var textColor = ChatFormatting.WHITE;
         var font = GUI.getFont();
-        String castTimeString = Utils.TimeFromTicks((1 - castCompletionPercent) * ClientMagicData.castDuration, 1);
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;
         textY = barY + IMAGE_HEIGHT / 2 - font.lineHeight / 2 + 1;
 
-        //GUI.getFont().drawShadow(stack, castTimeString, textX, textY, textColor.getColor());
         GUI.getFont().draw(stack, castTimeString, textX, textY, textColor.getColor());
     }
 }

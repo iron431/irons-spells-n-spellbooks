@@ -1,6 +1,11 @@
 package com.example.testmod.util;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+
 import java.util.Arrays;
+import java.util.UUID;
 
 public class Utils {
     public static String GetStackTraceAsString() {
@@ -24,7 +29,9 @@ public class Utils {
         }
         return stringTruncation(time, decimalPlaces) + affix;
     }
-
+    public static ServerPlayer getServerPlayer(Level level, UUID uuid){
+        return level.getServer().getPlayerList().getPlayer(uuid);
+    }
     private static String stringTruncation(float f, int places) {
         int whole = (int) f;
         if (f % 1 == 0) {
@@ -34,4 +41,5 @@ public class Utils {
         int decimalIndex = s.indexOf(".");
         return whole + s.substring(decimalIndex, Math.min(decimalIndex + places + 1, s.length()));
     }
+
 }

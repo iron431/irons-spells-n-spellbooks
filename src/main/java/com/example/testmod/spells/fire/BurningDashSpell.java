@@ -2,6 +2,7 @@ package com.example.testmod.spells.fire;
 
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;

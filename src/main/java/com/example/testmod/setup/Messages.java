@@ -1,11 +1,7 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.network.PacketCancelCast;
-import com.example.testmod.capabilities.magic.network.PacketCastSpell;
-import com.example.testmod.capabilities.magic.network.PacketCastingState;
-import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
-import com.example.testmod.capabilities.scroll.network.PacketUseScroll;
+import com.example.testmod.capabilities.magic.network.*;
 import com.example.testmod.gui.network.PacketInscribeSpell;
 import com.example.testmod.gui.network.PacketRemoveSpell;
 import net.minecraft.resources.ResourceLocation;
@@ -35,22 +31,16 @@ public class Messages {
 
         INSTANCE = net;
 
-        net.messageBuilder(PacketCastSpell.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PacketCastSpell::new)
-                .encoder(PacketCastSpell::toBytes)
-                .consumer(PacketCastSpell::handle)
-                .add();
+//        net.messageBuilder(PacketCastSpell.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+//                .decoder(PacketCastSpell::new)
+//                .encoder(PacketCastSpell::toBytes)
+//                .consumer(PacketCastSpell::handle)
+//                .add();
 
         net.messageBuilder(PacketCastingState.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(PacketCastingState::new)
                 .encoder(PacketCastingState::toBytes)
                 .consumer(PacketCastingState::handle)
-                .add();
-
-        net.messageBuilder(PacketUseScroll.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(PacketUseScroll::new)
-                .encoder(PacketUseScroll::toBytes)
-                .consumer(PacketUseScroll::handle)
                 .add();
 
         net.messageBuilder(PacketCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
@@ -59,10 +49,10 @@ public class Messages {
                 .consumer(PacketCancelCast::handle)
                 .add();
 
-        net.messageBuilder(PacketSyncMagicDataToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PacketSyncMagicDataToClient::new)
-                .encoder(PacketSyncMagicDataToClient::toBytes)
-                .consumer(PacketSyncMagicDataToClient::handle)
+        net.messageBuilder(PacketSyncManaToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PacketSyncManaToClient::new)
+                .encoder(PacketSyncManaToClient::toBytes)
+                .consumer(PacketSyncManaToClient::handle)
                 .add();
 
         net.messageBuilder(PacketInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
@@ -81,6 +71,12 @@ public class Messages {
                 .decoder(PacketRemoveSpell::new)
                 .encoder(PacketRemoveSpell::toBytes)
                 .consumer(PacketRemoveSpell::handle)
+                .add();
+
+        net.messageBuilder(PacketSyncCooldownToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PacketSyncCooldownToClient::new)
+                .encoder(PacketSyncCooldownToClient::toBytes)
+                .consumer(PacketSyncCooldownToClient::handle)
                 .add();
     }
 

@@ -1,10 +1,13 @@
 package com.example.testmod.item;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.network.PacketCancelCast;
 import com.example.testmod.capabilities.spellbook.data.SpellBookData;
 import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
 import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -14,8 +17,10 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
+import org.jline.utils.Log;
 
 public class SpellBook extends Item {
+
 
     public SpellBook() {
         this(1, Rarity.UNCOMMON);
@@ -25,58 +30,82 @@ public class SpellBook extends Item {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(rarity));
     }
 
-//    @Override
-//    public int getUseDuration(ItemStack p_41454_) {
-//        TestMod.LOGGER.info("SpellBook.getUseDuration");
-//        return 200;
-//    }
-//
-//    @Override
-//    public UseAnim getUseAnimation(ItemStack p_41452_) {
-//        TestMod.LOGGER.info("SpellBook.getUseAnimation");
-//        return UseAnim.BOW;
-//    }
-//
-//    @Override
-//    public void releaseUsing(ItemStack p_41412_, Level p_41413_, LivingEntity p_41414_, int p_41415_) {
-//        TestMod.LOGGER.info("SpellBook.releaseUsing");
-//        super.releaseUsing(p_41412_, p_41413_, p_41414_, p_41415_);
-//    }
+    @Override
+    public int getUseDuration(ItemStack itemStack) {
+        return 7200;
+    }
+
+    @Override
+    public UseAnim getUseAnimation(ItemStack p_41452_) {
+        return UseAnim.BOW;
+    }
+
+    @Override
+    public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
+        entity.stopUsingItem();
+        Messages.sendToServer(new PacketCancelCast(true));
+        super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
+    }
 
     public SpellBookData getSpellBookData(ItemStack stack) {
         return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
     }
 
+//    @Override
+//    public void onUsingTick(ItemStack stack, LivingEntity player, int totalUseTicks) {
+//
+//        //TODO: remove this
+//        if (totalUseTicks % 10 == 0){
+//            var spell = getSpellBookData(stack).getActiveSpell();
+//            if(getUseDuration(stack)-totalUseTicks>spell.getCastTime())
+//                cancelSpell(player);
+//        }
+//
+//        super.onUsingTick(stack, player, totalUseTicks);
+//    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        /*
+            pretty sure we can super easily cancel spell if you dont hold down use and still let quick cast not have to be held
+            just have to remember if we WERE using, cancel if we stop, but ONLY START using if we right click
+
+         */
+
         ItemStack itemStack = player.getItemInHand(hand);
         var spellBookData = getSpellBookData(itemStack);
         AbstractSpell spell = spellBookData.getActiveSpell();
 
+        //
+        //  Client Side Use Animation
+        //
         if (level.isClientSide()) {
-            TestMod.LOGGER.info("CLIENT: WimpySpellBook.use:");
-            if (spell != null
-                    && ClientMagicData.getPlayerMana() > spell.getManaCost()
-                    && !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
-                    && !ClientMagicData.isCasting
-            ) {
-                TestMod.LOGGER.info("CLIENT: WimpySpellBook.use: sidedSuccess");
-                return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
-            }
+            if (spell != null) {
+                if (ClientMagicData.isCasting) {
+                    Messages.sendToServer(new PacketCancelCast(false));
+                    return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+                } else if (ClientMagicData.getPlayerMana() > spell.getManaCost() &&
+                        !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
+                ) {
+                    //TestMod.LOGGER.info(spell.getCastType() + "");
+                    if (spell.getCastType() == CastType.CONTINUOUS)
+                        player.startUsingItem(hand);
+                    return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+                }
 
-            TestMod.LOGGER.info("CLIENT: WimpySpellBook.use: fail");
-            return InteractionResultHolder.fail(itemStack);
+            } else {
+                return InteractionResultHolder.fail(itemStack);
+            }
         }
 
-        TestMod.LOGGER.info("SERVER: WimpySpellBook.use: " + level.getServer().getTickCount() + " " + level.getServer().getAverageTickTime());
-        if (spell != null && spell.attemptCast(itemStack, level, player)) {
-            TestMod.LOGGER.info("SERVER: WimpySpellBook.use: success");
-            TestMod.LOGGER.info("\n\n\n\n");
+        //
+        //  Attempt to Cast Spell (attemptCast is serverSide only) (currently)
+        //
+        if (spell != null && spell.attemptInitiateCast(itemStack, level, player, true, true)) {
             return InteractionResultHolder.success(itemStack);
         }
 
-        TestMod.LOGGER.info("SERVER: WimpySpellBook.use: fail");
-        TestMod.LOGGER.info("\n\n\n\n");
+
         return InteractionResultHolder.fail(itemStack);
     }
 
