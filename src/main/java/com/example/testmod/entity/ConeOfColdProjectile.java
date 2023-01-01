@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -23,15 +24,44 @@ import net.minecraft.world.phys.Vec3;
 //https://github.com/maximumpower55/Aura
 
 public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
-    private static final double SPEED = 1.5d;
-    private static final int EXPIRE_TIME = 2 * 20;
-
     private int age;
     private float damage;
+
+    private final ConeOfColdPart[] subEntities;
+    public final ConeOfColdPart head;
+    private final ConeOfColdPart neck;
+    private final ConeOfColdPart body;
+    private final ConeOfColdPart tail1;
+    private final ConeOfColdPart tail2;
+    private final ConeOfColdPart tail3;
+    private final ConeOfColdPart wing1;
+    private final ConeOfColdPart wing2;
 
     public ConeOfColdProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
+
+        this.head = new ConeOfColdPart(this, "head", 1.0F, 1.0F);
+        this.neck = new ConeOfColdPart(this, "neck", 3.0F, 3.0F);
+        this.body = new ConeOfColdPart(this, "body", 5.0F, 3.0F);
+        this.tail1 = new ConeOfColdPart(this, "tail", 2.0F, 2.0F);
+        this.tail2 = new ConeOfColdPart(this, "tail", 2.0F, 2.0F);
+        this.tail3 = new ConeOfColdPart(this, "tail", 2.0F, 2.0F);
+        this.wing1 = new ConeOfColdPart(this, "wing", 4.0F, 2.0F);
+        this.wing2 = new ConeOfColdPart(this, "wing", 4.0F, 2.0F);
+        this.subEntities = new ConeOfColdPart[]{this.head, this.neck, this.body, this.tail1, this.tail2, this.tail3, this.wing1, this.wing2};
+
+        this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
+
+
+
+    }
+
+    @Override
+    public void setId(int id) {
+        super.setId(id);
+        for (int i = 0; i < this.subEntities.length; i++) // Forge: Fix MC-158205: Set part ids to successors of parent mob id
+            this.subEntities[i].setId(id + i + 1);
     }
 
     public ConeOfColdProjectile(Level levelIn, LivingEntity shooter) {
@@ -39,7 +69,7 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
     }
 
     public void shoot(Vec3 rotation) {
-        setDeltaMovement(rotation.scale(SPEED));
+        //setDeltaMovement(rotation.scale(SPEED));
 
     }
 
@@ -82,11 +112,11 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
     public void tick() {
         super.tick();
 
-        age++;
-        if (age > EXPIRE_TIME) {
-            discard();
-            return;
-        }
+//        age++;
+//        if (age > EXPIRE_TIME) {
+//            discard();
+//            return;
+//        }
 
         if (!level.isClientSide) {
             HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
