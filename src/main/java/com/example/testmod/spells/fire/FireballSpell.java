@@ -16,7 +16,7 @@ public class FireballSpell extends AbstractSpell {
     }
 
     public FireballSpell(int level) {
-        super(SpellType.FIREBALL_SPELL, SpellType.FIREBALL_SPELL.getCastType());
+        super(SpellType.FIREBALL_SPELL);
         this.level = level;
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 1;

@@ -31,8 +31,6 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
             var index = (++counter) % SpellType.values().length;
             scroll.setSpellType(SpellType.values()[index]);
 
-            TestMod.LOGGER.info("hash from loot table: " + itemStack.getItem().hashCode());
-
         }
         return itemStack;
     }

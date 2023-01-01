@@ -1,5 +1,6 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.TestMod;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 
@@ -12,6 +13,7 @@ public enum SpellType {
         Cast Type
         Translation
         Abstract Spell "getSpell" entry
+        More by now
      */
     NONE_SPELL(0),
     FIREBALL_SPELL(1),
@@ -35,15 +37,10 @@ public enum SpellType {
         return new TranslatableComponent("spell." + TestMod.MODID + "." + this.toString().toLowerCase().replace("_spell", ""));
     }
     public CastType getCastType(){
-        switch(this){
-            case FIREBALL_SPELL:
-            case TELEPORT_SPELL:
-                return CastType.LONG;
-
-            case ELECTROCUTE_SPELL:
-                return CastType.CONTINUOUS;
-
-            default: return CastType.INSTANT;
-        }
+        return switch (this) {
+            case FIREBALL_SPELL, TELEPORT_SPELL -> CastType.LONG;
+            case ELECTROCUTE_SPELL -> CastType.CONTINUOUS;
+            default -> CastType.INSTANT;
+        };
     }
 }

@@ -5,8 +5,7 @@ import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
 import com.example.testmod.setup.Messages;
-import com.example.testmod.spells.ender.TeleportSpell;
-import com.example.testmod.spells.evocation.MagicMissileSpell;
+import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
 import com.example.testmod.spells.fire.TeleportSpell;
@@ -34,9 +33,9 @@ public abstract class AbstractSpell {
     protected int castTime;
     protected int cooldown;
 
-    public AbstractSpell(SpellType spellType, CastType castType) {
+    public AbstractSpell(SpellType spellType) {
         this.spellType = spellType;
-        this.castType = castType;
+        this.castType = spellType.getCastType();
     }
 
     public int getID() {
@@ -77,6 +76,7 @@ public abstract class AbstractSpell {
     }
 
     public static AbstractSpell getSpell(SpellType spellType, int level) {
+
         switch (spellType) {
             case BURNING_DASH_SPELL -> {
                 return new BurningDashSpell(level);

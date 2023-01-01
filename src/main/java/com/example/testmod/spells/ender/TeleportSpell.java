@@ -16,7 +16,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     public TeleportSpell(int level) {
-        super(SpellType.TELEPORT_SPELL, SpellType.TELEPORT_SPELL.getCastType());
+        super(SpellType.TELEPORT_SPELL);
         this.level = level;
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;

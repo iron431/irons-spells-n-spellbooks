@@ -1,4 +1,4 @@
-package com.example.testmod.spells.evocation;
+package com.example.testmod.spells.ender;
 
 import com.example.testmod.entity.MagicMissileProjectile;
 import com.example.testmod.registries.EntityRegistry;

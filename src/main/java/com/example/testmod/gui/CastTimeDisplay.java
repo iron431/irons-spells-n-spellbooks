@@ -29,8 +29,6 @@ public class CastTimeDisplay extends GuiComponent {
 
     @SubscribeEvent
     public static void onPostRender(RenderGameOverlayEvent.Text e) {
-        TestMod.LOGGER.info("CLIENT: isCasting: " +ClientMagicData.isCasting);
-        TestMod.LOGGER.info("CLIENT: cast Left: " +ClientMagicData.castDurationRemaining);
         if (!ClientMagicData.isCasting || ClientMagicData.castDurationRemaining <= 0)
             return;
 

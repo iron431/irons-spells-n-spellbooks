@@ -23,7 +23,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     public BurningDashSpell(int level) {
-        super(SpellType.BURNING_DASH_SPELL, SpellType.BURNING_DASH_SPELL.getCastType());
+        super(SpellType.BURNING_DASH_SPELL);
         baseManaCost = 20;
         manaCostPerLevel = 5;
         baseSpellPower = 1;

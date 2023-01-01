@@ -30,7 +30,6 @@ public class PacketCancelCast {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
-        TestMod.LOGGER.info("PacketCancelCast");
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.getSender();

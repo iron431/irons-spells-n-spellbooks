@@ -2,7 +2,6 @@ package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.network.*;
-import com.example.testmod.capabilities.scroll.network.PacketUseScroll;
 import com.example.testmod.gui.network.PacketInscribeSpell;
 import com.example.testmod.gui.network.PacketRemoveSpell;
 import net.minecraft.resources.ResourceLocation;
@@ -42,12 +41,6 @@ public class Messages {
                 .decoder(PacketCastingState::new)
                 .encoder(PacketCastingState::toBytes)
                 .consumer(PacketCastingState::handle)
-                .add();
-
-        net.messageBuilder(PacketUseScroll.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(PacketUseScroll::new)
-                .encoder(PacketUseScroll::toBytes)
-                .consumer(PacketUseScroll::handle)
                 .add();
 
         net.messageBuilder(PacketCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)

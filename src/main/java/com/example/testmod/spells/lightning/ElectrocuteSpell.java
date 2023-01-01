@@ -16,7 +16,7 @@ public class ElectrocuteSpell extends AbstractSpell {
     }
 
     public ElectrocuteSpell(int level) {
-        super(SpellType.ELECTROCUTE_SPELL, SpellType.ELECTROCUTE_SPELL.getCastType());
+        super(SpellType.ELECTROCUTE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 1;
