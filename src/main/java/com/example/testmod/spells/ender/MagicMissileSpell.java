@@ -1,6 +1,7 @@
 package com.example.testmod.spells.ender;
 
 import com.example.testmod.entity.ConeOfColdProjectile;
+import com.example.testmod.entity.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +25,7 @@ public class MagicMissileSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, Player player) {
-        ConeOfColdProjectile magicMissileProjectile = new ConeOfColdProjectile(world, player);
+        MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(world, player);
         magicMissileProjectile.setPos(player.position().add(0, player.getEyeHeight(), 0));
         magicMissileProjectile.shoot(player.getLookAngle());
         magicMissileProjectile.setDamage(getSpellPower());

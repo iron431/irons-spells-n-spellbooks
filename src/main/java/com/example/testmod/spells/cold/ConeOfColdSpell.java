@@ -1,6 +1,7 @@
 package com.example.testmod.spells.cold;
 
 
+import com.example.testmod.entity.ConeOfColdProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;
@@ -28,6 +29,10 @@ public class ConeOfColdSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, Player player) {
-
+        ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, player);
+        coneOfColdProjectile.setPos(player.position().add(0, player.getEyeHeight() , 0));
+        coneOfColdProjectile.shoot(player.getLookAngle());//
+        coneOfColdProjectile.setDamage(getSpellPower());
+        world.addFreshEntity(coneOfColdProjectile);
     }
 }

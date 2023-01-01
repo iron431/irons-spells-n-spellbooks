@@ -13,9 +13,9 @@ public class ConeOfColdPart extends PartEntity<ConeOfColdProjectile> {
     public final String name;
     private final EntityDimensions size;
 
-    public ConeOfColdPart(ConeOfColdProjectile coneOfColdProjectile, String name, float x, float y) {
+    public ConeOfColdPart(ConeOfColdProjectile coneOfColdProjectile, String name, float scaleX, float scaleY) {
         super(coneOfColdProjectile);
-        this.size = EntityDimensions.scalable(x, y);
+        this.size = EntityDimensions.scalable(scaleX, scaleY);
         this.refreshDimensions();
         this.parentEntity = coneOfColdProjectile;
         this.name = name;
