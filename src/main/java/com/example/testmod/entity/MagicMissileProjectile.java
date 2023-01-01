@@ -21,8 +21,9 @@ import net.minecraft.world.phys.Vec3;
 
 public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     private static final double SPEED = 1.5d;
-    private static final int EXPIRE_TIME = 1 * 20;
+    private static final int EXPIRE_TIME = 2 * 20;
     private int age;
+    private Vec3 lastPosition;
 
     public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level level) {
         super(entityType, level);
@@ -75,8 +76,34 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         super.tick();
 
         age++;
+        if(age>EXPIRE_TIME){
+            discard();
+            return;
+        }
+
+        if(!level.isClientSide) {
+            lastPosition = position();
+            //TODO: hit detection
+//            HitResult hit = level.clip(new ClipContext(lastPosition, position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+//            if(hit != null) {
+//                switch(hit.getType()) {
+//                    case MISS:
+//                        break;
+//                    default:
+//                        kill();
+//                        System.out.println(hit);
+//                        return;
+//                }
+//            }
+            spawnParticles();
+        }
+
+        setPos(position().add(getDeltaMovement()));
+    }
+
+    public void spawnParticles(){
         if (!level.isClientSide) {
-            for (int count = 0; count < 16; count++) {
+            for (int count = 0; count < 3; count++) {
                 double x = getX() + (level.random.nextInt(3) - 1) / 4D;
                 double y = getY() + 0.2F + (level.random.nextInt(3) - 1) / 4D;
                 double z = getZ() + (level.random.nextInt(3) - 1) / 4D;
@@ -87,8 +114,38 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
                 level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, ParticleTypes.END_ROD, true, x, y, z, 1, deltaX, deltaY, deltaZ, .1d));
             }
         }
-
-        if (age > 40)
-            kill();
     }
+
+    /*
+	@Override
+	public void lerpMotion(double d, double e, double f) {
+		super.lerpMotion(d, e, f);
+		age = 0;
+	}
+
+	@Override
+	public boolean shouldRenderAtSqrDistance(double d) {
+		double e = this.getBoundingBox().getSize() * 10.0;
+		if (Double.isNaN(e)) {
+			e = 1.0;
+		}
+
+		e *= 64.0 * getViewScale();
+		return d < e * e;
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putShort("Age", (short)age);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		age = tag.getShort("Age");
+	}
+     */
+
+
 }

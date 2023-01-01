@@ -5,10 +5,7 @@ import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Fireball;
-import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class MagicMissileSpell extends AbstractSpell {
     public MagicMissileSpell() {
@@ -28,7 +25,7 @@ public class MagicMissileSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, Player player) {
-        MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), world, player);
+        MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(world, player);
         magicMissileProjectile.setPos(player.position().add(0, player.getEyeHeight(), 0));
         magicMissileProjectile.shoot(player.getLookAngle());
         world.addFreshEntity(magicMissileProjectile);
