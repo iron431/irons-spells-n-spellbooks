@@ -110,6 +110,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         setPos(position().add(getDeltaMovement()));
     }
 
+    //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
         if (!level.isClientSide) {
             for (int count = 0; count < 3; count++) {
