@@ -20,6 +20,7 @@
 ### Other Random Links
 - https://www.youtube.com/watch?v=prqMxqUtj-0
 - Teleport: https://moddingtutorials.org/1.19.2/advanced-items/
+- Loading values from config: https://www.youtube.com/watch?v=QN9jq3_V-I8
 
 ### Helpful commands
 - ```/setblock ~ ~ ~ testmod:inscription_table```
