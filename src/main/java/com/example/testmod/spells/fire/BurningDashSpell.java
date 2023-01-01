@@ -2,6 +2,7 @@ package com.example.testmod.spells.fire;
 
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -22,7 +23,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     public BurningDashSpell(int level) {
-        super(SpellType.BURNING_DASH_SPELL);
+        super(SpellType.BURNING_DASH_SPELL, SpellType.BURNING_DASH_SPELL.getCastType());
         baseManaCost = 20;
         manaCostPerLevel = 5;
         baseSpellPower = 1;

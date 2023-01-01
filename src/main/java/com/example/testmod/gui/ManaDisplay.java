@@ -2,10 +2,6 @@ package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.capabilities.magic.network.PacketCastSpell;
-import com.example.testmod.setup.Messages;
-import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.SpellType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;

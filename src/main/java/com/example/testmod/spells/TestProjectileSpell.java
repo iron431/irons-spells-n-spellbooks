@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 public class TestProjectileSpell extends AbstractSpell{
 
     public TestProjectileSpell() {
-        super(SpellType.TEST_SPELL);
+        super(SpellType.TEST_SPELL,CastType.INSTANT);
     }
 
     @Override

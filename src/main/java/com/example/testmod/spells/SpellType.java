@@ -1,16 +1,22 @@
 package com.example.testmod.spells;
 
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.Locale;
 
 public enum SpellType {
+    /*
+    When adding spell, add:
+        Spell Type
+        Cast Type
+        Translation
+        Abstract Spell "getSpell" entry
+     */
+
     NONE(0),
     FIREBALL_SPELL(1),
     BURNING_DASH_SPELL(2),
     TEST_SPELL(3),
-    TELEPORT(4);
+    TELEPORT_SPELL(4),
+    ELECTROCUTE_SPELL(5);
 
     private final int value;
 
@@ -26,8 +32,21 @@ public enum SpellType {
         switch (this) {
             case FIREBALL_SPELL:
                 return new TranslatableComponent("spell.fire.fireball");
+            case ELECTROCUTE_SPELL: return new TranslatableComponent("spell.lightning.electrocute");
             default:
                 return new TranslatableComponent("spell.none");
+        }
+    }
+    public CastType getCastType(){
+        switch(this){
+            case FIREBALL_SPELL:
+            case TELEPORT_SPELL:
+                return CastType.LONG;
+
+            case ELECTROCUTE_SPELL:
+                return CastType.CONTINUOUS;
+
+            default: return CastType.INSTANT;
         }
     }
 

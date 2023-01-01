@@ -25,5 +25,11 @@
   "spell.none": "None",
   "spell.fire.fireball": "Fireball",
   "spell.fire.burning_dash": "Burning Dash",
-  "spell.ender.teleport": "Teleport"
+  "spell.lightning.electrocute": "Electrocute",
+  "spell.ender.teleport": "Teleport",
+
+  "cast_type.testmod.none": "None",
+  "cast_type.testmod.instant": "Instant",
+  "cast_type.testmod.long": "%s",
+  "cast_type.testmod.continuous": "Up to %s"
 }

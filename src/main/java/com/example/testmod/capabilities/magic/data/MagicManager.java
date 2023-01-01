@@ -2,23 +2,25 @@ package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
-import com.example.testmod.capabilities.magic.network.PacketSyncMagicDataToClient;
+import com.example.testmod.capabilities.magic.network.PacketSyncCooldownToClient;
+import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
-import net.minecraft.nbt.CompoundTag;
+import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 
 import javax.annotation.Nonnull;
 
+import static com.example.testmod.registries.AttributeRegistry.COOLDOWN_REDUCTION;
 import static com.example.testmod.registries.AttributeRegistry.MAX_MANA;
 
-public class MagicManager extends SavedData {
+public class MagicManager {
 
-    public static final String MAGIC_MANAGER = "magicManager";
     public static final int TICKS_PER_CYCLE = 20;
+    public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
+
     private int counter = 0;
     private static MagicManager magicManager = null;
 
@@ -30,8 +32,7 @@ public class MagicManager extends SavedData {
         }
 
         if (magicManager == null) {
-            DimensionDataStorage storage = level.getServer().overworld().getDataStorage();
-            magicManager = storage.computeIfAbsent(MagicManager::new, MagicManager::new, MAGIC_MANAGER);
+            magicManager = new MagicManager();
         }
         return magicManager;
     }
@@ -76,20 +77,34 @@ public class MagicManager extends SavedData {
                 playerMagicData.getPlayerCooldowns().tick(1);
 
                 if (playerMagicData.isCasting()) {
+                    var spell = AbstractSpell.getSpell(playerMagicData.getCastingSpellId(), playerMagicData.getCastingSpellLevel());
                     playerMagicData.handleCastDuration();
-                    if (!playerMagicData.isCasting()) {
-                        TestMod.LOGGER.info("MagicManager.tick: handle spell casting complete");
-                        Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, true), serverPlayer);
-                        var spell = AbstractSpell.getSpell(playerMagicData.getCastingSpellId(), playerMagicData.getCastingSpellLevel());
-                        spell.finishCasting(serverPlayer.level, serverPlayer, this, playerMagicData);
-                        playerMagicData.resetCastingState();
+                    if (spell.getCastType() == CastType.LONG) {
+                        if (!playerMagicData.isCasting()) {
+                            TestMod.LOGGER.info("MagicManager.tick: handle spell casting complete");
+                            Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
+                            spell.castSpell(serverPlayer.level, serverPlayer, true, true);
+                            playerMagicData.resetCastingState();
+                        }
+                    } else if (spell.getCastType() == CastType.CONTINUOUS) {
+                        if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
+                            if (playerMagicData.getCastDurationRemaining()<CONTINUOUS_CAST_TICK_INTERVAL || playerMagicData.getMana() - spell.getManaCost() * 2 < 0) {
+                                TestMod.LOGGER.info("MagicManager.tick: handle spell casting complete");
+                                Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
+                                spell.castSpell(serverPlayer.level, serverPlayer, true, true);
+                                playerMagicData.resetCastingState();
+                            } else {
+                                spell.castSpell(serverPlayer.level, serverPlayer, true, false);
+                            }
+
+                        }
                     }
                 }
 
                 if (counter <= 0) {
                     counter = TICKS_PER_CYCLE;
                     regenPlayerMana(serverPlayer, playerMagicData);
-                    Messages.sendToPlayer(new PacketSyncMagicDataToClient(playerMagicData), serverPlayer);
+                    Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
                 }
             }
         });
@@ -97,13 +112,14 @@ public class MagicManager extends SavedData {
 
     public MagicManager() {
     }
-
-    public MagicManager(CompoundTag tag) {
-
+    public void addCooldown(ServerPlayer serverPlayer,  SpellType spellType){
+            double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
+            int effectiveCooldown = getEffectiveSpellCooldown(AbstractSpell.getSpell(spellType,1).getSpellCooldown(),playerCooldownModifier);
+            getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
+            Messages.sendToPlayer(new PacketSyncCooldownToClient(spellType.getValue(),effectiveCooldown),serverPlayer);
+    }
+    public static int getEffectiveSpellCooldown(int cooldown,  double playerCooldownModifier) {
+        return (int) (cooldown * (2 - playerCooldownModifier));
     }
 
-    @Override
-    public CompoundTag save(CompoundTag tag) {
-        return tag;
-    }
 }

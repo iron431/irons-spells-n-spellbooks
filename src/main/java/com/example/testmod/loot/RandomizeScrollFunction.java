@@ -26,9 +26,7 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         if (itemStack.getItem() instanceof Scroll scroll) {
             scroll.setLevel(levelRange.getInt(lootContext));
-            scroll.setSpellType(SpellType.FIREBALL_SPELL);
-
-            TestMod.LOGGER.info("hash from loot table: "+itemStack.getItem().hashCode());
+            scroll.setSpellType(lootContext.getRandom().nextBoolean()?SpellType.ELECTROCUTE_SPELL:SpellType.FIREBALL_SPELL);
 
         }
         return itemStack;

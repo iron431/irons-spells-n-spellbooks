@@ -1,6 +1,7 @@
 package com.example.testmod.item;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.scroll.data.ScrollData;
 import com.example.testmod.capabilities.scroll.data.ScrollDataProvider;
 import com.example.testmod.registries.ItemRegistry;
@@ -13,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -61,13 +63,14 @@ public class Scroll extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+
         if (level.isClientSide) {
             return InteractionResultHolder.success(player.getItemInHand(hand));
         }
 
         ItemStack stack = player.getItemInHand(hand);
         var scrollData = getScrollData(stack);
-        scrollData.getSpell().onCast(level, player);
+        scrollData.getSpell().castSpell(level, (ServerPlayer) player,false,false);
 
         removeScrollAfterCast(player, stack);
 

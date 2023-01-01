@@ -8,18 +8,18 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketSyncMagicDataToClient {
+public class PacketSyncManaToClient {
 
     private int playerMana = 0;
     private PlayerMagicData playerMagicData = null;
 
 
-    public PacketSyncMagicDataToClient(PlayerMagicData playerMagicData) {
+    public PacketSyncManaToClient(PlayerMagicData playerMagicData) {
         //Server side only
         this.playerMagicData = playerMagicData;
     }
 
-    public PacketSyncMagicDataToClient(FriendlyByteBuf buf) {
+    public PacketSyncManaToClient(FriendlyByteBuf buf) {
         playerMana = buf.readInt();
 //        int numCooldowns = buf.readInt();
 //        for (int i = 0; i < numCooldowns; i++) {
