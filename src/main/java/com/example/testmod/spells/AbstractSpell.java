@@ -5,6 +5,8 @@ import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.ender.TeleportSpell;
+import com.example.testmod.spells.evocation.MagicMissileSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
 import com.example.testmod.spells.fire.TeleportSpell;
@@ -84,6 +86,9 @@ public abstract class AbstractSpell {
             }
             case TELEPORT_SPELL -> {
                 return new TeleportSpell(level);
+            }
+            case MAGIC_MISSILE_SPELL -> {
+                return new MagicMissileSpell(level);
             }
             case ELECTROCUTE_SPELL -> {
                 return new ElectrocuteSpell(level);

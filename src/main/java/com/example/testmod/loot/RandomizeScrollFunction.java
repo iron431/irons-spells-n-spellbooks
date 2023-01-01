@@ -16,6 +16,7 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 //should extend lootmodifer?
 public class RandomizeScrollFunction extends LootItemConditionalFunction {
     final NumberProvider levelRange;
+    private int counter = 0;
 
     protected RandomizeScrollFunction(LootItemCondition[] lootConditions, NumberProvider levelRange) {
         super(lootConditions);
@@ -26,7 +27,11 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         if (itemStack.getItem() instanceof Scroll scroll) {
             scroll.setLevel(levelRange.getInt(lootContext));
-            scroll.setSpellType(lootContext.getRandom().nextBoolean()?SpellType.ELECTROCUTE_SPELL:SpellType.FIREBALL_SPELL);
+
+            var index = (++counter) % SpellType.values().length;
+            scroll.setSpellType(SpellType.values()[index]);
+
+            TestMod.LOGGER.info("hash from loot table: " + itemStack.getItem().hashCode());
 
         }
         return itemStack;

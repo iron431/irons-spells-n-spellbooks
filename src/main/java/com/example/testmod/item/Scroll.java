@@ -33,7 +33,7 @@ public class Scroll extends Item {
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
-        setSpellType(SpellType.NONE);
+        setSpellType(SpellType.NONE_SPELL);
     }
 
     public Scroll(SpellType spellType, int level) {

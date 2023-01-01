@@ -22,14 +22,9 @@
   "attribute.testmod.max_mana":"Max Mana",
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
 
-  "spell.none": "None",
-  "spell.fire.fireball": "Fireball",
-  "spell.fire.burning_dash": "Burning Dash",
-  "spell.lightning.electrocute": "Electrocute",
-  "spell.ender.teleport": "Teleport",
-
-  "cast_type.testmod.none": "None",
-  "cast_type.testmod.instant": "Instant",
-  "cast_type.testmod.long": "%s",
-  "cast_type.testmod.continuous": "Up to %s"
+  "spell.testmod.none": "None",
+  "spell.testmod.fireball": "Fireball",
+  "spell.testmod.burning_dash": "Burning Dash",
+  "spell.testmod.teleport": "Teleport",
+  "spell.testmod.magic_missile": "Magic Missile"
 }
