@@ -15,15 +15,15 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-public class MagicMissileProjectileRenderer extends EntityRenderer<MagicMissileProjectile> {
+public class ConeOfColdRenderer extends EntityRenderer<ConeOfColdProjectile> {
     private static final ResourceLocation TEXTURE = TestMod.id("textures/entity/magic_missile_projectile.png");
 
-    public MagicMissileProjectileRenderer(Context context) {
+    public ConeOfColdRenderer(Context context) {
         super(context);
     }
 
     @Override
-    public void render(MagicMissileProjectile entity, float yaw, float tickDelta, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    public void render(ConeOfColdProjectile entity, float yaw, float tickDelta, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
 
         poseStack.scale(.5f, .5f, .5f);
@@ -47,7 +47,7 @@ public class MagicMissileProjectileRenderer extends EntityRenderer<MagicMissileP
     }
 
     @Override
-    public ResourceLocation getTextureLocation(MagicMissileProjectile entity) {
+    public ResourceLocation getTextureLocation(ConeOfColdProjectile entity) {
         return TEXTURE;
     }
 }

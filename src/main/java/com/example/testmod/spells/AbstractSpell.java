@@ -71,23 +71,7 @@ public abstract class AbstractSpell {
     }
 
     public static AbstractSpell getSpell(SpellType spellType, int level) {
-        switch (spellType) {
-            case BURNING_DASH_SPELL -> {
-                return new BurningDashSpell(level);
-            }
-            case FIREBALL_SPELL -> {
-                return new FireballSpell(level);
-            }
-            case TELEPORT_SPELL -> {
-                return new TeleportSpell(level);
-            }
-            case MAGIC_MISSILE_SPELL -> {
-                return new MagicMissileSpell(level);
-            }
-            default -> {
-                return new NoneSpell(0);
-            }
-        }
+        return spellType.getSpellForType(level);
     }
 
     public static AbstractSpell getSpell(int spellId, int level) {
