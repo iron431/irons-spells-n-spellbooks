@@ -5,11 +5,6 @@ import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
 import com.example.testmod.setup.Messages;
-import com.example.testmod.spells.ender.MagicMissileSpell;
-import com.example.testmod.spells.fire.BurningDashSpell;
-import com.example.testmod.spells.fire.FireballSpell;
-import com.example.testmod.spells.fire.TeleportSpell;
-import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import com.example.testmod.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -76,27 +71,7 @@ public abstract class AbstractSpell {
     }
 
     public static AbstractSpell getSpell(SpellType spellType, int level) {
-
-        switch (spellType) {
-            case BURNING_DASH_SPELL -> {
-                return new BurningDashSpell(level);
-            }
-            case FIREBALL_SPELL -> {
-                return new FireballSpell(level);
-            }
-            case TELEPORT_SPELL -> {
-                return new TeleportSpell(level);
-            }
-            case MAGIC_MISSILE_SPELL -> {
-                return new MagicMissileSpell(level);
-            }
-            case ELECTROCUTE_SPELL -> {
-                return new ElectrocuteSpell(level);
-            }
-            default -> {
-                return new NoneSpell(0);
-            }
-        }
+        return spellType.getSpellForType(level);
     }
 
     public static AbstractSpell getSpell(int spellId, int level) {

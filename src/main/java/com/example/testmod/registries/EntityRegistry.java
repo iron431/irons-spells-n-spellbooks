@@ -1,7 +1,7 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.MagicMissileProjectile;
+import com.example.testmod.entity.ConeOfColdProjectile;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -17,8 +17,8 @@ public class EntityRegistry {
         ENTITIES.register(eventBus);
     }
 
-    public static final RegistryObject<EntityType<MagicMissileProjectile>> MAGIC_MISSILE_PROJECTILE =
-            ENTITIES.register("magic_missile_projectile", () -> EntityType.Builder.<MagicMissileProjectile>of(MagicMissileProjectile::new, MobCategory.MISC)
+    public static final RegistryObject<EntityType<ConeOfColdProjectile>> MAGIC_MISSILE_PROJECTILE =
+            ENTITIES.register("magic_missile_projectile", () -> EntityType.Builder.<ConeOfColdProjectile>of(ConeOfColdProjectile::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "magic_missile_projectile").toString()));

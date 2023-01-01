@@ -22,29 +22,19 @@ import net.minecraft.world.phys.Vec3;
 //https://github.com/CammiePone/Arcanus/blob/1.18-dev/src/main/java/dev/cammiescorner/arcanus/common/entities/MagicMissileEntity.java#L51
 //https://github.com/maximumpower55/Aura
 
-public class MagicMissileProjectile extends Projectile implements ItemSupplier {
+public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
     private static final double SPEED = 1.5d;
     private static final int EXPIRE_TIME = 2 * 20;
 
     private int age;
     private float damage;
 
-    public MagicMissileProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level level) {
+    public ConeOfColdProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
     }
 
-    public MagicMissileProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level levelIn, double x, double y, double z) {
-        super(entityType, levelIn);
-        setPos(x, y, z);
-    }
-
-    public MagicMissileProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level levelIn, LivingEntity shooter) {
-        super(entityType, levelIn);
-        setOwner(shooter);
-    }
-
-    public MagicMissileProjectile(Level levelIn, LivingEntity shooter) {
+    public ConeOfColdProjectile(Level levelIn, LivingEntity shooter) {
         this(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), levelIn);
     }
 

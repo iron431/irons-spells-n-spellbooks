@@ -1,8 +1,8 @@
-package com.example.testmod.spells.ender;
+package com.example.testmod.spells.cold;
+
 
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.entity.projectile.LargeFireball;
@@ -10,19 +10,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class TeleportSpell extends AbstractSpell {
-    public TeleportSpell() {
+public class ConeOfColdSpell extends AbstractSpell {
+    public ConeOfColdSpell() {
         this(1);
     }
 
-    public TeleportSpell(int level) {
-        super(SpellType.TELEPORT_SPELL);
+    public ConeOfColdSpell(int level) {
+        super(SpellType.CONE_OF_COLD_SPELL);
         this.level = level;
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
-        this.baseManaCost = 70;
-        this.cooldown = 200;
+        this.castTime = 150;
+        this.baseManaCost = 2;
+        this.cooldown = 100;
     }
 
     @Override
