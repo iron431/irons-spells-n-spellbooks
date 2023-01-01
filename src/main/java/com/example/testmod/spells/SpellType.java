@@ -14,17 +14,14 @@ public enum SpellType {
         Spell Type
         Cast Type
         Translation
-        Abstract Spell "getSpell" entry
-        More by now
      */
     NONE_SPELL(0),
     FIREBALL_SPELL(1),
     BURNING_DASH_SPELL(2),
-    TEST_SPELL(3),
-    TELEPORT_SPELL(4),
-    MAGIC_MISSILE_SPELL(5),
-    ELECTROCUTE_SPELL(6),
-    CONE_OF_COLD_SPELL(7);
+    TELEPORT_SPELL(3),
+    MAGIC_MISSILE_SPELL(4),
+    ELECTROCUTE_SPELL(5),
+    CONE_OF_COLD_SPELL(6);
 
     private final int value;
 

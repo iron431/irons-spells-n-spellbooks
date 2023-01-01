@@ -1,9 +1,18 @@
 package com.example.testmod.capabilities.spellbook.data;
 
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.util.Utils;
+import com.google.common.collect.Lists;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.Collection;
+import java.util.List;
 
 public class SpellBookData {
 
@@ -19,6 +28,7 @@ public class SpellBookData {
     private int spellSlots = 0;
     private int spellCount = 0;
     private boolean dirty = true;
+    private List<Component> hoverText;
     private CompoundTag tag = new CompoundTag();
 
     public SpellBookData(int spellSlots) {
@@ -120,6 +130,15 @@ public class SpellBookData {
         }
 
         return false;
+    }
+
+    public List<Component> getHoverText() {
+        if (hoverText == null || dirty) {
+            hoverText = Lists.newArrayList();
+            if(activeSpell!=null)
+                hoverText.add(new TranslatableComponent("tooltip.testmod.selected_spell", activeSpell.getSpellType().getDisplayName()).withStyle(ChatFormatting.WHITE));
+        }
+        return hoverText;
     }
 
     public CompoundTag saveNBTData() {

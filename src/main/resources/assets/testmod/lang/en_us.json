@@ -10,7 +10,7 @@
   "tooltip.testmod.mana_cost": " %d Mana Cost",
   "tooltip.testmod.cooldown_length_seconds": " %d Cooldown",
   "tooltip.testmod.cast_type": " %s Cast",
-
+  "tooltip.testmod.selected_spell": "[%s]",
   "ui.testmod.no_spellbook": "No SpellBook",
   "ui.testmod.no_selection": "Select a Spell",
   "ui.testmod.empty_slot": "Empty Slot",

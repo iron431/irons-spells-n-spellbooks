@@ -1,6 +1,7 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.data.PlayerMagicProvider;
 import com.example.testmod.capabilities.magic.network.PacketCancelCast;
@@ -8,14 +9,21 @@ import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.core.jmx.Server;
 
-
+@Mod.EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
 
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
@@ -28,14 +36,6 @@ public class ClientPlayerEvents {
         if (cap.isPresent()) {
             var playerMagicData = cap.resolve().get();
 
-//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntityLiving().getName().getString());
-//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getEntity().getName().getString());
-//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getResult().name());
-//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getSlot().getName());
-//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getSlot().getIndex());
-//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getFrom().getItem().getDescription().getString());
-//            TestMod.LOGGER.info("onLivingEquipmentChangeEvent: " + event.getTo().getItem().getDescription().getString());
-
             if (playerMagicData.isCasting() && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1) && event.getFrom().getItem() instanceof SpellBook) {
                 TestMod.LOGGER.info("onLivingEquipmentChangeEvent: Cancel Cast");
                 Messages.sendToServer(new PacketCancelCast(SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS));
@@ -43,27 +43,24 @@ public class ClientPlayerEvents {
         }
     }
 
-    public static void onLivingEntityUseItemEventStart(LivingEntityUseItemEvent.Start event) {
-        TestMod.LOGGER.info("onLivingEntityUseItemEventStart.1");
-        if (event.getItem().getItem() instanceof SpellBook) {
-            TestMod.LOGGER.info("onLivingEntityUseItemEventStart");
-        }
+    @SubscribeEvent
+    public static void onPlayerOpenContainer(PlayerContainerEvent.Open event) {
+        if (event.getPlayer().level.isClientSide)
+            return;
+
+        if (serverSideIsCasting(event.getPlayer()))
+            Messages.sendToServer(new PacketCancelCast(false));
+
     }
 
-    public static void onLivingEntityUseItemEventFinish(LivingEntityUseItemEvent.Finish event) {
-        TestMod.LOGGER.info("onLivingEntityUseItemEventFinish.1");
-        if (event.getItem().getItem() instanceof SpellBook) {
-            TestMod.LOGGER.info("onLivingEntityUseItemEventFinish");
-        }
-    }
+    @SubscribeEvent
+    public static void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+        if (event.getPlayer().level.isClientSide)
+            return;
 
-    public static void onLivingEntityUseItemEventTick(LivingEntityUseItemEvent.Tick event) {
-        TestMod.LOGGER.info("onLivingEntityUseItemEventTick.1");
-        if (event.getItem().getItem() instanceof SpellBook) {
-            TestMod.LOGGER.info("onLivingEntityUseItemEventTick");
-        }
+        if (serverSideIsCasting(event.getPlayer()))
+            Messages.sendToServer(new PacketCancelCast(false));
     }
-
 
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.side.isClient() && event.phase == TickEvent.Phase.END) {
@@ -72,6 +69,29 @@ public class ClientPlayerEvents {
                 ClientMagicData.castDurationRemaining--;
         }
     }
+
+    //
+    //  Helper Methods
+    //
+    private static boolean serverSideIsCasting(Player player) {
+        var playerMagicData = getPlayerMagicData(player);
+        if (playerMagicData != null)
+            return playerMagicData.isCasting();
+        else
+            return false;
+    }
+
+    private static PlayerMagicData getPlayerMagicData(Player player) {
+        var cap = player.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
+        if (cap.isPresent()) {
+            var playerMagicData = cap.resolve().get();
+
+            return playerMagicData;
+        } else {
+            return null;
+        }
+    }
+
 
     //https://github.com/TeamPneumatic/pnc-repressurized/commit/f901dae5180f378548c288da8f74373e1db631eb
     //https://www.tabnine.com/code/java/classes/net.minecraftforge.client.event.RenderPlayerEvent$Post
@@ -116,17 +136,5 @@ public class ClientPlayerEvents {
 //
 //        }
     }
-
-    public static void onLivingEntityUseItemEvent(LivingEntityUseItemEvent event) {
-        TestMod.LOGGER.info("onLivingEntityUseItemEvent");
-        if (event.getItem().getItem() instanceof SpellBook) {
-            if (ClientMagicData.isCasting || ClientMagicData.getCooldowns().hasCooldownsActive()) {
-                event.setCanceled(true);
-            }
-        }
-
-
-    }
-
 
 }
