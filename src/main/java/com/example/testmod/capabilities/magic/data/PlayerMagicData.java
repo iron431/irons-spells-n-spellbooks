@@ -41,6 +41,14 @@ public class PlayerMagicData {
         castDuration = 0;
     }
 
+    public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration) {
+        isCasting = true;
+        this.castingSpellId = castingSpellId;
+        this.castingSpellLevel = castingSpellLevel;
+        this.castDuration = castDuration;
+        this.castDurationRemaining = castDuration;
+    }
+
     public boolean isCasting() {
         return isCasting;
     }

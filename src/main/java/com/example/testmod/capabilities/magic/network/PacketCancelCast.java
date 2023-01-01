@@ -1,9 +1,11 @@
 package com.example.testmod.capabilities.magic.network;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,17 +14,19 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketCancelCast {
+    private final boolean triggerCooldown;
 
-    public PacketCancelCast() {
+    public PacketCancelCast(boolean triggerCooldown) {
 
+        this.triggerCooldown = triggerCooldown;
     }
 
     public PacketCancelCast(FriendlyByteBuf buf) {
-       buf.readByte();
+        triggerCooldown = buf.readBoolean();
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeByte(0);
+        buf.writeBoolean(triggerCooldown);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
@@ -35,7 +39,9 @@ public class PacketCancelCast {
                 if (playerMagicData.isCasting()) {
                     int spellId = playerMagicData.getCastingSpellId();
                     playerMagicData.resetCastingState();
-                    Messages.sendToPlayer(new PacketCastingState(spellId, 0, true), serverPlayer);
+                    if (triggerCooldown)
+                        MagicManager.get(serverPlayer.level).addCooldown(serverPlayer,SpellType.values()[spellId]);
+                    Messages.sendToPlayer(new PacketCastingState(spellId, 0, CastType.NONE, true), serverPlayer);
                 }
             }
         });

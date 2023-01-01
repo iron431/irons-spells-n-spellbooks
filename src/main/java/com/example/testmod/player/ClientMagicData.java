@@ -2,6 +2,7 @@ package com.example.testmod.player;
 
 import com.example.testmod.capabilities.magic.data.CooldownInstance;
 import com.example.testmod.capabilities.magic.data.PlayerCooldowns;
+import com.example.testmod.spells.CastType;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.data.PlayerMagicProvider;
 import com.example.testmod.spells.SpellType;
@@ -54,6 +55,7 @@ public class ClientMagicData {
     public static boolean isCasting = false;
     public static int castDurationRemaining = 0;
     public static int castDuration = 0;
+    public static CastType castType = CastType.NONE;
 
     public static float getCastCompletionPercent() {
         return 1 - (castDurationRemaining / (float) castDuration);

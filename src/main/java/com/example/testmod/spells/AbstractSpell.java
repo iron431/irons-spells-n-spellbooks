@@ -1,15 +1,17 @@
 package com.example.testmod.spells;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
-import com.example.testmod.capabilities.magic.network.PacketCastSpell;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
+import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.evocation.MagicMissileSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
+import com.example.testmod.spells.fire.TeleportSpell;
+import com.example.testmod.spells.lightning.ElectrocuteSpell;
+import com.example.testmod.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.TextComponent;
@@ -22,16 +24,19 @@ import static com.example.testmod.registries.AttributeRegistry.COOLDOWN_REDUCTIO
 
 public abstract class AbstractSpell {
     private final SpellType spellType;
+    private final CastType castType;
     protected int level;
     protected int baseManaCost;
     protected int manaCostPerLevel;
     protected int baseSpellPower;
-    protected int castTime;
     protected int spellPowerPerLevel;
+    //All time values in ticks
+    protected int castTime;
     protected int cooldown;
 
-    public AbstractSpell(SpellType spellEnum) {
-        this.spellType = spellEnum;
+    public AbstractSpell(SpellType spellType, CastType castType) {
+        this.spellType = spellType;
+        this.castType = castType;
     }
 
     public int getID() {
@@ -40,6 +45,10 @@ public abstract class AbstractSpell {
 
     public SpellType getSpellType() {
         return this.spellType;
+    }
+
+    public CastType getCastType() {
+        return this.castType;
     }
 
     public int getLevel() {
@@ -62,9 +71,6 @@ public abstract class AbstractSpell {
         return this.castTime;
     }
 
-    private int getEffectiveSpellCooldown(double playerCooldownModifier) {
-        return (int) (cooldown * (2 - playerCooldownModifier));
-    }
 
     public void setLevel(int level) {
         this.level = level;
@@ -84,6 +90,9 @@ public abstract class AbstractSpell {
             case MAGIC_MISSILE_SPELL -> {
                 return new MagicMissileSpell(level);
             }
+            case ELECTROCUTE_SPELL -> {
+                return new ElectrocuteSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -95,62 +104,92 @@ public abstract class AbstractSpell {
     }
 
     //returns true/false for success/failure to cast
-    public boolean attemptCast(ItemStack stack, Level world, Player player) {
+    public boolean attemptInitiateCast(ItemStack stack, Level world, Player player, boolean consumeMana, boolean triggerCooldown) {
         if (world.isClientSide) {
+            //TODO: handle client/server delineation in onCast, not here; this breaks all client side spells
             return false;
         }
-
-        var serverPlayer = world.getServer().getPlayerList().getPlayer(player.getUUID());
+        var serverPlayer = Utils.getServerPlayer(world, player.getUUID());
 
         if (serverPlayer != null) {
             MagicManager magicManager = MagicManager.get(world);
             var playerMagicData = magicManager.getPlayerMagicData(serverPlayer);
             int playerMana = playerMagicData.getMana();
 
-            if (playerMana <= 0) {
-                player.sendMessage(new TextComponent("Out of mana").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-            } else if (playerMana - getManaCost() < 0) {
+            boolean hasEnoughMana = playerMana - getManaCost() >= 0;
+            boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
+            boolean isAlreadyCasting = playerMagicData.isCasting();
+
+            if (!hasEnoughMana) {
                 player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-            } else if (playerMagicData.getPlayerCooldowns().isOnCooldown(spellType)) {
-                player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-            } else if (playerMagicData.isCasting()) {
-                player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is already casting").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-            } else if (castTime > 0) {
-                playerMagicData.setCasting(true);
-                playerMagicData.setCastingSpellId(getID());
-                playerMagicData.setCastingSpellLevel(level);
-                playerMagicData.setCastDuration(castTime);
-                playerMagicData.setCastDurationRemaining(castTime);
-                Messages.sendToPlayer(new PacketCastingState(getID(), castTime, false), serverPlayer);
-            } else {
-                return finishCasting(world, serverPlayer, magicManager, playerMagicData);
+                return false;
             }
+            if (isSpellOnCooldown) {
+                player.sendMessage(spellType.getDisplayName().append(" is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                return false;
+            }
+            if (isAlreadyCasting) {
+                return false;
+            }
+
+            if (this.castType == CastType.INSTANT) {
+                return castSpell(world, serverPlayer, consumeMana, triggerCooldown);
+            } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
+                playerMagicData.initiateCast(getID(), level, castTime);
+                Messages.sendToPlayer(new PacketCastingState(getID(), castTime, castType, false), serverPlayer);
+            }
+//            if (playerMana - getManaCost() < 0) {
+//                player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+//            } else if (playerMagicData.getPlayerCooldowns().isOnCooldown(spellType)) {
+//                player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+//            } else if (playerMagicData.isCasting()) {
+//                //player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is already casting").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+//            } else if (castTime > 0) {
+//                playerMagicData.setCasting(true);
+//                playerMagicData.setCastingSpellId(getID());
+//                playerMagicData.setCastingSpellLevel(level);
+//                playerMagicData.setCastDuration(castTime);
+//                playerMagicData.setCastDurationRemaining(castTime);
+//                Messages.sendToPlayer(new PacketCastingState(getID(), castTime, castType, false), serverPlayer);
+//            } else {
+//            }
         }
         return false;
     }
 
-    public boolean finishCasting(Level world, ServerPlayer serverPlayer, MagicManager magicManager, PlayerMagicData playerMagicData) {
-        int newMana = playerMagicData.getMana() - getManaCost();
-        double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
-        int effectiveCooldown = getEffectiveSpellCooldown(playerCooldownModifier);
-        magicManager.setPlayerCurrentMana(serverPlayer, newMana);
-        TestMod.LOGGER.info("setting cooldown: spell cooldown:" + cooldown + " effective spell cooldown:" + effectiveCooldown);
-        playerMagicData.getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
+    public boolean castSpell(Level world, ServerPlayer serverPlayer, boolean consumeMana, boolean triggerCooldown) {
+        MagicManager magicManager = MagicManager.get(serverPlayer.level);
+        PlayerMagicData playerMagicData = magicManager.getPlayerMagicData(serverPlayer);
+
+        int newMana = playerMagicData.getMana();
+        if (consumeMana) {
+            newMana -= getManaCost();
+            magicManager.setPlayerCurrentMana(serverPlayer, newMana);
+        }
+
+        if (triggerCooldown) {
+            MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, spellType);
+        }
+
         onCast(world, serverPlayer);
-        Messages.sendToPlayer(new PacketCastSpell(getID(), effectiveCooldown, newMana), serverPlayer);
+        Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
+
         return true;
     }
 
-    public abstract void onCast(Level world, Player player);
+    private int getCooldownLength(ServerPlayer serverPlayer) {
+        double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
+        int effectiveCooldown = MagicManager.getEffectiveSpellCooldown(cooldown, playerCooldownModifier);
+        return effectiveCooldown;
+    }
+
+    protected abstract void onCast(Level world, Player player);
 
     @Override
     public boolean equals(Object obj) {
         AbstractSpell o = (AbstractSpell) obj;
-        if (this == null || o == null)
-            return this == null && o == null;
-        if (this.spellType == o.spellType && this.level == o.level) {
-            return true;
-        }
-        return false;
+        if (o == null)
+            return false;
+        return this.spellType == o.spellType && this.level == o.level;
     }
 }

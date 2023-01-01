@@ -6,6 +6,8 @@ import com.example.testmod.capabilities.magic.data.PlayerMagicProvider;
 import com.example.testmod.capabilities.magic.network.PacketCancelCast;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -36,7 +38,7 @@ public class ClientPlayerEvents {
 
             if (playerMagicData.isCasting() && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1) && event.getFrom().getItem() instanceof SpellBook) {
                 TestMod.LOGGER.info("onLivingEquipmentChangeEvent: Cancel Cast");
-                Messages.sendToServer(new PacketCancelCast());
+                Messages.sendToServer(new PacketCancelCast(SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS));
             }
         }
     }
