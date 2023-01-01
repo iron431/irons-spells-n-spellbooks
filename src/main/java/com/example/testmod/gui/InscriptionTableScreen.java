@@ -7,6 +7,8 @@ import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,6 +22,7 @@ import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
@@ -27,6 +30,7 @@ import java.util.ArrayList;
 
 public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionTableMenu> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/gui/inscription_table.png");
+    private static final ResourceLocation TEXTURE2 = new ResourceLocation(TestMod.MODID, "textures/gui/spell_icons/fireball.png");
     //button locations
     private static final int INSCRIBE_BUTTON_X = 43;
     private static final int INSCRIBE_BUTTON_Y = 35;
@@ -77,9 +81,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     @Override
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+        setTexture(TEXTURE);
 
         this.blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
@@ -95,7 +97,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
 
         renderSpells(poseStack, mouseX, mouseY);
-        renderLorePage(poseStack,partialTick,mouseX,mouseY);
+        renderLorePage(poseStack, partialTick, mouseX, mouseY);
     }
 
     private void renderSpells(PoseStack poseStack, int mouseX, int mouseY) {
@@ -109,7 +111,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             var pos = spellSlots.get(i).relativePosition.add(center);
             spellSlot.x = (int) pos.x;
             spellSlot.y = (int) pos.y;
-            renderSpellSlot(poseStack, pos, mouseX, mouseY, i, spellSlots.get(i).hasSpell());
+            renderSpellSlot(poseStack, pos, mouseX, mouseY, i, spellSlots.get(i));
             //spellSlot.render(poseStack,mouseX,mouseY,1f);
         }
 
@@ -153,95 +155,115 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //could definitely be turned into method
     }
 
-    private void renderSpellSlot(PoseStack poseStack, Vec2 pos, int mouseX, int mouseY, int index, boolean hasSpell) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
-        int iconToDraw = isHovering((int) pos.x, (int) pos.y, 19, 19, mouseX, mouseY) ? 38 : hasSpell ? 19 : 0;
+    private void renderSpellSlot(PoseStack poseStack, Vec2 pos, int mouseX, int mouseY, int index, SpellSlotInfo slot) {
+        //setTexture(TEXTURE);
+        int iconToDraw = isHovering((int) pos.x, (int) pos.y, 19, 19, mouseX, mouseY) ? 38 : slot.hasSpell() ? 19 : 0;
         this.blit(poseStack, (int) pos.x, (int) pos.y, iconToDraw, 166, 19, 19);
+        if (slot.hasSpell()) {
+            drawSpellIcon(poseStack, pos, slot);
+            setTexture(TEXTURE);
+        }
         if (index == selectedSpellIndex)
             this.blit(poseStack, (int) pos.x, (int) pos.y, 57, 166, 19, 19);
+    }
+
+    private void drawSpellIcon(PoseStack poseStack, Vec2 pos, SpellSlotInfo slot) {
+        setTexture(slot.containedSpell.getSpellType().getResourceLocation());
+        this.blit(poseStack, (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
     }
 
     private void renderLorePage(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
         int x = leftPos + LORE_PAGE_X;
         int y = topPos;
-        int margin = 5;
+        int margin = 7;
         var textColor = Style.EMPTY.withColor(0x322c2a);
         //
         // Title
         //
         var title = selectedSpellIndex < 0 ? new TranslatableComponent("ui.testmod.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).containedSpell.getSpellType().getDisplayName() : new TranslatableComponent("ui.testmod.empty_slot");
         int titleWidth = font.width(title.getString());
-        int titleX = x + (LORE_PAGE_WIDTH -  titleWidth)/ 2;
-        int titleY = topPos+10;
-        font.draw(poseStack,title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, 0xFFFFFF);
+        int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
+        int titleY = topPos + 10;
+        font.draw(poseStack, title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, 0xFFFFFF);
 
-        if(selectedSpellIndex<0 || !spellSlots.get(selectedSpellIndex).hasSpell()) {
+        if (selectedSpellIndex < 0 || !spellSlots.get(selectedSpellIndex).hasSpell()) {
             return;
         }
         //good orange color: 0xe2701b
         //okay green color: 0x30bf30
-        var colorLevel = Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE);
-        var colorMana = Style.EMPTY.withColor(0x448fff);
+        //good mana color:0x448fff)
+        //var colorLevel = Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE);
+        var colorMana = Style.EMPTY.withColor(ChatFormatting.BLUE);
         var colorCast = textColor;
         var colorCooldown = textColor;
         var spell = spellSlots.get(selectedSpellIndex).containedSpell;
         float textScale = 1f;
-        float reverseScale = 1/textScale;
-        poseStack.scale(textScale,textScale,textScale);
+        float reverseScale = 1 / textScale;
+
+        String castKey = spell.getCastType() == CastType.CONTINUOUS ? "ui.testmod.cast_continuous" : "ui.testmod.cast_type";
+        String castContents = spell.getCastType() == CastType.INSTANT ? "Instant" : Utils.TimeFromTicks(spell.getCastTime(), 1);
+        Component school = spell.getSchoolType().getDisplayName();
+        poseStack.scale(textScale, textScale, textScale);
 
         //
         // Description
         //
-        if(isHovering(titleX,titleY,titleWidth,font.lineHeight,mouseX,mouseY))
-            renderTooltip(poseStack,new TextComponent("test"),mouseX,mouseY);
+        if (isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY))
+            renderTooltip(poseStack, new TextComponent("test"), mouseX, mouseY);
 
-        int descLine = y + font.lineHeight*3;
+        int descLine = y + font.lineHeight * 2 + 4;
+
+        //
+        //  School
+        //
+        drawTextWithShadow(font, poseStack, school, x + (LORE_PAGE_WIDTH - font.width(school.getString())) / 2, descLine, 0xFFFFFF, 1);
+        descLine += font.lineHeight * textScale;
 
         //
         // Level
         //
-        drawStatText(font,poseStack,x+margin,descLine,new TranslatableComponent("ui.testmod.level"),textColor,new TextComponent(spell.getLevel()+""),colorLevel,textScale);
-        descLine+=font.lineHeight*textScale;
+        var levelText = new TranslatableComponent("ui.testmod.level",spell.getLevel()).withStyle(textColor);
+        font.draw(poseStack,levelText,x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2,descLine,0xFFFFFF);
+        descLine += font.lineHeight * textScale * 2;
 
         //
         // Mana
         //
-        drawStatText(font,poseStack,x+margin,descLine,new TranslatableComponent("ui.testmod.mana_cost"),textColor,new TextComponent(spell.getManaCost()+""),colorMana,textScale);
-        descLine+=font.lineHeight;
+        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.mana_cost", textColor, new TextComponent(spell.getManaCost() + ""), colorMana, textScale);
+        descLine += font.lineHeight;
 
         //
         // Cast Time
         //
-        //TODO: replace with enum/real value
-        drawStatText(font,poseStack,x+margin,descLine,new TranslatableComponent("ui.testmod.cast_time"),textColor,new TextComponent("Instant"),colorCast,textScale);
-        descLine+=font.lineHeight;
+        drawStatText(font, poseStack, x + margin, descLine, castKey, textColor, new TextComponent(castContents), colorCast, textScale);
+        descLine += font.lineHeight;
 
         //
         // Cooldown
         //
-        drawStatText(font,poseStack,x+margin,descLine,new TranslatableComponent("ui.testmod.cooldown"),textColor,new TextComponent(Utils.TimeFromTicks(spell.getSpellCooldown(),1)),colorCooldown,textScale);
-        descLine+=font.lineHeight;
+        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.cooldown", textColor, new TextComponent(Utils.TimeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
+        descLine += font.lineHeight;
+
 
         //TODO: add dynamic information like damage, school, etc
 
 
-        poseStack.scale(reverseScale,reverseScale,reverseScale);
+        poseStack.scale(reverseScale, reverseScale, reverseScale);
     }
 
-    private void drawTextWithShadow(Font font, PoseStack poseStack, Component text, int x, int y, int color,float scale) {
-        x/=scale;
-        y/=scale;
+    private void drawTextWithShadow(Font font, PoseStack poseStack, Component text, int x, int y, int color, float scale) {
+        x /= scale;
+        y /= scale;
         font.draw(poseStack, text, x, y, color);
         font.drawShadow(poseStack, text, x, y, color);
     }
 
-    private void drawStatText(Font font, PoseStack poseStack, int x, int y, MutableComponent text1, Style color1,MutableComponent text2, Style color2, float scale){
-        x/=scale;
-        y/=scale;
-        font.draw(poseStack,text1.withStyle(color1).append(text2.withStyle(color2)),x,y,0xFFFFFF);
+    private void drawStatText(Font font, PoseStack poseStack, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
+        x /= scale;
+        y /= scale;
+        font.draw(poseStack, new TranslatableComponent(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF);
     }
+
     private void generateSpellSlots() {
         /*
          Reset Per-Book info
@@ -374,6 +396,12 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private boolean isHovering(int x, int y, int width, int height, int mouseX, int mouseY) {
         return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+    }
+
+    private void setTexture(ResourceLocation texture) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, texture);
     }
 
     private final int[][] LAYOUT = {

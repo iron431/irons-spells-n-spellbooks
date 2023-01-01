@@ -45,6 +45,10 @@ public abstract class AbstractSpell {
         return this.castType;
     }
 
+    public SchoolType getSchoolType() {
+        return spellType.getSchoolType();
+    }
+
     public int getLevel() {
         return this.level;
     }
