@@ -17,10 +17,13 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
+import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 //https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
 //https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
@@ -215,25 +218,25 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
         //TODO: check this out for hit detection: https://github.com/ZsoltMolnarrr/BetterCombat/tree/1.18.2/forge
         //https://github.com/ZsoltMolnarrr/BetterCombat/blob/74ccd5f7092b932b26462f27e0ea383acc1a92ae/common/src/main/java/net/bettercombat/client/collision/TargetFinder.java
 
-        if (!level.isClientSide) {
-            HitResult hitresult = getHitResult(this, this::canHitEntity);
-
-            TestMod.LOGGER.info("hitresult: {}", hitresult.getType().name());
-            if (hitresult.getType() == HitResult.Type.ENTITY) {
-                onHitEntity((EntityHitResult) hitresult);
-            }
-
-            for (int i = 0; i < subEntities.length; i++) {
-                var subEntity = subEntities[i];
-                hitresult = getHitResult(subEntity, this::canHitEntity);
-                if (hitresult.getType() == HitResult.Type.ENTITY) {
-                    onHitEntity((EntityHitResult) hitresult);
-                }
-
-            }
-
-            //spawnParticles();
-        }
+//        if (!level.isClientSide) {
+//            HitResult hitresult = getHitResult(this, this::canHitEntity);
+//
+//            TestMod.LOGGER.info("hitresult: {}", hitresult.getType().name());
+//            if (hitresult.getType() == HitResult.Type.ENTITY) {
+//                onHitEntity((EntityHitResult) hitresult);
+//            }
+//
+//            for (int i = 0; i < subEntities.length; i++) {
+//                var subEntity = subEntities[i];
+//                hitresult = getHitResult(subEntity, this::canHitEntity);
+//                if (hitresult.getType() == HitResult.Type.ENTITY) {
+//                    onHitEntity((EntityHitResult) hitresult);
+//                }
+//
+//            }
+//
+//            //spawnParticles();
+//        }
 
         var owner = this.getOwner();
         if (owner != null) {
@@ -260,7 +263,8 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
                 subEntity.zOld = vec3.z;
             }
         }
-
+        if (!level.isClientSide)
+            getSubEntityCollisions();
 //        if (++tickCount % 20 == 0) {
 //            var la = owner.getLookAngle();
 //            TestMod.LOGGER.info("ConeOfCold Owner look angle: x:{}, y:{}, z{}", la.x, la.y, la.z);
@@ -299,6 +303,27 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
 //            this.subEntities[l].zOld = vec3[l].z;
 //        }
         //setPos(position().add(getDeltaMovement()));
+    }
+
+    private List<Entity> getSubEntityCollisions() {
+        AABB aabb = this.getBoundingBox();
+        List<Entity> collisions = Lists.newArrayList();//this.level.getEntities(this, aabb);
+        for (Entity conepart : subEntities) {
+            collisions.addAll(level.getEntities(conepart, conepart.getBoundingBox()));
+        }
+
+        if (!collisions.isEmpty()) {
+
+             collisions = collisions.stream().filter(entity ->
+                    entity != getOwner() && entity != this && entity.getClass() != ConeOfColdPart.class
+            ).collect(Collectors.toList());
+
+            for (Entity entity : collisions) {
+                TestMod.LOGGER.info(entity.getName().getString());
+            }
+
+        }
+        return collisions;
     }
 
     public void spawnParticles() {
