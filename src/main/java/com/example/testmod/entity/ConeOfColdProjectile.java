@@ -22,6 +22,7 @@ import org.apache.commons.compress.utils.Lists;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -263,8 +264,11 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
                 subEntity.zOld = vec3.z;
             }
         }
-        if (!level.isClientSide)
-            getSubEntityCollisions();
+        if (!level.isClientSide) {
+            for (Entity entity : getSubEntityCollisions()) {
+                TestMod.LOGGER.info("ConeOfColdHit : {}", entity.getName().getString());
+            }
+        }
 //        if (++tickCount % 20 == 0) {
 //            var la = owner.getLookAngle();
 //            TestMod.LOGGER.info("ConeOfCold Owner look angle: x:{}, y:{}, z{}", la.x, la.y, la.z);
@@ -305,25 +309,25 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
         //setPos(position().add(getDeltaMovement()));
     }
 
-    private List<Entity> getSubEntityCollisions() {
+    private Set<Entity> getSubEntityCollisions() {
         AABB aabb = this.getBoundingBox();
         List<Entity> collisions = Lists.newArrayList();//this.level.getEntities(this, aabb);
         for (Entity conepart : subEntities) {
             collisions.addAll(level.getEntities(conepart, conepart.getBoundingBox()));
         }
 
-        if (!collisions.isEmpty()) {
+        return collisions.stream().filter(this::getValidCollision).collect(Collectors.toSet());
 
-             collisions = collisions.stream().filter(entity ->
-                    entity != getOwner() && entity != this && entity.getClass() != ConeOfColdPart.class
-            ).collect(Collectors.toList());
+    }
 
-            for (Entity entity : collisions) {
-                TestMod.LOGGER.info(entity.getName().getString());
-            }
+    private boolean getValidCollision(Entity target) {
+        return target != getOwner() && target instanceof LivingEntity && hasLineOfSightOnlyClip(this, target);
+    }
 
-        }
-        return collisions;
+    public static boolean hasLineOfSightOnlyClip(Entity entity, Entity target) {
+        Vec3 vec3 = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
+        Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
+        return entity.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
     }
 
     public void spawnParticles() {
