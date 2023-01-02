@@ -79,7 +79,7 @@ public enum SpellType {
     public CastType getCastType() {
         return switch (this) {
             case FIREBALL_SPELL, TELEPORT_SPELL -> CastType.LONG;
-            case ELECTROCUTE_SPELL -> CastType.CONTINUOUS;
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL -> CastType.CONTINUOUS;
             default -> CastType.INSTANT;
         };
     }

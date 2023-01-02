@@ -29,17 +29,17 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     private int age;
     private float damage;
 
-    public MagicMissileProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level level) {
+    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
     }
 
-    public MagicMissileProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level levelIn, double x, double y, double z) {
+    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, double x, double y, double z) {
         super(entityType, levelIn);
         setPos(x, y, z);
     }
 
-    public MagicMissileProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level levelIn, LivingEntity shooter) {
+    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, LivingEntity shooter) {
         super(entityType, levelIn);
         setOwner(shooter);
     }
@@ -50,7 +50,6 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
 
     public void shoot(Vec3 rotation) {
         setDeltaMovement(rotation.scale(SPEED));
-
     }
 
     public void setDamage(float damage) {
