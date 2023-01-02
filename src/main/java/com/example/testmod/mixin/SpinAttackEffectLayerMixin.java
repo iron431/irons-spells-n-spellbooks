@@ -23,7 +23,6 @@ public class SpinAttackEffectLayerMixin {
     public VertexConsumer selectSpinAttackTexture(VertexConsumer original,PoseStack poseStack, MultiBufferSource buffer, int p_117528_, LivingEntity livingEntity, float f1, float f2, float f3, float f4, float f5, float f6){
         //will need more refining if there become more ways to spin attack
         Item usedItem = livingEntity.getItemInHand(livingEntity.getUsedItemHand()).getItem();
-        TestMod.LOGGER.info("selected item: "+ usedItem);
         switch(ClientMagicData.lastSpinAttack){
             case FIRE:
                 return  buffer.getBuffer(RenderType.entityCutoutNoCull(FIRE_TEXTURE));

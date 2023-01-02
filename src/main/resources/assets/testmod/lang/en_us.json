@@ -10,7 +10,7 @@
   "tooltip.testmod.mana_cost": " %d Mana Cost",
   "tooltip.testmod.cooldown_length_seconds": " %d Cooldown",
   "tooltip.testmod.cast_type": " %s Cast",
-  "tooltip.testmod.selected_spell": "[%s]",
+  "tooltip.testmod.selected_spell": "[%s %d]",
 
   "ui.testmod.no_spellbook": "No SpellBook",
   "ui.testmod.no_selection": "Select a Spell",
@@ -29,7 +29,7 @@
   "school.testmod.holy": "Holy",
   "school.testmod.ender": "Ender",
   "school.testmod.blood": "Blood",
-  "school.testmod.evocation": "Evokation",
+  "school.testmod.evocation": "Evocation",
 
   "attribute.testmod.max_mana":"Max Mana",
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",

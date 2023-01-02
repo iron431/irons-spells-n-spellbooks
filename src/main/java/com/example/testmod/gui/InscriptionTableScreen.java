@@ -193,9 +193,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //okay green color: 0x30bf30
         //good mana color:0x448fff)
         //var colorLevel = Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE);
-        var colorMana = Style.EMPTY.withColor(ChatFormatting.BLUE);
-        var colorCast = textColor;
-        var colorCooldown = textColor;
+        var colorMana = Style.EMPTY.withColor(0x0044a9);
+        var colorCast = Style.EMPTY.withColor(0x115511);
+        var colorCooldown = Style.EMPTY.withColor(0x115511);
         var spell = spellSlots.get(selectedSpellIndex).containedSpell;
         float textScale = 1f;
         float reverseScale = 1 / textScale;

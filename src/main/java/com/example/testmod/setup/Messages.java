@@ -4,6 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.network.*;
 import com.example.testmod.gui.network.PacketInscribeSpell;
 import com.example.testmod.gui.network.PacketRemoveSpell;
+import com.example.testmod.spells.network.PacketAddMotionToClient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -41,6 +42,12 @@ public class Messages {
                 .decoder(PacketCastingState::new)
                 .encoder(PacketCastingState::toBytes)
                 .consumer(PacketCastingState::handle)
+                .add();
+
+        net.messageBuilder(PacketAddMotionToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PacketAddMotionToClient::new)
+                .encoder(PacketAddMotionToClient::toBytes)
+                .consumer(PacketAddMotionToClient::handle)
                 .add();
 
         net.messageBuilder(PacketCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)

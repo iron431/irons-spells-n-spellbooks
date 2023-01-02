@@ -117,21 +117,6 @@ public abstract class AbstractSpell {
                 playerMagicData.initiateCast(getID(), level, castTime);
                 Messages.sendToPlayer(new PacketCastingState(getID(), castTime, castType, false), serverPlayer);
             }
-//            if (playerMana - getManaCost() < 0) {
-//                player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-//            } else if (playerMagicData.getPlayerCooldowns().isOnCooldown(spellType)) {
-//                player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-//            } else if (playerMagicData.isCasting()) {
-//                //player.sendMessage(new TextComponent(this.spellType.getDisplayName().getString() + " is already casting").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-//            } else if (castTime > 0) {
-//                playerMagicData.setCasting(true);
-//                playerMagicData.setCastingSpellId(getID());
-//                playerMagicData.setCastingSpellLevel(level);
-//                playerMagicData.setCastDuration(castTime);
-//                playerMagicData.setCastDurationRemaining(castTime);
-//                Messages.sendToPlayer(new PacketCastingState(getID(), castTime, castType, false), serverPlayer);
-//            } else {
-//            }
         }
         return false;
     }
@@ -158,8 +143,7 @@ public abstract class AbstractSpell {
 
     private int getCooldownLength(ServerPlayer serverPlayer) {
         double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
-        int effectiveCooldown = MagicManager.getEffectiveSpellCooldown(cooldown, playerCooldownModifier);
-        return effectiveCooldown;
+        return MagicManager.getEffectiveSpellCooldown(cooldown, playerCooldownModifier);
     }
 
     protected abstract void onCast(Level world, Player player);

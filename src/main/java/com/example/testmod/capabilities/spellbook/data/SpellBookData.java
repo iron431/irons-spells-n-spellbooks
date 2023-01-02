@@ -136,7 +136,7 @@ public class SpellBookData {
         if (hoverText == null || dirty) {
             hoverText = Lists.newArrayList();
             if(activeSpell!=null)
-                hoverText.add(new TranslatableComponent("tooltip.testmod.selected_spell", activeSpell.getSpellType().getDisplayName()).withStyle(ChatFormatting.WHITE));
+                hoverText.add(new TranslatableComponent("tooltip.testmod.selected_spell", activeSpell.getSpellType().getDisplayName(),activeSpell.getLevel()).withStyle(ChatFormatting.WHITE));
         }
         return hoverText;
     }

@@ -1,9 +1,14 @@
 package com.example.testmod.spells.fire;
 
+import ca.weblite.objc.Message;
+import com.example.testmod.TestMod;
 import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.spells.network.PacketAddMotionToClient;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -13,6 +18,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.logging.Logger;
 
 
 public class BurningDashSpell extends AbstractSpell {
@@ -24,16 +31,28 @@ public class BurningDashSpell extends AbstractSpell {
 
     public BurningDashSpell(int level) {
         super(SpellType.BURNING_DASH_SPELL);
-        baseManaCost = 20;
-        manaCostPerLevel = 5;
-        baseSpellPower = 1;
-        spellPowerPerLevel = 1;
-        cooldown = 80;
+        this.level = level;
+        this.manaCostPerLevel = 5;
+        this.baseSpellPower = 1;
+        this.spellPowerPerLevel = 1;
+        this.castTime = 0;
+        this.baseManaCost = 20;
+        this.cooldown = 20;
     }
 
     @Override
     public void onCast(Level world, Player player) {
-        int spellLevel = this.level;//default is the riptide enchantment level
+        ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.FIRE;
+//
+        float amplifier = 0.5f + (level - 1) * .25f;
+        Vec3 vec = player.getLookAngle().normalize().scale(amplifier);
+//
+        if (player.isOnGround())
+            player.move(MoverType.SELF, new Vec3(0.0D, 0.75d, 0.0D));
+
+        player.startAutoSpinAttack(10 + level);
+        Messages.sendToPlayer(new PacketAddMotionToClient(vec,true),(ServerPlayer)player);
+        /*
         //in degrees
         float rx = player.getYRot();
         float ry = player.getXRot();
@@ -48,11 +67,9 @@ public class BurningDashSpell extends AbstractSpell {
         vecY *= amplifier / magnitude;
         vecZ *= amplifier / magnitude;
 
-        if (player.isOnGround())
-            player.move(MoverType.SELF, new Vec3(0.0D, 0.75d, 0.0D));
         player.startAutoSpinAttack(10);
         player.push(vecX, vecY * .5d, vecZ);
-        //player.spin
+
         SoundEvent soundevent;
         if (spellLevel >= 3) {
             soundevent = SoundEvents.TRIDENT_RIPTIDE_3;
@@ -61,7 +78,7 @@ public class BurningDashSpell extends AbstractSpell {
         } else {
             soundevent = SoundEvents.TRIDENT_RIPTIDE_1;
         }
-        world.playSound((Player) null, player, soundevent, SoundSource.PLAYERS, 1.0F, 1.0F);
-        ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.FIRE;
+        world.playSound((Player) null, player, soundevent, SoundSource.PLAYERS, 1.0F, 1.0F);*/
+
     }
 }
