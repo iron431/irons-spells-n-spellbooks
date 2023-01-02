@@ -8,6 +8,9 @@ import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
@@ -120,6 +123,10 @@ public class MagicManager {
     }
     public static int getEffectiveSpellCooldown(int cooldown,  double playerCooldownModifier) {
         return (int) (cooldown * (2 - playerCooldownModifier));
+    }
+    public static void spawnParticles(Level level,ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force){
+        level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
+
     }
 
 }

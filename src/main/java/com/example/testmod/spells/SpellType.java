@@ -6,6 +6,7 @@ import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
+import com.example.testmod.spells.holy.HealSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -14,8 +15,8 @@ public enum SpellType {
     /*
     When adding spell, add:
         Spell Type
-        Cast Type
-        School Type
+        SpellType.Cast Type
+        SpellType.School Type
         SpellType.getForType
         Translation
         Icon
@@ -26,7 +27,8 @@ public enum SpellType {
     TELEPORT_SPELL(3),
     MAGIC_MISSILE_SPELL(4),
     ELECTROCUTE_SPELL(5),
-    CONE_OF_COLD_SPELL(6);
+    CONE_OF_COLD_SPELL(6),
+    HEAL_SPELL(7);
 
     private final int value;
 
@@ -57,6 +59,9 @@ public enum SpellType {
             }
             case ELECTROCUTE_SPELL -> {
                 return new ElectrocuteSpell(level);
+            }
+            case HEAL_SPELL -> {
+                return new HealSpell(level);
             }
             default -> {
                 return new NoneSpell(0);
@@ -92,7 +97,7 @@ public enum SpellType {
             case FIREBALL_SPELL, BURNING_DASH_SPELL -> SchoolType.FIRE;
             case CONE_OF_COLD_SPELL -> SchoolType.ICE;
             case ELECTROCUTE_SPELL -> SchoolType.LIGHTNING;
-            //case NONE_SPELL -> SchoolType.HOLY;
+            case HEAL_SPELL -> SchoolType.HOLY;
             case TELEPORT_SPELL, MAGIC_MISSILE_SPELL -> SchoolType.ENDER;
             //case NONE_SPELL -> SchoolType.BLOOD;
             case NONE_SPELL -> SchoolType.EVOCATION;
