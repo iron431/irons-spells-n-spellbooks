@@ -148,7 +148,7 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
 
     public static HitResult getHitResult(Entity entity, Predicate<Entity> predicate) {
         Vec3 deltaStart = entity.getDeltaMovement();
-        TestMod.LOGGER.info("ConeOfColdProjectile.getHitResult:deltaStart {}, {}, {}", deltaStart.x, deltaStart.y, deltaStart.z);
+        TestMod.LOGGER.info("ConeOfColdProjectile.getHitResult:deltaStart {} {}, {}, {}", entity.getName().getString(), deltaStart.x, deltaStart.y, deltaStart.z);
         Level level = entity.level;
         Vec3 currentPos = entity.position();
         Vec3 deltaAdded = currentPos.add(deltaStart);
@@ -225,7 +225,7 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
 
             for (int i = 0; i < subEntities.length; i++) {
                 var subEntity = subEntities[i];
-                hitresult = ProjectileUtil.getHitResult(subEntity, this::canHitEntity);
+                hitresult = getHitResult(subEntity, this::canHitEntity);
                 if (hitresult.getType() == HitResult.Type.ENTITY) {
                     onHitEntity((EntityHitResult) hitresult);
                 }
