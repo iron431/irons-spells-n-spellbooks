@@ -1,6 +1,7 @@
 package com.example.testmod.capabilities.spellbook.data;
 
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.apache.commons.lang3.ArrayUtils;
@@ -8,14 +9,14 @@ import org.apache.commons.lang3.ArrayUtils;
 public class SpellBookData {
 
     public static final String SPELL_SLOTS = "spellSlots";
-    public static final String ACTIVE_SPELL_ID = "activeSpellId";
+    public static final String ACTIVE_SPELL_INDEX = "activeSpellIndex";
     public static final String SPELLS = "spells";
     public static final String ID = "id";
     public static final String LEVEL = "level";
     public static final String SLOT = "slot";
 
     private AbstractSpell[] transcribedSpells;
-    private AbstractSpell activeSpell = null;
+    private int activeSpellIndex = -1;
     private int spellSlots = 0;
     private int spellCount = 0;
     private boolean dirty = true;
@@ -27,23 +28,27 @@ public class SpellBookData {
     }
 
     public AbstractSpell getActiveSpell() {
-        return activeSpell;
+        if (activeSpellIndex < 0) {
+            return AbstractSpell.getSpell(SpellType.NONE_SPELL, 0);
+        }
+
+        AbstractSpell spell = transcribedSpells[activeSpellIndex];
+
+        if (spell == null) {
+            return AbstractSpell.getSpell(SpellType.NONE_SPELL, 0);
+        }
+
+        return transcribedSpells[activeSpellIndex];
     }
 
     public boolean setActiveSpell(AbstractSpell spell) {
         var index = ArrayUtils.indexOf(transcribedSpells, spell);
-
-        if (index > -1) {
-            this.activeSpell = transcribedSpells[index];
-            setDirty(true);
-            return true;
-        }
-        return false;
+        return setActiveSpell(index);
     }
 
     public boolean setActiveSpell(int index) {
-        if (index < transcribedSpells.length && transcribedSpells[index] != null) {
-            this.activeSpell = transcribedSpells[index];
+        if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
+            this.activeSpellIndex = index;
             setDirty(true);
             return true;
         }
@@ -65,7 +70,7 @@ public class SpellBookData {
     }
 
     public boolean addSpell(AbstractSpell spell, int index) {
-        if (index < transcribedSpells.length && transcribedSpells[index] == null) {
+        if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] == null) {
             transcribedSpells[index] = spell;
             spellCount++;
             if (spellCount == 1) {
@@ -101,7 +106,10 @@ public class SpellBookData {
     }
 
     public boolean replaceSpell(int index, AbstractSpell newSpell) {
-        return replaceSpell(transcribedSpells[index], newSpell);
+        if (index > -1 && index < transcribedSpells.length) {
+            return replaceSpell(transcribedSpells[index], newSpell);
+        }
+        return false;
     }
 
     public boolean removeSpell(AbstractSpell spell) {
@@ -130,6 +138,7 @@ public class SpellBookData {
         ListTag listTagSpells = new ListTag();
         CompoundTag compound = new CompoundTag();
         compound.putInt(SPELL_SLOTS, spellSlots);
+        compound.putInt(ACTIVE_SPELL_INDEX, -1);
 
         for (int i = 0; i < transcribedSpells.length; i++) {
             var spell = transcribedSpells[i];
@@ -143,21 +152,16 @@ public class SpellBookData {
         }
 
         compound.put(SPELLS, listTagSpells);
-
-        if (this.activeSpell == null) {
-            compound.putInt(ACTIVE_SPELL_ID, -1);
-        } else {
-            compound.putInt(ACTIVE_SPELL_ID, this.activeSpell.getID());
-        }
         this.tag = compound;
         setDirty(false);
+
         return (this.tag);
     }
 
     public void loadNBTData(CompoundTag compound) {
-        spellSlots = compound.getInt(SPELL_SLOTS);
-        transcribedSpells = new AbstractSpell[spellSlots];
-        int activeSpellId = compound.getInt(ACTIVE_SPELL_ID);
+        this.spellSlots = compound.getInt(SPELL_SLOTS);
+        this.transcribedSpells = new AbstractSpell[spellSlots];
+        this.activeSpellIndex = compound.getInt(ACTIVE_SPELL_INDEX);
 
         ListTag listTagSpells = (ListTag) compound.get(SPELLS);
         if (listTagSpells != null) {
@@ -169,10 +173,8 @@ public class SpellBookData {
                 AbstractSpell s = AbstractSpell.getSpell(id, level);
                 transcribedSpells[index] = s;
                 spellCount++;
-                if (activeSpellId == s.getID()) {
-                    setActiveSpell(s);
-                }
             });
         }
+        setDirty(false);
     }
 }
