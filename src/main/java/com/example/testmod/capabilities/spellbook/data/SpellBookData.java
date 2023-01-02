@@ -128,7 +128,7 @@ public class SpellBookData {
             transcribedSpells[index] = null;
             spellCount--;
 
-            if (spellCount == 0 || activeSpellIndex == index) {
+            if (spellCount == 0) {
                 activeSpellIndex = -1;
             } else {
                 for (int i = 0; i < transcribedSpells.length; i++) {
