@@ -30,8 +30,7 @@ public class ConeOfColdSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, Player player) {
         ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, player);
-        coneOfColdProjectile.setPos(player.position().add(0, player.getEyeHeight() , 0));
-        coneOfColdProjectile.shoot(player.getLookAngle());//
+        coneOfColdProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
         coneOfColdProjectile.setDamage(getSpellPower());
         world.addFreshEntity(coneOfColdProjectile);
     }

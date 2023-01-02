@@ -39,21 +39,20 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
     private int age;
     private float damage;
     private int tickCount;
+    boolean didRun = false;
 
     private final ConeOfColdPart[] subEntities;
-    public final ConeOfColdPart part1;
-    private final ConeOfColdPart part2;
-    private final ConeOfColdPart part3;
 
     public ConeOfColdProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
-        //this.setBoundingBox(new AABB(10,10,10,10,10,10));
 
-        this.part1 = new ConeOfColdPart(this, "part1", 1.0F, 1.0F);
-        this.part2 = new ConeOfColdPart(this, "part2", 2.0F, 1.0F);
-        this.part3 = new ConeOfColdPart(this, "part3", 3.0F, 1.0F);
-        this.subEntities = new ConeOfColdPart[]{part1, part2, part3};
+        this.subEntities = new ConeOfColdPart[]{
+                new ConeOfColdPart(this, "part1", 1.0F, 1.0F),
+                new ConeOfColdPart(this, "part2", 2.5F, 1.5F),
+                new ConeOfColdPart(this, "part3", 3.5F, 2.0F),
+                new ConeOfColdPart(this, "part4", 4.5F, 3.0F)
+        };
 
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
     }
@@ -132,21 +131,6 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
         coneOfColdPart.setPos(this.getX() + x, this.getY() + y, this.getZ() + z);
     }
 
-//    protected static Vec3 rayTrace(Entity owner) {
-//        double range = 5;
-//
-//        float f = owner.getXRot();
-//        float f1 = owner.getYRot();
-//        Vec3 vector3d = owner.getEyePosition(1.0F);
-//        float f2 = Mth.cos(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
-//        float f3 = Mth.sin(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
-//        float f4 = -Mth.cos(-f * ((float) Math.PI / 180F));
-//        float f5 = Mth.sin(-f * ((float) Math.PI / 180F));
-//        float f6 = f3 * f4;
-//        float f7 = f2 * f4;
-//        return vector3d.add((double) f6 * range, (double) f5 * range, (double) f7 * range);
-//    }
-
     protected static Vec3 rayTrace(Entity owner) {
         float f = owner.getXRot();
         float f1 = owner.getYRot();
@@ -160,15 +144,15 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
         return new Vec3(f6, f5, f7);
     }
 
-
     @Override
     public void tick() {
+
+        //TODO: try this instead of the ray trace
         /*
         So. This is what vectors are for.
         The player has a vector that is their "front" called "LookVec" (Search the EntityPlayer class).
         Take that vector, multiply by 0.5 (or 0.2 or whatever), add their current position, and voila. You have the spot a half-block in front of them.
         */
-
 
         super.tick();
 
@@ -177,16 +161,24 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
             return;
         }
 
+//        if (didRun) {
+//            return;
+//        }
+//        didRun = true;
+
         var owner = this.getOwner();
         if (owner != null) {
-            int range = 4;
             var rayTraceVector = rayTrace(owner);
-            var ownerEyePos = owner.getEyePosition(1.0f);
+            var ownerEyePos = owner.getEyePosition(1.0f).subtract(0, .8, 0);
             this.setPos(ownerEyePos);
 
+            double scale = 1;
+
             for (int i = 0; i < subEntities.length; i++) {
-                var newVector = ownerEyePos.add(rayTraceVector.multiply(range + i, range + i, range + i));
                 var subEntity = subEntities[i];
+
+                double distance = 1 + (i * scale * subEntity.getDimensions(null).width / 2);
+                var newVector = ownerEyePos.add(rayTraceVector.multiply(distance, distance, distance));
                 subEntity.setPos(newVector);
                 var vec3 = new Vec3(subEntity.getX(), subEntity.getY(), subEntity.getZ());
                 subEntity.xo = vec3.x;
