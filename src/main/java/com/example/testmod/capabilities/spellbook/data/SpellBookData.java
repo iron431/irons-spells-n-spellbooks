@@ -127,7 +127,13 @@ public class SpellBookData {
         if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
             transcribedSpells[index] = null;
             spellCount--;
-            activeSpellIndex = ArrayUtils.indexOf(transcribedSpells, AbstractSpell.class);
+            for (int i = 0; i < transcribedSpells.length; i++) {
+                if (transcribedSpells[i] != null) {
+                    activeSpellIndex = i;
+                    break;
+                }
+            }
+
             setDirty(true);
             return true;
         }
