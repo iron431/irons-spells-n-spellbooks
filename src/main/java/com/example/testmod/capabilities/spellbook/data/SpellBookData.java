@@ -138,7 +138,7 @@ public class SpellBookData {
         ListTag listTagSpells = new ListTag();
         CompoundTag compound = new CompoundTag();
         compound.putInt(SPELL_SLOTS, spellSlots);
-        compound.putInt(ACTIVE_SPELL_INDEX, -1);
+        compound.putInt(ACTIVE_SPELL_INDEX, activeSpellIndex);
 
         for (int i = 0; i < transcribedSpells.length; i++) {
             var spell = transcribedSpells[i];
