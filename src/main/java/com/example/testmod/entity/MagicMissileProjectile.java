@@ -1,7 +1,9 @@
 package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.registries.EntityRegistry;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -23,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 //https://github.com/maximumpower55/Aura
 
 public class MagicMissileProjectile extends Projectile implements ItemSupplier {
-    private static final double SPEED = 1.5d;
+    private static final double SPEED = 3d;
     private static final int EXPIRE_TIME = 2 * 20;
 
     private int age;
@@ -67,13 +69,22 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         TestMod.LOGGER.info("MagicMissileProjectile.onHitEntity");
-        if (entityHitResult.getEntity() instanceof LivingEntity target)
+        if (entityHitResult.getEntity() instanceof LivingEntity target) {
             //TODO: deal with the damage
             target.hurt(DamageSource.MAGIC, damage);
+                double x = getX() + getDeltaMovement().x;
+                double y = getY() + getDeltaMovement().y;
+                double z = getZ() + getDeltaMovement().z;
+
+
+                MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z,50, 0, 0, 0, .5, true);
+        }
+
     }
 
     @Override
     protected void onHit(HitResult p_37260_) {
+
         super.onHit(p_37260_);
     }
 
@@ -112,16 +123,13 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
         if (!level.isClientSide) {
-            for (int count = 0; count < 3; count++) {
-                double x = getX() + (level.random.nextInt(3) - 1) / 4D;
-                double y = getY() + 0.2F + (level.random.nextInt(3) - 1) / 4D;
-                double z = getZ() + (level.random.nextInt(3) - 1) / 4D;
-                double deltaX = (level.random.nextInt(3) - 1) * level.random.nextDouble();
-                double deltaY = (level.random.nextInt(3) - 1) * level.random.nextDouble();
-                double deltaZ = (level.random.nextInt(3) - 1) * level.random.nextDouble();
+            double x = getX();
+            double y = getY();
+            double z = getZ();
+            MagicManager.spawnParticles(level, ParticleTypes.GLOW, x, y, z, 3, 0, 0, 0, .25, true);
+            MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z, 1, 0, 0, 0, 0, false);
+            MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 1, 0, 0, 0, 0, false);
 
-                level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, ParticleTypes.END_ROD, true, x, y, z, 1, deltaX, deltaY, deltaZ, .1d));
-            }
         }
     }
 
