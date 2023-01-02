@@ -53,6 +53,7 @@ public class ScrollData {
         if (hoverText == null) {
             hoverText = Lists.newArrayList();
             hoverText.add(new TranslatableComponent("tooltip.testmod.level",spell.getLevel()).withStyle(ChatFormatting.GRAY));
+            hoverText.add(spell.getSchoolType().getDisplayName().copy());
             hoverText.add(TextComponent.EMPTY);
             hoverText.add(new TranslatableComponent("tooltip.testmod.scroll_tooltip").withStyle(ChatFormatting.GRAY));
             hoverText.add(new TranslatableComponent("tooltip.testmod.mana_cost",spell.getManaCost()).withStyle(ChatFormatting.BLUE));

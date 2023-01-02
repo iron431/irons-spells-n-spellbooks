@@ -6,7 +6,8 @@
   "mixins": [
     "TridentItemMixin",
     "ItemRendererMixin",
-    "SpinAttackEffectLayerMixin"
+    "SpinAttackEffectLayerMixin",
+    "LocalPlayerMixin"
   ],
   "client": [],
   "injectors": {

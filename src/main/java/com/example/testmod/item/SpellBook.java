@@ -9,6 +9,7 @@ import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,6 +19,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 import org.jline.utils.Log;
+
+import java.util.List;
 
 public class SpellBook extends Item {
 
@@ -29,40 +32,6 @@ public class SpellBook extends Item {
     public SpellBook(int spellSlots, Rarity rarity) {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(rarity));
     }
-
-    @Override
-    public int getUseDuration(ItemStack itemStack) {
-        return 7200;
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack p_41452_) {
-        return UseAnim.BOW;
-    }
-
-    @Override
-    public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
-        entity.stopUsingItem();
-        Messages.sendToServer(new PacketCancelCast(true));
-        super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
-    }
-
-    public SpellBookData getSpellBookData(ItemStack stack) {
-        return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
-    }
-
-//    @Override
-//    public void onUsingTick(ItemStack stack, LivingEntity player, int totalUseTicks) {
-//
-//        //TODO: remove this
-//        if (totalUseTicks % 10 == 0){
-//            var spell = getSpellBookData(stack).getActiveSpell();
-//            if(getUseDuration(stack)-totalUseTicks>spell.getCastTime())
-//                cancelSpell(player);
-//        }
-//
-//        super.onUsingTick(stack, player, totalUseTicks);
-//    }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
@@ -107,6 +76,33 @@ public class SpellBook extends Item {
 
 
         return InteractionResultHolder.fail(itemStack);
+    }
+
+    @Override
+    public int getUseDuration(ItemStack itemStack) {
+        return 7200;
+    }
+
+    @Override
+    public UseAnim getUseAnimation(ItemStack p_41452_) {
+        return UseAnim.BOW;
+    }
+
+    @Override
+    public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
+        entity.stopUsingItem();
+        Messages.sendToServer(new PacketCancelCast(true));
+        super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+        lines.addAll(getSpellBookData(itemStack).getHoverText());
+        super.appendHoverText(itemStack, level, lines, flag);
+    }
+
+    public SpellBookData getSpellBookData(ItemStack stack) {
+        return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
     }
 
     @Nullable

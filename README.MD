@@ -23,6 +23,9 @@
 - Teleport: https://moddingtutorials.org/1.19.2/advanced-items/
 - Loading values from config: https://www.youtube.com/watch?v=QN9jq3_V-I8
 
+###
+- Particles: https://forge.gemwire.uk/wiki/Particles
+
 ### Helpful commands
 - ```/setblock ~ ~ ~ testmod:inscription_table```
 - ```/data get entity @s```
