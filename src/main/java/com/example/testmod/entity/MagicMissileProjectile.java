@@ -34,16 +34,6 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         this.setNoGravity(true);
     }
 
-    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, double x, double y, double z) {
-        super(entityType, levelIn);
-        setPos(x, y, z);
-    }
-
-    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, LivingEntity shooter) {
-        super(entityType, levelIn);
-        setOwner(shooter);
-    }
-
     public MagicMissileProjectile(Level levelIn, LivingEntity shooter) {
         this(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), levelIn);
     }

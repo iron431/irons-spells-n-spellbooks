@@ -7,17 +7,20 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 //https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
 //https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
@@ -99,14 +102,13 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitBlock");
-        kill();
+        TestMod.LOGGER.info("ConeOfColdProjectile.onHitBlock");
     }
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitEntity");
+        TestMod.LOGGER.info("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         if (entityHitResult.getEntity() instanceof LivingEntity target)
             //TODO: deal with the damage
             target.hurt(DamageSource.MAGIC, damage);
@@ -144,6 +146,55 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
         return new Vec3(f6, f5, f7);
     }
 
+    public static HitResult getHitResult(Entity entity, Predicate<Entity> predicate) {
+        Vec3 deltaStart = entity.getDeltaMovement();
+        TestMod.LOGGER.info("ConeOfColdProjectile.getHitResult:deltaStart {}, {}, {}", deltaStart.x, deltaStart.y, deltaStart.z);
+        Level level = entity.level;
+        Vec3 currentPos = entity.position();
+        Vec3 deltaAdded = currentPos.add(deltaStart);
+        TestMod.LOGGER.info("ConeOfColdProjectile.getHitResult:deltaAdded {}, {}, {}", deltaAdded.x, deltaAdded.y, deltaAdded.z);
+        HitResult hitresult = level.clip(new ClipContext(currentPos, deltaAdded, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
+        TestMod.LOGGER.info("ConeOfColdProjectile.getHitResult:hitresult {}", hitresult.getType().name());
+        if (hitresult.getType() != HitResult.Type.MISS) {
+            deltaAdded = hitresult.getLocation();
+        }
+
+        HitResult hitresult1 = getEntityHitResult(level, entity, currentPos, deltaAdded, entity.getBoundingBox().expandTowards(entity.getDeltaMovement()).inflate(1.0D), predicate);
+        TestMod.LOGGER.info("ConeOfColdProjectile.getHitResult:hitresult.1 {}", hitresult.getType().name());
+        if (hitresult1 != null) {
+            hitresult = hitresult1;
+        }
+
+        return hitresult;
+    }
+
+    @Nullable
+    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabb, Predicate<Entity> predicate) {
+        TestMod.LOGGER.info("ConeOfColdProjectile.getEntityHitResult.enter:");
+        return getEntityHitResult(level, entity, currentPos, deltaPos, aabb, predicate, 0.3F);
+    }
+
+    @Nullable
+    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabbPassedin, Predicate<Entity> predicate, float inflateAmount) {
+        double d0 = Double.MAX_VALUE;
+        Entity hitEntity = null;
+
+        for (Entity entityToCheck : level.getEntities(entity, aabbPassedin, predicate)) {
+            TestMod.LOGGER.info("ConeOfColdProjectile:getEntityHitResult.2: {}", entityToCheck.getName().getString());
+            AABB aabb = entityToCheck.getBoundingBox().inflate((double) inflateAmount);
+            Optional<Vec3> optional = aabb.clip(currentPos, deltaPos);
+            if (optional.isPresent()) {
+                double d1 = currentPos.distanceToSqr(optional.get());
+                if (d1 < d0) {
+                    hitEntity = entityToCheck;
+                    d0 = d1;
+                }
+            }
+        }
+
+        return hitEntity == null ? null : new EntityHitResult(hitEntity);
+    }
+
     @Override
     public void tick() {
 
@@ -161,16 +212,35 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
             return;
         }
 
-//        if (didRun) {
-//            return;
-//        }
-//        didRun = true;
+        //TODO: check this out for hit detection: https://github.com/ZsoltMolnarrr/BetterCombat/tree/1.18.2/forge
+        //https://github.com/ZsoltMolnarrr/BetterCombat/blob/74ccd5f7092b932b26462f27e0ea383acc1a92ae/common/src/main/java/net/bettercombat/client/collision/TargetFinder.java
+
+        if (!level.isClientSide) {
+            HitResult hitresult = getHitResult(this, this::canHitEntity);
+
+            TestMod.LOGGER.info("hitresult: {}", hitresult.getType().name());
+            if (hitresult.getType() == HitResult.Type.ENTITY) {
+                onHitEntity((EntityHitResult) hitresult);
+            }
+
+            for (int i = 0; i < subEntities.length; i++) {
+                var subEntity = subEntities[i];
+                hitresult = ProjectileUtil.getHitResult(subEntity, this::canHitEntity);
+                if (hitresult.getType() == HitResult.Type.ENTITY) {
+                    onHitEntity((EntityHitResult) hitresult);
+                }
+
+            }
+
+            //spawnParticles();
+        }
 
         var owner = this.getOwner();
         if (owner != null) {
             var rayTraceVector = rayTrace(owner);
             var ownerEyePos = owner.getEyePosition(1.0f).subtract(0, .8, 0);
             this.setPos(ownerEyePos);
+            setDeltaMovement(ownerEyePos);
 
             double scale = 1;
 
@@ -180,6 +250,7 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
                 double distance = 1 + (i * scale * subEntity.getDimensions(null).width / 2);
                 var newVector = ownerEyePos.add(rayTraceVector.multiply(distance, distance, distance));
                 subEntity.setPos(newVector);
+                subEntity.setDeltaMovement(newVector);
                 var vec3 = new Vec3(subEntity.getX(), subEntity.getY(), subEntity.getZ());
                 subEntity.xo = vec3.x;
                 subEntity.yo = vec3.y;
