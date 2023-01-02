@@ -7,6 +7,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ItemSupplier;
@@ -59,46 +60,6 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
-        super.onHitBlock(blockHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitBlock");
-        kill();
-    }
-
-    @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
-        super.onHitEntity(entityHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitEntity");
-        if (entityHitResult.getEntity() instanceof LivingEntity target) {
-            //TODO: deal with the damage
-            target.hurt(DamageSource.MAGIC, damage);
-                double x = getX() + getDeltaMovement().x;
-                double y = getY() + getDeltaMovement().y;
-                double z = getZ() + getDeltaMovement().z;
-
-
-                MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z,50, 0, 0, 0, .5, true);
-        }
-
-    }
-
-    @Override
-    protected void onHit(HitResult p_37260_) {
-
-        super.onHit(p_37260_);
-    }
-
-    @Override
-    protected void defineSynchedData() {
-
-    }
-
-    @Override
-    public ItemStack getItem() {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     public void tick() {
         super.tick();
 
@@ -110,14 +71,58 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
 
         if (!level.isClientSide) {
             HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-            if (hitresult.getType() == HitResult.Type.ENTITY) {
-                onHitEntity((EntityHitResult) hitresult);
-            }
-
+            if (hitresult.getType() != HitResult.Type.MISS)
+                onHit(hitresult);
             spawnParticles();
         }
 
         setPos(position().add(getDeltaMovement()));
+    }
+
+    @Override
+    protected void onHit(HitResult hitresult) {
+        TestMod.LOGGER.info("MagicMissileProjectile.genericOnHit");
+        if (hitresult.getType() == HitResult.Type.ENTITY) {
+            onHitEntity((EntityHitResult) hitresult);
+        } else if (hitresult.getType() == HitResult.Type.BLOCK) {
+            onHitBlock((BlockHitResult) hitresult);
+        }
+        double x = hitresult.getLocation().x;
+        double y = hitresult.getLocation().y;
+        double z = hitresult.getLocation().z;
+
+        MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z, 50, 0, 0, 0, .5, true);
+
+        kill();
+
+    }
+
+    @Override
+    protected void onHitBlock(BlockHitResult blockHitResult) {
+        super.onHitBlock(blockHitResult);
+        TestMod.LOGGER.info("MagicMissileProjectile.onHitBlock");
+    }
+
+    @Override
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        super.onHitEntity(entityHitResult);
+        TestMod.LOGGER.info("MagicMissileProjectile.onHitEntity");
+        if (entityHitResult.getEntity() instanceof LivingEntity target) {
+            //TODO: deal with the damage
+            target.hurt(DamageSource.MAGIC, damage);
+
+        }
+
+    }
+
+    @Override
+    protected void defineSynchedData() {
+
+    }
+
+    @Override
+    public ItemStack getItem() {
+        return ItemStack.EMPTY;
     }
 
     //https://forge.gemwire.uk/wiki/Particles
@@ -133,6 +138,12 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         }
     }
 
+    @Override
+    protected boolean canHitEntity(Entity entity) {
+        if(entity == getOwner())
+            return false;
+        return super.canHitEntity(entity);
+    }
     /*
 	@Override
 	public void lerpMotion(double d, double e, double f) {
