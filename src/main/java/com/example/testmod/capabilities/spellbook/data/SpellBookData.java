@@ -48,12 +48,12 @@ public class SpellBookData {
         return transcribedSpells[activeSpellIndex];
     }
 
-    public boolean setActiveSpell(AbstractSpell spell) {
+    public boolean setActiveSpellIndex(AbstractSpell spell) {
         var index = ArrayUtils.indexOf(transcribedSpells, spell);
-        return setActiveSpell(index);
+        return setActiveSpellIndex(index);
     }
 
-    public boolean setActiveSpell(int index) {
+    public boolean setActiveSpellIndex(int index) {
         if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
             this.activeSpellIndex = index;
             setDirty(true);
@@ -81,7 +81,7 @@ public class SpellBookData {
             transcribedSpells[index] = spell;
             spellCount++;
             if (spellCount == 1) {
-                setActiveSpell(index);
+                setActiveSpellIndex(index);
             }
             setDirty(true);
             return true;
@@ -124,12 +124,10 @@ public class SpellBookData {
     }
 
     public boolean removeSpell(int index) {
-        if (index < transcribedSpells.length && transcribedSpells[index] != null) {
+        if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
             transcribedSpells[index] = null;
             spellCount--;
-            if (spellCount == 0) {
-                setActiveSpell(null);
-            }
+            activeSpellIndex = ArrayUtils.indexOf(transcribedSpells, AbstractSpell.class);
             setDirty(true);
             return true;
         }
