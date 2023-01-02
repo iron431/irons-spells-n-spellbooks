@@ -2,6 +2,8 @@ package com.example.testmod.player;
 
 import com.example.testmod.capabilities.magic.data.CooldownInstance;
 import com.example.testmod.capabilities.magic.data.PlayerCooldowns;
+import com.example.testmod.capabilities.spellbook.data.SpellBookData;
+import com.example.testmod.item.SpellBook;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.data.PlayerMagicProvider;
@@ -9,6 +11,11 @@ import com.example.testmod.spells.SpellType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec2;
+import org.apache.commons.compress.utils.Lists;
+
+import java.util.List;
 
 public class ClientMagicData {
     static {
@@ -72,6 +79,45 @@ public class ClientMagicData {
         FIRE
     }
 
+
+    /**
+     * SPELL BAR RENDER CACHING
+     *************************/
+    public static List<Vec2> relativeSpellBarSlotLocations = Lists.newArrayList();
+
+    public static void generateRelativeLocations(SpellBookData spellBookData,int boxSize, int spriteSize){
+        System.out.println("Generating spell slot locations");
+        relativeSpellBarSlotLocations.clear();
+        if(spellBookData==null)
+            return;
+        int spellCount = spellBookData.getSpellSlots();
+
+        int[] row1 = new int[SPELL_LAYOUT[spellCount - 1][0]];
+        int[] row2 = new int[SPELL_LAYOUT[spellCount - 1][1]];
+        int[] row3 = new int[SPELL_LAYOUT[spellCount - 1][2]];
+
+        int[] rowWidth = {
+                boxSize * row1.length,
+                boxSize * row2.length,
+                boxSize * row3.length
+        };
+        int[] rowHeight = {
+                row1.length > 0 ? boxSize : 0,
+                row2.length > 0 ? boxSize : 0,
+                row3.length > 0 ? boxSize : 0
+        };
+
+        int[][] display = {row1, row2, row3};
+        int overallHeight = rowHeight[0] + rowHeight[1] + rowHeight[2];
+        for (int row = 0; row < display.length; row++) {
+            for (int column = 0; column < display[row].length; column++) {
+                int offset = -rowWidth[row] / 2;
+                Vec2 location = new Vec2(offset + column * boxSize, (row) * boxSize - (overallHeight / 2));
+                location.add(-spriteSize/2);
+                relativeSpellBarSlotLocations.add(location);
+            }
+        }
+    }
     /**
      * HELPER
      *************************/
@@ -84,4 +130,22 @@ public class ClientMagicData {
         }
         return new PlayerMagicData();
     }
+
+    public static final int[][] SPELL_LAYOUT = {
+            {1, 0, 0}, //1
+            {2, 0, 0}, //2
+            {2, 1, 0}, //3
+            {2, 2, 0}, //4
+            {3, 2, 0}, //5
+            {3, 3, 0}, //6
+            {4, 3, 0}, //7
+            {4, 4, 0}, //8
+            {3, 3, 3}, //9
+            {3, 4, 3}, //10
+            {4, 4, 3}, //11
+            {4, 4, 4}, //12
+            {4, 5, 4}, //13
+            {5, 5, 4}, //14
+            {5, 5, 5}  //15
+    };
 }

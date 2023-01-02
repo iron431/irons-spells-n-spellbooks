@@ -5,6 +5,7 @@ import com.example.testmod.gui.network.PacketInscribeSpell;
 import com.example.testmod.gui.network.PacketRemoveSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
+import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
@@ -347,7 +348,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //  Called when inscription button clicked
         //
 
-        //quick inscribe
+        //  Is the spell book bricked?
+        if(spellSlots.size()<=0)
+            return;
+
+        //  Quick inscribe
         if (selectedSpellIndex < 0) {
             selectedSpellIndex = 0;
             for (int i = 0; i < spellSlots.size(); i++) {
@@ -357,14 +362,14 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 }
             }
         }
-        //is this slot already taken?
+        //  Is this slot already taken?
         if (spellSlots.get(selectedSpellIndex).hasSpell()) {
             return;
         }
         //TODO: check if we are eligible.. (rarity, other conditions, etc)
 
         //
-        //good to inscribe
+        //  Good to inscribe
         //
 
         isDirty = true;
@@ -385,8 +390,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private boolean isSpellBookSlotted() {
-        //switch to forge tags
-        return /*menu.slots.get(SPELLBOOK_SLOT).hasItem() &&*/ menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook;
+        return menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook;
     }
 
     private boolean isScrollSlotted() {
@@ -404,23 +408,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         RenderSystem.setShaderTexture(0, texture);
     }
 
-    private final int[][] LAYOUT = {
-            {1, 0, 0}, //1
-            {2, 0, 0}, //2
-            {2, 1, 0}, //3
-            {2, 2, 0}, //4
-            {3, 2, 0}, //5
-            {3, 3, 0}, //6
-            {4, 3, 0}, //7
-            {4, 4, 0}, //8
-            {3, 3, 3}, //9
-            {3, 4, 3}, //10
-            {4, 4, 3}, //11
-            {4, 4, 4}, //12
-            {4, 5, 4}, //13
-            {5, 5, 4}, //14
-            {5, 5, 5}  //15
-    };
+    private final int[][] LAYOUT = ClientMagicData.SPELL_LAYOUT;
 
     private class SpellSlotInfo {
         public AbstractSpell containedSpell;

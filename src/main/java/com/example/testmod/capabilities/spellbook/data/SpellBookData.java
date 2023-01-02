@@ -76,6 +76,10 @@ public class SpellBookData {
         return spellSlots;
     }
 
+    public int getActiveSpellIndex() {
+        return activeSpellIndex;
+    }
+
     public boolean addSpell(AbstractSpell spell, int index) {
         if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] == null) {
             transcribedSpells[index] = spell;
@@ -127,7 +131,18 @@ public class SpellBookData {
         if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
             transcribedSpells[index] = null;
             spellCount--;
-            activeSpellIndex = ArrayUtils.indexOf(transcribedSpells, AbstractSpell.class);
+
+            if (spellCount == 0) {
+                activeSpellIndex = -1;
+            } else {
+                for (int i = 0; i < transcribedSpells.length; i++) {
+                    if (transcribedSpells[i] != null) {
+                        activeSpellIndex = i;
+                        break;
+                    }
+                }
+            }
+
             setDirty(true);
             return true;
         }
