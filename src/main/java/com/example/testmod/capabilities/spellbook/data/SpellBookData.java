@@ -23,7 +23,7 @@ public class SpellBookData {
 
     private AbstractSpell[] transcribedSpells;
     private int activeSpellIndex = -1;
-    private int spellSlots = 0;
+    private int spellSlots;
     private int spellCount = 0;
     private boolean dirty = true;
     private List<Component> hoverText;
@@ -195,6 +195,5 @@ public class SpellBookData {
                 spellCount++;
             });
         }
-        setDirty(false);
     }
 }

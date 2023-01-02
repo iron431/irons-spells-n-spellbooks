@@ -24,13 +24,15 @@ import java.util.List;
 
 public class SpellBook extends Item {
 
+    private int spellSlots;
 
     public SpellBook() {
-        this(1, Rarity.UNCOMMON);
+        this(5, Rarity.UNCOMMON);
     }
 
     public SpellBook(int spellSlots, Rarity rarity) {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(rarity));
+        this.spellSlots = spellSlots;
     }
 
     @Override
@@ -109,7 +111,7 @@ public class SpellBook extends Item {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         //The CompoundTag passed in here will be attached to the ItemStack by forge so you can add additional items to it if you need
-        return new SpellBookDataProvider(2, stack, nbt);
+        return new SpellBookDataProvider(spellSlots, stack, nbt);
     }
 
 }
