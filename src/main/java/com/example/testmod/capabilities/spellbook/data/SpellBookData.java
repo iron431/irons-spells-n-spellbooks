@@ -127,10 +127,15 @@ public class SpellBookData {
         if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
             transcribedSpells[index] = null;
             spellCount--;
-            for (int i = 0; i < transcribedSpells.length; i++) {
-                if (transcribedSpells[i] != null) {
-                    activeSpellIndex = i;
-                    break;
+
+            if (spellCount == 0 || activeSpellIndex == index) {
+                activeSpellIndex = -1;
+            } else {
+                for (int i = 0; i < transcribedSpells.length; i++) {
+                    if (transcribedSpells[i] != null) {
+                        activeSpellIndex = i;
+                        break;
+                    }
                 }
             }
 
