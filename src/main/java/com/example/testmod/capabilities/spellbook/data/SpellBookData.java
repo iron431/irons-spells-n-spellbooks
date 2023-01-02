@@ -76,6 +76,10 @@ public class SpellBookData {
         return spellSlots;
     }
 
+    public int getActiveSpellIndex() {
+        return activeSpellIndex;
+    }
+
     public boolean addSpell(AbstractSpell spell, int index) {
         if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] == null) {
             transcribedSpells[index] = spell;
