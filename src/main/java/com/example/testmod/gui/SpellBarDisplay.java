@@ -85,14 +85,18 @@ public class SpellBarDisplay extends GuiComponent {
             setTranslucentTexture(TEXTURE);
             if (i != spellBookData.getActiveSpellIndex())
                 GUI.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22, 84, 22, 22);
-            else
-                GUI.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
 
             float f = spells[i] == null ? 0 : ClientMagicData.getCooldownPercent(spells[i].getSpellType());
             if (f > 0) {
                 int pixels = (int) (16 * f + 1f);
                 GUI.blit(stack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47, 87, 16, pixels);
             }
+        }
+        //Selected Outline
+        for (int i = 0; i < locations.size(); i++) {
+            setTranslucentTexture(TEXTURE);
+            if (i == spellBookData.getActiveSpellIndex())
+                GUI.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
         }
     }
 
