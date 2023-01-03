@@ -1,5 +1,6 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Fireball;
@@ -24,7 +25,7 @@ public class NoneSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player) {
+    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
 
     }
 }

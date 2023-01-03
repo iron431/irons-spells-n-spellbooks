@@ -1,6 +1,8 @@
 package com.example.testmod.spells.cold;
 
 
+import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.entity.ConeOfColdProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -28,10 +30,24 @@ public class ConeOfColdSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player) {
-        ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, player);
-        coneOfColdProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
-        coneOfColdProjectile.setDamage(getSpellPower());
-        world.addFreshEntity(coneOfColdProjectile);
+    public void onCastComplete(Level world, Player player, PlayerMagicData playerMagicData) {
+        TestMod.LOGGER.info("ConeOfColdSpell.onCast: {}, {}, {}", (playerMagicData.cone == null), playerMagicData.isCasting(), playerMagicData.getCastDurationRemaining());
+        if (playerMagicData.cone != null) {
+            playerMagicData.cone.discard();
+            playerMagicData.cone = null;
+        }
+    }
+
+    @Override
+    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
+            playerMagicData.cone.setDealDamageActive();
+        } else {
+            ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, player);
+            coneOfColdProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
+            coneOfColdProjectile.setDamage(getSpellPower());
+            world.addFreshEntity(coneOfColdProjectile);
+            playerMagicData.cone = coneOfColdProjectile;
+        }
     }
 }

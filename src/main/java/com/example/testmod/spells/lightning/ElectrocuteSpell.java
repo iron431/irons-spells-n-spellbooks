@@ -1,5 +1,6 @@
 package com.example.testmod.spells.lightning;
 
+import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
@@ -27,7 +28,7 @@ public class ElectrocuteSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player) {
+    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         float speed = 2.5f;
         Vec3 direction = player.getLookAngle().scale(speed);
         Vec3 origin = player.getEyePosition();

@@ -91,15 +91,15 @@ public class MagicManager {
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
-                            if (playerMagicData.getCastDurationRemaining()<CONTINUOUS_CAST_TICK_INTERVAL || playerMagicData.getMana() - spell.getManaCost() * 2 < 0) {
+                            if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || playerMagicData.getMana() - spell.getManaCost() * 2 < 0) {
                                 TestMod.LOGGER.info("MagicManager.tick: handle spell casting complete");
                                 Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, true, true);
+                                spell.onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                                 playerMagicData.resetCastingState();
                             } else {
                                 spell.castSpell(serverPlayer.level, serverPlayer, true, false);
                             }
-
                         }
                     }
                 }
@@ -115,16 +115,19 @@ public class MagicManager {
 
     public MagicManager() {
     }
-    public void addCooldown(ServerPlayer serverPlayer,  SpellType spellType){
-            double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
-            int effectiveCooldown = getEffectiveSpellCooldown(AbstractSpell.getSpell(spellType,1).getSpellCooldown(),playerCooldownModifier);
-            getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
-            Messages.sendToPlayer(new PacketSyncCooldownToClient(spellType.getValue(),effectiveCooldown),serverPlayer);
+
+    public void addCooldown(ServerPlayer serverPlayer, SpellType spellType) {
+        double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
+        int effectiveCooldown = getEffectiveSpellCooldown(AbstractSpell.getSpell(spellType, 1).getSpellCooldown(), playerCooldownModifier);
+        getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
+        Messages.sendToPlayer(new PacketSyncCooldownToClient(spellType.getValue(), effectiveCooldown), serverPlayer);
     }
-    public static int getEffectiveSpellCooldown(int cooldown,  double playerCooldownModifier) {
+
+    public static int getEffectiveSpellCooldown(int cooldown, double playerCooldownModifier) {
         return (int) (cooldown * (2 - playerCooldownModifier));
     }
-    public static void spawnParticles(Level level,ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force){
+
+    public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
         level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
 
     }

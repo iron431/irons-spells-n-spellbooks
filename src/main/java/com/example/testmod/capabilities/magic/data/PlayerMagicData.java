@@ -1,6 +1,7 @@
 package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.entity.ConeOfColdProjectile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,21 +32,20 @@ public class PlayerMagicData {
     private int castingSpellId = 0;
     private int castingSpellLevel = 0;
     private int castDurationRemaining = 0;
-    private int castDuration = 0;
+
+    public ConeOfColdProjectile cone;
 
     public void resetCastingState() {
-        isCasting = false;
-        castingSpellId = 0;
-        castingSpellLevel = 0;
-        castDurationRemaining = 0;
-        castDuration = 0;
+        this.isCasting = false;
+        this.castingSpellId = 0;
+        this.castingSpellLevel = 0;
+        this.castDurationRemaining = 0;
     }
 
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration) {
-        isCasting = true;
+        this.isCasting = true;
         this.castingSpellId = castingSpellId;
         this.castingSpellLevel = castingSpellLevel;
-        this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
     }
 
@@ -53,20 +53,8 @@ public class PlayerMagicData {
         return isCasting;
     }
 
-    public void setCasting(boolean casting) {
-        isCasting = casting;
-    }
-
-    public void setCastingSpellId(int spellId) {
-        castingSpellId = spellId;
-    }
-
     public int getCastingSpellId() {
         return castingSpellId;
-    }
-
-    public void setCastingSpellLevel(int spellLevel) {
-        castingSpellLevel = spellLevel;
     }
 
     public int getCastingSpellLevel() {
@@ -75,22 +63,6 @@ public class PlayerMagicData {
 
     public int getCastDurationRemaining() {
         return castDurationRemaining;
-    }
-
-    public void setCastDurationRemaining(int castDurationRemaining) {
-        this.castDurationRemaining = castDurationRemaining;
-    }
-
-    public int getCastDuration() {
-        return castDuration;
-    }
-
-    public void setCastDuration(int castDuration) {
-        this.castDuration = castDuration;
-    }
-
-    public void decrementCastDuration() {
-        castDurationRemaining--;
     }
 
     public void handleCastDuration() {
