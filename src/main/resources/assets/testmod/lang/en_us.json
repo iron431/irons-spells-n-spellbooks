@@ -25,6 +25,7 @@
   "ui.testmod.healing": "%d Healing",
   "ui.testmod.damage": "%d Damage",
   "ui.testmod.distance": "%d Block Range",
+  "ui.testmod.summon_count": "%d Summons",
 
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",

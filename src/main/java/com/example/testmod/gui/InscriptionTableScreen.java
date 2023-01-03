@@ -51,7 +51,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     protected Button extractButton;
     private ItemStack lastSpellBookItem = null;
     protected ArrayList<SpellSlotInfo> spellSlots;
-    private int selectedSpellIndex;
+    private int selectedSpellIndex = -1;
 
     public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -66,8 +66,14 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         inscribeButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()));
         extractButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.removeSpell()));
         spellSlots = new ArrayList<>();
-        selectedSpellIndex = -1;
+        TestMod.LOGGER.info("InscriptionTableScreen: init");
         generateSpellSlots();
+    }
+
+    @Override
+    public void onClose() {
+        selectedSpellIndex = -1;
+        super.onClose();
     }
 
     @Override
@@ -220,8 +226,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Level
         //
-        var levelText = new TranslatableComponent("ui.testmod.level",spell.getLevel()).withStyle(textColor);
-        font.draw(poseStack,levelText,x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2,descLine,0xFFFFFF);
+        var levelText = new TranslatableComponent("ui.testmod.level", spell.getLevel()).withStyle(textColor);
+        font.draw(poseStack, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF);
         descLine += font.lineHeight * textScale * 2;
 
         //
@@ -246,8 +252,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         //  Unique Info
         //
-        if(spell.getUniqueInfo()!=null)
-            drawText(font,poseStack,spell.getUniqueInfo(),x + margin, descLine,textColor.getColor().getValue(),1);
+        if (spell.getUniqueInfo() != null)
+            drawText(font, poseStack, spell.getUniqueInfo(), x + margin, descLine, textColor.getColor().getValue(), 1);
 
         poseStack.scale(reverseScale, reverseScale, reverseScale);
     }
@@ -336,8 +342,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private void onSpellBookSlotChanged() {
+
         isDirty = true;
-        selectedSpellIndex = -1;
+        if (!(menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook))
+            selectedSpellIndex = -1;
     }
 
     private void removeSpell() {
@@ -355,7 +363,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
 
         //  Is the spell book bricked?
-        if(spellSlots.size()<=0)
+        if (spellSlots.size() <= 0)
             return;
 
         //  Quick inscribe
@@ -380,6 +388,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         isDirty = true;
         Messages.sendToServer(new PacketInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
+
     }
 
     private void setSelectedIndex(int index) {
