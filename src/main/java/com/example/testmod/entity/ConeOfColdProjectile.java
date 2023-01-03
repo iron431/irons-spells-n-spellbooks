@@ -3,7 +3,6 @@ package com.example.testmod.entity;
 import com.example.testmod.TestMod;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -27,7 +26,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ConeOfColdProjectile extends Projectile {
-    private static final int EXPIRE_TIME = 10 * 20;
+    private static final int FAILSAFE_EXPIRE_TIME = 20 * 20;
     private int age;
     private float damage;
     private boolean dealDamageActive = true;
@@ -77,7 +76,9 @@ public class ConeOfColdProjectile extends Projectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         TestMod.LOGGER.info("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
-        entityHitResult.getEntity().hurt(DamageSource.MAGIC, damage);
+        var entity = entityHitResult.getEntity();
+        entity.hurt(DamageSource.MAGIC, damage);
+        entity.setTicksFrozen(entity.getTicksFrozen() + 80);
     }
 
     @Override
@@ -126,6 +127,11 @@ public class ConeOfColdProjectile extends Projectile {
     @Override
     public void tick() {
         super.tick();
+        if (++age > FAILSAFE_EXPIRE_TIME) {
+            //This exists in case there is any bug with removing the cone onCastComplete
+            discard();
+        }
+
         //TODO: try this instead of the ray trace
         /*
         So. This is what vectors are for.
@@ -146,7 +152,7 @@ public class ConeOfColdProjectile extends Projectile {
                 var subEntity = subEntities[i];
 
                 double distance = 1 + (i * scale * subEntity.getDimensions(null).width / 2);
-                var newVector = ownerEyePos.add(rayTraceVector.multiply(distance, distance, distance));
+                Vec3 newVector = ownerEyePos.add(rayTraceVector.multiply(distance, distance, distance));
                 subEntity.setPos(newVector);
                 subEntity.setDeltaMovement(newVector);
                 var vec3 = new Vec3(subEntity.getX(), subEntity.getY(), subEntity.getZ());
@@ -168,7 +174,15 @@ public class ConeOfColdProjectile extends Projectile {
                 }
                 dealDamageActive = false;
             }
+
+            if (age % 10 == 0) {
+                TestMod.LOGGER.info("ConeOfCold Pos: {} {}", owner.position(), owner.getLookAngle());
+            }
+
             //spawnParticles();
+        }else{
+            TestMod.LOGGER.info("ConeOfCold.spawnParticlesClienSide");
+            spawnParticlesClienSide();
         }
 
     }
@@ -194,18 +208,44 @@ public class ConeOfColdProjectile extends Projectile {
         return entity.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
     }
 
-    public void spawnParticles() {
-        if (!level.isClientSide) {
-            for (int count = 0; count < 3; count++) {
-                double x = getX() + (level.random.nextInt(3) - 1) / 4D;
-                double y = getY() + 0.2F + (level.random.nextInt(3) - 1) / 4D;
-                double z = getZ() + (level.random.nextInt(3) - 1) / 4D;
-                double deltaX = (level.random.nextInt(3) - 1) * level.random.nextDouble();
-                double deltaY = (level.random.nextInt(3) - 1) * level.random.nextDouble();
-                double deltaZ = (level.random.nextInt(3) - 1) * level.random.nextDouble();
+//    public void spawnParticles() {
+//        var owner = getOwner();
+//        //This is right in front of the player
+//        var vec3 = owner.getLookAngle().multiply(2, 2, 2).add(owner.position());
+//
+//        var vec3a = owner.getLookAngle().multiply(10, 10, 10);
+//
+//        double x = vec3.x;
+//        double y = vec3.y;
+//        double z = vec3.z;
+//        double dx = -1; //vec3a.x;
+//        double dy = 0; //vec3a.y;
+//        double dz = 0; //vec3a.z;
+//
+//        for (int count = 0; count < 10; count++) {
+//            ((ServerLevel)level).sendParticles(ParticleTypes.DRAGON_BREATH, x, y, z, 1, dx, dy, dz, .2);
+//        }
+//    }
 
-                level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, ParticleTypes.END_ROD, true, x, y, z, 1, deltaX, deltaY, deltaZ, .1d));
+    public void spawnParticlesClienSide() {
+        var owner = getOwner();
+        Vec3 vec3 = owner.getLookAngle().normalize();
+        vec3.yRot((-(float)Math.PI / 4F));
+        var pos = owner.position();
+        double d0 = pos.x;
+        double d1 = pos.y;
+        double d2 = pos.z;
+
+        for(int i = 0; i < 8; ++i) {
+            double d3 = d0 + level.getRandom().nextGaussian() / 2.0D;
+            double d4 = d1 + level.getRandom().nextGaussian() / 2.0D;
+            double d5 = d2 + level.getRandom().nextGaussian() / 2.0D;
+
+            for(int j = 0; j < 6; ++j) {
+                this.level.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vec3.x * (double)0.08F * (double)j, -vec3.y * (double)0.6F, -vec3.z * (double)0.08F * (double)j);
             }
+
+            vec3.yRot(0.19634955F);
         }
     }
 }

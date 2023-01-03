@@ -40,5 +40,6 @@ public class HealSpell extends AbstractSpell {
             //TODO: find out if this is a packet and if it should not be spammed
             MagicManager.spawnParticles(world, ParticleTypes.HEART, player.position().x + x, player.position().y, player.position().z + z, 1, 0, 0, 0, 0.1, false);
         }
+
     }
 }

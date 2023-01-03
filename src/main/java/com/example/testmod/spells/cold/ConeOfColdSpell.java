@@ -24,9 +24,9 @@ public class ConeOfColdSpell extends AbstractSpell {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
-        this.castTime = 150;
+        this.castTime = 1500;
         this.baseManaCost = 2;
-        this.cooldown = 100;
+        this.cooldown = 0;
     }
 
     @Override
