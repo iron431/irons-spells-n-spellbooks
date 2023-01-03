@@ -1,8 +1,10 @@
 package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -127,6 +129,7 @@ public class ConeOfColdProjectile extends Projectile {
     @Override
     public void tick() {
         super.tick();
+
         if (++age > FAILSAFE_EXPIRE_TIME) {
             //This exists in case there is any bug with removing the cone onCastComplete
             discard();
@@ -180,8 +183,7 @@ public class ConeOfColdProjectile extends Projectile {
             }
 
             //spawnParticles();
-        }else{
-            TestMod.LOGGER.info("ConeOfCold.spawnParticlesClienSide");
+        } else {
             spawnParticlesClienSide();
         }
 
@@ -227,22 +229,44 @@ public class ConeOfColdProjectile extends Projectile {
 //        }
 //    }
 
-    public void spawnParticlesClienSide() {
+    public void spawnParticles() {
         var owner = getOwner();
         Vec3 vec3 = owner.getLookAngle().normalize();
-        vec3.yRot((-(float)Math.PI / 4F));
+        vec3.yRot((-(float) Math.PI / 4F));
         var pos = owner.position();
         double d0 = pos.x;
         double d1 = pos.y;
         double d2 = pos.z;
 
-        for(int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; ++i) {
             double d3 = d0 + level.getRandom().nextGaussian() / 2.0D;
             double d4 = d1 + level.getRandom().nextGaussian() / 2.0D;
             double d5 = d2 + level.getRandom().nextGaussian() / 2.0D;
 
-            for(int j = 0; j < 6; ++j) {
-                this.level.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vec3.x * (double)0.08F * (double)j, -vec3.y * (double)0.6F, -vec3.z * (double)0.08F * (double)j);
+            for (int j = 0; j < 6; ++j) {
+                ((ServerLevel) level).sendParticles(ParticleTypes.DRAGON_BREATH, d3, d4, d5, 1, -vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j, .2);
+            }
+
+            vec3.yRot(0.19634955F);
+        }
+    }
+
+    public void spawnParticlesClienSide() {
+        var owner = getOwner();
+        Vec3 vec3 = owner.getLookAngle().normalize();
+        vec3.yRot((-(float) Math.PI / 4F));
+        var pos = owner.position();
+        double d0 = pos.x;
+        double d1 = pos.y;
+        double d2 = pos.z;
+
+        for (int i = 0; i < 8; ++i) {
+            double d3 = d0 + level.getRandom().nextGaussian() / 2.0D;
+            double d4 = d1 + level.getRandom().nextGaussian() / 2.0D;
+            double d5 = d2 + level.getRandom().nextGaussian() / 2.0D;
+
+            for (int j = 0; j < 6; ++j) {
+                this.level.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j);
             }
 
             vec3.yRot(0.19634955F);
