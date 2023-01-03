@@ -29,10 +29,12 @@ public class Utils {
         }
         return stringTruncation(time, decimalPlaces) + affix;
     }
-    public static ServerPlayer getServerPlayer(Level level, UUID uuid){
+
+    public static ServerPlayer getServerPlayer(Level level, UUID uuid) {
         return level.getServer().getPlayerList().getPlayer(uuid);
     }
-    private static String stringTruncation(float f, int places) {
+
+    public static String stringTruncation(float f, int places) {
         int whole = (int) f;
         if (f % 1 == 0) {
             return ("" + whole);

@@ -22,6 +22,9 @@
   "ui.testmod.cast_continuous": "%s Duration",
   "ui.testmod.cast_type": "%s Cast",
   "ui.testmod.cooldown": "%s Cooldown",
+  "ui.testmod.healing": "%d Healing",
+  "ui.testmod.damage": "%d Damage",
+  "ui.testmod.distance": "%d Block Range",
 
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",

@@ -9,6 +9,7 @@ import com.example.testmod.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -147,6 +148,10 @@ public abstract class AbstractSpell {
     }
 
     protected abstract void onCast(Level world, Player player);
+
+    public TranslatableComponent getUniqueInfo(){
+        return null;
+    }
 
     @Override
     public boolean equals(Object obj) {

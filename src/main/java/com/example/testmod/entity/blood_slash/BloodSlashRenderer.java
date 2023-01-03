@@ -54,6 +54,7 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
 
     @Override
     public ResourceLocation getTextureLocation(BloodSlashProjectile entity) {
+        //TODO: support "animated" textures
         return TEXTURE;
     }
 }

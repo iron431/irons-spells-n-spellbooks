@@ -52,13 +52,18 @@ public class ScrollData {
     public List<Component> getHoverText() {
         if (hoverText == null) {
             hoverText = Lists.newArrayList();
-            hoverText.add(new TranslatableComponent("tooltip.testmod.level",spell.getLevel()).withStyle(ChatFormatting.GRAY));
-            hoverText.add(spell.getSchoolType().getDisplayName().copy());
-            hoverText.add(TextComponent.EMPTY);
-            hoverText.add(new TranslatableComponent("tooltip.testmod.scroll_tooltip").withStyle(ChatFormatting.GRAY));
-            hoverText.add(new TranslatableComponent("tooltip.testmod.mana_cost",spell.getManaCost()).withStyle(ChatFormatting.BLUE));
-            hoverText.add(new TranslatableComponent("tooltip.testmod.cooldown_length_seconds", Utils.TimeFromTicks(getSpell().getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
-            //hoverText.add(new TranslatableComponent("ui.testmod.cast_type","Instant").withStyle(ChatFormatting.DARK_GREEN));
+            if(spell.getSpellType()!=SpellType.NONE_SPELL){
+                if(spell.getUniqueInfo()!=null)
+                    hoverText.add(spell.getUniqueInfo().withStyle(ChatFormatting.DARK_GREEN));
+                hoverText.add(new TranslatableComponent("tooltip.testmod.level",spell.getLevel()).withStyle(ChatFormatting.GRAY));
+                hoverText.add(TextComponent.EMPTY);
+                hoverText.add(new TranslatableComponent("tooltip.testmod.scroll_tooltip").withStyle(ChatFormatting.GRAY));
+                hoverText.add(new TranslatableComponent("tooltip.testmod.mana_cost",spell.getManaCost()).withStyle(ChatFormatting.BLUE));
+                hoverText.add(new TranslatableComponent("tooltip.testmod.cooldown_length_seconds", Utils.TimeFromTicks(getSpell().getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
+                hoverText.add(TextComponent.EMPTY);
+                hoverText.add(spell.getSchoolType().getDisplayName().copy());
+            }
+
         }
         return hoverText;
     }

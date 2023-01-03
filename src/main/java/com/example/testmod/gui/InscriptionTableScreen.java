@@ -246,8 +246,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         descLine += font.lineHeight;
 
 
-        //TODO: add dynamic information like damage, school, etc
-
+        //
+        //  Unique Info
+        //
+        if(spell.getUniqueInfo()!=null)
+            drawText(font,poseStack,spell.getUniqueInfo(),x + margin, descLine,textColor.getColor().getValue(),1);
 
         poseStack.scale(reverseScale, reverseScale, reverseScale);
     }
@@ -257,6 +260,12 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         y /= scale;
         font.draw(poseStack, text, x, y, color);
         font.drawShadow(poseStack, text, x, y, color);
+    }
+
+    private void drawText(Font font, PoseStack poseStack, Component text, int x, int y, int color, float scale) {
+        x /= scale;
+        y /= scale;
+        font.draw(poseStack, text, x, y, color);
     }
 
     private void drawStatText(Font font, PoseStack poseStack, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
