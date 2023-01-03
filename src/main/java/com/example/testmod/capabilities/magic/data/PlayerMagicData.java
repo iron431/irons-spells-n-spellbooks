@@ -1,9 +1,11 @@
 package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public class PlayerMagicData {
     public static final String MANA = "mana";
@@ -32,6 +34,7 @@ public class PlayerMagicData {
     private int castingSpellLevel = 0;
     private int castDurationRemaining = 0;
     private int castDuration = 0;
+    private ItemStack castingItemStack = ItemStack.EMPTY;
 
     public void resetCastingState() {
         isCasting = false;
@@ -91,6 +94,13 @@ public class PlayerMagicData {
 
     public void decrementCastDuration() {
         castDurationRemaining--;
+    }
+
+    public void setPlayerCastingItem(ItemStack itemStack) {
+        this.castingItemStack = itemStack;
+    }
+    public ItemStack getPlayerCastingItem() {
+        return this.castingItemStack;
     }
 
     public void handleCastDuration() {

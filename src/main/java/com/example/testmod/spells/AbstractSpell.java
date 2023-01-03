@@ -4,6 +4,8 @@ import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
+import com.example.testmod.item.Scroll;
+import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.util.Utils;
 import net.minecraft.ChatFormatting;
@@ -139,6 +141,11 @@ public abstract class AbstractSpell {
         onCast(world, serverPlayer);
         Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
 
+        if (serverPlayer.getMainHandItem().getItem() instanceof SpellBook || serverPlayer.getMainHandItem().getItem() instanceof Scroll)
+            playerMagicData.setPlayerCastingItem(serverPlayer.getMainHandItem());
+        else
+            playerMagicData.setPlayerCastingItem(serverPlayer.getOffhandItem());
+
         return true;
     }
 
@@ -149,7 +156,7 @@ public abstract class AbstractSpell {
 
     protected abstract void onCast(Level world, Player player);
 
-    public TranslatableComponent getUniqueInfo(){
+    public TranslatableComponent getUniqueInfo() {
         return null;
     }
 

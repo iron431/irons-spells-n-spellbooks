@@ -70,7 +70,7 @@ public class SpellBook extends Item {
         }
 
         //
-        //  Attempt to Cast Spell (attemptCast is serverSide only) (currently)
+        //  Attempt to Cast Spell
         //
         if (spell != null && spell.attemptInitiateCast(itemStack, level, player, true, true)) {
             return InteractionResultHolder.success(itemStack);

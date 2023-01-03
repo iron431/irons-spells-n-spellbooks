@@ -5,6 +5,7 @@ import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.data.PlayerMagicProvider;
 import com.example.testmod.capabilities.magic.network.PacketCancelCast;
+import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
@@ -14,6 +15,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
@@ -42,7 +44,7 @@ public class ClientPlayerEvents {
         if (cap.isPresent()) {
             var playerMagicData = cap.resolve().get();
 
-            if (playerMagicData.isCasting() && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1) && event.getFrom().getItem() instanceof SpellBook) {
+            if (playerMagicData.isCasting() && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1) && (event.getFrom().getItem() instanceof SpellBook || event.getFrom().getItem() instanceof Scroll)) {
                 TestMod.LOGGER.info("onLivingEquipmentChangeEvent: Cancel Cast");
                 Messages.sendToServer(new PacketCancelCast(SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS));
             }
@@ -99,6 +101,7 @@ public class ClientPlayerEvents {
             var playerMagicData = cap.resolve().get();
 
             if (playerMagicData.isCasting() &&
+                    SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
                     event.getSource() != DamageSource.ON_FIRE &&
                     event.getSource() != DamageSource.WITHER) {
                 TestMod.LOGGER.info("onPlayerTakeDamage: Cancel Cast");
