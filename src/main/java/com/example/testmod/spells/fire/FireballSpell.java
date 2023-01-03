@@ -28,7 +28,7 @@ public class FireballSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         float speed = 2.5f;
         Vec3 direction = player.getLookAngle().scale(speed);
         Vec3 origin = player.getEyePosition();

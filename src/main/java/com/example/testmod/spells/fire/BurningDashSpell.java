@@ -42,7 +42,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.FIRE;
 //
         float amplifier = 0.5f + (level - 1) * .25f;

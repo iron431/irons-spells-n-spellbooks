@@ -27,7 +27,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
 
     }
 }
