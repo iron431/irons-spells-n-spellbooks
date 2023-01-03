@@ -1,7 +1,7 @@
 package com.example.testmod.spells.ender;
 
-import com.example.testmod.entity.ConeOfColdProjectile;
-import com.example.testmod.entity.MagicMissileProjectile;
+import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
+import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;

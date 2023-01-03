@@ -1,11 +1,9 @@
-package com.example.testmod.entity;
+package com.example.testmod.entity.magic_missile;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.registries.EntityRegistry;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -48,7 +46,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     }
 
     public MagicMissileProjectile(Level levelIn, LivingEntity shooter) {
-        this(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), levelIn);
+        this(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), levelIn, shooter);
     }
 
     public void shoot(Vec3 rotation) {
@@ -63,7 +61,6 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     public void tick() {
         super.tick();
 
-        age++;
         if (age > EXPIRE_TIME) {
             discard();
             return;
@@ -71,12 +68,14 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
 
         if (!level.isClientSide) {
             HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-            if (hitresult.getType() != HitResult.Type.MISS)
+            if (hitresult.getType() != HitResult.Type.MISS) {
                 onHit(hitresult);
+            }
             spawnParticles();
         }
-
         setPos(position().add(getDeltaMovement()));
+
+        age++;
     }
 
     @Override
@@ -91,7 +90,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         double y = hitresult.getLocation().y;
         double z = hitresult.getLocation().z;
 
-        MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z, 50, 0, 0, 0, .5, true);
+        MagicManager.spawnParticles(level, ParticleTypes.GLOW, x, y, z, 50, 0, 0, 0, .2, true);
 
         kill();
 
@@ -129,18 +128,19 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     public void spawnParticles() {
         if (!level.isClientSide) {
             double x = getX();
-            double y = getY();
+            double y = getY()-.05;
             double z = getZ();
-            MagicManager.spawnParticles(level, ParticleTypes.GLOW, x, y, z, 3, 0, 0, 0, .25, true);
-            MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z, 1, 0, 0, 0, 0, false);
-            MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 1, 0, 0, 0, 0, false);
+            if (age > 0){
+                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x, y, z, 3, 0, 0, 0, .025, false);
+                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 2, 0, 0, 0, .025, false);
+            }
 
         }
     }
 
     @Override
     protected boolean canHitEntity(Entity entity) {
-        if(entity == getOwner())
+        if (entity == getOwner())
             return false;
         return super.canHitEntity(entity);
     }

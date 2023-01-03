@@ -1,7 +1,9 @@
 package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.registries.EntityRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -154,8 +156,26 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
         Take that vector, multiply by 0.5 (or 0.2 or whatever), add their current position, and voila. You have the spot a half-block in front of them.
         */
 
-        super.tick();
-
+//        Vec3 pos = position();
+//        super.tick();
+//        Vec3 vec3 = getOwner().getLookAngle().normalize();
+//        vec3.yRot((-(float) Math.PI / 4F));
+//        double d0 = pos.x;
+//        double d1 = pos.y * .5f;
+//        double d2 = pos.z;
+//
+//        for (int i = 0; i < 8; ++i) {
+//            double d3 = d0 + level.getRandom().nextGaussian() / 2.0D;
+//            double d4 = d1 + level.getRandom().nextGaussian() / 2.0D;
+//            double d5 = d2 + level.getRandom().nextGaussian() / 2.0D;
+//
+//            for (int j = 0; j < 6; ++j) {
+//                //level.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j);
+//                level.sendParticles(level,ParticleTypes.DRAGON_BREATH,d3, d4, d5,1,-vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j,.2,false);
+//            }
+//
+//            vec3.yRot(0.19634955F);
+//        }
         if (++age > EXPIRE_TIME) {
             discard();
             return;
@@ -180,13 +200,13 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
                 double distance = 1 + (i * scale * subEntity.getDimensions(null).width / 2);
                 var newVector = ownerEyePos.add(rayTraceVector.multiply(distance, distance, distance));
                 subEntity.setPos(newVector);
-                var vec3 = new Vec3(subEntity.getX(), subEntity.getY(), subEntity.getZ());
-                subEntity.xo = vec3.x;
-                subEntity.yo = vec3.y;
-                subEntity.zo = vec3.z;
-                subEntity.xOld = vec3.x;
-                subEntity.yOld = vec3.y;
-                subEntity.zOld = vec3.z;
+                var vec31 = new Vec3(subEntity.getX(), subEntity.getY(), subEntity.getZ());
+                subEntity.xo = vec31.x;
+                subEntity.yo = vec31.y;
+                subEntity.zo = vec31.z;
+                subEntity.xOld = vec31.x;
+                subEntity.yOld = vec31.y;
+                subEntity.zOld = vec31.z;
             }
         }
 

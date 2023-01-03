@@ -41,5 +41,6 @@
   "spell.testmod.magic_missile": "Magic Missile",
   "spell.testmod.cone_of_cold": "Cone of Cold",
   "spell.testmod.electrocute": "Electrocute",
-  "spell.testmod.heal": "Heal"
+  "spell.testmod.heal": "Heal",
+  "spell.testmod.blood_slash": "Blood Slash"
 }

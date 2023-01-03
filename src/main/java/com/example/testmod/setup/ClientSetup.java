@@ -2,7 +2,7 @@ package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.ConeOfColdRenderer;
-import com.example.testmod.entity.MagicMissileRenderer;
+import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,6 +18,8 @@ public class ClientSetup {
     public static void rendererRegister(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), ConeOfColdRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.BLOOD_SLASH_PROJECTILE.get(), BloodSlashRenderer::new);
+
     }
 }
 

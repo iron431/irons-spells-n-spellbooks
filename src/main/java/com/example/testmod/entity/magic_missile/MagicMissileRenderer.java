@@ -1,6 +1,7 @@
-package com.example.testmod.entity;
+package com.example.testmod.entity.magic_missile;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
