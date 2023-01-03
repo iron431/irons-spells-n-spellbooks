@@ -26,7 +26,7 @@ public class BloodSlashSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, Player player) {
         BloodSlashProjectile bloodSlash = new BloodSlashProjectile(world, player);
-        bloodSlash.setPos(player.getEyePosition());
+        bloodSlash.setPos(player.getEyePosition().subtract(0,.5f,0));
         bloodSlash.shoot(player.getLookAngle());
         bloodSlash.setDamage(getSpellPower());
         world.addFreshEntity(bloodSlash);

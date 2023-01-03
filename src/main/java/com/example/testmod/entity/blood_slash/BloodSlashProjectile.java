@@ -16,8 +16,11 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
+import org.apache.commons.compress.utils.Lists;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 //https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
 //https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
@@ -29,14 +32,21 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
     private static final double SPEED = 1d;
     private static final int EXPIRE_TIME = 10 * 20;
     public final int animationSeed;
-
-    private EntityDimensions dimensions = EntityDimensions.scalable(2, 0.5f);
+    private final float maxRadius;
+    private EntityDimensions dimensions;
+    public AABB oldDimensions;
     private int age;
     private float damage;
 
     public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level level) {
         super(entityType, level);
         animationSeed = level.random.nextInt(9999);
+
+        float initialRadius = 2;
+        maxRadius = 6;
+        dimensions = EntityDimensions.scalable(initialRadius, 0.5f);
+
+        oldDimensions = getBoundingBox();
         this.setNoGravity(true);
     }
 
@@ -65,9 +75,9 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
 
     }
 
-    public void setRadius(float p_19713_) {
-        if (!this.level.isClientSide) {
-            this.getEntityData().set(DATA_RADIUS, Mth.clamp(p_19713_, 0.0F, 32.0F));
+    public void setRadius(float newRadius) {
+        if (newRadius <= maxRadius && !this.level.isClientSide) {
+            this.getEntityData().set(DATA_RADIUS, Mth.clamp(newRadius, 0.0F, maxRadius));
         }
     }
 
@@ -90,10 +100,9 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
             discard();
             return;
         }
-        if (age % 20 == 0) {
-            TestMod.LOGGER.info("Increasing Radius");
-            setRadius(getRadius() + 0.5f);
-        }
+        //TestMod.LOGGER.info("Increasing Radius");
+        oldDimensions = getBoundingBox();
+        setRadius(getRadius() + 0.2f);
         //TODO: replace all this with custom hit detection
         if (!level.isClientSide) {
             HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
@@ -102,17 +111,26 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
             }
             //spawnParticles();
         }
+        List<Entity> collisions = Lists.newArrayList();
+        collisions.addAll(level.getEntities(this, this.getBoundingBox()));
+
+        collisions = collisions.stream().filter(target ->
+                target != getOwner() && target instanceof LivingEntity).collect(Collectors.toList());
+        for (Entity entity : collisions) {
+            TestMod.LOGGER.info(entity.getName().getString());
+        }
         setPos(position().add(getDeltaMovement()));
         age++;
     }
 
     public EntityDimensions getDimensions(Pose p_19721_) {
-        TestMod.LOGGER.info("Accessing Blood Slash Dimensions. Age: {}", age);
-
+        //TestMod.LOGGER.info("Accessing Blood Slash Dimensions. Age: {}", age);
+        this.getBoundingBox();
         return EntityDimensions.scalable(this.getRadius() + 2.0F, 0.5F);
     }
+
     public void onSyncedDataUpdated(EntityDataAccessor<?> p_19729_) {
-        TestMod.LOGGER.info("onSynchedDataUpdated");
+        //TestMod.LOGGER.info("onSynchedDataUpdated");
 
         if (DATA_RADIUS.equals(p_19729_)) {
             this.refreshDimensions();
@@ -120,6 +138,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
 
         super.onSyncedDataUpdated(p_19729_);
     }
+
     //    private void increaseSize(float increase){
 //        var bbOld = this.getBoundingBox();
 //        double newWidth = (bbOld.getXsize() + increase) * .5;
@@ -141,13 +160,13 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
 
         MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z, 50, 0, 0, 0, .5, true);
 
-        kill();
 
     }
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
+        kill();
     }
 
     @Override

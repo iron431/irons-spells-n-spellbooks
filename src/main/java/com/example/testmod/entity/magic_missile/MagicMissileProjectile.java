@@ -90,9 +90,8 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         double y = hitresult.getLocation().y;
         double z = hitresult.getLocation().z;
 
-        MagicManager.spawnParticles(level, ParticleTypes.GLOW, x, y, z, 50, .1, .1, .1, .2, true);
+        MagicManager.spawnParticles(level, ParticleTypes.ENCHANTED_HIT, x, y, z, 50, .1, .1, .1, .2, true);
 
-        kill();
 
     }
 
@@ -100,6 +99,8 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
         TestMod.LOGGER.info("MagicMissileProjectile.onHitBlock");
+        kill();
+
     }
 
     @Override
@@ -111,6 +112,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
             target.hurt(DamageSource.MAGIC, damage);
 
         }
+        kill();
 
     }
 
@@ -128,9 +130,9 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     public void spawnParticles() {
         if (!level.isClientSide) {
             double x = getX();
-            double y = getY()-.05;
+            double y = getY() - .05;
             double z = getZ();
-            if (age > 0){
+            if (age > 0) {
                 //TODO: Custom particles
                 MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x, y, z, 3, 0, 0, 0, .01, true);
                 MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 2, 0, 0, 0, .01, true);

@@ -34,17 +34,19 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
         Matrix3f normalMatrix = pose.normal();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
-        animationTime+=partialTicks;
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(((entity.animationSeed%60)-30) * (float)Math.sin(animationTime * .021)));
+        animationTime += partialTicks;
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(((entity.animationSeed % 30) - 15) * (float) Math.sin(animationTime * .035)));
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
 
+        float oldWith = (float) entity.oldDimensions.getXsize();
         float width = entity.getBbWidth();
+        width = oldWith + (width - oldWith) * Math.min(partialTicks,1);
         float halfWidth = width * .5f;
-        consumer.vertex(poseMatrix, -halfWidth, 0f, -halfWidth).color(125, 0, 10, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, halfWidth, 0f, -halfWidth).color(125, 0, 10, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, halfWidth, 0f, halfWidth).color(125, 0, 10, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, -halfWidth, 0f, halfWidth).color(125, 0, 10, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, -halfWidth, -.1f, -halfWidth).color(125, 0, 10, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth, -.1f, -halfWidth).color(125, 0, 10, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth, -.1f, halfWidth).color(125, 0, 10, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, -halfWidth, -.1f, halfWidth).color(125, 0, 10, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
 
         poseStack.popPose();
 
