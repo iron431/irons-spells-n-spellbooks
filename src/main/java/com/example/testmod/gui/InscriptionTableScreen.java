@@ -9,7 +9,6 @@ import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
-import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,9 +20,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
@@ -202,7 +199,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         float reverseScale = 1 / textScale;
 
         String castKey = spell.getCastType() == CastType.CONTINUOUS ? "ui.testmod.cast_continuous" : "ui.testmod.cast_type";
-        String castContents = spell.getCastType() == CastType.INSTANT ? "Instant" : Utils.TimeFromTicks(spell.getCastTime(), 1);
+        String castContents = spell.getCastType() == CastType.INSTANT ? "Instant" : Utils.timeFromTicks(spell.getCastTime(), 1);
         Component school = spell.getSchoolType().getDisplayName();
         poseStack.scale(textScale, textScale, textScale);
 
@@ -242,7 +239,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Cooldown
         //
-        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.cooldown", textColor, new TextComponent(Utils.TimeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
+        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.cooldown", textColor, new TextComponent(Utils.timeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
         descLine += font.lineHeight;
 
 

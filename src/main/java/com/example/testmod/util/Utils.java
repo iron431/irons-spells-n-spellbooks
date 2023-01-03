@@ -18,7 +18,7 @@ public class Utils {
         return sb.toString();
     }
 
-    public static String TimeFromTicks(float ticks, int decimalPlaces) {
+    public static String timeFromTicks(float ticks, int decimalPlaces) {
         float ticks_to_seconds = 20;
         float seconds_to_minutes = 60;
         String affix = "s";
@@ -29,12 +29,14 @@ public class Utils {
         }
         return stringTruncation(time, decimalPlaces) + affix;
     }
-
+    public static String decimalToPercent(double decimal){
+        return stringTruncation(decimal,2)+"%";
+    }
     public static ServerPlayer getServerPlayer(Level level, UUID uuid) {
         return level.getServer().getPlayerList().getPlayer(uuid);
     }
 
-    public static String stringTruncation(float f, int places) {
+    public static String stringTruncation(double f, int places) {
         int whole = (int) f;
         if (f % 1 == 0) {
             return ("" + whole);

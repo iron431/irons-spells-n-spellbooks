@@ -90,7 +90,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         double y = hitresult.getLocation().y;
         double z = hitresult.getLocation().z;
 
-        MagicManager.spawnParticles(level, ParticleTypes.GLOW, x, y, z, 50, 0, 0, 0, .2, true);
+        MagicManager.spawnParticles(level, ParticleTypes.GLOW, x, y, z, 50, .1, .1, .1, .2, true);
 
         kill();
 
@@ -131,8 +131,9 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
             double y = getY()-.05;
             double z = getZ();
             if (age > 0){
-                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x, y, z, 3, 0, 0, 0, .025, false);
-                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 2, 0, 0, 0, .025, false);
+                //TODO: Custom particles
+                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x, y, z, 3, 0, 0, 0, .01, true);
+                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 2, 0, 0, 0, .01, true);
             }
 
         }

@@ -19,6 +19,7 @@ import net.minecraft.util.Mth;
 
 public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
     private static final ResourceLocation TEXTURE = TestMod.id("textures/entity/slash.png");
+    private static float animationTime;
 
     public BloodSlashRenderer(Context context) {
         super(context);
@@ -28,15 +29,13 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
     public void render(BloodSlashProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
 
-        //poseStack.scale(.5f, .5f, .5f);
-        //poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
-        //poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
-
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+        animationTime+=partialTicks;
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(((entity.animationSeed%60)-30) * (float)Math.sin(animationTime * .021)));
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
 

@@ -59,8 +59,7 @@ public class ScrollData {
                 hoverText.add(TextComponent.EMPTY);
                 hoverText.add(new TranslatableComponent("tooltip.testmod.scroll_tooltip").withStyle(ChatFormatting.GRAY));
                 hoverText.add(new TranslatableComponent("tooltip.testmod.mana_cost",spell.getManaCost()).withStyle(ChatFormatting.BLUE));
-                hoverText.add(new TranslatableComponent("tooltip.testmod.cooldown_length_seconds", Utils.TimeFromTicks(getSpell().getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
-                hoverText.add(TextComponent.EMPTY);
+                hoverText.add(new TranslatableComponent("tooltip.testmod.cooldown_length_seconds", Utils.timeFromTicks(getSpell().getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
                 hoverText.add(spell.getSchoolType().getDisplayName().copy());
             }
 

@@ -17,6 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 
+import java.util.Random;
+
 //https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
 //https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
 //https://github.com/CammiePone/Arcanus/blob/1.18-dev/src/main/java/dev/cammiescorner/arcanus/common/entities/MagicMissileEntity.java#L51
@@ -26,6 +28,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(AreaEffectCloud.class, EntityDataSerializers.FLOAT);
     private static final double SPEED = 1d;
     private static final int EXPIRE_TIME = 10 * 20;
+    public final int animationSeed;
 
     private EntityDimensions dimensions = EntityDimensions.scalable(2, 0.5f);
     private int age;
@@ -33,16 +36,12 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
 
     public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level level) {
         super(entityType, level);
+        animationSeed = level.random.nextInt(9999);
         this.setNoGravity(true);
     }
 
-    public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level levelIn, double x, double y, double z) {
-        super(entityType, levelIn);
-        setPos(x, y, z);
-    }
-
     public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level levelIn, LivingEntity shooter) {
-        super(entityType, levelIn);
+        this(entityType, levelIn);
         setOwner(shooter);
         setYRot(shooter.getYRot());
         setXRot(shooter.getXRot());
