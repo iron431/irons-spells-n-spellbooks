@@ -4,11 +4,13 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.spellbook.data.SpellBookData;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.sun.jna.platform.win32.Wdm;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
@@ -32,9 +34,11 @@ public class SpellWheelDisplay extends GuiComponent {
     private static int screenHeight;
     private static int screenWidth;
     private static boolean active;
+    private static int selection;
 
     public static void open() {
         active = true;
+        selection = -1;
         Minecraft.getInstance().mouseHandler.releaseMouse();
     }
 
@@ -55,7 +59,7 @@ public class SpellWheelDisplay extends GuiComponent {
             return;
 
         Player player = minecraft.player;
-        Gui GUI = Minecraft.getInstance().gui;
+        Gui gui = Minecraft.getInstance().gui;
         PoseStack stack = e.getMatrixStack();
         screenWidth = e.getWindow().getGuiScaledWidth();
         screenHeight = e.getWindow().getGuiScaledHeight();
@@ -76,58 +80,49 @@ public class SpellWheelDisplay extends GuiComponent {
         float scale = Mth.clamp(1 + 3 * (spellCount / 15f), 1, 4);
         var locations = generateWheelPositions(spellBookData, scale);
 
+        if (selection < 0)
+            selection = spellBookData.getActiveSpellIndex();
+
+        Vec2 screenCenter = new Vec2(e.getWindow().getScreenWidth() * .5f, e.getWindow().getScreenHeight() * .5f);
+        Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());
+        double radiansPerSpell = Math.toRadians(360 / (float) spellCount);
+
+        float mouseRotation = (Utils.getAngle(
+                mousePos,
+                screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
+
+        selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, spellCount);
+
+        //gui.getFont().draw(stack, screenCenter.x + ", " + screenCenter.y + "\n" + mousePos.x + ", " + mousePos.y + "\n" + Math.toDegrees(mouseRotation) , centerX, centerY, 0xFFFFFF);
+
         setTranslucentTexture(WHEEL);
         stack.scale(scale, scale, scale);
-        GUI.blit(stack, (int) (centerX / scale - 32), (int) (centerY / scale - 32), 0, 0, 64, 64, 64, 64);
+        gui.blit(stack, (int) (centerX / scale - 32), (int) (centerY / scale - 32), 0, 0, 64, 64, 64, 64);
         stack.scale(1 / scale, 1 / scale, 1 / scale);
 
-        //Slot Border
-        setOpaqueTexture(TEXTURE);
-        for (Vec2 location : locations) {
-            GUI.blit(stack, centerX + (int) location.x, centerY + (int) location.y, 66, 84, 22, 22);
-            //drawWithScale(GUI, stack, centerX + (int) location.x, centerY + (int) location.y, 22, 22, 66, 84, 22, 22, 1);
-        }
-        //Border
+        //Slot Border, icon, selected frame
+        setTranslucentTexture(TEXTURE);
         for (int i = 0; i < locations.size(); i++) {
-            setTranslucentTexture(TEXTURE);
-            if (i != spellBookData.getActiveSpellIndex()) {
-                //var location = locations.get(i);
-                GUI.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22, 84, 22, 22);
-                //drawWithScale(GUI, stack, centerX + (int) location.x, centerY + (int) location.y, 22, 22, 22, 84, 22, 22, 1);
-            }
-
-
+            gui.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 66, 84, 22, 22);
+            gui.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22, 84, 22, 22);
+            if (selection == i)
+                gui.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 88, 84, 22, 22);
         }
-        //Spell Icons
+        //Spell Icons, cooldowns
         for (int i = 0; i < locations.size(); i++) {
             if (spells[i] != null) {
                 setOpaqueTexture(spells[i].getSpellType().getResourceLocation());
-                //var location = locations.get(i);
-                GUI.blit(stack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
-                //drawWithScale(GUI, stack, centerX + (int) location.x + 3, centerY + (int) location.y + 3, 22, 22, 0, 0, 16, 16, 16, 16, 1);
+                gui.blit(stack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
 
                 float f = spells[i] == null ? 0 : ClientMagicData.getCooldownPercent(spells[i].getSpellType());
                 if (f > 0) {
                     setTranslucentTexture(TEXTURE);
                     int pixels = (int) (16 * f + 1f);
-                    GUI.blit(stack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47, 87, 16, pixels);
-                    //drawWithScale(GUI, stack, centerX, centerY, 16, pixels, 47, 87, 16, pixels, 1);
+                    gui.blit(stack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47, 87, 16, pixels);
                 }
             }
         }
-        //Selected Outline
-        for (int i = 0; i < locations.size(); i++) {
-            setTranslucentTexture(TEXTURE);
-            if (i == spellBookData.getActiveSpellIndex()) {
-                //var location = locations.get(i);
-                GUI.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
-                //drawWithScale(GUI, stack, centerX + (int) location.x, centerY + (int) location.y, 22, 22, 0, 84, 22, 22, 1);
-
-            }
-        }
-
-        //stack.scale(.5f, .5f, .5f);
-
+        //gui.getFont().draw(stack, Math.toDegrees(mouseRotation) + " ", centerX, centerY, 0xFFFFFF);
     }
 
     private static void drawWithScale(Gui gui, PoseStack stack, int x, int y, int width, int height, int spriteX, int spriteY, int spriteWidth, int spriteHeight, float scale) {
