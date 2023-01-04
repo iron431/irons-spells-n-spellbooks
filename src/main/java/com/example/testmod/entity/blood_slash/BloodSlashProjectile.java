@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 //https://github.com/maximumpower55/Aura
 
 public class BloodSlashProjectile extends Projectile implements ItemSupplier {
-    private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(AreaEffectCloud.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
     private static final double SPEED = 1d;
     private static final int EXPIRE_TIME = 10 * 20;
     public final int animationSeed;

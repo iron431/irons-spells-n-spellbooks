@@ -51,6 +51,7 @@ public class SpellBarDisplay extends GuiComponent {
         screenHeight = e.getWindow().getGuiScaledHeight();
 
         int centerX, centerY;
+        //TODO: find a real spot
         centerX = screenWidth / 2 - screenWidth / 4;
         centerY = screenHeight - screenHeight / 8;
 

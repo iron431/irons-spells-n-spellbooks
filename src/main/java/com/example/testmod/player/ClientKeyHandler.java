@@ -1,11 +1,13 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.gui.SpellWheelDisplay;
 import com.google.common.collect.Lists;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
@@ -24,8 +26,24 @@ public final class ClientKeyHandler {
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
-        if (SPELL_WHEEL_STATE.wasPressed())
-            TestMod.LOGGER.info("R");
+        var minecraft = Minecraft.getInstance();
+
+        //
+        // "consumeClick()"
+        //
+
+        Player player = minecraft.player;
+        if (SPELL_WHEEL_STATE.wasPressed()) {
+            TestMod.LOGGER.info("Keypress: {}", SPELL_WHEEL_STATE.key.getKey());
+            if (minecraft.screen == null)
+                SpellWheelDisplay.open();
+        }
+        if (SPELL_WHEEL_STATE.wasReleased()) {
+            if (minecraft.screen == null)
+                SpellWheelDisplay.close();
+
+            TestMod.LOGGER.info("Key released: {}", SPELL_WHEEL_STATE.key.getKey());
+        }
 
 
         Update();

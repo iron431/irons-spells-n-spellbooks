@@ -80,6 +80,10 @@ public class SpellBookData {
         return activeSpellIndex;
     }
 
+    public int getSpellCount() {
+        return spellCount;
+    }
+
     public boolean addSpell(AbstractSpell spell, int index) {
         if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] == null) {
             transcribedSpells[index] = spell;
