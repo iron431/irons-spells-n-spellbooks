@@ -2,15 +2,15 @@ package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.spellbook.data.SpellBookData;
+import com.example.testmod.gui.network.PacketChangeSelectedSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.sun.jna.platform.win32.Wdm;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
@@ -44,7 +44,11 @@ public class SpellWheelDisplay extends GuiComponent {
 
     public static void close() {
         active = false;
+        if (selection >= 0)
+            Messages.sendToServer(new PacketChangeSelectedSpell(selection));
         Minecraft.getInstance().mouseHandler.grabMouse();
+        TestMod.LOGGER.info(Minecraft.getInstance().player.getUUID() + "");
+
     }
 
     @SubscribeEvent
@@ -52,7 +56,7 @@ public class SpellWheelDisplay extends GuiComponent {
 
         var minecraft = Minecraft.getInstance();
 
-        if (active && (minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed()))
+        if (active && (minecraft.player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed() || !Utils.isPlayerHoldingSpellBook(minecraft.player)))
             active = false;
 
         if (!active)
@@ -80,8 +84,6 @@ public class SpellWheelDisplay extends GuiComponent {
         float scale = Mth.clamp(1 + 3 * (spellCount / 15f), 1, 4);
         var locations = generateWheelPositions(spellBookData, scale);
 
-        if (selection < 0)
-            selection = spellBookData.getActiveSpellIndex();
 
         Vec2 screenCenter = new Vec2(e.getWindow().getScreenWidth() * .5f, e.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());
@@ -91,7 +93,7 @@ public class SpellWheelDisplay extends GuiComponent {
                 mousePos,
                 screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
 
-        selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, spellCount);
+        selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, spellCount - 1);
 
         //gui.getFont().draw(stack, screenCenter.x + ", " + screenCenter.y + "\n" + mousePos.x + ", " + mousePos.y + "\n" + Math.toDegrees(mouseRotation) , centerX, centerY, 0xFFFFFF);
 

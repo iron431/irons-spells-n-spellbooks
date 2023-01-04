@@ -1,7 +1,10 @@
 package com.example.testmod.util;
 
+import com.example.testmod.item.Scroll;
+import com.example.testmod.item.SpellBook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 
@@ -32,6 +35,14 @@ public class Utils {
     }
     public static String decimalToPercent(double decimal){
         return stringTruncation(decimal,2)+"%";
+    }
+
+    public static boolean isPlayerHoldingSpellBook(Player player){
+        return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
+    }
+
+    public static boolean isPlayerHoldingScroll(Player player){
+        return player.getMainHandItem().getItem() instanceof Scroll || player.getOffhandItem().getItem() instanceof Scroll;
     }
 
     public static ServerPlayer getServerPlayer(Level level, UUID uuid) {
