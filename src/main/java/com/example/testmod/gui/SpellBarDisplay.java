@@ -51,15 +51,13 @@ public class SpellBarDisplay extends GuiComponent {
         screenHeight = e.getWindow().getGuiScaledHeight();
 
         int centerX, centerY;
-        //TODO: find a real spot
-        centerX = screenWidth / 2 - screenWidth / 4;
-        centerY = screenHeight - screenHeight / 8;
+        centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);
+        centerY = screenHeight - Math.max(55, screenHeight / 8);
 
 
         //
         //  Render Spells
         //
-
         ItemStack spellbook = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
         var spellBookData = ((SpellBook) spellbook.getItem()).getSpellBookData(spellbook);
         if (spellbook != lastSpellBook) {
