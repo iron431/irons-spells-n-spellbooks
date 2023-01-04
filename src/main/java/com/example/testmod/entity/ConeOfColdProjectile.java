@@ -1,7 +1,6 @@
 package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -32,7 +31,6 @@ public class ConeOfColdProjectile extends Projectile {
     private int age;
     private float damage;
     private boolean dealDamageActive = true;
-
     private final ConeOfColdPart[] subEntities;
 
     public ConeOfColdProjectile(Level level, LivingEntity entity) {
@@ -51,7 +49,7 @@ public class ConeOfColdProjectile extends Projectile {
                 new ConeOfColdPart(this, "part4", 4.5F, 3.0F)
         };
 
-        this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
+        //this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
     }
 
     @Override
