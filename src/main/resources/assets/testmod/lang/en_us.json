@@ -38,6 +38,8 @@
   "attribute.testmod.max_mana":"Max Mana",
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
 
+  "key.testmod.spell_wheel": "Open Spell Wheel",
+
   "spell.testmod.none": "None",
   "spell.testmod.fireball": "Fireball",
   "spell.testmod.burning_dash": "Burning Dash",

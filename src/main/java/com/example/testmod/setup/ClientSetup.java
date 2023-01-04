@@ -3,8 +3,9 @@ package com.example.testmod.setup;
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.ConeOfColdRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
+import com.example.testmod.player.ClientKeyHandler;
+import com.example.testmod.player.KeyMappings;
 import com.example.testmod.registries.EntityRegistry;
-import com.example.testmod.util.KeyMappings;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -24,5 +25,10 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.BLOOD_SLASH_PROJECTILE.get(), BloodSlashRenderer::new);
 
     }
+//    @SubscribeEvent
+//    public static void forgeClientSetup(FMLClientSetupEvent event){
+//        ClientKeyHandler.register();
+//        TestMod.LOGGER.info("FML Registering KeyMappings");
+//    }
 }
 
