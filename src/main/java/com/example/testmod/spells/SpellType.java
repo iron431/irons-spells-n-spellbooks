@@ -1,6 +1,7 @@
 package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
+//import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.cold.ConeOfColdSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
@@ -28,7 +29,8 @@ public enum SpellType {
     MAGIC_MISSILE_SPELL(4),
     ELECTROCUTE_SPELL(5),
     CONE_OF_COLD_SPELL(6),
-    HEAL_SPELL(7);
+    HEAL_SPELL(7),
+    BLOOD_SLASH_SPELL(8);
 
     private final int value;
 
@@ -63,6 +65,9 @@ public enum SpellType {
             case HEAL_SPELL -> {
                 return new HealSpell(level);
             }
+//            case BLOOD_SLASH_SPELL -> {
+//                return new BloodSlashSpell(level);
+//            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -99,7 +104,7 @@ public enum SpellType {
             case ELECTROCUTE_SPELL -> SchoolType.LIGHTNING;
             case HEAL_SPELL -> SchoolType.HOLY;
             case TELEPORT_SPELL, MAGIC_MISSILE_SPELL -> SchoolType.ENDER;
-            //case NONE_SPELL -> SchoolType.BLOOD;
+            case BLOOD_SLASH_SPELL -> SchoolType.BLOOD;
             case NONE_SPELL -> SchoolType.EVOCATION;
         };
     }

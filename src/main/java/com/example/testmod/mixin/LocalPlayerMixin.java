@@ -30,6 +30,6 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 
     @Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUsingItem()Z"))
     public boolean addSlowdownCondition(LocalPlayer instance) {
-        return isUsingItem() || (ClientMagicData.isCasting && ClientMagicData.castType == CastType.LONG);
+        return isUsingItem() || ClientMagicData.isCasting;
     }
 }

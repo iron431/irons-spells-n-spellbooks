@@ -75,7 +75,7 @@ public class ConeOfColdProjectile extends Projectile {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        TestMod.LOGGER.info("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
+        TestMod.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         var entity = entityHitResult.getEntity();
         entity.hurt(DamageSource.MAGIC, damage);
         entity.setTicksFrozen(entity.getTicksFrozen() + 80);
@@ -99,7 +99,7 @@ public class ConeOfColdProjectile extends Projectile {
 
     @Nullable
     public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabb, Predicate<Entity> predicate) {
-        TestMod.LOGGER.info("ConeOfColdProjectile.getEntityHitResult.enter:");
+        TestMod.LOGGER.debug("ConeOfColdProjectile.getEntityHitResult.enter:");
         return getEntityHitResult(level, entity, currentPos, deltaPos, aabb, predicate, 0.3F);
     }
 
@@ -109,7 +109,7 @@ public class ConeOfColdProjectile extends Projectile {
         Entity hitEntity = null;
 
         for (Entity entityToCheck : level.getEntities(entity, aabbPassedin, predicate)) {
-            TestMod.LOGGER.info("ConeOfColdProjectile:getEntityHitResult.2: {}", entityToCheck.getName().getString());
+            TestMod.LOGGER.debug("ConeOfColdProjectile:getEntityHitResult.2: {}", entityToCheck.getName().getString());
             AABB aabb = entityToCheck.getBoundingBox().inflate((double) inflateAmount);
             Optional<Vec3> optional = aabb.clip(currentPos, deltaPos);
             if (optional.isPresent()) {
@@ -170,14 +170,14 @@ public class ConeOfColdProjectile extends Projectile {
         if (!level.isClientSide) {
             if (dealDamageActive) {
                 for (Entity entity : getSubEntityCollisions()) {
-                    TestMod.LOGGER.info("ConeOfColdHit : {}", entity.getName().getString());
+                    TestMod.LOGGER.debug("ConeOfColdHit : {}", entity.getName().getString());
                     onHitEntity(new EntityHitResult(entity));
                 }
                 dealDamageActive = false;
             }
 
             if (age % 10 == 0) {
-                TestMod.LOGGER.info("ConeOfCold Pos: {} {}", owner.position(), owner.getLookAngle());
+                TestMod.LOGGER.debug("ConeOfCold Pos: {} {}", owner.position(), owner.getLookAngle());
             }
 
             //spawnParticles();

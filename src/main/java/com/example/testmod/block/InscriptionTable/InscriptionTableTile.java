@@ -88,7 +88,7 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
 
     public void removeSelectedSpell(int selectedIndex) {
         // All data should have been validated by now
-        TestMod.LOGGER.info("recieving request to destroy");
+        TestMod.LOGGER.debug("recieving request to destroy");
         var slots = this.menu.slots;
 
         ItemStack spellBookItemStack = slots.get(SPELLBOOK_SLOT).getItem();

@@ -9,7 +9,6 @@ import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
-import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,9 +20,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
@@ -54,7 +51,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     protected Button extractButton;
     private ItemStack lastSpellBookItem = null;
     protected ArrayList<SpellSlotInfo> spellSlots;
-    private int selectedSpellIndex;
+    private int selectedSpellIndex = -1;
 
     public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -69,8 +66,14 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         inscribeButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()));
         extractButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.removeSpell()));
         spellSlots = new ArrayList<>();
-        selectedSpellIndex = -1;
+        TestMod.LOGGER.debug("InscriptionTableScreen: init");
         generateSpellSlots();
+    }
+
+    @Override
+    public void onClose() {
+        selectedSpellIndex = -1;
+        super.onClose();
     }
 
     @Override
@@ -202,7 +205,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         float reverseScale = 1 / textScale;
 
         String castKey = spell.getCastType() == CastType.CONTINUOUS ? "ui.testmod.cast_continuous" : "ui.testmod.cast_type";
-        String castContents = spell.getCastType() == CastType.INSTANT ? "Instant" : Utils.TimeFromTicks(spell.getCastTime(), 1);
+        String castContents = spell.getCastType() == CastType.INSTANT ? "Instant" : Utils.timeFromTicks(spell.getCastTime(), 1);
         Component school = spell.getSchoolType().getDisplayName();
         poseStack.scale(textScale, textScale, textScale);
 
@@ -223,8 +226,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Level
         //
-        var levelText = new TranslatableComponent("ui.testmod.level",spell.getLevel()).withStyle(textColor);
-        font.draw(poseStack,levelText,x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2,descLine,0xFFFFFF);
+        var levelText = new TranslatableComponent("ui.testmod.level", spell.getLevel()).withStyle(textColor);
+        font.draw(poseStack, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF);
         descLine += font.lineHeight * textScale * 2;
 
         //
@@ -242,12 +245,15 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Cooldown
         //
-        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.cooldown", textColor, new TextComponent(Utils.TimeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
+        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.cooldown", textColor, new TextComponent(Utils.timeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
         descLine += font.lineHeight;
 
 
-        //TODO: add dynamic information like damage, school, etc
-
+        //
+        //  Unique Info
+        //
+        if (spell.getUniqueInfo() != null)
+            drawText(font, poseStack, spell.getUniqueInfo(), x + margin, descLine, textColor.getColor().getValue(), 1);
 
         poseStack.scale(reverseScale, reverseScale, reverseScale);
     }
@@ -257,6 +263,12 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         y /= scale;
         font.draw(poseStack, text, x, y, color);
         font.drawShadow(poseStack, text, x, y, color);
+    }
+
+    private void drawText(Font font, PoseStack poseStack, Component text, int x, int y, int color, float scale) {
+        x /= scale;
+        y /= scale;
+        font.draw(poseStack, text, x, y, color);
     }
 
     private void drawStatText(Font font, PoseStack poseStack, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
@@ -330,8 +342,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private void onSpellBookSlotChanged() {
+
         isDirty = true;
-        selectedSpellIndex = -1;
+        if (!(menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook))
+            selectedSpellIndex = -1;
     }
 
     private void removeSpell() {
@@ -349,7 +363,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
 
         //  Is the spell book bricked?
-        if(spellSlots.size()<=0)
+        if (spellSlots.size() <= 0)
             return;
 
         //  Quick inscribe
@@ -374,6 +388,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         isDirty = true;
         Messages.sendToServer(new PacketInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
+
     }
 
     private void setSelectedIndex(int index) {

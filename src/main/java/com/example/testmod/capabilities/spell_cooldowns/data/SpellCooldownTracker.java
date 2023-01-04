@@ -15,6 +15,6 @@
 //    public static void tick(){
 //        elapsedTicks++;
 //        if(elapsedTicks%40==0)
-//            TestMod.LOGGER.info("Tick");
+//            TestMod.LOGGER.debug("Tick");
 //    }
 //}

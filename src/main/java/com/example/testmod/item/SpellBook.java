@@ -58,7 +58,7 @@ public class SpellBook extends Item {
                 } else if (ClientMagicData.getPlayerMana() > spell.getManaCost() &&
                         !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
                 ) {
-                    //TestMod.LOGGER.info(spell.getCastType() + "");
+                    //TestMod.LOGGER.debug(spell.getCastType() + "");
                     if (spell.getCastType() == CastType.CONTINUOUS)
                         player.startUsingItem(hand);
                     return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
@@ -70,9 +70,9 @@ public class SpellBook extends Item {
         }
 
         //
-        //  Attempt to Cast Spell (attemptCast is serverSide only) (currently)
+        //  Attempt to Cast Spell
         //
-        TestMod.LOGGER.info("SpellBook.Use.attemptInitiateCast");
+        TestMod.LOGGER.debug("SpellBook.Use.attemptInitiateCast");
         if (spell != null && spell.attemptInitiateCast(itemStack, level, player, true, true)) {
             return InteractionResultHolder.success(itemStack);
         }

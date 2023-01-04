@@ -31,7 +31,7 @@ public class ConeOfColdSpell extends AbstractSpell {
 
     @Override
     public void onCastComplete(Level world, Player player, PlayerMagicData playerMagicData) {
-        TestMod.LOGGER.info("ConeOfColdSpell.onCast: {}, {}, {}", (playerMagicData.cone == null), playerMagicData.isCasting(), playerMagicData.getCastDurationRemaining());
+        TestMod.LOGGER.debug("ConeOfColdSpell.onCast: {}, {}, {}", (playerMagicData.cone == null), playerMagicData.isCasting(), playerMagicData.getCastDurationRemaining());
         if (playerMagicData.cone != null) {
             playerMagicData.cone.discard();
             playerMagicData.cone = null;

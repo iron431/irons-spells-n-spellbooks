@@ -1,12 +1,11 @@
-package com.example.testmod.entity;
+package com.example.testmod.entity.magic_missile;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.registries.EntityRegistry;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ItemSupplier;
@@ -36,8 +35,13 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         this.setNoGravity(true);
     }
 
+    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, LivingEntity shooter) {
+        super(entityType, levelIn);
+        setOwner(shooter);
+    }
+
     public MagicMissileProjectile(Level levelIn, LivingEntity shooter) {
-        this(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), levelIn);
+        this(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), levelIn, shooter);
     }
 
     public void shoot(Vec3 rotation) {
@@ -49,33 +53,62 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+
+        if (age > EXPIRE_TIME) {
+            discard();
+            return;
+        }
+
+        if (!level.isClientSide) {
+            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
+            if (hitresult.getType() != HitResult.Type.MISS) {
+                onHit(hitresult);
+            }
+            spawnParticles();
+        }
+        setPos(position().add(getDeltaMovement()));
+
+        age++;
+    }
+
+    @Override
+    protected void onHit(HitResult hitresult) {
+        TestMod.LOGGER.debug("MagicMissileProjectile.genericOnHit");
+        if (hitresult.getType() == HitResult.Type.ENTITY) {
+            onHitEntity((EntityHitResult) hitresult);
+        } else if (hitresult.getType() == HitResult.Type.BLOCK) {
+            onHitBlock((BlockHitResult) hitresult);
+        }
+        double x = hitresult.getLocation().x;
+        double y = hitresult.getLocation().y;
+        double z = hitresult.getLocation().z;
+
+        MagicManager.spawnParticles(level, ParticleTypes.ENCHANTED_HIT, x, y, z, 50, .1, .1, .1, .2, true);
+
+
+    }
+
+    @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitBlock");
+        TestMod.LOGGER.debug("MagicMissileProjectile.onHitBlock");
         kill();
+
     }
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitEntity");
+        TestMod.LOGGER.debug("MagicMissileProjectile.onHitEntity");
         if (entityHitResult.getEntity() instanceof LivingEntity target) {
             //TODO: deal with the damage
             target.hurt(DamageSource.MAGIC, damage);
-                double x = getX() + getDeltaMovement().x;
-                double y = getY() + getDeltaMovement().y;
-                double z = getZ() + getDeltaMovement().z;
 
-
-                MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z,50, 0, 0, 0, .5, true);
         }
+        kill();
 
-    }
-
-    @Override
-    protected void onHit(HitResult p_37260_) {
-
-        super.onHit(p_37260_);
     }
 
     @Override
@@ -88,41 +121,27 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         return ItemStack.EMPTY;
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-
-        age++;
-        if (age > EXPIRE_TIME) {
-            discard();
-            return;
-        }
-
-        if (!level.isClientSide) {
-            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-            if (hitresult.getType() == HitResult.Type.ENTITY) {
-                onHitEntity((EntityHitResult) hitresult);
-            }
-
-            spawnParticles();
-        }
-
-        setPos(position().add(getDeltaMovement()));
-    }
-
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
         if (!level.isClientSide) {
             double x = getX();
-            double y = getY();
+            double y = getY() - .05;
             double z = getZ();
-            MagicManager.spawnParticles(level, ParticleTypes.GLOW, x, y, z, 3, 0, 0, 0, .25, true);
-            MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z, 1, 0, 0, 0, 0, false);
-            MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 1, 0, 0, 0, 0, false);
+            if (age > 0) {
+                //TODO: Custom particles
+                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x, y, z, 3, 0, 0, 0, .01, true);
+                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 2, 0, 0, 0, .01, true);
+            }
 
         }
     }
 
+    @Override
+    protected boolean canHitEntity(Entity entity) {
+        if (entity == getOwner())
+            return false;
+        return super.canHitEntity(entity);
+    }
     /*
 	@Override
 	public void lerpMotion(double d, double e, double f) {

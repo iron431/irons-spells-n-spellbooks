@@ -5,6 +5,7 @@ import com.example.testmod.entity.ConeOfColdProjectile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public class PlayerMagicData {
     public static final String MANA = "mana";
@@ -34,6 +35,8 @@ public class PlayerMagicData {
     private int castDurationRemaining = 0;
 
     public ConeOfColdProjectile cone;
+    private int castDuration = 0;
+    private ItemStack castingItemStack = ItemStack.EMPTY;
 
     public void resetCastingState() {
         this.isCasting = false;
@@ -46,6 +49,7 @@ public class PlayerMagicData {
         this.isCasting = true;
         this.castingSpellId = castingSpellId;
         this.castingSpellLevel = castingSpellLevel;
+        this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
     }
 
@@ -74,6 +78,14 @@ public class PlayerMagicData {
         }
     }
 
+    public void setPlayerCastingItem(ItemStack itemStack) {
+        this.castingItemStack = itemStack;
+    }
+
+    public ItemStack getPlayerCastingItem() {
+        return this.castingItemStack;
+    }
+
     /********* COOLDOWNS *******************************************************/
 
     private final PlayerCooldowns playerCooldowns = new PlayerCooldowns();
@@ -93,7 +105,7 @@ public class PlayerMagicData {
     }
 
     public void saveNBTData(CompoundTag compound) {
-        TestMod.LOGGER.info("PlayerMagicData: saving nbt");
+        TestMod.LOGGER.debug("PlayerMagicData: saving nbt");
         compound.putInt(MANA, mana);
 
         if (playerCooldowns.hasCooldownsActive()) {
@@ -106,7 +118,7 @@ public class PlayerMagicData {
     }
 
     public void loadNBTData(CompoundTag compound) {
-        TestMod.LOGGER.info("PlayerMagicData: loading nbt");
+        TestMod.LOGGER.debug("PlayerMagicData: loading nbt");
         mana = compound.getInt(MANA);
         ListTag listTag = (ListTag) compound.get(COOLDOWNS);
 

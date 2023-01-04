@@ -3,6 +3,7 @@ package com.example.testmod.capabilities.magic.network;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.item.Scroll;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -46,6 +47,8 @@ public class PacketCancelCast {
                     }
 
                     Messages.sendToPlayer(new PacketCastingState(spellId, 0, CastType.NONE, true), serverPlayer);
+                    if(SpellType.values()[spellId].getCastType()==CastType.CONTINUOUS)
+                        Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                 }
             }
         });

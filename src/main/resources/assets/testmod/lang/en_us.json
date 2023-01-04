@@ -22,6 +22,10 @@
   "ui.testmod.cast_continuous": "%s Duration",
   "ui.testmod.cast_type": "%s Cast",
   "ui.testmod.cooldown": "%s Cooldown",
+  "ui.testmod.healing": "%d Healing",
+  "ui.testmod.damage": "%d Damage",
+  "ui.testmod.distance": "%d Block Range",
+  "ui.testmod.summon_count": "%d Summons",
 
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",
@@ -41,5 +45,6 @@
   "spell.testmod.magic_missile": "Magic Missile",
   "spell.testmod.cone_of_cold": "Cone of Cold",
   "spell.testmod.electrocute": "Electrocute",
-  "spell.testmod.heal": "Heal"
+  "spell.testmod.heal": "Heal",
+  "spell.testmod.blood_slash": "Blood Slash"
 }

@@ -13,7 +13,6 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -33,7 +32,7 @@ public class CastTimeDisplay extends GuiComponent {
             return;
 
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
-        String castTimeString = Utils.TimeFromTicks((1 - castCompletionPercent) * ClientMagicData.castDuration, 1);
+        String castTimeString = Utils.timeFromTicks((1 - castCompletionPercent) * ClientMagicData.castDuration, 1);
         if(ClientMagicData.castType != CastType.LONG) {
             castCompletionPercent = 1 - castCompletionPercent;
         }

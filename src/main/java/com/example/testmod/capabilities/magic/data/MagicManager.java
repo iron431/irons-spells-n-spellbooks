@@ -4,14 +4,15 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncCooldownToClient;
 import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
+import com.example.testmod.item.Scroll;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ public class MagicManager {
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
     private int counter = 0;
+    private int manaRegenCounterDebug = 0;
     private static MagicManager magicManager = null;
 
     @Nonnull
@@ -76,7 +78,6 @@ public class MagicManager {
         level.players().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {
                 PlayerMagicData playerMagicData = getPlayerMagicData(serverPlayer);
-
                 playerMagicData.getPlayerCooldowns().tick(1);
 
                 if (playerMagicData.isCasting()) {
@@ -84,33 +85,39 @@ public class MagicManager {
                     playerMagicData.handleCastDuration();
                     if (spell.getCastType() == CastType.LONG) {
                         if (!playerMagicData.isCasting()) {
-                            TestMod.LOGGER.info("MagicManager.tick: handle spell casting complete");
+                            TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                             Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                             spell.castSpell(serverPlayer.level, serverPlayer, true, true);
                             playerMagicData.resetCastingState();
+                            Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
                             if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || playerMagicData.getMana() - spell.getManaCost() * 2 < 0) {
-                                TestMod.LOGGER.info("MagicManager.tick: handle spell casting complete");
+                                TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                                 Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, true, true);
                                 spell.onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                                 playerMagicData.resetCastingState();
+                                Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                             } else {
                                 spell.castSpell(serverPlayer.level, serverPlayer, true, false);
                             }
+
                         }
                     }
                 }
 
                 if (counter <= 0) {
-                    counter = TICKS_PER_CYCLE;
                     regenPlayerMana(serverPlayer, playerMagicData);
                     Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
                 }
             }
         });
+
+        if (counter <= 0) {
+            counter = TICKS_PER_CYCLE;
+        }
     }
 
     public MagicManager() {
@@ -127,9 +134,12 @@ public class MagicManager {
         return (int) (cooldown * (2 - playerCooldownModifier));
     }
 
-    public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
+    public static void spawnParticles2(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
         level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
+    }
 
+    public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double radiusX, double radiusY, double radiusZ, double speed, boolean force) {
+        ((ServerLevel) level).sendParticles(particle, x, y, z, count, radiusX, radiusY, radiusZ, speed);
     }
 
 }
