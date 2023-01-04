@@ -2,6 +2,7 @@ package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.gui.SpellWheelDisplay;
+import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
@@ -35,11 +36,11 @@ public final class ClientKeyHandler {
         Player player = minecraft.player;
         if (SPELL_WHEEL_STATE.wasPressed()) {
             TestMod.LOGGER.info("Keypress: {}", SPELL_WHEEL_STATE.key.getKey());
-            if (minecraft.screen == null)
+            if (minecraft.screen == null && Utils.isPlayerHoldingSpellBook(player))
                 SpellWheelDisplay.open();
         }
         if (SPELL_WHEEL_STATE.wasReleased()) {
-            if (minecraft.screen == null)
+            if (minecraft.screen == null && SpellWheelDisplay.active)
                 SpellWheelDisplay.close();
 
             TestMod.LOGGER.info("Key released: {}", SPELL_WHEEL_STATE.key.getKey());

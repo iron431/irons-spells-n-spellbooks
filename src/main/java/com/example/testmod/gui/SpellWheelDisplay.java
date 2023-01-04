@@ -33,7 +33,7 @@ public class SpellWheelDisplay extends GuiComponent {
 
     private static int screenHeight;
     private static int screenWidth;
-    private static boolean active;
+    public static boolean active;
     private static int selection;
 
     public static void open() {
@@ -47,8 +47,6 @@ public class SpellWheelDisplay extends GuiComponent {
         if (selection >= 0)
             Messages.sendToServer(new PacketChangeSelectedSpell(selection));
         Minecraft.getInstance().mouseHandler.grabMouse();
-        TestMod.LOGGER.info(Minecraft.getInstance().player.getUUID() + "");
-
     }
 
     @SubscribeEvent
