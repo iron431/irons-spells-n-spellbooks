@@ -18,25 +18,23 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = TestMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class ClientKeyHandler {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
-    private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.spellWheel);
-    private static final KeyState TEST_STATE = register(KeyMappings.test);
 
-//    public static void register() {
-//        spellWheelState = ;
-//        testState = KeyStates.put(KeyMappings.test, new KeyState(KeyMappings.test));
-//    }
+    private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
+    private static final KeyState TEST_STATE = register(KeyMappings.TEST_KEYMAP);
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
         if (SPELL_WHEEL_STATE.wasPressed())
             TestMod.LOGGER.info("R");
-        if (TEST_STATE.wasPressed())
-            TestMod.LOGGER.info("G");
 
+
+        Update();
+    }
+
+    private static void Update() {
         for (KeyState k : KEY_STATES) {
             k.Update();
         }
-
     }
 
     private static KeyState register(KeyMapping key) {
