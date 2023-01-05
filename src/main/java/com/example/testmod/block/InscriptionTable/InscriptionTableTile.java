@@ -68,22 +68,22 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
     }
 
     public void doInscription(int selectedIndex) {
-        // All data should have been validated by now
         // This method is called by the inscription packet
         var slots = this.menu.slots;
 
         ItemStack spellBookItemStack = slots.get(SPELLBOOK_SLOT).getItem();
         ItemStack scrollItemStack = slots.get(SCROLL_SLOT).getItem();
 
-        var spellBook = (SpellBook) spellBookItemStack.getItem();
-        var scroll = (Scroll) scrollItemStack.getItem();
+        if (spellBookItemStack.getItem() instanceof SpellBook && scrollItemStack.getItem() instanceof Scroll) {
+            var spellBook = (SpellBook) spellBookItemStack.getItem();
+            var scroll = (Scroll) scrollItemStack.getItem();
 
-        var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
-        var scrollData = scroll.getScrollData(scrollItemStack);
+            var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
+            var scrollData = scroll.getScrollData(scrollItemStack);
 
-        spellBookData.addSpell(scrollData.getSpell(), selectedIndex);
-
-        slots.get(SCROLL_SLOT).remove(1);
+            if (spellBookData.addSpell(scrollData.getSpell(), selectedIndex))
+                slots.get(SCROLL_SLOT).remove(1);
+        }
     }
 
     public void removeSelectedSpell(int selectedIndex) {
@@ -97,7 +97,7 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
 
         var spellId = spellBookData.getInscribedSpells()[selectedIndex].getID();
         var spellLevel = spellBookData.getInscribedSpells()[selectedIndex].getLevel();
-        generateScroll(spellId,spellLevel);
+        generateScroll(spellId, spellLevel);
         spellBookData.removeSpell(selectedIndex);
 
     }
@@ -109,11 +109,11 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
 
         //null check (empty spell slots send as -1)
         //if (spellId >= 0) {
-            ItemStack scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-            Scroll scroll = (Scroll) scrollStack.getItem();
-            scroll.setSpellType(SpellType.values()[spellId]);
-            scroll.setLevel(spellLevel);
-            extractionSlot.set(scrollStack);
+        ItemStack scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
+        Scroll scroll = (Scroll) scrollStack.getItem();
+        scroll.setSpellType(SpellType.values()[spellId]);
+        scroll.setLevel(spellLevel);
+        extractionSlot.set(scrollStack);
         //} else {
         //    extractionSlot.set(ItemStack.EMPTY);
         //}

@@ -42,7 +42,7 @@ public class SpellBarDisplay extends GuiComponent {
     public static void onPostRender(RenderGameOverlayEvent.Text e) {
         Player player = Minecraft.getInstance().player;
 
-        if (!(player.getMainHandItem().getItem() instanceof SpellBook) && !(player.getOffhandItem().getItem() instanceof SpellBook))
+        if (!Utils.isPlayerHoldingSpellBook(player))
             return;
         //System.out.println("SpellBarDisplay: Holding Spellbook");
         Gui GUI = Minecraft.getInstance().gui;
@@ -51,14 +51,13 @@ public class SpellBarDisplay extends GuiComponent {
         screenHeight = e.getWindow().getGuiScaledHeight();
 
         int centerX, centerY;
-        centerX = screenWidth / 2 - screenWidth / 4;
-        centerY = screenHeight - screenHeight / 8;
+        centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);
+        centerY = screenHeight - Math.max(55, screenHeight / 8);
 
 
         //
         //  Render Spells
         //
-
         ItemStack spellbook = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
         var spellBookData = ((SpellBook) spellbook.getItem()).getSpellBookData(spellbook);
         if (spellbook != lastSpellBook) {

@@ -86,7 +86,6 @@ public class ClientMagicData {
     public static List<Vec2> relativeSpellBarSlotLocations = Lists.newArrayList();
 
     public static void generateRelativeLocations(SpellBookData spellBookData,int boxSize, int spriteSize){
-        System.out.println("Generating spell slot locations");
         relativeSpellBarSlotLocations.clear();
         if(spellBookData==null)
             return;
