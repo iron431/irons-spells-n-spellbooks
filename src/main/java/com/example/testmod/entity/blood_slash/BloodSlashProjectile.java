@@ -2,7 +2,9 @@ package com.example.testmod.entity.blood_slash;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
+import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -120,6 +122,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
             TestMod.LOGGER.info(entity.getName().getString());
         }
         setPos(position().add(getDeltaMovement()));
+        spawnParticles();
         age++;
     }
 
@@ -158,7 +161,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
         double y = hitresult.getLocation().y;
         double z = hitresult.getLocation().z;
 
-        MagicManager.spawnParticles(level, ParticleTypes.REVERSE_PORTAL, x, y, z, 50, 0, 0, 0, .5, true);
+        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, x, y, z, 50, 0, 0, 0, .5, true);
 
 
     }
@@ -193,7 +196,8 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
             double x = getX();
             double y = getY();
             double z = getZ();
-            MagicManager.spawnParticles(level, ParticleTypes.SMOKE, x, y, z, 1, 0, 0, 0, .1, true);
+            float width = .35f * dimensions.width;
+            MagicManager.spawnParticles(level,ParticleRegistry.BLOOD_PARTICLE.get(), x, y, z, 3, width, 0, width, .1, false);
 
         }
     }
