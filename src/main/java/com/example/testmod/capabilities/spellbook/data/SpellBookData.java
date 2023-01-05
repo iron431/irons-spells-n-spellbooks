@@ -85,7 +85,10 @@ public class SpellBookData {
     }
 
     public boolean addSpell(AbstractSpell spell, int index) {
-        if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] == null) {
+        if (index > -1 && index < transcribedSpells.length &&
+                transcribedSpells[index] == null &&
+                ArrayUtils.indexOf(transcribedSpells, spell) == -1) {
+
             transcribedSpells[index] = spell;
             spellCount++;
             if (spellCount == 1) {
