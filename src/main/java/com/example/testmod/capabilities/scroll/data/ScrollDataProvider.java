@@ -45,7 +45,7 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        TestMod.LOGGER.debug("SDP.getCapability.1");
+        //TestMod.LOGGER.debug("SDP.getCapability.1");
         if (cap == SCROLL_DATA) {
             return opt.cast();
         }

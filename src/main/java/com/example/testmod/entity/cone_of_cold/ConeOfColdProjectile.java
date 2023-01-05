@@ -1,6 +1,7 @@
-package com.example.testmod.entity;
+package com.example.testmod.entity.cone_of_cold;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -182,7 +183,7 @@ public class ConeOfColdProjectile extends Projectile {
 
             //spawnParticles();
         } else {
-            spawnParticlesClienSide();
+            spawnParticles();
         }
 
     }
@@ -228,46 +229,29 @@ public class ConeOfColdProjectile extends Projectile {
 //    }
 
     public void spawnParticles() {
+        if (!level.isClientSide)
+            return;
         var owner = getOwner();
-        Vec3 vec3 = owner.getLookAngle().normalize();
-        vec3.yRot((-(float) Math.PI / 4F));
-        var pos = owner.position();
-        double d0 = pos.x;
-        double d1 = pos.y;
-        double d2 = pos.z;
+        Vec3 rotation = owner.getLookAngle().normalize();
+        //rVec.yRot((-(float) Math.PI / 4F));
+        var pos = owner.position().add(rotation.scale(0.5f));
+        double x = pos.x;
+        double y = pos.y + owner.getEyeHeight() * .8f;
+        double z = pos.z;
+        double speed = .6;
+        double randomAngleRange = Math.PI / 8;
+        for (int i = 0; i < 10; ++i) {
+            double dx = 0;//level.getRandom().nextDouble() * speed - speed * .5;
+            double dy = 0;//level.getRandom().nextDouble() * speed - speed * .5;
+            double dz = 0;//level.getRandom().nextDouble() * speed - speed * .5;
+            float yaw = (float) (level.random.nextDouble() * 2 * randomAngleRange - randomAngleRange);
+            float pitch = (float) (level.random.nextDouble() * 2 * randomAngleRange - randomAngleRange);
 
-        for (int i = 0; i < 8; ++i) {
-            double d3 = d0 + level.getRandom().nextGaussian() / 2.0D;
-            double d4 = d1 + level.getRandom().nextGaussian() / 2.0D;
-            double d5 = d2 + level.getRandom().nextGaussian() / 2.0D;
+            Vec3 randomRotation = rotation.yRot(yaw).xRot(pitch).zRot(pitch);
+            level.addParticle(ParticleTypes.SNOWFLAKE, x + dx, y + dy, z + dz, randomRotation.x * speed, randomRotation.y * speed, randomRotation.z * speed);
 
-            for (int j = 0; j < 6; ++j) {
-                ((ServerLevel) level).sendParticles(ParticleTypes.DRAGON_BREATH, d3, d4, d5, 1, -vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j, .2);
-            }
 
-            vec3.yRot(0.19634955F);
-        }
-    }
-
-    public void spawnParticlesClienSide() {
-        var owner = getOwner();
-        Vec3 vec3 = owner.getLookAngle().normalize();
-        vec3.yRot((-(float) Math.PI / 4F));
-        var pos = owner.position();
-        double d0 = pos.x;
-        double d1 = pos.y;
-        double d2 = pos.z;
-
-        for (int i = 0; i < 8; ++i) {
-            double d3 = d0 + level.getRandom().nextGaussian() / 2.0D;
-            double d4 = d1 + level.getRandom().nextGaussian() / 2.0D;
-            double d5 = d2 + level.getRandom().nextGaussian() / 2.0D;
-
-            for (int j = 0; j < 6; ++j) {
-                this.level.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j);
-            }
-
-            vec3.yRot(0.19634955F);
+            //rVec.yRot(0.19634955F);
         }
     }
 }

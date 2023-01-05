@@ -1,7 +1,7 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.ConeOfColdProjectile;
+import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import net.minecraft.resources.ResourceLocation;

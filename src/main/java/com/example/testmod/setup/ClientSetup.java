@@ -1,12 +1,10 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.ConeOfColdRenderer;
+import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
 import com.example.testmod.particle.BloodGroundParticle;
 import com.example.testmod.particle.BloodParticle;
-import com.example.testmod.player.ClientKeyHandler;
-import com.example.testmod.player.KeyMappings;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
 import net.minecraft.client.Minecraft;
@@ -16,7 +14,6 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 //TODO: find if there is a better place for this code to live (tutorial said to put it here)
 

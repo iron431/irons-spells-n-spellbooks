@@ -1,4 +1,4 @@
-package com.example.testmod.entity;
+package com.example.testmod.entity.cone_of_cold;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;

@@ -1,7 +1,7 @@
 package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.ConeOfColdProjectile;
+import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;

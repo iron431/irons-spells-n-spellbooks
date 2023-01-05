@@ -3,15 +3,11 @@ package com.example.testmod.spells.cold;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
-import com.example.testmod.entity.ConeOfColdProjectile;
+import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Fireball;
-import net.minecraft.world.entity.projectile.LargeFireball;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class ConeOfColdSpell extends AbstractSpell {
     public ConeOfColdSpell() {
