@@ -2,6 +2,9 @@ package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.gui.SpellWheelDisplay;
+import com.example.testmod.gui.network.PacketChangeSelectedSpell;
+import com.example.testmod.item.SpellBook;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.Util;
@@ -9,11 +12,14 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,20 +28,20 @@ import java.util.List;
 public final class ClientKeyHandler {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
+
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
-    private static final KeyState TEST_STATE = register(KeyMappings.TEST_KEYMAP);
+    private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
+
+
         var minecraft = Minecraft.getInstance();
-
-        //
-        // "consumeClick()"
-        //
-
         Player player = minecraft.player;
+        if (player == null)
+            return;
+
         if (SPELL_WHEEL_STATE.wasPressed()) {
-            TestMod.LOGGER.info("Keypress: {}", SPELL_WHEEL_STATE.key.getKey());
             if (minecraft.screen == null && Utils.isPlayerHoldingSpellBook(player))
                 SpellWheelDisplay.open();
         }
@@ -43,11 +49,51 @@ public final class ClientKeyHandler {
             if (minecraft.screen == null && SpellWheelDisplay.active)
                 SpellWheelDisplay.close();
 
-            TestMod.LOGGER.info("Key released: {}", SPELL_WHEEL_STATE.key.getKey());
         }
+        if (SPELLBAR_MODIFIER_STATE.wasPressed())
+            System.out.println("Shift Down");
 
+        if (SPELLBAR_MODIFIER_STATE.wasReleased())
+            System.out.println("Shift Up");
 
         Update();
+    }
+
+    @SubscribeEvent
+    public static void clientMouseScrolled(InputEvent.MouseScrollEvent event) {
+        var minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+        if (player == null)
+            return;
+        if (Utils.isPlayerHoldingSpellBook(player) && minecraft.screen == null) {
+            if (SPELLBAR_MODIFIER_STATE.isHeld()) {
+                ItemStack spellBook = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
+                var spellBookData = ((SpellBook) spellBook.getItem()).getSpellBookData(spellBook);
+                if (spellBookData.getSpellCount() > 0) {
+                    int direction = (int) event.getScrollDelta();
+                    TestMod.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
+
+                    int newIndex = spellBookData.getActiveSpellIndex() - direction;
+                    newIndex = (newIndex + spellBookData.getSpellCount()) % spellBookData.getSpellCount();
+                    while (spellBookData.getInscribedSpells()[newIndex] == null) {
+                        newIndex = (newIndex + spellBookData.getSpellCount() - direction) % spellBookData.getSpellCount();
+                    }
+                    TestMod.LOGGER.debug("direction: {}", direction);
+
+//                    do {
+//                        newIndex = (newIndex + direction) % spellBook.getCount();
+//                        TestMod.LOGGER.debug("new index: {}",newIndex);
+//                        TestMod.LOGGER.debug("spell here: {}",spellBookData.getInscribedSpells()[newIndex]);
+//                        if(newIndex == spellBookData.getActiveSpellIndex())
+//                            break;
+//                    }
+//                    while (spellBookData.getInscribedSpells()[newIndex] == null);
+                    Messages.sendToServer(new PacketChangeSelectedSpell(newIndex));
+                    event.setCanceled(true);
+                }
+
+            }
+        }
     }
 
     private static void Update() {

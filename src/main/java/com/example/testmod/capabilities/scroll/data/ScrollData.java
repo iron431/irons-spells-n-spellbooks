@@ -77,7 +77,7 @@ public class ScrollData {
     }
 
     public CompoundTag saveNBTData() {
-        TestMod.LOGGER.debug("ScrollData.saveNBTData: {} {}", spellId, spellLevel);
+        //TestMod.LOGGER.debug("ScrollData.saveNBTData: {} {}", spellId, spellLevel);
         CompoundTag compound = new CompoundTag();
         compound.putInt(SPELL_ID, spellId);
         compound.putInt(LEVEL, spellLevel);
@@ -85,7 +85,7 @@ public class ScrollData {
     }
 
     public void loadNBTData(CompoundTag compound) {
-        TestMod.LOGGER.debug("ScrollData.loadNBTData: {}", compound);
+        //TestMod.LOGGER.debug("ScrollData.loadNBTData: {}", compound);
         spellId = compound.getInt(SPELL_ID);
         spellLevel = compound.getInt(LEVEL);
     }

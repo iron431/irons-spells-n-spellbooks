@@ -3,8 +3,9 @@ package com.example.testmod.player;
 import net.minecraft.client.KeyMapping;
 
 public class KeyState {
-    boolean isHeld;
-    final KeyMapping key;
+    private boolean isHeld;
+    private final KeyMapping key;
+    private int heldTicks;
 
     public KeyState(KeyMapping key) {
         this.key = key;
@@ -18,14 +19,21 @@ public class KeyState {
         return isHeld && !key.isDown();
     }
 
+    public boolean wasHeldMoreThan(int ticks) {
+        return heldTicks >= ticks;
+    }
+
     public boolean isHeld() {
         return isHeld;
     }
 
     public void Update() {
-        if (key.isDown())
+        if (key.isDown()) {
+            heldTicks++;
             isHeld = true;
-        else
+        } else {
+            heldTicks = 0;
             isHeld = false;
+        }
     }
 }

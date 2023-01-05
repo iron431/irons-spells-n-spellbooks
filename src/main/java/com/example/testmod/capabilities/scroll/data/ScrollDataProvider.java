@@ -24,7 +24,7 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
 
     @Nonnull
     private ScrollData getOrCreateScrollData() {
-        TestMod.LOGGER.debug("SDP.getOrCreateScrollData");
+        //TestMod.LOGGER.debug("SDP.getOrCreateScrollData");
         if (scrollData == null) {
             TestMod.LOGGER.debug("SDP.getOrCreateScrollData create blank ScrollData");
             scrollData = new ScrollData(SpellType.NONE_SPELL, 0);
