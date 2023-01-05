@@ -5,7 +5,6 @@ import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -21,7 +20,6 @@ import net.minecraft.world.phys.*;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 //https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
@@ -36,19 +34,20 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
     public final int animationSeed;
     private final float maxRadius;
     private EntityDimensions dimensions;
-    public AABB oldDimensions;
+    public AABB oldBB;
     private int age;
     private float damage;
+    public int animationTime;
 
     public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level level) {
         super(entityType, level);
         animationSeed = level.random.nextInt(9999);
 
         float initialRadius = 2;
-        maxRadius = 6;
+        maxRadius = 4;
         dimensions = EntityDimensions.scalable(initialRadius, 0.5f);
 
-        oldDimensions = getBoundingBox();
+        oldBB = getBoundingBox();
         this.setNoGravity(true);
     }
 
@@ -71,6 +70,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
         this.damage = damage;
     }
 
+    //TODO: override "doWaterSplashEffect"
     @Override
     protected void defineSynchedData() {
         this.getEntityData().define(DATA_RADIUS, 0.5F);
@@ -103,8 +103,8 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
             return;
         }
         //TestMod.LOGGER.info("Increasing Radius");
-        oldDimensions = getBoundingBox();
-        setRadius(getRadius() + 0.2f);
+        oldBB = getBoundingBox();
+        setRadius(getRadius() + 0.12f);
         //TODO: replace all this with custom hit detection
         if (!level.isClientSide) {
             HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
@@ -192,13 +192,32 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
 
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
-        if (!level.isClientSide) {
-            double x = getX();
-            double y = getY();
-            double z = getZ();
-            float width = .35f * dimensions.width;
-            MagicManager.spawnParticles(level,ParticleRegistry.BLOOD_PARTICLE.get(), x, y, z, 3, width, 0, width, .1, false);
+        if (level.isClientSide) {
 
+            float width = (float) getBoundingBox().getXsize();
+            float step = .25f;
+            float radians = Mth.DEG_TO_RAD * getYRot();
+            float speed = .1f;
+            for (int i = 0; i < width / step; i++) {
+//                double x = getX() + step * (i - width / step / 2);
+//                double y = getY();
+//                double z = getZ();
+//
+//                double rotX = x * Math.cos(radians) - z * Math.sin(radians);
+//                double rotZ = z * Math.cos(radians) + x * Math.sin(radians);
+                double x = getX();
+                double y = getY();
+                double z = getZ();
+                double offset = step * (i - width / step / 2);
+                double rotX = offset * Math.cos(radians);
+                double rotZ = -offset * Math.sin(radians);
+
+                double dx = Math.random() * speed * 2 - speed;
+                double dy = Math.random() * speed * 2 - speed;
+                double dz = Math.random() * speed * 2 - speed;
+                level.addParticle(ParticleHelper.BLOOD, false, x + rotX + dx, y + dy,z + rotZ + dz, dx, dy, dz);
+            }
+            //MagicManager.spawnParticles(level,ParticleRegistry.BLOOD_PARTICLE.get(), x, y, z, 5 + (int)(width * 5), width, 0, width, .1, false);
         }
     }
 
