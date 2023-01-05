@@ -26,12 +26,7 @@ public class ScrollData {
     public ScrollData(SpellType spellType, int level) {
         this.spellId = spellType.getValue();
         this.spellLevel = level;
-        TestMod.LOGGER.debug("ScrollData.1");
-    }
-
-    public ScrollData(CompoundTag compound) {
-        TestMod.LOGGER.debug("ScrollData.2");
-        loadNBTData(compound);
+        TestMod.LOGGER.debug("ScrollData.1: {}, {}", spellId, spellLevel);
     }
 
     public AbstractSpell getSpell() {
@@ -40,6 +35,10 @@ public class ScrollData {
         }
 
         return spell;
+    }
+
+    public int getSpellId() {
+        return spellId;
     }
 
     public int getLevel() {

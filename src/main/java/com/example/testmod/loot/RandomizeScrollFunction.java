@@ -9,6 +9,7 @@ import com.google.gson.*;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -31,15 +32,14 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
         TestMod.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof Scroll scroll) {
             int spellLevel = levelRange.getInt(lootContext);
-            scroll.setLevel(spellLevel);
-
             var spellId = (++counter) % SpellType.values().length;
             scroll.setSpellType(SpellType.values()[spellId]);
+            scroll.setLevel(spellLevel);
 
-            TestMod.LOGGER.debug("RandomizeScrollFunction.getScrollData.1");
+//            TestMod.LOGGER.debug("RandomizeScrollFunction.getScrollData.1");
 //            var scrollData = scroll.getScrollData(itemStack);
 //            scrollData.setData(spellId, spellLevel);
-            TestMod.LOGGER.debug("RandomizeScrollFunction.getScrollData.2");
+//            TestMod.LOGGER.debug("RandomizeScrollFunction.getScrollData.2");
         }
         return itemStack;
     }

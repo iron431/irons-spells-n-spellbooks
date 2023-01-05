@@ -9,7 +9,8 @@
 ### Capabilities
 - https://github.com/mickelus/tetra/search?q=capability/
 - https://github.com/Shadows-of-Fire/Apotheosis/search?q=capability
-  //
+- https://github.com/TheGreyGhost/MinecraftByExample/search?q=getShareTag
+  
 ### Item Stack
 - https://www.youtube.com/watch?v=edcpW1zzUfk
 
