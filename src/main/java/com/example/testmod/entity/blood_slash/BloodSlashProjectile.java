@@ -4,7 +4,6 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
-import com.example.testmod.registries.ParticleRegistry;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -19,13 +18,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import org.apache.commons.compress.utils.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
-//https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
-//https://github.com/CammiePone/Arcanus/blob/1.18-dev/src/main/java/dev/cammiescorner/arcanus/common/entities/MagicMissileEntity.java#L51
-//https://github.com/maximumpower55/Aura
 
 public class BloodSlashProjectile extends Projectile implements ItemSupplier {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
@@ -113,7 +109,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
             }
             //spawnParticles();
         }
-        List<Entity> collisions = Lists.newArrayList();
+        List<Entity> collisions = new ArrayList<>();
         collisions.addAll(level.getEntities(this, this.getBoundingBox()));
 
         collisions = collisions.stream().filter(target ->
@@ -215,6 +211,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
                 double dx = Math.random() * speed * 2 - speed;
                 double dy = Math.random() * speed * 2 - speed;
                 double dz = Math.random() * speed * 2 - speed;
+                //TODO: find out how to un-force these particles (the one with that argument seems to not be public)
                 level.addParticle(ParticleHelper.BLOOD, false, x + rotX + dx, y + dy,z + rotZ + dz, dx, dy, dz);
             }
             //MagicManager.spawnParticles(level,ParticleRegistry.BLOOD_PARTICLE.get(), x, y, z, 5 + (int)(width * 5), width, 0, width, .1, false);
