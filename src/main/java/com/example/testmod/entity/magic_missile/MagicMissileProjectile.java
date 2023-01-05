@@ -35,11 +35,6 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         this.setNoGravity(true);
     }
 
-    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, double x, double y, double z) {
-        super(entityType, levelIn);
-        setPos(x, y, z);
-    }
-
     public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, LivingEntity shooter) {
         super(entityType, levelIn);
         setOwner(shooter);
@@ -80,7 +75,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
 
     @Override
     protected void onHit(HitResult hitresult) {
-        TestMod.LOGGER.info("MagicMissileProjectile.genericOnHit");
+        TestMod.LOGGER.debug("MagicMissileProjectile.genericOnHit");
         if (hitresult.getType() == HitResult.Type.ENTITY) {
             onHitEntity((EntityHitResult) hitresult);
         } else if (hitresult.getType() == HitResult.Type.BLOCK) {
@@ -98,7 +93,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitBlock");
+        TestMod.LOGGER.debug("MagicMissileProjectile.onHitBlock");
         kill();
 
     }
@@ -106,7 +101,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitEntity");
+        TestMod.LOGGER.debug("MagicMissileProjectile.onHitEntity");
         if (entityHitResult.getEntity() instanceof LivingEntity target) {
             //TODO: deal with the damage
             target.hurt(DamageSource.MAGIC, damage);

@@ -53,7 +53,7 @@ public class ManaDisplay extends GuiComponent {
         //System.out.println("success");
         var player = Minecraft.getInstance().player;
         if (player.getAttribute(MAX_MANA.get()) == null) {
-            TestMod.LOGGER.info("null");
+            TestMod.LOGGER.debug("null");
             return;
         }
         Gui GUI = Minecraft.getInstance().gui;

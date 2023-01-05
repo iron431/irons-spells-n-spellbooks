@@ -6,6 +6,7 @@ import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,8 +40,12 @@ public class PacketCancelCast {
                 if (playerMagicData.isCasting()) {
                     int spellId = playerMagicData.getCastingSpellId();
                     playerMagicData.resetCastingState();
-                    if (triggerCooldown)
-                        MagicManager.get(serverPlayer.level).addCooldown(serverPlayer,SpellType.values()[spellId]);
+
+                    if (triggerCooldown) {
+                        MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId]);
+                        AbstractSpell.getSpell(spellId, 0).onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
+                    }
+
                     Messages.sendToPlayer(new PacketCastingState(spellId, 0, CastType.NONE, true), serverPlayer);
                     if(SpellType.values()[spellId].getCastType()==CastType.CONTINUOUS)
                         Scroll.attemptRemoveScrollAfterCast(serverPlayer);

@@ -1,5 +1,6 @@
 package com.example.testmod.spells.ender;
 
+import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -26,7 +27,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player) {
+    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
 
     }
 }

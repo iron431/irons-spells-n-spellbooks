@@ -24,9 +24,10 @@ public class MagicManager {
 
     public static final int TICKS_PER_CYCLE = 20;
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
-    private static MagicManager magicManager = null;
 
     private int counter = 0;
+    private int manaRegenCounterDebug = 0;
+    private static MagicManager magicManager = null;
 
     @Nonnull
     public static MagicManager get(Level level) {
@@ -58,8 +59,6 @@ public class MagicManager {
         playerMagicData.setMana(newManaValue);
     }
 
-
-
     public void regenPlayerMana(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
         int increment = Math.round(Math.max(playerMaxMana * .01f, 1));
@@ -79,7 +78,6 @@ public class MagicManager {
         level.players().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {
                 PlayerMagicData playerMagicData = getPlayerMagicData(serverPlayer);
-
                 playerMagicData.getPlayerCooldowns().tick(1);
 
                 if (playerMagicData.isCasting()) {
@@ -87,7 +85,7 @@ public class MagicManager {
                     playerMagicData.handleCastDuration();
                     if (spell.getCastType() == CastType.LONG) {
                         if (!playerMagicData.isCasting()) {
-                            TestMod.LOGGER.info("MagicManager.tick: handle spell casting complete");
+                            TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                             Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                             spell.castSpell(serverPlayer.level, serverPlayer, true, true);
                             playerMagicData.resetCastingState();
@@ -96,9 +94,10 @@ public class MagicManager {
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
                             if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || playerMagicData.getMana() - spell.getManaCost() * 2 < 0) {
-                                TestMod.LOGGER.info("MagicManager.tick: handle spell casting complete");
+                                TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                                 Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, true, true);
+                                spell.onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                                 playerMagicData.resetCastingState();
                                 Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                             } else {
@@ -110,12 +109,15 @@ public class MagicManager {
                 }
 
                 if (counter <= 0) {
-                    counter = TICKS_PER_CYCLE;
                     regenPlayerMana(serverPlayer, playerMagicData);
                     Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
                 }
             }
         });
+
+        if (counter <= 0) {
+            counter = TICKS_PER_CYCLE;
+        }
     }
 
     public MagicManager() {
@@ -130,6 +132,10 @@ public class MagicManager {
 
     public static int getEffectiveSpellCooldown(int cooldown, double playerCooldownModifier) {
         return (int) (cooldown * (2 - playerCooldownModifier));
+    }
+
+    public static void spawnParticles2(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
+        level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
     }
 
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double radiusX, double radiusY, double radiusZ, double speed, boolean force) {

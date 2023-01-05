@@ -1,6 +1,6 @@
 package com.example.testmod.spells.ender;
 
-import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
+import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SchoolType;
@@ -32,7 +32,7 @@ public class MagicMissileSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player) {
+    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(world, player);
         magicMissileProjectile.setPos(player.position().add(0, player.getEyeHeight(), 0));
         magicMissileProjectile.shoot(player.getLookAngle());

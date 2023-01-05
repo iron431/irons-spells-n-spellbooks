@@ -45,7 +45,7 @@ public class ClientPlayerEvents {
             var playerMagicData = cap.resolve().get();
 
             if (playerMagicData.isCasting() && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1) && (event.getFrom().getItem() instanceof SpellBook || event.getFrom().getItem() instanceof Scroll)) {
-                TestMod.LOGGER.info("onLivingEquipmentChangeEvent: Cancel Cast");
+                TestMod.LOGGER.debug("onLivingEquipmentChangeEvent: Cancel Cast");
                 Messages.sendToServer(new PacketCancelCast(SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS));
             }
         }
@@ -104,7 +104,7 @@ public class ClientPlayerEvents {
                     SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
                     event.getSource() != DamageSource.ON_FIRE &&
                     event.getSource() != DamageSource.WITHER) {
-                TestMod.LOGGER.info("onPlayerTakeDamage: Cancel Cast");
+                TestMod.LOGGER.debug("onPlayerTakeDamage: Cancel Cast");
                 Messages.sendToServer(new PacketCancelCast(false));
             }
         }
@@ -153,10 +153,10 @@ public class ClientPlayerEvents {
     //https://forums.minecraftforge.net/topic/111556-version-1182-solved-change-rendered-mobs-model-under-certain-conditions/
 
     public static void onPlayerRenderPost(RenderPlayerEvent.Pre event) {
-        //TestMod.LOGGER.info("RenderPlayerEvent.Post");
+        //TestMod.LOGGER.debug("RenderPlayerEvent.Post");
 
 //        if(ClientMagicData.isCasting){
-//            TestMod.LOGGER.info("onPlayerRenderPost: isUsingItem:" + event.getPlayer().isUsingItem());
+//            TestMod.LOGGER.debug("onPlayerRenderPost: isUsingItem:" + event.getPlayer().isUsingItem());
 //                event.getPlayer().startUsingItem(InteractionHand.MAIN_HAND);
 //        }
 

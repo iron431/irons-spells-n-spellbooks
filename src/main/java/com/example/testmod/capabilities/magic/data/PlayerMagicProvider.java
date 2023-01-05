@@ -16,15 +16,15 @@ public class PlayerMagicProvider implements ICapabilityProvider, INBTSerializabl
 
     public static Capability<PlayerMagicData> PLAYER_MAGIC = CapabilityManager.get(new CapabilityToken<>(){});
 
-    private PlayerMagicData playerMana = null;
+    private PlayerMagicData playerMagicData = null;
     private final LazyOptional<PlayerMagicData> opt = LazyOptional.of(this::createPlayerMagicData);
 
     @Nonnull
     private PlayerMagicData createPlayerMagicData() {
-        if (playerMana == null) {
-            playerMana = new PlayerMagicData();
+        if (playerMagicData == null) {
+            playerMagicData = new PlayerMagicData();
         }
-        return playerMana;
+        return playerMagicData;
     }
 
     @Nonnull

@@ -2,6 +2,7 @@ package com.example.testmod.spells.fire;
 
 import ca.weblite.objc.Message;
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -41,7 +42,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player) {
+    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.FIRE;
 //
         float amplifier = 0.5f + (level - 1) * .25f;

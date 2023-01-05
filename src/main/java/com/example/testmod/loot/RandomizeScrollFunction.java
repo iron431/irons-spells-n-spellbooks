@@ -1,6 +1,7 @@
 package com.example.testmod.loot;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.scroll.data.ScrollData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.registries.LootRegistry;
 import com.example.testmod.spells.SpellType;
@@ -8,10 +9,13 @@ import com.google.gson.*;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+
+import static com.example.testmod.capabilities.scroll.data.ScrollDataProvider.SCROLL_DATA;
 
 //should extend lootmodifer?
 public class RandomizeScrollFunction extends LootItemConditionalFunction {
@@ -25,12 +29,17 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
 
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
+        TestMod.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof Scroll scroll) {
-            scroll.setLevel(levelRange.getInt(lootContext));
+            int spellLevel = levelRange.getInt(lootContext);
+            var spellId = (++counter) % SpellType.values().length;
+            scroll.setSpellType(SpellType.values()[spellId]);
+            scroll.setLevel(spellLevel);
 
-            var index = (++counter) % SpellType.values().length;
-            scroll.setSpellType(SpellType.values()[index]);
-
+//            TestMod.LOGGER.debug("RandomizeScrollFunction.getScrollData.1");
+//            var scrollData = scroll.getScrollData(itemStack);
+//            scrollData.setData(spellId, spellLevel);
+//            TestMod.LOGGER.debug("RandomizeScrollFunction.getScrollData.2");
         }
         return itemStack;
     }

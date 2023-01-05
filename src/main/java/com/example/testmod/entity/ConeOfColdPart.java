@@ -23,7 +23,6 @@ public class ConeOfColdPart extends PartEntity<ConeOfColdProjectile> {
 
     @Override
     protected void defineSynchedData() {
-
     }
 
     @Override

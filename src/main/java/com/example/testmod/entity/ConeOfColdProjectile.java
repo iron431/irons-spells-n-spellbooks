@@ -1,49 +1,42 @@
 package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.registries.EntityRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.boss.EnderDragonPart;
-import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
+import org.apache.commons.compress.utils.Lists;
 
-//https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
-//https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
-//https://github.com/CammiePone/Arcanus/blob/1.18-dev/src/main/java/dev/cammiescorner/arcanus/common/entities/MagicMissileEntity.java#L51
-//https://github.com/maximumpower55/Aura
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-/*
-Projectile.lerpMotion is also a decent reference
-This method appears to set the movement delta (change in position) of the projectile, as well as its rotation based on the movement delta.
-The method takes three parameters: p37279, p37280, and p37281, which represent the movement delta in the x, y, and z directions, respectively.
-The method first sets the movement delta using the setDeltaMovement method. It then checks if the xRotO and yRotO fields are equal to 0.0. If they are,
-it calculates the pitch and yaw (rotation around the x and y axes, respectively) based on the movement delta using the atan2 function. It then sets the
-pitch and yaw of the projectile using the setXRot and setYRot methods, and stores the pitch and yaw in the xRotO and yRotO fields, respectively. Finally,
-it calls the moveTo method to update the position and rotation of the projectile.
- */
-
-public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
-    private static final int EXPIRE_TIME = 10 * 20;
+public class ConeOfColdProjectile extends Projectile {
+    private static final int FAILSAFE_EXPIRE_TIME = 20 * 20;
     private int age;
     private float damage;
-    private int tickCount;
-    boolean didRun = false;
-
+    private boolean dealDamageActive = true;
     private final ConeOfColdPart[] subEntities;
+
+    public ConeOfColdProjectile(Level level, LivingEntity entity) {
+        this(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), level);
+        setOwner(entity);
+    }
 
     public ConeOfColdProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level level) {
         super(entityType, level);
@@ -56,15 +49,7 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
                 new ConeOfColdPart(this, "part4", 4.5F, 3.0F)
         };
 
-        this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
-    }
-
-    public ConeOfColdPart[] getSubEntities() {
-        return this.subEntities;
-    }
-
-    private float rotWrap(double p_31165_) {
-        return (float) Mth.wrapDegrees(p_31165_);
+        //this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
     }
 
     @Override
@@ -84,59 +69,25 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
             this.subEntities[i].setId(id + i + 1);
     }
 
-    public ConeOfColdProjectile(Level level, LivingEntity entity) {
-        this(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), level);
-        setOwner(entity);
-    }
-
-    public void shoot(Vec3 rotation) {
-        //setDeltaMovement(rotation.scale(SPEED));
-
-    }
-
     public void setDamage(float damage) {
         this.damage = damage;
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
-        super.onHitBlock(blockHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitBlock");
-        kill();
-    }
-
-    @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        super.onHitEntity(entityHitResult);
-        TestMod.LOGGER.info("MagicMissileProjectile.onHitEntity");
-        if (entityHitResult.getEntity() instanceof LivingEntity target)
-            //TODO: deal with the damage
-            target.hurt(DamageSource.MAGIC, damage);
-    }
-
-    @Override
-    protected void onHit(HitResult hitResult) {
-        super.onHit(hitResult);
+        TestMod.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
+        var entity = entityHitResult.getEntity();
+        entity.hurt(DamageSource.MAGIC, damage);
+        entity.setTicksFrozen(entity.getTicksFrozen() + 80);
     }
 
     @Override
     protected void defineSynchedData() {
-
-    }
-
-    @Override
-    public ItemStack getItem() {
-        return ItemStack.EMPTY;
-    }
-
-    private void tickPart(ConeOfColdPart coneOfColdPart, double x, double y, double z) {
-        coneOfColdPart.setPos(this.getX() + x, this.getY() + y, this.getZ() + z);
     }
 
     protected static Vec3 rayTrace(Entity owner) {
         float f = owner.getXRot();
         float f1 = owner.getYRot();
-        //Vec3 vector3d = owner.getEyePosition(1.0F);
         float f2 = Mth.cos(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
         float f3 = Mth.sin(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
         float f4 = -Mth.cos(-f * ((float) Math.PI / 180F));
@@ -146,8 +97,41 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
         return new Vec3(f6, f5, f7);
     }
 
+    @Nullable
+    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabb, Predicate<Entity> predicate) {
+        TestMod.LOGGER.debug("ConeOfColdProjectile.getEntityHitResult.enter:");
+        return getEntityHitResult(level, entity, currentPos, deltaPos, aabb, predicate, 0.3F);
+    }
+
+    @Nullable
+    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabbPassedin, Predicate<Entity> predicate, float inflateAmount) {
+        double d0 = Double.MAX_VALUE;
+        Entity hitEntity = null;
+
+        for (Entity entityToCheck : level.getEntities(entity, aabbPassedin, predicate)) {
+            TestMod.LOGGER.debug("ConeOfColdProjectile:getEntityHitResult.2: {}", entityToCheck.getName().getString());
+            AABB aabb = entityToCheck.getBoundingBox().inflate((double) inflateAmount);
+            Optional<Vec3> optional = aabb.clip(currentPos, deltaPos);
+            if (optional.isPresent()) {
+                double d1 = currentPos.distanceToSqr(optional.get());
+                if (d1 < d0) {
+                    hitEntity = entityToCheck;
+                    d0 = d1;
+                }
+            }
+        }
+
+        return hitEntity == null ? null : new EntityHitResult(hitEntity);
+    }
+
     @Override
     public void tick() {
+        super.tick();
+
+        if (++age > FAILSAFE_EXPIRE_TIME) {
+            //This exists in case there is any bug with removing the cone onCastComplete
+            discard();
+        }
 
         //TODO: try this instead of the ray trace
         /*
@@ -156,41 +140,12 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
         Take that vector, multiply by 0.5 (or 0.2 or whatever), add their current position, and voila. You have the spot a half-block in front of them.
         */
 
-//        Vec3 pos = position();
-//        super.tick();
-//        Vec3 vec3 = getOwner().getLookAngle().normalize();
-//        vec3.yRot((-(float) Math.PI / 4F));
-//        double d0 = pos.x;
-//        double d1 = pos.y * .5f;
-//        double d2 = pos.z;
-//
-//        for (int i = 0; i < 8; ++i) {
-//            double d3 = d0 + level.getRandom().nextGaussian() / 2.0D;
-//            double d4 = d1 + level.getRandom().nextGaussian() / 2.0D;
-//            double d5 = d2 + level.getRandom().nextGaussian() / 2.0D;
-//
-//            for (int j = 0; j < 6; ++j) {
-//                //level.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j);
-//                level.sendParticles(level,ParticleTypes.DRAGON_BREATH,d3, d4, d5,1,-vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j,.2,false);
-//            }
-//
-//            vec3.yRot(0.19634955F);
-//        }
-        if (++age > EXPIRE_TIME) {
-            discard();
-            return;
-        }
-
-//        if (didRun) {
-//            return;
-//        }
-//        didRun = true;
-
         var owner = this.getOwner();
         if (owner != null) {
             var rayTraceVector = rayTrace(owner);
             var ownerEyePos = owner.getEyePosition(1.0f).subtract(0, .8, 0);
             this.setPos(ownerEyePos);
+            setDeltaMovement(ownerEyePos);
 
             double scale = 1;
 
@@ -198,103 +153,121 @@ public class ConeOfColdProjectile extends Projectile implements ItemSupplier {
                 var subEntity = subEntities[i];
 
                 double distance = 1 + (i * scale * subEntity.getDimensions(null).width / 2);
-                var newVector = ownerEyePos.add(rayTraceVector.multiply(distance, distance, distance));
+                Vec3 newVector = ownerEyePos.add(rayTraceVector.multiply(distance, distance, distance));
                 subEntity.setPos(newVector);
-                var vec31 = new Vec3(subEntity.getX(), subEntity.getY(), subEntity.getZ());
-                subEntity.xo = vec31.x;
-                subEntity.yo = vec31.y;
-                subEntity.zo = vec31.z;
-                subEntity.xOld = vec31.x;
-                subEntity.yOld = vec31.y;
-                subEntity.zOld = vec31.z;
+                subEntity.setDeltaMovement(newVector);
+                var vec3 = new Vec3(subEntity.getX(), subEntity.getY(), subEntity.getZ());
+                subEntity.xo = vec3.x;
+                subEntity.yo = vec3.y;
+                subEntity.zo = vec3.z;
+                subEntity.xOld = vec3.x;
+                subEntity.yOld = vec3.y;
+                subEntity.zOld = vec3.z;
             }
         }
 
-//        if (++tickCount % 20 == 0) {
-//            var la = owner.getLookAngle();
-//            TestMod.LOGGER.info("ConeOfCold Owner look angle: x:{}, y:{}, z{}", la.x, la.y, la.z);
-//            TestMod.LOGGER.info("ConeOfCold Position: x:{}, y:{}, z{}", this.getX(), this.getY(), this.getZ());
-//            for (ConeOfColdPart subEntity : this.subEntities) {
-//                TestMod.LOGGER.info("ConeOfCold part Position: x:{}, y:{}, z{}", subEntity.getX(), subEntity.getY(), subEntity.getZ());
-//            }
-//        }
+        /* Hit Detection */
+        if (!level.isClientSide) {
+            if (dealDamageActive) {
+                for (Entity entity : getSubEntityCollisions()) {
+                    TestMod.LOGGER.debug("ConeOfColdHit : {}", entity.getName().getString());
+                    onHitEntity(new EntityHitResult(entity));
+                }
+                dealDamageActive = false;
+            }
 
+            if (age % 10 == 0) {
+                TestMod.LOGGER.debug("ConeOfCold Pos: {} {}", owner.position(), owner.getLookAngle());
+            }
 
-//        Vec3[] vec3 = new Vec3[this.subEntities.length];
-//        for (int j = 0; j < this.subEntities.length; ++j) {
-//            vec3[j] = new Vec3(this.subEntities[j].getX(), this.subEntities[j].getY(), this.subEntities[j].getZ());
-//        }
+            //spawnParticles();
+        } else {
+            spawnParticlesClienSide();
+        }
 
-//        if (!level.isClientSide) {
-//            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-//            if (hitresult.getType() == HitResult.Type.ENTITY) {
-//                onHitEntity((EntityHitResult) hitresult);
-//            }
-//
-//            //pawnParticles();
-//        }
-//        Vec3[] vec3 = new Vec3[this.subEntities.length];
-//        for(int j = 0; j < this.subEntities.length; ++j) {
-//            vec3[j] = new Vec3(this.subEntities[j].getX(), this.subEntities[j].getY(), this.subEntities[j].getZ());
-//        }
-
-
-//        for (int l = 0; l < this.subEntities.length; ++l) {
-//            this.subEntities[l].xo = vec3[l].x;
-//            this.subEntities[l].yo = vec3[l].y;
-//            this.subEntities[l].zo = vec3[l].z;
-//            this.subEntities[l].xOld = vec3[l].x;
-//            this.subEntities[l].yOld = vec3[l].y;
-//            this.subEntities[l].zOld = vec3[l].z;
-//        }
-        //setPos(position().add(getDeltaMovement()));
     }
+
+    public void setDealDamageActive() {
+        this.dealDamageActive = true;
+    }
+
+    private Set<Entity> getSubEntityCollisions() {
+        List<Entity> collisions = Lists.newArrayList();
+        for (Entity conepart : subEntities) {
+            collisions.addAll(level.getEntities(conepart, conepart.getBoundingBox()));
+        }
+
+        return collisions.stream().filter(target ->
+                target != getOwner() && target instanceof LivingEntity && hasLineOfSightOnlyClip(this, target)
+        ).collect(Collectors.toSet());
+    }
+
+    public static boolean hasLineOfSightOnlyClip(Entity entity, Entity target) {
+        Vec3 vec3 = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
+        Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
+        return entity.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
+    }
+
+//    public void spawnParticles() {
+//        var owner = getOwner();
+//        //This is right in front of the player
+//        var vec3 = owner.getLookAngle().multiply(2, 2, 2).add(owner.position());
+//
+//        var vec3a = owner.getLookAngle().multiply(10, 10, 10);
+//
+//        double x = vec3.x;
+//        double y = vec3.y;
+//        double z = vec3.z;
+//        double dx = -1; //vec3a.x;
+//        double dy = 0; //vec3a.y;
+//        double dz = 0; //vec3a.z;
+//
+//        for (int count = 0; count < 10; count++) {
+//            ((ServerLevel)level).sendParticles(ParticleTypes.DRAGON_BREATH, x, y, z, 1, dx, dy, dz, .2);
+//        }
+//    }
 
     public void spawnParticles() {
-        if (!level.isClientSide) {
-            for (int count = 0; count < 3; count++) {
-                double x = getX() + (level.random.nextInt(3) - 1) / 4D;
-                double y = getY() + 0.2F + (level.random.nextInt(3) - 1) / 4D;
-                double z = getZ() + (level.random.nextInt(3) - 1) / 4D;
-                double deltaX = (level.random.nextInt(3) - 1) * level.random.nextDouble();
-                double deltaY = (level.random.nextInt(3) - 1) * level.random.nextDouble();
-                double deltaZ = (level.random.nextInt(3) - 1) * level.random.nextDouble();
+        var owner = getOwner();
+        Vec3 vec3 = owner.getLookAngle().normalize();
+        vec3.yRot((-(float) Math.PI / 4F));
+        var pos = owner.position();
+        double d0 = pos.x;
+        double d1 = pos.y;
+        double d2 = pos.z;
 
-                level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, ParticleTypes.END_ROD, true, x, y, z, 1, deltaX, deltaY, deltaZ, .1d));
+        for (int i = 0; i < 8; ++i) {
+            double d3 = d0 + level.getRandom().nextGaussian() / 2.0D;
+            double d4 = d1 + level.getRandom().nextGaussian() / 2.0D;
+            double d5 = d2 + level.getRandom().nextGaussian() / 2.0D;
+
+            for (int j = 0; j < 6; ++j) {
+                ((ServerLevel) level).sendParticles(ParticleTypes.DRAGON_BREATH, d3, d4, d5, 1, -vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j, .2);
             }
+
+            vec3.yRot(0.19634955F);
         }
     }
 
-    /*
-	@Override
-	public void lerpMotion(double d, double e, double f) {
-		super.lerpMotion(d, e, f);
-		age = 0;
-	}
+    public void spawnParticlesClienSide() {
+        var owner = getOwner();
+        Vec3 vec3 = owner.getLookAngle().normalize();
+        vec3.yRot((-(float) Math.PI / 4F));
+        var pos = owner.position();
+        double d0 = pos.x;
+        double d1 = pos.y;
+        double d2 = pos.z;
 
-	@Override
-	public boolean shouldRenderAtSqrDistance(double d) {
-		double e = this.getBoundingBox().getSize() * 10.0;
-		if (Double.isNaN(e)) {
-			e = 1.0;
-		}
+        for (int i = 0; i < 8; ++i) {
+            double d3 = d0 + level.getRandom().nextGaussian() / 2.0D;
+            double d4 = d1 + level.getRandom().nextGaussian() / 2.0D;
+            double d5 = d2 + level.getRandom().nextGaussian() / 2.0D;
 
-		e *= 64.0 * getViewScale();
-		return d < e * e;
-	}
+            for (int j = 0; j < 6; ++j) {
+                this.level.addParticle(ParticleTypes.DRAGON_BREATH, d3, d4, d5, -vec3.x * (double) 0.08F * (double) j, -vec3.y * (double) 0.6F, -vec3.z * (double) 0.08F * (double) j);
+            }
 
-	@Override
-	public void addAdditionalSaveData(CompoundTag tag) {
-		super.addAdditionalSaveData(tag);
-		tag.putShort("Age", (short)age);
-	}
-
-	@Override
-	public void readAdditionalSaveData(CompoundTag tag) {
-		super.readAdditionalSaveData(tag);
-		age = tag.getShort("Age");
-	}
-     */
-
-
+            vec3.yRot(0.19634955F);
+        }
+    }
 }

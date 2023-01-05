@@ -1,6 +1,7 @@
 package com.example.testmod.spells.holy;
 
 import com.example.testmod.capabilities.magic.data.MagicManager;
+import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -33,7 +34,7 @@ public class HealSpell extends AbstractSpell {
     }
 
     @Override
-    protected void onCast(Level world, Player player) {
+    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         player.heal(getHealingAmount());
         int count = 16;
         float radius = 1.25f;

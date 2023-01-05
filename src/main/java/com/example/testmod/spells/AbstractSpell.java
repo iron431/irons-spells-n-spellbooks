@@ -138,7 +138,12 @@ public abstract class AbstractSpell {
             MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, spellType);
         }
 
-        onCast(world, serverPlayer);
+        onCast(world, serverPlayer, playerMagicData);
+
+        if(this.castType != CastType.CONTINUOUS){
+            onCastComplete(world,serverPlayer, playerMagicData);
+        }
+
         Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
 
         if (serverPlayer.getMainHandItem().getItem() instanceof SpellBook || serverPlayer.getMainHandItem().getItem() instanceof Scroll)
@@ -154,7 +159,11 @@ public abstract class AbstractSpell {
         return MagicManager.getEffectiveSpellCooldown(cooldown, playerCooldownModifier);
     }
 
-    protected abstract void onCast(Level world, Player player);
+    protected abstract void onCast(Level world, Player player, PlayerMagicData playerMagicData);
+
+    public void onCastComplete(Level world, Player player, PlayerMagicData playerMagicData) {
+
+    }
 
     public TranslatableComponent getUniqueInfo() {
         return null;

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class Utils {
-    public static String GetStackTraceAsString() {
+    public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
         StringBuffer sb = new StringBuffer();
         trace.forEach(item -> {

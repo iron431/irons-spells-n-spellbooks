@@ -1,7 +1,7 @@
 package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.util.Utils;
+import com.example.testmod.entity.ConeOfColdProjectile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,19 +33,20 @@ public class PlayerMagicData {
     private int castingSpellId = 0;
     private int castingSpellLevel = 0;
     private int castDurationRemaining = 0;
+
+    public ConeOfColdProjectile cone;
     private int castDuration = 0;
     private ItemStack castingItemStack = ItemStack.EMPTY;
 
     public void resetCastingState() {
-        isCasting = false;
-        castingSpellId = 0;
-        castingSpellLevel = 0;
-        castDurationRemaining = 0;
-        castDuration = 0;
+        this.isCasting = false;
+        this.castingSpellId = 0;
+        this.castingSpellLevel = 0;
+        this.castDurationRemaining = 0;
     }
 
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration) {
-        isCasting = true;
+        this.isCasting = true;
         this.castingSpellId = castingSpellId;
         this.castingSpellLevel = castingSpellLevel;
         this.castDuration = castDuration;
@@ -56,20 +57,8 @@ public class PlayerMagicData {
         return isCasting;
     }
 
-    public void setCasting(boolean casting) {
-        isCasting = casting;
-    }
-
-    public void setCastingSpellId(int spellId) {
-        castingSpellId = spellId;
-    }
-
     public int getCastingSpellId() {
         return castingSpellId;
-    }
-
-    public void setCastingSpellLevel(int spellLevel) {
-        castingSpellLevel = spellLevel;
     }
 
     public int getCastingSpellLevel() {
@@ -80,29 +69,6 @@ public class PlayerMagicData {
         return castDurationRemaining;
     }
 
-    public void setCastDurationRemaining(int castDurationRemaining) {
-        this.castDurationRemaining = castDurationRemaining;
-    }
-
-    public int getCastDuration() {
-        return castDuration;
-    }
-
-    public void setCastDuration(int castDuration) {
-        this.castDuration = castDuration;
-    }
-
-    public void decrementCastDuration() {
-        castDurationRemaining--;
-    }
-
-    public void setPlayerCastingItem(ItemStack itemStack) {
-        this.castingItemStack = itemStack;
-    }
-    public ItemStack getPlayerCastingItem() {
-        return this.castingItemStack;
-    }
-
     public void handleCastDuration() {
         castDurationRemaining--;
 
@@ -110,6 +76,14 @@ public class PlayerMagicData {
             isCasting = false;
             castDurationRemaining = 0;
         }
+    }
+
+    public void setPlayerCastingItem(ItemStack itemStack) {
+        this.castingItemStack = itemStack;
+    }
+
+    public ItemStack getPlayerCastingItem() {
+        return this.castingItemStack;
     }
 
     /********* COOLDOWNS *******************************************************/
@@ -131,7 +105,7 @@ public class PlayerMagicData {
     }
 
     public void saveNBTData(CompoundTag compound) {
-        TestMod.LOGGER.info("PlayerMagicData: saving nbt");
+        TestMod.LOGGER.debug("PlayerMagicData: saving nbt");
         compound.putInt(MANA, mana);
 
         if (playerCooldowns.hasCooldownsActive()) {
@@ -144,7 +118,7 @@ public class PlayerMagicData {
     }
 
     public void loadNBTData(CompoundTag compound) {
-        TestMod.LOGGER.info("PlayerMagicData: loading nbt");
+        TestMod.LOGGER.debug("PlayerMagicData: loading nbt");
         mana = compound.getInt(MANA);
         ListTag listTag = (ListTag) compound.get(COOLDOWNS);
 

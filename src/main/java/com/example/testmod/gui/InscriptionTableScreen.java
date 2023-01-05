@@ -66,7 +66,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         inscribeButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()));
         extractButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.removeSpell()));
         spellSlots = new ArrayList<>();
-        TestMod.LOGGER.info("InscriptionTableScreen: init");
+        TestMod.LOGGER.debug("InscriptionTableScreen: init");
         generateSpellSlots();
     }
 

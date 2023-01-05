@@ -1,5 +1,6 @@
 package com.example.testmod.capabilities.scroll.data;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,69 +18,47 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
 
     public static Capability<ScrollData> SCROLL_DATA = CapabilityManager.get(new CapabilityToken<>() {
     });
-    private final LazyOptional<ScrollData> opt = LazyOptional.of(this::getOrCreateScrollData);
 
     private ScrollData scrollData = null;
-    private final SpellType spellType;
-    private final int level;
-
-    public ScrollDataProvider(SpellType spellType, int level) {
-        this.spellType = spellType;
-        this.level = level;
-        getOrCreateScrollData();
-    }
-
-    public SpellType getSpellType() {
-        return spellType;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public ScrollDataProvider(CompoundTag tag) {
-        if (tag != null && !tag.isEmpty()) {
-            scrollData = new ScrollData(tag);
-            this.spellType = scrollData.getSpell().getSpellType();
-            this.level = scrollData.getSpell().getLevel();
-        } else {
-            spellType = SpellType.NONE_SPELL;
-            level = 0;
-            scrollData= new ScrollData(spellType, level);
-        }
-    }
+    private final LazyOptional<ScrollData> opt = LazyOptional.of(this::getOrCreateScrollData);
 
     @Nonnull
     private ScrollData getOrCreateScrollData() {
+        TestMod.LOGGER.debug("SDP.getOrCreateScrollData");
         if (scrollData == null) {
-            scrollData = new ScrollData(this.spellType, this.level);
+            TestMod.LOGGER.debug("SDP.getOrCreateScrollData create blank ScrollData");
+            scrollData = new ScrollData(SpellType.NONE_SPELL, 0);
+        }
+        return scrollData;
+    }
+
+    @Nonnull
+    public ScrollData getOrCreateScrollData(SpellType spellType, int level) {
+        TestMod.LOGGER.debug("SDP.getOrCreateScrollData {} {}", spellType.getValue(), level);
+        if (scrollData == null) {
+            TestMod.LOGGER.debug("SDP.getOrCreateScrollData create hydrated ScrollData {} {}", spellType.getValue(), level);
+            scrollData = new ScrollData(spellType, level);
         }
         return scrollData;
     }
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        TestMod.LOGGER.debug("SDP.getCapability.1");
         if (cap == SCROLL_DATA) {
             return opt.cast();
         }
         return LazyOptional.empty();
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        return getCapability(cap);
-    }
-
     @Override
     public CompoundTag serializeNBT() {
-
-        return scrollData.saveNBTData();
+        return getOrCreateScrollData().saveNBTData();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        scrollData.loadNBTData(nbt);
+        getOrCreateScrollData().loadNBTData(nbt);
     }
 }
