@@ -233,25 +233,22 @@ public class ConeOfColdProjectile extends Projectile {
             return;
         var owner = getOwner();
         Vec3 rotation = owner.getLookAngle().normalize();
-        //rVec.yRot((-(float) Math.PI / 4F));
         var pos = owner.position().add(rotation.scale(0.5f));
+
         double x = pos.x;
         double y = pos.y + owner.getEyeHeight() * .8f;
         double z = pos.z;
+
         double speed = .6;
-        double randomAngleRange = Math.PI / 8;
-        for (int i = 0; i < 10; ++i) {
-            double dx = 0;//level.getRandom().nextDouble() * speed - speed * .5;
-            double dy = 0;//level.getRandom().nextDouble() * speed - speed * .5;
-            double dz = 0;//level.getRandom().nextDouble() * speed - speed * .5;
-            float yaw = (float) (level.random.nextDouble() * 2 * randomAngleRange - randomAngleRange);
-            float pitch = (float) (level.random.nextDouble() * 2 * randomAngleRange - randomAngleRange);
+        for (int i = 0; i < 10; i++) {
+            double offset = .25;
+            double ox = Math.random() * 2 * offset - offset;
+            double oy = Math.random() * 2 * offset - offset;
+            double oz = Math.random() * 2 * offset - offset;
 
-            Vec3 randomRotation = rotation.yRot(yaw).xRot(pitch).zRot(pitch);
-            level.addParticle(ParticleTypes.SNOWFLAKE, x + dx, y + dy, z + dz, randomRotation.x * speed, randomRotation.y * speed, randomRotation.z * speed);
-
-
-            //rVec.yRot(0.19634955F);
+            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
+            Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
+            level.addParticle(ParticleTypes.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }
     }
 }
