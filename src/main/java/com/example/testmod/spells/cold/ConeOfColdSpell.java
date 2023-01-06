@@ -17,12 +17,12 @@ public class ConeOfColdSpell extends AbstractSpell {
     public ConeOfColdSpell(int level) {
         super(SpellType.CONE_OF_COLD_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 1;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
-        this.castTime = 1500;
-        this.baseManaCost = 2;
-        this.cooldown = 0;
+        this.castTime = 100;
+        this.baseManaCost = 5;
+        this.cooldown = 100;
     }
 
     @Override
