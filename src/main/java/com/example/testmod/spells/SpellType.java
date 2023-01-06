@@ -2,6 +2,7 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 //import com.example.testmod.spells.blood.BloodSlashSpell;
+import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.cold.ConeOfColdSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
@@ -65,9 +66,9 @@ public enum SpellType {
             case HEAL_SPELL -> {
                 return new HealSpell(level);
             }
-//            case BLOOD_SLASH_SPELL -> {
-//                return new BloodSlashSpell(level);
-//            }
+            case BLOOD_SLASH_SPELL -> {
+                return new BloodSlashSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
