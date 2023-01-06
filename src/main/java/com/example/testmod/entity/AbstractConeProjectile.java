@@ -1,10 +1,10 @@
-package com.example.testmod.entity.cone_of_cold;
+package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.entity.cone_of_cold.ConeOfColdPart;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -27,31 +27,34 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class ConeOfColdProjectile extends Projectile {
+public abstract class AbstractConeProjectile extends Projectile {
     private static final int FAILSAFE_EXPIRE_TIME = 20 * 20;
     private int age;
     private float damage;
     private boolean dealDamageActive = true;
-    private final ConeOfColdPart[] subEntities;
+    private final ConePart[] subEntities;
 
-    public ConeOfColdProjectile(Level level, LivingEntity entity) {
-        this(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), level);
+    public AbstractConeProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level, LivingEntity entity) {
+        this(entityType, level);
         setOwner(entity);
     }
 
-    public ConeOfColdProjectile(EntityType<? extends ConeOfColdProjectile> entityType, Level level) {
+    public AbstractConeProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
 
-        this.subEntities = new ConeOfColdPart[]{
-                new ConeOfColdPart(this, "part1", 1.0F, 1.0F),
-                new ConeOfColdPart(this, "part2", 2.5F, 1.5F),
-                new ConeOfColdPart(this, "part3", 3.5F, 2.0F),
-                new ConeOfColdPart(this, "part4", 4.5F, 3.0F)
+        this.subEntities = new ConePart[]{
+                new ConePart(this, "part1", 1.0F, 1.0F),
+                new ConePart(this, "part2", 2.5F, 1.5F),
+                new ConePart(this, "part3", 3.5F, 2.0F),
+                new ConePart(this, "part4", 4.5F, 3.0F)
         };
 
         //this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
     }
+
+    @Override
+    protected abstract void onHitEntity(EntityHitResult entityHitResult);
 
     @Override
     public boolean isMultipartEntity() {
@@ -75,14 +78,6 @@ public class ConeOfColdProjectile extends Projectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
-        TestMod.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
-        var entity = entityHitResult.getEntity();
-        entity.hurt(DamageSource.MAGIC, damage);
-        entity.setTicksFrozen(entity.getTicksFrozen() + 80);
-    }
-
-    @Override
     protected void defineSynchedData() {
     }
 
@@ -98,32 +93,32 @@ public class ConeOfColdProjectile extends Projectile {
         return new Vec3(f6, f5, f7);
     }
 
-//    @Nullable
-//    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabb, Predicate<Entity> predicate) {
-//        TestMod.LOGGER.debug("ConeOfColdProjectile.getEntityHitResult.enter:");
-//        return getEntityHitResult(level, entity, currentPos, deltaPos, aabb, predicate, 0.3F);
-//    }
-//
-//    @Nullable
-//    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabbPassedin, Predicate<Entity> predicate, float inflateAmount) {
-//        double d0 = Double.MAX_VALUE;
-//        Entity hitEntity = null;
-//
-//        for (Entity entityToCheck : level.getEntities(entity, aabbPassedin, predicate)) {
-//            TestMod.LOGGER.debug("ConeOfColdProjectile:getEntityHitResult.2: {}", entityToCheck.getName().getString());
-//            AABB aabb = entityToCheck.getBoundingBox().inflate((double) inflateAmount);
-//            Optional<Vec3> optional = aabb.clip(currentPos, deltaPos);
-//            if (optional.isPresent()) {
-//                double d1 = currentPos.distanceToSqr(optional.get());
-//                if (d1 < d0) {
-//                    hitEntity = entityToCheck;
-//                    d0 = d1;
-//                }
-//            }
-//        }
-//
-//        return hitEntity == null ? null : new EntityHitResult(hitEntity);
-//    }
+    @Nullable
+    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabb, Predicate<Entity> predicate) {
+        TestMod.LOGGER.debug("ConeOfColdProjectile.getEntityHitResult.enter:");
+        return getEntityHitResult(level, entity, currentPos, deltaPos, aabb, predicate, 0.3F);
+    }
+
+    @Nullable
+    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabbPassedin, Predicate<Entity> predicate, float inflateAmount) {
+        double d0 = Double.MAX_VALUE;
+        Entity hitEntity = null;
+
+        for (Entity entityToCheck : level.getEntities(entity, aabbPassedin, predicate)) {
+            TestMod.LOGGER.debug("ConeOfColdProjectile:getEntityHitResult.2: {}", entityToCheck.getName().getString());
+            AABB aabb = entityToCheck.getBoundingBox().inflate((double) inflateAmount);
+            Optional<Vec3> optional = aabb.clip(currentPos, deltaPos);
+            if (optional.isPresent()) {
+                double d1 = currentPos.distanceToSqr(optional.get());
+                if (d1 < d0) {
+                    hitEntity = entityToCheck;
+                    d0 = d1;
+                }
+            }
+        }
+
+        return hitEntity == null ? null : new EntityHitResult(hitEntity);
+    }
 
     @Override
     public void tick() {
@@ -177,7 +172,7 @@ public class ConeOfColdProjectile extends Projectile {
                 dealDamageActive = false;
             }
 
-            if (age % 10 == 0 && owner != null) {
+            if (age % 10 == 0) {
                 TestMod.LOGGER.debug("ConeOfCold Pos: {} {}", owner.position(), owner.getLookAngle());
             }
 

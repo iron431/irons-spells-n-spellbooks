@@ -38,4 +38,5 @@ public class EntityRegistry {
                     .build(new ResourceLocation(TestMod.MODID, "blood_slash_projectile").toString()));
 
 
+
 }

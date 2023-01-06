@@ -43,6 +43,7 @@ public class PlayerMagicData {
         this.castingSpellId = 0;
         this.castingSpellLevel = 0;
         this.castDurationRemaining = 0;
+        this.discardCone();
     }
 
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration) {
@@ -52,7 +53,15 @@ public class PlayerMagicData {
         this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
     }
-
+    public boolean discardCone(){
+        if (this.cone != null) {
+            this.cone.discard();
+            this.cone = null;
+            TestMod.LOGGER.debug("PlayerMagicData: discarding cone");
+            return true;
+        }
+        return false;
+    }
     public boolean isCasting() {
         return isCasting;
     }
