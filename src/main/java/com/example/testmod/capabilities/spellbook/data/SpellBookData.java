@@ -1,5 +1,6 @@
 package com.example.testmod.capabilities.spellbook.data;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.google.common.collect.Lists;
@@ -171,6 +172,7 @@ public class SpellBookData {
     }
 
     public CompoundTag saveNBTData() {
+        //TestMod.LOGGER.debug("SpellBookData.saveNBTData");
         if (!dirty) {
             return this.tag;
         }
@@ -199,6 +201,7 @@ public class SpellBookData {
     }
 
     public void loadNBTData(CompoundTag compound) {
+        //TestMod.LOGGER.debug("SpellBookData.loadNBTData {}", compound);
         this.spellSlots = compound.getInt(SPELL_SLOTS);
         this.transcribedSpells = new AbstractSpell[spellSlots];
         this.activeSpellIndex = compound.getInt(ACTIVE_SPELL_INDEX);

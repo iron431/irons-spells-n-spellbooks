@@ -26,7 +26,7 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
     private ScrollData getOrCreateScrollData() {
         //TestMod.LOGGER.debug("SDP.getOrCreateScrollData");
         if (scrollData == null) {
-            TestMod.LOGGER.debug("SDP.getOrCreateScrollData create blank ScrollData");
+            //TestMod.LOGGER.debug("SDP.getOrCreateScrollData create blank ScrollData");
             scrollData = new ScrollData(SpellType.NONE_SPELL, 0);
         }
         return scrollData;
@@ -34,9 +34,9 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
 
     @Nonnull
     public ScrollData getOrCreateScrollData(SpellType spellType, int level) {
-        TestMod.LOGGER.debug("SDP.getOrCreateScrollData {} {}", spellType.getValue(), level);
+        //TestMod.LOGGER.debug("SDP.getOrCreateScrollData {} {}", spellType.getValue(), level);
         if (scrollData == null) {
-            TestMod.LOGGER.debug("SDP.getOrCreateScrollData create hydrated ScrollData {} {}", spellType.getValue(), level);
+            //TestMod.LOGGER.debug("SDP.getOrCreateScrollData create hydrated ScrollData {} {}", spellType.getValue(), level);
             scrollData = new ScrollData(spellType, level);
         }
         return scrollData;
@@ -47,8 +47,10 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         //TestMod.LOGGER.debug("SDP.getCapability.1");
         if (cap == SCROLL_DATA) {
+            //TestMod.LOGGER.debug("SDP.getCapability.2");
             return opt.cast();
         }
+        //TestMod.LOGGER.debug("SDP.getCapability.3");
         return LazyOptional.empty();
     }
 
