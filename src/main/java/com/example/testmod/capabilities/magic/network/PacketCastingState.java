@@ -47,7 +47,9 @@ public class PacketCastingState {
                 ClientMagicData.castDuration = 0;
                 ClientMagicData.isCasting = false;
                 ClientMagicData.castType = CastType.NONE;
-                Minecraft.getInstance().player.stopUsingItem();
+                if (Minecraft.getInstance().player != null) {
+                    Minecraft.getInstance().player.stopUsingItem();
+                }
             } else {
                 ClientMagicData.castDurationRemaining = castTime;
                 ClientMagicData.castDuration = castTime;

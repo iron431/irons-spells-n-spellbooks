@@ -35,11 +35,12 @@ public class ConeOfColdSpell extends AbstractSpell {
     protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
             playerMagicData.cone.setDealDamageActive();
-        } else if(playerMagicData.cone == null){
+        } else{
             ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, player);
             coneOfColdProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
             coneOfColdProjectile.setDamage(getSpellPower());
             world.addFreshEntity(coneOfColdProjectile);
+            playerMagicData.discardCone();
             playerMagicData.cone = coneOfColdProjectile;
         }
     }
