@@ -26,7 +26,7 @@ public class ScrollData {
     public ScrollData(SpellType spellType, int level) {
         this.spellId = spellType.getValue();
         this.spellLevel = level;
-        TestMod.LOGGER.debug("ScrollData.1: {}, {}", spellId, spellLevel);
+        //TestMod.LOGGER.debug("ScrollData.1: {}, {}", spellId, spellLevel);
     }
 
     public AbstractSpell getSpell() {

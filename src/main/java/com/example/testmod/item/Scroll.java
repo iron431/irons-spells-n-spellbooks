@@ -18,17 +18,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Scroll extends Item {
+public class Scroll extends Item implements IScroll {
 
     public static final String PARENT = "Parent";
 
@@ -70,9 +70,13 @@ public class Scroll extends Item {
     }
 
     public ScrollData getScrollData(ItemStack stack) {
-        //var scrollData = stack.getCapability(ScrollDataProvider.SCROLL_DATA).resolve().get();
-        //TestMod.LOGGER.debug("Scroll.getScrollData {}, {}, {}, {}", scrollData.getSpellId(), scrollData.getLevel(), this.spellType, this.level);
+        //TestMod.LOGGER.debug("Scroll.getScrollData.1 {}", stack.hashCode());
         return stack.getCapability(ScrollDataProvider.SCROLL_DATA).resolve().get();
+    }
+
+    public LazyOptional<ScrollData> getScrollDataProvider(ItemStack stack) {
+        //TestMod.LOGGER.debug("Scroll.getScrollData.2 {}", stack.hashCode());
+        return stack.getCapability(ScrollDataProvider.SCROLL_DATA);
     }
 
     @Override
@@ -171,21 +175,32 @@ public class Scroll extends Item {
     public CompoundTag getShareTag(ItemStack stack) {
         CompoundTag shareTag = new CompoundTag();
         CompoundTag tag = stack.getTag();
+        //TestMod.LOGGER.debug("Scroll.getShareTag.1: {}, {}, {}", spellType, level, tag);
         if (tag != null) {
             shareTag.put("tag", tag);
         }
-        shareTag.put("cap", getScrollData(stack).saveNBTData());
+
+        getScrollDataProvider(stack).ifPresent(
+                (scrollDataProvider) -> {
+                    var newNbt = scrollDataProvider.saveNBTData();
+                    //TestMod.LOGGER.debug("Scroll.getShareTag.2: {}, {}, {}", spellType, level, newNbt);
+                    shareTag.put("cap", newNbt);
+                }
+        );
+
         return shareTag;
     }
 
     @Override
     public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
         if (nbt != null) {
+            //TestMod.LOGGER.debug("Scroll.readShareTag.1: {}, {}, {}", spellType, level, nbt);
             stack.setTag(nbt.contains("tag") ? nbt.getCompound("tag") : null);
             if (nbt.contains("cap")) {
                 getScrollData(stack).loadNBTData(nbt.getCompound("cap"));
             }
         } else {
+            //TestMod.LOGGER.debug("Scroll.readShareTag.2: {}, {}", spellType, level);
             stack.setTag(null);
         }
     }
@@ -193,17 +208,15 @@ public class Scroll extends Item {
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-
         var scrollDataProvider = new ScrollDataProvider();
 
         if (nbt != null) {
             //TestMod.LOGGER.debug("Scroll.initCapabilities.1: {}, {}, {}", spellType, level, nbt);
             scrollDataProvider.deserializeNBT(nbt.getCompound(PARENT));
-            return scrollDataProvider;
         } else {
             //TestMod.LOGGER.debug("Scroll.initCapabilities.2: {}, {}", spellType, level);
             scrollDataProvider.getOrCreateScrollData(spellType, level);
-            return scrollDataProvider;
         }
+        return scrollDataProvider;
     }
 }
