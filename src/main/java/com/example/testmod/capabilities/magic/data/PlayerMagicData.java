@@ -1,6 +1,7 @@
 package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -34,7 +35,7 @@ public class PlayerMagicData {
     private int castingSpellLevel = 0;
     private int castDurationRemaining = 0;
 
-    public ConeOfColdProjectile cone;
+    public AbstractConeProjectile cone;
     private int castDuration = 0;
     private ItemStack castingItemStack = ItemStack.EMPTY;
 
