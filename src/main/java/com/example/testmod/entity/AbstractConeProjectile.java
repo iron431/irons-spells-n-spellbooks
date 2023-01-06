@@ -1,38 +1,29 @@
 package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.cone_of_cold.ConeOfColdPart;
-import com.example.testmod.particle.ParticleHelper;
-import com.example.testmod.registries.EntityRegistry;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
 import org.apache.commons.compress.utils.Lists;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class AbstractConeProjectile extends Projectile {
-    private static final int FAILSAFE_EXPIRE_TIME = 20 * 20;
-    private int age;
-    private float damage;
-    private boolean dealDamageActive = true;
-    private final ConePart[] subEntities;
+    protected static final int FAILSAFE_EXPIRE_TIME = 20 * 20;
+    protected int age;
+    protected float damage;
+    protected boolean dealDamageActive = true;
+    protected final ConePart[] subEntities;
 
     public AbstractConeProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level, LivingEntity entity) {
         this(entityType, level);
@@ -43,6 +34,7 @@ public abstract class AbstractConeProjectile extends Projectile {
         super(entityType, level);
         this.setNoGravity(true);
 
+        //TODO: dynamically generate cone parts based off of input for overall cone length/width
         this.subEntities = new ConePart[]{
                 new ConePart(this, "part1", 1.0F, 1.0F),
                 new ConePart(this, "part2", 2.5F, 1.5F),
@@ -52,6 +44,8 @@ public abstract class AbstractConeProjectile extends Projectile {
 
         //this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
     }
+
+    public abstract void spawnParticles();
 
     @Override
     protected abstract void onHitEntity(EntityHitResult entityHitResult);
@@ -91,33 +85,6 @@ public abstract class AbstractConeProjectile extends Projectile {
         float f6 = f3 * f4;
         float f7 = f2 * f4;
         return new Vec3(f6, f5, f7);
-    }
-
-    @Nullable
-    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabb, Predicate<Entity> predicate) {
-        TestMod.LOGGER.debug("ConeOfColdProjectile.getEntityHitResult.enter:");
-        return getEntityHitResult(level, entity, currentPos, deltaPos, aabb, predicate, 0.3F);
-    }
-
-    @Nullable
-    public static EntityHitResult getEntityHitResult(Level level, Entity entity, Vec3 currentPos, Vec3 deltaPos, AABB aabbPassedin, Predicate<Entity> predicate, float inflateAmount) {
-        double d0 = Double.MAX_VALUE;
-        Entity hitEntity = null;
-
-        for (Entity entityToCheck : level.getEntities(entity, aabbPassedin, predicate)) {
-            TestMod.LOGGER.debug("ConeOfColdProjectile:getEntityHitResult.2: {}", entityToCheck.getName().getString());
-            AABB aabb = entityToCheck.getBoundingBox().inflate((double) inflateAmount);
-            Optional<Vec3> optional = aabb.clip(currentPos, deltaPos);
-            if (optional.isPresent()) {
-                double d1 = currentPos.distanceToSqr(optional.get());
-                if (d1 < d0) {
-                    hitEntity = entityToCheck;
-                    d0 = d1;
-                }
-            }
-        }
-
-        return hitEntity == null ? null : new EntityHitResult(hitEntity);
     }
 
     @Override
@@ -171,12 +138,6 @@ public abstract class AbstractConeProjectile extends Projectile {
                 }
                 dealDamageActive = false;
             }
-
-            if (age % 10 == 0) {
-                TestMod.LOGGER.debug("ConeOfCold Pos: {} {}", owner.position(), owner.getLookAngle());
-            }
-
-            //spawnParticles();
         } else {
             spawnParticles();
         }
@@ -187,7 +148,7 @@ public abstract class AbstractConeProjectile extends Projectile {
         this.dealDamageActive = true;
     }
 
-    private Set<Entity> getSubEntityCollisions() {
+    protected Set<Entity> getSubEntityCollisions() {
         List<Entity> collisions = Lists.newArrayList();
         for (Entity conepart : subEntities) {
             collisions.addAll(level.getEntities(conepart, conepart.getBoundingBox()));
@@ -198,52 +159,9 @@ public abstract class AbstractConeProjectile extends Projectile {
         ).collect(Collectors.toSet());
     }
 
-    public static boolean hasLineOfSightOnlyClip(Entity entity, Entity target) {
-        Vec3 vec3 = new Vec3(entity.getX(), entity.getEyeY(), entity.getZ());
+    protected static boolean hasLineOfSightOnlyClip(Entity start, Entity target) {
+        Vec3 vec3 = new Vec3(start.getX(), start.getEyeY(), start.getZ());
         Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
-        return entity.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
-    }
-
-//    public void spawnParticles() {
-//        var owner = getOwner();
-//        //This is right in front of the player
-//        var vec3 = owner.getLookAngle().multiply(2, 2, 2).add(owner.position());
-//
-//        var vec3a = owner.getLookAngle().multiply(10, 10, 10);
-//
-//        double x = vec3.x;
-//        double y = vec3.y;
-//        double z = vec3.z;
-//        double dx = -1; //vec3a.x;
-//        double dy = 0; //vec3a.y;
-//        double dz = 0; //vec3a.z;
-//
-//        for (int count = 0; count < 10; count++) {
-//            ((ServerLevel)level).sendParticles(ParticleTypes.DRAGON_BREATH, x, y, z, 1, dx, dy, dz, .2);
-//        }
-//    }
-
-    public void spawnParticles() {
-        if (!level.isClientSide)
-            return;
-        var owner = getOwner();
-        Vec3 rotation = owner.getLookAngle().normalize();
-        var pos = owner.position().add(rotation.scale(0.5f));
-
-        double x = pos.x;
-        double y = pos.y + owner.getEyeHeight() * .8f;
-        double z = pos.z;
-
-        double speed = .6;
-        for (int i = 0; i < 10; i++) {
-            double offset = .25;
-            double ox = Math.random() * 2 * offset - offset;
-            double oy = Math.random() * 2 * offset - offset;
-            double oz = Math.random() * 2 * offset - offset;
-
-            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
-            Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(Math.random() > .1 ? ParticleTypes.SNOWFLAKE : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
-        }
+        return start.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
     }
 }
