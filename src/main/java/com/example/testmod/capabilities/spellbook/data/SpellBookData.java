@@ -207,6 +207,7 @@ public class SpellBookData {
         this.activeSpellIndex = compound.getInt(ACTIVE_SPELL_INDEX);
 
         ListTag listTagSpells = (ListTag) compound.get(SPELLS);
+        spellCount = 0;
         if (listTagSpells != null) {
             listTagSpells.forEach(tag -> {
                 CompoundTag t = (CompoundTag) tag;
