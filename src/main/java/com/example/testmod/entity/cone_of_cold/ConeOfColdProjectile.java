@@ -248,7 +248,7 @@ public class ConeOfColdProjectile extends Projectile {
 
             Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(ParticleTypes.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level.addParticle(Math.random() > .1 ? ParticleTypes.SNOWFLAKE : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }
     }
 }

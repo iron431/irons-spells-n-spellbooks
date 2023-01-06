@@ -6,6 +6,7 @@ import com.example.testmod.gui.network.PacketChangeSelectedSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -23,7 +24,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.ArrayUtils;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -35,17 +39,20 @@ public class SpellWheelDisplay extends GuiComponent {
     private static int screenWidth;
     public static boolean active;
     private static int selection;
+    private static int selectedSpellIndex;
 
     public static void open() {
         active = true;
         selection = -1;
+        selectedSpellIndex = -1;
         Minecraft.getInstance().mouseHandler.releaseMouse();
     }
 
     public static void close() {
         active = false;
-        if (selection >= 0)
-            Messages.sendToServer(new PacketChangeSelectedSpell(selection));
+        if (selectedSpellIndex >= 0){
+            Messages.sendToServer(new PacketChangeSelectedSpell(selectedSpellIndex));
+        }
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
@@ -77,11 +84,16 @@ public class SpellWheelDisplay extends GuiComponent {
         ItemStack spellbook = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
 
         var spellBookData = ((SpellBook) spellbook.getItem()).getSpellBookData(spellbook);
-        var spells = spellBookData.getInscribedSpells();
+        //var spells = spellBookData.getInscribedSpells();
         int spellCount = spellBookData.getSpellCount();
         float scale = Mth.clamp(1 + 3 * (spellCount / 15f), 1, 4);
         var locations = generateWheelPositions(spellBookData, scale);
 
+        List<AbstractSpell> spells = new ArrayList<>();
+        for (AbstractSpell spell : spellBookData.getInscribedSpells()) {
+            if (spell != null)
+                spells.add(spell);
+        }
 
         Vec2 screenCenter = new Vec2(e.getWindow().getScreenWidth() * .5f, e.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());
@@ -92,6 +104,7 @@ public class SpellWheelDisplay extends GuiComponent {
                 screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
 
         selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, spellCount - 1);
+        selectedSpellIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(),spells.get(selection));
 
         //gui.getFont().draw(stack, screenCenter.x + ", " + screenCenter.y + "\n" + mousePos.x + ", " + mousePos.y + "\n" + Math.toDegrees(mouseRotation) , centerX, centerY, 0xFFFFFF);
 
@@ -110,11 +123,11 @@ public class SpellWheelDisplay extends GuiComponent {
         }
         //Spell Icons, cooldowns
         for (int i = 0; i < locations.size(); i++) {
-            if (spells[i] != null) {
-                setOpaqueTexture(spells[i].getSpellType().getResourceLocation());
+            if (spells.get(i) != null) {
+                setOpaqueTexture(spells.get(i).getSpellType().getResourceLocation());
                 gui.blit(stack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
 
-                float f = spells[i] == null ? 0 : ClientMagicData.getCooldownPercent(spells[i].getSpellType());
+                float f = spells.get(i) == null ? 0 : ClientMagicData.getCooldownPercent(spells.get(i).getSpellType());
                 if (f > 0) {
                     setTranslucentTexture(TEXTURE);
                     int pixels = (int) (16 * f + 1f);
