@@ -5,6 +5,7 @@ import com.example.testmod.gui.SpellWheelDisplay;
 import com.example.testmod.gui.network.PacketChangeSelectedSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.Util;
@@ -19,6 +20,7 @@ import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -71,15 +73,30 @@ public final class ClientKeyHandler {
                 var spellBookData = ((SpellBook) spellBook.getItem()).getSpellBookData(spellBook);
                 if (spellBookData.getSpellCount() > 0) {
                     int direction = (int) event.getScrollDelta();
-                    TestMod.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
+//                    TestMod.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
 
-                    int newIndex = spellBookData.getActiveSpellIndex() - direction;
-                    newIndex = (newIndex + spellBookData.getSpellCount()) % spellBookData.getSpellCount();
-                    while (spellBookData.getInscribedSpells()[newIndex] == null) {
-                        newIndex = (newIndex + spellBookData.getSpellCount() - direction) % spellBookData.getSpellCount();
+                    List<AbstractSpell> spells = new ArrayList<>();
+                    for (AbstractSpell spell : spellBookData.getInscribedSpells()) {
+                        if (spell != null)
+                            spells.add(spell);
                     }
-                    TestMod.LOGGER.debug("direction: {}", direction);
+                    int spellCount = spellBookData.getSpellCount();
+                    int scrollIndex = (spells.indexOf(spellBookData.getActiveSpell()) - direction);
+//                    TestMod.LOGGER.debug("collapsed new index: {}", scrollIndex);
+//                    TestMod.LOGGER.debug("{} + {} = {}", scrollIndex, spellCount, scrollIndex + spellCount);
+//                    TestMod.LOGGER.debug("{} % {} = {}", scrollIndex + spellCount, spellCount, (scrollIndex + spellCount) % spellCount);
+                    scrollIndex = (scrollIndex + spellCount) % spellCount;
 
+//                    TestMod.LOGGER.debug("wrapped collapsed index: {}", scrollIndex);
+
+
+                    int selectedIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), spells.get(scrollIndex));
+
+//                    int newIndex = spellBookData.getActiveSpellIndex() - direction;
+//                    newIndex = (newIndex + spellBookData.getSpellCount()) % spellBookData.getSpellCount();
+//                    while (spellBookData.getInscribedSpells()[newIndex] == null) {
+//                        newIndex = (newIndex + spellBookData.getSpellCount() - direction) % spellBookData.getSpellCount();
+//                    }
 //                    do {
 //                        newIndex = (newIndex + direction) % spellBook.getCount();
 //                        TestMod.LOGGER.debug("new index: {}",newIndex);
@@ -88,7 +105,7 @@ public final class ClientKeyHandler {
 //                            break;
 //                    }
 //                    while (spellBookData.getInscribedSpells()[newIndex] == null);
-                    Messages.sendToServer(new PacketChangeSelectedSpell(newIndex));
+                    Messages.sendToServer(new PacketChangeSelectedSpell(selectedIndex));
                     event.setCanceled(true);
                 }
 
