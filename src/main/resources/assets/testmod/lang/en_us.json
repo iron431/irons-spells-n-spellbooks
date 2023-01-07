@@ -36,6 +36,7 @@
   "school.testmod.evocation": "Evocation",
 
   "attribute.testmod.max_mana":"Max Mana",
+  "attribute.testmod.spell_power":"Spell Power",
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
   "attribute.testmod.blood_moagic_resist":"Blood Magic Resist",
 
@@ -51,9 +52,9 @@
   "spell.testmod.heal": "Heal",
   "spell.testmod.blood_slash": "Blood Slash",
 
-  "death.attack.blood_slash": "%1$s blood slash 1",
-  "death.attack.blood_slash.item": "%1$s blood slash 2",
-  "death.attack.blood_slash.player": "%1$s blood slash 3",
+  "death.attack.blood_magic": "%1$s blood magic 1",
+  "death.attack.blood_magic.item": "%1$s blood magic 2",
+  "death.attack.blood_magic.player": "%1$s blood magic 3",
 
   "effect.testmod.blood_slashed": "Blood Slashed"
 }

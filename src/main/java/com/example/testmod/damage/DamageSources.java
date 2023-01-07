@@ -12,11 +12,11 @@ import net.minecraft.world.entity.player.Player;
 
 public class DamageSources {
 
-    public static final String BLOOD_SLASH_ID = "blood_slash";
+    public static final String BLOOD_MAGIC_ID = "blood_magic";
 
     public static EntityDamageSource bloodSlash(Player player) {
-        return new EntityDamageSource(BLOOD_SLASH_ID, player);
+        return new EntityDamageSource(BLOOD_MAGIC_ID, player);
     }
 
-    public static DamageSource BLOOD_SLASH = new DamageSource(BLOOD_SLASH_ID);
+    public static DamageSource BLOOD_MAGIC = new DamageSource(BLOOD_MAGIC_ID);
 }

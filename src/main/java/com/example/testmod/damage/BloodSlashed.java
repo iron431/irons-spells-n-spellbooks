@@ -1,6 +1,5 @@
 package com.example.testmod.damage;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.registries.MobEffectRegistry;
 import net.minecraft.world.damagesource.DamageSource;
@@ -25,10 +24,12 @@ public class BloodSlashed extends MobEffect {
             DamageSource damageSource = null;
 
             if (source instanceof Player sourcePlayer) {
+                float spellPower = (float) targetPlayer.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
+                actualDamage *= spellPower;
                 damageSource = DamageSources.bloodSlash(sourcePlayer);
                 sourcePlayer.heal(actualHeal);
             } else {
-                damageSource = DamageSources.BLOOD_SLASH;
+                damageSource = DamageSources.BLOOD_MAGIC;
             }
 
             targetPlayer.hurt(damageSource, actualDamage);
@@ -48,6 +49,6 @@ public class BloodSlashed extends MobEffect {
             resist = 2 - (float) targetPlayer.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
         }
 
-        entity.hurt(DamageSources.BLOOD_SLASH, amount * resist);
+        entity.hurt(DamageSources.BLOOD_MAGIC, amount * resist);
     }
 }
