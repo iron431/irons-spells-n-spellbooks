@@ -37,6 +37,7 @@
 
   "attribute.testmod.max_mana":"Max Mana",
   "attribute.testmod.spell_power":"Spell Power",
+  "attribute.testmod.cast_time_reduction":"Cast Time Reduction",
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
   "attribute.testmod.blood_magic_resist":"Blood Magic Resist",
 

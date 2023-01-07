@@ -8,7 +8,6 @@ import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
-import com.example.testmod.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.TextComponent;
@@ -69,7 +68,7 @@ public abstract class AbstractSpell {
         if (sourceEntity instanceof LivingEntity sourceLivingEntity) {
             entitySpellPowerModifer = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
         }
-        
+
         return (baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifer;
     }
 
@@ -81,6 +80,14 @@ public abstract class AbstractSpell {
         return this.castTime;
     }
 
+    public int getEffectiveCastTime(Entity sourceEntity) {
+        float entityCastTimeModifer = 1;
+        if (sourceEntity instanceof LivingEntity sourceLivingEntity) {
+            entityCastTimeModifer = 2 - (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get());
+        }
+
+        return Math.round(this.castTime * entityCastTimeModifer);
+    }
 
     public void setLevel(int level) {
         this.level = level;
@@ -127,8 +134,9 @@ public abstract class AbstractSpell {
             if (this.castType == CastType.INSTANT) {
                 return castSpell(world, serverPlayer, fromScroll, triggerCooldown);
             } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
-                playerMagicData.initiateCast(getID(), level, castTime, fromScroll);
-                Messages.sendToPlayer(new PacketCastingState(getID(), castTime, castType, false), serverPlayer);
+                int effectiveCastTime = getEffectiveCastTime(player);
+                playerMagicData.initiateCast(getID(), level, effectiveCastTime, fromScroll);
+                Messages.sendToPlayer(new PacketCastingState(getID(), effectiveCastTime, castType, false), serverPlayer);
             }
         }
         return false;
