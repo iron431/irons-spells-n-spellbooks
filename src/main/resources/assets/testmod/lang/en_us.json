@@ -48,5 +48,11 @@
   "spell.testmod.cone_of_cold": "Cone of Cold",
   "spell.testmod.electrocute": "Electrocute",
   "spell.testmod.heal": "Heal",
-  "spell.testmod.blood_slash": "Blood Slash"
+  "spell.testmod.blood_slash": "Blood Slash",
+
+  "death.attack.blood_slash": "%1$s blood slash 1",
+  "death.attack.blood_slash.item": "%1$s blood slash 2",
+  "death.attack.blood_slash.player": "%1$s blood slash 3",
+
+  "effect.testmod.blood_slashed": "Blood Slashed"
 }

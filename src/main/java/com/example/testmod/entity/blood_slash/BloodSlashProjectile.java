@@ -2,14 +2,18 @@ package com.example.testmod.entity.blood_slash;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.registries.MobEffectRegistry;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -171,14 +175,14 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
+
         if (entityHitResult.getEntity() instanceof LivingEntity target) {
-            //TODO: deal with the damage
-            target.hurt(DamageSource.MAGIC, damage);
-            if (getOwner() instanceof LivingEntity livingEntity)
-                livingEntity.heal(damage * 0.1f);
-
+            if (getOwner() instanceof Player source) {
+                source.heal(damage * 0.1f);
+                target.hurt(DamageSources.bloodSlash(source), damage);
+                target.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
+            }
         }
-
     }
 
     @Override
@@ -212,7 +216,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
                 double dy = Math.random() * speed * 2 - speed;
                 double dz = Math.random() * speed * 2 - speed;
                 //TODO: find out how to un-force these particles (the one with that argument seems to not be public)
-                level.addParticle(ParticleHelper.BLOOD, false, x + rotX + dx, y + dy,z + rotZ + dz, dx, dy, dz);
+                level.addParticle(ParticleHelper.BLOOD, false, x + rotX + dx, y + dy, z + rotZ + dz, dx, dy, dz);
             }
             //MagicManager.spawnParticles(level,ParticleRegistry.BLOOD_PARTICLE.get(), x, y, z, 5 + (int)(width * 5), width, 0, width, .1, false);
         }

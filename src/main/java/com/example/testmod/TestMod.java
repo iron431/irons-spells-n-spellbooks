@@ -49,6 +49,7 @@ public class TestMod {
         MenuRegistry.register(modEventBus);
         EntityRegistry.register(modEventBus);
         LootRegistry.register(modEventBus);
+        MobEffectRegistry.register(modEventBus);
         ParticleRegistry.register(modEventBus);
 
 

@@ -11,6 +11,8 @@
 
 ### Requirements and Concepts
 - https://docs.google.com/document/d/1IKr9KUGlv01eKqjDgKikAks-1RKGPKXncFk2uGoRORM/edit
+- https://forge.gemwire.uk/wiki/Main_Page/1.18
+- https://docs.minecraftforge.net/en/1.18.x/
 
 ### Known Issues
 - Custom item data for Scrolls and ScrollBooks gets screwed up when in creative on a multiplayer world due to an unresolved forge bug.

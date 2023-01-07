@@ -1,6 +1,5 @@
 package com.example.testmod.player;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.PlayerMagicProvider;
 import com.example.testmod.capabilities.magic.network.PacketCancelCast;
 import com.example.testmod.item.Scroll;
@@ -8,7 +7,6 @@ import com.example.testmod.item.SpellBook;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
