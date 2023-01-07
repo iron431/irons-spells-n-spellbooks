@@ -2,7 +2,6 @@ package com.example.testmod.spells.blood;
 
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
-import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;
