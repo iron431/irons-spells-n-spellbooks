@@ -18,12 +18,10 @@ public class BloodSlashed extends MobEffect {
     }
 
     public static void applyDamage(Entity source, Entity target, float baseDamage) {
-        TestMod.LOGGER.debug("BloodSlashed.applyDamage.1: {}, {}", baseDamage);
         if (target instanceof Player targetPlayer) {
             float resist = 2 - (float) targetPlayer.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
             float actualDamage = baseDamage * resist;
             float actualHeal = baseDamage * resist * .1f;
-            TestMod.LOGGER.debug("BloodSlashed.applyDamage.2: {}, {}, {}", actualDamage, actualHeal, resist);
             DamageSource damageSource = null;
 
             if (source instanceof Player sourcePlayer) {
