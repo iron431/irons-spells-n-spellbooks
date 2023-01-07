@@ -3,6 +3,7 @@ package com.example.testmod.setup;
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
+import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
 import com.example.testmod.particle.BloodGroundParticle;
 import com.example.testmod.particle.BloodParticle;
 import com.example.testmod.particle.ElectricityParticle;
@@ -27,7 +28,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), ConeOfColdRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BLOOD_SLASH_PROJECTILE.get(), BloodSlashRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.ELECTROCUTE_PROJECTILE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ELECTROCUTE_PROJECTILE.get(), ElectrocuteRenderer::new);
 
     }
     @SubscribeEvent

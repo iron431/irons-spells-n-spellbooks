@@ -108,7 +108,11 @@ public abstract class AbstractConeProjectile extends Projectile {
             var rayTraceVector = rayTrace(owner);
             var ownerEyePos = owner.getEyePosition(1.0f).subtract(0, .8, 0);
             this.setPos(ownerEyePos);
-            setDeltaMovement(ownerEyePos);
+            this.setXRot(owner.getXRot());
+            this.setYRot(owner.getYRot());
+            this.yRotO = getYRot();
+            this.xRotO = getXRot();
+            //setDeltaMovement(ownerEyePos);
 
             double scale = 1;
 
