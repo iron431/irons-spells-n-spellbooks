@@ -62,8 +62,10 @@ public class SpellBook extends Item implements ISpellBook {
                         !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
                 ) {
                     //TestMod.LOGGER.debug(spell.getCastType() + "");
-                    if (spell.getCastType() == CastType.CONTINUOUS)
+                    if (spell.getCastType() == CastType.CONTINUOUS){
                         player.startUsingItem(hand);
+                        TestMod.LOGGER.debug("SpellBook: Start Using");
+                    }
                     return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
                 }
 
@@ -98,6 +100,7 @@ public class SpellBook extends Item implements ISpellBook {
     public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
         entity.stopUsingItem();
         Messages.sendToServer(new PacketCancelCast(true));
+        TestMod.LOGGER.debug("SpellBook: Stop Using");
         super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
     }
 

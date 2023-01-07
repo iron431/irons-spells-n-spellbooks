@@ -40,14 +40,16 @@ public class PacketCastingState {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            TestMod.LOGGER.debug("PacketCastingState: spellId: " + spellId + ", castTime: " + castTime + ", castFinished:" + castFinished);
+            //TestMod.LOGGER.debug("PacketCastingState: spellId: " + spellId + ", castTime: " + castTime + ", castFinished:" + castFinished);
 
             if (this.castFinished) {
                 ClientMagicData.castDurationRemaining = 0;
                 ClientMagicData.castDuration = 0;
                 ClientMagicData.isCasting = false;
                 ClientMagicData.castType = CastType.NONE;
-                Minecraft.getInstance().player.stopUsingItem();
+                if (Minecraft.getInstance().player != null) {
+                    Minecraft.getInstance().player.stopUsingItem();
+                }
             } else {
                 ClientMagicData.castDurationRemaining = castTime;
                 ClientMagicData.castDuration = castTime;

@@ -50,7 +50,7 @@ public class SpellWheelDisplay extends GuiComponent {
 
     public static void close() {
         active = false;
-        if (selectedSpellIndex >= 0){
+        if (selectedSpellIndex >= 0) {
             Messages.sendToServer(new PacketChangeSelectedSpell(selectedSpellIndex));
         }
         Minecraft.getInstance().mouseHandler.grabMouse();
@@ -80,7 +80,6 @@ public class SpellWheelDisplay extends GuiComponent {
         //
         //  Render Spells
         //
-
         ItemStack spellbook = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
 
         var spellBookData = ((SpellBook) spellbook.getItem()).getSpellBookData(spellbook);
@@ -94,7 +93,10 @@ public class SpellWheelDisplay extends GuiComponent {
             if (spell != null)
                 spells.add(spell);
         }
-
+//        TestMod.LOGGER.debug("SpellBarDisplay.spellcount: {}", spellCount);
+//        TestMod.LOGGER.debug("SpellBarDisplay.non-null spells.length: {}", spells.size());
+//        if (spellCount > spells.size())
+//            return;
         Vec2 screenCenter = new Vec2(e.getWindow().getScreenWidth() * .5f, e.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());
         double radiansPerSpell = Math.toRadians(360 / (float) spellCount);
@@ -104,7 +106,7 @@ public class SpellWheelDisplay extends GuiComponent {
                 screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
 
         selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, spellCount - 1);
-        selectedSpellIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(),spells.get(selection));
+        selectedSpellIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), spells.get(selection));
 
         //gui.getFont().draw(stack, screenCenter.x + ", " + screenCenter.y + "\n" + mousePos.x + ", " + mousePos.y + "\n" + Math.toDegrees(mouseRotation) , centerX, centerY, 0xFFFFFF);
 

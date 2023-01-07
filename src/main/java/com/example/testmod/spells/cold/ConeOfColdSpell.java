@@ -28,21 +28,19 @@ public class ConeOfColdSpell extends AbstractSpell {
     @Override
     public void onCastComplete(Level world, Player player, PlayerMagicData playerMagicData) {
         TestMod.LOGGER.debug("ConeOfColdSpell.onCast: {}, {}, {}", (playerMagicData.cone == null), playerMagicData.isCasting(), playerMagicData.getCastDurationRemaining());
-        if (playerMagicData.cone != null) {
-            playerMagicData.cone.discard();
-            playerMagicData.cone = null;
-        }
+        playerMagicData.discardCone();
     }
 
     @Override
     protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
             playerMagicData.cone.setDealDamageActive();
-        } else {
+        } else{
             ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, player);
             coneOfColdProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
             coneOfColdProjectile.setDamage(getSpellPower());
             world.addFreshEntity(coneOfColdProjectile);
+            playerMagicData.discardCone();
             playerMagicData.cone = coneOfColdProjectile;
         }
     }

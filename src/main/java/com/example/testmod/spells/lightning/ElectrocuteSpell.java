@@ -1,6 +1,7 @@
 package com.example.testmod.spells.lightning;
 
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
@@ -29,11 +30,15 @@ public class ElectrocuteSpell extends AbstractSpell {
 
     @Override
     protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
-        float speed = 2.5f;
-        Vec3 direction = player.getLookAngle().scale(speed);
-        Vec3 origin = player.getEyePosition();
-        Fireball fireball = new LargeFireball(world, player, direction.x(), direction.y(), direction.z(), 1);
-        fireball.setPos(origin.add(direction));
-        world.addFreshEntity(fireball);
+        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
+            playerMagicData.cone.setDealDamageActive();
+        } else{
+            ElectrocuteProjectile electrocuteProjectile = new ElectrocuteProjectile(world, player);
+            electrocuteProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
+            electrocuteProjectile.setDamage(getSpellPower());
+            world.addFreshEntity(electrocuteProjectile);
+            playerMagicData.discardCone();
+            playerMagicData.cone = electrocuteProjectile;
+        }
     }
 }

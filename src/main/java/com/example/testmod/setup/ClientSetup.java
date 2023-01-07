@@ -27,6 +27,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), ConeOfColdRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BLOOD_SLASH_PROJECTILE.get(), BloodSlashRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ELECTROCUTE_PROJECTILE.get(), NoopRenderer::new);
 
     }
     @SubscribeEvent

@@ -1,23 +1,22 @@
-package com.example.testmod.entity.cone_of_cold;
+package com.example.testmod.entity;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
-
 import net.minecraft.world.entity.Pose;
 import net.minecraftforge.entity.PartEntity;
 
-public class ConeOfColdPart extends PartEntity<ConeOfColdProjectile> {
+public class ConePart extends PartEntity<AbstractConeProjectile> {
 
-    public final ConeOfColdProjectile parentEntity;
+    public final AbstractConeProjectile parentEntity;
     public final String name;
     private final EntityDimensions size;
 
-    public ConeOfColdPart(ConeOfColdProjectile coneOfColdProjectile, String name, float scaleX, float scaleY) {
-        super(coneOfColdProjectile);
+    public ConePart(AbstractConeProjectile coneProjectile, String name, float scaleX, float scaleY) {
+        super(coneProjectile);
         this.size = EntityDimensions.scalable(scaleX, scaleY);
         this.refreshDimensions();
-        this.parentEntity = coneOfColdProjectile;
+        this.parentEntity = coneProjectile;
         this.name = name;
     }
 

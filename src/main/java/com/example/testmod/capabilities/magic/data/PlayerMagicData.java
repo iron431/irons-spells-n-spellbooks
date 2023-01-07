@@ -1,7 +1,7 @@
 package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
+import com.example.testmod.entity.AbstractConeProjectile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,7 +35,7 @@ public class PlayerMagicData {
     private int castDurationRemaining = 0;
     private boolean fromScroll = false;
 
-    public ConeOfColdProjectile cone;
+    public AbstractConeProjectile cone;
     private int castDuration = 0;
     private ItemStack castingItemStack = ItemStack.EMPTY;
 
@@ -44,6 +44,7 @@ public class PlayerMagicData {
         this.castingSpellId = 0;
         this.castingSpellLevel = 0;
         this.castDurationRemaining = 0;
+        this.discardCone();
     }
 
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration) {
@@ -52,6 +53,15 @@ public class PlayerMagicData {
         this.castingSpellLevel = castingSpellLevel;
         this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
+    }
+    public boolean discardCone(){
+        if (this.cone != null) {
+            this.cone.discard();
+            this.cone = null;
+            TestMod.LOGGER.debug("PlayerMagicData: discarding cone");
+            return true;
+        }
+        return false;
     }
 
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, boolean fromScroll) {
