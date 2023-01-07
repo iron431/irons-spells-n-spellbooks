@@ -32,7 +32,7 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
         TestMod.LOGGER.debug("generatingLightningBeams");
         Random random = new Random();
         beamVectors = new ArrayList<>();
-        Vec3 coreStart = new Vec3(0, .25, 0);
+        Vec3 coreStart = new Vec3(0, 0, 0);
         int coreLength = random.nextInt(4)+3;
         for (int core = 0; core < coreLength; core++) {
             Vec3 coreEnd = coreStart.add(0, 0, 1).add(randomVector(.3f));

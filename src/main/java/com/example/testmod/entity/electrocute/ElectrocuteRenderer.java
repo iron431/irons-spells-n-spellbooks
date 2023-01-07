@@ -27,7 +27,12 @@ import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
-    private static ResourceLocation TEXTURE = TestMod.id("textures/entity/electric_beams/beam_1.png");
+    private static ResourceLocation TEXTURES[] = {
+            TestMod.id("textures/entity/electric_beams/beam_1.png"),
+            TestMod.id("textures/entity/electric_beams/beam_2.png"),
+            TestMod.id("textures/entity/electric_beams/beam_3.png"),
+            TestMod.id("textures/entity/electric_beams/beam_4.png")
+    };
 
     public ElectrocuteRenderer(Context context) {
         super(context);
@@ -72,15 +77,16 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
 
         //to = new Vec3(1, 0, 10);
         float halfWidth = width * .5f;
-        consumer.vertex(poseMatrix, (float) from.x - halfWidth, 0, (float) from.z).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, (float) from.x + halfWidth, 0, (float) from.z).color(255, 255, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, (float) to.x + halfWidth, 0, (float) to.z).color(255, 255, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, (float) to.x - halfWidth, 0, (float) to.z).color(255, 255, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        float height = (float) (Math.random() * .25f) + .25f;
+        consumer.vertex(poseMatrix, (float) from.x - halfWidth, height, (float) from.z).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) from.x + halfWidth, height, (float) from.z).color(255, 255, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) to.x + halfWidth, height, (float) to.z).color(255, 255, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) to.x - halfWidth, height, (float) to.z).color(255, 255, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
 
     }
 
     @Override
     public ResourceLocation getTextureLocation(ElectrocuteProjectile p_115264_) {
-        return TEXTURE;
+        return TEXTURES[(int) (Math.random() * 4)];
     }
 }
