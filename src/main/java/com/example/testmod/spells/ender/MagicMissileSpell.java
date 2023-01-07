@@ -28,7 +28,7 @@ public class MagicMissileSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 5;
         this.cooldown = 0;
-        uniqueText = new TranslatableComponent("ui.testmod.damage", Utils.stringTruncation(getDamage(), 1));
+        uniqueText = new TranslatableComponent("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1));
     }
 
     @Override
@@ -36,12 +36,8 @@ public class MagicMissileSpell extends AbstractSpell {
         MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(world, player);
         magicMissileProjectile.setPos(player.position().add(0, player.getEyeHeight(), 0));
         magicMissileProjectile.shoot(player.getLookAngle());
-        magicMissileProjectile.setDamage(getDamage());
+        magicMissileProjectile.setDamage(getSpellPower(player));
         world.addFreshEntity(magicMissileProjectile);
-    }
-
-    private float getDamage() {
-        return getSpellPower();
     }
 
     @Override

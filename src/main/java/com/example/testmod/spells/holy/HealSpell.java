@@ -30,12 +30,12 @@ public class HealSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 30;
         this.cooldown = 400;
-        uniqueText = new TranslatableComponent("ui.testmod.healing", Utils.stringTruncation(getHealingAmount(), 1));
+        uniqueText = new TranslatableComponent("ui.testmod.healing", Utils.stringTruncation(getSpellPower(null), 1));
     }
 
     @Override
     protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
-        player.heal(getHealingAmount());
+        player.heal(getSpellPower(player));
         int count = 16;
         float radius = 1.25f;
         for (int i = 0; i < count; i++) {
@@ -45,10 +45,6 @@ public class HealSpell extends AbstractSpell {
             z = Math.sin(theta) * radius;
             MagicManager.spawnParticles(world, ParticleTypes.HEART, player.position().x + x, player.position().y, player.position().z + z, 1, 0, 0, 0, 0.1, false);
         }
-    }
-
-    private float getHealingAmount() {
-        return getSpellPower();
     }
 
     @Override

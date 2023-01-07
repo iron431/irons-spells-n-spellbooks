@@ -24,8 +24,6 @@ public class BloodSlashed extends MobEffect {
             DamageSource damageSource = null;
 
             if (source instanceof Player sourcePlayer) {
-                float spellPower = (float) targetPlayer.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
-                actualDamage *= spellPower;
                 damageSource = DamageSources.bloodSlash(sourcePlayer);
                 sourcePlayer.heal(actualHeal);
             } else {

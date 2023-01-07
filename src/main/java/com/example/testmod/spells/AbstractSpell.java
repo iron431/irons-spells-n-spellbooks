@@ -6,6 +6,7 @@ import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.util.Utils;
 import net.minecraft.ChatFormatting;
@@ -14,6 +15,8 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -61,8 +64,13 @@ public abstract class AbstractSpell {
         return baseManaCost + manaCostPerLevel * (level - 1);
     }
 
-    public int getSpellPower() {
-        return baseSpellPower + spellPowerPerLevel * (level - 1);
+    public float getSpellPower(Entity sourceEntity) {
+        float entitySpellPowerModifer = 1;
+        if (sourceEntity instanceof LivingEntity sourceLivingEntity) {
+            entitySpellPowerModifer = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
+        }
+        
+        return (baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifer;
     }
 
     public int getSpellCooldown() {
@@ -168,7 +176,7 @@ public abstract class AbstractSpell {
 
     }
 
-    public void onClientPreCast(Level level, Player player, InteractionHand hand){
+    public void onClientPreCast(Level level, Player player, InteractionHand hand) {
 
     }
 

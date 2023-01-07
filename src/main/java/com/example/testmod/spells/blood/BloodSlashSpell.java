@@ -29,7 +29,7 @@ public class BloodSlashSpell extends AbstractSpell {
         BloodSlashProjectile bloodSlash = new BloodSlashProjectile(world, player);
         bloodSlash.setPos(player.getEyePosition());
         bloodSlash.shoot(player.getLookAngle());
-        bloodSlash.setDamage(getSpellPower());
+        bloodSlash.setDamage(getSpellPower(player));
         world.addFreshEntity(bloodSlash);
     }
 }

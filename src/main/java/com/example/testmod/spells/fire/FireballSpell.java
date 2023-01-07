@@ -32,7 +32,7 @@ public class FireballSpell extends AbstractSpell {
         float speed = 2.5f;
         Vec3 direction = player.getLookAngle().scale(speed);
         Vec3 origin = player.getEyePosition();
-        Fireball fireball = new LargeFireball(world, player, direction.x(), direction.y(), direction.z(), getSpellPower());
+        Fireball fireball = new LargeFireball(world, player, direction.x(), direction.y(), direction.z(), (int)getSpellPower(player));
         fireball.setPos(origin.add(direction));
         world.addFreshEntity(fireball);
     }

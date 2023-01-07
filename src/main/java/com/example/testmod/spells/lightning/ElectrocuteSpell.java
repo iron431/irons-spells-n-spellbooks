@@ -35,7 +35,7 @@ public class ElectrocuteSpell extends AbstractSpell {
         } else{
             ElectrocuteProjectile electrocuteProjectile = new ElectrocuteProjectile(world, player);
             electrocuteProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
-            electrocuteProjectile.setDamage(getSpellPower());
+            electrocuteProjectile.setDamage(getSpellPower(player));
             world.addFreshEntity(electrocuteProjectile);
             playerMagicData.discardCone();
             playerMagicData.cone = electrocuteProjectile;
