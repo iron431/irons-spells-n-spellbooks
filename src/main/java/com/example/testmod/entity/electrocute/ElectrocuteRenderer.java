@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,7 +26,7 @@ import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
-    private static ResourceLocation TEXTURE = TestMod.id("textures/entity/blood_slash/blood_slash_large.png");
+    private static ResourceLocation TEXTURE = TestMod.id("textures/entity/electric_beams/beam_1.png");
 
     public ElectrocuteRenderer(Context context) {
         super(context);
@@ -33,6 +34,8 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
 
     @Override
     public void render(ElectrocuteProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+        if (entity.getOwner() == null)
+            return;
         poseStack.pushPose();
 
         PoseStack.Pose pose = poseStack.last();
@@ -42,31 +45,25 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getOwner().getYRot()));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getOwner().getXRot()));
         //drawCube(pose,poseMatrix,consumer,light, entity.position(),entity.position().add(entity.getLookAngle().scale(10).add(1,1,1)));
-        drawSegment(pose, consumer, entity, bufferSource, light, entity.position(), entity.position().add(entity.getOwner().getLookAngle().normalize().scale(-10)), 1);
+        //drawSegment(new Vec3(0, 0, 0), new Vec3(0, 0, 3), 1, pose, consumer, entity, bufferSource, light);
+        drawSegment(new Vec3(1, 1, 0), new Vec3(-1, 1, 3), 1, pose, consumer, entity, bufferSource, light);
+        drawSegment(new Vec3(-1, 1, 3), new Vec3(1, 1, 5), 1, pose, consumer, entity, bufferSource, light);
         poseStack.popPose();
 
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    private void drawSegment(PoseStack.Pose pose, VertexConsumer consumer, ElectrocuteProjectile entity, MultiBufferSource bufferSource, int light, Vec3 to, Vec3 from, float width) {
+    private void drawSegment(Vec3 from, Vec3 to, float width, PoseStack.Pose pose, VertexConsumer consumer, ElectrocuteProjectile entity, MultiBufferSource bufferSource, int light) {
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
 
-//        to.subtract(entity.position());
-//        from.subtract(entity.position());
-        to = Vec3.ZERO;
-        to = entity.getOwner().getEyePosition().subtract(entity.position());
-        TestMod.LOGGER.debug("{} - {} = {}",entity.getOwner().getEyePosition(),entity.position(),to);
-        from = new Vec3(1,0,10);
+        //to = new Vec3(1, 0, 10);
         float halfWidth = width * .5f;
-        double radians = entity.getYRot() * Mth.DEG_TO_RAD;
-        float rotX = halfWidth;// * (float) Math.cos(radians);
-        float rotZ = halfWidth;//-halfWidth * (float) Math.sin(radians);
+        consumer.vertex(poseMatrix, (float) from.x - halfWidth, 0, (float) from.z).color(90, 0, 10, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) from.x + halfWidth, 0, (float) from.z).color(90, 0, 10, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) to.x + halfWidth, 0, (float) to.z).color(90, 0, 10, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, (float) to.x - halfWidth, 0, (float) to.z).color(90, 0, 10, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
 
-        consumer.vertex(poseMatrix, -rotX + (float) from.x, (float) from.y, -rotZ + (float) from.z).color(90, 0, 10, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, rotX + (float) from.x, (float) from.y, -rotZ + (float) from.z).color(90, 0, 10, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, rotX + (float) to.x, (float) to.y, rotZ + (float) to.z).color(90, 0, 10, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, -rotX + (float) to.x, (float) to.y, rotZ + (float) to.z).color(90, 0, 10, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
     }
 
     private void drawCube(PoseStack.Pose pose, Matrix4f poseMatrix, VertexConsumer consumer, int light, Vec3 from, Vec3 to) {

@@ -24,29 +24,28 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
 
     @Override
     public void spawnParticles() {
-        var owner = getOwner();
-        if (!level.isClientSide || owner == null) {
-            return;
-        }
-        Vec3 rotation = owner.getLookAngle().normalize();
-        var pos = owner.position().add(rotation.scale(0.5f));
-
-        double x = pos.x;
-        double y = pos.y + owner.getEyeHeight() * .8f;
-        double z = pos.z;
-
-        double speed = .6;
-        for (int i = 0; i < 5; i++) {
-            double offset = .25;
-            double ox = Math.random() * 2 * offset - offset;
-            double oy = Math.random() * 2 * offset - offset;
-            double oz = Math.random() * 2 * offset - offset;
-
-            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
-            Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(ParticleHelper.ELECTRICITY, x + ox, y + oy, z + oz, result.x, result.y, result.z);
-        }
-
+//        var owner = getOwner();
+//        if (!level.isClientSide || owner == null) {
+//            return;
+//        }
+//        Vec3 rotation = owner.getLookAngle().normalize();
+//        var pos = owner.position().add(rotation.scale(0.5f));
+//
+//        double x = pos.x;
+//        double y = pos.y + owner.getEyeHeight() * .8f;
+//        double z = pos.z;
+//
+//        double speed = .6;
+//        for (int i = 0; i < 5; i++) {
+//            double offset = .25;
+//            double ox = Math.random() * 2 * offset - offset;
+//            double oy = Math.random() * 2 * offset - offset;
+//            double oz = Math.random() * 2 * offset - offset;
+//
+//            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
+//            Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
+//            level.addParticle(ParticleHelper.ELECTRICITY, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+//        }
 
     }
 
