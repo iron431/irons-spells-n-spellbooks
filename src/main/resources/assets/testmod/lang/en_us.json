@@ -39,6 +39,7 @@
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
 
   "key.testmod.spell_wheel": "Open Spell Wheel",
+  "key.testmod.spell_bar_modifier": "Spell Bar Scroll Modifier",
 
   "spell.testmod.none": "None",
   "spell.testmod.fireball": "Fireball",
@@ -49,6 +50,7 @@
   "spell.testmod.electrocute": "Electrocute",
   "spell.testmod.heal": "Heal",
   "spell.testmod.blood_slash": "Blood Slash",
+  "spell.testmod.summon_vex": "Summon Vex",
 
   "death.attack.blood_slash": "%1$s blood slash 1",
   "death.attack.blood_slash.item": "%1$s blood slash 2",

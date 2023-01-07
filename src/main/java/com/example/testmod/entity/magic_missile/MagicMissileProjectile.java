@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     private static final double SPEED = 3d;
-    private static final int EXPIRE_TIME = 2 * 20;
+    private static final int EXPIRE_TIME = 20 * 20;
 
     private int age;
     private float damage;
@@ -55,7 +55,6 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     @Override
     public void tick() {
         super.tick();
-
         if (age > EXPIRE_TIME) {
             discard();
             return;
@@ -129,8 +128,8 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
             double z = getZ();
             if (age > 0) {
                 //TODO: Custom particles
-                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x, y, z, 3, 0, 0, 0, .01, true);
-                MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 2, 0, 0, 0, .01, true);
+                //MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x, y, z, 3, 0, 0, 0, .01, true);
+                //MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 2, 0, 0, 0, .01, true);
             }
 
         }

@@ -6,6 +6,7 @@ import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.cold.ConeOfColdSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
+import com.example.testmod.spells.evocation.SummonVexSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
 import com.example.testmod.spells.holy.HealSpell;
@@ -31,7 +32,8 @@ public enum SpellType {
     ELECTROCUTE_SPELL(5),
     CONE_OF_COLD_SPELL(6),
     HEAL_SPELL(7),
-    BLOOD_SLASH_SPELL(8);
+    BLOOD_SLASH_SPELL(8),
+    SUMMON_VEX_SPELL(9);
 
     private final int value;
 
@@ -69,22 +71,13 @@ public enum SpellType {
             case BLOOD_SLASH_SPELL -> {
                 return new BloodSlashSpell(level);
             }
+            case SUMMON_VEX_SPELL -> {
+                return new SummonVexSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
         }
-    }
-
-    public TranslatableComponent getDisplayName() {
-        return new TranslatableComponent("spell." + TestMod.MODID + "." + this.getId());
-    }
-
-    public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(TestMod.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
-    }
-
-    private String getId() {
-        return this.toString().toLowerCase().replace("_spell", "");
     }
 
     public CastType getCastType() {
@@ -106,7 +99,19 @@ public enum SpellType {
             case HEAL_SPELL -> SchoolType.HOLY;
             case TELEPORT_SPELL, MAGIC_MISSILE_SPELL -> SchoolType.ENDER;
             case BLOOD_SLASH_SPELL -> SchoolType.BLOOD;
-            case NONE_SPELL -> SchoolType.EVOCATION;
+            case NONE_SPELL,SUMMON_VEX_SPELL -> SchoolType.EVOCATION;
         };
+    }
+
+    public TranslatableComponent getDisplayName() {
+        return new TranslatableComponent("spell." + TestMod.MODID + "." + this.getId());
+    }
+
+    public ResourceLocation getResourceLocation() {
+        return new ResourceLocation(TestMod.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
+    }
+
+    private String getId() {
+        return this.toString().toLowerCase().replace("_spell", "");
     }
 }
