@@ -2,6 +2,7 @@ package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractConeProjectile;
+import com.example.testmod.player.ClientMagicData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,6 +29,8 @@ public class PlayerMagicData {
     }
 
     /********* CASTING *******************************************************/
+
+    public ClientMagicData.SpinAttackType spinAttackType;
 
     private boolean isCasting = false;
     private int castingSpellId = 0;

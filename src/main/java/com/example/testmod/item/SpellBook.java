@@ -55,6 +55,7 @@ public class SpellBook extends Item implements ISpellBook {
         //
         if (level.isClientSide()) {
             if (spell != null) {
+                spell.onClientPreCast(level, player, hand);
                 if (ClientMagicData.isCasting) {
                     Messages.sendToServer(new PacketCancelCast(false));
                     return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
