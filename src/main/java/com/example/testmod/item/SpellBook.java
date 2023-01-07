@@ -76,7 +76,7 @@ public class SpellBook extends Item implements ISpellBook {
         //  Attempt to Cast Spell
         //
         TestMod.LOGGER.debug("SpellBook.Use.attemptInitiateCast");
-        if (spell != null && spell.attemptInitiateCast(itemStack, level, player, true, true)) {
+        if (spell != null && spell.attemptInitiateCast(itemStack, level, player, false, true)) {
             return InteractionResultHolder.success(itemStack);
         }
 

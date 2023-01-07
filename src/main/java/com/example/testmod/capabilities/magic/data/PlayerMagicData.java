@@ -33,6 +33,7 @@ public class PlayerMagicData {
     private int castingSpellId = 0;
     private int castingSpellLevel = 0;
     private int castDurationRemaining = 0;
+    private boolean fromScroll = false;
 
     public ConeOfColdProjectile cone;
     private int castDuration = 0;
@@ -51,6 +52,11 @@ public class PlayerMagicData {
         this.castingSpellLevel = castingSpellLevel;
         this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
+    }
+
+    public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, boolean fromScroll) {
+        this.fromScroll = fromScroll;
+        initiateCast(castingSpellId, castingSpellLevel, castDuration);
     }
 
     public boolean isCasting() {

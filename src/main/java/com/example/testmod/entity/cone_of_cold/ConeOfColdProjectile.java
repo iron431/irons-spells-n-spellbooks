@@ -4,7 +4,6 @@ import com.example.testmod.TestMod;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -18,9 +17,9 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
-import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -193,7 +192,7 @@ public class ConeOfColdProjectile extends Projectile {
     }
 
     private Set<Entity> getSubEntityCollisions() {
-        List<Entity> collisions = Lists.newArrayList();
+        List<Entity> collisions = new ArrayList<>();
         for (Entity conepart : subEntities) {
             collisions.addAll(level.getEntities(conepart, conepart.getBoundingBox()));
         }

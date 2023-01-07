@@ -86,51 +86,51 @@ public abstract class AbstractSpell {
     }
 
     //returns true/false for success/failure to cast
-    public boolean attemptInitiateCast(ItemStack stack, Level world, Player player, boolean consumeMana, boolean triggerCooldown) {
+    public boolean attemptInitiateCast(ItemStack stack, Level world, Player player, boolean fromScroll, boolean triggerCooldown) {
         if (world.isClientSide) {
             //TODO: handle client/server delineation in onCast, not here; this breaks all client side spells
             return false;
         }
-        var serverPlayer = Utils.getServerPlayer(world, player.getUUID());
 
-        if (serverPlayer != null) {
-            MagicManager magicManager = MagicManager.get(world);
-            var playerMagicData = magicManager.getPlayerMagicData(serverPlayer);
+        if (player != null) {
+            var serverPlayer = (ServerPlayer) player;
+            var playerMagicData = MagicManager.getPlayerMagicData(serverPlayer);
             int playerMana = playerMagicData.getMana();
 
             boolean hasEnoughMana = playerMana - getManaCost() >= 0;
             boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
             boolean isAlreadyCasting = playerMagicData.isCasting();
 
-            if (!hasEnoughMana) {
-                player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                return false;
-            }
-            if (isSpellOnCooldown) {
-                player.sendMessage(spellType.getDisplayName().append(" is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                return false;
-            }
-            if (isAlreadyCasting) {
-                return false;
+            if (!fromScroll) {
+                if (!hasEnoughMana) {
+                    player.sendMessage(new TextComponent("Not enough mana to cast spell").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    return false;
+                }
+                if (isSpellOnCooldown) {
+                    player.sendMessage(spellType.getDisplayName().append(" is on cooldown").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    return false;
+                }
+                if (isAlreadyCasting) {
+                    return false;
+                }
             }
 
             if (this.castType == CastType.INSTANT) {
-                return castSpell(world, serverPlayer, consumeMana, triggerCooldown);
+                return castSpell(world, serverPlayer, fromScroll, triggerCooldown);
             } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
-                playerMagicData.initiateCast(getID(), level, castTime);
+                playerMagicData.initiateCast(getID(), level, castTime, fromScroll);
                 Messages.sendToPlayer(new PacketCastingState(getID(), castTime, castType, false), serverPlayer);
             }
         }
         return false;
     }
 
-    public boolean castSpell(Level world, ServerPlayer serverPlayer, boolean consumeMana, boolean triggerCooldown) {
+    public boolean castSpell(Level world, ServerPlayer serverPlayer, boolean fromScroll, boolean triggerCooldown) {
         MagicManager magicManager = MagicManager.get(serverPlayer.level);
-        PlayerMagicData playerMagicData = magicManager.getPlayerMagicData(serverPlayer);
+        PlayerMagicData playerMagicData = MagicManager.getPlayerMagicData(serverPlayer);
 
-        int newMana = playerMagicData.getMana();
-        if (consumeMana) {
-            newMana -= getManaCost();
+        if (!fromScroll) {
+            int newMana = playerMagicData.getMana() - getManaCost();
             magicManager.setPlayerCurrentMana(serverPlayer, newMana);
         }
 
@@ -140,11 +140,13 @@ public abstract class AbstractSpell {
 
         onCast(world, serverPlayer, playerMagicData);
 
-        if(this.castType != CastType.CONTINUOUS){
-            onCastComplete(world,serverPlayer, playerMagicData);
+        if (this.castType != CastType.CONTINUOUS) {
+            onCastComplete(world, serverPlayer, playerMagicData);
         }
 
-        Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
+        if (!fromScroll) {
+            Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
+        }
 
         if (serverPlayer.getMainHandItem().getItem() instanceof SpellBook || serverPlayer.getMainHandItem().getItem() instanceof Scroll)
             playerMagicData.setPlayerCastingItem(serverPlayer.getMainHandItem());

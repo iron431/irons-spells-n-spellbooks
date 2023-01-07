@@ -42,7 +42,7 @@ public class MagicManager {
         return magicManager;
     }
 
-    public PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
+    public static PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
         var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
         if (capContainer.isPresent()) {
             return capContainer.resolve().orElse(new PlayerMagicData());
