@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -42,17 +43,19 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onClientPreCast(Level level, Player player, InteractionHand hand) {
         ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.FIRE;
-//
+    }
+
+    @Override
+    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         float amplifier = 0.5f + (level - 1) * .25f;
         Vec3 vec = player.getLookAngle().normalize().scale(amplifier);
-//
         if (player.isOnGround())
             player.move(MoverType.SELF, new Vec3(0.0D, 0.75d, 0.0D));
 
         player.startAutoSpinAttack(10 + level);
-        Messages.sendToPlayer(new PacketAddMotionToClient(vec,true),(ServerPlayer)player);
+        Messages.sendToPlayer(new PacketAddMotionToClient(vec, true), (ServerPlayer) player);
         /*
         //in degrees
         float rx = player.getYRot();

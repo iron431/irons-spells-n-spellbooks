@@ -1,17 +1,14 @@
 package com.example.testmod.item;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.data.MagicManager;
 import com.example.testmod.capabilities.magic.data.PlayerMagicData;
 import com.example.testmod.capabilities.magic.network.PacketCancelCast;
-import com.example.testmod.capabilities.magic.network.PacketCastingState;
 import com.example.testmod.capabilities.scroll.data.ScrollData;
 import com.example.testmod.capabilities.scroll.data.ScrollDataProvider;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
-import com.example.testmod.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -55,12 +52,15 @@ public class Scroll extends Item implements IScroll {
         this.level = level;
     }
 
-    protected void removeScrollAfterCast(ServerPlayer player, ItemStack stack) {
-        if (!player.isCreative())
-            player.getInventory().removeItem(stack);
+    protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
+        TestMod.LOGGER.debug("removeScrollAfterCast {}", serverPlayer.getName().getString());
+        if (!serverPlayer.isCreative()) {
+            stack.shrink(1);
+        }
     }
 
     public static boolean attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
+        TestMod.LOGGER.debug("attemptRemoveScrollAfterCast {}", serverPlayer.getName().getString());
         ItemStack potentialScroll = PlayerMagicData.getPlayerMagicData(serverPlayer).getPlayerCastingItem();
         if (potentialScroll.getItem() instanceof Scroll scroll) {
             scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
@@ -80,66 +80,48 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         var scrollData = getScrollData(stack);
         var spell = scrollData.getSpell();
 
         if (level.isClientSide) {
+            spell.onClientPreCast(level, player, hand);
             if (ClientMagicData.isCasting) {
                 Messages.sendToServer(new PacketCancelCast(false));
-
             }
             if (spell.getCastType() == CastType.CONTINUOUS) {
                 player.startUsingItem(hand);
             }
-            return InteractionResultHolder.success(player.getItemInHand(hand));
+            return InteractionResultHolder.success(stack);
         }
 
-        var serverPlayer = Utils.getServerPlayer(level, player.getUUID());
-        if (serverPlayer != null) {
-            var playerMagicData = MagicManager.get(level).getPlayerMagicData(serverPlayer);
-
-
-            if (playerMagicData.isCasting()) {
-                if (spell.getCastType() == CastType.CONTINUOUS)
-                    removeScrollAfterCast(serverPlayer, stack);
-                return InteractionResultHolder.success(stack);
-            }
-
+        if (spell.attemptInitiateCast(stack, level, player, true, false)) {
             if (spell.getCastType() == CastType.INSTANT) {
-                spell.castSpell(level, serverPlayer, false, false);
-                removeScrollAfterCast(serverPlayer, stack);
-            } else if (spell.getCastTime() > 0) {
-                playerMagicData.initiateCast(spell.getID(), spell.getLevel(), spell.getCastTime());
-                Messages.sendToPlayer(new PacketCastingState(spell.getID(), spell.getCastTime(), spell.getCastType(), false), serverPlayer);
-
+                removeScrollAfterCast((ServerPlayer) player, stack);
             }
-
-
             return InteractionResultHolder.success(stack);
         } else {
             return InteractionResultHolder.fail(stack);
         }
-
     }
 
     @Override
-    public int getUseDuration(ItemStack itemStack) {
+    public int getUseDuration(@NotNull ItemStack itemStack) {
         return 7200;
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack p_41452_) {
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
         return UseAnim.BOW;
     }
 
     @Override
-    public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int ticksUsed) {
+    public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         entity.stopUsingItem();
         if (getUseDuration(itemStack) - ticksUsed >= 10)
             Messages.sendToServer(new PacketCancelCast(true));
-        super.releaseUsing(itemStack, p_41413_, entity, ticksUsed);
+        super.releaseUsing(itemStack, level, entity, ticksUsed);
     }
 
     @Override
@@ -150,26 +132,11 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, List<Component> lines, @NotNull TooltipFlag flag) {
         lines.addAll(getScrollData(itemStack).getHoverText());
         super.appendHoverText(itemStack, level, lines, flag);
     }
 
-    /**
-     * Ensure that our capability is sent to the client when transmitted over the network.
-     * Not needed if you don't need the capability information on the client
-     * <p>
-     * Note that this will sometimes be applied multiple times, the following MUST
-     * be supported:
-     * Item item = stack.getItem();
-     * NBTTagCompound nbtShare1 = item.getShareTag(stack);
-     * stack.readShareTag(nbtShare1);
-     * NBTTagCompound nbtShare2 = item.getShareTag(stack);
-     * assert nbtShare1.equals(nbtShare2);
-     *
-     * @param stack The stack to send the NBT tag for
-     * @return The NBT tag
-     */
     @Nullable
     @Override
     public CompoundTag getShareTag(ItemStack stack) {

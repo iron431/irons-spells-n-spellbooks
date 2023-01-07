@@ -12,8 +12,8 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
-import org.apache.commons.compress.utils.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -153,7 +153,7 @@ public abstract class AbstractConeProjectile extends Projectile {
     }
 
     protected Set<Entity> getSubEntityCollisions() {
-        List<Entity> collisions = Lists.newArrayList();
+        List<Entity> collisions = new ArrayList<>();
         for (Entity conepart : subEntities) {
             collisions.addAll(level.getEntities(conepart, conepart.getBoundingBox()));
         }

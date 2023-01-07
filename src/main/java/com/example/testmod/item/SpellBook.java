@@ -55,6 +55,7 @@ public class SpellBook extends Item implements ISpellBook {
         //
         if (level.isClientSide()) {
             if (spell != null) {
+                spell.onClientPreCast(level, player, hand);
                 if (ClientMagicData.isCasting) {
                     Messages.sendToServer(new PacketCancelCast(false));
                     return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
@@ -78,7 +79,7 @@ public class SpellBook extends Item implements ISpellBook {
         //  Attempt to Cast Spell
         //
         TestMod.LOGGER.debug("SpellBook.Use.attemptInitiateCast");
-        if (spell != null && spell.attemptInitiateCast(itemStack, level, player, true, true)) {
+        if (spell != null && spell.attemptInitiateCast(itemStack, level, player, false, true)) {
             return InteractionResultHolder.success(itemStack);
         }
 

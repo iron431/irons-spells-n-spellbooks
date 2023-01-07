@@ -2,7 +2,7 @@ package com.example.testmod.capabilities.magic.data;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractConeProjectile;
-import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
+import com.example.testmod.player.ClientMagicData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,10 +30,13 @@ public class PlayerMagicData {
 
     /********* CASTING *******************************************************/
 
+    public ClientMagicData.SpinAttackType spinAttackType;
+
     private boolean isCasting = false;
     private int castingSpellId = 0;
     private int castingSpellLevel = 0;
     private int castDurationRemaining = 0;
+    private boolean fromScroll = false;
 
     public AbstractConeProjectile cone;
     private int castDuration = 0;
@@ -63,6 +66,12 @@ public class PlayerMagicData {
         }
         return false;
     }
+
+    public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, boolean fromScroll) {
+        this.fromScroll = fromScroll;
+        initiateCast(castingSpellId, castingSpellLevel, castDuration);
+    }
+
     public boolean isCasting() {
         return isCasting;
     }

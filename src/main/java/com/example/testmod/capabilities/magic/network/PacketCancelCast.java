@@ -32,26 +32,31 @@ public class PacketCancelCast {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
+        TestMod.LOGGER.debug("PacketCancelCast.handle");
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.getSender();
-            if (serverPlayer != null) {
-                var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-                if (playerMagicData.isCasting()) {
-                    int spellId = playerMagicData.getCastingSpellId();
-                    playerMagicData.resetCastingState();
-
-                    if (triggerCooldown) {
-                        MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId]);
-                        AbstractSpell.getSpell(spellId, 0).onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
-                    }
-
-                    Messages.sendToPlayer(new PacketCastingState(spellId, 0, CastType.NONE, true), serverPlayer);
-                    if(SpellType.values()[spellId].getCastType()==CastType.CONTINUOUS)
-                        Scroll.attemptRemoveScrollAfterCast(serverPlayer);
-                }
-            }
+            cancelCast(serverPlayer, triggerCooldown);
         });
         return true;
+    }
+
+    public static void cancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
+        if (serverPlayer != null) {
+            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            if (playerMagicData.isCasting()) {
+                int spellId = playerMagicData.getCastingSpellId();
+                playerMagicData.resetCastingState();
+
+                if (triggerCooldown) {
+                    MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId]);
+                    AbstractSpell.getSpell(spellId, 0).onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
+                }
+
+                Messages.sendToPlayer(new PacketCastingState(spellId, 0, CastType.NONE, true), serverPlayer);
+                if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)
+                    Scroll.attemptRemoveScrollAfterCast(serverPlayer);
+            }
+        }
     }
 }

@@ -1,12 +1,7 @@
 package com.example.testmod.capabilities.spellbook.data;
 
-import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.scroll.data.ScrollData;
-import com.example.testmod.spells.SpellType;
-import com.example.testmod.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;

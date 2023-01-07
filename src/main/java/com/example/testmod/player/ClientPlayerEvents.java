@@ -30,27 +30,6 @@ import org.apache.logging.log4j.core.jmx.Server;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
-
-    //
-    //  Cancel Cast if we Switch off Spellbook
-    //
-    public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
-        //THIS EVENT IS SERVER SIDE ONLY
-        if (event.getEntityLiving() == null) {
-            return;
-        }
-
-        var cap = event.getEntityLiving().getCapability(PlayerMagicProvider.PLAYER_MAGIC);
-        if (cap.isPresent()) {
-            var playerMagicData = cap.resolve().get();
-
-            if (playerMagicData.isCasting() && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1) && (event.getFrom().getItem() instanceof SpellBook || event.getFrom().getItem() instanceof Scroll)) {
-                TestMod.LOGGER.debug("onLivingEquipmentChangeEvent: Cancel Cast");
-                Messages.sendToServer(new PacketCancelCast(SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS));
-            }
-        }
-    }
-
     //
     //  Cancel Cast if we Open a Container
     //
