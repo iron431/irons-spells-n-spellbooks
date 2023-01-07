@@ -1,17 +1,14 @@
 package com.example.testmod.player;
 
-import com.example.testmod.capabilities.magic.data.CooldownInstance;
-import com.example.testmod.capabilities.magic.data.PlayerCooldowns;
-import com.example.testmod.capabilities.spellbook.data.SpellBookData;
-import com.example.testmod.item.SpellBook;
+import com.example.testmod.capabilities.magic.CooldownInstance;
+import com.example.testmod.capabilities.magic.PlayerCooldowns;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.capabilities.magic.PlayerMagicProvider;
+import com.example.testmod.capabilities.spellbook.SpellBookData;
 import com.example.testmod.spells.CastType;
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
-import com.example.testmod.capabilities.magic.data.PlayerMagicProvider;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.apache.commons.compress.utils.Lists;
 

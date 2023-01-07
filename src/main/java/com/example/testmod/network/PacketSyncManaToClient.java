@@ -1,8 +1,7 @@
-package com.example.testmod.capabilities.magic.network;
+package com.example.testmod.network;
 
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
-import com.example.testmod.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 

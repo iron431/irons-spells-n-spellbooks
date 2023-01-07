@@ -1,6 +1,5 @@
-package com.example.testmod.capabilities.magic.network;
+package com.example.testmod.network;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.CastType;
 import net.minecraft.client.Minecraft;

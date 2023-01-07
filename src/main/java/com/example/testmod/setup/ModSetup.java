@@ -1,8 +1,8 @@
 package com.example.testmod.setup;
 
-import com.example.testmod.capabilities.magic.data.MagicEvents;
-import com.example.testmod.capabilities.scroll.data.ScrollDataEvents;
-import com.example.testmod.capabilities.spellbook.data.SpellBookDataEvents;
+import com.example.testmod.capabilities.magic.MagicEvents;
+import com.example.testmod.capabilities.scroll.ScrollDataEvents;
+import com.example.testmod.capabilities.spellbook.SpellBookDataEvents;
 import com.example.testmod.player.ClientPlayerEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;

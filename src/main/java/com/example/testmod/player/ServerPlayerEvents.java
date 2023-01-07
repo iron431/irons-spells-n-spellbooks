@@ -1,9 +1,9 @@
 package com.example.testmod.player;
 
-import com.example.testmod.capabilities.magic.data.PlayerMagicProvider;
-import com.example.testmod.capabilities.magic.network.PacketCancelCast;
+import com.example.testmod.capabilities.magic.PlayerMagicProvider;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.network.PacketCancelCast;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.server.level.ServerPlayer;

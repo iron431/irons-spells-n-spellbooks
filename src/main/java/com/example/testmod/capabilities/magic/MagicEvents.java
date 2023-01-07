@@ -1,4 +1,4 @@
-package com.example.testmod.capabilities.magic.data;
+package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
 import net.minecraft.resources.ResourceLocation;

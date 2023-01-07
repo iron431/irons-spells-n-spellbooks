@@ -1,6 +1,6 @@
 package com.example.testmod.spells.ender;
 
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;

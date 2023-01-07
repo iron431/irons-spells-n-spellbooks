@@ -1,15 +1,7 @@
-package com.example.testmod.spells.network;
+package com.example.testmod.network;
 
-import com.example.testmod.capabilities.magic.data.MagicManager;
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
-import com.example.testmod.capabilities.magic.network.PacketCastingState;
-import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.setup.Messages;
-import com.example.testmod.spells.CastType;
-import com.example.testmod.spells.SpellType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 

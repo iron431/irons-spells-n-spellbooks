@@ -1,10 +1,9 @@
 package com.example.testmod.item;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.network.PacketCancelCast;
-import com.example.testmod.capabilities.scroll.data.ScrollDataProvider;
-import com.example.testmod.capabilities.spellbook.data.SpellBookData;
-import com.example.testmod.capabilities.spellbook.data.SpellBookDataProvider;
+import com.example.testmod.capabilities.spellbook.SpellBookData;
+import com.example.testmod.capabilities.spellbook.SpellBookDataProvider;
+import com.example.testmod.network.PacketCancelCast;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
-import org.jline.utils.Log;
 
 import java.util.List;
 

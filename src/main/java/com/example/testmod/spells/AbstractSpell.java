@@ -1,11 +1,11 @@
 package com.example.testmod.spells;
 
-import com.example.testmod.capabilities.magic.data.MagicManager;
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
-import com.example.testmod.capabilities.magic.network.PacketCastingState;
-import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
+import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.network.PacketCastingState;
+import com.example.testmod.network.PacketSyncManaToClient;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import net.minecraft.ChatFormatting;

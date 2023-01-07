@@ -1,7 +1,7 @@
 package com.example.testmod.entity.blood_slash;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.data.MagicManager;
+import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.damage.BloodSlashed;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;

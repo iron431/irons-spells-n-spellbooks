@@ -1,6 +1,5 @@
-package com.example.testmod.capabilities.scroll.data;
+package com.example.testmod.capabilities.scroll;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;

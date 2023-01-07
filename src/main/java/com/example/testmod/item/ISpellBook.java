@@ -1,7 +1,6 @@
 package com.example.testmod.item;
 
-import com.example.testmod.capabilities.scroll.data.ScrollData;
-import com.example.testmod.capabilities.spellbook.data.SpellBookData;
+import com.example.testmod.capabilities.spellbook.SpellBookData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 

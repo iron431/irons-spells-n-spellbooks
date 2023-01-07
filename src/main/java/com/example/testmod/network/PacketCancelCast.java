@@ -1,10 +1,9 @@
-package com.example.testmod.capabilities.magic.network;
+package com.example.testmod.network;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.data.MagicManager;
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
-import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;

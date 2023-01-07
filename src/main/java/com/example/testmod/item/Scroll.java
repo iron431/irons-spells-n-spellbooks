@@ -1,10 +1,10 @@
 package com.example.testmod.item;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
-import com.example.testmod.capabilities.magic.network.PacketCancelCast;
-import com.example.testmod.capabilities.scroll.data.ScrollData;
-import com.example.testmod.capabilities.scroll.data.ScrollDataProvider;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.capabilities.scroll.ScrollData;
+import com.example.testmod.capabilities.scroll.ScrollDataProvider;
+import com.example.testmod.network.PacketCancelCast;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
