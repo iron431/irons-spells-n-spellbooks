@@ -1,13 +1,8 @@
 package com.example.testmod.spells;
 
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
-import net.minecraft.network.chat.TranslatableComponent;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Fireball;
-import net.minecraft.world.entity.projectile.LargeFireball;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class NoneSpell extends AbstractSpell {
     public NoneSpell() {

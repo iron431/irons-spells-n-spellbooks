@@ -1,11 +1,10 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.network.*;
+import com.example.testmod.gui.network.PacketChangeSelectedSpell;
 import com.example.testmod.gui.network.PacketInscribeSpell;
 import com.example.testmod.gui.network.PacketRemoveSpell;
-import com.example.testmod.gui.network.PacketChangeSelectedSpell;
-import com.example.testmod.spells.network.PacketAddMotionToClient;
+import com.example.testmod.network.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;

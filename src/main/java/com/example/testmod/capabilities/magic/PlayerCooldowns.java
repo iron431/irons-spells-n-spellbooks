@@ -1,4 +1,4 @@
-package com.example.testmod.capabilities.magic.data;
+package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.spells.SpellType;
 import com.google.common.collect.Maps;

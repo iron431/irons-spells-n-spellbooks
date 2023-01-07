@@ -2,7 +2,7 @@ package com.example.testmod.spells.cold;
 
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -38,7 +38,7 @@ public class ConeOfColdSpell extends AbstractSpell {
         } else{
             ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, player);
             coneOfColdProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
-            coneOfColdProjectile.setDamage(getSpellPower());
+            coneOfColdProjectile.setDamage(getSpellPower(player));
             world.addFreshEntity(coneOfColdProjectile);
             playerMagicData.discardCone();
             playerMagicData.cone = coneOfColdProjectile;

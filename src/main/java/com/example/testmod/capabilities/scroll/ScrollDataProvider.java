@@ -1,6 +1,5 @@
-package com.example.testmod.capabilities.scroll.data;
+package com.example.testmod.capabilities.scroll;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

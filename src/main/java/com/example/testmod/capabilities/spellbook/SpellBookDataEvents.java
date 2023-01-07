@@ -1,4 +1,4 @@
-package com.example.testmod.capabilities.spellbook.data;
+package com.example.testmod.capabilities.spellbook;
 
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 

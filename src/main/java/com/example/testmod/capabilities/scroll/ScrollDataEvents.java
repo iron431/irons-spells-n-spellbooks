@@ -1,6 +1,5 @@
-package com.example.testmod.capabilities.scroll.data;
+package com.example.testmod.capabilities.scroll;
 
-import com.example.testmod.capabilities.spellbook.data.SpellBookData;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 
 public class ScrollDataEvents {

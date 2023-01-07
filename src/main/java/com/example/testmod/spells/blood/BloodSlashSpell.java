@@ -1,8 +1,7 @@
 package com.example.testmod.spells.blood;
 
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
-import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +28,7 @@ public class BloodSlashSpell extends AbstractSpell {
         BloodSlashProjectile bloodSlash = new BloodSlashProjectile(world, player);
         bloodSlash.setPos(player.getEyePosition());
         bloodSlash.shoot(player.getLookAngle());
-        bloodSlash.setDamage(getSpellPower());
+        bloodSlash.setDamage(getSpellPower(player));
         world.addFreshEntity(bloodSlash);
     }
 }

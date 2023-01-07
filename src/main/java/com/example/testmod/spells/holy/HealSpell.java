@@ -1,15 +1,12 @@
 package com.example.testmod.spells.holy;
 
-import com.example.testmod.capabilities.magic.data.MagicManager;
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -30,12 +27,12 @@ public class HealSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 30;
         this.cooldown = 400;
-        uniqueText = new TranslatableComponent("ui.testmod.healing", Utils.stringTruncation(getHealingAmount(), 1));
+        uniqueText = new TranslatableComponent("ui.testmod.healing", Utils.stringTruncation(getSpellPower(null), 1));
     }
 
     @Override
     protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
-        player.heal(getHealingAmount());
+        player.heal(getSpellPower(player));
         int count = 16;
         float radius = 1.25f;
         for (int i = 0; i < count; i++) {
@@ -45,10 +42,6 @@ public class HealSpell extends AbstractSpell {
             z = Math.sin(theta) * radius;
             MagicManager.spawnParticles(world, ParticleTypes.HEART, player.position().x + x, player.position().y, player.position().z + z, 1, 0, 0, 0, 0.1, false);
         }
-    }
-
-    private float getHealingAmount() {
-        return getSpellPower();
     }
 
     @Override

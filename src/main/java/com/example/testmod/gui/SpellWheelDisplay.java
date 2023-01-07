@@ -1,7 +1,7 @@
 package com.example.testmod.gui;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.spellbook.data.SpellBookData;
+import com.example.testmod.capabilities.spellbook.SpellBookData;
 import com.example.testmod.gui.network.PacketChangeSelectedSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.player.ClientMagicData;
@@ -10,7 +10,7 @@ import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
@@ -26,7 +26,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

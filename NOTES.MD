@@ -35,8 +35,9 @@
 - ```/data get entity @s SelectedItem```
 - ```/data get entity @s ForgeCaps```
 
-### Give Generator
+### Give Generator//
 - https://mapmaking.fr/give1.16/
+- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:blood_slash_resist",Slot:"chest",Amount:.5,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
 - ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:cooldown_reduction",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
 - ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:max_mana",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
 

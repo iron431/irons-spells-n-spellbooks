@@ -1,6 +1,4 @@
-package com.example.testmod.capabilities.magic.data;
-
-import com.example.testmod.TestMod;
+package com.example.testmod.capabilities.magic;
 
 public class CooldownInstance {
     private int cooldownRemaining;

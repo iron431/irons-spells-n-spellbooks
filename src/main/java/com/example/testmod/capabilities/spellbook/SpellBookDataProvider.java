@@ -1,4 +1,4 @@
-package com.example.testmod.capabilities.spellbook.data;
+package com.example.testmod.capabilities.spellbook;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

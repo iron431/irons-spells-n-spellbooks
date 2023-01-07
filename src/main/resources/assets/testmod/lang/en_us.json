@@ -36,7 +36,10 @@
   "school.testmod.evocation": "Evocation",
 
   "attribute.testmod.max_mana":"Max Mana",
+  "attribute.testmod.spell_power":"Spell Power",
+  "attribute.testmod.cast_time_reduction":"Cast Time Reduction",
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
+  "attribute.testmod.blood_magic_resist":"Blood Magic Resist",
 
   "key.testmod.spell_wheel": "Open Spell Wheel",
   "key.testmod.spell_bar_modifier": "Spell Bar Scroll Modifier",
@@ -52,9 +55,9 @@
   "spell.testmod.blood_slash": "Blood Slash",
   "spell.testmod.summon_vex": "Summon Vex",
 
-  "death.attack.blood_slash": "%1$s blood slash 1",
-  "death.attack.blood_slash.item": "%1$s blood slash 2",
-  "death.attack.blood_slash.player": "%1$s blood slash 3",
+  "death.attack.blood_magic": "%1$s blood magic 1",
+  "death.attack.blood_magic.item": "%1$s blood magic 2",
+  "death.attack.blood_magic.player": "%1$s blood magic 3",
 
   "effect.testmod.blood_slashed": "Blood Slashed"
 }

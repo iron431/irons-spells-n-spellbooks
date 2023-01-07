@@ -1,13 +1,10 @@
 package com.example.testmod.spells.ender;
 
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -28,7 +25,7 @@ public class MagicMissileSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 5;
         this.cooldown = 0;
-        uniqueText = new TranslatableComponent("ui.testmod.damage", Utils.stringTruncation(getDamage(), 1));
+        uniqueText = new TranslatableComponent("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1));
     }
 
     @Override
@@ -36,12 +33,8 @@ public class MagicMissileSpell extends AbstractSpell {
         MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(world, player);
         magicMissileProjectile.setPos(player.position().add(0, player.getEyeHeight() - magicMissileProjectile.getBoundingBox().getYsize() * .5f, 0));
         magicMissileProjectile.shoot(player.getLookAngle());
-        magicMissileProjectile.setDamage(getDamage());
+        magicMissileProjectile.setDamage(getSpellPower(player));
         world.addFreshEntity(magicMissileProjectile);
-    }
-
-    private float getDamage() {
-        return getSpellPower();
     }
 
     @Override

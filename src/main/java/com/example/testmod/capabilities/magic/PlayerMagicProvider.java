@@ -1,4 +1,4 @@
-package com.example.testmod.capabilities.magic.data;
+package com.example.testmod.capabilities.magic;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

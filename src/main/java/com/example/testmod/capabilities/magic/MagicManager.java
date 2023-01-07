@@ -1,10 +1,10 @@
-package com.example.testmod.capabilities.magic.data;
+package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.network.PacketCastingState;
-import com.example.testmod.capabilities.magic.network.PacketSyncCooldownToClient;
-import com.example.testmod.capabilities.magic.network.PacketSyncManaToClient;
 import com.example.testmod.item.Scroll;
+import com.example.testmod.network.PacketCastingState;
+import com.example.testmod.network.PacketSyncCooldownToClient;
+import com.example.testmod.network.PacketSyncManaToClient;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
@@ -12,7 +12,6 @@ import com.example.testmod.spells.SpellType;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;

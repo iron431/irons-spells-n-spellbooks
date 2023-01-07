@@ -1,27 +1,17 @@
 package com.example.testmod.spells.fire;
 
-import ca.weblite.objc.Message;
-import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.data.PlayerMagicData;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.network.PacketAddMotionToClient;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
-import com.example.testmod.spells.network.PacketAddMotionToClient;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.logging.Logger;
 
 
 public class BurningDashSpell extends AbstractSpell {
