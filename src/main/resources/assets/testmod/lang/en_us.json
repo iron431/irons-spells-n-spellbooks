@@ -37,7 +37,7 @@
 
   "attribute.testmod.max_mana":"Max Mana",
   "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
-  "attribute.testmod.blood_slash_resist":"Blood Slash Resist",
+  "attribute.testmod.blood_moagic_resist":"Blood Magic Resist",
 
   "key.testmod.spell_wheel": "Open Spell Wheel",
 
