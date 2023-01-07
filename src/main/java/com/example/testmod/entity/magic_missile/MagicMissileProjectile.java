@@ -59,12 +59,12 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
             discard();
             return;
         }
-
         if (!level.isClientSide) {
             HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
             if (hitresult.getType() != HitResult.Type.MISS) {
                 onHit(hitresult);
             }
+        }else{
             spawnParticles();
         }
         setPos(position().add(getDeltaMovement()));
@@ -122,17 +122,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
 
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
-        if (!level.isClientSide) {
-            double x = getX();
-            double y = getY() - .05;
-            double z = getZ();
-            if (age > 0) {
-                //TODO: Custom particles
-                //MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x, y, z, 3, 0, 0, 0, .01, true);
-                //MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, x - getDeltaMovement().x * .5, y - getDeltaMovement().y * .5, z - getDeltaMovement().z * .5, 2, 0, 0, 0, .01, true);
-            }
 
-        }
     }
 
     @Override
