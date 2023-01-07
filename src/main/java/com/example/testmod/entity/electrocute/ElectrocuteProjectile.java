@@ -11,16 +11,74 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.checkerframework.checker.units.qual.Length;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class ElectrocuteProjectile extends AbstractConeProjectile {
-    public ElectrocuteProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level){
-        super(entityType,level);
+    private List<Vec3> beamVectors;
+
+    public ElectrocuteProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level) {
+        super(entityType, level);
     }
 
     public ElectrocuteProjectile(Level level, LivingEntity entity) {
         super(EntityRegistry.ELECTROCUTE_PROJECTILE.get(), level, entity);
     }
 
+    public void generateLightningBeams() {
+        TestMod.LOGGER.debug("generatingLightningBeams");
+        Random random = new Random();
+        beamVectors = new ArrayList<>();
+        Vec3 coreStart = new Vec3(0, .25, 0);
+        int coreLength = random.nextInt(4)+3;
+        for (int core = 0; core < coreLength; core++) {
+            Vec3 coreEnd = coreStart.add(0, 0, 1).add(randomVector(.3f));
+            beamVectors.add(coreStart);
+            beamVectors.add(coreEnd);
+            coreStart = coreEnd;
+
+            int branchSegments = random.nextInt(3)+2;
+            beamVectors.addAll(generateBranch(coreEnd, branchSegments, 0.6f, 0));
+        }
+    }
+
+    private List<Vec3> generateBranch(Vec3 origin, int maxLength, float splitChance, int recursionCount) {
+        List<Vec3> branchSegements = new ArrayList<>();
+        Random random = new Random();
+        int branches = random.nextInt(maxLength + 1);
+        Vec3 branchStart = origin;
+        int dir = random.nextBoolean() ? 1 : -1;
+        float branchLength = .75f / (recursionCount + 1);
+        for (int i = 0; i < branches; i++) {
+            Vec3 branchEnd = branchStart.add(dir * branchLength, 0, branchLength).add(randomVector(.3f));
+            branchSegements.add(branchStart);
+            branchSegements.add(branchEnd);
+            if (random.nextFloat() <= splitChance)
+                branchSegements.addAll(generateBranch(branchEnd, maxLength - 1, splitChance * 1.2f, recursionCount + 1));
+            branchStart = branchEnd;
+        }
+        return branchSegements;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    private Vec3 randomVector(float radius) {
+        double x = Math.random() * 2 * radius - radius;
+        double y = Math.random() * 2 * radius - radius;
+        double z = Math.random() * 2 * radius - radius;
+        return new Vec3(x, y, z);
+    }
+
+    public List<Vec3> getBeamCache() {
+        if (beamVectors == null)
+            generateLightningBeams();
+        return beamVectors;
+    }
 
     @Override
     public void spawnParticles() {

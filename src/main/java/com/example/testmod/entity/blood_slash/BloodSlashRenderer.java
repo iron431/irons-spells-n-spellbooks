@@ -96,7 +96,7 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
     }
 
     private ResourceLocation getTextureLocation(BloodSlashProjectile entity,int offset) {
-        int frame = (entity.animationTime / 4 + offset) % TEXTURES.length;
+        int frame = (entity.animationTime / 6 + offset) % TEXTURES.length;
         return TEXTURES[frame];
     }
 }
