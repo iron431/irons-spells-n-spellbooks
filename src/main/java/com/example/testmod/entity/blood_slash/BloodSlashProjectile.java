@@ -21,15 +21,10 @@ import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.example.testmod.registries.AttributeRegistry.BLOOD_SLASH_RESIST;
-import static com.example.testmod.registries.AttributeRegistry.MAX_MANA;
-
 
 public class BloodSlashProjectile extends Projectile implements ItemSupplier {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
