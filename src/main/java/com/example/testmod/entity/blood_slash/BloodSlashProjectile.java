@@ -2,6 +2,7 @@ package com.example.testmod.entity.blood_slash;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.data.MagicManager;
+import com.example.testmod.damage.BloodSlashed;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
@@ -25,6 +26,9 @@ import org.apache.commons.compress.utils.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.example.testmod.registries.AttributeRegistry.BLOOD_SLASH_RESIST;
+import static com.example.testmod.registries.AttributeRegistry.MAX_MANA;
 
 
 public class BloodSlashProjectile extends Projectile implements ItemSupplier {
@@ -174,15 +178,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        super.onHitEntity(entityHitResult);
-
-        if (entityHitResult.getEntity() instanceof LivingEntity target) {
-            if (getOwner() instanceof Player source) {
-                source.heal(damage * 0.1f);
-                target.hurt(DamageSources.bloodSlash(source), damage);
-                target.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
-            }
-        }
+        BloodSlashed.applyDamage(getEffectSource(), entityHitResult.getEntity(), damage);
     }
 
     @Override
