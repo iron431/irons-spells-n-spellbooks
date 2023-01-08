@@ -1,7 +1,6 @@
 package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
-//import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.cold.ConeOfColdSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
@@ -87,7 +86,7 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, TELEPORT_SPELL -> CastType.LONG;
+            case FIREBALL_SPELL -> CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL -> CastType.CONTINUOUS;
             default -> CastType.INSTANT;
         };

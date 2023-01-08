@@ -28,7 +28,7 @@ public class SpellBook extends Item implements ISpellBook {
     private final int spellSlots;
 
     public SpellBook() {
-        this(5, Rarity.UNCOMMON);
+        this(15, Rarity.UNCOMMON);
     }
 
     public SpellBook(int spellSlots, Rarity rarity) {
