@@ -32,6 +32,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
     private int age;
     private float damage;
     public int animationTime;
+    private List<Entity> victims;
 
     public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level level) {
         super(entityType, level);
@@ -42,6 +43,7 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
         dimensions = EntityDimensions.scalable(initialRadius, 0.5f);
 
         oldBB = getBoundingBox();
+        victims = new ArrayList<>();
         this.setNoGravity(true);
     }
 
@@ -96,25 +98,29 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
             discard();
             return;
         }
-        //TestMod.LOGGER.info("Increasing Radius");
         oldBB = getBoundingBox();
         setRadius(getRadius() + 0.12f);
-        //TODO: replace all this with custom hit detection
+
         if (!level.isClientSide) {
             HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-            if (hitresult.getType() != HitResult.Type.MISS) {
-                onHit(hitresult);
+            if (hitresult.getType() == HitResult.Type.BLOCK) {
+                onHitBlock((BlockHitResult) hitresult);
+            }
+            for ( Entity entity : level.getEntities(this, this.getBoundingBox()).stream().filter(target -> target != getOwner() && target instanceof LivingEntity && !victims.contains(target)).collect(Collectors.toSet())){
+                damageEntity(entity);
+                TestMod.LOGGER.info(entity.getName().getString());
+                MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY(), entity.getZ(), 50, 0, 0, 0, .5, true);
             }
             //spawnParticles();
         }
-        List<Entity> collisions = new ArrayList<>();
-        collisions.addAll(level.getEntities(this, this.getBoundingBox()));
+//        List<Entity> collisions = new ArrayList<>();
+//        collisions.addAll(level.getEntities(this, this.getBoundingBox()));
+//
+//        collisions = collisions.stream().filter(target ->
+//                target != getOwner() && target instanceof LivingEntity && !victims.contains(target)).collect(Collectors.toList());
+//        for (Entity entity : collisions) {
+//        }
 
-        collisions = collisions.stream().filter(target ->
-                target != getOwner() && target instanceof LivingEntity).collect(Collectors.toList());
-        for (Entity entity : collisions) {
-            TestMod.LOGGER.info(entity.getName().getString());
-        }
         setPos(position().add(getDeltaMovement()));
         spawnParticles();
         age++;
@@ -168,7 +174,14 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        BloodSlashed.applyDamage(getEffectSource(), entityHitResult.getEntity(), damage);
+        damageEntity(entityHitResult.getEntity());
+    }
+
+    private void damageEntity(Entity entity) {
+        if(!victims.contains(entity)){
+            BloodSlashed.applyDamage(getEffectSource(), entity, damage);
+            victims.add(entity);
+        }
     }
 
     @Override

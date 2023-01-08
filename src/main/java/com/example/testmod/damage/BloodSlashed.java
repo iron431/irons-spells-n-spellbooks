@@ -17,8 +17,8 @@ public class BloodSlashed extends MobEffect {
     }
 
     public static void applyDamage(Entity source, Entity target, float baseDamage) {
-        if (target instanceof Player targetPlayer) {
-            float resist = 2 - (float) targetPlayer.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
+        if (target instanceof LivingEntity targetEntity) {
+            float resist = 2 - (float) targetEntity.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
             float actualDamage = baseDamage * resist;
             float actualHeal = baseDamage * resist * .1f;
             DamageSource damageSource = null;
@@ -30,8 +30,8 @@ public class BloodSlashed extends MobEffect {
                 damageSource = DamageSources.BLOOD_MAGIC;
             }
 
-            targetPlayer.hurt(damageSource, actualDamage);
-            targetPlayer.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
+            targetEntity.hurt(damageSource, actualDamage);
+            targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
         }
     }
 
