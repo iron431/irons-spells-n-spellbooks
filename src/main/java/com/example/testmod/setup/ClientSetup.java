@@ -5,6 +5,7 @@ import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
 import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
 import com.example.testmod.entity.firebolt.FireboltRenderer;
+import com.example.testmod.entity.icicle.IcicleRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
 import com.example.testmod.particle.*;
 import com.example.testmod.registries.EntityRegistry;
@@ -29,6 +30,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.BLOOD_SLASH_PROJECTILE.get(), BloodSlashRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ELECTROCUTE_PROJECTILE.get(), ElectrocuteRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIREBOLT_PROJECTILE.get(), FireboltRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ICICLE_PROJECTILE.get(), IcicleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_BREATH_PROJECTILE.get(), NoopRenderer::new);
 
     }

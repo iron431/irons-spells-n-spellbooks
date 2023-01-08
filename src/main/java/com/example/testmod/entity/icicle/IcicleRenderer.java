@@ -1,10 +1,10 @@
-package com.example.testmod.entity.magic_missile;
+package com.example.testmod.entity.icicle;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
@@ -18,15 +18,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
-public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile> {
-    private static final ResourceLocation TEXTURE = TestMod.id("textures/entity/magic_missile_projectile.png");
+public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
+    private static final ResourceLocation TEXTURE = TestMod.id("textures/entity/icicle_projectile.png");
 
-    public MagicMissileRenderer(Context context) {
+    public IcicleRenderer(Context context) {
         super(context);
     }
 
     @Override
-    public void render(MagicMissileProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    public void render(IcicleProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
 
         poseStack.scale(0.0625f, 0.0625f, 0.0625f);
@@ -62,7 +62,7 @@ public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile>
     }
 
     @Override
-    public ResourceLocation getTextureLocation(MagicMissileProjectile entity) {
+    public ResourceLocation getTextureLocation(IcicleProjectile entity) {
         return TEXTURE;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.testmod.spells.cold;
+package com.example.testmod.spells.ice;
 
 
 import com.example.testmod.TestMod;

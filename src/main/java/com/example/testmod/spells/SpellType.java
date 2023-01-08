@@ -2,7 +2,7 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.spells.blood.BloodSlashSpell;
-import com.example.testmod.spells.cold.ConeOfColdSpell;
+import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.evocation.SummonVexSpell;
@@ -11,6 +11,7 @@ import com.example.testmod.spells.fire.FireBreathSpell;
 import com.example.testmod.spells.fire.FireballSpell;
 import com.example.testmod.spells.fire.FireboltSpell;
 import com.example.testmod.spells.holy.HealSpell;
+import com.example.testmod.spells.ice.IcicleSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +37,8 @@ public enum SpellType {
     BLOOD_SLASH_SPELL(8),
     SUMMON_VEX_SPELL(9),
     FIREBOLT_SPELL(10),
-    FIRE_BREATH_SPELL(11);
+    FIRE_BREATH_SPELL(11),
+    ICICLE_SPELL(12);
 
     private final int value;
 
@@ -83,6 +85,9 @@ public enum SpellType {
             case FIRE_BREATH_SPELL -> {
                 return new FireBreathSpell(level);
             }
+            case ICICLE_SPELL -> {
+                return new IcicleSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -103,7 +108,7 @@ public enum SpellType {
         //
         return switch (this) {
             case FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL -> SchoolType.FIRE;
-            case CONE_OF_COLD_SPELL -> SchoolType.ICE;
+            case CONE_OF_COLD_SPELL,ICICLE_SPELL -> SchoolType.ICE;
             case ELECTROCUTE_SPELL -> SchoolType.LIGHTNING;
             case HEAL_SPELL -> SchoolType.HOLY;
             case TELEPORT_SPELL, MAGIC_MISSILE_SPELL -> SchoolType.ENDER;

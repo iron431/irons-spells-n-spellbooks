@@ -6,6 +6,7 @@ import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
 import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
 import com.example.testmod.entity.fire_breath.FireBreathProjectile;
 import com.example.testmod.entity.firebolt.FireboltProjectile;
+import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -51,6 +52,12 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "firebolt_projectile").toString()));
+
+    public static final RegistryObject<EntityType<IcicleProjectile>> ICICLE_PROJECTILE =
+            ENTITIES.register("icicle_projectile", () -> EntityType.Builder.<IcicleProjectile>of(IcicleProjectile::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "icicle_projectile").toString()));
 
     public static final RegistryObject<EntityType<FireBreathProjectile>> FIRE_BREATH_PROJECTILE =
             ENTITIES.register("fire_breath_projectile", () -> EntityType.Builder.<FireBreathProjectile>of(FireBreathProjectile::new, MobCategory.MISC)
