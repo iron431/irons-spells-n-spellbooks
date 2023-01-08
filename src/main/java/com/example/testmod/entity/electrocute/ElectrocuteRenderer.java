@@ -51,7 +51,7 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getOwner().getYRot()));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getOwner().getXRot()));
 
-        if (entity.getAge() % 3 == 0)
+        if (entity.getAge() % 4 == 0)
             entity.generateLightningBeams();
         List<Vec3> segments = entity.getBeamCache();
         //TestMod.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
