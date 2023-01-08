@@ -127,7 +127,7 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
             float yHeading = -((float) (Mth.atan2(getDeltaMovement().z, getDeltaMovement().x) * (double) (180F / (float) Math.PI)) + 90.0F);
             //float xHeading = -((float) (Mth.atan2(getDeltaMovement().horizontalDistance(), getDeltaMovement().y) * (double) (180F / (float) Math.PI)) - 90.0F);
             float radius = .3f;
-            int steps = 3;
+            int steps = 4;
             for (int j = 0; j < steps; j++) {
                 float offset = (1f / steps) * i;
                 double radians = ((age + offset) / 7.5f) * 360 * Mth.DEG_TO_RAD;
@@ -137,8 +137,6 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
                 double z = getZ() + swirl.z;
                 level.addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
             }
-
-
         }
     }
 

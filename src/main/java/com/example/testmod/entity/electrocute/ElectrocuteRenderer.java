@@ -51,15 +51,17 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getOwner().getYRot()));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getOwner().getXRot()));
 
-        if (entity.getAge() % 2 == 0)
+        if (entity.getAge() % 3 == 0)
             entity.generateLightningBeams();
         List<Vec3> segments = entity.getBeamCache();
         //TestMod.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
 
 
-        //TODO: use y value as width scaling
+        float width = .5f;
         for (int i = 0; i < segments.size() - 1; i += 2) {
-            drawSegment(segments.get(i), segments.get(i + 1), 0.25f, pose, consumer, entity, bufferSource, light);
+            //var from = segments.get(i);
+            //var to = segments.get(i + 1);
+            drawSegment(segments.get(i), segments.get(i + 1), width, pose, consumer, entity, bufferSource, light);
         }
 
 

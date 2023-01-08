@@ -1,11 +1,13 @@
 package com.example.testmod.entity.electrocute;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -33,14 +35,14 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
         Random random = new Random();
         beamVectors = new ArrayList<>();
         Vec3 coreStart = new Vec3(0, 0, 0);
-        int coreLength = random.nextInt(4)+3;
+        int coreLength = random.nextInt(4) + 3;
         for (int core = 0; core < coreLength; core++) {
             Vec3 coreEnd = coreStart.add(0, 0, 1).add(randomVector(.3f));
             beamVectors.add(coreStart);
             beamVectors.add(coreEnd);
             coreStart = coreEnd;
 
-            int branchSegments = random.nextInt(3)+2;
+            int branchSegments = random.nextInt(3) + 2;
             beamVectors.addAll(generateBranch(coreEnd, branchSegments, 0.6f, 0));
         }
     }
@@ -82,28 +84,28 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
 
     @Override
     public void spawnParticles() {
-//        var owner = getOwner();
-//        if (!level.isClientSide || owner == null) {
-//            return;
-//        }
-//        Vec3 rotation = owner.getLookAngle().normalize();
-//        var pos = owner.position().add(rotation.scale(0.5f));
-//
-//        double x = pos.x;
-//        double y = pos.y + owner.getEyeHeight() * .8f;
-//        double z = pos.z;
-//
-//        double speed = .6;
-//        for (int i = 0; i < 5; i++) {
-//            double offset = .25;
-//            double ox = Math.random() * 2 * offset - offset;
-//            double oy = Math.random() * 2 * offset - offset;
-//            double oz = Math.random() * 2 * offset - offset;
-//
-//            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
-//            Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-//            level.addParticle(ParticleHelper.ELECTRICITY, x + ox, y + oy, z + oz, result.x, result.y, result.z);
-//        }
+        var owner = getOwner();
+        if (!level.isClientSide || owner == null) {
+            return;
+        }
+        Vec3 rotation = owner.getLookAngle().normalize();
+        var pos = owner.position().add(rotation.scale(0.5f));
+
+        double x = pos.x;
+        double y = pos.y + owner.getEyeHeight() * .8f;
+        double z = pos.z;
+
+        double speed = .6;
+        for (int i = 0; i < 1; i++) {
+            double offset = .25;
+            double ox = Math.random() * 2 * offset - offset;
+            double oy = 0;
+            double oz = Math.random() * 2 * offset - offset;
+
+            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
+            Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
+            level.addParticle(ParticleHelper.ELECTRICITY, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+        }
 
     }
 
@@ -111,6 +113,6 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
         entity.hurt(DamageSource.MAGIC, damage);
+        MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 10, entity.getBbWidth() / 3, entity.getBbHeight() / 3, entity.getBbWidth() / 3, 0.1, false);
     }
-
 }

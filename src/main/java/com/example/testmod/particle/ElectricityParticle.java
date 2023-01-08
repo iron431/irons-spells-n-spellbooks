@@ -21,7 +21,7 @@ public class ElectricityParticle extends TextureSheetParticle {
         this.zd = zd;
         this.quadSize *= 1f;
         this.scale(1.5f);
-        this.lifetime = 5 + (int) (Math.random() * 25);
+        this.lifetime = 5 + (int) (Math.random() * 15);
         sprites = spriteSet;
         this.gravity = 0.0F;
         this.setSpriteFromAge(spriteSet);
