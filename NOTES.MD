@@ -31,9 +31,9 @@
 
 ### Helpful commands
 - ```/setblock ~ ~ ~ testmod:inscription_table```
-- ```/data get entity @s```
 - ```/data get entity @s SelectedItem```
 - ```/data get entity @s ForgeCaps```
+- ```/data get entity @s Pos```
 
 ### Give Generator//
 - https://mapmaking.fr/give1.16/
