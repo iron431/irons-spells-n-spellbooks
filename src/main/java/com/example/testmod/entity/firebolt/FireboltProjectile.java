@@ -137,6 +137,8 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
                 double z = getZ() + swirl.z;
                 level.addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
             }
+            level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), 0, 0, 0);
+
         }
     }
 

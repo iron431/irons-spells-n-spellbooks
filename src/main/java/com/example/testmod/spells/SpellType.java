@@ -7,6 +7,7 @@ import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.evocation.SummonVexSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
+import com.example.testmod.spells.fire.FireBreathSpell;
 import com.example.testmod.spells.fire.FireballSpell;
 import com.example.testmod.spells.fire.FireboltSpell;
 import com.example.testmod.spells.holy.HealSpell;
@@ -34,7 +35,8 @@ public enum SpellType {
     HEAL_SPELL(7),
     BLOOD_SLASH_SPELL(8),
     SUMMON_VEX_SPELL(9),
-    FIREBOLT_SPELL(10);
+    FIREBOLT_SPELL(10),
+    FIRE_BREATH_SPELL(11);
 
     private final int value;
 
@@ -78,6 +80,9 @@ public enum SpellType {
             case FIREBOLT_SPELL -> {
                 return new FireboltSpell(level);
             }
+            case FIRE_BREATH_SPELL -> {
+                return new FireBreathSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -87,7 +92,7 @@ public enum SpellType {
     public CastType getCastType() {
         return switch (this) {
             case FIREBALL_SPELL -> CastType.LONG;
-            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL -> CastType.CONTINUOUS;
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL -> CastType.CONTINUOUS;
             default -> CastType.INSTANT;
         };
     }
@@ -97,7 +102,7 @@ public enum SpellType {
         //   Don't put default, just add the new spell
         //
         return switch (this) {
-            case FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL -> SchoolType.FIRE;
+            case FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL -> SchoolType.FIRE;
             case CONE_OF_COLD_SPELL -> SchoolType.ICE;
             case ELECTROCUTE_SPELL -> SchoolType.LIGHTNING;
             case HEAL_SPELL -> SchoolType.HOLY;
