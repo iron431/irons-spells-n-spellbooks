@@ -9,6 +9,7 @@ import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.evocation.SummonVexSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireballSpell;
+import com.example.testmod.spells.fire.FireboltSpell;
 import com.example.testmod.spells.holy.HealSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -33,7 +34,8 @@ public enum SpellType {
     CONE_OF_COLD_SPELL(6),
     HEAL_SPELL(7),
     BLOOD_SLASH_SPELL(8),
-    SUMMON_VEX_SPELL(9);
+    SUMMON_VEX_SPELL(9),
+    FIREBOLT_SPELL(10);
 
     private final int value;
 
@@ -74,6 +76,9 @@ public enum SpellType {
             case SUMMON_VEX_SPELL -> {
                 return new SummonVexSpell(level);
             }
+            case FIREBOLT_SPELL -> {
+                return new FireboltSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -93,7 +98,7 @@ public enum SpellType {
         //   Don't put default, just add the new spell
         //
         return switch (this) {
-            case FIREBALL_SPELL, BURNING_DASH_SPELL -> SchoolType.FIRE;
+            case FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL -> SchoolType.FIRE;
             case CONE_OF_COLD_SPELL -> SchoolType.ICE;
             case ELECTROCUTE_SPELL -> SchoolType.LIGHTNING;
             case HEAL_SPELL -> SchoolType.HOLY;

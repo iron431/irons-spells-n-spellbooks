@@ -1,10 +1,11 @@
-package com.example.testmod.entity.magic_missile;
+package com.example.testmod.entity.firebolt;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -24,25 +25,25 @@ import net.minecraft.world.phys.Vec3;
 //https://github.com/CammiePone/Arcanus/blob/1.18-dev/src/main/java/dev/cammiescorner/arcanus/common/entities/MagicMissileEntity.java#L51
 //https://github.com/maximumpower55/Aura
 
-public class MagicMissileProjectile extends Projectile implements ItemSupplier {
-    private static final double SPEED = 3d;
+public class FireboltProjectile extends Projectile implements ItemSupplier {
+    private static final double SPEED = 1.75d;
     private static final int EXPIRE_TIME = 5 * 20;
 
     private int age;
     private float damage;
 
-    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level level) {
+    public FireboltProjectile(EntityType<? extends FireboltProjectile> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
     }
 
-    public MagicMissileProjectile(EntityType<? extends MagicMissileProjectile> entityType, Level levelIn, LivingEntity shooter) {
+    public FireboltProjectile(EntityType<? extends FireboltProjectile> entityType, Level levelIn, LivingEntity shooter) {
         super(entityType, levelIn);
         setOwner(shooter);
     }
 
-    public MagicMissileProjectile(Level levelIn, LivingEntity shooter) {
-        this(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), levelIn, shooter);
+    public FireboltProjectile(Level levelIn, LivingEntity shooter) {
+        this(EntityRegistry.FIREBOLT_PROJECTILE.get(), levelIn, shooter);
     }
 
     public void shoot(Vec3 rotation) {
@@ -85,15 +86,13 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         double y = hitresult.getLocation().y;
         double z = hitresult.getLocation().z;
 
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 50, .1, .1, .1, .25, true);
-
 
     }
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        TestMod.LOGGER.debug("MagicMissileProjectile.onHitBlock");
+        MagicManager.spawnParticles(level, ParticleTypes.LAVA, getX(), getY(), getZ(), 10, .1, .1, .1, .25, true);
         kill();
 
     }
@@ -101,10 +100,10 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        TestMod.LOGGER.debug("MagicMissileProjectile.onHitEntity");
         if (entityHitResult.getEntity() instanceof LivingEntity target) {
             //TODO: deal with the damage
             target.hurt(DamageSource.MAGIC, damage);
+            target.setSecondsOnFire(3);
 
         }
         kill();
@@ -124,14 +123,21 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
 
-        for (int i = 0; i < 2; i++) {
-            double speed = .05;
-            double dx = level.random.nextDouble() * 2 * speed - speed;
-            double dy = level.random.nextDouble() * 2 * speed - speed;
-            double dz = level.random.nextDouble() * 2 * speed - speed;
-            level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
-            if (age > 1)
-                level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx - getDeltaMovement().x / 2, this.getY() + dy - getDeltaMovement().y / 2, this.getZ() + dz - getDeltaMovement().z / 2, dx, dy, dz);
+        for (int i = 0; i < 1; i++) {
+            float yHeading = -((float) (Mth.atan2(getDeltaMovement().z, getDeltaMovement().x) * (double) (180F / (float) Math.PI)) + 90.0F);
+            //float xHeading = -((float) (Mth.atan2(getDeltaMovement().horizontalDistance(), getDeltaMovement().y) * (double) (180F / (float) Math.PI)) - 90.0F);
+            float radius = .3f;
+            int steps = 3;
+            for (int j = 0; j < steps; j++) {
+                float offset = (1f / steps) * i;
+                double radians = ((age + offset) / 7.5f) * 360 * Mth.DEG_TO_RAD;
+                Vec3 swirl = new Vec3(Math.cos(radians) * radius, Math.sin(radians) * radius, 0).yRot(yHeading * Mth.DEG_TO_RAD);
+                double x = getX() + swirl.x;
+                double y = getY() + swirl.y + getBbHeight() / 2;
+                double z = getZ() + swirl.z;
+                level.addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
+            }
+
 
         }
     }

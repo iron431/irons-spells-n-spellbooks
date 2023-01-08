@@ -38,8 +38,8 @@ public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile>
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
         Vec3 motion = entity.getDeltaMovement();
-        float xRot = -((float)(Mth.atan2(motion.horizontalDistance(), motion.y) * (double)(180F / (float)Math.PI)) - 90.0F);
-        float yRot = -((float)(Mth.atan2(motion.z, motion.x) * (double)(180F / (float)Math.PI)) + 90.0F);
+        float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
+        float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));

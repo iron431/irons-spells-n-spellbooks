@@ -4,6 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
 import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
+import com.example.testmod.entity.firebolt.FireboltProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -43,5 +44,11 @@ public class EntityRegistry {
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "electrocute_projectile").toString()));
+
+    public static final RegistryObject<EntityType<FireboltProjectile>> FIREBOLT_PROJECTILE =
+            ENTITIES.register("firebolt_projectile", () -> EntityType.Builder.<FireboltProjectile>of(FireboltProjectile::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "firebolt_projectile").toString()));
 
 }
