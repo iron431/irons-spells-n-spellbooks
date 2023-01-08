@@ -5,10 +5,7 @@ import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
 import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
-import com.example.testmod.particle.BloodGroundParticle;
-import com.example.testmod.particle.BloodParticle;
-import com.example.testmod.particle.ElectricityParticle;
-import com.example.testmod.particle.SnowflakeParticle;
+import com.example.testmod.particle.*;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
 import net.minecraft.client.Minecraft;
@@ -38,6 +35,7 @@ public class ClientSetup {
         Minecraft.getInstance().particleEngine.register(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), BloodGroundParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ParticleRegistry.SNOWFLAKE_PARTICLE.get(), SnowflakeParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ParticleRegistry.ELECTRICITY_PARTICLE.get(), ElectricityParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.UNSTABLE_ENDER_PARTICLE.get(), UnstableEnderParticle.Provider::new);
     }
 
 }

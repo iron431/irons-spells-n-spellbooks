@@ -2,6 +2,7 @@ package com.example.testmod.entity.magic_missile;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;
@@ -64,7 +65,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
             if (hitresult.getType() != HitResult.Type.MISS) {
                 onHit(hitresult);
             }
-        }else{
+        } else {
             spawnParticles();
         }
         setPos(position().add(getDeltaMovement()));
@@ -84,7 +85,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         double y = hitresult.getLocation().y;
         double z = hitresult.getLocation().z;
 
-        MagicManager.spawnParticles(level, ParticleTypes.ENCHANTED_HIT, x, y, z, 50, .1, .1, .1, .2, true);
+        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 50, .1, .1, .1, .25, true);
 
 
     }
@@ -123,6 +124,16 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
 
+        for (int i = 0; i < 2; i++) {
+            double speed = .05;
+            double dx = level.random.nextDouble() * 2 * speed - speed;
+            double dy = level.random.nextDouble() * 2 * speed - speed;
+            double dz = level.random.nextDouble() * 2 * speed - speed;
+            level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
+            if (age > 1)
+                level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx - getDeltaMovement().x / 2, this.getY() + dy - getDeltaMovement().y / 2, this.getZ() + dz - getDeltaMovement().z / 2, dx, dy, dz);
+
+        }
     }
 
     @Override
