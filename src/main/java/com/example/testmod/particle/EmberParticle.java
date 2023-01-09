@@ -19,10 +19,10 @@ public class EmberParticle extends TextureSheetParticle {
         this.yd = yd;
         this.zd = zd;
         this.scale(this.random.nextFloat() * 1.75f + 1f);
-        this.lifetime = 5 + (int) (Math.random() * 10);
+        this.lifetime = 4 + (int) (Math.random() * 11);
         sprites = spriteSet;
         this.setSpriteFromAge(spriteSet);
-        this.gravity = -0.015F;
+        this.gravity = -0.1F;
 
 
     }
@@ -30,13 +30,13 @@ public class EmberParticle extends TextureSheetParticle {
     @Override
     public void tick() {
         super.tick();
-        this.xd += this.random.nextFloat() / 500.0F * (float) (this.random.nextBoolean() ? 1 : -1);
+        this.xd += this.random.nextFloat() / 100.0F * (float) (this.random.nextBoolean() ? 1 : -1);
         this.yd += this.random.nextFloat() / 100.0F;
-        this.zd += this.random.nextFloat() / 500.0F * (float) (this.random.nextBoolean() ? 1 : -1);
+        this.zd += this.random.nextFloat() / 100.0F * (float) (this.random.nextBoolean() ? 1 : -1);
 
         this.setSpriteFromAge(this.sprites);
 
-         if (this.random.nextFloat() <= .1f) {
+         if (age > lifetime * .5 && this.random.nextFloat() <= .05f) {
             this.level.addParticle(ParticleTypes.SMOKE, this.x, this.y, this.z, this.xd, this.yd, this.zd);
         }
     }
