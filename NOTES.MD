@@ -19,10 +19,23 @@
 - Teleport: https://moddingtutorials.org/1.19.2/advanced-items/
 - Loading values from config: https://www.youtube.com/watch?v=QN9jq3_V-I8
 
-###
-- Particles
-    - https://forge.gemwire.uk/wiki/Particles
-    - https://www.youtube.com/watch?v=DM69u76tXMI
+### Particles
+- https://forge.gemwire.uk/wiki/Particles
+- https://www.youtube.com/watch?v=DM69u76tXMI
+
+### Structures
+- https://github.com/TelepathicGrunt/StructureTutorialMod/tree/1.18.2-Forge-Jigsaw
+- https://www.mcjty.eu/docs/1.18/ep5
+- Getting resource registry issue
+  - Template Pool: https://www.youtube.com/watch?v=TD1lDaw4zfY
+  - 
+
+### World Edit
+- Cylinders https://www.youtube.com/watch?v=FZj4-Y2qvm8
+- Fill and Hollow https://www.youtube.com/watch?v=_dJBsfhMX9U
+
+### Cool Building Mod
+- https://www.reddit.com/r/feedthebeast/comments/102jpqk/i_ported_the_mighty_architect_to_fabric_1192/
 
 ###
 - Hit Detection
