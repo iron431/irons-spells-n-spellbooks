@@ -84,7 +84,7 @@ public class IcicleProjectile extends Projectile implements ItemSupplier {
         double y = hitresult.getLocation().y;
         double z = hitresult.getLocation().z;
 
-        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 15, .1, .1, .1, .25, true);
+        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 15, .1, .1, .1, .1, true);
 
 
     }

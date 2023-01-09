@@ -95,7 +95,7 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
         double y = pos.y + owner.getEyeHeight() * .8f;
         double z = pos.z;
 
-        double speed = .6;
+        double speed = random.nextDouble() * .35 + .25;
         for (int i = 0; i < 1; i++) {
             double offset = .25;
             double ox = Math.random() * 2 * offset - offset;
