@@ -20,7 +20,7 @@ public class MagicEvents {
         }
     }
 
-    //TODO: look into this
+    //FIXME: look into this
 //    public static void onPlayerCloned(PlayerEvent.Clone event) {
 //        if (event.isWasDeath()) {
 //            // We need to copyFrom the capabilities

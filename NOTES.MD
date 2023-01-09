@@ -6,6 +6,10 @@
 - https://moddingtutorials.org/1.18.2/environment-setup
 - Entity creation in blockbench https://www.youtube.com/watch?v=XBIXn7s-fMo
 
+### Testing
+- Testing Example on a Forge pull request: https://github.com/MinecraftForge/MinecraftForge/pull/8918/files#diff-fae470ebbd5b00cd8bcd73d47b8cf766f3e19a42b3dc409440f9c884bbb41758
+- Curios Github tests: https://github.com/TheIllusiveC4/Curios/tree/1.18.x/src/test/java/top/theillusivec4/curiostest
+
 ### Capabilities
 - https://github.com/mickelus/tetra/search?q=capability/
 - https://github.com/Shadows-of-Fire/Apotheosis/search?q=capability

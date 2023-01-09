@@ -1,13 +1,14 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
+import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
 import com.example.testmod.entity.fire_breath.FireBreathProjectile;
 import com.example.testmod.entity.firebolt.FireboltProjectile;
 import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
+import com.example.testmod.entity.mobs.SimpleWizard;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -64,4 +65,10 @@ public class EntityRegistry {
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "fire_breath_projectile").toString()));
+
+    public static final RegistryObject<EntityType<SimpleWizard>> SIMPLE_WIZARD =
+            ENTITIES.register("simple_wizard", () -> EntityType.Builder.<SimpleWizard>of(SimpleWizard::new, MobCategory.MONSTER)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "simple_wizard").toString()));
 }
