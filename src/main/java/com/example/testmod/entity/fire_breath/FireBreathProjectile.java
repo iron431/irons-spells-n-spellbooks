@@ -39,7 +39,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
                     if (hitResult.getType() == HitResult.Type.BLOCK) {
                         Vec3 pos = hitResult.getLocation().subtract(cast.scale(.5));
                         BlockPos blockPos = new BlockPos(pos.x, pos.y, pos.z);
-                        if(level.getBlockState(blockPos).isAir())
+                        if (level.getBlockState(blockPos).isAir())
                             level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level, blockPos));
                     }
                 }
@@ -61,7 +61,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
         double y = pos.y + owner.getEyeHeight() * .8f;
         double z = pos.z;
 
-        double speed = .6;
+        double speed = random.nextDouble() * .35 + .25;
         for (int i = 0; i < 10; i++) {
             double offset = .05;
             double ox = Math.random() * 2 * offset - offset;
@@ -70,7 +70,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
 
             Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(Math.random() > .1 ? ParticleTypes.FLAME : ParticleTypes.SMOKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level.addParticle(ParticleHelper.FIRE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }
     }
 

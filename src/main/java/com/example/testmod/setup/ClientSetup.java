@@ -41,6 +41,9 @@ public class ClientSetup {
         Minecraft.getInstance().particleEngine.register(ParticleRegistry.SNOWFLAKE_PARTICLE.get(), SnowflakeParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ParticleRegistry.ELECTRICITY_PARTICLE.get(), ElectricityParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ParticleRegistry.UNSTABLE_ENDER_PARTICLE.get(), UnstableEnderParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.DRAGON_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.FIRE_PARTICLE.get(), FireParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
     }
 
 }
