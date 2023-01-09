@@ -1,12 +1,14 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
+import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
 import com.example.testmod.entity.firebolt.FireboltRenderer;
 import com.example.testmod.entity.icicle.IcicleRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
+import com.example.testmod.entity.mobs.SimpleWizardModel;
+import com.example.testmod.entity.mobs.SimpleWizardRenderer;
 import com.example.testmod.particle.*;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
@@ -23,6 +25,12 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = TestMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
 
+
+    @SubscribeEvent
+    public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(SimpleWizardModel.SIMPLE_WIZARD_LAYER, SimpleWizardModel::createBodyLayer);
+    }
+
     @SubscribeEvent
     public static void rendererRegister(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityRegistry.MAGIC_MISSILE_PROJECTILE.get(), MagicMissileRenderer::new);
@@ -32,10 +40,12 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FIREBOLT_PROJECTILE.get(), FireboltRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ICICLE_PROJECTILE.get(), IcicleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_BREATH_PROJECTILE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SIMPLE_WIZARD.get(), SimpleWizardRenderer::new);
 
     }
+
     @SubscribeEvent
-    public static void registerParticles(ParticleFactoryRegisterEvent event){
+    public static void registerParticles(ParticleFactoryRegisterEvent event) {
         Minecraft.getInstance().particleEngine.register(ParticleRegistry.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), BloodGroundParticle.Provider::new);
         Minecraft.getInstance().particleEngine.register(ParticleRegistry.SNOWFLAKE_PARTICLE.get(), SnowflakeParticle.Provider::new);
