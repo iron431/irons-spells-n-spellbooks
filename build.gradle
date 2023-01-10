@@ -43,7 +43,7 @@ minecraft {
 
     //mappings channel: 'official', version: '1.18.2'
 
-    mappings channel: 'parchment', version: "2022.11.06-1.18.2"
+    mappings channel: 'parchment', version: "2022.11.27-1.19.2"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
@@ -155,7 +155,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.92'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.3'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     //compileOnly fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
