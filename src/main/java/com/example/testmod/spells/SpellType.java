@@ -13,7 +13,9 @@ import com.example.testmod.spells.fire.FireboltSpell;
 import com.example.testmod.spells.holy.HealSpell;
 import com.example.testmod.spells.ice.IcicleSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public enum SpellType {
@@ -108,17 +110,17 @@ public enum SpellType {
         //
         return switch (this) {
             case FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL -> SchoolType.FIRE;
-            case CONE_OF_COLD_SPELL,ICICLE_SPELL -> SchoolType.ICE;
+            case CONE_OF_COLD_SPELL, ICICLE_SPELL -> SchoolType.ICE;
             case ELECTROCUTE_SPELL -> SchoolType.LIGHTNING;
             case HEAL_SPELL -> SchoolType.HOLY;
             case TELEPORT_SPELL, MAGIC_MISSILE_SPELL -> SchoolType.ENDER;
             case BLOOD_SLASH_SPELL -> SchoolType.BLOOD;
-            case NONE_SPELL,SUMMON_VEX_SPELL -> SchoolType.EVOCATION;
+            case NONE_SPELL, SUMMON_VEX_SPELL -> SchoolType.EVOCATION;
         };
     }
 
-    public TranslatableComponent getDisplayName() {
-        return new TranslatableComponent("spell." + TestMod.MODID + "." + this.getId());
+    public MutableComponent getDisplayName() {
+        return Component.translatable("spell." + TestMod.MODID + "." + this.getId());
     }
 
     public ResourceLocation getResourceLocation() {

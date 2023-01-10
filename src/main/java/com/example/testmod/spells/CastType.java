@@ -1,6 +1,7 @@
 package com.example.testmod.spells;
 
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public enum CastType {
     NONE(0),
@@ -18,12 +19,16 @@ public enum CastType {
         return value;
     }
 
-    public TranslatableComponent getDisplayName() {
+    public MutableComponent getDisplayName() {
         switch (this) {
-            case INSTANT: return new TranslatableComponent("cast_type.testmod.instant");
-            case LONG: return new TranslatableComponent("cast_type.testmod.long");
-            case CONTINUOUS: return new TranslatableComponent("cast_type.testmod.continuous");
-            default: return new TranslatableComponent("cast_type.testmod.none");
+            case INSTANT:
+                return Component.translatable("cast_type.testmod.instant");
+            case LONG:
+                return Component.translatable("cast_type.testmod.long");
+            case CONTINUOUS:
+                return Component.translatable("cast_type.testmod.continuous");
+            default:
+                return Component.translatable("cast_type.testmod.none");
         }
     }
 }

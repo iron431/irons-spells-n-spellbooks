@@ -7,8 +7,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 
 import java.util.List;
 
@@ -16,8 +15,8 @@ public class ScrollData {
 
     public static final String SPELL_ID = "spellId";
     public static final String LEVEL = "level";
-    private Component displayName;
-    private List<Component> hoverText;
+    private MutableComponent displayName;
+    private List<MutableComponent> hoverText;
     private AbstractSpell spell;
     private int spellId;
     private int spellLevel;
@@ -51,23 +50,23 @@ public class ScrollData {
 
     public Component getDisplayName() {
         if (displayName == null) {
-            displayName = getSpell().getSpellType().getDisplayName().append(" ").append(new TranslatableComponent("item.testmod.scroll"));
+            displayName = getSpell().getSpellType().getDisplayName().append(" ").append(Component.translatable("item.testmod.scroll"));
         }
         return displayName;
     }
 
-    public List<Component> getHoverText() {
+    public List<MutableComponent> getHoverText() {
         if (hoverText == null) {
             hoverText = Lists.newArrayList();
             var s = getSpell();
             if (s.getSpellType() != SpellType.NONE_SPELL) {
                 if (s.getUniqueInfo() != null)
                     hoverText.add(s.getUniqueInfo().withStyle(ChatFormatting.DARK_GREEN));
-                hoverText.add(new TranslatableComponent("tooltip.testmod.level", s.getLevel()).withStyle(ChatFormatting.GRAY));
-                hoverText.add(TextComponent.EMPTY);
-                hoverText.add(new TranslatableComponent("tooltip.testmod.scroll_tooltip").withStyle(ChatFormatting.GRAY));
-                hoverText.add(new TranslatableComponent("tooltip.testmod.mana_cost", s.getManaCost()).withStyle(ChatFormatting.BLUE));
-                hoverText.add(new TranslatableComponent("tooltip.testmod.cooldown_length_seconds", Utils.timeFromTicks(s.getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
+                hoverText.add(Component.translatable("tooltip.testmod.level", s.getLevel()).withStyle(ChatFormatting.GRAY));
+                hoverText.add(Component.empty());
+                hoverText.add(Component.translatable("tooltip.testmod.scroll_tooltip").withStyle(ChatFormatting.GRAY));
+                hoverText.add(Component.translatable("tooltip.testmod.mana_cost", s.getManaCost()).withStyle(ChatFormatting.BLUE));
+                hoverText.add(Component.translatable("tooltip.testmod.cooldown_length_seconds", Utils.timeFromTicks(s.getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
                 hoverText.add(s.getSchoolType().getDisplayName().copy());
             }
 

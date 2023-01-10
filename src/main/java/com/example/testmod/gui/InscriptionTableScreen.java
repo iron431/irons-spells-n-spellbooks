@@ -184,7 +184,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Title
         //
-        var title = selectedSpellIndex < 0 ? new TranslatableComponent("ui.testmod.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).containedSpell.getSpellType().getDisplayName() : new TranslatableComponent("ui.testmod.empty_slot");
+        var title = selectedSpellIndex < 0 ? Component.translatable("ui.testmod.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).containedSpell.getSpellType().getDisplayName() : Component.translatable("ui.testmod.empty_slot");
         int titleWidth = font.width(title.getString());
         int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
         int titleY = topPos + 10;
@@ -226,7 +226,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Level
         //
-        var levelText = new TranslatableComponent("ui.testmod.level", spell.getLevel()).withStyle(textColor);
+        var levelText = Component.translatable("ui.testmod.level", spell.getLevel()).withStyle(textColor);
         font.draw(poseStack, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF);
         descLine += font.lineHeight * textScale * 2;
 
@@ -274,7 +274,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private void drawStatText(Font font, PoseStack poseStack, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
         x /= scale;
         y /= scale;
-        font.draw(poseStack, new TranslatableComponent(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF);
+        font.draw(poseStack, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF);
     }
 
     private void generateSpellSlots() {

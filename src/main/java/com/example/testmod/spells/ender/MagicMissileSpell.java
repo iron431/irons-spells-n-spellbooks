@@ -5,7 +5,7 @@ import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
@@ -15,7 +15,7 @@ public class MagicMissileSpell extends AbstractSpell {
         this(1);
     }
 
-    public final TranslatableComponent uniqueText;
+    public final MutableComponent uniqueText;
 
     public MagicMissileSpell(int level) {
         super(SpellType.MAGIC_MISSILE_SPELL);
@@ -26,7 +26,7 @@ public class MagicMissileSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 5;
         this.cooldown = 0;
-        uniqueText = new TranslatableComponent("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1));
+        uniqueText = Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class MagicMissileSpell extends AbstractSpell {
     }
 
     @Override
-    public TranslatableComponent getUniqueInfo() {
+    public MutableComponent getUniqueInfo() {
         return uniqueText;
     }
 }

@@ -7,7 +7,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
@@ -162,7 +161,7 @@ public class SpellBookData {
             hoverText = Lists.newArrayList();
             if (activeSpellIndex > -1) {
                 AbstractSpell activeSpell = getActiveSpell();
-                hoverText.add(new TranslatableComponent("tooltip.testmod.selected_spell",
+                hoverText.add(Component.translatable("tooltip.testmod.selected_spell",
                         activeSpell.getSpellType().getDisplayName(),
                         activeSpell.getLevel()).withStyle(ChatFormatting.WHITE));
             }

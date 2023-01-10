@@ -5,7 +5,7 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -55,7 +55,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public TranslatableComponent getUniqueInfo() {
-        return new TranslatableComponent("ui.testmod.distance", getSpellPower(null));
+    public MutableComponent getUniqueInfo() {
+        return Component.translatable("ui.testmod.distance", getSpellPower(null));
     }
 }
