@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -58,7 +57,7 @@ public class TestMod {
         //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
         //MinecraftForge.EVENT_BUS.register(eventHandler);
         // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         // Register the processIMC method for modloading
@@ -76,12 +75,12 @@ public class TestMod {
 
     }
 
-    private void setup(final FMLCommonSetupEvent event) {
-
-        // some preinit code
-        LOGGER.info("HELLO FROM PREINIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
-    }
+//    private void setup(final FMLCommonSetupEvent event) {
+//
+//        // some preinit code
+//        LOGGER.info("HELLO FROM PREINIT");
+//        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+//    }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         // Some example code to dispatch IMC to another mod
@@ -105,16 +104,16 @@ public class TestMod {
         LOGGER.info("HELLO from server starting");
     }
 
-    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
-    // Event bus for receiving Registry Events)
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-        @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-            // Register a new block here
-            LOGGER.info("HELLO from Register Block");
-        }
-    }
+//    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
+//    // Event bus for receiving Registry Events)
+//    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+//    public static class RegistryEvents {
+//        @SubscribeEvent
+//        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
+//            // Register a new block here
+//            LOGGER.info("HELLO from Register Block");
+//        }
+//    }
 
     public static ResourceLocation id(@NotNull String path) {
         return new ResourceLocation(TestMod.MODID, path);

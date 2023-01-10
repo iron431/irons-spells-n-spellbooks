@@ -25,10 +25,10 @@ public class ClientPlayerEvents {
     //
     @SubscribeEvent
     public static void onPlayerOpenContainer(PlayerContainerEvent.Open event) {
-        if (event.getPlayer().level.isClientSide)
+        if (event.getEntity().level.isClientSide)
             return;
 
-        if (serverSideIsCasting(event.getPlayer()))
+        if (serverSideIsCasting(event.getEntity()))
             Messages.sendToServer(new PacketCancelCast(false));
 
     }
@@ -38,10 +38,10 @@ public class ClientPlayerEvents {
     //
     @SubscribeEvent
     public static void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-        if (event.getPlayer().level.isClientSide)
+        if (event.getEntity().level.isClientSide)
             return;
 
-        if (serverSideIsCasting(event.getPlayer()))
+        if (serverSideIsCasting(event.getEntity()))
             Messages.sendToServer(new PacketCancelCast(false));
     }
 
@@ -51,7 +51,7 @@ public class ClientPlayerEvents {
     @SubscribeEvent
     public static void onPlayerTakeDamage(LivingDamageEvent event) {
         //THIS EVENT IS SERVER SIDE ONLY
-        if (event.getEntityLiving() == null) {
+        if (event.getEntity() == null) {
             return;
         }
 
@@ -65,7 +65,7 @@ public class ClientPlayerEvents {
 
         We shall make magic damage interrupt cast, so poison will cancel.
          */
-        var cap = event.getEntityLiving().getCapability(PlayerMagicProvider.PLAYER_MAGIC);
+        var cap = event.getEntity().getCapability(PlayerMagicProvider.PLAYER_MAGIC);
         if (cap.isPresent()) {
             var playerMagicData = cap.resolve().get();
 

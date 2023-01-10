@@ -16,8 +16,8 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent()
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
-        if (event.getEntityLiving() instanceof ServerPlayer serverPlayer) {
-            var cap = event.getEntityLiving().getCapability(PlayerMagicProvider.PLAYER_MAGIC);
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            var cap = event.getEntity().getCapability(PlayerMagicProvider.PLAYER_MAGIC);
             if (cap.isPresent()) {
                 var playerMagicData = cap.resolve().get();
 

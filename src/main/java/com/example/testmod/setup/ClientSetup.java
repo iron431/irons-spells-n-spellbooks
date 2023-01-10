@@ -17,7 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -52,16 +52,15 @@ public class ClientSetup {
     }
 
     @SubscribeEvent
-    public static void registerParticles(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particleEngine.register(ParticleRegistry.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), BloodGroundParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ParticleRegistry.SNOWFLAKE_PARTICLE.get(), SnowflakeParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ParticleRegistry.ELECTRICITY_PARTICLE.get(), ElectricityParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ParticleRegistry.UNSTABLE_ENDER_PARTICLE.get(), UnstableEnderParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ParticleRegistry.DRAGON_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ParticleRegistry.FIRE_PARTICLE.get(), FireParticle.Provider::new);
-        Minecraft.getInstance().particleEngine.register(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
+    public static void registerParticles(RegisterParticleProvidersEvent event) {
+        event.register(ParticleRegistry.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
+        event.register(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), BloodGroundParticle.Provider::new);
+        event.register(ParticleRegistry.SNOWFLAKE_PARTICLE.get(), SnowflakeParticle.Provider::new);
+        event.register(ParticleRegistry.ELECTRICITY_PARTICLE.get(), ElectricityParticle.Provider::new);
+        event.register(ParticleRegistry.UNSTABLE_ENDER_PARTICLE.get(), UnstableEnderParticle.Provider::new);
+        event.register(ParticleRegistry.DRAGON_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
+        event.register(ParticleRegistry.FIRE_PARTICLE.get(), FireParticle.Provider::new);
+        event.register(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
     }
-
 }
 

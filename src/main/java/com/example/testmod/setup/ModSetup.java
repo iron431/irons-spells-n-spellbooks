@@ -4,6 +4,7 @@ import com.example.testmod.capabilities.magic.MagicEvents;
 import com.example.testmod.capabilities.scroll.ScrollDataEvents;
 import com.example.testmod.capabilities.spellbook.SpellBookDataEvents;
 import com.example.testmod.player.ClientPlayerEvents;
+import com.example.testmod.player.KeyMappings;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -16,6 +17,7 @@ public class ModSetup {
 
         //PLAYER
         bus.addListener(ClientPlayerEvents::onPlayerTick);
+        bus.addListener(KeyMappings::onRegisterKeybinds);
 //        bus.addListener(ClientPlayerEvents::onLivingEquipmentChangeEvent);
         //bus.addListener(ClientPlayerEvents::onPlayerRenderPre);
 //        bus.addListener(ClientPlayerEvents::onLivingEntityUseItemEventStart);

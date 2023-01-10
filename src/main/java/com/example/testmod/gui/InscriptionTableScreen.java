@@ -213,7 +213,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         // Description
         //
         if (isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY))
-            renderTooltip(poseStack, new TextComponent("test"), mouseX, mouseY);
+            renderTooltip(poseStack, Component.literal("test") , mouseX, mouseY);
 
         int descLine = y + font.lineHeight * 2 + 4;
 
@@ -233,19 +233,19 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Mana
         //
-        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.mana_cost", textColor, new TextComponent(spell.getManaCost() + ""), colorMana, textScale);
+        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.mana_cost", textColor, Component.translatable(spell.getManaCost() + "") , colorMana, textScale);
         descLine += font.lineHeight;
 
         //
         // Cast Time
         //
-        drawStatText(font, poseStack, x + margin, descLine, castKey, textColor, new TextComponent(castContents), colorCast, textScale);
+        drawStatText(font, poseStack, x + margin, descLine, castKey, textColor, Component.translatable(castContents), colorCast, textScale);
         descLine += font.lineHeight;
 
         //
         // Cooldown
         //
-        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.cooldown", textColor, new TextComponent(Utils.timeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
+        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.cooldown", textColor, Component.translatable(Utils.timeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
         descLine += font.lineHeight;
 
 
@@ -331,7 +331,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 int temp_index = index;
                 spellSlots.add(new SpellSlotInfo(storedSpells[index],
                         location,
-                        this.addWidget(new Button((int) location.x, (int) location.y, boxSize, boxSize, new TextComponent(temp_index + ""), (p_169820_) -> this.setSelectedIndex(temp_index)))));
+                        this.addWidget(new Button((int) location.x, (int) location.y, boxSize, boxSize, Component.translatable(temp_index + ""), (p_169820_) -> this.setSelectedIndex(temp_index)))));
                 index++;
             }
         }

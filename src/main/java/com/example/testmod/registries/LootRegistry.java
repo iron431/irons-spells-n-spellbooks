@@ -5,7 +5,6 @@ import com.example.testmod.loot.RandomizeScrollFunction;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

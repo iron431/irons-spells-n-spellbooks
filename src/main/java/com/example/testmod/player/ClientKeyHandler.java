@@ -11,7 +11,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -62,7 +61,7 @@ public final class ClientKeyHandler {
     }
 
     @SubscribeEvent
-    public static void clientMouseScrolled(InputEvent.MouseScrollEvent event) {
+    public static void clientMouseScrolled(InputEvent.MouseScrollingEvent event) {
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player == null)

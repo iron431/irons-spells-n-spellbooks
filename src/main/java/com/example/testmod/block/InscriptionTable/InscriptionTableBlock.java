@@ -107,7 +107,7 @@ public static final VoxelShape SHAPE_TABLETOP = Block.box(0,10,0,16,14,16);
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);
             if (entity instanceof InscriptionTableTile) {
-                NetworkHooks.openGui(((ServerPlayer) player), (InscriptionTableTile) entity, pos);
+                NetworkHooks.openScreen(((ServerPlayer) player), (InscriptionTableTile) entity, pos) ;
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
