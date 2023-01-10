@@ -21,7 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
@@ -56,7 +56,7 @@ public class SpellWheelDisplay extends GuiComponent {
     }
 
     @SubscribeEvent
-    public static void onPostRender(RenderGameOverlayEvent.Text e) {
+    public static void onPostRender(RenderGuiOverlayEvent.Post e) {
 
         var minecraft = Minecraft.getInstance();
 
@@ -68,7 +68,7 @@ public class SpellWheelDisplay extends GuiComponent {
 
         Player player = minecraft.player;
         Gui gui = Minecraft.getInstance().gui;
-        PoseStack stack = e.getMatrixStack();
+        PoseStack stack = e.getPoseStack();
         screenWidth = e.getWindow().getGuiScaledWidth();
         screenHeight = e.getWindow().getGuiScaledHeight();
 

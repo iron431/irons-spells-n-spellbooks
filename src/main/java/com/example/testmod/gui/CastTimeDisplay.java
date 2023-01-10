@@ -13,7 +13,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -27,7 +27,7 @@ public class CastTimeDisplay extends GuiComponent {
     static int screenWidth;
 
     @SubscribeEvent
-    public static void onPostRender(RenderGameOverlayEvent.Text e) {
+    public static void onPostRender(RenderGuiOverlayEvent.Post e) {
         if (!ClientMagicData.isCasting || ClientMagicData.castDurationRemaining <= 0)
             return;
 
@@ -38,7 +38,7 @@ public class CastTimeDisplay extends GuiComponent {
         }
 
         Gui GUI = Minecraft.getInstance().gui;
-        PoseStack stack = e.getMatrixStack();
+        PoseStack stack = e.getPoseStack();
         screenWidth = e.getWindow().getGuiScaledWidth();
         screenHeight = e.getWindow().getGuiScaledHeight();
 

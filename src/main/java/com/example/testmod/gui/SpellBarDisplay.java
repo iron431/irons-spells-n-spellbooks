@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.compress.utils.Lists;
@@ -39,14 +39,14 @@ public class SpellBarDisplay extends GuiComponent {
     private static ItemStack lastSpellBook = ItemStack.EMPTY;
 
     @SubscribeEvent
-    public static void onPostRender(RenderGameOverlayEvent.Text e) {
+    public static void onPostRender(RenderGuiOverlayEvent.Post e) {
         Player player = Minecraft.getInstance().player;
 
         if (!Utils.isPlayerHoldingSpellBook(player))
             return;
         //System.out.println("SpellBarDisplay: Holding Spellbook");
         Gui GUI = Minecraft.getInstance().gui;
-        PoseStack stack = e.getMatrixStack();
+        PoseStack stack = e.getPoseStack();
         screenWidth = e.getWindow().getGuiScaledWidth();
         screenHeight = e.getWindow().getGuiScaledHeight();
 

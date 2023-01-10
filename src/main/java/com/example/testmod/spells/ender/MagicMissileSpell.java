@@ -5,6 +5,7 @@ import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;

@@ -36,15 +36,15 @@ public class MagicEvents {
         event.register(PlayerMagicData.class);
     }
 
-    public static void onWorldTick(TickEvent.WorldTickEvent event) {
+    public static void onWorldTick(TickEvent.LevelTickEvent event) {
         // Don't do anything client side
-        if (event.world.isClientSide) {
+        if (event.level.isClientSide) {
             return;
         }
         if (event.phase == TickEvent.Phase.START) {
             return;
         }
 
-        MagicManager.get(event.world).tick(event.world);
+        MagicManager.get(event.level).tick(event.level);
     }
 }

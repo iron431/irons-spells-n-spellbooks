@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -30,34 +30,20 @@ public class ManaDisplay extends GuiComponent {
     static final int ICON_ROW_HEIGHT = 11;
     static final int CHAR_WIDTH = 6;
     static final int HUNGER_BAR_OFFSET = 50;
+    static final int TEXT_COLOR = ChatFormatting.AQUA.getColor();
     static int screenHeight;
     static int screenWidth;
-    static char key = ' ';
     static boolean centered = true;
-    static int colorIndex = 0;
-    static ChatFormatting[] colors = {ChatFormatting.AQUA, ChatFormatting.BLUE, ChatFormatting.GOLD, ChatFormatting.DARK_AQUA, ChatFormatting.WHITE, ChatFormatting.YELLOW, ChatFormatting.GRAY, ChatFormatting.DARK_GRAY, ChatFormatting.LIGHT_PURPLE, ChatFormatting.DARK_PURPLE};
 
     @SubscribeEvent
-    public static void onPostRender(RenderGameOverlayEvent.Text e) {
-        /*
-            extensions change when its drawn, as far as i understand:
-            POST/PostLayer (idk the difference): After Chat
-            PRE/PreLayer(^): Intertwined with Chat
-            TEXT: Before Chat
-            BOSSINFO: only when a bossbar is up
-            CHAT: before chat
-            ALl of them seem to render above the hotbar however; idk how to use ElementLayers or if they would help
-
-            This must be rendered before Gui.render() in order to appear below the hotbar elements, the only way to do that might be with a mixin
-         */
-        //System.out.println("success");
+    public static void onPostRender(RenderGuiOverlayEvent.Post e) {
         var player = Minecraft.getInstance().player;
         if (player.getAttribute(MAX_MANA.get()) == null) {
             TestMod.LOGGER.debug("null");
             return;
         }
         Gui GUI = Minecraft.getInstance().gui;
-        PoseStack stack = e.getMatrixStack();
+        PoseStack stack = e.getPoseStack();
         int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
         int mana = ClientMagicData.getPlayerMana();
         screenWidth = e.getWindow().getGuiScaledWidth();
@@ -67,8 +53,6 @@ public class ManaDisplay extends GuiComponent {
         barX = screenWidth / 2 - IMAGE_WIDTH / 2 + (centered ? 0 : HUNGER_BAR_OFFSET);
         barY = screenHeight - HOTBAR_HEIGHT - ICON_ROW_HEIGHT * getOffsetCountFromHotbar(player) - IMAGE_HEIGHT / 2;
 
-        //if(key=='T')
-        //    x=0;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, TEXTURE);
@@ -77,14 +61,13 @@ public class ManaDisplay extends GuiComponent {
         GUI.blit(stack, barX, barY, 0, IMAGE_HEIGHT, (int) (IMAGE_WIDTH * Math.min((mana / (double) maxMana), 1)), IMAGE_HEIGHT);
 
         int textX, textY;
-        var textColor = colors[colorIndex];
         String manaFraction = (int) (mana) + "/" + maxMana;
 
         textX = barX + IMAGE_WIDTH / 2 - (int) ((("" + (int) mana).length() + 0.5) * CHAR_WIDTH);
         textY = barY + ICON_ROW_HEIGHT;
 
-        GUI.getFont().drawShadow(stack, manaFraction, textX, textY, textColor.getColor());
-        GUI.getFont().draw(stack, manaFraction, textX, textY, textColor.getColor());
+        GUI.getFont().drawShadow(stack, manaFraction, textX, textY, TEXT_COLOR);
+        GUI.getFont().draw(stack, manaFraction, textX, textY, TEXT_COLOR);
 
 
     }
@@ -97,18 +80,4 @@ public class ManaDisplay extends GuiComponent {
         else
             return 1;
     }
-
-    @SubscribeEvent
-    public static void onKeyPress(InputEvent.KeyInputEvent e) {
-        key = (char) e.getKey();
-//        if (e.getKey() == (int) 'Y' && e.getAction() == 1) {
-//            Player player = Minecraft.getInstance().player;
-//            player.sendMessage(new TextComponent("Launching " + player.getDisplayName().getString()), player.getUUID());
-//            player.push(0, 1, 0);
-//            //player.move(MoverType.SELF, new Vec3(1,10,1));
-//
-//        }
-    }
-
-
 }
