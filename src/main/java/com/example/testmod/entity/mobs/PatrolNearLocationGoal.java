@@ -1,58 +1,84 @@
 package com.example.testmod.entity.mobs;
 
+import com.example.testmod.TestMod;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 
-public class PatrolNearLocationGoal extends MoveToBlockGoal {
+public class PatrolNearLocationGoal extends Goal {
 
-    private final SimpleWizard simpleWizard;
+    private final PathfinderMob mob;
     private final int maxRadius;
-    private final Vec3 patrolLocationCenter;
+    private final float speedModifier;
+    private Vec3 patrolLocationCenter = null;
     private final Random random = new Random();
+    private BlockPos targeBlock;
+    private long cooldownUntil;
 
-    public PatrolNearLocationGoal(SimpleWizard simpleWizard, Vec3 patrolLocationCenter, int maxRadius) {
-        super(simpleWizard, .8, 16);
-        this.simpleWizard = simpleWizard;
+    public PatrolNearLocationGoal(PathfinderMob mob, int maxRadius, float speedModifier) {
+        this.mob = mob;
         this.maxRadius = maxRadius;
-        this.patrolLocationCenter = patrolLocationCenter;
+        this.speedModifier = speedModifier;
+        this.patrolLocationCenter = null;
+        this.cooldownUntil = 0;
+
+        TestMod.LOGGER.debug("PNLG: {}", mob.position());
+    }
+
+    @Override
+    public boolean canUse() {
+        boolean isOnCooldown = this.mob.level.getGameTime() < this.cooldownUntil;
+        TestMod.LOGGER.debug("PNLG.canUse: {}, {}, {}", this.mob.level.getGameTime(), cooldownUntil, (this.mob.getTarget() == null && !isOnCooldown));
+        return this.mob.getTarget() == null && !isOnCooldown;
     }
 
     /**
      * Reset the task's internal state. Called when this task is interrupted by another one
      */
     public void stop() {
-        super.stop();
-        BlockEntity be = mob.level.getBlockEntity(blockPos);
-        if (be instanceof ChestBlockEntity) {
-            mob.level.blockEvent(blockPos, be.getBlockState().getBlock(), 1, 0);
-        }
+        TestMod.LOGGER.debug("PNLG.stop");
     }
 
     public void tick() {
-        super.tick();
-        if (isReachedTarget()) {
-            //BlockEntity be = mob.level.getBlockEntity(blockPos);
+        PathNavigation pathnavigation = this.mob.getNavigation();
+        if (patrolLocationCenter == null || pathnavigation.isDone()) {
+            getNextTargetBlock();
+            if (!pathnavigation.moveTo(targeBlock.getX(), targeBlock.getY(), targeBlock.getZ(), speedModifier)) {
+                getNextTargetBlock();
+                this.cooldownUntil = this.mob.level.getGameTime() + 200L;
+            }
         }
     }
 
+    private void getNextTargetBlock() {
+        if (patrolLocationCenter == null) {
+            patrolLocationCenter = mob.getEyePosition();
+        }
+
+        Vec3 pos = patrolLocationCenter.add(getRandomPosInRadius());
+        this.targeBlock = this.mob.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(pos));
+        TestMod.LOGGER.debug("PNLG.getNextTargetBlock: center:{} target:{}", patrolLocationCenter, targeBlock);
+    }
+
+    private Vec3 getRandomPosInRadius() {
+        return new Vec3(
+                random.nextInt(maxRadius * 2) - maxRadius,
+                10,
+                random.nextInt(maxRadius * 2) - maxRadius
+        );
+    }
 
     /**
      * Return true to set given position as destination
      */
     protected boolean isValidTarget(LevelReader pLevel, BlockPos pPos) {
-        if (!pLevel.isEmptyBlock(pPos.above())) {
-            return false;
-        } else {
-            BlockState blockstate = pLevel.getBlockState(pPos);
-            return blockstate.is(Blocks.CHEST);
-        }
+        TestMod.LOGGER.debug("PNLG.isValidTarget");
+        return true;
     }
 }

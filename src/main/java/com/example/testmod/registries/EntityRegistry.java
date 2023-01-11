@@ -8,7 +8,7 @@ import com.example.testmod.entity.fire_breath.FireBreathProjectile;
 import com.example.testmod.entity.firebolt.FireboltProjectile;
 import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
-import com.example.testmod.entity.mobs.SimpleWizard;
+import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
