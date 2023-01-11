@@ -32,7 +32,7 @@
 - https://www.mcjty.eu/docs/1.18/ep5
 - Getting resource registry issue
   - Template Pool: https://www.youtube.com/watch?v=TD1lDaw4zfY
-  - 
+- Great Structure Resouce: https://github.com/TelepathicGrunt/StructureTutorialMod
 
 ### World Edit
 - Cylinders https://www.youtube.com/watch?v=FZj4-Y2qvm8
