@@ -97,6 +97,6 @@ public class Utils {
         var rotation = player.getLookAngle().normalize().scale(reach);
         var pos = player.getEyePosition();
         var dest = rotation.add(pos);
-        return level.clip(new ClipContext(pos, dest, ClipContext.Block.OUTLINE, clipContext, player));
+        return level.clip(new ClipContext(pos, dest, ClipContext.Block.COLLIDER, clipContext, player));
     }
 }

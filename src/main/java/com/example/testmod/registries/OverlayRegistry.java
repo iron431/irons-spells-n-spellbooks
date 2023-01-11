@@ -22,7 +22,7 @@ public class OverlayRegistry {
         event.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "cast_bar", CastBarOverlay::render);
 
         event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), "spell_bar", SpellBarOverlay::render);
-        
+
         event.registerAbove(VanillaGuiOverlay.PLAYER_LIST.id(), "spell_wheel", SpellWheelOverlay::render);
     }
 }

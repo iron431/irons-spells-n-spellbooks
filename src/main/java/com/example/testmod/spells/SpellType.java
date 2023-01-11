@@ -2,6 +2,7 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.spells.blood.BloodSlashSpell;
+import com.example.testmod.spells.evocation.FirecrackerSpell;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
@@ -40,7 +41,8 @@ public enum SpellType {
     SUMMON_VEX_SPELL(9),
     FIREBOLT_SPELL(10),
     FIRE_BREATH_SPELL(11),
-    ICICLE_SPELL(12);
+    ICICLE_SPELL(12),
+    FIRECRACKER_SPELL(13);
 
     private final int value;
 
@@ -90,6 +92,9 @@ public enum SpellType {
             case ICICLE_SPELL -> {
                 return new IcicleSpell(level);
             }
+            case FIRECRACKER_SPELL -> {
+                return new FirecrackerSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -105,9 +110,7 @@ public enum SpellType {
     }
 
     public SchoolType getSchoolType() {
-        //
-        //   Don't put default, just add the new spell
-        //
+        //TODO: not this
         return switch (this) {
             case FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL -> SchoolType.FIRE;
             case CONE_OF_COLD_SPELL, ICICLE_SPELL -> SchoolType.ICE;
@@ -115,7 +118,7 @@ public enum SpellType {
             case HEAL_SPELL -> SchoolType.HOLY;
             case TELEPORT_SPELL, MAGIC_MISSILE_SPELL -> SchoolType.ENDER;
             case BLOOD_SLASH_SPELL -> SchoolType.BLOOD;
-            case NONE_SPELL, SUMMON_VEX_SPELL -> SchoolType.EVOCATION;
+            case NONE_SPELL, SUMMON_VEX_SPELL,FIRECRACKER_SPELL  -> SchoolType.EVOCATION;
         };
     }
 
