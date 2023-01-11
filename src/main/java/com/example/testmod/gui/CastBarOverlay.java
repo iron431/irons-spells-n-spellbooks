@@ -14,20 +14,17 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
-public class CastTimeDisplay extends GuiComponent {
+public class CastBarOverlay extends GuiComponent {
     public final static ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/gui/icons.png");
     static final int IMAGE_WIDTH = 54;
     static final int COMPLETION_BAR_WIDTH = 44;
     static final int IMAGE_HEIGHT = 21;
-    static int screenHeight;
-    static int screenWidth;
 
-    @SubscribeEvent
-    public static void onPostRender(RenderGuiOverlayEvent.Post e) {
+    public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         if (!ClientMagicData.isCasting || ClientMagicData.castDurationRemaining <= 0)
             return;
 
@@ -37,11 +34,6 @@ public class CastTimeDisplay extends GuiComponent {
             castCompletionPercent = 1 - castCompletionPercent;
         }
 
-        Gui GUI = Minecraft.getInstance().gui;
-        PoseStack stack = e.getPoseStack();
-        screenWidth = e.getWindow().getGuiScaledWidth();
-        screenHeight = e.getWindow().getGuiScaledHeight();
-
         int barX, barY;
         barX = screenWidth / 2 - IMAGE_WIDTH / 2;
         barY = screenHeight / 2 + screenHeight / 8;
@@ -50,15 +42,15 @@ public class CastTimeDisplay extends GuiComponent {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, TEXTURE);
 
-        GUI.blit(stack, barX, barY, 0, IMAGE_HEIGHT * 2, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
-        GUI.blit(stack, barX, barY, 0, IMAGE_HEIGHT * 3, (int) (COMPLETION_BAR_WIDTH * castCompletionPercent + (IMAGE_WIDTH - COMPLETION_BAR_WIDTH) / 2), IMAGE_HEIGHT);
+        gui.blit(poseStack, barX, barY, 0, IMAGE_HEIGHT * 2, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
+        gui.blit(poseStack, barX, barY, 0, IMAGE_HEIGHT * 3, (int) (COMPLETION_BAR_WIDTH * castCompletionPercent + (IMAGE_WIDTH - COMPLETION_BAR_WIDTH) / 2), IMAGE_HEIGHT);
 
         int textX, textY;
         var textColor = ChatFormatting.WHITE;
-        var font = GUI.getFont();
+        var font = gui.getFont();
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;
         textY = barY + IMAGE_HEIGHT / 2 - font.lineHeight / 2 + 1;
 
-        GUI.getFont().draw(stack, castTimeString, textX, textY, textColor.getColor());
+        gui.getFont().draw(poseStack, castTimeString, textX, textY, textColor.getColor());
     }
 }

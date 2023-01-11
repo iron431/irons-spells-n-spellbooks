@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
@@ -29,13 +30,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
-public class SpellWheelDisplay extends GuiComponent {
+public class SpellWheelOverlay extends GuiComponent {
     public final static ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/gui/icons.png");
     public final static ResourceLocation WHEEL = new ResourceLocation(TestMod.MODID, "textures/gui/spell_wheel.png");
 
-    private static int screenHeight;
-    private static int screenWidth;
     public static boolean active;
     private static int selection;
     private static int selectedSpellIndex;
@@ -55,22 +53,20 @@ public class SpellWheelDisplay extends GuiComponent {
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
-    @SubscribeEvent
-    public static void onPostRender(RenderGuiOverlayEvent.Post e) {
-
-        var minecraft = Minecraft.getInstance();
-
-        if (active && (minecraft.player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed() || !Utils.isPlayerHoldingSpellBook(minecraft.player)))
-            active = false;
-
+    public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         if (!active)
             return;
 
+        var minecraft = Minecraft.getInstance();
+
+        if ((minecraft.player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed() || !Utils.isPlayerHoldingSpellBook(minecraft.player))) {
+            active = false;
+            return;
+        }
+
+
+
         Player player = minecraft.player;
-        Gui gui = Minecraft.getInstance().gui;
-        PoseStack stack = e.getPoseStack();
-        screenWidth = e.getWindow().getGuiScaledWidth();
-        screenHeight = e.getWindow().getGuiScaledHeight();
 
         int centerX, centerY;
         centerX = screenWidth / 2;
@@ -96,7 +92,7 @@ public class SpellWheelDisplay extends GuiComponent {
 //        TestMod.LOGGER.debug("SpellBarDisplay.non-null spells.length: {}", spells.size());
 //        if (spellCount > spells.size())
 //            return;
-        Vec2 screenCenter = new Vec2(e.getWindow().getScreenWidth() * .5f, e.getWindow().getScreenHeight() * .5f);
+        Vec2 screenCenter = new Vec2(minecraft.getWindow().getScreenWidth() * .5f, minecraft.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());
         double radiansPerSpell = Math.toRadians(360 / (float) spellCount);
 
@@ -110,29 +106,29 @@ public class SpellWheelDisplay extends GuiComponent {
         //gui.getFont().draw(stack, screenCenter.x + ", " + screenCenter.y + "\n" + mousePos.x + ", " + mousePos.y + "\n" + Math.toDegrees(mouseRotation) , centerX, centerY, 0xFFFFFF);
 
         setTranslucentTexture(WHEEL);
-        stack.scale(scale, scale, scale);
-        gui.blit(stack, (int) (centerX / scale - 32), (int) (centerY / scale - 32), 0, 0, 64, 64, 64, 64);
-        stack.scale(1 / scale, 1 / scale, 1 / scale);
+        poseStack.scale(scale, scale, scale);
+        gui.blit(poseStack, (int) (centerX / scale - 32), (int) (centerY / scale - 32), 0, 0, 64, 64, 64, 64);
+        poseStack.scale(1 / scale, 1 / scale, 1 / scale);
 
         //Slot Border, icon, selected frame
         setTranslucentTexture(TEXTURE);
         for (int i = 0; i < locations.size(); i++) {
-            gui.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 66, 84, 22, 22);
-            gui.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22, 84, 22, 22);
+            gui.blit(poseStack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 66, 84, 22, 22);
+            gui.blit(poseStack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22, 84, 22, 22);
             if (selection == i)
-                gui.blit(stack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 88, 84, 22, 22);
+                gui.blit(poseStack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 88, 84, 22, 22);
         }
         //Spell Icons, cooldowns
         for (int i = 0; i < locations.size(); i++) {
             if (spells.get(i) != null) {
                 setOpaqueTexture(spells.get(i).getSpellType().getResourceLocation());
-                gui.blit(stack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
+                gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
 
                 float f = spells.get(i) == null ? 0 : ClientMagicData.getCooldownPercent(spells.get(i).getSpellType());
                 if (f > 0) {
                     setTranslucentTexture(TEXTURE);
                     int pixels = (int) (16 * f + 1f);
-                    gui.blit(stack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47, 87, 16, pixels);
+                    gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47, 87, 16, pixels);
                 }
             }
         }
@@ -155,6 +151,7 @@ public class SpellWheelDisplay extends GuiComponent {
 
     private static void setTranslucentTexture(ResourceLocation texture) {
         RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, texture);

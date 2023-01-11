@@ -1,26 +1,22 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.SpellWheelDisplay;
+import com.example.testmod.gui.SpellWheelOverlay;
 import com.example.testmod.gui.network.PacketChangeSelectedSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.util.Utils;
-import com.google.common.collect.Lists;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +40,11 @@ public final class ClientKeyHandler {
 
         if (SPELL_WHEEL_STATE.wasPressed()) {
             if (minecraft.screen == null && Utils.isPlayerHoldingSpellBook(player))
-                SpellWheelDisplay.open();
+                SpellWheelOverlay.open();
         }
         if (SPELL_WHEEL_STATE.wasReleased()) {
-            if (minecraft.screen == null && SpellWheelDisplay.active)
-                SpellWheelDisplay.close();
+            if (minecraft.screen == null && SpellWheelOverlay.active)
+                SpellWheelOverlay.close();
 
         }
         if (SPELLBAR_MODIFIER_STATE.wasPressed())
