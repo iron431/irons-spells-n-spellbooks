@@ -1,5 +1,7 @@
-package com.example.testmod.entity.mobs;
+package com.example.testmod.entity.mobs.simple_wizard;
 
+import com.example.testmod.entity.mobs.PatrolNearLocationGoal;
+import com.example.testmod.entity.mobs.WizardAttackGoal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
@@ -9,6 +11,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -23,11 +26,20 @@ public class SimpleWizard extends Animal {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new PatrolNearLocationGoal(this, this.position(), 15));
-        //this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.8));
+        this.goalSelector.addGoal(0, new PatrolNearLocationGoal(this, 30, .25f));
+        this.goalSelector.addGoal(5, new WizardAttackGoal(this, .5, 20));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isValidTarget));
     }
+
+    public boolean isValidTarget(@Nullable LivingEntity livingEntity) {
+        if (livingEntity != null && livingEntity.isAlive() && livingEntity instanceof Player) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Nullable
     @Override

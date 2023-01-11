@@ -1,4 +1,4 @@
-package com.example.testmod.entity.mobs;
+package com.example.testmod.entity.mobs.simple_wizard;
 
 
 import com.example.testmod.TestMod;
