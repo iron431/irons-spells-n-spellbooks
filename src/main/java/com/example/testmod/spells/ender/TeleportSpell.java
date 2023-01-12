@@ -1,8 +1,6 @@
 package com.example.testmod.spells.ender;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -10,7 +8,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -18,6 +16,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class TeleportSpell extends AbstractSpell {
+
+    private Vec3 teleportLocation;
+
     public TeleportSpell() {
         this(1);
     }
@@ -36,34 +37,41 @@ public class TeleportSpell extends AbstractSpell {
         this.baseManaCost = 1;
         this.cooldown = 0;
         this.castTime = 0;
+
     }
 
     @Override
-    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand) {
+        particleCloud(level, entity, entity.getPosition(1));
+        Vec3 teleportLocation = findTeleportLocation(level, entity);
+        particleCloud(level, entity, teleportLocation);
+    }
+
+    @Override
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
 
         //TestMod.LOGGER.debug("teleport: loc: {}", blockHitResult.getLocation());
         //TestMod.LOGGER.debug("teleport: blockhit: {}, {}, {}", blockHitResult.getBlockPos().getX(), blockHitResult.getBlockPos().getY(), blockHitResult.getBlockPos().getZ());
         //TestMod.LOGGER.debug("teleport: y: {}", y);
-        var dest = findTeleportLocation(world, player);
-        player.teleportTo(dest.x, dest.y, dest.z);
 
-        player.resetFallDistance();
+        var dest = teleportLocation != null ? teleportLocation : findTeleportLocation(world, entity);
+        entity.teleportTo(dest.x, dest.y, dest.z);
+        entity.resetFallDistance();
+        teleportLocation = null;
     }
 
-    @Override
-    public void onClientPreCast(Level level, Player player, InteractionHand hand) {
-        particleCloud(level, player, player.getPosition(1));
-        Vec3 teleportLocation = findTeleportLocation(level, player);
-        particleCloud(level, player, teleportLocation);
+    public void setTeleportLocation(LivingEntity entity, Vec3 location) {
+        int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) location.x, (int) location.z);
+        this.teleportLocation = new Vec3(location.x, y, location.z);
     }
 
-    private Vec3 findTeleportLocation(Level world, Player player) {
+    private Vec3 findTeleportLocation(Level world, LivingEntity entity) {
         //TODO: potentially cache this result
-        var blockHitResult = Utils.getTargetBlock(world, player, ClipContext.Fluid.ANY, getSpellPower(player));
+        var blockHitResult = Utils.getTargetBlock(world, entity, ClipContext.Fluid.ANY, getSpellPower(entity));
         var pos = blockHitResult.getBlockPos();
 
         //TODO: if this is a performance hit can just manually check the few blocks over this position
-        int y = player.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
+        int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
 
         if (y - pos.getY() > 3 || blockHitResult.getType() == HitResult.Type.MISS) {
             return blockHitResult.getLocation();
@@ -72,10 +80,10 @@ public class TeleportSpell extends AbstractSpell {
         }
     }
 
-    private void particleCloud(Level level, Player player, Vec3 pos) {
+    private void particleCloud(Level level, LivingEntity entity, Vec3 pos) {
         if (level.isClientSide) {
             double width = 0.5;
-            float height = player.getBbHeight() / 2;
+            float height = entity.getBbHeight() / 2;
             for (int i = 0; i < 55; i++) {
                 double x = pos.x + level.random.nextDouble() * width * 2 - width;
                 double y = pos.y + height + level.random.nextDouble() * height * 1.2 * 2 - height * 1.2;

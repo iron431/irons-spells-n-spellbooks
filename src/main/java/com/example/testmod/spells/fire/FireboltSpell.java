@@ -2,13 +2,12 @@ package com.example.testmod.spells.fire;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.firebolt.FireboltProjectile;
-import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 public class FireboltSpell extends AbstractSpell {
@@ -31,11 +30,11 @@ public class FireboltSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
-        FireboltProjectile firebolt = new FireboltProjectile(world, player);
-        firebolt.setPos(player.position().add(0, player.getEyeHeight() - firebolt.getBoundingBox().getYsize() * .5f, 0));
-        firebolt.shoot(player.getLookAngle());
-        firebolt.setDamage(getSpellPower(player));
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        FireboltProjectile firebolt = new FireboltProjectile(world, entity);
+        firebolt.setPos(entity.position().add(0, entity.getEyeHeight() - firebolt.getBoundingBox().getYsize() * .5f, 0));
+        firebolt.shoot(entity.getLookAngle());
+        firebolt.setDamage(getSpellPower(entity));
         world.addFreshEntity(firebolt);
     }
 

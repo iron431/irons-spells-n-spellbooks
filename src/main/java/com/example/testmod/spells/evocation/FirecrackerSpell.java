@@ -3,27 +3,18 @@ package com.example.testmod.spells.evocation;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.HitscanFireworkRocketEntity;
-import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.Random;
 
@@ -46,28 +37,28 @@ public class FirecrackerSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
-        Vec3 shootAngle = player.getLookAngle().normalize();
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        Vec3 shootAngle = entity.getLookAngle().normalize();
         float speed = 2.5f;
-        Vec3 hitPos = Utils.getTargetBlock(world, player, ClipContext.Fluid.NONE, getRange(player)).getLocation();
-        EntityHitResult entityHit = Utils.getTargetEntity(world, player, player.getEyePosition(), hitPos);
+        Vec3 hitPos = Utils.getTargetBlock(world, entity, ClipContext.Fluid.NONE, getRange(entity)).getLocation();
+        EntityHitResult entityHit = Utils.getTargetEntity(world, entity, entity.getEyePosition(), hitPos);
         if (entityHit != null) {
             hitPos = entityHit.getLocation();
             TestMod.LOGGER.debug("FirecrackerSpell.onCast.raycastFoundEntity");
         }
         Vec3 spawn = hitPos.subtract(shootAngle.scale(.5f));
 
-        HitscanFireworkRocketEntity firework = new HitscanFireworkRocketEntity(world, randomFireworkRocket(), player, spawn.x, spawn.y, spawn.z, true, getDamage(player));
+        HitscanFireworkRocketEntity firework = new HitscanFireworkRocketEntity(world, randomFireworkRocket(), entity, spawn.x, spawn.y, spawn.z, true, getDamage(entity));
         world.addFreshEntity(firework);
         firework.shoot(shootAngle.x, shootAngle.y, shootAngle.z, speed, 0);
     }
 
-    private int getRange(Player player) {
-        return 15 + (int) (getSpellPower(player) * 2);
+    private int getRange(LivingEntity entity) {
+        return 15 + (int) (getSpellPower(entity) * 2);
     }
 
-    private float getDamage(Player player) {
-        return getSpellPower(player);
+    private float getDamage(LivingEntity entity) {
+        return getSpellPower(entity);
     }
 
     private ItemStack randomFireworkRocket() {

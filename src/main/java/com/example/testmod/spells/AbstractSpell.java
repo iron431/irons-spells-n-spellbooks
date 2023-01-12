@@ -9,7 +9,6 @@ import com.example.testmod.network.PacketSyncManaToClient;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -178,14 +177,12 @@ public abstract class AbstractSpell {
         return MagicManager.getEffectiveSpellCooldown(cooldown, playerCooldownModifier);
     }
 
-    protected abstract void onCast(Level world, Player player, PlayerMagicData playerMagicData);
+    public abstract void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData);
 
-    public void onCastComplete(Level world, Player player, PlayerMagicData playerMagicData) {
-
+    public void onCastComplete(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
     }
 
-    public void onClientPreCast(Level level, Player player, InteractionHand hand) {
-
+    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand) {
     }
 
     public MutableComponent getUniqueInfo() {

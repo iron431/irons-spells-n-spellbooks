@@ -1,14 +1,13 @@
 package com.example.testmod.spells.ice;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.entity.firebolt.FireboltProjectile;
 import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 public class IcicleSpell extends AbstractSpell {
@@ -31,11 +30,11 @@ public class IcicleSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
-        IcicleProjectile icicle = new IcicleProjectile(world, player);
-        icicle.setPos(player.position().add(0, player.getEyeHeight() - icicle.getBoundingBox().getYsize() * .5f, 0));
-        icicle.shoot(player.getLookAngle());
-        icicle.setDamage(getSpellPower(player));
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        IcicleProjectile icicle = new IcicleProjectile(world, entity);
+        icicle.setPos(entity.position().add(0, entity.getEyeHeight() - icicle.getBoundingBox().getYsize() * .5f, 0));
+        icicle.shoot(entity.getLookAngle());
+        icicle.setDamage(getSpellPower(entity));
         world.addFreshEntity(icicle);
     }
 

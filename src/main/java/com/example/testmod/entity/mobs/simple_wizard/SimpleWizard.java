@@ -9,8 +9,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
@@ -27,9 +25,9 @@ public class SimpleWizard extends Animal {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .25f));
-        this.goalSelector.addGoal(2, new WizardAttackGoal(this, .5, 20));
-        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(2, new WizardAttackGoal(this, .5, 60));
+        //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isValidTarget));
     }
 

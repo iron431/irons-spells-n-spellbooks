@@ -8,7 +8,7 @@ import com.example.testmod.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 public class HealSpell extends AbstractSpell {
@@ -32,8 +32,8 @@ public class HealSpell extends AbstractSpell {
     }
 
     @Override
-    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
-        player.heal(getSpellPower(player));
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        entity.heal(getSpellPower(entity));
         int count = 16;
         float radius = 1.25f;
         for (int i = 0; i < count; i++) {
@@ -41,7 +41,7 @@ public class HealSpell extends AbstractSpell {
             double theta = Math.toRadians(360 / count) * i;
             x = Math.cos(theta) * radius;
             z = Math.sin(theta) * radius;
-            MagicManager.spawnParticles(world, ParticleTypes.HEART, player.position().x + x, player.position().y, player.position().z + z, 1, 0, 0, 0, 0.1, false);
+            MagicManager.spawnParticles(world, ParticleTypes.HEART, entity.position().x + x, entity.position().y, entity.position().z + z, 1, 0, 0, 0, 0.1, false);
         }
     }
 

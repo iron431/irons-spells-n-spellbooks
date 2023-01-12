@@ -7,8 +7,7 @@ import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 public class MagicMissileSpell extends AbstractSpell {
@@ -31,11 +30,11 @@ public class MagicMissileSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
-        MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(world, player);
-        magicMissileProjectile.setPos(player.position().add(0, player.getEyeHeight() - magicMissileProjectile.getBoundingBox().getYsize() * .5f, 0));
-        magicMissileProjectile.shoot(player.getLookAngle());
-        magicMissileProjectile.setDamage(getSpellPower(player));
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(world, entity);
+        magicMissileProjectile.setPos(entity.position().add(0, entity.getEyeHeight() - magicMissileProjectile.getBoundingBox().getYsize() * .5f, 0));
+        magicMissileProjectile.shoot(entity.getLookAngle());
+        magicMissileProjectile.setDamage(getSpellPower(entity));
         world.addFreshEntity(magicMissileProjectile);
     }
 

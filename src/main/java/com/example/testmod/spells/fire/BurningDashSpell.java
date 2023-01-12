@@ -8,8 +8,8 @@ import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -33,19 +33,22 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, Player player, InteractionHand hand) {
+    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand) {
         ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.FIRE;
     }
 
     @Override
-    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         float amplifier = 0.5f + (level - 1) * .25f;
-        Vec3 vec = player.getLookAngle().normalize().scale(amplifier);
-        if (player.isOnGround())
-            player.move(MoverType.SELF, new Vec3(0.0D, 0.75d, 0.0D));
+        Vec3 vec = entity.getLookAngle().normalize().scale(amplifier);
+        if (entity.isOnGround())
+            entity.move(MoverType.SELF, new Vec3(0.0D, 0.75d, 0.0D));
 
-        player.startAutoSpinAttack(10 + level);
-        Messages.sendToPlayer(new PacketAddMotionToClient(vec, true), (ServerPlayer) player);
+        if (entity instanceof ServerPlayer player) {
+            player.startAutoSpinAttack(10 + level);
+            Messages.sendToPlayer(new PacketAddMotionToClient(vec, true), (ServerPlayer) entity);
+        }
+
         /*
         //in degrees
         float rx = player.getYRot();

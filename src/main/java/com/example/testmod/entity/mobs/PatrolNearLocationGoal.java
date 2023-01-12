@@ -28,13 +28,13 @@ public class PatrolNearLocationGoal extends Goal {
         this.patrolLocationCenter = null;
         this.cooldownUntil = 0;
 
-        TestMod.LOGGER.debug("PNLG: {}", mob.position());
+        //TestMod.LOGGER.debug("PNLG: {}", mob.position());
     }
 
     @Override
     public boolean canUse() {
         boolean isOnCooldown = this.mob.level.getGameTime() < this.cooldownUntil;
-        TestMod.LOGGER.debug("PNLG.canUse: {}, {}, {}", this.mob.level.getGameTime(), cooldownUntil, (this.mob.getTarget() == null && !isOnCooldown));
+        //TestMod.LOGGER.debug("PNLG.canUse: {}, {}, {}", this.mob.level.getGameTime(), cooldownUntil, (this.mob.getTarget() == null && !isOnCooldown));
         return this.mob.getTarget() == null && !isOnCooldown;
     }
 
@@ -63,7 +63,7 @@ public class PatrolNearLocationGoal extends Goal {
 
         Vec3 pos = patrolLocationCenter.add(getRandomPosInRadius());
         this.targeBlock = this.mob.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(pos));
-        TestMod.LOGGER.debug("PNLG.getNextTargetBlock: center:{} target:{}", patrolLocationCenter, targeBlock);
+        //TestMod.LOGGER.debug("PNLG.getNextTargetBlock: center:{} target:{}", patrolLocationCenter, targeBlock);
     }
 
     private Vec3 getRandomPosInRadius() {
@@ -78,7 +78,7 @@ public class PatrolNearLocationGoal extends Goal {
      * Return true to set given position as destination
      */
     protected boolean isValidTarget(LevelReader pLevel, BlockPos pPos) {
-        TestMod.LOGGER.debug("PNLG.isValidTarget");
+        //TestMod.LOGGER.debug("PNLG.isValidTarget");
         return true;
     }
 }

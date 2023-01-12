@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,8 +15,10 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class Utils {
     public static String getStackTraceAsString() {
@@ -93,11 +96,11 @@ public class Utils {
         return level.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, clipContext, player));
     }
 
-    public static BlockHitResult getTargetBlock(Level level, Player player, ClipContext.Fluid clipContext, double reach) {
-        var rotation = player.getLookAngle().normalize().scale(reach);
-        var pos = player.getEyePosition();
+    public static BlockHitResult getTargetBlock(Level level, LivingEntity entity, ClipContext.Fluid clipContext, double reach) {
+        var rotation = entity.getLookAngle().normalize().scale(reach);
+        var pos = entity.getEyePosition();
         var dest = rotation.add(pos);
-        return level.clip(new ClipContext(pos, dest, ClipContext.Block.COLLIDER, clipContext, player));
+        return level.clip(new ClipContext(pos, dest, ClipContext.Block.COLLIDER, clipContext, entity));
     }
 
     public static EntityHitResult getEntityIntersecting(Entity entity, Vec3 start, Vec3 end) {
@@ -110,8 +113,8 @@ public class Utils {
 
     }
 
-    public static EntityHitResult getTargetEntity(Level level, Player player, Vec3 start, Vec3 end) {
-        AABB range = player.getBoundingBox().expandTowards(end.subtract(start));
+    public static EntityHitResult getTargetEntity(Level level, LivingEntity entity, Vec3 start, Vec3 end) {
+        AABB range = entity.getBoundingBox().expandTowards(end.subtract(start));
         TestMod.LOGGER.debug("Utils.getTargetEntity.rangeStart: {}",new Vec3(range.minX,range.minY,range.minZ));
         TestMod.LOGGER.debug("Utils.getTargetEntity.rangeEnd: {}",new Vec3(range.maxX,range.maxY,range.maxZ));
 
@@ -119,8 +122,8 @@ public class Utils {
         List<EntityHitResult> hits = new ArrayList<>();
         //TestMod.LOGGER.debug("Utils.getTargetEntity.foundEntityCount: {}",level.getEntities(player, range).size());
 
-        for (Entity entity : level.getEntities(player, range)) {
-            EntityHitResult hit = getEntityIntersecting(entity, start, end);
+        for (Entity target : level.getEntities(entity, range)) {
+            EntityHitResult hit = getEntityIntersecting(target, start, end);
             if (hit != null)
                 hits.add(hit);
         }

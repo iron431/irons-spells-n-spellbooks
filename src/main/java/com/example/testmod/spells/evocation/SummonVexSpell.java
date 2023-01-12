@@ -3,14 +3,8 @@ package com.example.testmod.spells.evocation;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Evoker;
-import net.minecraft.world.entity.monster.Vex;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Fireball;
-import net.minecraft.world.entity.projectile.LargeFireball;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class SummonVexSpell extends AbstractSpell {
     public SummonVexSpell() {
@@ -29,7 +23,7 @@ public class SummonVexSpell extends AbstractSpell {
     }
 
     @Override
-    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         for (int i = 0; i < this.level; i++) {
 //            Vex vex = EntityType.VEX.create(world);
 //            vex.setOwner(player);

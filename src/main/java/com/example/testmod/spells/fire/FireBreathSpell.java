@@ -1,13 +1,11 @@
 package com.example.testmod.spells.fire;
 
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.entity.fire_breath.FireBreathProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 public class FireBreathSpell extends AbstractSpell {
@@ -27,18 +25,18 @@ public class FireBreathSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCastComplete(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onCastComplete(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         playerMagicData.discardCone();
     }
 
     @Override
-    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
             playerMagicData.cone.setDealDamageActive();
-        } else{
-            FireBreathProjectile fireBreathProjectile = new FireBreathProjectile(world, player);
-            fireBreathProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
-            fireBreathProjectile.setDamage(getSpellPower(player));
+        } else {
+            FireBreathProjectile fireBreathProjectile = new FireBreathProjectile(world, entity);
+            fireBreathProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
+            fireBreathProjectile.setDamage(getSpellPower(entity));
             world.addFreshEntity(fireBreathProjectile);
             playerMagicData.discardCone();
             playerMagicData.cone = fireBreathProjectile;

@@ -4,7 +4,7 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 
@@ -25,13 +25,13 @@ public class ElectrocuteSpell extends AbstractSpell {
     }
 
     @Override
-    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
             playerMagicData.cone.setDealDamageActive();
         } else{
-            ElectrocuteProjectile electrocuteProjectile = new ElectrocuteProjectile(world, player);
-            electrocuteProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
-            electrocuteProjectile.setDamage(getSpellPower(player));
+            ElectrocuteProjectile electrocuteProjectile = new ElectrocuteProjectile(world, entity);
+            electrocuteProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
+            electrocuteProjectile.setDamage(getSpellPower(entity));
             world.addFreshEntity(electrocuteProjectile);
             playerMagicData.discardCone();
             playerMagicData.cone = electrocuteProjectile;

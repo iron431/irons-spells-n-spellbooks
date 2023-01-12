@@ -2,6 +2,10 @@ package com.example.testmod.entity.mobs;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
+import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.SpellType;
+import com.example.testmod.spells.ender.MagicMissileSpell;
+import com.example.testmod.spells.ender.TeleportSpell;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -15,8 +19,14 @@ public class WizardAttackGoal extends Goal {
     private final float attackRadius;
     private final float attackRadiusSqr;
 
-    private int seeTime;
+    private int seeTime = 0;
     private int attackTime = -1;
+
+    private int attackCount = 0;
+    private int movementCount = 0;
+
+    private TeleportSpell teleportSpell = (TeleportSpell) AbstractSpell.getSpell(SpellType.TELEPORT_SPELL, 10);
+    private MagicMissileSpell magicMissileSpell = (MagicMissileSpell) AbstractSpell.getSpell(SpellType.MAGIC_MISSILE_SPELL, 1);
 
     public WizardAttackGoal(SimpleWizard simpleWizard, double pSpeedModifier, int pAttackInterval) {
         this(simpleWizard, pSpeedModifier, pAttackInterval, pAttackInterval);
@@ -27,7 +37,7 @@ public class WizardAttackGoal extends Goal {
         this.speedModifier = pSpeedModifier;
         this.attackIntervalMin = pAttackIntervalMin;
         this.attackIntervalMax = pAttackIntervalMax;
-        this.attackRadius = 30;
+        this.attackRadius = 20;
         this.attackRadiusSqr = attackRadius * attackRadius;
     }
 
@@ -39,9 +49,11 @@ public class WizardAttackGoal extends Goal {
         LivingEntity livingentity = this.simpleWizard.getTarget();
         if (livingentity != null && livingentity.isAlive()) {
             this.target = livingentity;
-            TestMod.LOGGER.debug("WizardAttackGoal.canuse: target:{}", target.getName().getString());
+            //TestMod.LOGGER.debug("WizardAttackGoal.canuse: target:{}", target.getName().getString());
             return true;
         } else {
+            attackCount = 0;
+            movementCount = 0;
             return false;
         }
     }
@@ -70,15 +82,16 @@ public class WizardAttackGoal extends Goal {
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
-        double d0 = this.simpleWizard.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
-        boolean flag = this.simpleWizard.getSensing().hasLineOfSight(this.target);
-        if (flag) {
+        double distanceSquared = this.simpleWizard.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
+        boolean hasLineOfSight = this.simpleWizard.getSensing().hasLineOfSight(this.target);
+        if (hasLineOfSight) {
             ++this.seeTime;
         } else {
             this.seeTime = 0;
         }
 
-        if (!(d0 > (double) this.attackRadiusSqr) && this.seeTime >= 5) {
+        if (!(distanceSquared > (double) attackRadiusSqr) && seeTime >= 5) {
+            //TestMod.LOGGER.debug("WizardAttackGoal.tick.1: distanceSquared: {},attackRadiusSqr: {}, seeTime: {}, attackTime: {}", distanceSquared, attackRadiusSqr, seeTime, attackTime);
             this.simpleWizard.getNavigation().stop();
         } else {
             this.simpleWizard.getNavigation().moveTo(this.target, this.speedModifier);
@@ -86,19 +99,48 @@ public class WizardAttackGoal extends Goal {
 
         this.simpleWizard.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
         if (--this.attackTime == 0) {
-            if (!flag) {
+            if (!hasLineOfSight) {
                 return;
             }
 
-            float f = (float) Math.sqrt(d0) / this.attackRadius;
+            float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
             float f1 = Mth.clamp(f, 0.1F, 1.0F);
 
-            //TODO: attack here
+            doAction();
 
-            //this.simpleWizard.performRangedAttack(this.target, f1);
             this.attackTime = Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
+            //TestMod.LOGGER.debug("WizardAttackGoal.tick.2: attackTime.1: {}", attackTime);
         } else if (this.attackTime < 0) {
-            this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(d0) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
+            this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(distanceSquared) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
+            //TestMod.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
         }
+    }
+
+    private void doAction() {
+        attackCount++;
+
+        if (attackCount % 3 == 0) {
+            doMovement();
+        } else {
+            doAttack();
+        }
+    }
+
+    private void doAttack() {
+        simpleWizard.lookAt(target, 360, 360);
+        //simpleWizard.getLookControl().setLookAt(target, 30, 30);
+        TestMod.LOGGER.debug("WizardAttackGoal.doAttack: {}, {}, {}", simpleWizard.getLookAngle(), target.getName().getString(), simpleWizard.getLookControl().isLookingAtTarget());
+        magicMissileSpell.onCast(this.simpleWizard.level, simpleWizard, null);
+    }
+
+    private void doMovement() {
+        TestMod.LOGGER.debug("WizardAttackGoal.doMovement");
+
+        var rotation = target.getLookAngle().normalize().scale(-15);
+        var pos = target.position();
+        var dest = rotation.add(pos);
+
+        teleportSpell.setTeleportLocation(simpleWizard, dest);
+        teleportSpell.onCast(simpleWizard.level, simpleWizard, null);
     }
 }

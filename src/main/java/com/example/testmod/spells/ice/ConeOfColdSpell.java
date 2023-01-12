@@ -6,7 +6,7 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 public class ConeOfColdSpell extends AbstractSpell {
@@ -26,19 +26,19 @@ public class ConeOfColdSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCastComplete(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onCastComplete(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         TestMod.LOGGER.debug("ConeOfColdSpell.onCast: {}, {}, {}", (playerMagicData.cone == null), playerMagicData.isCasting(), playerMagicData.getCastDurationRemaining());
         playerMagicData.discardCone();
     }
 
     @Override
-    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
             playerMagicData.cone.setDealDamageActive();
         } else{
-            ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, player);
-            coneOfColdProjectile.setPos(player.position().add(0, player.getEyeHeight() * .7, 0));
-            coneOfColdProjectile.setDamage(getSpellPower(player));
+            ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, entity);
+            coneOfColdProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
+            coneOfColdProjectile.setDamage(getSpellPower(entity));
             world.addFreshEntity(coneOfColdProjectile);
             playerMagicData.discardCone();
             playerMagicData.cone = coneOfColdProjectile;

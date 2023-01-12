@@ -3,7 +3,7 @@ package com.example.testmod.spells.fire;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.entity.projectile.LargeFireball;
 import net.minecraft.world.level.Level;
@@ -26,11 +26,11 @@ public class FireballSpell extends AbstractSpell {
     }
 
     @Override
-    protected void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         float speed = 2.5f;
-        Vec3 direction = player.getLookAngle().scale(speed);
-        Vec3 origin = player.getEyePosition();
-        Fireball fireball = new LargeFireball(world, player, direction.x(), direction.y(), direction.z(), (int)getSpellPower(player));
+        Vec3 direction = entity.getLookAngle().scale(speed);
+        Vec3 origin = entity.getEyePosition();
+        Fireball fireball = new LargeFireball(world, entity, direction.x(), direction.y(), direction.z(), (int)getSpellPower(entity));
         fireball.setPos(origin.add(direction));
         world.addFreshEntity(fireball);
     }

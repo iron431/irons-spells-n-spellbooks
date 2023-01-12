@@ -1,7 +1,7 @@
 package com.example.testmod.spells;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 public class NoneSpell extends AbstractSpell {
@@ -20,7 +20,7 @@ public class NoneSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
 
     }
 }
