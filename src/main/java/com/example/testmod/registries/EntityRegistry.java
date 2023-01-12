@@ -68,7 +68,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<SimpleWizard>> SIMPLE_WIZARD =
             ENTITIES.register("simple_wizard", () -> EntityType.Builder.<SimpleWizard>of(SimpleWizard::new, MobCategory.MONSTER)
-                    .sized(1f, 1f)
+                    .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "simple_wizard").toString()));
 }
