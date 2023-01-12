@@ -1,21 +1,21 @@
 package com.example.testmod.util;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Utils {
     public static String getStackTraceAsString() {
@@ -98,5 +98,37 @@ public class Utils {
         var pos = player.getEyePosition();
         var dest = rotation.add(pos);
         return level.clip(new ClipContext(pos, dest, ClipContext.Block.COLLIDER, clipContext, player));
+    }
+
+    public static EntityHitResult getEntityIntersecting(Entity entity, Vec3 start, Vec3 end) {
+
+        Vec3 hitPos = entity.getBoundingBox().clip(start, end).orElse(null);
+        if (hitPos != null)
+            return new EntityHitResult(entity, hitPos);
+        else
+            return null;
+
+    }
+
+    public static EntityHitResult getTargetEntity(Level level, Player player, Vec3 start, Vec3 end) {
+        AABB range = player.getBoundingBox().expandTowards(end.subtract(start));
+        TestMod.LOGGER.debug("Utils.getTargetEntity.rangeStart: {}",new Vec3(range.minX,range.minY,range.minZ));
+        TestMod.LOGGER.debug("Utils.getTargetEntity.rangeEnd: {}",new Vec3(range.maxX,range.maxY,range.maxZ));
+
+
+        List<EntityHitResult> hits = new ArrayList<>();
+        //TestMod.LOGGER.debug("Utils.getTargetEntity.foundEntityCount: {}",level.getEntities(player, range).size());
+
+        for (Entity entity : level.getEntities(player, range)) {
+            EntityHitResult hit = getEntityIntersecting(entity, start, end);
+            if (hit != null)
+                hits.add(hit);
+        }
+        if (hits.size() > 0) {
+            hits.sort((o1, o2) -> (int) (o1.getLocation().distanceToSqr(start) - o2.getLocation().distanceToSqr(start)));
+            return hits.get(0);
+        } else {
+            return null;
+        }
     }
 }

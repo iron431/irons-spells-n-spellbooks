@@ -1,6 +1,8 @@
 package com.example.testmod.spells.evocation;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.entity.HitscanFireworkRocketEntity;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -17,6 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.checkerframework.checker.units.qual.C;
 
@@ -44,14 +49,25 @@ public class FirecrackerSpell extends AbstractSpell {
     public void onCast(Level world, Player player, PlayerMagicData playerMagicData) {
         Vec3 shootAngle = player.getLookAngle().normalize();
         float speed = 2.5f;
-        Vec3 spawn = Utils.getTargetBlock(world, player, ClipContext.Fluid.NONE, getRange(player)).getLocation().subtract(shootAngle.scale(.5f));
-        FireworkRocketEntity firework = new FireworkRocketEntity(world, randomFireworkRocket(), player, spawn.x, spawn.y, spawn.z, true);
+        Vec3 hitPos = Utils.getTargetBlock(world, player, ClipContext.Fluid.NONE, getRange(player)).getLocation();
+        EntityHitResult entityHit = Utils.getTargetEntity(world, player, player.getEyePosition(), hitPos);
+        if (entityHit != null) {
+            hitPos = entityHit.getLocation();
+            TestMod.LOGGER.debug("FirecrackerSpell.onCast.raycastFoundEntity");
+        }
+        Vec3 spawn = hitPos.subtract(shootAngle.scale(.5f));
+
+        HitscanFireworkRocketEntity firework = new HitscanFireworkRocketEntity(world, randomFireworkRocket(), player, spawn.x, spawn.y, spawn.z, true, getDamage(player));
         world.addFreshEntity(firework);
         firework.shoot(shootAngle.x, shootAngle.y, shootAngle.z, speed, 0);
     }
 
     private int getRange(Player player) {
-        return 15 + (int) (getSpellPower(player) * 3);
+        return 15 + (int) (getSpellPower(player) * 2);
+    }
+
+    private float getDamage(Player player) {
+        return getSpellPower(player);
     }
 
     private ItemStack randomFireworkRocket() {
