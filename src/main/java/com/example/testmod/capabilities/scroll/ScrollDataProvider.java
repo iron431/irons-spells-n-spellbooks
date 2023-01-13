@@ -22,7 +22,7 @@ public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable
     private final LazyOptional<ScrollData> opt = LazyOptional.of(this::getOrCreateScrollData);
 
     @Nonnull
-    private ScrollData getOrCreateScrollData() {
+    public ScrollData getOrCreateScrollData() {
         //TestMod.LOGGER.debug("SDP.getOrCreateScrollData");
         if (scrollData == null) {
             //TestMod.LOGGER.debug("SDP.getOrCreateScrollData create blank ScrollData");

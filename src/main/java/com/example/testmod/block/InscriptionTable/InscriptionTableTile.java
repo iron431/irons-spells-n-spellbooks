@@ -2,12 +2,10 @@ package com.example.testmod.block.InscriptionTable;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.gui.InscriptionTableMenu;
-import com.example.testmod.gui.InscriptionTableScreen;
-import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
+import com.example.testmod.item.SpellBook;
 import com.example.testmod.registries.BlockRegistry;
 import com.example.testmod.registries.ItemRegistry;
-import com.example.testmod.spells.SpellType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -20,10 +18,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -111,13 +107,8 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
         //if (spellId >= 0) {
         ItemStack scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
         Scroll scroll = (Scroll) scrollStack.getItem();
-        scroll.setSpellType(SpellType.values()[spellId]);
-        scroll.setLevel(spellLevel);
+        scroll.getScrollData(scrollStack).setData(spellId, spellLevel);
         extractionSlot.set(scrollStack);
-        //} else {
-        //    extractionSlot.set(ItemStack.EMPTY);
-        //}
-
     }
 
 
