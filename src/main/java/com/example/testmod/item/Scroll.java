@@ -8,7 +8,6 @@ import com.example.testmod.network.PacketCancelCast;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
-import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,27 +28,8 @@ public class Scroll extends Item implements IScroll {
 
     public static final String PARENT = "Parent";
 
-    /**
-     * DO NOT USE THESE. ONLY FOR LOOT GEN CAPABILITY INIT
-     **/
-    private SpellType spellType;
-    private int level = 0;
-
-    /**
-     * DO NOT USE THESE. ONLY FOR LOOT GEN CAPABILITY INIT
-     **/
-
     public Scroll() {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
-        setSpellType(SpellType.NONE_SPELL);
-    }
-
-    public void setSpellType(SpellType spellType) {
-        this.spellType = spellType;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
     }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
@@ -182,7 +162,7 @@ public class Scroll extends Item implements IScroll {
             scrollDataProvider.deserializeNBT(nbt.getCompound(PARENT));
         } else {
             //TestMod.LOGGER.debug("Scroll.initCapabilities.2: {}, {}", spellType, level);
-            scrollDataProvider.getOrCreateScrollData(spellType, level);
+            scrollDataProvider.getOrCreateScrollData();
         }
         return scrollDataProvider;
     }

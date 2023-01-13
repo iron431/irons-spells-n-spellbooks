@@ -31,12 +31,12 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
         if (itemStack.getItem() instanceof Scroll scroll) {
             int spellLevel = levelRange.getInt(lootContext);
             var spellId = (++counter) % SpellType.values().length;
-            scroll.setSpellType(SpellType.values()[spellId]);
-            scroll.setLevel(spellLevel);
+            //scroll.setSpellType(SpellType.values()[spellId]);
+            //scroll.setLevel(spellLevel);
 
 //            TestMod.LOGGER.debug("RandomizeScrollFunction.getScrollData.1");
-//            var scrollData = scroll.getScrollData(itemStack);
-//            scrollData.setData(spellId, spellLevel);
+            var scrollData = scroll.getScrollData(itemStack);
+            scrollData.setData(spellId, spellLevel);
 //            TestMod.LOGGER.debug("RandomizeScrollFunction.getScrollData.2");
         }
         return itemStack;
