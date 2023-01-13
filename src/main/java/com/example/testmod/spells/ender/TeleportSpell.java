@@ -43,8 +43,8 @@ public class TeleportSpell extends AbstractSpell {
     @Override
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand) {
         particleCloud(level, entity, entity.getPosition(1));
-        Vec3 teleportLocation = findTeleportLocation(level, entity);
-        particleCloud(level, entity, teleportLocation);
+        var dest = teleportLocation != null ? teleportLocation : findTeleportLocation(level, entity);
+        particleCloud(level, entity, dest);
     }
 
     @Override
@@ -65,9 +65,9 @@ public class TeleportSpell extends AbstractSpell {
         this.teleportLocation = new Vec3(location.x, y, location.z);
     }
 
-    private Vec3 findTeleportLocation(Level world, LivingEntity entity) {
+    private Vec3 findTeleportLocation(Level level, LivingEntity entity) {
         //TODO: potentially cache this result
-        var blockHitResult = Utils.getTargetBlock(world, entity, ClipContext.Fluid.ANY, getSpellPower(entity));
+        var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, getSpellPower(entity));
         var pos = blockHitResult.getBlockPos();
 
         //TODO: if this is a performance hit can just manually check the few blocks over this position

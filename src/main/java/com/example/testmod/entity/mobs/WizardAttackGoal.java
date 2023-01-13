@@ -1,11 +1,7 @@
 package com.example.testmod.entity.mobs;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
-import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.SpellType;
-import com.example.testmod.spells.ender.MagicMissileSpell;
-import com.example.testmod.spells.ender.TeleportSpell;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -21,12 +17,7 @@ public class WizardAttackGoal extends Goal {
 
     private int seeTime = 0;
     private int attackTime = -1;
-
     private int attackCount = 0;
-    private int movementCount = 0;
-
-    private TeleportSpell teleportSpell = (TeleportSpell) AbstractSpell.getSpell(SpellType.TELEPORT_SPELL, 10);
-    private MagicMissileSpell magicMissileSpell = (MagicMissileSpell) AbstractSpell.getSpell(SpellType.MAGIC_MISSILE_SPELL, 1);
 
     public WizardAttackGoal(SimpleWizard simpleWizard, double pSpeedModifier, int pAttackInterval) {
         this(simpleWizard, pSpeedModifier, pAttackInterval, pAttackInterval);
@@ -53,7 +44,6 @@ public class WizardAttackGoal extends Goal {
             return true;
         } else {
             attackCount = 0;
-            movementCount = 0;
             return false;
         }
     }
@@ -129,18 +119,19 @@ public class WizardAttackGoal extends Goal {
     private void doAttack() {
         simpleWizard.lookAt(target, 360, 360);
         //simpleWizard.getLookControl().setLookAt(target, 30, 30);
-        TestMod.LOGGER.debug("WizardAttackGoal.doAttack: {}, {}, {}", simpleWizard.getLookAngle(), target.getName().getString(), simpleWizard.getLookControl().isLookingAtTarget());
-        magicMissileSpell.onCast(this.simpleWizard.level, simpleWizard, null);
+        //TestMod.LOGGER.debug("WizardAttackGoal.doAttack: {}, {}, {}", simpleWizard.getLookAngle(), target.getName().getString(), simpleWizard.getLookControl().isLookingAtTarget());
+        simpleWizard.magicMissileSpell.onCast(this.simpleWizard.level, simpleWizard, null);
     }
 
     private void doMovement() {
-        TestMod.LOGGER.debug("WizardAttackGoal.doMovement");
+        //TestMod.LOGGER.debug("WizardAttackGoal.doMovement");
 
         var rotation = target.getLookAngle().normalize().scale(-15);
         var pos = target.position();
         var dest = rotation.add(pos);
 
-        teleportSpell.setTeleportLocation(simpleWizard, dest);
-        teleportSpell.onCast(simpleWizard.level, simpleWizard, null);
+        simpleWizard.setCastingSpell(simpleWizard.teleportSpell.getID(), new BlockPos(dest));
+        simpleWizard.teleportSpell.setTeleportLocation(simpleWizard, dest);
+        simpleWizard.teleportSpell.onCast(simpleWizard.level, simpleWizard, null);
     }
 }
