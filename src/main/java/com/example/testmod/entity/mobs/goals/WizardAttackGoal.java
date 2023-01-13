@@ -1,4 +1,4 @@
-package com.example.testmod.entity.mobs;
+package com.example.testmod.entity.mobs.goals;
 
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import net.minecraft.core.BlockPos;

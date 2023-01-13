@@ -1,7 +1,7 @@
 package com.example.testmod.entity.mobs.simple_wizard;
 
-import com.example.testmod.entity.mobs.PatrolNearLocationGoal;
-import com.example.testmod.entity.mobs.WizardAttackGoal;
+import com.example.testmod.entity.mobs.goals.PatrolNearLocationGoal;
+import com.example.testmod.entity.mobs.goals.WizardAttackGoal;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.ender.MagicMissileSpell;
