@@ -3,6 +3,7 @@ package com.example.testmod.spells;
 import com.example.testmod.TestMod;
 import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.evocation.FirecrackerSpell;
+import com.example.testmod.spells.evocation.SummonHorseSpell;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
@@ -42,7 +43,8 @@ public enum SpellType {
     FIREBOLT_SPELL(10),
     FIRE_BREATH_SPELL(11),
     ICICLE_SPELL(12),
-    FIRECRACKER_SPELL(13);
+    FIRECRACKER_SPELL(13),
+    SUMMON_HORSE_SPELL(14);
 
     private final int value;
 
@@ -95,6 +97,9 @@ public enum SpellType {
             case FIRECRACKER_SPELL -> {
                 return new FirecrackerSpell(level);
             }
+            case SUMMON_HORSE_SPELL -> {
+                return new SummonHorseSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -118,7 +123,7 @@ public enum SpellType {
             case HEAL_SPELL -> SchoolType.HOLY;
             case TELEPORT_SPELL, MAGIC_MISSILE_SPELL -> SchoolType.ENDER;
             case BLOOD_SLASH_SPELL -> SchoolType.BLOOD;
-            case NONE_SPELL, SUMMON_VEX_SPELL,FIRECRACKER_SPELL  -> SchoolType.EVOCATION;
+            case NONE_SPELL, SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL -> SchoolType.EVOCATION;
         };
     }
 

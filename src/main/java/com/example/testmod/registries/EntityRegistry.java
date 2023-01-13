@@ -9,6 +9,7 @@ import com.example.testmod.entity.firebolt.FireboltProjectile;
 import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
+import com.example.testmod.entity.mobs.summons.SpectralSteed;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -71,4 +72,10 @@ public class EntityRegistry {
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "simple_wizard").toString()));
+
+    public static final RegistryObject<EntityType<SpectralSteed>> SPECTRAL_STEED =
+            ENTITIES.register("spectral_steed", () -> EntityType.Builder.<SpectralSteed>of(SpectralSteed::new, MobCategory.CREATURE)
+                    .sized(1.3964844F, 1.6F)
+                    .clientTrackingRange(10)
+                    .build(new ResourceLocation(TestMod.MODID, "spectral_steed").toString()));
 }
