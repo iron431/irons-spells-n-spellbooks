@@ -1,13 +1,13 @@
 package com.example.testmod.entity.mobs.goals;
 
-import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
-import net.minecraft.core.BlockPos;
+import com.example.testmod.TestMod;
+import com.example.testmod.entity.AbstractSpellCastingMob;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 public class WizardAttackGoal extends Goal {
-    private final SimpleWizard simpleWizard;
+    private final AbstractSpellCastingMob mob;
     private LivingEntity target;
     private final double speedModifier;
     private final int attackIntervalMin;
@@ -19,12 +19,12 @@ public class WizardAttackGoal extends Goal {
     private int attackTime = -1;
     private int attackCount = 0;
 
-    public WizardAttackGoal(SimpleWizard simpleWizard, double pSpeedModifier, int pAttackInterval) {
-        this(simpleWizard, pSpeedModifier, pAttackInterval, pAttackInterval);
+    public WizardAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
+        this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
     }
 
-    public WizardAttackGoal(SimpleWizard simpleWizard, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
-        this.simpleWizard = simpleWizard;
+    public WizardAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
+        this.mob = abstractSpellCastingMob;
         this.speedModifier = pSpeedModifier;
         this.attackIntervalMin = pAttackIntervalMin;
         this.attackIntervalMax = pAttackIntervalMax;
@@ -37,7 +37,7 @@ public class WizardAttackGoal extends Goal {
      * method as well.
      */
     public boolean canUse() {
-        LivingEntity livingentity = this.simpleWizard.getTarget();
+        LivingEntity livingentity = this.mob.getTarget();
         if (livingentity != null && livingentity.isAlive()) {
             this.target = livingentity;
             //TestMod.LOGGER.debug("WizardAttackGoal.canuse: target:{}", target.getName().getString());
@@ -52,7 +52,7 @@ public class WizardAttackGoal extends Goal {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     public boolean canContinueToUse() {
-        return this.canUse() || this.target.isAlive() && !this.simpleWizard.getNavigation().isDone();
+        return this.canUse() || this.target.isAlive() && !this.mob.getNavigation().isDone();
     }
 
     /**
@@ -72,8 +72,8 @@ public class WizardAttackGoal extends Goal {
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
-        double distanceSquared = this.simpleWizard.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
-        boolean hasLineOfSight = this.simpleWizard.getSensing().hasLineOfSight(this.target);
+        double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
+        boolean hasLineOfSight = this.mob.getSensing().hasLineOfSight(this.target);
         if (hasLineOfSight) {
             ++this.seeTime;
         } else {
@@ -82,12 +82,12 @@ public class WizardAttackGoal extends Goal {
 
         if (!(distanceSquared > (double) attackRadiusSqr) && seeTime >= 5) {
             //TestMod.LOGGER.debug("WizardAttackGoal.tick.1: distanceSquared: {},attackRadiusSqr: {}, seeTime: {}, attackTime: {}", distanceSquared, attackRadiusSqr, seeTime, attackTime);
-            this.simpleWizard.getNavigation().stop();
+            this.mob.getNavigation().stop();
         } else {
-            this.simpleWizard.getNavigation().moveTo(this.target, this.speedModifier);
+            this.mob.getNavigation().moveTo(this.target, this.speedModifier);
         }
 
-        this.simpleWizard.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
+        this.mob.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
         if (--this.attackTime == 0) {
             if (!hasLineOfSight) {
                 return;
@@ -117,21 +117,13 @@ public class WizardAttackGoal extends Goal {
     }
 
     private void doAttack() {
-        simpleWizard.lookAt(target, 360, 360);
-        //simpleWizard.getLookControl().setLookAt(target, 30, 30);
-        //TestMod.LOGGER.debug("WizardAttackGoal.doAttack: {}, {}, {}", simpleWizard.getLookAngle(), target.getName().getString(), simpleWizard.getLookControl().isLookingAtTarget());
-        simpleWizard.magicMissileSpell.onCast(this.simpleWizard.level, simpleWizard, null);
+        mob.castMagicMissile(true, 1);
+        TestMod.LOGGER.debug("WizardAttackGoal.doAttack: {}, {}, {}", mob.getLookAngle(), target.getName().getString(), mob.getLookControl().isLookingAtTarget());
+        //mob.magicMissileSpell.onCast(this.mob.level, mob, null);
     }
 
     private void doMovement() {
-        //TestMod.LOGGER.debug("WizardAttackGoal.doMovement");
-
-        var rotation = target.getLookAngle().normalize().scale(-15);
-        var pos = target.position();
-        var dest = rotation.add(pos);
-
-        simpleWizard.setCastingSpell(simpleWizard.teleportSpell.getID(), new BlockPos(dest));
-        simpleWizard.teleportSpell.setTeleportLocation(simpleWizard, dest);
-        simpleWizard.teleportSpell.onCast(simpleWizard.level, simpleWizard, null);
+        TestMod.LOGGER.debug("WizardAttackGoal.doMovement: target.position: {}", target.position());
+        mob.castTelportBehindTarget(target, 15);
     }
 }
