@@ -57,7 +57,8 @@ public class PlayerMagicData {
         this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
     }
-    public boolean discardCone(){
+
+    public boolean discardCone() {
         if (this.cone != null) {
             this.cone.discard();
             this.cone = null;

@@ -1,12 +1,15 @@
 package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.fire.FireballSpell;
+import com.example.testmod.spells.ice.ConeOfColdSpell;
+import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -33,11 +36,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
     private static final EntityDataAccessor<Integer> DATA_CASTING_SPELL_DURATION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Optional<BlockPos>> DATA_CASTING_TELEPORT_LOC = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
 
-    public TeleportSpell teleportSpell;
-    public MagicMissileSpell magicMissileSpell;
-    public FireballSpell fireballSpell;
+    private TeleportSpell teleportSpell;
+    private MagicMissileSpell magicMissileSpell;
+    private FireballSpell fireballSpell;
+    private ConeOfColdSpell coneOfColdSpell;
+    private ElectrocuteSpell electrocuteSpell;
 
-    private int castDurationRemaining = -1;
+    private PlayerMagicData playerMagicData = new PlayerMagicData();
     private boolean castStarted = false;
     private boolean forceLookAtTarget = false;
 
@@ -68,16 +73,31 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
                         prepareSpell(getTarget(), true, SpellType.FIREBALL_SPELL, 1);
                         startCasting(fireballSpell, true);
                     }
+                    case CONE_OF_COLD_SPELL -> {
+                        TestMod.LOGGER.debug("ASCM.castConeOfCold");
+                        prepareSpell(getTarget(), true, SpellType.CONE_OF_COLD_SPELL, 1);
+                        startCasting(coneOfColdSpell, true);
+                    }
+                    case ELECTROCUTE_SPELL -> {
+                        TestMod.LOGGER.debug("ASCM.ELECTROCUTE_SPELL");
+                        prepareSpell(getTarget(), true, SpellType.ELECTROCUTE_SPELL, 1);
+                        startCasting(electrocuteSpell, true);
+                    }
                 }
             }
         }
     }
 
-    private void resetCastingSpell() {
+    private void castComplete(AbstractSpell spell) {
+        if (!level.isClientSide) {
+            spell.onCastComplete(level, this, playerMagicData);
+        }
+
+        playerMagicData.resetCastingState();
+
         entityData.set(DATA_CASTING_TELEPORT_LOC, Optional.empty());
         entityData.set(DATA_CASTING_SPELL_DURATION, -1);
         entityData.set(DATA_CASTING_SPELL_ID, 0);
-        castDurationRemaining = -1;
         castStarted = false;
         forceLookAtTarget = false;
     }
@@ -91,14 +111,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             return;
         }
 
-        //TestMod.LOGGER.debug("ASCM.aiStep");
-        if (castDurationRemaining > 0) {
-            castDurationRemaining--;
-        }
-
         //TestMod.LOGGER.debug("ASCM.aiStep: castingSpellId:{}, castDurationRemaining:{}, castStarted:{}", spellId, castDurationRemaining, castStarted);
 
-        if (castDurationRemaining <= 0) {
+        if (playerMagicData.getCastDurationRemaining() <= 0) {
             switch (SpellType.values()[spellId]) {
                 case TELEPORT_SPELL -> {
                     entityData.get(DATA_CASTING_TELEPORT_LOC).ifPresent(pos -> {
@@ -111,7 +126,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
                     //TODO: Stop long Casting animation here?
                 }
             }
-            resetCastingSpell();
         } else if (!castStarted) {
             castStarted = true;
             switch (SpellType.values()[spellId]) {
@@ -139,13 +153,11 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             return;
         }
 
-        if (castDurationRemaining > 0) {
-            castDurationRemaining--;
-        }
+        playerMagicData.handleCastDuration();
 
         //TestMod.LOGGER.debug("ASCM.customServerAiStep: {}", spellId);
 
-        if (castDurationRemaining <= 0) {
+        if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (forceLookAtTarget) {
                 forceLookAtTarget(getTarget());
             }
@@ -156,16 +168,23 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
                         this.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
                         teleportSpell.setTeleportLocation(this, new Vec3(pos.getX(), pos.getY(), pos.getZ()));
                         teleportSpell.onCast(this.level, this, null);
-
+                        castComplete(teleportSpell);
                     });
                 }
                 case FIREBALL_SPELL -> {
                     this.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
                     fireballSpell.onCast(level, this, null);
+                    castComplete(fireballSpell);
+                }
+                case CONE_OF_COLD_SPELL -> {
+                    TestMod.LOGGER.debug("ASCM.customServerAiStep  castComplete(coneOfColdSpell)");
+                    castComplete(coneOfColdSpell);
+                }
+                case ELECTROCUTE_SPELL -> {
+                    TestMod.LOGGER.debug("ASCM.customServerAiStep  castComplete(coneOfColdSpell)");
+                    castComplete(electrocuteSpell);
                 }
             }
-
-            resetCastingSpell();
         } else if (!castStarted) {
             castStarted = true;
             switch (SpellType.values()[spellId]) {
@@ -174,18 +193,47 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
                     this.playSound(SoundEvents.EVOKER_PREPARE_ATTACK, 1.0f, 1.0f);
                     //TODO: Start long Casting animation here?
                 }
+                case CONE_OF_COLD_SPELL -> {
+                    TestMod.LOGGER.debug("ASCM: coneOfColdSpell start cast");
+                    coneOfColdSpell.onCast(level, this, playerMagicData);
+                }
+                case ELECTROCUTE_SPELL -> {
+                    TestMod.LOGGER.debug("ASCM: coneOfColdSpell start cast");
+                    electrocuteSpell.onCast(level, this, playerMagicData);
+                }
+            }
+        } else {
+            switch (SpellType.values()[spellId]) {
+                case CONE_OF_COLD_SPELL -> {
+                    TestMod.LOGGER.debug("ASCM: coneOfColdSpell tick cast");
+                    if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
+                        if (forceLookAtTarget && getTarget() != null) {
+                            forceLookAtTarget(getTarget());
+                        }
+                        coneOfColdSpell.onCast(level, this, playerMagicData);
+                    }
+                }
+                case ELECTROCUTE_SPELL -> {
+                    TestMod.LOGGER.debug("ASCM: coneOfColdSpell tick cast");
+                    if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
+                        if (forceLookAtTarget && getTarget() != null) {
+                            forceLookAtTarget(getTarget());
+                        }
+                        electrocuteSpell.onCast(level, this, playerMagicData);
+                    }
+                }
             }
         }
     }
 
-    public void castFireball(boolean forceLookAtTarget, int level) {
+    public void castFireball(boolean forceLookAtTarget, int spellLevel) {
         var target = getTarget();
-        prepareSpell(target, forceLookAtTarget, SpellType.FIREBALL_SPELL, level);
+        prepareSpell(target, forceLookAtTarget, SpellType.FIREBALL_SPELL, spellLevel);
         startCasting(fireballSpell, true);
     }
 
-    public void castMagicMissile(boolean forceLookAtTarget, int level) {
-        prepareSpell(getTarget(), true, SpellType.MAGIC_MISSILE_SPELL, level);
+    public void castMagicMissile(boolean forceLookAtTarget, int spellLevel) {
+        prepareSpell(getTarget(), true, SpellType.MAGIC_MISSILE_SPELL, spellLevel);
         magicMissileSpell.onCast(this.level, this, null);
     }
 
@@ -194,6 +242,18 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
 
         entityData.set(DATA_CASTING_TELEPORT_LOC, Optional.of(new BlockPos(pos)));
         entityData.set(DATA_CASTING_SPELL_ID, teleportSpell.getID());
+    }
+
+    public void castConeOfCold(boolean forceLookAtTarget, int spellLevel) {
+        TestMod.LOGGER.debug("ASCM.castConeOfCold forceLook: {}, spellLevel: {}", forceLookAtTarget, spellLevel);
+        prepareSpell(getTarget(), forceLookAtTarget, SpellType.CONE_OF_COLD_SPELL, spellLevel);
+        startCasting(coneOfColdSpell, true);
+    }
+
+    public void castElectrocute(boolean forceLookAtTarget, int spellLevel) {
+        TestMod.LOGGER.debug("ASCM.castConeOfCold forceLook: {}, spellLevel: {}", forceLookAtTarget, spellLevel);
+        prepareSpell(getTarget(), forceLookAtTarget, SpellType.ELECTROCUTE_SPELL, spellLevel);
+        startCasting(electrocuteSpell, true);
     }
 
     public void castTelportBehindTarget(LivingEntity target, int distance) {
@@ -217,34 +277,49 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
     private void startCasting(AbstractSpell spell, boolean forceLookAtTarget) {
         entityData.set(DATA_CASTING_SPELL_ID, spell.getID());
 
-        if (spell.getCastType() == CastType.LONG) {
+        playerMagicData.initiateCast(spell.getID(), spell.getLevel(), spell.getCastTime());
+
+        if (spell.getCastType() == CastType.LONG || spell.getCastType() == CastType.CONTINUOUS) {
             entityData.set(DATA_CASTING_SPELL_DURATION, spell.getCastTime());
-            castDurationRemaining = spell.getCastTime();
             this.forceLookAtTarget = forceLookAtTarget;
         }
     }
 
-    private void prepareSpell(LivingEntity target, boolean forceLookAtTarget, SpellType spellType, int level) {
+    private void prepareSpell(LivingEntity target, boolean forceLookAtTarget, SpellType spellType, int spellLevel) {
+        this.forceLookAtTarget = forceLookAtTarget;
+
         switch (spellType) {
             case TELEPORT_SPELL -> {
                 if (teleportSpell == null)
-                    teleportSpell = (TeleportSpell) AbstractSpell.getSpell(SpellType.TELEPORT_SPELL, level);
+                    teleportSpell = (TeleportSpell) AbstractSpell.getSpell(SpellType.TELEPORT_SPELL, spellLevel);
             }
             case MAGIC_MISSILE_SPELL -> {
                 if (magicMissileSpell == null)
-                    magicMissileSpell = (MagicMissileSpell) AbstractSpell.getSpell(SpellType.MAGIC_MISSILE_SPELL, level);
+                    magicMissileSpell = (MagicMissileSpell) AbstractSpell.getSpell(SpellType.MAGIC_MISSILE_SPELL, spellLevel);
                 else
-                    magicMissileSpell.setLevel(level);
+                    magicMissileSpell.setLevel(spellLevel);
             }
             case FIREBALL_SPELL -> {
                 if (fireballSpell == null)
-                    fireballSpell = (FireballSpell) AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, level);
+                    fireballSpell = (FireballSpell) AbstractSpell.getSpell(SpellType.FIREBALL_SPELL, spellLevel);
                 else
-                    fireballSpell.setLevel(level);
+                    fireballSpell.setLevel(spellLevel);
+            }
+            case CONE_OF_COLD_SPELL -> {
+                if (coneOfColdSpell == null)
+                    coneOfColdSpell = (ConeOfColdSpell) AbstractSpell.getSpell(SpellType.CONE_OF_COLD_SPELL, spellLevel);
+                else
+                    coneOfColdSpell.setLevel(spellLevel);
+            }
+            case ELECTROCUTE_SPELL -> {
+                if (electrocuteSpell == null)
+                    electrocuteSpell = (ElectrocuteSpell) AbstractSpell.getSpell(SpellType.ELECTROCUTE_SPELL, spellLevel);
+                else
+                    electrocuteSpell.setLevel(spellLevel);
             }
         }
 
-        if (forceLookAtTarget && target != null) {
+        if (this.forceLookAtTarget && target != null) {
             forceLookAtTarget(target);
         }
     }

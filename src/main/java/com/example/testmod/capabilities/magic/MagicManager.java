@@ -102,7 +102,6 @@ public class MagicManager {
                             } else {
                                 spell.castSpell(serverPlayer.level, serverPlayer, true, false);
                             }
-
                         }
                     }
                 }
