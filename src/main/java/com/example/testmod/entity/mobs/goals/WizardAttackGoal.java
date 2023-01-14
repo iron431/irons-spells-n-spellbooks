@@ -95,7 +95,8 @@ public class WizardAttackGoal extends Goal {
             float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
             float f1 = Mth.clamp(f, 0.1F, 1.0F);
 
-            doAction();
+            if(!mob.isCasting())
+                doAction();
 
             this.attackTime = Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
             //TestMod.LOGGER.debug("WizardAttackGoal.tick.2: attackTime.1: {}", attackTime);

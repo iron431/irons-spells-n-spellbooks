@@ -39,7 +39,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
 
     private int castDurationRemaining = -1;
     private boolean castStarted = false;
-
     private boolean forceLookAtTarget = false;
 
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
@@ -97,7 +96,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             castDurationRemaining--;
         }
 
-        TestMod.LOGGER.debug("ASCM.aiStep: castingSpellId:{}, castDurationRemaining:{}, castStarted:{}", spellId, castDurationRemaining, castStarted);
+        //TestMod.LOGGER.debug("ASCM.aiStep: castingSpellId:{}, castDurationRemaining:{}, castStarted:{}", spellId, castDurationRemaining, castStarted);
 
         if (castDurationRemaining <= 0) {
             switch (SpellType.values()[spellId]) {
@@ -147,6 +146,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
         //TestMod.LOGGER.debug("ASCM.customServerAiStep: {}", spellId);
 
         if (castDurationRemaining <= 0) {
+            if (forceLookAtTarget) {
+                forceLookAtTarget(getTarget());
+            }
+
             switch (SpellType.values()[spellId]) {
                 case TELEPORT_SPELL -> {
                     entityData.get(DATA_CASTING_TELEPORT_LOC).ifPresent(pos -> {
@@ -207,6 +210,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
         return false;
     }
 
+    public boolean isCasting() {
+        return castStarted;
+    }
+
     private void startCasting(AbstractSpell spell, boolean forceLookAtTarget) {
         entityData.set(DATA_CASTING_SPELL_ID, spell.getID());
 
@@ -238,8 +245,12 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
         }
 
         if (forceLookAtTarget && target != null) {
-            lookAt(target, 180, 180);
+            forceLookAtTarget(target);
         }
+    }
+
+    private void forceLookAtTarget(LivingEntity target) {
+        lookAt(target, 180, 180);
     }
 
     private void addClientSideParticles() {
