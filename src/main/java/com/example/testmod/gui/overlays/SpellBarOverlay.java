@@ -1,4 +1,4 @@
-package com.example.testmod.gui;
+package com.example.testmod.gui.overlays;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.item.SpellBook;

@@ -1,6 +1,7 @@
-package com.example.testmod.gui;
+package com.example.testmod.gui.inscription_table;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.gui.inscription_table.InscriptionTableMenu;
 import com.example.testmod.gui.network.PacketInscribeSpell;
 import com.example.testmod.gui.network.PacketRemoveSpell;
 import com.example.testmod.item.SpellBook;
@@ -28,7 +29,6 @@ import java.util.ArrayList;
 
 public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionTableMenu> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/gui/inscription_table.png");
-    private static final ResourceLocation TEXTURE2 = new ResourceLocation(TestMod.MODID, "textures/gui/spell_icons/fireball.png");
     //button locations
     private static final int INSCRIBE_BUTTON_X = 43;
     private static final int INSCRIBE_BUTTON_Y = 35;

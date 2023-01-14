@@ -1,7 +1,5 @@
-package com.example.testmod.block.InscriptionTable;
+package com.example.testmod.block.inscription_table;
 
-import com.example.testmod.registries.BlockRegistry;
-import it.unimi.dsi.fastutil.ints.IntSets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -12,8 +10,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -26,8 +22,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
-
-import static net.minecraft.world.level.material.Material.WOOD;
 
 //https://youtu.be/CUHEKcaIpOk?t=451
 public class InscriptionTableBlock extends BaseEntityBlock {

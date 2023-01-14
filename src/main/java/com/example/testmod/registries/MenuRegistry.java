@@ -1,10 +1,10 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.InscriptionTableMenu;
+import com.example.testmod.gui.inscription_table.InscriptionTableMenu;
+import com.example.testmod.gui.scroll_forge.ScrollForgeMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.network.IContainerFactory;
@@ -23,5 +23,6 @@ public class MenuRegistry {
     }
 
     public static final RegistryObject<MenuType<InscriptionTableMenu>> INSCRIPTION_TABLE_MENU = registerMenuType(InscriptionTableMenu::new,"inscription_table_menu");
+    public static final RegistryObject<MenuType<ScrollForgeMenu>> SCROLL_FORGE_MENU = registerMenuType(ScrollForgeMenu::new,"scroll_forge_menu");
 
 }

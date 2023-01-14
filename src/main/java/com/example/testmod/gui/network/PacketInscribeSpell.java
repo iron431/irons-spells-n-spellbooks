@@ -1,6 +1,6 @@
 package com.example.testmod.gui.network;
 
-import com.example.testmod.block.InscriptionTable.InscriptionTableTile;
+import com.example.testmod.block.inscription_table.InscriptionTableTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;

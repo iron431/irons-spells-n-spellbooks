@@ -1,10 +1,10 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.CastBarOverlay;
-import com.example.testmod.gui.ManaBarOverlay;
-import com.example.testmod.gui.SpellBarOverlay;
-import com.example.testmod.gui.SpellWheelOverlay;
+import com.example.testmod.gui.overlays.CastBarOverlay;
+import com.example.testmod.gui.overlays.ManaBarOverlay;
+import com.example.testmod.gui.overlays.SpellBarOverlay;
+import com.example.testmod.gui.overlays.SpellWheelOverlay;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;

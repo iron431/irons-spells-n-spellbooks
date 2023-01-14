@@ -1,10 +1,7 @@
-package com.example.testmod.gui;
+package com.example.testmod.gui.inscription_table;
 
-import com.example.testmod.TestMod;
-import com.example.testmod.block.InscriptionTable.InscriptionTableTile;
-import com.example.testmod.gui.slot.ScrollExtractionSlot;
+import com.example.testmod.block.inscription_table.InscriptionTableTile;
 import com.example.testmod.registries.MenuRegistry;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

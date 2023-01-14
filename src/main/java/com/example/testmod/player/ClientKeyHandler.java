@@ -1,7 +1,7 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.SpellWheelOverlay;
+import com.example.testmod.gui.overlays.SpellWheelOverlay;
 import com.example.testmod.gui.network.PacketChangeSelectedSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;

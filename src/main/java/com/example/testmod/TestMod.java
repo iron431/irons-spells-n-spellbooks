@@ -1,6 +1,7 @@
 package com.example.testmod;
 
-import com.example.testmod.gui.InscriptionTableScreen;
+import com.example.testmod.gui.inscription_table.InscriptionTableScreen;
+import com.example.testmod.gui.scroll_forge.ScrollForgeScreen;
 import com.example.testmod.registries.*;
 import com.example.testmod.setup.ModSetup;
 import com.mojang.logging.LogUtils;
@@ -67,7 +68,9 @@ public class TestMod {
 
     private void clientSetup(final FMLClientSetupEvent e) {
 
+        //TODO: find a better place for this
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
+        MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
 
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
 

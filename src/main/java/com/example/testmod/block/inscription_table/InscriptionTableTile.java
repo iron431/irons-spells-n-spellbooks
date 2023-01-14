@@ -1,7 +1,7 @@
-package com.example.testmod.block.InscriptionTable;
+package com.example.testmod.block.inscription_table;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.InscriptionTableMenu;
+import com.example.testmod.gui.inscription_table.InscriptionTableMenu;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.registries.BlockRegistry;
