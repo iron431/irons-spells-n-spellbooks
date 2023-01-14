@@ -1,6 +1,5 @@
 package com.example.testmod.entity.mobs.goals;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -87,7 +86,7 @@ public class WizardAttackGoal extends Goal {
             this.mob.getNavigation().moveTo(this.target, this.speedModifier);
         }
 
-        this.mob.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
+        this.mob.getLookControl().setLookAt(this.target, 45, 45);
         if (--this.attackTime == 0) {
             if (!hasLineOfSight) {
                 return;
@@ -109,7 +108,7 @@ public class WizardAttackGoal extends Goal {
     private void doAction() {
         attackCount++;
 
-        if (attackCount % 3 == 0) {
+        if (attackCount % 4 == 0) {
             doMovement();
         } else {
             doAttack();
@@ -117,13 +116,15 @@ public class WizardAttackGoal extends Goal {
     }
 
     private void doAttack() {
-        mob.castMagicMissile(true, 1);
-        TestMod.LOGGER.debug("WizardAttackGoal.doAttack: {}, {}, {}", mob.getLookAngle(), target.getName().getString(), mob.getLookControl().isLookingAtTarget());
-        //mob.magicMissileSpell.onCast(this.mob.level, mob, null);
+        //TestMod.LOGGER.debug("WizardAttackGoal.doAttack: {}, {}, {}", mob.getLookAngle(), target.getName().getString(), mob.getLookControl().isLookingAtTarget());
+        if (attackCount % 5 == 0)
+            mob.castFireball(true, 1);
+        else
+            mob.castMagicMissile(true, 1);
     }
 
     private void doMovement() {
-        TestMod.LOGGER.debug("WizardAttackGoal.doMovement: target.position: {}", target.position());
+        //TestMod.LOGGER.debug("WizardAttackGoal.doMovement: target.position: {}", target.position());
         mob.castTelportBehindTarget(target, 15);
     }
 }
