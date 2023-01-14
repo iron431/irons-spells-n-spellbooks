@@ -1,6 +1,5 @@
 package com.example.testmod.entity;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.ender.MagicMissileSpell;
@@ -13,8 +12,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -32,13 +29,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
 
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-    }
-
-    @Override
-    protected void registerGoals() {
-        //this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .25f));
-        //this.goalSelector.addGoal(2, new WizardAttackGoal(this, .5, 60));
-        //this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isValidTarget));
     }
 
     @Override
@@ -78,7 +68,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             return;
         }
 
-        TestMod.LOGGER.debug("ASCM.aiStep");
+        //TestMod.LOGGER.debug("ASCM.aiStep");
 
         switch (SpellType.values()[spellId]) {
             case TELEPORT_SPELL -> {
@@ -99,7 +89,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             return;
         }
 
-        TestMod.LOGGER.debug("ASCM.customServerAiStep: {}", spellId);
+        //TestMod.LOGGER.debug("ASCM.customServerAiStep: {}", spellId);
 
         switch (SpellType.values()[spellId]) {
             case TELEPORT_SPELL -> {
@@ -150,13 +140,5 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             return true;
         }
         return false;
-    }
-
-    public static AttributeSupplier.Builder prepareAttributes() {
-        return LivingEntity.createLivingAttributes()
-                .add(Attributes.ATTACK_DAMAGE, 3.0)
-                .add(Attributes.MAX_HEALTH, 20.0)
-                .add(Attributes.FOLLOW_RANGE, 40.0)
-                .add(Attributes.MOVEMENT_SPEED, 1);
     }
 }
