@@ -1,100 +1,99 @@
 package com.example.testmod.gui.scroll_forge;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.block.scroll_forge.ScrollForgeTile;
+import com.example.testmod.gui.inscription_table.ScrollExtractionSlot;
 import com.example.testmod.item.Scroll;
-import com.example.testmod.registries.BlockRegistry;
 import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.registries.MenuRegistry;
+import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
-import net.minecraft.world.item.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-import java.util.List;
+import static com.example.testmod.registries.BlockRegistry.SCROLL_FORGE_BLOCK;
+import static net.minecraft.world.item.Items.*;
 
 public class ScrollForgeMenu extends AbstractContainerMenu {
     public final ScrollForgeTile blockEntity;
     private final Level level;
+
+    public ScrollForgeMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
+        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+    }
 
     private final Slot inkSlot;
     private final Slot blankScrollSlot;
     private final Slot focusSlot;
     private final Slot resultSlot;
 
-    Runnable slotUpdateListener = () -> {
-    };
-
-    private final Container inputContainer = new SimpleContainer(3) {
-        /**
-         * For block entities, ensures the chunk containing the block entity is saved to disk later - the game won't think
-         * it hasn't changed and skip it.
-         */
-        public void setChanged() {
-            super.setChanged();
-            ScrollForgeMenu.this.slotsChanged(this);
-            ScrollForgeMenu.this.slotUpdateListener.run();
-        }
-    };
-    private final Container outputContainer = new SimpleContainer(1) {
-        /**
-         * For block entities, ensures the chunk containing the block entity is saved to disk later - the game won't think
-         * it hasn't changed and skip it.
-         */
-        public void setChanged() {
-            super.setChanged();
-            ScrollForgeMenu.this.slotUpdateListener.run();
-        }
-    };
-
     public ScrollForgeMenu(int containerId, Inventory inv, BlockEntity entity) {
+        //exists on server and render
         super(MenuRegistry.SCROLL_FORGE_MENU.get(), containerId);
+        checkContainerSize(inv, 4);
+        blockEntity = (ScrollForgeTile) entity;
+        this.level = inv.player.level;
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
+        IItemHandler itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get();
 
-        inkSlot = this.addSlot(new Slot(this.inputContainer, 0, 0, 0));
-        focusSlot = this.addSlot(new Slot(this.inputContainer, 1, 20, 0));
-        blankScrollSlot = this.addSlot(new Slot(this.inputContainer, 2, 40, 0));
-        resultSlot = this.addSlot(new Slot(this.outputContainer, 0, 60, 0));
+        inkSlot = new SlotItemHandler(itemHandler, 0, 12, 17);
+        blankScrollSlot = new SlotItemHandler(itemHandler, 1, 35, 17);
+        focusSlot = new SlotItemHandler(itemHandler, 2, 58, 17);
+        resultSlot = new SlotItemHandler(itemHandler, 3, 35, 47) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return false;
+            }
 
-        this.level = inv.player.getLevel();
-        this.blockEntity = (ScrollForgeTile) entity;
+            @Override
+            public void onTake(Player player, ItemStack stack) {
+                inkSlot.remove(1);
+                blankScrollSlot.remove(1);
+                focusSlot.remove(1);
+                super.onTake(player, stack);
+            }
+        };
+
+        this.addSlot(inkSlot);
+        this.addSlot(blankScrollSlot);
+        this.addSlot(focusSlot);
+        this.addSlot(resultSlot);
     }
 
-    public ScrollForgeMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
-    }
-
-    @Override
-    public void slotsChanged(Container pInventory) {
+    public void onSlotsChanged() {
         setupResultSlot(SpellType.FIREBALL_SPELL);
-        super.slotsChanged(pInventory);
+
+        TestMod.LOGGER.debug("ScrollForgeMenu: slotsChanged");
     }
 
     private void setupResultSlot(SpellType selectedSpellType) {
         ItemStack scrollStack = this.blankScrollSlot.getItem();
         ItemStack inkStack = this.inkSlot.getItem();
+        ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty()) {
-            resultStack = new ItemStack(ItemRegistry.SCROLL.get());
-            resultStack.setCount(1);
-            Scroll scroll = (Scroll) scrollStack.getItem();
-            var scrollData = scroll.getScrollData(resultStack);
-            scrollData.setData(selectedSpellType.getValue(), 1);
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty()) {
+            //if (scrollStack.is(PAPER) && inkStack.is(INK_SAC) && focusStack.is(BLAZE_POWDER)) {
+                resultStack = new ItemStack(ItemRegistry.SCROLL.get());
+                resultStack.setCount(1);
+                Scroll scroll = (Scroll) resultStack.getItem();
+                var scrollData = scroll.getScrollData(resultStack);
+                scrollData.setData(selectedSpellType.getValue(), 1);
+            //}
         }
 
         if (!ItemStack.matches(resultStack, this.resultSlot.getItem())) {
@@ -103,21 +102,9 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
     }
 
-    public Slot getResultSlot() {
-        return this.resultSlot;
-    }
+    private void setupSpellList(){
 
-    //TODO: register me in screen (see loom)
-    public void registerUpdateListener(Runnable pListener) {
-        this.slotUpdateListener = pListener;
     }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-                player, BlockRegistry.SCROLL_FORGE_BLOCK.get());
-    }
-
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.
     // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
@@ -134,7 +121,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 3;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 4;  // must be the number of slots you have!
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
@@ -168,17 +155,23 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         return copyOfSourceStack;
     }
 
+    @Override
+    public boolean stillValid(Player pPlayer) {
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
+                pPlayer, SCROLL_FORGE_BLOCK.get());
+    }
+
     private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
+                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18 + 21, 84 + i * 18));
             }
         }
     }
 
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18  + 21, 142));
         }
     }
 }

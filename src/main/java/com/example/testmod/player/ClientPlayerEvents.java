@@ -4,11 +4,20 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.PlayerMagicProvider;
 import com.example.testmod.network.PacketCancelCast;
+import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
@@ -17,6 +26,10 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.logging.Level;
+
+import static net.minecraft.world.item.Items.GLASS_BOTTLE;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
@@ -38,11 +51,28 @@ public class ClientPlayerEvents {
     //
     @SubscribeEvent
     public static void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-        if (event.getEntity().level.isClientSide)
-            return;
+        Player player = event.getEntity();
+        if (player.level.isClientSide) {
+            if (player.getItemInHand(player.getUsedItemHand()).is(GLASS_BOTTLE)) {
+                //TestMod.LOGGER.debug("onPlayerRightClickEntity: Glass Bottle");
+                if (event.getTarget() instanceof Creeper creeper) {
+                    //TestMod.LOGGER.debug("onPlayerRightClickEntity: Creeper");
+                    if (creeper.isPowered()) {
+                        //TestMod.LOGGER.debug("onPlayerRightClickEntity: Charged");
+                        player.level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                        ItemStack bottleStack = player.getItemInHand(player.getUsedItemHand());
+                        ItemUtils.createFilledResult(bottleStack, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()));
+                        creeper.ignite();
+                        event.setCancellationResult(InteractionResult.SUCCESS);
+                        event.setCanceled(true);
+                    }
+                }
+            }
+        } else {
+            if (serverSideIsCasting(player))
+                Messages.sendToServer(new PacketCancelCast(false));
+        }
 
-        if (serverSideIsCasting(event.getEntity()))
-            Messages.sendToServer(new PacketCancelCast(false));
     }
 
     //

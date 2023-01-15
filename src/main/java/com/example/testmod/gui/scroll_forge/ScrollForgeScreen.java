@@ -10,12 +10,20 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation("textures/gui/container/brewing_stand.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID , "textures/gui/scroll_forge.png");
 
     public ScrollForgeScreen(ScrollForgeMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
-    }
+        this.imageWidth = 218;
+        this.imageHeight = 166;
 
+    }
+    @Override
+    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta) {
+        renderBackground(pPoseStack);
+        super.render(pPoseStack, mouseX, mouseY, delta);
+        renderTooltip(pPoseStack, mouseX, mouseY);
+    }
     @Override
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
         setTexture(TEXTURE);

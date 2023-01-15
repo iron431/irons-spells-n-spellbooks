@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:blaze_powder",
+    "minecraft:ender_pearl",
+    "minecraft:echo_shard",
+    "minecraft:emerald",
+    "minecraft:amethyst_shard",
+    "testmod:lightning_bottle",
+    "testmod:frozen_bone_shard",
+    "testmod:blood_vial"
+  ]
+}
