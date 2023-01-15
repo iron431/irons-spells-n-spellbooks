@@ -102,7 +102,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             return;
         }
 
-        TestMod.LOGGER.debug("aiStep: {}, level:{}, duration:{}", castingSpell.getSpellType(), castingSpell.getLevel(), playerMagicData.getCastDurationRemaining());
+        //TestMod.LOGGER.debug("aiStep: {}, level:{}, duration:{}", castingSpell.getSpellType(), castingSpell.getLevel(), playerMagicData.getCastDurationRemaining());
 
         if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (castingSpell.getCastType() == CastType.INSTANT) {
