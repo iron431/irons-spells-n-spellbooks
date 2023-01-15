@@ -20,7 +20,7 @@ public class SimpleWizard extends AbstractSpellCastingMob {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .25f));
-        this.goalSelector.addGoal(2, new WizardAttackGoal(this, .5, 600));
+        this.goalSelector.addGoal(2, new WizardAttackGoal(this, .5, 60));
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isValidTarget));
