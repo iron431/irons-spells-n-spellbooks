@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 public class PlayerMagicData {
     public static final String MANA = "mana";
@@ -41,12 +42,14 @@ public class PlayerMagicData {
     public AbstractConeProjectile cone;
     private int castDuration = 0;
     private ItemStack castingItemStack = ItemStack.EMPTY;
+    private Vec3 teleportTargetPosition;
 
     public void resetCastingState() {
         this.isCasting = false;
         this.castingSpellId = 0;
         this.castingSpellLevel = 0;
         this.castDurationRemaining = 0;
+        this.teleportTargetPosition = null;
         this.discardCone();
     }
 
@@ -71,6 +74,14 @@ public class PlayerMagicData {
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, boolean fromScroll) {
         this.fromScroll = fromScroll;
         initiateCast(castingSpellId, castingSpellLevel, castDuration);
+    }
+
+    public void setTeleportTargetPosition(Vec3 targetPosition) {
+        this.teleportTargetPosition = targetPosition;
+    }
+
+    public Vec3 getTeleportTargetPosition() {
+        return this.teleportTargetPosition;
     }
 
     public boolean isCasting() {

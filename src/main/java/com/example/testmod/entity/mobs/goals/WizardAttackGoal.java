@@ -37,10 +37,10 @@ public class WizardAttackGoal extends Goal {
 
         spellList.add(SpellType.MAGIC_MISSILE_SPELL);
         spellList.add(SpellType.CONE_OF_COLD_SPELL);
-        spellList.add(SpellType.ELECTROCUTE_SPELL);
-        spellList.add(SpellType.MAGIC_MISSILE_SPELL);
+        spellList.add(SpellType.FIRE_BREATH_SPELL);
+        spellList.add(SpellType.BLOOD_SLASH_SPELL);
         spellList.add(SpellType.TELEPORT_SPELL);
-        spellList.add(SpellType.FIREBALL_SPELL);
+
     }
 
     /**
@@ -118,20 +118,19 @@ public class WizardAttackGoal extends Goal {
     }
 
     private void doAction() {
-        switch (getNextSpellType()) {
-            case FIREBALL_SPELL -> mob.castFireball(true, 1);
-            case MAGIC_MISSILE_SPELL -> mob.castMagicMissile(true, 1);
-            case TELEPORT_SPELL -> mob.castTelportBehindTarget(target, 15);
-            case CONE_OF_COLD_SPELL -> mob.castConeOfCold(true, 1);
-            case ELECTROCUTE_SPELL -> mob.castElectrocute(true, 1);
+        var spellType = getNextSpellType();
+
+        if (spellType == SpellType.TELEPORT_SPELL) {
+            mob.setTeleportLocationBehindTarget(15);
         }
+
+        mob.castSpell(spellType, 1);
     }
 
     private SpellType getNextSpellType() {
         if (spellListIndex == spellList.size() - 1) {
             spellListIndex = -1;
         }
-
         return spellList.get(++spellListIndex);
     }
 }
