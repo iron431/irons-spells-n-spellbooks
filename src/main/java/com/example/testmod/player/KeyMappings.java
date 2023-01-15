@@ -1,5 +1,6 @@
 package com.example.testmod.player;
 
+import com.example.testmod.TestMod;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
@@ -7,7 +8,7 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = TestMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class KeyMappings {
 
     //TODO: make custom key category
@@ -20,6 +21,7 @@ public final class KeyMappings {
 
     @SubscribeEvent
     public static void onRegisterKeybinds(RegisterKeyMappingsEvent event) {
+        TestMod.LOGGER.debug("KeyMappings.onRegisterKeybinds");
         event.register(SPELL_WHEEL_KEYMAP);
         event.register(SPELLBAR_SCROLL_MODIFIER_KEYMAP);
     }

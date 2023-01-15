@@ -32,7 +32,6 @@ public final class ClientKeyHandler {
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
 
-
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player == null)
