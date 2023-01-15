@@ -2,21 +2,20 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.spells.blood.BloodSlashSpell;
-import com.example.testmod.spells.evocation.FirecrackerSpell;
-import com.example.testmod.spells.evocation.SummonHorseSpell;
-import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
+import com.example.testmod.spells.evocation.FirecrackerSpell;
+import com.example.testmod.spells.evocation.SummonHorseSpell;
 import com.example.testmod.spells.evocation.SummonVexSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireBreathSpell;
 import com.example.testmod.spells.fire.FireballSpell;
 import com.example.testmod.spells.fire.FireboltSpell;
 import com.example.testmod.spells.holy.HealSpell;
+import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ice.IcicleSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
@@ -54,6 +53,10 @@ public enum SpellType {
 
     public int getValue() {
         return value;
+    }
+
+    public static SpellType getTypeFromValue(int value){
+        return SpellType.values()[value];
     }
 
     public AbstractSpell getSpellForType(int level) {

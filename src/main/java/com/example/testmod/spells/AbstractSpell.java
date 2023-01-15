@@ -19,6 +19,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
+
 import static com.example.testmod.registries.AttributeRegistry.COOLDOWN_REDUCTION;
 
 public abstract class AbstractSpell {
@@ -135,6 +137,7 @@ public abstract class AbstractSpell {
             } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
                 int effectiveCastTime = getEffectiveCastTime(player);
                 playerMagicData.initiateCast(getID(), level, effectiveCastTime, fromScroll);
+                onServerPreCast(player.level, player, playerMagicData);
                 Messages.sendToPlayer(new PacketCastingState(getID(), effectiveCastTime, castType, false), serverPlayer);
             }
         }
@@ -177,12 +180,33 @@ public abstract class AbstractSpell {
         return MagicManager.getEffectiveSpellCooldown(cooldown, playerCooldownModifier);
     }
 
-    public abstract void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData);
+    /**
+     * The primary spell effect handling goes here
+     */
+    public abstract void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData);
 
-    public void onCastComplete(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    /**
+     * Called on the server when a long spell casts, or a continuous spell is done casting or cancelled
+     */
+    public void onCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
     }
 
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand) {
+    /**
+     * Called once just before executing onCast. Can be used for client side sounds and particles
+     */
+    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
+    }
+
+    /**
+     * Called once just before executing onCast. Can be used for server side sounds and particles
+     */
+    public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+    }
+
+    /**
+     * Called on the server each tick while casting LONG and CONTINUOUS only
+     */
+    public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
     }
 
     public MutableComponent getUniqueInfo() {

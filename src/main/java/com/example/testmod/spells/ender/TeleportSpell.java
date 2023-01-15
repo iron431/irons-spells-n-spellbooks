@@ -1,5 +1,6 @@
 package com.example.testmod.spells.ender;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -7,6 +8,7 @@ import com.example.testmod.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -16,8 +18,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class TeleportSpell extends AbstractSpell {
-
-    private Vec3 teleportLocation;
 
     public TeleportSpell() {
         this(1);
@@ -41,28 +41,37 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand) {
+    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
+        TestMod.LOGGER.debug("Teleport.onClientPreCast: isClient:{}", level.isClientSide);
         particleCloud(level, entity, entity.getPosition(1));
-        var dest = teleportLocation != null ? teleportLocation : findTeleportLocation(level, entity);
+
+        Vec3 dest = null;
+
+        if (playerMagicData != null && playerMagicData.getTeleportTargetPosition() != null) {
+            var tmp = playerMagicData.getTeleportTargetPosition();
+            int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) tmp.x, (int) tmp.z);
+            dest = new Vec3(tmp.x, y, tmp.z);
+        } else {
+            dest = findTeleportLocation(level, entity);
+        }
+
         particleCloud(level, entity, dest);
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        entity.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
+        var potentialTarget = playerMagicData.getTeleportTargetPosition();
+        var dest = potentialTarget != null ? findTeleportLocation(entity, potentialTarget) : findTeleportLocation(level, entity);
 
-        //TestMod.LOGGER.debug("teleport: loc: {}", blockHitResult.getLocation());
-        //TestMod.LOGGER.debug("teleport: blockhit: {}, {}, {}", blockHitResult.getBlockPos().getX(), blockHitResult.getBlockPos().getY(), blockHitResult.getBlockPos().getZ());
-        //TestMod.LOGGER.debug("teleport: y: {}", y);
-
-        var dest = teleportLocation != null ? teleportLocation : findTeleportLocation(world, entity);
         entity.teleportTo(dest.x, dest.y, dest.z);
         entity.resetFallDistance();
-        teleportLocation = null;
+        playerMagicData.setTeleportTargetPosition(null);
     }
 
-    public void setTeleportLocation(LivingEntity entity, Vec3 location) {
+    public Vec3 findTeleportLocation(LivingEntity entity, Vec3 location) {
         int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) location.x, (int) location.z);
-        this.teleportLocation = new Vec3(location.x, y, location.z);
+        return new Vec3(location.x, y, location.z);
     }
 
     private Vec3 findTeleportLocation(Level level, LivingEntity entity) {

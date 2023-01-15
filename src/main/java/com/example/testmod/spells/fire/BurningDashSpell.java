@@ -33,7 +33,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand) {
+    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
         ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.FIRE;
     }
 

@@ -66,7 +66,7 @@ public class Scroll extends Item implements IScroll {
         var spell = scrollData.getSpell();
 
         if (level.isClientSide) {
-            spell.onClientPreCast(level, player, hand);
+            spell.onClientPreCast(level, player, hand, null);
             if (ClientMagicData.isCasting) {
                 Messages.sendToServer(new PacketCancelCast(false));
             }

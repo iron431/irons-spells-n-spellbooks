@@ -1,9 +1,12 @@
 package com.example.testmod.entity.mobs.goals;
 
 import com.example.testmod.entity.AbstractSpellCastingMob;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+
+import java.util.ArrayList;
 
 public class WizardAttackGoal extends Goal {
     private final AbstractSpellCastingMob mob;
@@ -16,7 +19,9 @@ public class WizardAttackGoal extends Goal {
 
     private int seeTime = 0;
     private int attackTime = -1;
-    private int attackCount = 0;
+
+    private final ArrayList<SpellType> spellList = new ArrayList<>();
+    private int spellListIndex = -1;
 
     public WizardAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
         this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
@@ -29,6 +34,13 @@ public class WizardAttackGoal extends Goal {
         this.attackIntervalMax = pAttackIntervalMax;
         this.attackRadius = 20;
         this.attackRadiusSqr = attackRadius * attackRadius;
+
+        spellList.add(SpellType.MAGIC_MISSILE_SPELL);
+        spellList.add(SpellType.CONE_OF_COLD_SPELL);
+        spellList.add(SpellType.FIRE_BREATH_SPELL);
+        spellList.add(SpellType.BLOOD_SLASH_SPELL);
+        spellList.add(SpellType.TELEPORT_SPELL);
+
     }
 
     /**
@@ -42,7 +54,6 @@ public class WizardAttackGoal extends Goal {
             //TestMod.LOGGER.debug("WizardAttackGoal.canuse: target:{}", target.getName().getString());
             return true;
         } else {
-            attackCount = 0;
             return false;
         }
     }
@@ -95,7 +106,7 @@ public class WizardAttackGoal extends Goal {
             float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
             float f1 = Mth.clamp(f, 0.1F, 1.0F);
 
-            if(!mob.isCasting())
+            if (!mob.isCasting())
                 doAction();
 
             this.attackTime = Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
@@ -107,25 +118,19 @@ public class WizardAttackGoal extends Goal {
     }
 
     private void doAction() {
-        attackCount++;
+        var spellType = getNextSpellType();
 
-        if (attackCount % 4 == 0) {
-            doMovement();
-        } else {
-            doAttack();
+        if (spellType == SpellType.TELEPORT_SPELL) {
+            mob.setTeleportLocationBehindTarget(15);
         }
+
+        mob.castSpell(spellType, 1);
     }
 
-    private void doAttack() {
-        //TestMod.LOGGER.debug("WizardAttackGoal.doAttack: {}, {}, {}", mob.getLookAngle(), target.getName().getString(), mob.getLookControl().isLookingAtTarget());
-        if (attackCount % 5 == 0)
-            mob.castFireball(true, 1);
-        else
-            mob.castMagicMissile(true, 1);
-    }
-
-    private void doMovement() {
-        //TestMod.LOGGER.debug("WizardAttackGoal.doMovement: target.position: {}", target.position());
-        mob.castTelportBehindTarget(target, 15);
+    private SpellType getNextSpellType() {
+        if (spellListIndex == spellList.size() - 1) {
+            spellListIndex = -1;
+        }
+        return spellList.get(++spellListIndex);
     }
 }

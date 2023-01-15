@@ -38,6 +38,9 @@
 - Cylinders https://www.youtube.com/watch?v=FZj4-Y2qvm8
 - Fill and Hollow https://www.youtube.com/watch?v=_dJBsfhMX9U
 
+### Sounds
+- https://forge.gemwire.uk/wiki/Sounds
+
 ### Cool Building Mod
 - https://www.reddit.com/r/feedthebeast/comments/102jpqk/i_ported_the_mighty_architect_to_fabric_1192/
 
@@ -51,8 +54,9 @@
 - ```/data get entity @s SelectedItem```
 - ```/data get entity @s ForgeCaps```
 - ```/data get entity @s Pos```
+- ```/effect give @s resistance 10000 4 true```
 
-### Give Generator//
+### Give Generator
 - https://mapmaking.fr/give1.16/
 - ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:blood_slash_resist",Slot:"chest",Amount:.5,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
 - ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:cooldown_reduction",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
