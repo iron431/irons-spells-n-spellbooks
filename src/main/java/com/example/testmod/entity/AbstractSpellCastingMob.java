@@ -62,6 +62,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             var castingData = entityData.get(DATA_CASTING);
 
             if (castingData == null || castingData.spellId == 0) {
+                castComplete();
                 return;
             }
 
