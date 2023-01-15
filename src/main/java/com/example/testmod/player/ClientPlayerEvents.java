@@ -8,6 +8,8 @@ import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -59,7 +61,7 @@ public class ClientPlayerEvents {
                     //TestMod.LOGGER.debug("onPlayerRightClickEntity: Creeper");
                     if (creeper.isPowered()) {
                         //TestMod.LOGGER.debug("onPlayerRightClickEntity: Charged");
-                        player.level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                        ((ClientLevel)player.level).playSound(player, new BlockPos(player.getX(), player.getY(), player.getZ()), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
                         ItemStack bottleStack = player.getItemInHand(player.getUsedItemHand());
                         ItemUtils.createFilledResult(bottleStack, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()));
                         creeper.ignite();
