@@ -1,9 +1,12 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.registries.ItemRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public enum SchoolType {
     FIRE(0),
@@ -26,6 +29,30 @@ public enum SchoolType {
 
     public Component getDisplayName() {
         return DISPLAYS[getValue()];
+    }
+
+    public static SchoolType getSchoolFromItem(Item item) {
+        if (Items.BLAZE_POWDER.equals(item)) {
+            return FIRE;
+        } else if (ItemRegistry.FROZEN_BONE_SHARD.get().equals(item)) {
+            return ICE;
+        }else if (ItemRegistry.LIGHTNING_BOTTLE.get().equals(item)) {
+            return LIGHTNING;
+        }else if (Items.AMETHYST_SHARD.equals(item)) {
+            return HOLY;
+        }else if (Items.ENDER_PEARL.equals(item)) {
+            return ENDER;
+        }else if (ItemRegistry.BLOOD_VIAL.get().equals(item)) {
+            return BLOOD;
+        }else if (Items.EMERALD.equals(item)) {
+            return EVOCATION;
+        }/*else if (Items.ECHO_SHARD.equals(item)) {
+            return VOID;
+        }*/
+        else return null;
+    }
+    public static SchoolType getSchoolFromItem(ItemStack stack){
+        return getSchoolFromItem(stack.getItem());
     }
 
     public static final Component DISPLAY_FIRE = Component.translatable("school.testmod.fire").withStyle(ChatFormatting.GOLD);

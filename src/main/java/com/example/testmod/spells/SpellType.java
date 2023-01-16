@@ -18,6 +18,7 @@ import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.lang3.ArrayUtils;
 
 public enum SpellType {
     /*
@@ -55,7 +56,7 @@ public enum SpellType {
         return value;
     }
 
-    public static SpellType getTypeFromValue(int value){
+    public static SpellType getTypeFromValue(int value) {
         return SpellType.values()[value];
     }
 
@@ -118,17 +119,53 @@ public enum SpellType {
     }
 
     public SchoolType getSchoolType() {
-        //TODO: not this
-        return switch (this) {
-            case FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL -> SchoolType.FIRE;
-            case CONE_OF_COLD_SPELL, ICICLE_SPELL -> SchoolType.ICE;
-            case ELECTROCUTE_SPELL -> SchoolType.LIGHTNING;
-            case HEAL_SPELL -> SchoolType.HOLY;
-            case TELEPORT_SPELL, MAGIC_MISSILE_SPELL -> SchoolType.ENDER;
-            case BLOOD_SLASH_SPELL -> SchoolType.BLOOD;
-            case NONE_SPELL, SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL -> SchoolType.EVOCATION;
-        };
+        if (quickSearch(FIRE_SPELLS, this))
+            return SchoolType.FIRE;
+        if (quickSearch(ICE_SPELLS, this))
+            return SchoolType.ICE;
+        if (quickSearch(LIGHTNING_SPELLS, this))
+            return SchoolType.LIGHTNING;
+        if (quickSearch(HOLY_SPELLS, this))
+            return SchoolType.HOLY;
+        if (quickSearch(ENDER_SPELLS, this))
+            return SchoolType.ENDER;
+        if (quickSearch(BLOOD_SPELLS, this))
+            return SchoolType.BLOOD;
+        //if (quickSearch(EVOCATION_SPELLS, this))
+        return SchoolType.EVOCATION;
     }
+
+    public static SpellType[] getSpellsFromSchool(SchoolType school) {
+        if (school.equals(SchoolType.FIRE))
+            return FIRE_SPELLS;
+        else if (school.equals(SchoolType.ICE))
+            return ICE_SPELLS;
+        else if (school.equals(SchoolType.LIGHTNING))
+            return LIGHTNING_SPELLS;
+        else if (school.equals(SchoolType.HOLY))
+            return HOLY_SPELLS;
+        else if (school.equals(SchoolType.ENDER))
+            return ENDER_SPELLS;
+        else if (school.equals(SchoolType.BLOOD))
+            return BLOOD_SPELLS;
+        //else if (school.equals(SchoolType.EVOCATION))
+        return EVOCATION_SPELLS;
+    }
+
+    private static final SpellType[] FIRE_SPELLS =
+            {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL};
+    private static final SpellType[] ICE_SPELLS =
+            {CONE_OF_COLD_SPELL, ICICLE_SPELL};
+    private static final SpellType[] LIGHTNING_SPELLS =
+            {ELECTROCUTE_SPELL};
+    private static final SpellType[] HOLY_SPELLS =
+            {HEAL_SPELL};
+    private static final SpellType[] ENDER_SPELLS =
+            {TELEPORT_SPELL, MAGIC_MISSILE_SPELL};
+    private static final SpellType[] BLOOD_SPELLS =
+            {BLOOD_SLASH_SPELL};
+    private static final SpellType[] EVOCATION_SPELLS =
+            {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL};
 
     public MutableComponent getDisplayName() {
         return Component.translatable("spell." + TestMod.MODID + "." + this.getId());
@@ -140,5 +177,12 @@ public enum SpellType {
 
     private String getId() {
         return this.toString().toLowerCase().replace("_spell", "");
+    }
+
+    private boolean quickSearch(SpellType[] array, SpellType query) {
+        for (SpellType spellType : array)
+            if (spellType.equals(query))
+                return true;
+        return false;
     }
 }

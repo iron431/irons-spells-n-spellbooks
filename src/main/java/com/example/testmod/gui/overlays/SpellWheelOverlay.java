@@ -2,7 +2,7 @@ package com.example.testmod.gui.overlays;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.spellbook.SpellBookData;
-import com.example.testmod.gui.network.PacketChangeSelectedSpell;
+import com.example.testmod.gui.inscription_table.network.PacketChangeSelectedSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
@@ -20,11 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;

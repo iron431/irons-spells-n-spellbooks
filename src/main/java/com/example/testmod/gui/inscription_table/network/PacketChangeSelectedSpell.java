@@ -1,13 +1,11 @@
-package com.example.testmod.gui.network;
+package com.example.testmod.gui.inscription_table.network;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.item.SpellBook;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class PacketChangeSelectedSpell {

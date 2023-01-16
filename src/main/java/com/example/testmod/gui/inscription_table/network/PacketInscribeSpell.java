@@ -1,4 +1,4 @@
-package com.example.testmod.gui.network;
+package com.example.testmod.gui.inscription_table.network;
 
 import com.example.testmod.block.inscription_table.InscriptionTableTile;
 import net.minecraft.core.BlockPos;

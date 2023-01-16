@@ -1,9 +1,8 @@
 package com.example.testmod.gui.inscription_table;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.inscription_table.InscriptionTableMenu;
-import com.example.testmod.gui.network.PacketInscribeSpell;
-import com.example.testmod.gui.network.PacketRemoveSpell;
+import com.example.testmod.gui.inscription_table.network.PacketInscribeSpell;
+import com.example.testmod.gui.inscription_table.network.PacketRemoveSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.player.ClientMagicData;
@@ -49,7 +48,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private boolean isDirty;
     protected Button inscribeButton;
     protected Button extractButton;
-    private ItemStack lastSpellBookItem = null;
+    private ItemStack lastSpellBookItem = ItemStack.EMPTY;
     protected ArrayList<SpellSlotInfo> spellSlots;
     private int selectedSpellIndex = -1;
 

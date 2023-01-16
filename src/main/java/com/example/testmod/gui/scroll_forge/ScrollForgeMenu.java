@@ -6,8 +6,11 @@ import com.example.testmod.gui.inscription_table.ScrollExtractionSlot;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.registries.MenuRegistry;
+import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.ModTags;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -19,10 +22,17 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.testmod.registries.BlockRegistry.SCROLL_FORGE_BLOCK;
 import static net.minecraft.world.item.Items.*;
@@ -39,6 +49,8 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     private final Slot blankScrollSlot;
     private final Slot focusSlot;
     private final Slot resultSlot;
+
+    //private List<SpellCardInfo> spellCards;
 
     public ScrollForgeMenu(int containerId, Inventory inv, BlockEntity entity) {
         //exists on server and render
@@ -73,12 +85,14 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         this.addSlot(blankScrollSlot);
         this.addSlot(focusSlot);
         this.addSlot(resultSlot);
+
     }
 
     public void onSlotsChanged() {
-        setupResultSlot(SpellType.FIREBALL_SPELL);
+        TestMod.LOGGER.debug("{}",this.hashCode());
 
-        TestMod.LOGGER.debug("ScrollForgeMenu: slotsChanged");
+        setupResultSlot(SpellType.FIREBALL_SPELL);
+        TestMod.LOGGER.debug("ScrollForgeMenu.slotsChanged");
     }
 
     private void setupResultSlot(SpellType selectedSpellType) {
@@ -88,11 +102,11 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         ItemStack resultStack = ItemStack.EMPTY;
         if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty()) {
             //if (scrollStack.is(PAPER) && inkStack.is(INK_SAC) && focusStack.is(BLAZE_POWDER)) {
-                resultStack = new ItemStack(ItemRegistry.SCROLL.get());
-                resultStack.setCount(1);
-                Scroll scroll = (Scroll) resultStack.getItem();
-                var scrollData = scroll.getScrollData(resultStack);
-                scrollData.setData(selectedSpellType.getValue(), 1);
+            resultStack = new ItemStack(ItemRegistry.SCROLL.get());
+            resultStack.setCount(1);
+            Scroll scroll = (Scroll) resultStack.getItem();
+            var scrollData = scroll.getScrollData(resultStack);
+            scrollData.setData(selectedSpellType.getValue(), 1);
             //}
         }
 
@@ -102,9 +116,22 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
     }
 
-    private void setupSpellList(){
-
+    public Slot getInkSlot() {
+        return inkSlot;
     }
+
+    public Slot getBlankScrollSlot() {
+        return blankScrollSlot;
+    }
+
+    public Slot getFocusSlot() {
+        return focusSlot;
+    }
+
+    public Slot getResultSlot() {
+        return resultSlot;
+    }
+
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.
     // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
@@ -171,7 +198,19 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18  + 21, 142));
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18 + 21, 142));
         }
     }
+
+//    private class SpellCardInfo {
+//        public SpellType spell;
+//        public int index;
+//        public Button button;
+//
+//        SpellCardInfo(SpellType spell, int index, Button button) {
+//            this.spell = spell;
+//            this.index = index;
+//            this.button = button;
+//        }
+//    }
 }
