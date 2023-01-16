@@ -53,13 +53,13 @@ public class SpellBook extends Item implements ISpellBook {
         //
         if (level.isClientSide()) {
             if (spell != null) {
-                spell.onClientPreCast(level, player, hand, null);
                 if (ClientMagicData.isCasting) {
                     Messages.sendToServer(new PacketCancelCast(false));
                     return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
                 } else if (ClientMagicData.getPlayerMana() > spell.getManaCost() &&
                         !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
                 ) {
+                    spell.onClientPreCast(level, player, hand, null);
                     //TestMod.LOGGER.debug(spell.getCastType() + "");
                     if (spell.getCastType() == CastType.CONTINUOUS) {
                         player.startUsingItem(hand);
