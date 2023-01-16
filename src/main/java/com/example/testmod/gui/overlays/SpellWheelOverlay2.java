@@ -102,7 +102,8 @@ public class SpellWheelOverlay2 extends GuiComponent {
         float mouseRotation = (Utils.getAngle(mousePos, screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
 
         selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, spellCount - 1);
-        selectedSpellIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), spells.get(selection));
+        var currentSpell = spells.get(selection);
+        selectedSpellIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), currentSpell);
 
         int mouseXX = (int) (minecraft.mouseHandler.xpos() * (double) minecraft.getWindow().getGuiScaledWidth() / (double) minecraft.getWindow().getScreenWidth());
         int mouseYY = (int) (minecraft.mouseHandler.ypos() * (double) minecraft.getWindow().getGuiScaledHeight() / (double) minecraft.getWindow().getScreenHeight());
@@ -127,7 +128,14 @@ public class SpellWheelOverlay2 extends GuiComponent {
         setTranslucentTexture(TEXTURE);
         for (int i = 0; i < locations.length; i++) {
             var spell = spells.get(i);
+
             if (spell != null) {
+                var spellText = currentSpell.getSpellType().getDisplayName().getString() + " (" + currentSpell.getLevel() + ")";
+                var font = gui.getFont();
+                int size = font.width(spellText);
+
+                font.draw(poseStack, spellText, (float)(centerX-size/2), (float)(centerY-ringOuterEdgeMax), whiteTextColor);
+
                 gui.blit(poseStack, centerX + (int) locations[i].x, centerY + (int) locations[i].y, 176, 84, 22, 22);
             }
         }
@@ -149,6 +157,7 @@ public class SpellWheelOverlay2 extends GuiComponent {
         }
 
         poseStack.popPose();
+
     }
 
     private Vec2[] drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY,
