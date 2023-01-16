@@ -7,6 +7,7 @@ import com.example.testmod.entity.SpellCastSyncedData;
 import com.example.testmod.player.ClientPlayerEvents;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -37,6 +38,7 @@ public class ModSetup {
 
         //SCROLLS
         bus.addListener(ScrollDataEvents::onRegisterCapabilities);
+        bus.addGenericListener(ItemStack.class, ScrollDataEvents::onAttachCapabilitiesItemStack);
 
     }
 

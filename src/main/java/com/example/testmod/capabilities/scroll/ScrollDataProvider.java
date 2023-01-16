@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 
 public class ScrollDataProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
+    public ScrollDataProvider(){}
+
     public static Capability<ScrollData> SCROLL_DATA = CapabilityManager.get(new CapabilityToken<>() {
     });
 

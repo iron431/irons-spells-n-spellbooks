@@ -1,6 +1,8 @@
 package com.example.testmod.util;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.scroll.ScrollData;
+import com.example.testmod.capabilities.scroll.ScrollDataProvider;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import net.minecraft.core.BlockPos;
@@ -29,6 +31,10 @@ public class Utils {
             sb.append("\n");
         });
         return sb.toString();
+    }
+
+    public static ScrollData getScrollData(ItemStack stack) {
+        return stack.getCapability(ScrollDataProvider.SCROLL_DATA).resolve().get();
     }
 
     public static void spawnInWorld(Level level, BlockPos pos, ItemStack remaining) {
@@ -115,8 +121,8 @@ public class Utils {
 
     public static EntityHitResult getTargetEntity(Level level, LivingEntity entity, Vec3 start, Vec3 end) {
         AABB range = entity.getBoundingBox().expandTowards(end.subtract(start));
-        TestMod.LOGGER.debug("Utils.getTargetEntity.rangeStart: {}",new Vec3(range.minX,range.minY,range.minZ));
-        TestMod.LOGGER.debug("Utils.getTargetEntity.rangeEnd: {}",new Vec3(range.maxX,range.maxY,range.maxZ));
+        TestMod.LOGGER.debug("Utils.getTargetEntity.rangeStart: {}", new Vec3(range.minX, range.minY, range.minZ));
+        TestMod.LOGGER.debug("Utils.getTargetEntity.rangeEnd: {}", new Vec3(range.maxX, range.maxY, range.maxZ));
 
 
         List<EntityHitResult> hits = new ArrayList<>();
