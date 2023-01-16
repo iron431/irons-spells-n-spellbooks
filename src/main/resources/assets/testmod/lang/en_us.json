@@ -19,6 +19,8 @@
   "ui.testmod.no_selection": "Select a Spell",
   "ui.testmod.empty_slot": "Empty Slot",
   "ui.testmod.level": "Level %d",
+  "ui.testmod.lvl": "Lvl:",
+  "ui.testmod.cost": "Cost:",
   "ui.testmod.mana_cost": "%d Mana",
   "ui.testmod.cast_instant": "Instant Cast",
   "ui.testmod.cast_long": "%s Cast Time",
