@@ -38,6 +38,12 @@
   "school.testmod.blood": "Blood",
   "school.testmod.evocation": "Evocation",
 
+  "rarity.testmod.common": "Common",
+  "rarity.testmod.uncommon": "Uncommon",
+  "rarity.testmod.rare": "Rare",
+  "rarity.testmod.epic": "Epic",
+  "rarity.testmod.legendary": "Legendary",
+
   "attribute.testmod.max_mana":"Max Mana",
   "attribute.testmod.spell_power":"Spell Power",
   "attribute.testmod.cast_time_reduction":"Cast Time Reduction",

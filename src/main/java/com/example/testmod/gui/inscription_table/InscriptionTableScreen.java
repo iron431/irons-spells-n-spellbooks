@@ -392,7 +392,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private void setSelectedIndex(int index) {
         selectedSpellIndex = index;
-
     }
 
     private boolean isValidInscription() {
