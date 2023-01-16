@@ -2,7 +2,7 @@ package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.gui.inscription_table.network.PacketChangeSelectedSpell;
-import com.example.testmod.gui.overlays.SpellWheelOverlay2;
+import com.example.testmod.gui.overlays.SpellWheelOverlay;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -38,11 +38,11 @@ public final class ClientKeyHandler {
 
         if (SPELL_WHEEL_STATE.wasPressed()) {
             if (minecraft.screen == null && Utils.isPlayerHoldingSpellBook(player))
-                SpellWheelOverlay2.instance.open();
+                SpellWheelOverlay.instance.open();
         }
         if (SPELL_WHEEL_STATE.wasReleased()) {
-            if (minecraft.screen == null && SpellWheelOverlay2.instance.active)
-                SpellWheelOverlay2.instance.close();
+            if (minecraft.screen == null && SpellWheelOverlay.instance.active)
+                SpellWheelOverlay.instance.close();
 
         }
         if (SPELLBAR_MODIFIER_STATE.wasPressed())
