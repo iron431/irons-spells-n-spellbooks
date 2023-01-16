@@ -1,8 +1,8 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.overlays.SpellWheelOverlay;
 import com.example.testmod.gui.network.PacketChangeSelectedSpell;
+import com.example.testmod.gui.overlays.SpellWheelOverlay2;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -25,7 +25,6 @@ import java.util.List;
 public final class ClientKeyHandler {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
-
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
 
@@ -39,11 +38,11 @@ public final class ClientKeyHandler {
 
         if (SPELL_WHEEL_STATE.wasPressed()) {
             if (minecraft.screen == null && Utils.isPlayerHoldingSpellBook(player))
-                SpellWheelOverlay.open();
+                SpellWheelOverlay2.instance.open();
         }
         if (SPELL_WHEEL_STATE.wasReleased()) {
-            if (minecraft.screen == null && SpellWheelOverlay.active)
-                SpellWheelOverlay.close();
+            if (minecraft.screen == null && SpellWheelOverlay2.instance.active)
+                SpellWheelOverlay2.instance.close();
 
         }
         if (SPELLBAR_MODIFIER_STATE.wasPressed())

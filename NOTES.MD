@@ -44,6 +44,9 @@
 ### Cool Building Mod
 - https://www.reddit.com/r/feedthebeast/comments/102jpqk/i_ported_the_mighty_architect_to_fabric_1192/
 
+### Rendering
+- OpenGL Blending used by Minecraft: https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBlendFuncSeparate.xhtml 
+
 ###
 - Hit Detection
     - https://github.com/ZsoltMolnarrr/BetterCombat/tree/1.18.2/forge

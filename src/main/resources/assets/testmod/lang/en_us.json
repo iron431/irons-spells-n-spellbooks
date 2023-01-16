@@ -15,7 +15,7 @@
   "tooltip.testmod.cast_type": " %s Cast",
   "tooltip.testmod.selected_spell": "[%s %d]",
 
-  "ui.testmod.no_spellbook": "No SpellBook",
+  "ui.testmod.no_spell_book": "No SpellBook",
   "ui.testmod.no_selection": "Select a Spell",
   "ui.testmod.empty_slot": "Empty Slot",
   "ui.testmod.level": "Level %d",
@@ -66,5 +66,9 @@
   "death.attack.blood_magic.item": "%1$s blood magic 2",
   "death.attack.blood_magic.player": "%1$s blood magic 3",
 
-  "effect.testmod.blood_slashed": "Blood Slashed"
+  "effect.testmod.blood_slashed": "Blood Slashed",
+
+  "commands.testmod.create_scroll.failed":"Create Scroll Failed",
+  "commands.testmod.create_spell_book.failed": "Create SpellBook Failed"
+
 }
