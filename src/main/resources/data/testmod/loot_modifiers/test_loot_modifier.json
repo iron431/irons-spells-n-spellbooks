@@ -1,0 +1,10 @@
+{
+  "type": "testmod:append_loot",
+  "conditions": [
+    {
+      "condition": "block_state_property",
+      "block": "minecraft:grass"
+    }
+  ],
+  "key": "testmod:scroll_gen"
+}
