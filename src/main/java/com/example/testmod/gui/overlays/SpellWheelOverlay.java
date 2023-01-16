@@ -35,26 +35,17 @@ public class SpellWheelOverlay extends GuiComponent {
     public final static ResourceLocation WHEEL = new ResourceLocation(TestMod.MODID, "textures/gui/spell_wheel.png");
 
     private final Vector4f radialButtonColor = new Vector4f(0f, 0f, 0f, .5f);
-    private final Vector4f sideButtonColor = new Vector4f(.5f, .5f, .5f, .5f);
     private final Vector4f highlightColor = new Vector4f(.6f, .8f, 1f, .6f);
     private final Vector4f selectedColor = new Vector4f(0f, .5f, 1f, .5f);
     private final Vector4f highlightSelectedColor = new Vector4f(0.2f, .7f, 1f, .7f);
 
     private final int whiteTextColor = 0xffffffff;
-    private final int watermarkTextColor = 0x88888888;
-    private final int descriptionTextColor = 0xdd888888;
-    private final int optionTextColor = 0xeeeeeeff;
 
     private final double ringInnerEdge = 20;
     private double ringOuterEdge = 90;
     private final double ringOuterEdgeMax = 90;
     private final double ringOuterEdgeMin = 65;
     private final double categoryLineWidth = 1;
-    private final double textDistance = 75;
-    private final double buttonDistance = 105;
-    private final float fadeSpeed = 0.3f;
-    private final int descriptionHeight = 100;
-    private float visibility = 0f;
 
     public boolean active;
     private int selection;
