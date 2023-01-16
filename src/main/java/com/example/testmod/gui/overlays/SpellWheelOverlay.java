@@ -8,7 +8,6 @@ import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.util.Utils;
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Vector4f;
@@ -16,9 +15,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -124,20 +123,19 @@ public class SpellWheelOverlay extends GuiComponent {
             var spell = spells.get(i);
 
             if (spell != null) {
-                var spellText = currentSpell.getSpellType().getDisplayName().getString() + " (L:" + currentSpell.getLevel() + ", M:" + currentSpell.getManaCost() + ")";
-
-                List<FormattedCharSequence> list = Lists.newArrayList();
-                list.add(FormattedCharSequence.forward(currentSpell.getSpellType().getDisplayName().getString() + " (", Style.EMPTY.withColor(ChatFormatting.WHITE)));
-                list.add(FormattedCharSequence.forward("L:" + currentSpell.getLevel(), Style.EMPTY.withColor(ChatFormatting.RED)));
-                list.add(FormattedCharSequence.forward(" M:" + currentSpell.getManaCost(), Style.EMPTY.withColor(ChatFormatting.DARK_BLUE)));
-                list.add(FormattedCharSequence.forward(")", Style.EMPTY.withColor(ChatFormatting.WHITE)));
-                var fcs = FormattedCharSequence.composite(list);
 
                 var font = gui.getFont();
-                int size = font.width(spellText);
+                var spellName = currentSpell.getSpellType().getDisplayName().withStyle(Style.EMPTY.withUnderlined(true));
+                int size = font.width(spellName);
+                font.drawShadow(poseStack, spellName, (float) (centerX - size / 2), (float) (centerY - (ringOuterEdge + 25)), whiteTextColor);
 
-                font.draw(poseStack, spellText, (float) (centerX - size / 2), (float) (centerY - ringOuterEdge), whiteTextColor);
-                font.draw(poseStack, fcs, (float) (centerX - size / 2), (float) (centerY - (ringOuterEdge + 20)), whiteTextColor);
+                var spellInfo = Component.translatable("ui." + TestMod.MODID + ".lvl").withStyle(ChatFormatting.WHITE)
+                        .append(Component.literal(" " + currentSpell.getLevel() + "  ").withStyle(ChatFormatting.RED))
+                        .append(Component.translatable("ui." + TestMod.MODID + ".cost").withStyle(ChatFormatting.WHITE))
+                        .append(Component.literal(" " + currentSpell.getManaCost()).withStyle(ChatFormatting.BLUE));
+                size = font.width(spellInfo);
+                font.drawShadow(poseStack, spellInfo, (float) (centerX - size / 2), (float) (centerY - (ringOuterEdge + 10)), whiteTextColor);
+
                 setTranslucentTexture(TEXTURE);
                 gui.blit(poseStack, centerX + (int) locations[i].x, centerY + (int) locations[i].y, 176, 84, 22, 22);
             }
