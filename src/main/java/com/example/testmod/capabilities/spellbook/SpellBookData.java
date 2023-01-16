@@ -104,7 +104,7 @@ public class SpellBookData {
     public boolean addSpell(AbstractSpell spell, int index) {
         if (index > -1 && index < transcribedSpells.length &&
                 transcribedSpells[index] == null &&
-                Arrays.stream(transcribedSpells).noneMatch(s -> s.getSpellType() == spell.getSpellType())) {
+                Arrays.stream(transcribedSpells).noneMatch(s -> s!= null && s.getSpellType() == spell.getSpellType())) {
             transcribedSpells[index] = spell;
             spellCount++;
             if (spellCount == 1) {
