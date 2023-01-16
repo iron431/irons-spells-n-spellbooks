@@ -1,6 +1,7 @@
 {
   "replace": false,
   "entries": [
-    "testmod:test_loot_modifier"
+    "testmod:test_loot_modifier",
+    "testmod:stray_modifier"
   ]
 }
