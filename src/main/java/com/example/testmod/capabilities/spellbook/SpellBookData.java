@@ -9,7 +9,9 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class SpellBookData {
 
@@ -31,6 +33,12 @@ public class SpellBookData {
     public SpellBookData(int spellSlots) {
         this.spellSlots = spellSlots;
         this.transcribedSpells = new AbstractSpell[this.spellSlots];
+    }
+
+    public void setSlots(int slots) {
+        this.spellSlots = slots;
+        this.transcribedSpells = new AbstractSpell[this.spellSlots];
+        setDirty(true);
     }
 
     public AbstractSpell getActiveSpell() {
@@ -67,6 +75,12 @@ public class SpellBookData {
         return result;
     }
 
+
+    public List<AbstractSpell> getActiveInscribedSpells() {
+        return Arrays.stream(this.transcribedSpells).filter(Objects::nonNull).toList();
+    }
+
+
     private void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
@@ -81,6 +95,10 @@ public class SpellBookData {
 
     public int getSpellCount() {
         return spellCount;
+    }
+
+    public AbstractSpell getSpell(int index) {
+        return transcribedSpells[index];
     }
 
     public boolean addSpell(AbstractSpell spell, int index) {

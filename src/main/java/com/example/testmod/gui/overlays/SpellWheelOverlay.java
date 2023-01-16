@@ -35,6 +35,7 @@ public class SpellWheelOverlay extends GuiComponent {
     private static int selectedSpellIndex;
 
     public static void open() {
+        TestMod.LOGGER.debug("SpellWheelOverlay.open");
         active = true;
         selection = -1;
         selectedSpellIndex = -1;
@@ -42,6 +43,7 @@ public class SpellWheelOverlay extends GuiComponent {
     }
 
     public static void close() {
+        TestMod.LOGGER.debug("SpellWheelOverlay.close");
         active = false;
         if (selectedSpellIndex >= 0) {
             Messages.sendToServer(new PacketChangeSelectedSpell(selectedSpellIndex));
@@ -56,10 +58,10 @@ public class SpellWheelOverlay extends GuiComponent {
         var minecraft = Minecraft.getInstance();
 
         if ((minecraft.player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed() || !Utils.isPlayerHoldingSpellBook(minecraft.player))) {
+            TestMod.LOGGER.debug("SpellWheelOverlay.render set active to false");
             active = false;
             return;
         }
-
 
 
         Player player = minecraft.player;
@@ -103,7 +105,7 @@ public class SpellWheelOverlay extends GuiComponent {
 
         setTranslucentTexture(WHEEL);
         poseStack.scale(scale, scale, scale);
-        gui.blit(poseStack, (int) (centerX / scale - 32), (int) (centerY / scale - 32), 0, 0, 64, 64, 64, 64);
+        blit(poseStack, (int) (centerX / scale - 32), (int) (centerY / scale - 32), 0, 0, 64, 64, 64, 64);
         poseStack.scale(1 / scale, 1 / scale, 1 / scale);
 
         //Slot Border, icon, selected frame
@@ -118,7 +120,7 @@ public class SpellWheelOverlay extends GuiComponent {
         for (int i = 0; i < locations.size(); i++) {
             if (spells.get(i) != null) {
                 setOpaqueTexture(spells.get(i).getSpellType().getResourceLocation());
-                gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
+                blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
 
                 float f = spells.get(i) == null ? 0 : ClientMagicData.getCooldownPercent(spells.get(i).getSpellType());
                 if (f > 0) {
@@ -136,7 +138,7 @@ public class SpellWheelOverlay extends GuiComponent {
     }
 
     private static void drawWithScale(Gui gui, PoseStack stack, int x, int y, int width, int height, int spriteX, int spriteY, int spriteWidth, int spriteHeight, int spriteMapWidth, int spriteMapHeight, float scale) {
-        gui.blit(stack, (int) (x / scale) - width / 2, (int) (y / scale) - height / 2, spriteX, spriteY, spriteWidth, spriteHeight, spriteMapWidth, spriteMapHeight);
+        blit(stack, (int) (x / scale) - width / 2, (int) (y / scale) - height / 2, spriteX, spriteY, spriteWidth, spriteHeight, spriteMapWidth, spriteMapHeight);
     }
 
     private static void setOpaqueTexture(ResourceLocation texture) {
