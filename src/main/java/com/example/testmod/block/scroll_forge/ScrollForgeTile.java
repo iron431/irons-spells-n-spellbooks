@@ -6,6 +6,7 @@ import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.registries.BlockRegistry;
 import com.example.testmod.registries.ItemRegistry;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +32,6 @@ import javax.annotation.Nonnull;
 
 public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     private ScrollForgeMenu menu;
-
     private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -63,6 +63,9 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
         return menu;
     }
 
+    public void setRecipeSpell(int spellId){
+        menu.setRecipeSpell(SpellType.getTypeFromValue(spellId));
+    }
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
@@ -109,6 +112,8 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
+
+
 
 
 //    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, InscriptionTableTile pBlockEntity) {

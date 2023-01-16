@@ -50,6 +50,8 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     private final Slot focusSlot;
     private final Slot resultSlot;
 
+    private SpellType spellRecipeSelection = SpellType.NONE_SPELL;
+
     //private List<SpellCardInfo> spellCards;
 
     public ScrollForgeMenu(int containerId, Inventory inv, BlockEntity entity) {
@@ -89,9 +91,9 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     }
 
     public void onSlotsChanged() {
-        TestMod.LOGGER.debug("{}",this.hashCode());
+        TestMod.LOGGER.debug("{}", this.hashCode());
 
-        setupResultSlot(SpellType.FIREBALL_SPELL);
+        setupResultSlot(spellRecipeSelection);
         TestMod.LOGGER.debug("ScrollForgeMenu.slotsChanged");
     }
 
@@ -100,7 +102,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty()) {
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && selectedSpellType != SpellType.NONE_SPELL) {
             //if (scrollStack.is(PAPER) && inkStack.is(INK_SAC) && focusStack.is(BLAZE_POWDER)) {
             resultStack = new ItemStack(ItemRegistry.SCROLL.get());
             resultStack.setCount(1);
@@ -114,6 +116,11 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
             this.resultSlot.set(resultStack);
         }
 
+    }
+
+    public void setRecipeSpell(SpellType typeFromValue) {
+        this.spellRecipeSelection = typeFromValue;
+        setupResultSlot(typeFromValue);
     }
 
     public Slot getInkSlot() {
@@ -201,6 +208,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18 + 21, 142));
         }
     }
+
 
 //    private class SpellCardInfo {
 //        public SpellType spell;

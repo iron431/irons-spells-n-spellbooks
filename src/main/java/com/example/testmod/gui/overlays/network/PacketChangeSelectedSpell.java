@@ -1,4 +1,4 @@
-package com.example.testmod.gui.inscription_table.network;
+package com.example.testmod.gui.overlays.network;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.item.SpellBook;

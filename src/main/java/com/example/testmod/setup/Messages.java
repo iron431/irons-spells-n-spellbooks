@@ -1,9 +1,10 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.inscription_table.network.PacketChangeSelectedSpell;
+import com.example.testmod.gui.overlays.network.PacketChangeSelectedSpell;
 import com.example.testmod.gui.inscription_table.network.PacketInscribeSpell;
 import com.example.testmod.gui.inscription_table.network.PacketRemoveSpell;
+import com.example.testmod.gui.scroll_forge.network.PacketSpellListSelection;
 import com.example.testmod.network.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -90,6 +91,12 @@ public class Messages {
                 .decoder(PacketChangeSelectedSpell::new)
                 .encoder(PacketChangeSelectedSpell::toBytes)
                 .consumer(PacketChangeSelectedSpell::handle)
+                .add();
+
+        net.messageBuilder(PacketSpellListSelection.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(PacketSpellListSelection::new)
+                .encoder(PacketSpellListSelection::toBytes)
+                .consumer(PacketSpellListSelection::handle)
                 .add();
     }
 

@@ -2,7 +2,7 @@ package com.example.testmod.gui.overlays;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.spellbook.SpellBookData;
-import com.example.testmod.gui.inscription_table.network.PacketChangeSelectedSpell;
+import com.example.testmod.gui.overlays.network.PacketChangeSelectedSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
