@@ -1,23 +1,22 @@
 package com.example.testmod.gui.scroll_forge;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.inscription_table.InscriptionTableScreen;
+import com.example.testmod.gui.scroll_forge.network.PacketSpellListSelection;
+import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellRarity;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.ModTags;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
@@ -52,8 +51,19 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     @Override
     public void onClose() {
-        selectedSpellIndex = -1;
+        resetList();
         super.onClose();
+    }
+
+    private void resetList() {
+        selectedSpellIndex = -1;
+        scrollOffset = 0;
+
+        for (SpellCardInfo s : availableSpells)
+            removeWidget(s.button);
+        availableSpells.clear();
+
+        Messages.sendToServer(new PacketSpellListSelection(this.menu.blockEntity.getBlockPos(), 0));
     }
 
     @Override
@@ -109,10 +119,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     private List<SpellCardInfo> generateSpellList() {
-        for (SpellCardInfo s : availableSpells)
-            removeWidget(s.button);
-        availableSpells.clear();
-        selectedSpellIndex = -1;
+        this.resetList();
 
         ItemStack focusStack = menu.getFocusSlot().getItem();
         TestMod.LOGGER.info("ScrollForgeMenu.generateSpellSlots.focus: {}", focusStack.getItem());
@@ -122,7 +129,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             var spells = SpellType.getSpellsFromSchool(school);
             for (int i = 0; i < spells.length; i++) {
                 int temp_index = i;
-                availableSpells.add(new SpellCardInfo(spells[i], i, this.addWidget(new Button((int) 0, (int) 0, 108, 19, Component.translatable(i + ""), (p_169820_) -> this.setSelectedIndex(temp_index)))));
+                availableSpells.add(new SpellCardInfo(spells[i], i + 1, i, this.addWidget(new Button((int) 0, (int) 0, 108, 19, Component.translatable(i + ""), (p_169820_) -> this.setSelectedIndex(temp_index)))));
             }
             TestMod.LOGGER.info("ScrollForgeMenu.generateSpellSlots.spells: {}", ArrayUtils.toString(availableSpells));
 
@@ -132,7 +139,13 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     private void setSelectedIndex(int index) {
         selectedSpellIndex = index;
+        Messages.sendToServer(new PacketSpellListSelection(this.menu.blockEntity.getBlockPos(), availableSpells.get(index).spell.getValue()));
+
         TestMod.LOGGER.debug("ScrollForgeScreen: setting selected spell: {}", availableSpells.get(index).getDisplayName());
+    }
+
+    public int getSelectedSpellIndex() {
+        return selectedSpellIndex;
     }
 
     private void setTexture(ResourceLocation texture) {
@@ -143,29 +156,32 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     private class SpellCardInfo {
         SpellType spell;
+        int spellLevel;
+        SpellRarity rarity;
         Button button;
         int index;
 
-        SpellCardInfo(SpellType spell, int index, Button button) {
+        SpellCardInfo(SpellType spell, int spellLevel, int index, Button button) {
             this.spell = spell;
+            this.spellLevel = spellLevel;
             this.index = index;
             this.button = button;
+            this.rarity = SpellRarity.getSpellRarity(AbstractSpell.getSpell(spell, spellLevel));
         }
 
-        void draw(Screen screen, PoseStack poseStack, int x, int y, int mouseX, int mouseY) {
+        void draw(ScrollForgeScreen screen, PoseStack poseStack, int x, int y, int mouseX, int mouseY) {
             setTexture(TEXTURE);
+            this.button.active = rarity.compareRarity(SpellRarity.UNCOMMON) <= 0;
             if (this.button.active) {
-                if (mouseX >= x && mouseY >= y && mouseX < x + 108 && mouseY < y + 19)
+                if (index == screen.getSelectedSpellIndex())//mouseX >= x && mouseY >= y && mouseX < x + 108 && mouseY < y + 19)
                     screen.blit(poseStack, x, y, 0, 204, 108, 19);
                 else
                     screen.blit(poseStack, x, y, 0, 166, 108, 19);
-                font.draw(poseStack, getDisplayName().withStyle(Style.EMPTY.withFont(RUNIC_FONT)), x + 5, y + 5, 0xFFFFFF);
+                font.draw(poseStack, getDisplayName(), x + 2, y + 2, 0xFFFFFF);
 
             } else {
                 screen.blit(poseStack, x, y, 0, 185, 108, 19);
-
-                Minecraft.getInstance().fontFilterFishy.draw(poseStack, getDisplayName(), x + 5, y + 5, 0xFFFFFF);
-
+                font.draw(poseStack, getDisplayName().withStyle(Style.EMPTY.withFont(RUNIC_FONT)), x + 2, y + 2, 0xFFFFFF);
             }
         }
 

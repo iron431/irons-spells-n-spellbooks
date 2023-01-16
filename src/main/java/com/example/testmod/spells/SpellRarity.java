@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 public enum SpellRarity {
-    COMMON (0),
+    COMMON(0),
     UNCOMMON(1),
     RARE(2),
     EPIC(3),
@@ -14,11 +14,12 @@ public enum SpellRarity {
     ANCIENT(6);
 
     private final int value;
+
     SpellRarity(final int newValue) {
         value = newValue;
     }
 
-    public static SpellRarity getSpellRarity(AbstractSpell spell){
+    public static SpellRarity getSpellRarity(AbstractSpell spell) {
         //TODO: calcuate this dynamic and based off of config files
         return switch (spell.level) {
             case 1 -> COMMON;
@@ -28,11 +29,20 @@ public enum SpellRarity {
             default -> LEGENDARY;
         };
     }
-    public int getValue(){
+
+    public int getValue() {
         return this.value;
     }
+
     public Component getDisplayName() {
         return DISPLAYS[getValue()];
+    }
+
+    /**
+     * @return Returns positive if the other is less rare, negative if it is more rare, and zero if they are equal
+     */
+    public int compareRarity(SpellRarity other) {
+        return Integer.compare(this.getValue(), other.getValue());
     }
 
     private final MutableComponent[] DISPLAYS = {

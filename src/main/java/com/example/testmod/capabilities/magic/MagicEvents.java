@@ -10,12 +10,12 @@ import net.minecraftforge.event.TickEvent;
 
 public class MagicEvents {
 
-    public static final String PLAYER_MAGIC = "playermagic";
+    public static final ResourceLocation PLAYER_MAGIC_RESOURCE = new ResourceLocation(TestMod.MODID, "player_magic");
 
     public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player) {
             if (!event.getObject().getCapability(PlayerMagicProvider.PLAYER_MAGIC).isPresent()) {
-                event.addCapability(new ResourceLocation(TestMod.MODID, MagicEvents.PLAYER_MAGIC), new PlayerMagicProvider());
+                event.addCapability(PLAYER_MAGIC_RESOURCE, new PlayerMagicProvider());
             }
         }
     }
