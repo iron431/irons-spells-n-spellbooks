@@ -1,6 +1,5 @@
 package com.example.testmod.spells;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
@@ -115,10 +114,7 @@ public abstract class AbstractSpell {
         var serverPlayer = (ServerPlayer) player;
         var playerMagicData = MagicManager.getPlayerMagicData(serverPlayer);
 
-        TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.0: {}, {}, {}, {}", playerMagicData.isCasting(), playerMagicData.getCastingSpellId(), fromScroll, triggerCooldown);
-
         if (!playerMagicData.isCasting()) {
-            TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.1");
             int playerMana = playerMagicData.getMana();
 
             boolean hasEnoughMana = playerMana - getManaCost() >= 0;
@@ -135,13 +131,9 @@ public abstract class AbstractSpell {
                 }
             }
 
-            TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.2");
-
             if (this.castType == CastType.INSTANT) {
-                TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.3");
                 return castSpell(level, serverPlayer, fromScroll, triggerCooldown);
             } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
-                TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.4");
                 int effectiveCastTime = getEffectiveCastTime(player);
                 playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, fromScroll);
                 onServerPreCast(player.level, player, playerMagicData);
@@ -149,7 +141,6 @@ public abstract class AbstractSpell {
             }
             return true;
         } else {
-            TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.5");
             ServerPlayerEvents.serverSideCancelCast(serverPlayer, playerMagicData);
             return false;
         }

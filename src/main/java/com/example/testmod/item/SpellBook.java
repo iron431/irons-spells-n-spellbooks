@@ -44,8 +44,7 @@ public class SpellBook extends Item implements ISpellBook {
         AbstractSpell spell = spellBookData.getActiveSpell();
 
         if (level.isClientSide()) {
-            if (spell == null
-                    || ClientMagicData.isCasting
+            if (ClientMagicData.isCasting
                     || ClientMagicData.getPlayerMana() < spell.getManaCost()
                     || ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
                 return InteractionResultHolder.fail(itemStack);
@@ -58,7 +57,7 @@ public class SpellBook extends Item implements ISpellBook {
             }
         }
 
-        if (spell != null && spell.attemptInitiateCast(itemStack, level, player, false, true)) {
+        if (spell.attemptInitiateCast(itemStack, level, player, false, true)) {
             return InteractionResultHolder.success(itemStack);
         } else {
             return InteractionResultHolder.fail(itemStack);

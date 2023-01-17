@@ -62,8 +62,7 @@ public class Scroll extends Item implements IScroll {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        var scrollData = getScrollData(stack);
-        var spell = scrollData.getSpell();
+        var spell =  getScrollData(stack).getSpell();
 
         if (level.isClientSide) {
             if (ClientMagicData.isCasting) {

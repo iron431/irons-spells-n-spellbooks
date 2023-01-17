@@ -1,18 +1,12 @@
 package com.example.testmod.mixin;
 
-import com.example.testmod.TestMod;
-import com.example.testmod.network.PacketCancelCast;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.setup.Messages;
-import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -24,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 
-import javax.imageio.ImageTranscoder;
 import java.util.List;
 
 @Mixin(SwordItem.class)
@@ -35,27 +28,31 @@ public abstract class SwordItemMixin extends Item {
 
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack swordStack = player.getItemInHand(hand);
-        var spell = Utils.getScrollData(swordStack).getSpell();
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        var spell = Utils.getScrollData(stack).getSpell();
+
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             if (level.isClientSide) {
-                spell.onClientPreCast(level, player, hand, null);
                 if (ClientMagicData.isCasting) {
-                    Messages.sendToServer(new PacketCancelCast(false));
+                    return InteractionResultHolder.fail(stack);
+                } else {
+                    spell.onClientPreCast(level, player, hand, null);
+
+                    if (spell.getCastType() == CastType.CONTINUOUS) {
+                        player.startUsingItem(hand);
+                    }
+                    return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
                 }
-                if (spell.getCastType() == CastType.CONTINUOUS) {
-                    player.startUsingItem(hand);
-                }
-                return InteractionResultHolder.success(swordStack);
             }
 
-            if (spell.attemptInitiateCast(swordStack, level, player, false, true)) {
-                return InteractionResultHolder.success(swordStack);
+            if (spell.attemptInitiateCast(stack, level, player, false, true)) {
+                return InteractionResultHolder.success(stack);
             } else {
-                return InteractionResultHolder.fail(swordStack);
+                return InteractionResultHolder.fail(stack);
             }
         }
+
         return super.use(level, player, hand);
     }
 
