@@ -53,12 +53,13 @@ public class PlayerMagicData {
         this.discardCone();
     }
 
-    public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration) {
-        this.isCasting = true;
+    public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, boolean fromScroll) {
+        this.fromScroll = fromScroll;
         this.castingSpellId = castingSpellId;
         this.castingSpellLevel = castingSpellLevel;
         this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
+        this.isCasting = true;
     }
 
     public boolean discardCone() {
@@ -71,10 +72,6 @@ public class PlayerMagicData {
         return false;
     }
 
-    public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, boolean fromScroll) {
-        this.fromScroll = fromScroll;
-        initiateCast(castingSpellId, castingSpellLevel, castDuration);
-    }
 
     public void setTeleportTargetPosition(Vec3 targetPosition) {
         this.teleportTargetPosition = targetPosition;

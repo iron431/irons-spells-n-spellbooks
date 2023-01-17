@@ -44,6 +44,7 @@ public class PacketCancelCast {
         if (serverPlayer != null) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
+                TestMod.LOGGER.debug("PacketCancelCast.cancelCast currently casting");
                 int spellId = playerMagicData.getCastingSpellId();
                 playerMagicData.resetCastingState();
 

@@ -175,7 +175,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             entityData.set(DATA_CASTING, data);
         }
 
-        playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime());
+        playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), false);
 
         //TODO: this may be in the wrong spot.. i don't think this works for all cast types here
         if (!level.isClientSide) {
