@@ -1,11 +1,13 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.network.PacketCastingState;
 import com.example.testmod.network.PacketSyncManaToClient;
+import com.example.testmod.player.ServerPlayerEvents;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import net.minecraft.ChatFormatting;
@@ -102,21 +104,25 @@ public abstract class AbstractSpell {
         return getSpell(SpellType.values()[spellId], level);
     }
 
-    //returns true/false for success/failure to cast
-    public boolean attemptInitiateCast(ItemStack stack, Level world, Player player, boolean fromScroll, boolean triggerCooldown) {
-        if (world.isClientSide) {
-            //TODO: handle client/server delineation in onCast, not here; this breaks all client side spells
+    /**
+     * returns true/false for success/failure to cast
+     */
+    public boolean attemptInitiateCast(ItemStack stack, Level level, Player player, boolean fromScroll, boolean triggerCooldown) {
+        if (level.isClientSide) {
             return false;
         }
 
-        if (player != null) {
-            var serverPlayer = (ServerPlayer) player;
-            var playerMagicData = MagicManager.getPlayerMagicData(serverPlayer);
+        var serverPlayer = (ServerPlayer) player;
+        var playerMagicData = MagicManager.getPlayerMagicData(serverPlayer);
+
+        TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.0: {}, {}, {}, {}", playerMagicData.isCasting(), playerMagicData.getCastingSpellId(), fromScroll, triggerCooldown);
+
+        if (!playerMagicData.isCasting()) {
+            TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.1");
             int playerMana = playerMagicData.getMana();
 
             boolean hasEnoughMana = playerMana - getManaCost() >= 0;
             boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
-            boolean isAlreadyCasting = playerMagicData.isCasting();
 
             if (!fromScroll) {
                 if (!hasEnoughMana) {
@@ -127,21 +133,26 @@ public abstract class AbstractSpell {
                     player.sendSystemMessage(spellType.getDisplayName().append(" is on cooldown").withStyle(ChatFormatting.RED));
                     return false;
                 }
-                if (isAlreadyCasting) {
-                    return false;
-                }
             }
 
+            TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.2");
+
             if (this.castType == CastType.INSTANT) {
-                return castSpell(world, serverPlayer, fromScroll, triggerCooldown);
+                TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.3");
+                return castSpell(level, serverPlayer, fromScroll, triggerCooldown);
             } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
+                TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.4");
                 int effectiveCastTime = getEffectiveCastTime(player);
-                playerMagicData.initiateCast(getID(), level, effectiveCastTime, fromScroll);
+                playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, fromScroll);
                 onServerPreCast(player.level, player, playerMagicData);
                 Messages.sendToPlayer(new PacketCastingState(getID(), effectiveCastTime, castType, false), serverPlayer);
             }
+            return true;
+        } else {
+            TestMod.LOGGER.debug("AbsctractSpell.attemptInitiateCast.5");
+            ServerPlayerEvents.serverSideCancelCast(serverPlayer, playerMagicData);
+            return false;
         }
-        return false;
     }
 
     public boolean castSpell(Level world, ServerPlayer serverPlayer, boolean fromScroll, boolean triggerCooldown) {

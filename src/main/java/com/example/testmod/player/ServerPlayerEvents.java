@@ -83,7 +83,7 @@ public class ServerPlayerEvents {
         }
     }
 
-    private static void serverSideCancelCast(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
+    public static void serverSideCancelCast(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
         PacketCancelCast.cancelCast(serverPlayer, SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
     }
 }

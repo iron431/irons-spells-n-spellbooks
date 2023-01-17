@@ -38,51 +38,31 @@ public class SpellBook extends Item implements ISpellBook {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        /*
-            pretty sure we can super easily cancel spell if you dont hold down use and still let quick cast not have to be held
-            just have to remember if we WERE using, cancel if we stop, but ONLY START using if we right click
-
-         */
 
         ItemStack itemStack = player.getItemInHand(hand);
         var spellBookData = getSpellBookData(itemStack);
         AbstractSpell spell = spellBookData.getActiveSpell();
 
-        //
-        //  Client Side Use Animation
-        //
         if (level.isClientSide()) {
-            if (spell != null) {
-                if (ClientMagicData.isCasting) {
-                    Messages.sendToServer(new PacketCancelCast(false));
-                    return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
-                } else if (ClientMagicData.getPlayerMana() > spell.getManaCost() &&
-                        !ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())
-                ) {
-                    spell.onClientPreCast(level, player, hand, null);
-                    //TestMod.LOGGER.debug(spell.getCastType() + "");
-                    if (spell.getCastType() == CastType.CONTINUOUS) {
-                        player.startUsingItem(hand);
-                        TestMod.LOGGER.debug("SpellBook: Start Using");
-                    }
-                    return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
-                }
-
-            } else {
+            if (spell == null
+                    || ClientMagicData.isCasting
+                    || ClientMagicData.getPlayerMana() < spell.getManaCost()
+                    || ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
                 return InteractionResultHolder.fail(itemStack);
+            } else {
+                spell.onClientPreCast(level, player, hand, null);
+                if (spell.getCastType() == CastType.CONTINUOUS) {
+                    player.startUsingItem(hand);
+                }
+                return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
             }
         }
 
-        //
-        //  Attempt to Cast Spell
-        //
-        TestMod.LOGGER.debug("SpellBook.Use.attemptInitiateCast");
         if (spell != null && spell.attemptInitiateCast(itemStack, level, player, false, true)) {
             return InteractionResultHolder.success(itemStack);
+        } else {
+            return InteractionResultHolder.fail(itemStack);
         }
-
-
-        return InteractionResultHolder.fail(itemStack);
     }
 
     @Override
