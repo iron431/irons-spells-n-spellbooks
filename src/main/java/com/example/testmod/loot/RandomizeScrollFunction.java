@@ -17,20 +17,22 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 //should extend lootmodifer?
 public class RandomizeScrollFunction extends LootItemConditionalFunction {
-    final NumberProvider levelRange;
-    private int counter = 0;
+    final NumberProvider qualityRange;
 
-    protected RandomizeScrollFunction(LootItemCondition[] lootConditions, NumberProvider levelRange) {
+    protected RandomizeScrollFunction(LootItemCondition[] lootConditions, NumberProvider qualityRange) {
         super(lootConditions);
-        this.levelRange = levelRange;
+        this.qualityRange = qualityRange;
     }
 
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         TestMod.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof Scroll scroll) {
-            int spellLevel = levelRange.getInt(lootContext);
-            var spellId = (++counter) % SpellType.values().length;
+            //TODO: replace with config on a per-spell basis
+            int TEMP_MAX_SPELL_LEVEL = 10;
+            float quality = qualityRange.getFloat(lootContext);
+            int spellLevel = 1 + Math.round(quality * (TEMP_MAX_SPELL_LEVEL - 1) );
+            var spellId = lootContext.getRandom().nextInt(SpellType.values().length);
             //scroll.setSpellType(SpellType.values()[spellId]);
             //scroll.setLevel(spellLevel);
 
@@ -59,7 +61,7 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
         public RandomizeScrollFunction deserialize(JsonObject json, JsonDeserializationContext jsonDeserializationContext, LootItemCondition[] lootConditions) {
             //https://github.com/mickelus/tetra/blob/aedc884203aed78bd5c71e787781cb5511d78540/src/main/java/se/mickelus/tetra/loot/ScrollDataFunction.
             //https://github.com/mickelus/tetra/blob/1e058d250dfd1c18796f6f44c69ca1e21127d057/src/main/java/se/mickelus/tetra/blocks/scroll/ScrollData.java
-            NumberProvider numberProvider = GsonHelper.getAsObject(json, "levels", jsonDeserializationContext, NumberProvider.class);
+            NumberProvider numberProvider = GsonHelper.getAsObject(json, "quality", jsonDeserializationContext, NumberProvider.class);
 
             return new RandomizeScrollFunction(lootConditions, numberProvider);
         }

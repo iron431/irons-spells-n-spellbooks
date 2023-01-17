@@ -9,9 +9,9 @@
           "functions": [
             {
               "function": "testmod:randomize_scroll",
-              "levels": {
-                "min": 1,
-                "max": 10
+              "quality": {
+                "min": 0.0,
+                "max": 1.0
               }
             }
           ]
