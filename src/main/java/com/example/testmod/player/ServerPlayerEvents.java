@@ -29,9 +29,11 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent()
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
+
         if (event.getEntity().level.isClientSide) {
             return;
         }
+
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()
@@ -47,6 +49,7 @@ public class ServerPlayerEvents {
         if (event.getEntity().level.isClientSide) {
             return;
         }
+        TestMod.LOGGER.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
@@ -77,21 +80,22 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
 
-        TestMod.LOGGER.debug("onPlayerRightClickEntity {} {}", event.getEntity().getName().getString(), event.getTarget().getName().getString());
-
         if (event.getEntity().level.isClientSide) {
             return;
         }
+        TestMod.LOGGER.debug("onPlayerRightClickEntity {} {}", event.getEntity().getName().getString(), event.getTarget().getName().getString());
+
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-
-            if (serverPlayer.getItemInHand(serverPlayer.getUsedItemHand()).is(GLASS_BOTTLE)) {
+            var useHand = serverPlayer.getUsedItemHand();
+            if (serverPlayer.getItemInHand(useHand).is(GLASS_BOTTLE)) {
                 //TestMod.LOGGER.debug("onPlayerRightClickEntity: Glass Bottle");
                 if (event.getTarget() instanceof Creeper creeper) {
                     //TestMod.LOGGER.debug("onPlayerRightClickEntity: Creeper");
                     if (creeper.isPowered()) {
                         //TestMod.LOGGER.debug("onPlayerRightClickEntity: Charged");
                         //((ClientLevel) player.level).playSound(player, new BlockPos(player.getX(), player.getY(), player.getZ()), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                        serverPlayer.getItemInHand(useHand).use(serverPlayer.level,serverPlayer,useHand);
                         ItemStack bottleStack = serverPlayer.getItemInHand(serverPlayer.getUsedItemHand());
                         ItemUtils.createFilledResult(bottleStack, serverPlayer, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()));
                         creeper.ignite();
