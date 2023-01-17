@@ -3,6 +3,7 @@ package com.example.testmod.mixin;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,24 +31,30 @@ public class ItemRendererMixin {
         if (item instanceof SpellBook spellBook) {
 
             AbstractSpell spell = spellBook.getSpellBookData(stack).getActiveSpell();
-            if (spell != null) {
-                float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
-
-                if (f > 0.0F) {
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.disableTexture();
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
-                    Tesselator tesselator = Tesselator.getInstance();
-                    BufferBuilder bufferbuilder = tesselator.getBuilder();
-                    fillRect(bufferbuilder, one, two + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-                    RenderSystem.enableTexture();
-                    RenderSystem.enableDepthTest();
-                }
-            }
+            renderSpellCooldown(one, two, spell);
             //TestMod.LOGGER.debug("hooked: " + (f * 100) + "% cooldown");
             //TestMod.LOGGER.debug(s.getActiveSpell().getLevel()+"");
+        } else if (item instanceof SwordItem swordItem) {
+            AbstractSpell spell = Utils.getScrollData(stack).getSpell();
+            renderSpellCooldown(one, two, spell);
         }
 
+    }
+    private void renderSpellCooldown(int one, int two, AbstractSpell spell) {
+        if (spell != null) {
+            float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
+
+            if (f > 0.0F) {
+                RenderSystem.disableDepthTest();
+                RenderSystem.disableTexture();
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                Tesselator tesselator = Tesselator.getInstance();
+                BufferBuilder bufferbuilder = tesselator.getBuilder();
+                fillRect(bufferbuilder, one, two + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
+                RenderSystem.enableTexture();
+                RenderSystem.enableDepthTest();
+            }
+        }
     }
 }
