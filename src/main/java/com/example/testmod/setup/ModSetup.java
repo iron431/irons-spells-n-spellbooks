@@ -4,7 +4,6 @@ import com.example.testmod.capabilities.magic.MagicEvents;
 import com.example.testmod.capabilities.scroll.ScrollDataEvents;
 import com.example.testmod.capabilities.spellbook.SpellBookDataEvents;
 import com.example.testmod.entity.SpellCastSyncedData;
-import com.example.testmod.player.ClientPlayerEvents;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +17,7 @@ public class ModSetup {
         IEventBus bus = MinecraftForge.EVENT_BUS;
 
         //PLAYER
-        bus.addListener(ClientPlayerEvents::onPlayerTick);
+        //bus.addListener(ClientPlayerEvents::onPlayerTick); Firing for all players
         //bus.addListener(KeyMappings::onRegisterKeybinds);
 //        bus.addListener(ClientPlayerEvents::onLivingEquipmentChangeEvent);
         //bus.addListener(ClientPlayerEvents::onPlayerRenderPre);
