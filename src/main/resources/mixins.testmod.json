@@ -9,7 +9,8 @@
     "SpinAttackEffectLayerMixin",
     "LocalPlayerMixin",
     "CauldronMixin",
-    "SwordItemMixin"
+    "SwordItemMixin",
+    "GlassBottleMixin"
   ],
   "client": [],
   "injectors": {

@@ -121,8 +121,8 @@ public class Utils {
 
     public static EntityHitResult getTargetEntity(Level level, LivingEntity entity, Vec3 start, Vec3 end) {
         AABB range = entity.getBoundingBox().expandTowards(end.subtract(start));
-        TestMod.LOGGER.debug("Utils.getTargetEntity.rangeStart: {}", new Vec3(range.minX, range.minY, range.minZ));
-        TestMod.LOGGER.debug("Utils.getTargetEntity.rangeEnd: {}", new Vec3(range.maxX, range.maxY, range.maxZ));
+        //TestMod.LOGGER.debug("Utils.getTargetEntity.rangeStart: {}", new Vec3(range.minX, range.minY, range.minZ));
+        //TestMod.LOGGER.debug("Utils.getTargetEntity.rangeEnd: {}", new Vec3(range.maxX, range.maxY, range.maxZ));
 
 
         List<EntityHitResult> hits = new ArrayList<>();
