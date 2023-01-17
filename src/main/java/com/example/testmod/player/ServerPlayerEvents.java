@@ -5,24 +5,16 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.network.PacketCancelCast;
-import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.trading.Merchant;
+import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import static net.minecraft.world.item.Items.GLASS_BOTTLE;
 
 @Mod.EventBusSubscriber()
 public class ServerPlayerEvents {
@@ -72,6 +64,20 @@ public class ServerPlayerEvents {
                     SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
                     event.getSource() != DamageSource.ON_FIRE &&
                     event.getSource() != DamageSource.WITHER) {
+                serverSideCancelCast(serverPlayer, playerMagicData);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityMountEvent(EntityMountEvent event) {
+        if (event.getEntity().level.isClientSide) {
+            return;
+        }
+
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            if (playerMagicData.isCasting()) {
                 serverSideCancelCast(serverPlayer, playerMagicData);
             }
         }
