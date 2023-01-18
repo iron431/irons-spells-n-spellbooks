@@ -1,8 +1,12 @@
 package com.example.testmod.config;
 
 import com.example.testmod.spells.SpellRarity;
+import com.example.testmod.spells.SpellType;
+import net.minecraftforge.common.ForgeConfig;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommonConfigs {
@@ -10,42 +14,33 @@ public class CommonConfigs {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
-//    public static final ForgeConfigSpec.ConfigValue<List<SpellConfigParameters>> SPELL_PARAMETERS;
-
+    //public static final List<SpellConfigParameters> SPELL_PARAMETERS;
+    //public static final ForgeConfigSpec.ConfigValue<SpellConfigParameters> FIREBALL;
     //https://forge.gemwire.uk/wiki/Configs
 
     static {
+        final SpellConfigParameters DEFAULT_FIREBALL = new SpellConfigParameters(3, SpellRarity.UNCOMMON);
+        //SPELL_PARAMETERS = new ArrayList<>();
         BUILDER.push("Common Configs");
+//        List<SpellConfigParameters> spellParameters = new ArrayList<>();
 
-//        SPELL_PARAMETERS = BUILDER.comment("Individual Spell Configurations.")
-//                .comment("Format = SPELL_NAME: [MAX LEVEL, MIN RARITY]")
-//                        .define()
+        var spells = SpellType.values();
+        BUILDER.comment("Individual Spell Configurations.").comment("Format = SPELL_NAME: [MAX LEVEL, MIN RARITY]").comment("Common = 0\nUncommon = 1\nRare = 2\nEpic = 3\nLegendary = 4");
+        BUILDER.pop();
+//        spellParameters.add(toSpellConfigParameter(BUILDER.defineList(spells[1].toString().toLowerCase(),
+//                DEFAULT_FIREBALL.asList(),
+//                entry -> true).get()
+//        ));
 
-
+        //SPELL_PARAMETERS = new ForgeConfigSpec.ConfigValue<List<SpellConfigParameters>>(spellParameters) ;
+        BUILDER.push("Fireball");
+        BUILDER.define("Max Level",10);
         BUILDER.pop();
         SPEC = BUILDER.build();
     }
 
-    private class SpellConfigParameters {
-        final int MAX_LEVEL;
-        final SpellRarity MIN_RARITY;
-
-        //Not implemented:
-        final boolean ENABLED;
-        final int BASE_MANA_COST;
-        final int MANA_COST_PER_LEVEL;
-        final int BASE_POWER;
-        final int POWER_PER_LEVEL;
-
-        SpellConfigParameters(int MAX_LEVEL, SpellRarity MIN_RARITY) {
-            this.MAX_LEVEL = MAX_LEVEL;
-            this.MIN_RARITY = MIN_RARITY;
-
-            this.ENABLED = true;
-            this.BASE_MANA_COST = 0;
-            this.MANA_COST_PER_LEVEL = 0;
-            this.BASE_POWER = 0;
-            this.POWER_PER_LEVEL = 0;
-        }
+    static SpellConfigParameters toSpellConfigParameter(List<? extends Integer> parameters) {
+        return new SpellConfigParameters(parameters.get(0), SpellRarity.values()[parameters.get(1)]);
     }
+
 }

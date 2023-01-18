@@ -1,5 +1,7 @@
 package com.example.testmod;
 
+import com.example.testmod.config.ClientConfigs;
+import com.example.testmod.config.CommonConfigs;
 import com.example.testmod.gui.inscription_table.InscriptionTableScreen;
 import com.example.testmod.gui.scroll_forge.ScrollForgeScreen;
 import com.example.testmod.registries.*;
@@ -14,7 +16,9 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
@@ -52,6 +56,12 @@ public class TestMod {
 
 
         modEventBus.addListener(this::clientSetup);
+
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"testmod-client.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfigs.SPEC,"testmod-common.toml");
+
+
         //AttributesRegistry.register(eventBus);
         //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
         //MinecraftForge.EVENT_BUS.register(eventHandler);
@@ -61,6 +71,8 @@ public class TestMod {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         // Register the processIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+
+
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
