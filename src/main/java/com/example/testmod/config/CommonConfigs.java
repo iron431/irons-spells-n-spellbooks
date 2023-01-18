@@ -4,13 +4,18 @@ import com.example.testmod.spells.SpellRarity;
 import com.example.testmod.spells.SpellType;
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class CommonConfigs {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
-    public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(10,SpellRarity.COMMON);
+    public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(10, SpellRarity.COMMON);
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
+
     //https://forge.gemwire.uk/wiki/Configs
 
     private static final Map<SpellType, SpellConfigParameters> SPELL_CONFIGS;
@@ -21,9 +26,13 @@ public class CommonConfigs {
         CONFIG_QUEUE = new LinkedList<>();
         BUILDER.comment("Individual Spell Configurations.");
 
-        createEntry(SpellType.FIREBALL_SPELL, 100, SpellRarity.LEGENDARY);
-        createEntry(SpellType.ELECTROCUTE_SPELL, 1000, SpellRarity.LEGENDARY);
+        //TODO: Fill out all spells with real values
+        createSpellConfigEntry(SpellType.FIREBALL_SPELL, 100, SpellRarity.LEGENDARY);
+        createSpellConfigEntry(SpellType.MAGIC_MISSILE_SPELL, 1, SpellRarity.UNCOMMON);
+        createSpellConfigEntry(SpellType.ELECTROCUTE_SPELL, 1000, SpellRarity.LEGENDARY);
+        createSpellConfigEntry(SpellType.ICICLE_SPELL, 10, SpellRarity.EPIC);
 
+        SWORDS_CONSUME_MANA = BUILDER.push(createTitle("Do swords consume mana")).define("Consume Mana", true);
 
         SPEC = BUILDER.build();
     }
@@ -36,16 +45,25 @@ public class CommonConfigs {
         return getByType(SpellType.getTypeFromValue(spellId));
     }
 
-    private static void createEntry(SpellType spell, int defaultMaxLevel, SpellRarity defaultMinRarity) {
-        BUILDER.push(spell.getId().substring(0, 1).toUpperCase() + spell.getId().substring(1));
+    private static void createSpellConfigEntry(SpellType spell, int defaultMaxLevel, SpellRarity defaultMinRarity) {
+
+        BUILDER.push(createTitle(spell.getId()));
 
         CONFIG_QUEUE.add(new DelayedConfigConstructor(
-                BUILDER.define("Max Level", defaultMaxLevel),
-                BUILDER.define("Min Rarity", defaultMinRarity),
+                BUILDER.define("MaxLevel", defaultMaxLevel),
+                BUILDER.define("MinRarity", defaultMinRarity),
                 spell
         ));
 
         BUILDER.pop();
+    }
+
+    private static String createTitle(String str) {
+        var words = str.split("[_| ]");
+        for (int i = 0; i < words.length; i++) {
+            words[i] = words[i].substring(0, 1).toUpperCase() + words[i].substring(1);
+        }
+        return Arrays.stream(words).sequential().collect(Collectors.joining("-"));
     }
 
     public static void resolveQueue() {

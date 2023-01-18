@@ -1,5 +1,6 @@
 package com.example.testmod.mixin;
 
+import com.example.testmod.config.CommonConfigs;
 import com.example.testmod.network.PacketCancelCast;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
@@ -31,7 +32,6 @@ public abstract class SwordItemMixin extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         var spell = Utils.getScrollData(stack).getSpell();
-
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             if (level.isClientSide) {
                 if (ClientMagicData.isCasting) {
