@@ -1,6 +1,8 @@
 package com.example.testmod.mixin;
 
+import com.example.testmod.network.PacketCancelCast;
 import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -8,11 +10,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +46,7 @@ public abstract class SwordItemMixin extends Item {
                 }
             }
 
-            if (spell.attemptInitiateCast(stack, level, player, false, true)) {
+            if (spell.attemptInitiateCast(stack, level, player, true, false)) {
                 return InteractionResultHolder.success(stack);
             } else {
                 return InteractionResultHolder.fail(stack);
@@ -54,6 +54,36 @@ public abstract class SwordItemMixin extends Item {
         }
 
         return super.use(level, player, hand);
+    }
+
+    @Override
+    public int getUseDuration(@NotNull ItemStack itemStack) {
+        var spell = Utils.getScrollData(itemStack).getSpell();
+        if (spell.getSpellType() != SpellType.NONE_SPELL)
+            return 7200;
+        else
+            return super.getUseDuration(itemStack);
+    }
+
+    @Override
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
+        var spell = Utils.getScrollData(itemStack).getSpell();
+        if (spell.getSpellType() != SpellType.NONE_SPELL)
+            return UseAnim.BOW;
+        else
+            return getUseAnimation(itemStack);
+    }
+
+    @Override
+    public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
+        var spell = Utils.getScrollData(itemStack).getSpell();
+        if (spell.getSpellType() != SpellType.NONE_SPELL){
+            entity.stopUsingItem();
+            if (getUseDuration(itemStack) - ticksUsed >= 10)
+                Messages.sendToServer(new PacketCancelCast(true));
+        }
+
+        super.releaseUsing(itemStack, level, entity, ticksUsed);
     }
 
     @Override
