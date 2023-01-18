@@ -175,7 +175,7 @@ public enum SpellType {
         return new ResourceLocation(TestMod.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
     }
 
-    private String getId() {
+    public String getId() {
         return this.toString().toLowerCase().replace("_spell", "");
     }
 

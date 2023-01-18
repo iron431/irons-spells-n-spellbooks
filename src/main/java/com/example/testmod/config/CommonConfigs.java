@@ -2,61 +2,72 @@ package com.example.testmod.config;
 
 import com.example.testmod.spells.SpellRarity;
 import com.example.testmod.spells.SpellType;
-import net.minecraftforge.common.ForgeConfig;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CommonConfigs {
 
-    public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
-
-    //TODO: make an external app to deal with this file... forge config formatting is retarded... you (I) can't (figure out how to) create instance variables that aren't ConfigValues or reference an outside class with a non-ConfigValue variable
-    //static final SpellConfigParameters DEFAULT_FIREBALL = new SpellConfigParameters(3, SpellRarity.UNCOMMON);
-    //static final SpellConfigParameters FIREBALL;
-
-    //public static final List<SpellConfigParameters> SPELL_PARAMETERS;
-    //public static final ForgeConfigSpec.ConfigValue<SpellConfigParameters> FIREBALL;
+    public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(10,SpellRarity.COMMON);
     //https://forge.gemwire.uk/wiki/Configs
 
-    //TODO: repeat x999999
-    public static final ForgeConfigSpec.ConfigValue<Integer> fireball_max_level;
-    public static final ForgeConfigSpec.ConfigValue<SpellRarity> fireball_min_rarity;
-    static {
+    private static final Map<SpellType, SpellConfigParameters> SPELL_CONFIGS;
+    private static final Queue<DelayedConfigConstructor> CONFIG_QUEUE;
 
-        //var spells = SpellType.values();
+    static {
+        SPELL_CONFIGS = new HashMap<>();
+        CONFIG_QUEUE = new LinkedList<>();
         BUILDER.comment("Individual Spell Configurations.");
 
-//        FIREBALL = new SpellConfigParameters(
-//                BUILDER.define("Max Level",10).get(),
-//                BUILDER.define("Min Rarity",SpellRarity.UNCOMMON.getValue()).get()
-//        );
-        BUILDER.push("Fireball");
-        fireball_max_level = BUILDER.define("Max Level", 10);
-        fireball_min_rarity = BUILDER.define("Min Rarity", SpellRarity.UNCOMMON);
-        BUILDER.pop();
-
-        //buildSpell(777);
+        createEntry(SpellType.FIREBALL_SPELL, 100, SpellRarity.LEGENDARY);
+        createEntry(SpellType.ELECTROCUTE_SPELL, 1000, SpellRarity.LEGENDARY);
 
 
         SPEC = BUILDER.build();
-
-        //var z = new SpellConfigParameters(x.get(),y.get().getValue());
     }
-//    static ForgeConfigSpec.ConfigValue<Integer> buildSpell(int test){
-//        BUILDER.push("buildSpell");
-//        var x = BUILDER.define("value",test);
-//        //FIREBALL
-//        SpellConfigParameters.FIREBALL = new SpellConfigParameters(x.get(),x.get());
-//        BUILDER.pop();
-//        return x;
-//
-//    }
-//    static SpellConfigParameters toSpellConfigParameter(List<? extends Integer> parameters) {
-//        return new SpellConfigParameters(parameters.get(0), SpellRarity.values()[parameters.get(1)]);
-//    }
+
+    public static SpellConfigParameters getByType(SpellType spellType) {
+        return SPELL_CONFIGS.getOrDefault(spellType, DEFAULT_CONFIG);
+    }
+
+    public static SpellConfigParameters getById(int spellId) {
+        return getByType(SpellType.getTypeFromValue(spellId));
+    }
+
+    private static void createEntry(SpellType spell, int defaultMaxLevel, SpellRarity defaultMinRarity) {
+        BUILDER.push(spell.getId().substring(0, 1).toUpperCase() + spell.getId().substring(1));
+
+        CONFIG_QUEUE.add(new DelayedConfigConstructor(
+                BUILDER.define("Max Level", defaultMaxLevel),
+                BUILDER.define("Min Rarity", defaultMinRarity),
+                spell
+        ));
+
+        BUILDER.pop();
+    }
+
+    public static void resolveQueue() {
+        while (!CONFIG_QUEUE.isEmpty())
+            CONFIG_QUEUE.remove().construct();
+    }
+
+    //TODO: is this being static going to fuck shit up? (seems to work fine...)
+    private static class DelayedConfigConstructor {
+        final ForgeConfigSpec.ConfigValue<Integer> MAX_LEVEL;
+        final ForgeConfigSpec.ConfigValue<SpellRarity> MIN_RARITY;
+        SpellType spellType;
+
+        DelayedConfigConstructor(ForgeConfigSpec.ConfigValue<Integer> MAX_LEVEL, ForgeConfigSpec.ConfigValue<SpellRarity> MIN_RARITY, SpellType spellType) {
+            this.MAX_LEVEL = MAX_LEVEL;
+            this.MIN_RARITY = MIN_RARITY;
+            this.spellType = spellType;
+        }
+
+        void construct() {
+            SPELL_CONFIGS.put(spellType, new SpellConfigParameters(MAX_LEVEL.get(), MIN_RARITY.get()));
+        }
+    }
 
 }

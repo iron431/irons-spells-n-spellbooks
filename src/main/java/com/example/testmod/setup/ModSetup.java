@@ -3,6 +3,7 @@ package com.example.testmod.setup;
 import com.example.testmod.capabilities.magic.MagicEvents;
 import com.example.testmod.capabilities.scroll.ScrollDataEvents;
 import com.example.testmod.capabilities.spellbook.SpellBookDataEvents;
+import com.example.testmod.config.CommonConfigs;
 import com.example.testmod.entity.SpellCastSyncedData;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.entity.Entity;
@@ -43,6 +44,7 @@ public class ModSetup {
 
     public static void init(FMLCommonSetupEvent event) {
         Messages.register();
+        CommonConfigs.resolveQueue();
         EntityDataSerializers.registerSerializer(SpellCastSyncedData.SPELL_SYNCED_DATA);
     }
 

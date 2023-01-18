@@ -11,7 +11,7 @@
   "tooltip.testmod.level": "Level %d",
   "tooltip.testmod.scroll_tooltip": "When in Spell Book:",
   "tooltip.testmod.imbued_tooltip": "Imbued Spell:",
-  "tooltip.testmod.spell_title": "%s Level %d",
+  "tooltip.testmod.spell_title": "%s [lvl %d]",
   "tooltip.testmod.mana_cost": " %d Mana Cost",
   "tooltip.testmod.cooldown_length_seconds": " %d Cooldown",
   "tooltip.testmod.cast_type": " %s Cast",
