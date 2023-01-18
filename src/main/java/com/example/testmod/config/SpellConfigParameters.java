@@ -16,9 +16,9 @@ class SpellConfigParameters {
     final int BASE_POWER;
     final int POWER_PER_LEVEL;
 
-    SpellConfigParameters(int MAX_LEVEL, SpellRarity MIN_RARITY) {
+    SpellConfigParameters(int MAX_LEVEL, int MIN_RARITY) {
         this.MAX_LEVEL = MAX_LEVEL;
-        this.MIN_RARITY = MIN_RARITY;
+        this.MIN_RARITY = SpellRarity.values() [MIN_RARITY];
 
         this.ENABLED = true;
         this.BASE_MANA_COST = 0;
@@ -30,4 +30,6 @@ class SpellConfigParameters {
     List<Integer> asList() {
         return Arrays.asList(MAX_LEVEL, MIN_RARITY.getValue());
     }
+
+    public static SpellConfigParameters FIREBALL;
 }
