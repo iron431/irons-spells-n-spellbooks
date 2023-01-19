@@ -45,6 +45,19 @@ public enum SpellRarity {
         return Integer.compare(this.getValue(), other.getValue());
     }
 
+//    public static SpellRarity getRarityFromPercent(float f){
+//        if (f >= .9f)
+//            return SpellRarity.LEGENDARY;
+//        else if (f >= .8f)
+//            return SpellRarity.EPIC;
+//        else if (f >= .6f)
+//            return SpellRarity.RARE;
+//        else if (f >= .4f)
+//            return SpellRarity.UNCOMMON;
+//        else
+//            return SpellRarity.COMMON;
+//    }
+
     private final MutableComponent[] DISPLAYS = {
             Component.translatable("rarity.testmod.common").withStyle(ChatFormatting.GRAY),
             Component.translatable("rarity.testmod.uncommon").withStyle(ChatFormatting.GREEN),

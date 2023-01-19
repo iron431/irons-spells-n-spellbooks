@@ -19,6 +19,7 @@ import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public enum SpellType {
     /*
@@ -47,6 +48,10 @@ public enum SpellType {
     SUMMON_HORSE_SPELL(14);
 
     private final int value;
+    private boolean configLoaded = false;
+    private int maxLevel;
+    private int minRarity;
+    private int maxRarity;
 
     SpellType(final int newValue) {
         value = newValue;
@@ -68,36 +73,28 @@ public enum SpellType {
         };
     }
 
-    private final float UNCOMMON = .4f;
-    private final float RARE = .6f;
-    private final float EPIC = .8f;
-    private final float LEGENDARY = .9f;
+    //private final float minLevel = 1;
 
-    private final float minLevel = 1;
-    private final float maxLevel = CommonConfigs.getByType(this).MAX_LEVEL;
-
-    private final float minRarity = CommonConfigs.getByType(this).MIN_RARITY.getValue();
-    private final int maxRarity = SpellRarity.LEGENDARY.getValue();
-    private float mappingConstant = (maxRarity - minRarity) / (maxLevel - minLevel);
+    //private float mappingConstant = (maxRarity - minRarity) / (maxLevel - minLevel);
 
     public static float getRarityMapped(float levelMin, float levelMax, float rarityMin, float rarityMax, float levelToMap) {
         return rarityMin + ((levelToMap - levelMin) * (rarityMax - rarityMin)) / (levelMax - levelMin);
     }
 
     public SpellRarity getRarity(int level) {
+        if (!configLoaded)
+            loadFromConfig();
+        //float adjustedRarity = getRarityMapped(minLevel, maxLevel, minRarity, maxRarity, level);
 
-        float adjustedRarity = getRarityMapped(minLevel, maxLevel, minRarity, maxRarity, level);
+        //https://www.desmos.com/calculator/fumipfwdfr
+        float rarity = level / (float) maxLevel;
+        float adjustedRarity = Mth.clamp(lerp(minRarity, maxRarity, rarity * rarity), minRarity, maxRarity);
+        return SpellRarity.values()[(int) adjustedRarity];
+        //return SpellRarity.getRarityFromPercent(adjustedRarity);
+    }
 
-        if (adjustedRarity >= LEGENDARY)
-            return SpellRarity.LEGENDARY;
-        else if (adjustedRarity >= EPIC)
-            return SpellRarity.EPIC;
-        else if (adjustedRarity >= RARE)
-            return SpellRarity.RARE;
-        else if (adjustedRarity >= UNCOMMON)
-            return SpellRarity.UNCOMMON;
-        else
-            return SpellRarity.COMMON;
+    private float lerp(float a, float b, float f) {
+        return a + f * (b - a);
     }
 
     public SchoolType getSchoolType() {
@@ -198,6 +195,12 @@ public enum SpellType {
             {BLOOD_SLASH_SPELL};
     private static final SpellType[] EVOCATION_SPELLS =
             {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL};
+
+    private void loadFromConfig() {
+        this.maxLevel = CommonConfigs.getByType(this).MAX_LEVEL;
+        this.minRarity = CommonConfigs.getByType(this).MIN_RARITY.getValue();
+        this.maxRarity = SpellRarity.LEGENDARY.getValue();
+    }
 
     public MutableComponent getDisplayName() {
         return Component.translatable("spell." + TestMod.MODID + "." + this.getId());
