@@ -19,7 +19,6 @@ import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.ArrayUtils;
 
 public enum SpellType {
     /*
@@ -68,23 +67,30 @@ public enum SpellType {
             default -> CastType.INSTANT;
         };
     }
+
     private final float UNCOMMON = .4f;
     private final float RARE = .6f;
     private final float EPIC = .8f;
     private final float LEGENDARY = .9f;
-    public SpellRarity getRarity(int level) {
-        float p = level / (float) CommonConfigs.getByType(this).MAX_LEVEL;
-        int baseRarity = CommonConfigs.getByType(this).MIN_RARITY.getValue();
-        int maxRarity = SpellRarity.LEGENDARY.getValue();
-        float adjustedRarity = (baseRarity + (maxRarity-baseRarity)*p)/maxRarity;
 
-        if(adjustedRarity>=LEGENDARY)
+    private final float minLevel = 1;
+    private final float maxLevel = CommonConfigs.getByType(this).MAX_LEVEL;
+
+    private final float minRarity = CommonConfigs.getByType(this).MIN_RARITY.getValue();
+    private final int maxRarity = SpellRarity.LEGENDARY.getValue();
+    private float mappingConstant = (maxRarity - minRarity) / (maxLevel - minLevel);
+
+    public SpellRarity getRarity(int level) {
+
+        float adjustedRarity = minLevel + mappingConstant * (level - minRarity);
+
+        if (adjustedRarity >= LEGENDARY)
             return SpellRarity.LEGENDARY;
-        else if(adjustedRarity>=EPIC)
+        else if (adjustedRarity >= EPIC)
             return SpellRarity.EPIC;
-        else if(adjustedRarity>=RARE)
+        else if (adjustedRarity >= RARE)
             return SpellRarity.RARE;
-        else if(adjustedRarity>=UNCOMMON)
+        else if (adjustedRarity >= UNCOMMON)
             return SpellRarity.UNCOMMON;
         else
             return SpellRarity.COMMON;
