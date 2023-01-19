@@ -3,6 +3,7 @@ package com.example.testmod.entity;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.particles.ParticleTypes;
@@ -36,7 +37,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
     private final PlayerMagicData playerMagicData = new PlayerMagicData();
     private AbstractSpell castingSpell;
-    private SpellCastSyncedData emptySyncedData = new SpellCastSyncedData();
+    private final SpellCastSyncedData emptySyncedData = new SpellCastSyncedData();
 
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -61,6 +62,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
         if (level.isClientSide && pKey == DATA_CASTING) {
             var castingData = entityData.get(DATA_CASTING);
 
+            //noinspection ConstantValue
             if (castingData == null || castingData.spellId == 0) {
                 castComplete();
                 return;
@@ -76,7 +78,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             }
 
             castSpell(spellType, castingData.spellLevel);
-
         }
     }
 
@@ -175,7 +176,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             entityData.set(DATA_CASTING, data);
         }
 
-        playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), false);
+        playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.Mob);
 
         //TODO: this may be in the wrong spot.. i don't think this works for all cast types here
         if (!level.isClientSide) {

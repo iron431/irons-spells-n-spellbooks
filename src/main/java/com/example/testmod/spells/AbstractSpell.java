@@ -65,8 +65,20 @@ public abstract class AbstractSpell {
         return this.level;
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public int getManaCost() {
         return baseManaCost + manaCostPerLevel * (level - 1);
+    }
+
+    public int getSpellCooldown() {
+        return this.cooldown;
+    }
+
+    public int getCastTime() {
+        return this.castTime;
     }
 
     public float getSpellPower(Entity sourceEntity) {
@@ -78,14 +90,6 @@ public abstract class AbstractSpell {
         return (baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifer;
     }
 
-    public int getSpellCooldown() {
-        return this.cooldown;
-    }
-
-    public int getCastTime() {
-        return this.castTime;
-    }
-
     public int getEffectiveCastTime(Entity sourceEntity) {
         float entityCastTimeModifer = 1;
         if (sourceEntity instanceof LivingEntity sourceLivingEntity) {
@@ -93,10 +97,6 @@ public abstract class AbstractSpell {
         }
 
         return Math.round(this.castTime * entityCastTimeModifer);
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
     }
 
     public static AbstractSpell getSpell(SpellType spellType, int level) {
@@ -110,7 +110,7 @@ public abstract class AbstractSpell {
     /**
      * returns true/false for success/failure to cast
      */
-    public boolean attemptInitiateCast(ItemStack stack, Level level, Player player, boolean fromScroll, boolean triggerCooldown) {
+    public boolean attemptInitiateCast(ItemStack stack, Level level, Player player, CastSource castSource, boolean triggerCooldown) {
         if (level.isClientSide) {
             return false;
         }
@@ -124,22 +124,21 @@ public abstract class AbstractSpell {
             boolean hasEnoughMana = playerMana - getManaCost() >= 0;
             boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
 
-            if (!fromScroll) {
-                if (!hasEnoughMana) {
-                    player.sendSystemMessage(Component.literal("Not enough mana to cast spell").withStyle(ChatFormatting.RED));
-                    return false;
-                }
-                if (isSpellOnCooldown) {
-                    player.sendSystemMessage(spellType.getDisplayName().append(" is on cooldown").withStyle(ChatFormatting.RED));
-                    return false;
-                }
+            if (castSource == CastSource.SpellBook && !hasEnoughMana) {
+                player.sendSystemMessage(Component.literal("Not enough mana to cast spell").withStyle(ChatFormatting.RED));
+                return false;
+            }
+
+            if ((castSource == CastSource.SpellBook || castSource == CastSource.Sword) && isSpellOnCooldown) {
+                player.sendSystemMessage(spellType.getDisplayName().append(" is on cooldown").withStyle(ChatFormatting.RED));
+                return false;
             }
 
             if (this.castType == CastType.INSTANT) {
-                return castSpell(level, serverPlayer, fromScroll, triggerCooldown);
+                return castSpell(level, serverPlayer, castSource, triggerCooldown);
             } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
                 int effectiveCastTime = getEffectiveCastTime(player);
-                playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, fromScroll);
+                playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, castSource);
                 onServerPreCast(player.level, player, playerMagicData);
                 Messages.sendToPlayer(new PacketCastingState(getID(), effectiveCastTime, castType, false), serverPlayer);
             }
@@ -150,17 +149,17 @@ public abstract class AbstractSpell {
         }
     }
 
-    public boolean castSpell(Level world, ServerPlayer serverPlayer, boolean fromScroll, boolean triggerCooldown) {
+    public boolean castSpell(Level world, ServerPlayer serverPlayer, CastSource castSource, boolean triggerCooldown) {
         MagicManager magicManager = MagicManager.get(serverPlayer.level);
         PlayerMagicData playerMagicData = MagicManager.getPlayerMagicData(serverPlayer);
 
-        if (!fromScroll) {
+        if (castSource == CastSource.SpellBook) {
             int newMana = playerMagicData.getMana() - getManaCost();
             magicManager.setPlayerCurrentMana(serverPlayer, newMana);
         }
 
         if (triggerCooldown) {
-            MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, spellType);
+            MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, spellType, castSource);
         }
 
         onCast(world, serverPlayer, playerMagicData);
@@ -169,7 +168,7 @@ public abstract class AbstractSpell {
             onCastComplete(world, serverPlayer, playerMagicData);
         }
 
-        if (!fromScroll) {
+        if (castSource == CastSource.SpellBook) {
             Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
         }
 

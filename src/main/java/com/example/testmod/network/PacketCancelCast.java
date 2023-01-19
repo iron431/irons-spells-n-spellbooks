@@ -46,12 +46,13 @@ public class PacketCancelCast {
             if (playerMagicData.isCasting()) {
                 TestMod.LOGGER.debug("PacketCancelCast.cancelCast currently casting");
                 int spellId = playerMagicData.getCastingSpellId();
-                playerMagicData.resetCastingState();
 
                 if (triggerCooldown) {
-                    MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId]);
+                    MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
                     AbstractSpell.getSpell(spellId, 0).onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                 }
+
+                playerMagicData.resetCastingState();
 
                 Messages.sendToPlayer(new PacketCastingState(spellId, 0, CastType.NONE, true), serverPlayer);
                 if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)

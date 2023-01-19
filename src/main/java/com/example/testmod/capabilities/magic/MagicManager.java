@@ -7,6 +7,7 @@ import com.example.testmod.network.PacketSyncCooldownToClient;
 import com.example.testmod.network.PacketSyncManaToClient;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.particles.ParticleOptions;
@@ -25,7 +26,6 @@ public class MagicManager {
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
     private int counter = 0;
-    private int manaRegenCounterDebug = 0;
     private static MagicManager magicManager = null;
 
     @Nonnull
@@ -47,10 +47,6 @@ public class MagicManager {
             return capContainer.resolve().orElse(new PlayerMagicData());
         }
         return new PlayerMagicData();
-    }
-
-    public int getPlayerCurrentMana(ServerPlayer serverPlayer) {
-        return getPlayerMagicData(serverPlayer).getMana();
     }
 
     public void setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
@@ -86,7 +82,7 @@ public class MagicManager {
                         if (!playerMagicData.isCasting()) {
                             TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                             Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
-                            spell.castSpell(serverPlayer.level, serverPlayer, true, true);
+                            spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                             playerMagicData.resetCastingState();
                             Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                         } else {
@@ -97,12 +93,12 @@ public class MagicManager {
                             if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || playerMagicData.getMana() - spell.getManaCost() * 2 < 0) {
                                 TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                                 Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
-                                spell.castSpell(serverPlayer.level, serverPlayer, true, true);
+                                spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                                 spell.onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                                 playerMagicData.resetCastingState();
                                 Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                             } else {
-                                spell.castSpell(serverPlayer.level, serverPlayer, true, false);
+                                spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), false);
                             }
                         }
                     }
@@ -123,9 +119,16 @@ public class MagicManager {
     public MagicManager() {
     }
 
-    public void addCooldown(ServerPlayer serverPlayer, SpellType spellType) {
+    public void addCooldown(ServerPlayer serverPlayer, SpellType spellType, CastSource castSource) {
         double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
-        int effectiveCooldown = getEffectiveSpellCooldown(AbstractSpell.getSpell(spellType, 1).getSpellCooldown(), playerCooldownModifier);
+
+        int itemCoolDownModifer = 1;
+        if (castSource == CastSource.Sword) {
+            itemCoolDownModifer = 2;
+        }
+
+        int effectiveCooldown = getEffectiveSpellCooldown(AbstractSpell.getSpell(spellType, 1).getSpellCooldown(), playerCooldownModifier) * itemCoolDownModifer;
+
         getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
         Messages.sendToPlayer(new PacketSyncCooldownToClient(spellType.getValue(), effectiveCooldown), serverPlayer);
     }

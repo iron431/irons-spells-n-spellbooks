@@ -7,6 +7,7 @@ import com.example.testmod.network.PacketCancelCast;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -57,7 +58,7 @@ public class SpellBook extends Item implements ISpellBook {
             }
         }
 
-        if (spell.attemptInitiateCast(itemStack, level, player, false, true)) {
+        if (spell.attemptInitiateCast(itemStack, level, player, CastSource.SpellBook, true)) {
             return InteractionResultHolder.success(itemStack);
         } else {
             return InteractionResultHolder.fail(itemStack);

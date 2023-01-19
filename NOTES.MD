@@ -21,6 +21,10 @@
 ### Item Stack
 - https://www.youtube.com/watch?v=edcpW1zzUfk
 
+### Creating entities / Blockbench
+- https://www.youtube.com/watch?v=VlUwLXkwb2c
+- https://www.youtube.com/watch?v=kxzZ-oJKjcY
+
 ### Other Random Links
 - https://www.youtube.com/watch?v=prqMxqUtj-0
 - Teleport: https://moddingtutorials.org/1.19.2/advanced-items/

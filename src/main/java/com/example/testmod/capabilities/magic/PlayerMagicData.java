@@ -3,6 +3,7 @@ package com.example.testmod.capabilities.magic;
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.spells.CastSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,7 +38,7 @@ public class PlayerMagicData {
     private int castingSpellId = 0;
     private int castingSpellLevel = 0;
     private int castDurationRemaining = 0;
-    private boolean fromScroll = false;
+    private CastSource castSource;
 
     public AbstractConeProjectile cone;
     private int castDuration = 0;
@@ -53,8 +54,8 @@ public class PlayerMagicData {
         this.discardCone();
     }
 
-    public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, boolean fromScroll) {
-        this.fromScroll = fromScroll;
+    public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, CastSource castSource) {
+        this.castSource = castSource;
         this.castingSpellId = castingSpellId;
         this.castingSpellLevel = castingSpellLevel;
         this.castDuration = castDuration;
@@ -71,7 +72,6 @@ public class PlayerMagicData {
         }
         return false;
     }
-
 
     public void setTeleportTargetPosition(Vec3 targetPosition) {
         this.teleportTargetPosition = targetPosition;
@@ -91,6 +91,10 @@ public class PlayerMagicData {
 
     public int getCastingSpellLevel() {
         return castingSpellLevel;
+    }
+
+    public CastSource getCastSource() {
+        return castSource;
     }
 
     public int getCastDurationRemaining() {

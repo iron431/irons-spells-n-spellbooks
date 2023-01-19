@@ -1,9 +1,9 @@
 package com.example.testmod.mixin;
 
-import com.example.testmod.config.CommonConfigs;
 import com.example.testmod.network.PacketCancelCast;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -34,7 +34,7 @@ public abstract class SwordItemMixin extends Item {
         var spell = Utils.getScrollData(stack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             if (level.isClientSide) {
-                if (ClientMagicData.isCasting) {
+                if (ClientMagicData.isCasting || ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
                     return InteractionResultHolder.fail(stack);
                 } else {
                     spell.onClientPreCast(level, player, hand, null);
@@ -46,7 +46,7 @@ public abstract class SwordItemMixin extends Item {
                 }
             }
 
-            if (spell.attemptInitiateCast(stack, level, player, true, false)) {
+            if (spell.attemptInitiateCast(stack, level, player, CastSource.Sword, false)) {
                 return InteractionResultHolder.success(stack);
             } else {
                 return InteractionResultHolder.fail(stack);
@@ -77,10 +77,9 @@ public abstract class SwordItemMixin extends Item {
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         var spell = Utils.getScrollData(itemStack).getSpell();
-        if (spell.getSpellType() != SpellType.NONE_SPELL){
+        if (spell.getSpellType() != SpellType.NONE_SPELL) {
             entity.stopUsingItem();
-            if (getUseDuration(itemStack) - ticksUsed >= 10)
-                Messages.sendToServer(new PacketCancelCast(true));
+            Messages.sendToServer(new PacketCancelCast(true));
         }
 
         super.releaseUsing(itemStack, level, entity, ticksUsed);
