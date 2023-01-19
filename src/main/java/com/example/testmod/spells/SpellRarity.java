@@ -9,9 +9,9 @@ public enum SpellRarity {
     UNCOMMON(1),
     RARE(2),
     EPIC(3),
-    LEGENDARY(4),
+    LEGENDARY(4)/*,
     MYTHIC(5),
-    ANCIENT(6);
+    ANCIENT(6)*/;
 
     private final int value;
 
@@ -34,7 +34,7 @@ public enum SpellRarity {
         return this.value;
     }
 
-    public Component getDisplayName() {
+    public MutableComponent getDisplayName() {
         return DISPLAYS[getValue()];
     }
 

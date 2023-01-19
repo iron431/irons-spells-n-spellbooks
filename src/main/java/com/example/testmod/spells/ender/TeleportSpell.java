@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -76,7 +77,7 @@ public class TeleportSpell extends AbstractSpell {
 
     private Vec3 findTeleportLocation(Level level, LivingEntity entity) {
         //TODO: potentially cache this result
-        var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, getSpellPower(entity));
+        var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, getDistance(entity));
         var pos = blockHitResult.getBlockPos();
 
         //TODO: if this is a performance hit can just manually check the few blocks over this position
@@ -105,8 +106,11 @@ public class TeleportSpell extends AbstractSpell {
         }
     }
 
+    private float getDistance(Entity sourceEntity){
+        return getSpellPower(sourceEntity);
+    }
     @Override
     public MutableComponent getUniqueInfo() {
-        return Component.translatable("ui.testmod.distance", getSpellPower(null));
+        return Component.translatable("ui.testmod.distance", Utils.stringTruncation(getDistance(null),1));
     }
 }

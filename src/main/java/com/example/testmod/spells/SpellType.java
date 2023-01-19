@@ -1,6 +1,7 @@
 package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.config.CommonConfigs;
 import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
@@ -60,6 +61,52 @@ public enum SpellType {
         return SpellType.values()[value];
     }
 
+    public CastType getCastType() {
+        return switch (this) {
+            case FIREBALL_SPELL -> CastType.LONG;
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL -> CastType.CONTINUOUS;
+            default -> CastType.INSTANT;
+        };
+    }
+    private final float UNCOMMON = .4f;
+    private final float RARE = .6f;
+    private final float EPIC = .8f;
+    private final float LEGENDARY = .9f;
+    public SpellRarity getRarity(int level) {
+        float p = level / (float) CommonConfigs.getByType(this).MAX_LEVEL;
+        int baseRarity = CommonConfigs.getByType(this).MIN_RARITY.getValue();
+        int maxRarity = SpellRarity.LEGENDARY.getValue();
+        float adjustedRarity = (baseRarity + (maxRarity-baseRarity)*p)/maxRarity;
+
+        if(adjustedRarity>=LEGENDARY)
+            return SpellRarity.LEGENDARY;
+        else if(adjustedRarity>=EPIC)
+            return SpellRarity.EPIC;
+        else if(adjustedRarity>=RARE)
+            return SpellRarity.RARE;
+        else if(adjustedRarity>=UNCOMMON)
+            return SpellRarity.UNCOMMON;
+        else
+            return SpellRarity.COMMON;
+    }
+
+    public SchoolType getSchoolType() {
+        if (quickSearch(FIRE_SPELLS, this))
+            return SchoolType.FIRE;
+        if (quickSearch(ICE_SPELLS, this))
+            return SchoolType.ICE;
+        if (quickSearch(LIGHTNING_SPELLS, this))
+            return SchoolType.LIGHTNING;
+        if (quickSearch(HOLY_SPELLS, this))
+            return SchoolType.HOLY;
+        if (quickSearch(ENDER_SPELLS, this))
+            return SchoolType.ENDER;
+        if (quickSearch(BLOOD_SPELLS, this))
+            return SchoolType.BLOOD;
+        //if (quickSearch(EVOCATION_SPELLS, this))
+        return SchoolType.EVOCATION;
+    }
+
     public AbstractSpell getSpellForType(int level) {
         switch (this) {
             case BURNING_DASH_SPELL -> {
@@ -108,31 +155,6 @@ public enum SpellType {
                 return new NoneSpell(0);
             }
         }
-    }
-
-    public CastType getCastType() {
-        return switch (this) {
-            case FIREBALL_SPELL -> CastType.LONG;
-            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL -> CastType.CONTINUOUS;
-            default -> CastType.INSTANT;
-        };
-    }
-
-    public SchoolType getSchoolType() {
-        if (quickSearch(FIRE_SPELLS, this))
-            return SchoolType.FIRE;
-        if (quickSearch(ICE_SPELLS, this))
-            return SchoolType.ICE;
-        if (quickSearch(LIGHTNING_SPELLS, this))
-            return SchoolType.LIGHTNING;
-        if (quickSearch(HOLY_SPELLS, this))
-            return SchoolType.HOLY;
-        if (quickSearch(ENDER_SPELLS, this))
-            return SchoolType.ENDER;
-        if (quickSearch(BLOOD_SPELLS, this))
-            return SchoolType.BLOOD;
-        //if (quickSearch(EVOCATION_SPELLS, this))
-        return SchoolType.EVOCATION;
     }
 
     public static SpellType[] getSpellsFromSchool(SchoolType school) {

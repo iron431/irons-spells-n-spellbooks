@@ -89,11 +89,13 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     private void renderSpellList(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
+        //TODO: get real ink rarity
+        SpellRarity inkRarity = SpellRarity.COMMON;
         for (int i = 0; i < availableSpells.size(); i++) {
             SpellCardInfo spellCard = availableSpells.get(i);
 
             if (i - scrollOffset >= 0 && i - scrollOffset < 3) {
-                spellCard.button.active = true;
+                spellCard.button.active = true;//spellCard.s;
                 int x = leftPos + SPELL_LIST_X;
                 int y = topPos + SPELL_LIST_Y + (i - scrollOffset) * 19;
                 spellCard.button.x = x;
@@ -171,7 +173,6 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         void draw(ScrollForgeScreen screen, PoseStack poseStack, int x, int y, int mouseX, int mouseY) {
             setTexture(TEXTURE);
-            this.button.active = rarity.compareRarity(SpellRarity.UNCOMMON) <= 0;
             if (this.button.active) {
                 if (index == screen.getSelectedSpellIndex())//mouseX >= x && mouseY >= y && mouseX < x + 108 && mouseY < y + 19)
                     screen.blit(poseStack, x, y, 0, 204, 108, 19);
@@ -183,6 +184,13 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 screen.blit(poseStack, x, y, 0, 185, 108, 19);
                 font.draw(poseStack, getDisplayName().withStyle(Style.EMPTY.withFont(RUNIC_FONT)), x + 2, y + 2, 0xFFFFFF);
             }
+            if (mouseX >= x && mouseY >= y && mouseX < x + 108 && mouseY < y + 19) {
+                screen.renderTooltip(poseStack, getHoverText(), mouseX, mouseY);
+            }
+        }
+
+        MutableComponent getHoverText() {
+            return this.button.active ? getDisplayName() : Component.translatable("ink_rarity_error");
         }
 
         MutableComponent getDisplayName() {

@@ -49,6 +49,10 @@ public abstract class AbstractSpell {
         return this.spellType;
     }
 
+    public SpellRarity getRarity() {
+        return spellType.getRarity(level);
+    }
+
     public CastType getCastType() {
         return this.castType;
     }

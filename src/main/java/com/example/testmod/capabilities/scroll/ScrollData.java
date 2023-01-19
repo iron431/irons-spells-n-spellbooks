@@ -50,7 +50,7 @@ public class ScrollData {
 
     public Component getDisplayName() {
         if (displayName == null) {
-            displayName = getSpell().getSpellType().getDisplayName().append(" ").append(Component.translatable("item.testmod.scroll"));
+            displayName = getSpell().getSpellType().getDisplayName().append(" ").append(Component.translatable("item.testmod.scroll"));//.append(" ").append(Component.translatable("tooltip.testmod.rarity",getSpell().getRarity().getDisplayName().getString()));
         }
         return displayName;
     }
@@ -60,9 +60,11 @@ public class ScrollData {
             hoverText = Lists.newArrayList();
             var s = getSpell();
             if (s.getSpellType() != SpellType.NONE_SPELL) {
+                //hoverText.add(s.getRarity().getDisplayName().copy());
+                //hoverText.add(Component.translatable("tooltip.testmod.level", s.getLevel()).withStyle(ChatFormatting.GRAY));
+                hoverText.add(Component.translatable("tooltip.testmod.level",s.getLevel()).append(" ").append(Component.translatable("tooltip.testmod.rarity",getSpell().getRarity().getDisplayName().getString())).withStyle(getSpell().getRarity().getDisplayName().getStyle()));
                 if (s.getUniqueInfo() != null)
-                    hoverText.add(s.getUniqueInfo().withStyle(ChatFormatting.DARK_GREEN));
-                hoverText.add(Component.translatable("tooltip.testmod.level", s.getLevel()).withStyle(ChatFormatting.GRAY));
+                    hoverText.add(s.getUniqueInfo().withStyle(ChatFormatting.GRAY));
                 hoverText.add(Component.empty());
                 hoverText.add(Component.translatable("tooltip.testmod.scroll_tooltip").withStyle(ChatFormatting.GRAY));
                 hoverText.add(Component.translatable("tooltip.testmod.mana_cost", s.getManaCost()).withStyle(ChatFormatting.BLUE));
