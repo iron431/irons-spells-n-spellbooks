@@ -80,9 +80,13 @@ public enum SpellType {
     private final int maxRarity = SpellRarity.LEGENDARY.getValue();
     private float mappingConstant = (maxRarity - minRarity) / (maxLevel - minLevel);
 
+    public static float getRarityMapped(float levelMin, float levelMax, float rarityMin, float rarityMax, float levelToMap) {
+        return rarityMin + ((levelToMap - levelMin) * (rarityMax - rarityMin)) / (levelMax - levelMin);
+    }
+
     public SpellRarity getRarity(int level) {
 
-        float adjustedRarity = minLevel + mappingConstant * (level - minRarity);
+        float adjustedRarity = getRarityMapped(minLevel, maxLevel, minRarity, maxRarity, level);
 
         if (adjustedRarity >= LEGENDARY)
             return SpellRarity.LEGENDARY;
