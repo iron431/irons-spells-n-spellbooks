@@ -20,6 +20,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
 
 public enum SpellType {
     /*
@@ -48,13 +50,16 @@ public enum SpellType {
     SUMMON_HORSE_SPELL(14);
 
     private final int value;
-    private boolean configLoaded = false;
-    private int maxLevel;
-    private int minRarity;
-    private int maxRarity;
+    private final LazyOptional<Integer> maxLevel;
+    private final LazyOptional<Integer> minRarity;
+    private final int maxRarity;
 
     SpellType(final int newValue) {
         value = newValue;
+        maxLevel = LazyOptional.of(() -> (CommonConfigs.getByType(this).MAX_LEVEL));
+        minRarity = LazyOptional.of(() -> (CommonConfigs.getByType(this).MIN_RARITY.getValue()));
+        maxRarity = SpellRarity.LEGENDARY.getValue();
+
     }
 
     public int getValue() {
@@ -82,15 +87,25 @@ public enum SpellType {
     }
 
     public SpellRarity getRarity(int level) {
-        if (!configLoaded)
-            loadFromConfig();
         //float adjustedRarity = getRarityMapped(minLevel, maxLevel, minRarity, maxRarity, level);
-
+        int maxLevel = this.maxLevel.resolve().get();
+        int minRarity = this.minRarity.resolve().get();
         //https://www.desmos.com/calculator/fumipfwdfr
-        float rarity = level / (float) maxLevel;
-        float adjustedRarity = Mth.clamp(lerp(minRarity, maxRarity, rarity * rarity), minRarity, maxRarity);
-        return SpellRarity.values()[(int) adjustedRarity];
+        float rarityPercent = level / (float) maxLevel;
+        float scaledRarity = Mth.clamp(lerp(minRarity, maxRarity, rarityPercent * rarityPercent), minRarity, maxRarity);
+        return SpellRarity.values()[(int) scaledRarity];
         //return SpellRarity.getRarityFromPercent(adjustedRarity);
+    }
+
+    public AbstractSpell getSpellForRarity(SpellRarity rarity) {
+        int minRarity = this.minRarity.resolve().get();
+        float maxLevel = this.maxLevel.resolve().get();
+        var x = rarity.getValue();
+        var a = minRarity;
+        var b = maxRarity;
+        int level = (int) (maxLevel * Math.sqrt((x-a)/(double)(b-a)));
+
+        return getSpellForType(level);
     }
 
     private float lerp(float a, float b, float f) {
@@ -195,12 +210,6 @@ public enum SpellType {
             {BLOOD_SLASH_SPELL};
     private static final SpellType[] EVOCATION_SPELLS =
             {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL};
-
-    private void loadFromConfig() {
-        this.maxLevel = CommonConfigs.getByType(this).MAX_LEVEL;
-        this.minRarity = CommonConfigs.getByType(this).MIN_RARITY.getValue();
-        this.maxRarity = SpellRarity.LEGENDARY.getValue();
-    }
 
     public MutableComponent getDisplayName() {
         return Component.translatable("spell." + TestMod.MODID + "." + this.getId());

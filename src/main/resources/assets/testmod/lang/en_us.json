@@ -34,7 +34,7 @@
   "ui.testmod.damage": "%d Damage",
   "ui.testmod.distance": "%d Block Range",
   "ui.testmod.summon_count": "%d Summons",
-  "ui.testmod.ink_rarity_error": "You need higher quality ink to inscribe such spells",
+  "ui.testmod.ink_rarity_error": "Obtain higher quality ink",
 
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",

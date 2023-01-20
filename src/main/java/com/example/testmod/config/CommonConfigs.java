@@ -28,6 +28,7 @@ public class CommonConfigs {
 
         //TODO: Fill out all spells with real values
         createSpellConfigEntry(SpellType.FIREBALL_SPELL, 100, SpellRarity.LEGENDARY);
+        createSpellConfigEntry(SpellType.FIREBOLT_SPELL, 15, SpellRarity.UNCOMMON);
         createSpellConfigEntry(SpellType.MAGIC_MISSILE_SPELL, 1, SpellRarity.UNCOMMON);
         createSpellConfigEntry(SpellType.ELECTROCUTE_SPELL, 1000, SpellRarity.LEGENDARY);
         createSpellConfigEntry(SpellType.ICICLE_SPELL, 10, SpellRarity.EPIC);

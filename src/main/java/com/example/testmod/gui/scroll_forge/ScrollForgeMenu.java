@@ -2,40 +2,28 @@ package com.example.testmod.gui.scroll_forge;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.block.scroll_forge.ScrollForgeTile;
-import com.example.testmod.gui.inscription_table.ScrollExtractionSlot;
+import com.example.testmod.item.InkItem;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.registries.MenuRegistry;
-import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.SchoolType;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.SpellType;
-import com.example.testmod.util.ModTags;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.testmod.registries.BlockRegistry.SCROLL_FORGE_BLOCK;
-import static net.minecraft.world.item.Items.*;
 
 public class ScrollForgeMenu extends AbstractContainerMenu {
     public final ScrollForgeTile blockEntity;
@@ -91,25 +79,25 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     }
 
     public void onSlotsChanged() {
-        TestMod.LOGGER.debug("{}", this.hashCode());
-
         setupResultSlot(spellRecipeSelection);
         TestMod.LOGGER.debug("ScrollForgeMenu.slotsChanged");
     }
 
     private void setupResultSlot(SpellType selectedSpellType) {
+        TestMod.LOGGER.debug("ScrollForgeMenu.setupResultSlot");
+
         ItemStack scrollStack = this.blankScrollSlot.getItem();
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
         if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && selectedSpellType != SpellType.NONE_SPELL) {
-            //if (scrollStack.is(PAPER) && inkStack.is(INK_SAC) && focusStack.is(BLAZE_POWDER)) {
-            resultStack = new ItemStack(ItemRegistry.SCROLL.get());
-            resultStack.setCount(1);
-            Scroll scroll = (Scroll) resultStack.getItem();
-            var scrollData = scroll.getScrollData(resultStack);
-            scrollData.setData(selectedSpellType.getValue(), 1);
-            //}
+            if(scrollStack.getItem() .equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem){
+                resultStack = new ItemStack(ItemRegistry.SCROLL.get());
+                resultStack.setCount(1);
+                Scroll scroll = (Scroll) resultStack.getItem();
+                var scrollData = scroll.getScrollData(resultStack);
+                scrollData.setData(selectedSpellType.getSpellForRarity(inkItem.getRarity()));
+            }
         }
 
         if (!ItemStack.matches(resultStack, this.resultSlot.getItem())) {
@@ -120,6 +108,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
     public void setRecipeSpell(SpellType typeFromValue) {
         this.spellRecipeSelection = typeFromValue;
+        TestMod.LOGGER.debug("Setting selected Spell");
         setupResultSlot(typeFromValue);
     }
 

@@ -45,11 +45,6 @@ public final class ClientKeyHandler {
                 SpellWheelOverlay.instance.close();
 
         }
-        if (SPELLBAR_MODIFIER_STATE.wasPressed())
-            System.out.println("Shift Down");
-
-        if (SPELLBAR_MODIFIER_STATE.wasReleased())
-            System.out.println("Shift Up");
 
         Update();
     }

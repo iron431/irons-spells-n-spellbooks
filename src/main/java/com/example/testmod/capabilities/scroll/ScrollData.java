@@ -47,6 +47,10 @@ public class ScrollData {
         this.spellId = spellId;
         this.spellLevel = spellLevel;
     }
+    public void setData(AbstractSpell spell) {
+        this.spellId = spell.getID();
+        this.spellLevel = spell.getLevel();
+    }
 
     public Component getDisplayName() {
         if (displayName == null) {

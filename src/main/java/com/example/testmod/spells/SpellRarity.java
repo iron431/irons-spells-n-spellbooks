@@ -19,17 +19,6 @@ public enum SpellRarity {
         value = newValue;
     }
 
-    public static SpellRarity getSpellRarity(AbstractSpell spell) {
-        //TODO: calcuate this dynamic and based off of config files
-        return switch (spell.level) {
-            case 1 -> COMMON;
-            case 2 -> UNCOMMON;
-            case 3 -> RARE;
-            case 4 -> EPIC;
-            default -> LEGENDARY;
-        };
-    }
-
     public int getValue() {
         return this.value;
     }

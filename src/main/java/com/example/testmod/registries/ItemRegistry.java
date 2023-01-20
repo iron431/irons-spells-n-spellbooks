@@ -1,8 +1,10 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.item.InkItem;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.spells.SpellRarity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -22,6 +24,11 @@ public class ItemRegistry {
     //public static final RegistryObject<Item> SPELL_BOOK = ITEMS.register("spell_book", SpellBook::new);
     public static final RegistryObject<Item> WIMPY_SPELL_BOOK = ITEMS.register("wimpy_spell_book", SpellBook::new);
     public static final RegistryObject<Item> SCROLL = ITEMS.register("scroll", Scroll::new);
+    public static final RegistryObject<Item> INK_COMMON = ITEMS.register("common_ink", () -> new InkItem(SpellRarity.COMMON));
+    public static final RegistryObject<Item> INK_UNCOMMON = ITEMS.register("uncommon_ink", () -> new InkItem(SpellRarity.UNCOMMON));
+    public static final RegistryObject<Item> INK_RARE = ITEMS.register("rare_ink", () -> new InkItem(SpellRarity.RARE));
+    public static final RegistryObject<Item> INK_EPIC = ITEMS.register("epic_ink", () -> new InkItem(SpellRarity.EPIC));
+    public static final RegistryObject<Item> INK_LEGENDARY = ITEMS.register("legendary_ink", () -> new InkItem(SpellRarity.LEGENDARY));
     public static final RegistryObject<Item> LIGHTNING_BOTTLE = ITEMS.register("lightning_bottle", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> FROZEN_BONE_SHARD = ITEMS.register("frozen_bone", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
     public static final RegistryObject<Item> BLOOD_VIAL = ITEMS.register("blood_vial", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
