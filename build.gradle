@@ -152,12 +152,13 @@ repositories {
 //         dir 'libs'
 //     }
     maven { url = 'https://maven.enginehub.org/repo/' }
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.19.2-43.2.3'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
+    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.39')
     //compileOnly fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
     //implementation fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
     //implementation fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
