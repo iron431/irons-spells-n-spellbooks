@@ -1,10 +1,7 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.overlays.CastBarOverlay;
-import com.example.testmod.gui.overlays.ManaBarOverlay;
-import com.example.testmod.gui.overlays.SpellBarOverlay;
-import com.example.testmod.gui.overlays.SpellWheelOverlay;
+import com.example.testmod.gui.overlays.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -21,7 +18,8 @@ public class OverlayRegistry {
         event.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "mana_overlay", ManaBarOverlay::render);
         event.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "cast_bar", CastBarOverlay::render);
 
-        event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), "spell_bar", SpellBarOverlay::render);
+        event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "spell_bar", SpellBarOverlay::render);
+        event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "imbued_spell", ImbuedSpellOverlay::render);
 
         event.registerAbove(VanillaGuiOverlay.PLAYER_LIST.id(), "spell_wheel", SpellWheelOverlay.instance::render);
     }

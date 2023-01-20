@@ -32,6 +32,7 @@ public class SpellBarOverlay extends GuiComponent {
     public final static ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/gui/icons.png");
     static final int IMAGE_HEIGHT = 21;
     static final int IMAGE_WIDTH = 21;
+    static final int HOTBAR_HALFWIDTH = 91;
     static final int boxSize = 20;
     static int screenHeight;
     static int screenWidth;
@@ -62,7 +63,11 @@ public class SpellBarOverlay extends GuiComponent {
 
         var spells = spellBookData.getInscribedSpells();
         var locations = ClientMagicData.relativeSpellBarSlotLocations;
-        //Slot Border
+        int approximateWidth = locations.size()/3;
+        //Move spellbar away from hotbar as it gets bigger
+        centerX -= approximateWidth * 5;
+
+                //Slot Border
         setTranslucentTexture(TEXTURE);
         for (Vec2 location : locations) {
             gui.blit(poseStack, centerX + (int) location.x, centerY + (int) location.y, 66, 84, 22, 22);
@@ -71,7 +76,7 @@ public class SpellBarOverlay extends GuiComponent {
         for (int i = 0; i < locations.size(); i++) {
             if (spells[i] != null) {
                 setOpaqueTexture(spells[i].getSpellType().getResourceLocation());
-                gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
+                gui.blit(poseStack, centerX + (int) locations.get(i).x + 3 , centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
             }
         }
         //Border + Cooldowns

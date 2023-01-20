@@ -5,14 +5,17 @@ import com.example.testmod.capabilities.scroll.ScrollData;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
@@ -64,6 +67,29 @@ public class Utils {
 
     public static boolean isPlayerHoldingSpellBook(Player player) {
         return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
+    }
+
+    public static ItemStack getImbuedSwordInHand(Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if(stack.getItem() instanceof SwordItem){
+            var spell = Utils.getScrollData(stack).getSpell();
+            if (spell.getSpellType() != SpellType.NONE_SPELL)
+                return stack;
+
+        }
+        return null;
+    }
+
+    public static ItemStack getHeldImbuedSword(Player player){
+        ItemStack mainhand = getImbuedSwordInHand(player,InteractionHand.MAIN_HAND);
+        if(mainhand!=null){
+            return mainhand;
+
+        }
+        else{
+            ItemStack offhand = getImbuedSwordInHand(player,InteractionHand.OFF_HAND);
+            return offhand;
+        }
     }
 
     public static boolean isPlayerHoldingScroll(Player player) {
