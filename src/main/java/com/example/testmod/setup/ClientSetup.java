@@ -1,6 +1,7 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.entity.armor.WizardArmorRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
@@ -12,10 +13,10 @@ import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardModel;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardRenderer;
 import com.example.testmod.entity.mobs.summons.SpectralSteed;
 import com.example.testmod.entity.mobs.summons.horse.MagicHorseRenderer;
+import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
-import net.minecraft.client.renderer.entity.HorseRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -23,6 +24,7 @@ import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 //TODO: find if there is a better place for this code to live (tutorial said to put it here)
 
@@ -39,6 +41,11 @@ public class ClientSetup {
     @SubscribeEvent
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(SimpleWizardModel.SIMPLE_WIZARD_LAYER, SimpleWizardModel::createBodyLayer);
+    }
+
+    @SubscribeEvent
+    public static void registerArmorRenderers(final EntityRenderersEvent.AddLayers event) {
+        GeoArmorRenderer.registerArmorRenderer(WizardArmorItem.class, new WizardArmorRenderer());
     }
 
     @SubscribeEvent
