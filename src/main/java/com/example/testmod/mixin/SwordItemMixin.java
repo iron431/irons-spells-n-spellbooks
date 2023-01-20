@@ -34,8 +34,10 @@ public abstract class SwordItemMixin extends Item {
         var spell = Utils.getScrollData(stack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             if (level.isClientSide) {
-                if (ClientMagicData.isCasting || ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
+                if (ClientMagicData.isCasting) {
                     return InteractionResultHolder.fail(stack);
+                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
+                    return InteractionResultHolder.pass(stack);
                 } else {
                     spell.onClientPreCast(level, player, hand, null);
 
