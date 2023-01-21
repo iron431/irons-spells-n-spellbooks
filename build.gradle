@@ -157,10 +157,22 @@ repositories {
 }
 
 dependencies {
+    //FORGE
     minecraft 'net.minecraftforge:forge:1.19.2-43.2.3'
+
+    //MIXINS
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    //GECKOLIB
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.39')
-    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6")
+
+    //CAELUS
+    implementation fg.deobf('top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api')
+    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
+    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6")
+    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
+
+
     //compileOnly fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
     //implementation fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
     //implementation fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")

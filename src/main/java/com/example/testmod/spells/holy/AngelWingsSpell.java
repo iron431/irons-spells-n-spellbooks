@@ -28,7 +28,7 @@ public class AngelWingsSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 30;
         this.cooldown = 400;
-        uniqueText = Component.translatable("ui.testmod.ange_wings", Utils.stringTruncation(getSpellPower(null), 1));
+        uniqueText = Component.translatable("ui.testmod.angel_wings", Utils.stringTruncation(getSpellPower(null), 1));
     }
 
     private int getEffectDuration(LivingEntity entity) {
@@ -38,6 +38,7 @@ public class AngelWingsSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(entity)), entity);
+        //entity.getAttributes().getInstance(CaelusApi.getInstance().getFlightAttribute()).addTransientModifier(CaelusApi.getInstance().getElytraModifier());
     }
 
     @Override
