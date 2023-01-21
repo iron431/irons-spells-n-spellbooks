@@ -1,6 +1,8 @@
 package com.example.testmod.entity.electrocute;
 
 import com.example.testmod.TestMod;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
@@ -37,12 +39,15 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         if (entity.getOwner() == null)
             return;
         poseStack.pushPose();
-
         PoseStack.Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(getTextureLocation(entity)));
-        //VertexConsumer consumer = bufferSource.getBuffer(RenderType.endPortal());
+
+//        RenderSystem.disableDepthTest();
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,GlStateManager.DestFactor.ONE);
+
+        //VertexConsumer consumer = bufferSource.getBuffer(RenderType.lightning());
         poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getOwner().getYRot()));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getOwner().getXRot()));
 
@@ -51,22 +56,30 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         List<Vec3> segments = entity.getBeamCache();
         //TestMod.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
 
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(getTextureLocation(entity)));
 
         float width = .25f;
         float height = width;
         for (int i = 0; i < segments.size() - 1; i += 2) {
             var from = segments.get(i).add(0, entity.getOwner().getEyeHeight() / 4, 0);
             var to = segments.get(i + 1).add(0, entity.getOwner().getEyeHeight() / 4, 0);
-            drawHull(from, to, width, height, pose, consumer, 0, 156, 255, 35);
-            drawHull(from, to, width * .75f, height * .75f, pose, consumer, 0, 226, 255, 35);
-            drawHull(from, to, width * .3f, height * .3f, pose, consumer, 255, 255, 255, 255);
+            drawHull(from, to, width, height, pose, consumer, 0, 156, 255, 30);
+            drawHull(from, to, width * .55f, height * .55f, pose, consumer, 0, 226, 255, 30);
+
+        }
+
+        consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity),0,0));
+        for (int i = 0; i < segments.size() - 1; i += 2) {
+            var from = segments.get(i).add(0, entity.getOwner().getEyeHeight() / 4, 0);
+            var to = segments.get(i + 1).add(0, entity.getOwner().getEyeHeight() / 4, 0);
+            drawHull(from, to, width * .2f, height * .2f, pose, consumer, 255, 255, 255, 255);
+
         }
 
 
 //        drawSegment(new Vec3(0, 0, 0), new Vec3(-1, 1, 3), 1, pose, consumer, entity, bufferSource, light);
 //        drawSegment(new Vec3(-1, 1, 3), new Vec3(1, 1, 5), 1, pose, consumer, entity, bufferSource, light);
         poseStack.popPose();
-
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
