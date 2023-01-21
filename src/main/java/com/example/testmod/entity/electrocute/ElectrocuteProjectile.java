@@ -31,19 +31,19 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
     }
 
     public void generateLightningBeams() {
-        TestMod.LOGGER.debug("generatingLightningBeams");
+        //TestMod.LOGGER.debug("generatingLightningBeams");
         Random random = new Random();
         beamVectors = new ArrayList<>();
         Vec3 coreStart = new Vec3(0, 0, 0);
-        int coreLength = random.nextInt(4) + 3;
+        int coreLength = random.nextInt(3) + 6;
         for (int core = 0; core < coreLength; core++) {
             Vec3 coreEnd = coreStart.add(0, 0, 1).add(randomVector(.3f));
             beamVectors.add(coreStart);
             beamVectors.add(coreEnd);
             coreStart = coreEnd;
 
-            int branchSegments = random.nextInt(3) + 2;
-            beamVectors.addAll(generateBranch(coreEnd, branchSegments, 0.6f, 0));
+            int branchSegments = random.nextInt(3) + 1;
+            beamVectors.addAll(generateBranch(coreEnd, branchSegments, 0.5f, 1));
         }
     }
 
@@ -84,28 +84,28 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
 
     @Override
     public void spawnParticles() {
-        var owner = getOwner();
-        if (!level.isClientSide || owner == null) {
-            return;
-        }
-        Vec3 rotation = owner.getLookAngle().normalize();
-        var pos = owner.position().add(rotation.scale(0.5f));
-
-        double x = pos.x;
-        double y = pos.y + owner.getEyeHeight() * .8f;
-        double z = pos.z;
-
-        double speed = random.nextDouble() * .35 + .25;
-        for (int i = 0; i < 1; i++) {
-            double offset = .25;
-            double ox = Math.random() * 2 * offset - offset;
-            double oy = 0;
-            double oz = Math.random() * 2 * offset - offset;
-
-            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
-            Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(ParticleHelper.ELECTRICITY, x + ox, y + oy, z + oz, result.x, result.y, result.z);
-        }
+//        var owner = getOwner();
+//        if (!level.isClientSide || owner == null) {
+//            return;
+//        }
+//        Vec3 rotation = owner.getLookAngle().normalize();
+//        var pos = owner.position().add(rotation.scale(0.5f));
+//
+//        double x = pos.x;
+//        double y = pos.y + owner.getEyeHeight() * .8f;
+//        double z = pos.z;
+//
+//        double speed = random.nextDouble() * .35 + .25;
+//        for (int i = 0; i < 1; i++) {
+//            double offset = .25;
+//            double ox = Math.random() * 2 * offset - offset;
+//            double oy = 0;
+//            double oz = Math.random() * 2 * offset - offset;
+//
+//            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
+//            Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
+//            level.addParticle(ParticleHelper.ELECTRICITY, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+//        }
 
     }
 
