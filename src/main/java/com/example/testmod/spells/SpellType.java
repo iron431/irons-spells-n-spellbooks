@@ -12,6 +12,7 @@ import com.example.testmod.spells.fire.BurningDashSpell;
 import com.example.testmod.spells.fire.FireBreathSpell;
 import com.example.testmod.spells.fire.FireballSpell;
 import com.example.testmod.spells.fire.FireboltSpell;
+import com.example.testmod.spells.holy.AngelWingsSpell;
 import com.example.testmod.spells.holy.HealSpell;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ice.IcicleSpell;
@@ -21,7 +22,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
 
 public enum SpellType {
     /*
@@ -47,7 +47,8 @@ public enum SpellType {
     FIRE_BREATH_SPELL(11),
     ICICLE_SPELL(12),
     FIRECRACKER_SPELL(13),
-    SUMMON_HORSE_SPELL(14);
+    SUMMON_HORSE_SPELL(14),
+    ANGEL_WING_SPELL(15);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -103,7 +104,7 @@ public enum SpellType {
         var x = rarity.getValue();
         var a = minRarity;
         var b = maxRarity;
-        int level = (int) (maxLevel * Math.sqrt((x-a)/(double)(b-a)));
+        int level = (int) (maxLevel * Math.sqrt((x - a) / (double) (b - a)));
 
         return getSpellForType(level);
     }
@@ -173,6 +174,9 @@ public enum SpellType {
             case SUMMON_HORSE_SPELL -> {
                 return new SummonHorseSpell(level);
             }
+            case ANGEL_WING_SPELL -> {
+                return new AngelWingsSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -203,7 +207,7 @@ public enum SpellType {
     private static final SpellType[] LIGHTNING_SPELLS =
             {ELECTROCUTE_SPELL};
     private static final SpellType[] HOLY_SPELLS =
-            {HEAL_SPELL};
+            {HEAL_SPELL, ANGEL_WING_SPELL};
     private static final SpellType[] ENDER_SPELLS =
             {TELEPORT_SPELL, MAGIC_MISSILE_SPELL};
     private static final SpellType[] BLOOD_SPELLS =

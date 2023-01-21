@@ -1,5 +1,6 @@
-package com.example.testmod.damage;
+package com.example.testmod.effect;
 
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.registries.MobEffectRegistry;
 import net.minecraft.world.damagesource.DamageSource;

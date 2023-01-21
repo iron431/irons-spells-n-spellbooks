@@ -4,13 +4,13 @@
   "refmap": "testmod.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "TridentItemMixin",
-    "ItemRendererMixin",
-    "SpinAttackEffectLayerMixin",
-    "LocalPlayerMixin",
     "CauldronMixin",
+    "GlassBottleMixin",
+    "ItemRendererMixin",
+    "LocalPlayerMixin",
+    "SpinAttackEffectLayerMixin",
     "SwordItemMixin",
-    "GlassBottleMixin"
+    "TridentItemMixin"
   ],
   "client": [],
   "injectors": {

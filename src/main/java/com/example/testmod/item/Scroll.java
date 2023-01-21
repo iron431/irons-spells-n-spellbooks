@@ -74,6 +74,7 @@ public class Scroll extends Item implements IScroll {
                 if (spell.getCastType() == CastType.CONTINUOUS) {
                     player.startUsingItem(hand);
                 }
+
                 return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
             }
         }
@@ -82,6 +83,10 @@ public class Scroll extends Item implements IScroll {
             if (spell.getCastType() == CastType.INSTANT) {
                 removeScrollAfterCast((ServerPlayer) player, stack);
             }
+
+            player.getAbilities().mayfly = true;
+            player.getAbilities().flying = true;
+
             return InteractionResultHolder.success(stack);
         } else {
             return InteractionResultHolder.fail(stack);
