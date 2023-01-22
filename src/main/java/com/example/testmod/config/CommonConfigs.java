@@ -33,6 +33,7 @@ public class CommonConfigs {
         createSpellConfigEntry(SpellType.ELECTROCUTE_SPELL, 1000, SpellRarity.LEGENDARY);
         createSpellConfigEntry(SpellType.ICICLE_SPELL, 10, SpellRarity.EPIC);
 
+        BUILDER.comment("Misc.");
         SWORDS_CONSUME_MANA = BUILDER.push(createTitle("Do swords consume mana")).define("Consume Mana", true);
 
         SPEC = BUILDER.build();

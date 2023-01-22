@@ -1,7 +1,8 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.armor.WizardArmorRenderer;
+import com.example.testmod.entity.armor.simple_wizard.WizardArmorRenderer;
+import com.example.testmod.entity.armor.wandering_magician.WanderingMagicianRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
@@ -13,6 +14,7 @@ import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardModel;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardRenderer;
 import com.example.testmod.entity.mobs.summons.SpectralSteed;
 import com.example.testmod.entity.mobs.summons.horse.MagicHorseRenderer;
+import com.example.testmod.item.armor.WanderMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
 import com.example.testmod.registries.EntityRegistry;
@@ -46,6 +48,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerArmorRenderers(final EntityRenderersEvent.AddLayers event) {
         GeoArmorRenderer.registerArmorRenderer(WizardArmorItem.class, new WizardArmorRenderer());
+        GeoArmorRenderer.registerArmorRenderer(WanderMagicianArmorItem.class, new WanderingMagicianRenderer());
     }
 
     @SubscribeEvent

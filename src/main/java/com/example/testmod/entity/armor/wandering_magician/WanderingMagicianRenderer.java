@@ -1,19 +1,19 @@
-package com.example.testmod.entity.armor;
+package com.example.testmod.entity.armor.wandering_magician;
 
-import com.example.testmod.TestMod;
+import com.example.testmod.item.armor.WanderMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 import software.bernie.geckolib3.util.GeoUtils;
 
-public class WizardArmorRenderer extends GeoArmorRenderer<WizardArmorItem> {
+public class WanderingMagicianRenderer extends GeoArmorRenderer<WanderMagicianArmorItem> {
     public String leggingTorsoLayer = "armorLeggingTorsoLayer";
     private final GeoBone leggingTorsoLayerBone;
-    public WizardArmorRenderer() {
-        super(new WizardArmorModel());
+
+    public WanderingMagicianRenderer() {
+        super(new WanderingMagicianModel());
 
         this.headBone = "armorHead";
         this.bodyBone = "armorBody";
@@ -84,12 +84,10 @@ public class WizardArmorRenderer extends GeoArmorRenderer<WizardArmorItem> {
 
         return this;
     }
-    private void ensureBone(){
+
+    private void ensureBone() {
         var model = getGeoModelProvider();
-        if(!model.getAnimationProcessor().getModelRendererList().contains(leggingTorsoLayerBone))
+        if (!model.getAnimationProcessor().getModelRendererList().contains(leggingTorsoLayerBone))
             model.registerBone(leggingTorsoLayerBone);
-
-
-        //register bone or register renderer?
     }
 }

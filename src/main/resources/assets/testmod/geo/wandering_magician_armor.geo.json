@@ -69,6 +69,8 @@
 							"origin": [-4, 3, -2],
 							"size": [8, 18, 4],
 							"inflate": 1,
+							"pivot": [0, 24, 0],
+							"rotation": [-2.5, 0, 0],
 							"uv": {
 								"north": {"uv": [21, 20], "uv_size": [8, 18]},
 								"east": {"uv": [16, 20], "uv_size": [5, 18]},
@@ -83,7 +85,7 @@
 							"size": [8, 16, 4],
 							"inflate": 0.99,
 							"pivot": [0, 24, 0],
-							"rotation": [12.5, 0, 0],
+							"rotation": [10, 0, 0],
 							"uv": {
 								"east": {"uv": [60, 21], "uv_size": [5, 17]},
 								"south": {"uv": [72, 21], "uv_size": [8, 17]},

@@ -57,7 +57,6 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         //TestMod.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(getTextureLocation(entity)));
-
         float width = .25f;
         float height = width;
         for (int i = 0; i < segments.size() - 1; i += 2) {
