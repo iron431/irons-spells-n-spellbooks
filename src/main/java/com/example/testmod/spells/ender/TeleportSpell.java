@@ -5,6 +5,7 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -43,6 +44,9 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
+        if(entity instanceof LocalPlayer localPlayer) {
+            localPlayer.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
+        }
         TestMod.LOGGER.debug("Teleport.onClientPreCast: isClient:{}", level.isClientSide);
         particleCloud(level, entity, entity.getPosition(1));
 

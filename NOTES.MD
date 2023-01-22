@@ -79,6 +79,15 @@
 - ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:cooldown_reduction",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
 - ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:max_mana",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
 
+### Offline Server/Client
+- Running the dedicated server in intellj
+  - In ./run/eula.txt set "eula=true"
+  - In ./run/server.properties set "online-mode=false"
+  - In IntelliJ run the runServer task
+- Connecting as a specific user to the offline server
+  - Edit the run-client gradle task and edit the CLI Arguments.  Append --username=YourOfflineUsernameGoesHere
+  - In IntelliJ run the runClient task
+
 ### Notes
 - Block Overlay Example: https://github.com/Hexeption/DarkForge/blob/master/src/main/java/uk/co/hexeption/darkforge/mod/mods/render/BlockOverlay.java
 - Nice rendering library: https://github.com/maruohon/malilib

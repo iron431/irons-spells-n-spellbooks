@@ -16,7 +16,6 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'maven-publish'
-apply plugin: 'eclipse'
 
 version = '1.0'
 group = 'com.example.testmod'
