@@ -187,7 +187,7 @@ public abstract class AbstractSpell {
     }
 
     /**
-     * The primary spell effect handling goes here
+     * The primary spell effect handling goes here. Called Server Side
      */
     public abstract void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData);
 
