@@ -1,8 +1,14 @@
 package com.example.testmod.item.armor;
 
+import com.example.testmod.registries.AttributeRegistry;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
@@ -18,16 +24,40 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.item.GeoArmorItem;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class WanderMagicianArmorItem extends GeoArmorItem implements IAnimatable {
+    private static final UUID[] ARMOR_MODIFIER_UUID_PER_SLOT = new UUID[]{UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")};
+    private final Multimap<Attribute, AttributeModifier> ARMOR_ATTRIBUTES;
     private AnimationFactory factory = new AnimationFactory(this);
 
     private static final Map<ArmorMaterial, MobEffectInstance> MATERIAL_TO_EFFECT_MAP =
             (new ImmutableMap.Builder<ArmorMaterial, MobEffectInstance>()).build();
-                    //.put(ModArmorMaterials., new MobEffectInstance(MobEffects.LUCK, 200, 1)).build();
+    //.put(ModArmorMaterials., new MobEffectInstance(MobEffects.LUCK, 200, 1)).build();
 
     public WanderMagicianArmorItem(ArmorMaterial material, EquipmentSlot slot, Properties settings) {
         super(material, slot, settings);
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        builder.put(Attributes.ARMOR, new AttributeModifier("Armor", getDefense(), AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier("Armor toughness", getToughness(), AttributeModifier.Operation.ADDITION));
+        if (this.knockbackResistance > 0) {
+            builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Armor knockback resistance", this.knockbackResistance, AttributeModifier.Operation.ADDITION));
+        }
+        builder.put(AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 10, AttributeModifier.Operation.ADDITION));
+
+        ARMOR_ATTRIBUTES = builder.build();
+
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
+        if(pEquipmentSlot == this.slot){
+            //var attributes = super.getDefaultAttributeModifiers(pEquipmentSlot);
+            //attributes.putAll(MANA_ATTRIBUTES);
+            return ARMOR_ATTRIBUTES;
+        }else{
+            return ImmutableMultimap.of();
+        }
     }
 
     @Override
