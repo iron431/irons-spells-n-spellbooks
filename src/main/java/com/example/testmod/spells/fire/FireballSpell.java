@@ -1,6 +1,5 @@
 package com.example.testmod.spells.fire;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -36,16 +35,15 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
-        TestMod.LOGGER.debug("FireBall onServerPreCast");
         entity.playSound(SoundEvents.EVOKER_PREPARE_ATTACK, 1.0f, 1.0f);
     }
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        entity.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
         float speed = 2.5f;
         Vec3 direction = entity.getLookAngle().scale(speed);
         Vec3 origin = entity.getEyePosition();
-        entity.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
         Fireball fireball = new LargeFireball(world, entity, direction.x(), direction.y(), direction.z(), (int) getSpellPower(entity));
         fireball.setPos(origin.add(direction));
         world.addFreshEntity(fireball);
