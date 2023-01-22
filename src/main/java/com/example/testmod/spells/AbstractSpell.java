@@ -1,5 +1,6 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
@@ -194,24 +195,28 @@ public abstract class AbstractSpell {
      * Called on the server when a long spell casts, or a continuous spell is done casting or cancelled
      */
     public void onCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        TestMod.LOGGER.debug("AbstractSpell.: onCastComplete:{}", level.isClientSide);
     }
 
     /**
      * Called once just before executing onCast. Can be used for client side sounds and particles
      */
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
+        TestMod.LOGGER.debug("AbstractSpell.onClientPreCast: isClient:{}", level.isClientSide);
     }
 
     /**
      * Called once just before executing onCast. Can be used for server side sounds and particles
      */
     public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+        TestMod.LOGGER.debug("AbstractSpell.: onServerPreCast:{}", level.isClientSide);
     }
 
     /**
      * Called on the server each tick while casting LONG and CONTINUOUS only
      */
     public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+
     }
 
     public MutableComponent getUniqueInfo() {

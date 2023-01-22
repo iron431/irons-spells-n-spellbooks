@@ -44,10 +44,11 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
+        TestMod.LOGGER.debug("Teleport.onClientPreCast: isClient:{}", level.isClientSide);
         if(entity instanceof LocalPlayer localPlayer) {
+
             localPlayer.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
         }
-        TestMod.LOGGER.debug("Teleport.onClientPreCast: isClient:{}", level.isClientSide);
         particleCloud(level, entity, entity.getPosition(1));
 
         Vec3 dest = null;
