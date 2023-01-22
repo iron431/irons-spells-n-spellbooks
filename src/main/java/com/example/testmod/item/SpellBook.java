@@ -162,7 +162,7 @@ public class SpellBook extends Item implements ISpellBook {
             spellBookDataProvider.deserializeNBT(nbt.getCompound(PARENT));
         } else {
             //TestMod.LOGGER.debug("SpellBook.initCapabilities.2: {}", spellSlots);
-            spellBookDataProvider.getOrCreateSpellbookData(spellSlots);
+            spellBookDataProvider.getOrCreateSpellBookData(spellSlots);
         }
         return spellBookDataProvider;
     }

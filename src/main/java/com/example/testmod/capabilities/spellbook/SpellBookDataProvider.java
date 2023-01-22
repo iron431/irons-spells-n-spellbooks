@@ -16,16 +16,12 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
 
     public static Capability<SpellBookData> SPELL_BOOK_DATA = CapabilityManager.get(new CapabilityToken<>() {
     });
-    private final LazyOptional<SpellBookData> opt = LazyOptional.of(this::getOrCreateSpellbookData);
+    private final LazyOptional<SpellBookData> opt = LazyOptional.of(this::getOrCreateSpellBookData);
 
     private SpellBookData spellBookData = null;
 
-    public SpellBookDataProvider() {
-        getOrCreateSpellbookData();
-    }
-
     @Nonnull
-    private SpellBookData getOrCreateSpellbookData() {
+    private SpellBookData getOrCreateSpellBookData() {
         //TestMod.LOGGER.debug("SBDP.getOrCreateSpellbookData");
         if (spellBookData == null) {
             spellBookData = new SpellBookData(5);
@@ -34,10 +30,10 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
     }
 
     @Nonnull
-    public SpellBookData getOrCreateSpellbookData(int spellSlots) {
-        //TestMod.LOGGER.debug("SBDP.getOrCreateSpellbookData enter: {}", spellSlots);
+    public SpellBookData getOrCreateSpellBookData(int spellSlots) {
+        //TestMod.LOGGER.debug("SpellBookDataProvider.getOrCreateSpellbookData: {} ", spellBookData == null);
+
         if (spellBookData == null) {
-            //TestMod.LOGGER.debug("SBDP.getOrCreateSpellbookData create hydrated SpellBookData: {} ", spellSlots);
             spellBookData = new SpellBookData(spellSlots);
         }
         return spellBookData;
@@ -60,11 +56,11 @@ public class SpellBookDataProvider implements ICapabilityProvider, INBTSerializa
 
     @Override
     public CompoundTag serializeNBT() {
-        return getOrCreateSpellbookData().saveNBTData();
+        return getOrCreateSpellBookData().saveNBTData();
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        getOrCreateSpellbookData().loadNBTData(nbt);
+        getOrCreateSpellBookData().loadNBTData(nbt);
     }
 }
