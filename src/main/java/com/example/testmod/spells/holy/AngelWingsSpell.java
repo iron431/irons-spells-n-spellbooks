@@ -29,6 +29,11 @@ public class AngelWingsSpell extends AbstractSpell {
     }
 
     @Override
+    public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(entity)), entity);
+    }
+
+    @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(entity)), entity);
     }
