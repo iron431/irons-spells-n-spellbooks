@@ -8,21 +8,21 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketCastingState {
+public class ClientboundUpdateCastingState {
 
     private final int spellId;
     private final int castTime;
     private final CastType castType;
     private final boolean castFinished;
 
-    public PacketCastingState(int spellId, int castTime, CastType castType, boolean castFinished) {
+    public ClientboundUpdateCastingState(int spellId, int castTime, CastType castType, boolean castFinished) {
         this.spellId = spellId;
         this.castTime = castTime;
         this.castType = castType;
         this.castFinished = castFinished;
     }
 
-    public PacketCastingState(FriendlyByteBuf buf) {
+    public ClientboundUpdateCastingState(FriendlyByteBuf buf) {
         this.spellId = buf.readInt();
         this.castTime = buf.readInt();
         this.castType = CastType.values()[buf.readInt()];

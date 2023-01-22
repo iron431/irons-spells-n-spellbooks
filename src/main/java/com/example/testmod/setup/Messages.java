@@ -1,10 +1,10 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.overlays.network.PacketChangeSelectedSpell;
-import com.example.testmod.gui.inscription_table.network.PacketInscribeSpell;
-import com.example.testmod.gui.inscription_table.network.PacketRemoveSpell;
-import com.example.testmod.gui.scroll_forge.network.PacketSpellListSelection;
+import com.example.testmod.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
+import com.example.testmod.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
+import com.example.testmod.gui.inscription_table.network.ServerboundInscribeSpell;
+import com.example.testmod.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import com.example.testmod.network.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,70 +33,58 @@ public class Messages {
 
         INSTANCE = net;
 
-//        net.messageBuilder(PacketCastSpell.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-//                .decoder(PacketCastSpell::new)
-//                .encoder(PacketCastSpell::toBytes)
-//                .consumer(PacketCastSpell::handle)
-//                .add();
-
-        net.messageBuilder(PacketCastingState.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PacketCastingState::new)
-                .encoder(PacketCastingState::toBytes)
-                .consumer(PacketCastingState::handle)
+        net.messageBuilder(ClientboundUpdateCastingState.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundUpdateCastingState::new)
+                .encoder(ClientboundUpdateCastingState::toBytes)
+                .consumer(ClientboundUpdateCastingState::handle)
                 .add();
 
-        net.messageBuilder(PacketAddMotionToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PacketAddMotionToClient::new)
-                .encoder(PacketAddMotionToClient::toBytes)
-                .consumer(PacketAddMotionToClient::handle)
+        net.messageBuilder(ClientboundAddMotionToPlayer.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundAddMotionToPlayer::new)
+                .encoder(ClientboundAddMotionToPlayer::toBytes)
+                .consumer(ClientboundAddMotionToPlayer::handle)
                 .add();
 
-        net.messageBuilder(PacketCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(PacketCancelCast::new)
-                .encoder(PacketCancelCast::toBytes)
-                .consumer(PacketCancelCast::handle)
+        net.messageBuilder(ServerboundCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundCancelCast::new)
+                .encoder(ServerboundCancelCast::toBytes)
+                .consumer(ServerboundCancelCast::handle)
                 .add();
 
-        net.messageBuilder(PacketSyncManaToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PacketSyncManaToClient::new)
-                .encoder(PacketSyncManaToClient::toBytes)
-                .consumer(PacketSyncManaToClient::handle)
+        net.messageBuilder(ClientboundSyncMana.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncMana::new)
+                .encoder(ClientboundSyncMana::toBytes)
+                .consumer(ClientboundSyncMana::handle)
                 .add();
 
-        net.messageBuilder(PacketInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(PacketInscribeSpell::new)
-                .encoder(PacketInscribeSpell::toBytes)
-                .consumer(PacketInscribeSpell::handle)
+        net.messageBuilder(ServerboundInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundInscribeSpell::new)
+                .encoder(ServerboundInscribeSpell::toBytes)
+                .consumer(ServerboundInscribeSpell::handle)
                 .add();
 
-//        net.messageBuilder(PacketGenerateScroll.class, id(), NetworkDirection.PLAY_TO_SERVER)
-//                .decoder(PacketGenerateScroll::new)
-//                .encoder(PacketGenerateScroll::toBytes)
-//                .consumer(PacketGenerateScroll::handle)
-//                .add();
-
-        net.messageBuilder(PacketRemoveSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(PacketRemoveSpell::new)
-                .encoder(PacketRemoveSpell::toBytes)
-                .consumer(PacketRemoveSpell::handle)
+        net.messageBuilder(ClientboundSyncCooldown.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncCooldown::new)
+                .encoder(ClientboundSyncCooldown::toBytes)
+                .consumer(ClientboundSyncCooldown::handle)
                 .add();
 
-        net.messageBuilder(PacketSyncCooldownToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PacketSyncCooldownToClient::new)
-                .encoder(PacketSyncCooldownToClient::toBytes)
-                .consumer(PacketSyncCooldownToClient::handle)
+        net.messageBuilder(ServerboundSetSpellBookActiveIndex.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundSetSpellBookActiveIndex::new)
+                .encoder(ServerboundSetSpellBookActiveIndex::toBytes)
+                .consumer(ServerboundSetSpellBookActiveIndex::handle)
                 .add();
 
-        net.messageBuilder(PacketChangeSelectedSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(PacketChangeSelectedSpell::new)
-                .encoder(PacketChangeSelectedSpell::toBytes)
-                .consumer(PacketChangeSelectedSpell::handle)
+        net.messageBuilder(ServerboundScrollForgeSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundScrollForgeSelectSpell::new)
+                .encoder(ServerboundScrollForgeSelectSpell::toBytes)
+                .consumer(ServerboundScrollForgeSelectSpell::handle)
                 .add();
 
-        net.messageBuilder(PacketSpellListSelection.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(PacketSpellListSelection::new)
-                .encoder(PacketSpellListSelection::toBytes)
-                .consumer(PacketSpellListSelection::handle)
+        net.messageBuilder(ServerboundInscriptionTableSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundInscriptionTableSelectSpell::new)
+                .encoder(ServerboundInscriptionTableSelectSpell::toBytes)
+                .consumer(ServerboundInscriptionTableSelectSpell::handle)
                 .add();
     }
 

@@ -7,24 +7,24 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketAddMotionToClient {
+public class ClientboundAddMotionToPlayer {
     private final double x, y, z;
     private final boolean preserveMomentum;
 
-    public PacketAddMotionToClient(double x, double y, double z, boolean preserveMomentum) {
+    public ClientboundAddMotionToPlayer(double x, double y, double z, boolean preserveMomentum) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.preserveMomentum = preserveMomentum;
     }
-    public PacketAddMotionToClient(Vec3 motion, boolean preserveMomentum) {
+    public ClientboundAddMotionToPlayer(Vec3 motion, boolean preserveMomentum) {
         this.x = motion.x;
         this.y = motion.y;
         this.z = motion.z;
         this.preserveMomentum = preserveMomentum;
     }
 
-    public PacketAddMotionToClient(FriendlyByteBuf buf) {
+    public ClientboundAddMotionToPlayer(FriendlyByteBuf buf) {
         x = buf.readDouble();
         y = buf.readDouble();
         z = buf.readDouble();

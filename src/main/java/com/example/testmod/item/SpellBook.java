@@ -3,7 +3,7 @@ package com.example.testmod.item;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.spellbook.SpellBookData;
 import com.example.testmod.capabilities.spellbook.SpellBookDataProvider;
-import com.example.testmod.network.PacketCancelCast;
+import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -82,7 +82,7 @@ public class SpellBook extends Item implements ISpellBook {
     @Override
     public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
         entity.stopUsingItem();
-        Messages.sendToServer(new PacketCancelCast(true));
+        Messages.sendToServer(new ServerboundCancelCast(true));
         TestMod.LOGGER.debug("SpellBook: Stop Using");
         super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
     }

@@ -1,8 +1,8 @@
 package com.example.testmod.gui.inscription_table;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.inscription_table.network.PacketInscribeSpell;
-import com.example.testmod.gui.inscription_table.network.PacketRemoveSpell;
+import com.example.testmod.gui.inscription_table.network.ServerboundInscribeSpell;
+import com.example.testmod.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.player.ClientMagicData;
@@ -47,7 +47,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private static final int LORE_PAGE_WIDTH = 80;
     private boolean isDirty;
     protected Button inscribeButton;
-    protected Button extractButton;
+    //protected Button extractButton;
     private ItemStack lastSpellBookItem = ItemStack.EMPTY;
     protected ArrayList<SpellSlotInfo> spellSlots;
     private int selectedSpellIndex = -1;
@@ -63,7 +63,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     protected void init() {
         super.init();
         inscribeButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()));
-        extractButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.removeSpell()));
+        //extractButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.removeSpell()));
         spellSlots = new ArrayList<>();
         TestMod.LOGGER.debug("InscriptionTableScreen: init");
         generateSpellSlots();
@@ -71,7 +71,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     @Override
     public void onClose() {
-        selectedSpellIndex = -1;
+        resetSelectedSpell();
         super.onClose();
     }
 
@@ -90,7 +90,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
 
         inscribeButton.active = isValidInscription();
-        extractButton.active = isValidExtraction();
+        //extractButton.active = isValidExtraction();
         renderButtons(poseStack, mouseX, mouseY);
 
         if (menu.slots.get(SPELLBOOK_SLOT).getItem() != lastSpellBookItem) {
@@ -138,24 +138,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             //disabled
             this.blit(poseStack, inscribeButton.x, inscribeButton.y, 0, 185, 14, 14);
         }
-        //
-        //  Rendering extraction Button
-        //
-        extractButton.x = leftPos + EXTRACT_BUTTON_X;
-        extractButton.y = topPos + EXTRACT_BUTTON_Y;
-        if (extractButton.active) {
-            if (isHovering(extractButton.x, extractButton.y, 14, 14, mouseX, mouseY)) {
-                //highlighted
-                this.blit(poseStack, extractButton.x, extractButton.y, 28, 199, 14, 14);
-            } else {
-                //regular
-                this.blit(poseStack, extractButton.x, extractButton.y, 14, 199, 14, 14);
-            }
-        } else {
-            //disabled
-            this.blit(poseStack, extractButton.x, extractButton.y, 0, 199, 14, 14);
-        }
-        //could definitely be turned into method
+
     }
 
     private void renderSpellSlot(PoseStack poseStack, Vec2 pos, int mouseX, int mouseY, int index, SpellSlotInfo slot) {
@@ -212,7 +195,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         // Description
         //
         if (isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY))
-            renderTooltip(poseStack, Component.literal("test") , mouseX, mouseY);
+            renderTooltip(poseStack, Component.literal("test"), mouseX, mouseY);
 
         int descLine = y + font.lineHeight * 2 + 4;
 
@@ -232,7 +215,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Mana
         //
-        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.mana_cost", textColor, Component.translatable(spell.getManaCost() + "") , colorMana, textScale);
+        drawStatText(font, poseStack, x + margin, descLine, "ui.testmod.mana_cost", textColor, Component.translatable(spell.getManaCost() + ""), colorMana, textScale);
         descLine += font.lineHeight;
 
         //
@@ -344,16 +327,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         isDirty = true;
         if (!(menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook))
-            selectedSpellIndex = -1;
-    }
-
-    private void removeSpell() {
-        BlockPos pos = menu.blockEntity.getBlockPos();
-        AbstractSpell spell = null;
-        if (selectedSpellIndex >= 0)
-            spell = spellSlots.get(selectedSpellIndex).containedSpell;
-        //Messages.sendToServer(new PacketGenerateScroll(pos, spell));
-        Messages.sendToServer(new PacketRemoveSpell(pos, selectedSpellIndex));
+            resetSelectedSpell();
     }
 
     private void onInscription() {
@@ -367,10 +341,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         //  Quick inscribe
         if (selectedSpellIndex < 0) {
-            selectedSpellIndex = 0;
             for (int i = 0; i < spellSlots.size(); i++) {
                 if (!spellSlots.get(i).hasSpell()) {
-                    selectedSpellIndex = i;
+                    setSelectedIndex(i);
                     break;
                 }
             }
@@ -386,12 +359,17 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
 
         isDirty = true;
-        Messages.sendToServer(new PacketInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
+        Messages.sendToServer(new ServerboundInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
 
     }
 
     private void setSelectedIndex(int index) {
         selectedSpellIndex = index;
+        Messages.sendToServer(new ServerboundInscriptionTableSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpellIndex));
+    }
+
+    private void resetSelectedSpell() {
+        setSelectedIndex(-1);
     }
 
     private boolean isValidInscription() {

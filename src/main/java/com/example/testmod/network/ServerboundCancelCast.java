@@ -14,15 +14,15 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketCancelCast {
+public class ServerboundCancelCast {
     private final boolean triggerCooldown;
 
-    public PacketCancelCast(boolean triggerCooldown) {
+    public ServerboundCancelCast(boolean triggerCooldown) {
 
         this.triggerCooldown = triggerCooldown;
     }
 
-    public PacketCancelCast(FriendlyByteBuf buf) {
+    public ServerboundCancelCast(FriendlyByteBuf buf) {
         triggerCooldown = buf.readBoolean();
     }
 
@@ -54,7 +54,7 @@ public class PacketCancelCast {
 
                 playerMagicData.resetCastingState();
 
-                Messages.sendToPlayer(new PacketCastingState(spellId, 0, CastType.NONE, true), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(spellId, 0, CastType.NONE, true), serverPlayer);
                 if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
             }

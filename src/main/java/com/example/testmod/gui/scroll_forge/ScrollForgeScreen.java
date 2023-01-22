@@ -2,9 +2,8 @@ package com.example.testmod.gui.scroll_forge;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.config.CommonConfigs;
-import com.example.testmod.gui.scroll_forge.network.PacketSpellListSelection;
+import com.example.testmod.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import com.example.testmod.item.InkItem;
-import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellRarity;
@@ -18,15 +17,11 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> {
@@ -71,7 +66,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             removeWidget(s.button);
         availableSpells.clear();
 
-        Messages.sendToServer(new PacketSpellListSelection(this.menu.blockEntity.getBlockPos(), selectedSpell.getValue()));
+        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpell.getValue()));
     }
 
     @Override
@@ -167,7 +162,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     private void setSelectedSpell(SpellType spell) {
         selectedSpell = spell;
-        Messages.sendToServer(new PacketSpellListSelection(this.menu.blockEntity.getBlockPos(), spell.getValue()));
+        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), spell.getValue()));
 
         //TestMod.LOGGER.debug("ScrollForgeScreen: setting selected spell: {}", availableSpells.get(index).getDisplayName());
     }

@@ -2,9 +2,9 @@ package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.item.Scroll;
-import com.example.testmod.network.PacketCastingState;
-import com.example.testmod.network.PacketSyncCooldownToClient;
-import com.example.testmod.network.PacketSyncManaToClient;
+import com.example.testmod.network.ClientboundUpdateCastingState;
+import com.example.testmod.network.ClientboundSyncCooldown;
+import com.example.testmod.network.ClientboundSyncMana;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
@@ -81,7 +81,7 @@ public class MagicManager {
                     if (spell.getCastType() == CastType.LONG) {
                         if (!playerMagicData.isCasting()) {
                             TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
-                            Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
+                            Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                             spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                             playerMagicData.resetCastingState();
                             Scroll.attemptRemoveScrollAfterCast(serverPlayer);
@@ -92,7 +92,7 @@ public class MagicManager {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
                             if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || playerMagicData.getMana() - spell.getManaCost() * 2 < 0) {
                                 TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
-                                Messages.sendToPlayer(new PacketCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
+                                Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                                 spell.onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                                 playerMagicData.resetCastingState();
@@ -106,7 +106,7 @@ public class MagicManager {
 
                 if (counter <= 0) {
                     regenPlayerMana(serverPlayer, playerMagicData);
-                    Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
+                    Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
                 }
             }
         });
@@ -130,7 +130,7 @@ public class MagicManager {
         int effectiveCooldown = getEffectiveSpellCooldown(AbstractSpell.getSpell(spellType, 1).getSpellCooldown(), playerCooldownModifier) * itemCoolDownModifer;
 
         getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
-        Messages.sendToPlayer(new PacketSyncCooldownToClient(spellType.getValue(), effectiveCooldown), serverPlayer);
+        Messages.sendToPlayer(new ClientboundSyncCooldown(spellType.getValue(), effectiveCooldown), serverPlayer);
     }
 
     public static int getEffectiveSpellCooldown(int cooldown, double playerCooldownModifier) {

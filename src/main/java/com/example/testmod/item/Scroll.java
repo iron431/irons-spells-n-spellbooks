@@ -4,7 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.scroll.ScrollData;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
-import com.example.testmod.network.PacketCancelCast;
+import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastSource;
@@ -109,7 +109,7 @@ public class Scroll extends Item {
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         entity.stopUsingItem();
         if (getUseDuration(itemStack) - ticksUsed >= 10)
-            Messages.sendToServer(new PacketCancelCast(true));
+            Messages.sendToServer(new ServerboundCancelCast(true));
         super.releaseUsing(itemStack, level, entity, ticksUsed);
     }
 

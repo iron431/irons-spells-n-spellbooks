@@ -7,20 +7,20 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketRemoveSpell {
+public class ServerboundInscribeSpell {
 
 
     private final BlockPos pos;
     private final int selectedIndex;
 
-    public PacketRemoveSpell(BlockPos pos, int selectedIndex) {
+    public ServerboundInscribeSpell(BlockPos pos, int selectedIndex) {
         //convert objects into bytes then re-read them into objects
 
         this.pos = pos;
         this.selectedIndex = selectedIndex;
     }
 
-    public PacketRemoveSpell(FriendlyByteBuf buf) {
+    public ServerboundInscribeSpell(FriendlyByteBuf buf) {
         int x = buf.readInt();
         int y = buf.readInt();
         int z = buf.readInt();
@@ -40,9 +40,11 @@ public class PacketRemoveSpell {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             // Here we are server side
+            // All validity checks should have already been done before this message could be sent
+            // Keep in mind screen does not exist on server
             InscriptionTableTile inscriptionTable = (InscriptionTableTile) ctx.getSender().level.getBlockEntity(pos);
             if (inscriptionTable != null) {
-                inscriptionTable.removeSelectedSpell(selectedIndex);
+                inscriptionTable.doInscription(selectedIndex);
             }
 
         });

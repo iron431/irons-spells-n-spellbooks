@@ -7,17 +7,17 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketSyncCooldownToClient {
+public class ClientboundSyncCooldown {
     private final int spellId;
     private final int duration;
 
-    public PacketSyncCooldownToClient(int spellId,int duration) {
+    public ClientboundSyncCooldown(int spellId, int duration) {
 
         this.spellId=spellId;
         this.duration=duration;
     }
 
-    public PacketSyncCooldownToClient(FriendlyByteBuf buf) {
+    public ClientboundSyncCooldown(FriendlyByteBuf buf) {
         spellId = buf.readInt();
         duration = buf.readInt();
     }

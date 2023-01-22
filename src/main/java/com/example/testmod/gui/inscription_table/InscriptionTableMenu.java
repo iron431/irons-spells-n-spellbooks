@@ -1,6 +1,10 @@
 package com.example.testmod.gui.inscription_table;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.block.inscription_table.InscriptionTableTile;
+import com.example.testmod.item.Scroll;
+import com.example.testmod.item.SpellBook;
+import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.registries.MenuRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,7 +15,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import static com.example.testmod.registries.BlockRegistry.INSCRIPTION_TABLE_BLOCK;
@@ -19,9 +24,15 @@ import static com.example.testmod.registries.BlockRegistry.INSCRIPTION_TABLE_BLO
 public class InscriptionTableMenu extends AbstractContainerMenu {
     public final InscriptionTableTile blockEntity;
     private final Level level;
+    private final Slot spellBookSlot;
+    private final Slot scrollSlot;
+    private final Slot resultSlot;
+    private int selectedSpellIndex = -1;
+
     public InscriptionTableMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
         this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
     }
+
 
     public InscriptionTableMenu(int containerId, Inventory inv, BlockEntity entity) {
         //exists on server and render
@@ -32,14 +43,79 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
+        IItemHandler itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get();
 
-        this.blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 17, 21));
-            this.addSlot(new SlotItemHandler(handler, 1, 17, 53));
-            this.addSlot(new ScrollExtractionSlot(handler, 2, 208, 136));
-        });
+        spellBookSlot = new SlotItemHandler(itemHandler, 0, 17, 21);
+        scrollSlot = new SlotItemHandler(itemHandler, 1, 17, 53);
+        resultSlot = new SlotItemHandler(itemHandler, 2, 208, 136) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return false;
+            }
+
+            @Override
+            public void onTake(Player player, ItemStack stack) {
+                TestMod.LOGGER.debug("InscriptionTableMenu.take spell!");
+                var spellBookData = ((SpellBook) spellBookSlot.getItem().getItem()).getSpellBookData(spellBookSlot.getItem());
+                spellBookData.removeSpell(selectedSpellIndex);
+                super.onTake(player, stack);
+            }
+        };
+
+        this.addSlot(spellBookSlot);
+        this.addSlot(scrollSlot);
+        this.addSlot(resultSlot);
+//        this.blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
+//            this.addSlot(new SlotItemHandler(handler, 0, 17, 21));
+//            this.addSlot(new SlotItemHandler(handler, 1, 17, 53));
+//            this.addSlot(new ScrollExtractionSlot(handler, 2, 208, 136));
+//        });
     }
 
+    public Slot getSpellBookSlot() {
+        return spellBookSlot;
+    }
+
+
+    public Slot getScrollSlot() {
+        return scrollSlot;
+    }
+
+    public Slot getResultSlot() {
+        return resultSlot;
+    }
+
+    public void onSlotsChanged() {
+        TestMod.LOGGER.debug("InscriptionTableMenu.slotsChanged");
+        setupResultSlot();
+    }
+
+    public void setSelectedSpell(int index) {
+        selectedSpellIndex = index;
+        setupResultSlot();
+    }
+
+    private void setupResultSlot() {
+        TestMod.LOGGER.debug("InscriptionTableMenu.setupResultSlot");
+        TestMod.LOGGER.debug("InscriptionTableMenu.selected spell index: {}", selectedSpellIndex);
+
+        ItemStack resultStack = ItemStack.EMPTY;
+        if (spellBookSlot.getItem().getItem() instanceof SpellBook spellBook) {
+            var spellBookData = spellBook.getSpellBookData(spellBookSlot.getItem());
+            if (selectedSpellIndex >= 0 && spellBookData.getSpell(selectedSpellIndex) != null) {
+                resultStack = new ItemStack(ItemRegistry.SCROLL.get());
+                resultStack.setCount(1);
+                Scroll scroll = (Scroll) resultStack.getItem();
+                var scrollData = scroll.getScrollData(resultStack);
+                scrollData.setData(spellBookData.getSpell(selectedSpellIndex));
+            }
+        }
+
+        if (!ItemStack.matches(resultStack, this.resultSlot.getItem())) {
+            this.resultSlot.set(resultStack);
+        }
+
+    }
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.

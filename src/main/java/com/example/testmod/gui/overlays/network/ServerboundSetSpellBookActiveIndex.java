@@ -8,15 +8,15 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketChangeSelectedSpell {
+public class ServerboundSetSpellBookActiveIndex {
     private final int selectedIndex;
 
-    public PacketChangeSelectedSpell(int selectedIndex) {
+    public ServerboundSetSpellBookActiveIndex(int selectedIndex) {
         //convert objects into bytes then re-read them into objects
         this.selectedIndex = selectedIndex;
     }
 
-    public PacketChangeSelectedSpell(FriendlyByteBuf buf) {
+    public ServerboundSetSpellBookActiveIndex(FriendlyByteBuf buf) {
         selectedIndex = buf.readInt();
 
     }

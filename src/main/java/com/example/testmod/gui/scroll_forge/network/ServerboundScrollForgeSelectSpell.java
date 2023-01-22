@@ -8,18 +8,18 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketSpellListSelection {
+public class ServerboundScrollForgeSelectSpell {
 
 
     private final BlockPos pos;
     private final int spellId;
 
-    public PacketSpellListSelection(BlockPos pos, int spellId) {
+    public ServerboundScrollForgeSelectSpell(BlockPos pos, int spellId) {
         this.pos = pos;
         this.spellId = spellId;
     }
 
-    public PacketSpellListSelection(FriendlyByteBuf buf) {
+    public ServerboundScrollForgeSelectSpell(FriendlyByteBuf buf) {
         int x = buf.readInt();
         int y = buf.readInt();
         int z = buf.readInt();

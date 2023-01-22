@@ -5,8 +5,8 @@ import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
-import com.example.testmod.network.PacketCastingState;
-import com.example.testmod.network.PacketSyncManaToClient;
+import com.example.testmod.network.ClientboundUpdateCastingState;
+import com.example.testmod.network.ClientboundSyncMana;
 import com.example.testmod.player.ServerPlayerEvents;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
@@ -141,7 +141,7 @@ public abstract class AbstractSpell {
                 int effectiveCastTime = getEffectiveCastTime(player);
                 playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, castSource);
                 onServerPreCast(player.level, player, playerMagicData);
-                Messages.sendToPlayer(new PacketCastingState(getID(), effectiveCastTime, castType, false), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), effectiveCastTime, castType, false), serverPlayer);
             }
             return true;
         } else {
@@ -170,7 +170,7 @@ public abstract class AbstractSpell {
         }
 
         if (castSource == CastSource.SpellBook) {
-            Messages.sendToPlayer(new PacketSyncManaToClient(playerMagicData), serverPlayer);
+            Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
         }
 
         if (serverPlayer.getMainHandItem().getItem() instanceof SpellBook || serverPlayer.getMainHandItem().getItem() instanceof Scroll)

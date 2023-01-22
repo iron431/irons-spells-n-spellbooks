@@ -1,7 +1,7 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.overlays.network.PacketChangeSelectedSpell;
+import com.example.testmod.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import com.example.testmod.gui.overlays.SpellWheelOverlay;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
@@ -93,7 +93,7 @@ public final class ClientKeyHandler {
 //                            break;
 //                    }
 //                    while (spellBookData.getInscribedSpells()[newIndex] == null);
-                    Messages.sendToServer(new PacketChangeSelectedSpell(selectedIndex));
+                    Messages.sendToServer(new ServerboundSetSpellBookActiveIndex(selectedIndex));
                     event.setCanceled(true);
                 }
 

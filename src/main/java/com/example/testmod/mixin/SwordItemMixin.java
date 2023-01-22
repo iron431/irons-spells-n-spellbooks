@@ -3,7 +3,7 @@ package com.example.testmod.mixin;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
 import com.example.testmod.item.Scroll;
-import com.example.testmod.network.PacketCancelCast;
+import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastSource;
@@ -93,7 +93,7 @@ public abstract class SwordItemMixin extends Item {
         var spell = Utils.getScrollData(itemStack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             entity.stopUsingItem();
-            Messages.sendToServer(new PacketCancelCast(true));
+            Messages.sendToServer(new ServerboundCancelCast(true));
         }
 
         super.releaseUsing(itemStack, level, entity, ticksUsed);

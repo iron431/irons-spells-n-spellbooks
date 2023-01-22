@@ -1,7 +1,7 @@
 package com.example.testmod.spells.fire;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.network.PacketAddMotionToClient;
+import com.example.testmod.network.ClientboundAddMotionToPlayer;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -46,7 +46,7 @@ public class BurningDashSpell extends AbstractSpell {
 
         if (entity instanceof ServerPlayer player) {
             player.startAutoSpinAttack(10 + level);
-            Messages.sendToPlayer(new PacketAddMotionToClient(vec, true), (ServerPlayer) entity);
+            Messages.sendToPlayer(new ClientboundAddMotionToPlayer(vec, true), (ServerPlayer) entity);
         }
 
         /*

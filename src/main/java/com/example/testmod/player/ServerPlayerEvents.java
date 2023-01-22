@@ -4,7 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
-import com.example.testmod.network.PacketCancelCast;
+import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.server.level.ServerPlayer;
@@ -85,6 +85,6 @@ public class ServerPlayerEvents {
     }
 
     public static void serverSideCancelCast(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
-        PacketCancelCast.cancelCast(serverPlayer, SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
+        ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
     }
 }

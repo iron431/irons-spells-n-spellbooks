@@ -32,18 +32,22 @@ import javax.annotation.Nonnull;
 
 
 public class InscriptionTableTile extends BlockEntity implements MenuProvider {
-    private AbstractContainerMenu menu;
-
-    public static final int SPELLBOOK_SLOT = 36 + 0;
-    public static final int SCROLL_SLOT = 36 + 1;
-    public static final int EXTRACTION_SLOT = 36 + 2;
+    private InscriptionTableMenu menu;
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(3) {
         @Override
         protected void onContentsChanged(int slot) {
+            TestMod.LOGGER.debug("InscriptionTableTile.contentsChange: {}", slot);
+            if (slot != 2)
+                updateMenuSlots();
             setChanged();
         }
     };
+
+    private void updateMenuSlots() {
+        if (menu != null)
+            menu.onSlotsChanged();
+    }
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
@@ -65,51 +69,38 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
 
     public void doInscription(int selectedIndex) {
         // This method is called by the inscription packet
-        var slots = this.menu.slots;
+        ItemStack spellBookItemStack = menu.getSpellBookSlot().getItem();
+        ItemStack scrollItemStack = menu.getScrollSlot().getItem();
 
-        ItemStack spellBookItemStack = slots.get(SPELLBOOK_SLOT).getItem();
-        ItemStack scrollItemStack = slots.get(SCROLL_SLOT).getItem();
-
-        if (spellBookItemStack.getItem() instanceof SpellBook && scrollItemStack.getItem() instanceof Scroll) {
-            var spellBook = (SpellBook) spellBookItemStack.getItem();
-            var scroll = (Scroll) scrollItemStack.getItem();
+        if (spellBookItemStack.getItem() instanceof SpellBook spellBook && scrollItemStack.getItem() instanceof Scroll scroll) {
 
             var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
             var scrollData = scroll.getScrollData(scrollItemStack);
 
             if (spellBookData.addSpell(scrollData.getSpell(), selectedIndex))
-                slots.get(SCROLL_SLOT).remove(1);
+                menu.getScrollSlot().remove(1);
         }
     }
 
-    public void removeSelectedSpell(int selectedIndex) {
-        // All data should have been validated by now
-        TestMod.LOGGER.debug("recieving request to destroy");
-        var slots = this.menu.slots;
-
-        ItemStack spellBookItemStack = slots.get(SPELLBOOK_SLOT).getItem();
-        SpellBook spellBook = (SpellBook) spellBookItemStack.getItem();
-        var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
-
-        var spellId = spellBookData.getInscribedSpells()[selectedIndex].getID();
-        var spellLevel = spellBookData.getInscribedSpells()[selectedIndex].getLevel();
-        generateScroll(spellId, spellLevel);
-        spellBookData.removeSpell(selectedIndex);
-
+    public void setSelectedSpell(int index) {
+        this.menu.setSelectedSpell(index);
     }
 
-    public void generateScroll(int spellId, int spellLevel) {
-        // This method is called by the generate scroll packet
-
-        Slot extractionSlot = this.menu.slots.get(EXTRACTION_SLOT);
-
-        //null check (empty spell slots send as -1)
-        //if (spellId >= 0) {
-        ItemStack scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-        Scroll scroll = (Scroll) scrollStack.getItem();
-        scroll.getScrollData(scrollStack).setData(spellId, spellLevel);
-        extractionSlot.set(scrollStack);
-    }
+//    public void removeSelectedSpell(int selectedIndex) {
+//        // All data should have been validated by now
+//        TestMod.LOGGER.debug("recieving request to destroy");
+//        var slots = this.menu.slots;
+//
+//        ItemStack spellBookItemStack = slots.get(SPELLBOOK_SLOT).getItem();
+//        SpellBook spellBook = (SpellBook) spellBookItemStack.getItem();
+//        var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
+//
+//        var spellId = spellBookData.getInscribedSpells()[selectedIndex].getID();
+//        var spellLevel = spellBookData.getInscribedSpells()[selectedIndex].getLevel();
+//        generateScroll(spellId, spellLevel);
+//        spellBookData.removeSpell(selectedIndex);
+//
+//    }
 
 
     @Nonnull
@@ -156,31 +147,4 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
 
-
-//    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, InscriptionTableTile pBlockEntity) {
-//        if(hasRecipe(pBlockEntity) && hasNotReachedStackLimit(pBlockEntity)) {
-//            craftItem(pBlockEntity);
-//        }
-//    }
-//
-//    private static void craftItem(GemCuttingStationBlockEntity entity) {
-//        entity.itemHandler.extractItem(0, 1, false);
-//        entity.itemHandler.extractItem(1, 1, false);
-//        entity.itemHandler.getStackInSlot(2).hurt(1, new Random(), null);
-//
-//        entity.itemHandler.setStackInSlot(3, new ItemStack(ModItems.CITRINE.get(),
-//                entity.itemHandler.getStackInSlot(3).getCount() + 1));
-//    }
-//
-//    private static boolean hasRecipe(GemCuttingStationBlockEntity entity) {
-//        boolean hasItemInWaterSlot = PotionUtils.getPotion(entity.itemHandler.getStackInSlot(0)) == Potions.WATER;
-//        boolean hasItemInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.RAW_CITRINE.get();
-//        boolean hasItemInSecondSlot = entity.itemHandler.getStackInSlot(2).getItem() == ModItems.GEM_CUTTER_TOOL.get();
-//
-//        return hasItemInWaterSlot && hasItemInFirstSlot && hasItemInSecondSlot;
-//    }
-//
-//    private static boolean hasNotReachedStackLimit(GemCuttingStationBlockEntity entity) {
-//        return entity.itemHandler.getStackInSlot(3).getCount() < entity.itemHandler.getStackInSlot(3).getMaxStackSize();
-//    }
 }
