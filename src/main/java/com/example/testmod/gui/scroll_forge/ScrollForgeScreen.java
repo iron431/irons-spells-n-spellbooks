@@ -12,13 +12,13 @@ import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.ModTags;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -56,12 +56,13 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     @Override
     public void onClose() {
+        selectedSpell = SpellType.NONE_SPELL;
         resetList();
         super.onClose();
     }
 
     private void resetList() {
-        if(!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(CommonConfigs.getByType(selectedSpell).MIN_RARITY )>=0)))
+        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(CommonConfigs.getByType(selectedSpell).MIN_RARITY) >= 0)))
             selectedSpell = SpellType.NONE_SPELL;
         //TODO: reorder setting old focus to test if we actually need to reset the scroll... or just give ink its own path since we dont even need to regenerate the list anyways
         scrollOffset = 0;
@@ -206,18 +207,24 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         void draw(ScrollForgeScreen screen, PoseStack poseStack, int x, int y, int mouseX, int mouseY) {
             setTexture(TEXTURE);
+            int maxWidth = 108 - 20;
+            //var hoverText = new HoverEvent(HoverEvent.Action.SHOW_TEXT, getHoverText());
+            var text = trimText(font, getDisplayName().withStyle(this.button.active ? Style.EMPTY : Style.EMPTY.withFont(RUNIC_FONT)), maxWidth);
             if (this.button.active) {
                 if (spell == screen.getSelectedSpell())//mouseX >= x && mouseY >= y && mouseX < x + 108 && mouseY < y + 19)
                     screen.blit(poseStack, x, y, 0, 204, 108, 19);
                 else
                     screen.blit(poseStack, x, y, 0, 166, 108, 19);
-                font.draw(poseStack, getDisplayName(), x + 2, y + 2, 0xFFFFFF);
 
             } else {
                 screen.blit(poseStack, x, y, 0, 185, 108, 19);
-                font.draw(poseStack, getDisplayName().withStyle(Style.EMPTY.withFont(RUNIC_FONT)), x + 2, y + 2, 0xFFFFFF);
+                //font.drawWordWrap(, x + 2, y + 2, maxWidth, 0xFFFFFF);
             }
-            if (mouseX >= x && mouseY >= y && mouseX < x + 108 && mouseY < y + 19) {
+            int textX = x + 2;
+            int textY = y + 3;
+            font.drawWordWrap(text, textX, textY, maxWidth, 0xFFFFFF);
+
+            if (mouseX >= textX && mouseY >= textY && mouseX < textX + font.width(text) && mouseY < textY + font.lineHeight) {
                 screen.renderTooltip(poseStack, getHoverText(), mouseX, mouseY);
             }
             //button.render(poseStack,mouseX,mouseY,1);
@@ -225,6 +232,10 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         MutableComponent getHoverText() {
             return this.button.active ? getDisplayName() : Component.translatable("ui.testmod.ink_rarity_error");
+        }
+
+        private FormattedText trimText(Font font, Component component, int maxWidth) {
+            return font.getSplitter().splitLines(component, maxWidth, component.getStyle()).get(0);
         }
 
         MutableComponent getDisplayName() {
