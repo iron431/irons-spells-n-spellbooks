@@ -220,6 +220,9 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 screen.blit(poseStack, x, y, 0, 185, 108, 19);
                 //font.drawWordWrap(, x + 2, y + 2, maxWidth, 0xFFFFFF);
             }
+            setTexture(this.button.active ? spell.getResourceLocation() : SpellType.NONE_SPELL.getResourceLocation());
+            screen.blit(poseStack, x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
+
             int textX = x + 2;
             int textY = y + 3;
             font.drawWordWrap(text, textX, textY, maxWidth, 0xFFFFFF);
