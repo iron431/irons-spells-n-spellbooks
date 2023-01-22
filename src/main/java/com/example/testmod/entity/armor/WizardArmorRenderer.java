@@ -21,8 +21,8 @@ public class WizardArmorRenderer extends GeoArmorRenderer<WizardArmorItem> {
         this.leftArmBone = "armorLeftArm";
         this.rightLegBone = "armorRightLeg";
         this.leftLegBone = "armorLeftLeg";
-        this.rightBootBone = "armorLeftBoot";
-        this.leftBootBone = "armorRightBoot";
+        this.rightBootBone = "armorRightBoot";
+        this.leftBootBone = "armorLeftBoot";
         leggingTorsoLayerBone = new GeoBone();
         leggingTorsoLayerBone.name = "armorLeggingTorsoLayer";
 
