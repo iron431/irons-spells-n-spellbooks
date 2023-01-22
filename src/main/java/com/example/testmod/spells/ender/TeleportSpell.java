@@ -1,11 +1,9 @@
 package com.example.testmod.spells.ender;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -44,11 +42,7 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
-        TestMod.LOGGER.debug("Teleport.onClientPreCast: isClient:{}", level.isClientSide);
-        if(entity instanceof LocalPlayer localPlayer) {
-
-            localPlayer.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
-        }
+        entity.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
         particleCloud(level, entity, entity.getPosition(1));
 
         Vec3 dest = null;
@@ -111,11 +105,12 @@ public class TeleportSpell extends AbstractSpell {
         }
     }
 
-    private float getDistance(Entity sourceEntity){
+    private float getDistance(Entity sourceEntity) {
         return getSpellPower(sourceEntity);
     }
+
     @Override
     public MutableComponent getUniqueInfo() {
-        return Component.translatable("ui.testmod.distance", Utils.stringTruncation(getDistance(null),1));
+        return Component.translatable("ui.testmod.distance", Utils.stringTruncation(getDistance(null), 1));
     }
 }

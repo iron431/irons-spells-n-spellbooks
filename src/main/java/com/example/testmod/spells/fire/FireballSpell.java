@@ -5,6 +5,7 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.entity.projectile.LargeFireball;
@@ -26,6 +27,11 @@ public class FireballSpell extends AbstractSpell {
         this.castTime = 60;
         this.baseManaCost = 50;
         this.cooldown = 300;
+    }
+
+    @Override
+    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
+        entity.playSound(SoundEvents.EVOKER_PREPARE_ATTACK, 1.0f, 1.0f);
     }
 
     @Override
