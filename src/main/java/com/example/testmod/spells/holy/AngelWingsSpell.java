@@ -1,6 +1,5 @@
 package com.example.testmod.spells.holy;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.AbstractSpell;
@@ -8,7 +7,6 @@ import com.example.testmod.spells.SpellType;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import top.theillusivec4.caelus.api.CaelusApi;
 
 public class AngelWingsSpell extends AbstractSpell {
     public AngelWingsSpell() {
@@ -33,9 +31,5 @@ public class AngelWingsSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(entity)), entity);
-        if (entity.getAttributes().hasAttribute(CaelusApi.getInstance().getFlightAttribute())) {
-            TestMod.LOGGER.debug("onCast CaelusApi");
-            entity.getAttributes().getInstance(CaelusApi.getInstance().getFlightAttribute()).setBaseValue(1);
-        }
     }
 }

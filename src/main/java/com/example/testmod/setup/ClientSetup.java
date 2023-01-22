@@ -19,7 +19,12 @@ import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
+import com.example.testmod.render.AngelWingsLayer;
+import com.example.testmod.render.AngelWingsModel;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
@@ -43,12 +48,26 @@ public class ClientSetup {
     @SubscribeEvent
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(SimpleWizardModel.SIMPLE_WIZARD_LAYER, SimpleWizardModel::createBodyLayer);
+        event.registerLayerDefinition(AngelWingsModel.ANGEL_WINGS_LAYER, AngelWingsModel::createLayer);
     }
 
     @SubscribeEvent
-    public static void registerArmorRenderers(final EntityRenderersEvent.AddLayers event) {
+    public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
         GeoArmorRenderer.registerArmorRenderer(WizardArmorItem.class, new WizardArmorRenderer());
         GeoArmorRenderer.registerArmorRenderer(WanderMagicianArmorItem.class, new WanderingMagicianRenderer());
+
+        TestMod.LOGGER.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
+
+        addLayerToPlayerSkin(event, "default");
+        addLayerToPlayerSkin(event, "slim");
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static void addLayerToPlayerSkin(EntityRenderersEvent.AddLayers event, String skinName) {
+        EntityRenderer<? extends Player> render = event.getSkin(skinName);
+        if (render instanceof LivingEntityRenderer livingRenderer) {
+            livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
+        }
     }
 
     @SubscribeEvent
