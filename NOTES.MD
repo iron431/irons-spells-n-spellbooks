@@ -60,11 +60,13 @@
     - https://github.com/ZsoltMolnarrr/BetterCombat/blob/74ccd5f7092b932b26462f27e0ea383acc1a92ae/common/src/main/java/net/bettercombat/client/collision/TargetFinder.java
 
 ### Helpful commands
-- ```/setblock ~ ~ ~ testmod:inscription_table```
-- ```/data get entity @s SelectedItem```
-- ```/data get entity @s ForgeCaps```
-- ```/data get entity @s Pos```
-- ```/effect give @s resistance 10000 4 true```
+- ```setblock ~ ~ ~ testmod:inscription_table```
+- ```data get entity @s SelectedItem```
+- ```data get entity @s ForgeCaps```
+- ```data get entity @s Pos```
+- ```effect give @s resistance 10000 4 true```
+- Fill floor directly below you
+  - ```fill ~-5 ~-1 ~-5 ~5 ~-1 ~5 quartz_block```
 
 ### Give Generator
 - https://mapmaking.fr/give1.16/
