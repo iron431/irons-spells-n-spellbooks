@@ -55,25 +55,10 @@ public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> e
         }
     }
 
-    /**
-     * Determines if the AngelWingsLayer should render.
-     * ItemStack and Entity are provided for modder convenience,
-     * For example, using the same ElytraLayer for multiple custom Elytra.
-     *
-     * @param entity The entity being rendered.
-     * @return If the ElytraLayer should render.
-     */
     public boolean shouldRender(T entity) {
         return entity.hasEffect(MobEffectRegistry.ANGEL_WINGS.get());
     }
 
-    /**
-     * Gets the texture to use with this ElytraLayer.
-     * This assumes the vanilla Elytra model.
-     *
-     * @param entity The entity being rendered.
-     * @return The texture.
-     */
     public ResourceLocation getAngelWingsTexture(T entity) {
         return WINGS_LOCATION;
     }

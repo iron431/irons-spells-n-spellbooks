@@ -1,3 +1,8 @@
+### Mod Resources
+- Miro Board: https://miro.com/app/board/uXjVPvycxJQ=/
+- Spell Sheet: https://docs.google.com/spreadsheets/d/1o0MyG9ok5Csf8_-77f-qH3VqOu6NtiuYcBb_SzDmA3M/edit#gid=1973083805
+- Trello: https://trello.com/b/yzpLtJpQ/spell-book-mod
+- Github: https://github.com/iron431/testmod
 
 ### Good 1.18 tutorials
 - https://www.mcjty.eu/docs/1.18/
