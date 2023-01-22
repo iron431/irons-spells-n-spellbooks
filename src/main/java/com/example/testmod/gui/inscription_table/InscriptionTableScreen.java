@@ -352,7 +352,13 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         if (spellSlots.get(selectedSpellIndex).hasSpell()) {
             return;
         }
-        //TODO: check if we are eligible.. (rarity, other conditions, etc)
+
+        //Is the spellbook a high enough rarity?
+        if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellBook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
+            var scrollData = scroll.getScrollData( menu.getScrollSlot().getItem());
+            if (spellBook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
+                return;
+        }
 
         //
         //  Good to inscribe
