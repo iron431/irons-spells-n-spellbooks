@@ -1,6 +1,5 @@
 package com.example.testmod.util;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.scroll.ScrollData;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
 import com.example.testmod.item.Scroll;
@@ -19,6 +18,7 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
+import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +34,10 @@ public class Utils {
             sb.append("\n");
         });
         return sb.toString();
+    }
+
+    public static LazyOptional<ScrollData> getScrollDataProvider(ItemStack stack) {
+        return stack.getCapability(ScrollDataProvider.SCROLL_DATA);
     }
 
     public static ScrollData getScrollData(ItemStack stack) {
@@ -71,7 +75,7 @@ public class Utils {
 
     public static ItemStack getImbuedSwordInHand(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if(stack.getItem() instanceof SwordItem){
+        if (stack.getItem() instanceof SwordItem) {
             var spell = Utils.getScrollData(stack).getSpell();
             if (spell.getSpellType() != SpellType.NONE_SPELL)
                 return stack;
@@ -80,14 +84,13 @@ public class Utils {
         return null;
     }
 
-    public static ItemStack getHeldImbuedSword(Player player){
-        ItemStack mainhand = getImbuedSwordInHand(player,InteractionHand.MAIN_HAND);
-        if(mainhand!=null){
+    public static ItemStack getHeldImbuedSword(Player player) {
+        ItemStack mainhand = getImbuedSwordInHand(player, InteractionHand.MAIN_HAND);
+        if (mainhand != null) {
             return mainhand;
 
-        }
-        else{
-            ItemStack offhand = getImbuedSwordInHand(player,InteractionHand.OFF_HAND);
+        } else {
+            ItemStack offhand = getImbuedSwordInHand(player, InteractionHand.OFF_HAND);
             return offhand;
         }
     }

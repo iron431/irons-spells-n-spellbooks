@@ -25,9 +25,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Scroll extends Item implements IScroll {
+public class Scroll extends Item {
 
     public static final String PARENT = "Parent";
+    public static final String TAG = "tag";
+    public static final String CAP = "cap";
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
@@ -63,7 +65,7 @@ public class Scroll extends Item implements IScroll {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        var spell =  getScrollData(stack).getSpell();
+        var spell = getScrollData(stack).getSpell();
 
         if (level.isClientSide) {
             if (ClientMagicData.isCasting) {
@@ -131,14 +133,14 @@ public class Scroll extends Item implements IScroll {
         CompoundTag tag = stack.getTag();
         //TestMod.LOGGER.debug("Scroll.getShareTag.1: {}, {}, {}", spellType, level, tag);
         if (tag != null) {
-            shareTag.put("tag", tag);
+            shareTag.put(Scroll.TAG, tag);
         }
 
         getScrollDataProvider(stack).ifPresent(
                 (scrollDataProvider) -> {
                     var newNbt = scrollDataProvider.saveNBTData();
                     //TestMod.LOGGER.debug("Scroll.getShareTag.2: {}, {}, {}", spellType, level, newNbt);
-                    shareTag.put("cap", newNbt);
+                    shareTag.put(Scroll.CAP, newNbt);
                 }
         );
 
@@ -149,9 +151,9 @@ public class Scroll extends Item implements IScroll {
     public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
         if (nbt != null) {
             //TestMod.LOGGER.debug("Scroll.readShareTag.1: {}, {}, {}", spellType, level, nbt);
-            stack.setTag(nbt.contains("tag") ? nbt.getCompound("tag") : null);
-            if (nbt.contains("cap")) {
-                getScrollData(stack).loadNBTData(nbt.getCompound("cap"));
+            stack.setTag(nbt.contains(Scroll.TAG) ? nbt.getCompound(Scroll.TAG) : null);
+            if (nbt.contains(Scroll.CAP)) {
+                getScrollData(stack).loadNBTData(nbt.getCompound(Scroll.CAP));
             }
         } else {
             //TestMod.LOGGER.debug("Scroll.readShareTag.2: {}, {}", spellType, level);

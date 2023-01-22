@@ -26,6 +26,9 @@ import java.util.List;
 public class SpellBook extends Item implements ISpellBook {
 
     private static final String PARENT = "Parent";
+    public static final String TAG = "tag";
+    public static final String CAP = "cap";
+
     private final int spellSlots;
 
     public SpellBook() {
@@ -97,14 +100,14 @@ public class SpellBook extends Item implements ISpellBook {
         CompoundTag tag = stack.getTag();
         //TestMod.LOGGER.debug("SpellBook.getShareTag.1: {}, {}", spellSlots, tag);
         if (tag != null) {
-            shareTag.put("tag", tag);
+            shareTag.put(TAG, tag);
         }
 
         getSpellBookDataProvider(stack).ifPresent(
                 (spellBookData) -> {
                     var newNbt = spellBookData.saveNBTData();
                     //TestMod.LOGGER.debug("SpellBook.getShareTag.2: {}, {}", spellSlots, newNbt);
-                    shareTag.put("cap", newNbt);
+                    shareTag.put(CAP, newNbt);
                 }
         );
 
@@ -115,9 +118,9 @@ public class SpellBook extends Item implements ISpellBook {
     public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
         if (nbt != null) {
             //TestMod.LOGGER.debug("SpellBook.readShareTag.1: {}, {}", spellSlots, nbt);
-            stack.setTag(nbt.contains("tag") ? nbt.getCompound("tag") : null);
-            if (nbt.contains("cap")) {
-                getSpellBookData(stack).loadNBTData(nbt.getCompound("cap"));
+            stack.setTag(nbt.contains(TAG) ? nbt.getCompound(TAG) : null);
+            if (nbt.contains(CAP)) {
+                getSpellBookData(stack).loadNBTData(nbt.getCompound(CAP));
             }
         } else {
             //TestMod.LOGGER.debug("SpellBook.readShareTag.2: {}", spellSlots);
