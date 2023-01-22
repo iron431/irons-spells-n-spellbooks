@@ -9,6 +9,7 @@ import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.SpellRarity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -28,16 +29,21 @@ public class SpellBook extends Item implements ISpellBook {
     private static final String PARENT = "Parent";
     public static final String TAG = "tag";
     public static final String CAP = "cap";
-
+    private final SpellRarity rarity;
     private final int spellSlots;
 
     public SpellBook() {
-        this(15, Rarity.UNCOMMON);
+        this(1, SpellRarity.COMMON);
     }
 
-    public SpellBook(int spellSlots, Rarity rarity) {
-        super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(rarity));
+    public SpellBook(int spellSlots, SpellRarity rarity) {
+        super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
         this.spellSlots = spellSlots;
+        this.rarity = rarity;
+    }
+
+    public SpellRarity getRarity() {
+        return rarity;
     }
 
     @Override
@@ -89,7 +95,14 @@ public class SpellBook extends Item implements ISpellBook {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        lines.addAll(getSpellBookData(itemStack).getHoverText());
+        lines.add(this.rarity.getDisplayName());
+
+        var selectedSpellText = getSpellBookData(itemStack).getHoverText();
+        if (selectedSpellText.size() > 0) {
+            lines.add(Component.empty());
+            lines.addAll(selectedSpellText);
+        }
+
         super.appendHoverText(itemStack, level, lines, flag);
     }
 

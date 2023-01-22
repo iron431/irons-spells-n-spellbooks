@@ -340,8 +340,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             return;
 
         //  Quick inscribe
-        if (selectedSpellIndex < 0) {
-            for (int i = 0; i < spellSlots.size(); i++) {
+        if (selectedSpellIndex < 0 || spellSlots.get(selectedSpellIndex).hasSpell()) {
+            for (int i = selectedSpellIndex + 1; i < spellSlots.size(); i++) {
                 if (!spellSlots.get(i).hasSpell()) {
                     setSelectedIndex(i);
                     break;
