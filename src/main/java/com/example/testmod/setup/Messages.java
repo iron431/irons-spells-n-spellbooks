@@ -1,9 +1,9 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.gui.inscription_table.network.ServerboundInscribeSpell;
 import com.example.testmod.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
 import com.example.testmod.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
-import com.example.testmod.gui.inscription_table.network.ServerboundInscribeSpell;
 import com.example.testmod.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import com.example.testmod.network.*;
 import net.minecraft.resources.ResourceLocation;
@@ -55,6 +55,12 @@ public class Messages {
                 .decoder(ClientboundSyncMana::new)
                 .encoder(ClientboundSyncMana::toBytes)
                 .consumer(ClientboundSyncMana::handle)
+                .add();
+
+        net.messageBuilder(ClientboundOnClientCast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundOnClientCast::new)
+                .encoder(ClientboundOnClientCast::toBytes)
+                .consumer(ClientboundOnClientCast::handle)
                 .add();
 
         net.messageBuilder(ServerboundInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)

@@ -5,8 +5,9 @@ import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
-import com.example.testmod.network.ClientboundUpdateCastingState;
+import com.example.testmod.network.ClientboundOnClientCast;
 import com.example.testmod.network.ClientboundSyncMana;
+import com.example.testmod.network.ClientboundUpdateCastingState;
 import com.example.testmod.player.ServerPlayerEvents;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
@@ -163,6 +164,10 @@ public abstract class AbstractSpell {
             MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, spellType, castSource);
         }
 
+        if (this.castType != CastType.INSTANT) {
+            Messages.sendToPlayer(new ClientboundOnClientCast(this.getID(), this.level, castSource), serverPlayer);
+        }
+
         onCast(world, serverPlayer, playerMagicData);
 
         if (this.castType != CastType.CONTINUOUS) {
@@ -184,6 +189,13 @@ public abstract class AbstractSpell {
     private int getCooldownLength(ServerPlayer serverPlayer) {
         double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
         return MagicManager.getEffectiveSpellCooldown(cooldown, playerCooldownModifier);
+    }
+
+    /**
+     * The primary spell effect sound and particle handling goes here. Called Client Side only
+     */
+    public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        TestMod.LOGGER.debug("AbstractSpell.: onClientCast:{}", level.isClientSide);
     }
 
     /**

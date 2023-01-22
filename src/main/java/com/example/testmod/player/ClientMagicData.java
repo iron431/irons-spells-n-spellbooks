@@ -5,6 +5,8 @@ import com.example.testmod.capabilities.magic.PlayerCooldowns;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.PlayerMagicProvider;
 import com.example.testmod.capabilities.spellbook.SpellBookData;
+import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.client.Minecraft;
@@ -82,9 +84,9 @@ public class ClientMagicData {
      *************************/
     public static List<Vec2> relativeSpellBarSlotLocations = Lists.newArrayList();
 
-    public static void generateRelativeLocations(SpellBookData spellBookData,int boxSize, int spriteSize){
+    public static void generateRelativeLocations(SpellBookData spellBookData, int boxSize, int spriteSize) {
         relativeSpellBarSlotLocations.clear();
-        if(spellBookData==null)
+        if (spellBookData == null)
             return;
         int spellCount = spellBookData.getSpellSlots();
 
@@ -109,11 +111,12 @@ public class ClientMagicData {
             for (int column = 0; column < display[row].length; column++) {
                 int offset = -rowWidth[row] / 2;
                 Vec2 location = new Vec2(offset + column * boxSize, (row) * boxSize - (overallHeight / 2));
-                location.add(-spriteSize/2);
+                location.add(-spriteSize / 2);
                 relativeSpellBarSlotLocations.add(location);
             }
         }
     }
+
     /**
      * HELPER
      *************************/
@@ -144,4 +147,14 @@ public class ClientMagicData {
             {5, 5, 4}, //14
             {5, 5, 5}  //15
     };
+
+    /**
+     * Network Handling Wrapper
+     */
+
+    public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource) {
+        var spell = AbstractSpell.getSpell(spellId, level);
+        //var player = Minecraft.getInstance().player;
+        spell.onClientCast(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
+    }
 }

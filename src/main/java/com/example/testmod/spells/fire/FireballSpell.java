@@ -39,6 +39,11 @@ public class FireballSpell extends AbstractSpell {
     }
 
     @Override
+    public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        entity.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
+    }
+
+    @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
         float speed = 2.5f;
