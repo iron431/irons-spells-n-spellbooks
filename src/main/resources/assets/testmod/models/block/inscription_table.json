@@ -183,20 +183,24 @@
 			}
 		}
 	],
-	"groups": [0,
+	"groups": [
+		0,
 		{
 			"name": "open_book",
 			"origin": [8, 8, 8],
+			"color": 0,
 			"children": [1, 2, 3]
 		},
 		{
 			"name": "table",
 			"origin": [8, 8, 8],
+			"color": 0,
 			"children": [4, 5, 6, 7, 8, 9, 10, 11, 12]
 		},
 		{
 			"name": "inkwell",
 			"origin": [8, 8, 8],
+			"color": 0,
 			"children": [13, 14]
 		}
 	]

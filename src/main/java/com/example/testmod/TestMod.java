@@ -85,6 +85,7 @@ public class TestMod {
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
 
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.SCROLL_FORGE_BLOCK.get(), RenderType.cutout());
 
     }
 

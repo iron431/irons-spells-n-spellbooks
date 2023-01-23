@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "testmod:block/scroll_forge",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "testmod:block/scroll_forge"
+    },
+    "facing=south": {
+      "model": "testmod:block/scroll_forge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "testmod:block/scroll_forge",
+      "y": 270
+    }
+  }
+}

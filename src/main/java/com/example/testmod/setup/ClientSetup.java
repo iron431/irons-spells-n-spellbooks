@@ -1,6 +1,7 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.block.scroll_forge.ScrollForgeRenderer;
 import com.example.testmod.entity.armor.simple_wizard.WizardArmorRenderer;
 import com.example.testmod.entity.armor.wandering_magician.WanderingMagicianRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
@@ -17,6 +18,7 @@ import com.example.testmod.entity.mobs.summons.horse.MagicHorseRenderer;
 import com.example.testmod.item.armor.WanderMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
+import com.example.testmod.registries.BlockRegistry;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
 import com.example.testmod.render.AngelWingsLayer;
@@ -81,6 +83,8 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FIRE_BREATH_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SIMPLE_WIZARD.get(), SimpleWizardRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SPECTRAL_STEED.get(), MagicHorseRenderer::new);
+
+        event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
 
     }
 
