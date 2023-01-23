@@ -118,7 +118,7 @@ public abstract class AbstractSpell {
         }
 
         var serverPlayer = (ServerPlayer) player;
-        var playerMagicData = MagicManager.getPlayerMagicData(serverPlayer);
+        var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
 
         if (!playerMagicData.isCasting()) {
             int playerMana = playerMagicData.getMana();
@@ -153,7 +153,7 @@ public abstract class AbstractSpell {
 
     public boolean castSpell(Level world, ServerPlayer serverPlayer, CastSource castSource, boolean triggerCooldown) {
         MagicManager magicManager = MagicManager.get(serverPlayer.level);
-        PlayerMagicData playerMagicData = MagicManager.getPlayerMagicData(serverPlayer);
+        PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
 
         if (castSource == CastSource.SpellBook) {
             int newMana = playerMagicData.getMana() - getManaCost();

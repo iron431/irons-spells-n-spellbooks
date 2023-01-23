@@ -41,16 +41,9 @@ public class MagicManager {
         return magicManager;
     }
 
-    public static PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
-        var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
-        if (capContainer.isPresent()) {
-            return capContainer.resolve().orElse(new PlayerMagicData(serverPlayer));
-        }
-        return new PlayerMagicData(serverPlayer);
-    }
 
     public void setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
-        var playerMagicData = getPlayerMagicData(serverPlayer);
+        var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
         playerMagicData.setMana(newManaValue);
     }
 
@@ -72,7 +65,7 @@ public class MagicManager {
 
         level.players().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {
-                PlayerMagicData playerMagicData = getPlayerMagicData(serverPlayer);
+                PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
                 playerMagicData.getPlayerCooldowns().tick(1);
 
                 if (playerMagicData.isCasting()) {
@@ -129,7 +122,7 @@ public class MagicManager {
 
         int effectiveCooldown = getEffectiveSpellCooldown(AbstractSpell.getSpell(spellType, 1).getSpellCooldown(), playerCooldownModifier) * itemCoolDownModifer;
 
-        getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
+        PlayerMagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
         Messages.sendToPlayer(new ClientboundSyncCooldown(spellType.getValue(), effectiveCooldown), serverPlayer);
     }
 

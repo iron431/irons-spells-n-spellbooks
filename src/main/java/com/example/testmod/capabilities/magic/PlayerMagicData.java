@@ -11,11 +11,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class PlayerMagicData {
 
-    private ServerPlayer serverPlayer;
-
-    public PlayerMagicData(ServerPlayer serverPlayer) {
-        this.serverPlayer = serverPlayer;
-        this.playerSyncedData = new PlayerSyncedData(serverPlayer);
+    public PlayerMagicData() {
     }
 
     public static final String MANA = "mana";
@@ -39,9 +35,13 @@ public class PlayerMagicData {
 
     /********* SYNC DATA *******************************************************/
 
-    private final PlayerSyncedData playerSyncedData;
+    private PlayerSyncedData playerSyncedData;
 
-    public PlayerSyncedData getSyncedData() {
+    public PlayerSyncedData getSyncedData(ServerPlayer serverPlayer) {
+        if (playerSyncedData == null) {
+            playerSyncedData = new PlayerSyncedData(serverPlayer);
+        }
+
         return playerSyncedData;
     }
 
@@ -144,9 +144,9 @@ public class PlayerMagicData {
     public static PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
         var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
         if (capContainer.isPresent()) {
-            return capContainer.resolve().orElse(new PlayerMagicData(serverPlayer));
+            return capContainer.resolve().orElse(new PlayerMagicData());
         }
-        return new PlayerMagicData(serverPlayer);
+        return new PlayerMagicData();
     }
 
     public void saveNBTData(CompoundTag compound) {
