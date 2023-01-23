@@ -11,6 +11,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -33,7 +34,8 @@ import static net.minecraft.core.Direction.SOUTH;
 
 
 public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile> {
-    private static final ResourceLocation PAPER_TEXTURE = new ResourceLocation(TestMod.MODID , "textures/block/scroll_forge_paper.png");
+    private static final ResourceLocation PAPER_TEXTURE = new ResourceLocation(TestMod.MODID, "textures/block/scroll_forge_paper.png");
+    private static final ResourceLocation SIGIL_TEXTURE = new ResourceLocation(TestMod.MODID, "textures/block/scroll_forge_sigil.png");
     ItemRenderer itemRenderer;
 
     public ScrollForgeRenderer(BlockEntityRendererProvider.Context context) {
@@ -59,15 +61,27 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
 
         if (!paperStack.isEmpty() && paperStack.is(Items.PAPER)) {
             poseStack.pushPose();
-            RenderSystem.disableCull();
-            rotatePoseWithBlock(poseStack,scrollForgeTile);
+            rotatePoseWithBlock(poseStack, scrollForgeTile);
             poseStack.translate(PAPER_POS.x, PAPER_POS.y, PAPER_POS.z);
             poseStack.mulPose(Vector3f.YP.rotationDegrees(85));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(PAPER_TEXTURE));
+            var light = LevelRenderer.getLightColor(scrollForgeTile.getLevel(), scrollForgeTile.getBlockPos());
 
-            drawQuad(.45f, poseStack.last(), consumer);
+            drawQuad(.45f, poseStack.last(), consumer, light);
             poseStack.popPose();
+
         }
+
+        float angle = (Minecraft.getInstance().player.tickCount + partialTick )%360;
+        poseStack.pushPose();
+        rotatePoseWithBlock(poseStack, scrollForgeTile);
+        poseStack.translate(INK_POS.x, INK_POS.y, INK_POS.z);
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(angle));
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(SIGIL_TEXTURE));
+        drawQuad(.5f, poseStack.last(), consumer, LightTexture.FULL_BRIGHT);
+        poseStack.popPose();
 
 
     }
@@ -78,7 +92,7 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
         int renderId = (int) scrollForgeTile.getBlockPos().asLong();
         //BakedModel model = itemRenderer.getModel(itemStack, null, null, renderId);
 
-        rotatePoseWithBlock(poseStack,scrollForgeTile);
+        rotatePoseWithBlock(poseStack, scrollForgeTile);
 
         poseStack.translate(offset.x, offset.y, offset.z);
         poseStack.mulPose(Vector3f.XP.rotationDegrees(-90));
@@ -87,27 +101,28 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
         //poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
         poseStack.scale(0.45f, 0.45f, 0.45f);
 
-        itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.FIXED, LevelRenderer.getLightColor(scrollForgeTile.getLevel(), scrollForgeTile.getBlockPos().above()), packedOverlay, poseStack, bufferSource, renderId);
+        itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.FIXED, LevelRenderer.getLightColor(scrollForgeTile.getLevel(), scrollForgeTile.getBlockPos()), packedOverlay, poseStack, bufferSource, renderId);
         poseStack.popPose();
     }
 
-    private void drawQuad(float width, PoseStack.Pose pose, VertexConsumer consumer) {
+    private void drawQuad(float width, PoseStack.Pose pose, VertexConsumer consumer, int light) {
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
         float halfWidth = width * .5f;
-        consumer.vertex(poseMatrix, -halfWidth, 0, -halfWidth).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, halfWidth, 0, -halfWidth).color(255, 255, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, halfWidth, 0, halfWidth).color(255, 255, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        consumer.vertex(poseMatrix, -halfWidth, 0, halfWidth).color(255, 255, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, -halfWidth, 0, -halfWidth).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, -1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth, 0, -halfWidth).color(255, 255, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, -1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth, 0, halfWidth).color(255, 255, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, -1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, -halfWidth, 0, halfWidth).color(255, 255, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, -1f, 0f).endVertex();
 
     }
 
-    private void rotatePoseWithBlock(PoseStack poseStack, ScrollForgeTile scrollForgeTile){
+    private void rotatePoseWithBlock(PoseStack poseStack, ScrollForgeTile scrollForgeTile) {
         Vec3 center = new Vec3(0.5, 0.5, 0.5);
         poseStack.translate(center.x, center.y, center.z);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(getBlockFacingDegrees(scrollForgeTile)));
         poseStack.translate(-center.x, -center.y, -center.z);
     }
+
     private int getBlockFacingDegrees(ScrollForgeTile tileEntity) {
         var block = tileEntity.getLevel().getBlockState(tileEntity.getBlockPos());
         if (block.getBlock() instanceof ScrollForgeBlock) {
