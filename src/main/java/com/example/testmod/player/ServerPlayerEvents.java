@@ -14,6 +14,7 @@ import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -50,6 +51,16 @@ public class ServerPlayerEvents {
                 serverSideCancelCast(serverPlayer, playerMagicData);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onStartTracking(final PlayerEvent.StartTracking event) {
+        TestMod.LOGGER.debug("ServerPlayerEvents.onStartTracking: {} -> {}", event.getEntity().getName().getString(), event.getTarget().getName().getString());
+    }
+
+    @SubscribeEvent
+    public static void onStopTracking(final PlayerEvent.StopTracking event) {
+        TestMod.LOGGER.debug("ServerPlayerEvents.onStopTracking: {} -> {}", event.getEntity().getName().getString(), event.getTarget().getName().getString());
     }
 
     @SubscribeEvent
