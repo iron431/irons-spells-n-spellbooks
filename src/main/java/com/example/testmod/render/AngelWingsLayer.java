@@ -1,6 +1,7 @@
 package com.example.testmod.render;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.registries.MobEffectRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -17,6 +18,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
@@ -55,7 +58,10 @@ public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> e
     }
 
     public boolean shouldRender(T entity) {
-        return true;//entity.hasEffect(MobEffectRegistry.ANGEL_WINGS.get());
+        TestMod.LOGGER.debug("AngelWingsLayer.shouldRender {} {}", entity.getName().getString(), entity.getActiveEffects().stream().map(x -> x.getEffect().getDisplayName().getString()).collect(Collectors.toSet()));
+
+
+        return entity.hasEffect(MobEffectRegistry.ANGEL_WINGS.get());
     }
 
     public ResourceLocation getAngelWingsTexture(T entity) {
