@@ -14,7 +14,11 @@ public class AngelWingsEffect extends MobEffect {
 
     @Override
     public boolean isInstantenous() {
-        return true;
+        return false;
     }
 
+    @Override
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+        return true;
+    }
 }
