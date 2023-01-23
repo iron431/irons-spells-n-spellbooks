@@ -2,9 +2,9 @@ package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.item.Scroll;
-import com.example.testmod.network.ClientboundUpdateCastingState;
 import com.example.testmod.network.ClientboundSyncCooldown;
 import com.example.testmod.network.ClientboundSyncMana;
+import com.example.testmod.network.ClientboundUpdateCastingState;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;

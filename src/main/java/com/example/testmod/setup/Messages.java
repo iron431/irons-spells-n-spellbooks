@@ -8,6 +8,7 @@ import com.example.testmod.gui.scroll_forge.network.ServerboundScrollForgeSelect
 import com.example.testmod.network.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -61,6 +62,14 @@ public class Messages {
                 .decoder(ClientboundOnClientCast::new)
                 .encoder(ClientboundOnClientCast::toBytes)
                 .consumer(ClientboundOnClientCast::handle)
+                .consumer(ClientboundOnClientCast::handle)
+                .add();
+
+        net.messageBuilder(ClientBoundSyncPlayerData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientBoundSyncPlayerData::new)
+                .encoder(ClientBoundSyncPlayerData::toBytes)
+                .consumer(ClientBoundSyncPlayerData::handle)
+                .consumer(ClientBoundSyncPlayerData::handle)
                 .add();
 
         net.messageBuilder(ServerboundInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
@@ -102,4 +111,7 @@ public class Messages {
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 
+    public static <MSG> void sendToPlayersTrackingEntity(MSG message, Entity entity) {
+        INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+    }
 }

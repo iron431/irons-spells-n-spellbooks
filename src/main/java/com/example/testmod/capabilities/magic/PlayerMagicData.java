@@ -2,7 +2,6 @@ package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractConeProjectile;
-import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.CastSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,6 +10,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 public class PlayerMagicData {
+
+    private ServerPlayer serverPlayer;
+
+    public PlayerMagicData(ServerPlayer serverPlayer) {
+        this.serverPlayer = serverPlayer;
+        this.playerSyncedData = new PlayerSyncedData(serverPlayer);
+    }
+
     public static final String MANA = "mana";
     public static final String COOLDOWNS = "cooldowns";
 
@@ -30,9 +37,15 @@ public class PlayerMagicData {
         this.mana += mana;
     }
 
-    /********* CASTING *******************************************************/
+    /********* SYNC DATA *******************************************************/
 
-    public ClientMagicData.SpinAttackType spinAttackType;
+    private final PlayerSyncedData playerSyncedData;
+
+    public PlayerSyncedData getSyncedData() {
+        return playerSyncedData;
+    }
+
+    /********* CASTING *******************************************************/
 
     private boolean isCasting = false;
     private int castingSpellId = 0;
@@ -131,9 +144,9 @@ public class PlayerMagicData {
     public static PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
         var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
         if (capContainer.isPresent()) {
-            return capContainer.resolve().orElse(new PlayerMagicData());
+            return capContainer.resolve().orElse(new PlayerMagicData(serverPlayer));
         }
-        return new PlayerMagicData();
+        return new PlayerMagicData(serverPlayer);
     }
 
     public void saveNBTData(CompoundTag compound) {

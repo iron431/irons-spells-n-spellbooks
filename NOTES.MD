@@ -19,6 +19,8 @@
 - https://github.com/mickelus/tetra/search?q=capability/
 - https://github.com/Shadows-of-Fire/Apotheosis/search?q=capability
 - https://github.com/TheGreyGhost/MinecraftByExample/search?q=getShareTag
+- Player Cap Syncing
+  - https://github.com/Fuzss/puzzleslib/blob/1.19/Forge/src/main/java/fuzs/puzzleslib/capability/data/ForgePlayerCapabilityKey.java
   
 ### Mixins
 - https://gist.github.com/TelepathicGrunt/3784f8a8b317bac11039474012de5fb4

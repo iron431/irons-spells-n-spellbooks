@@ -1,7 +1,7 @@
 package com.example.testmod.render;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.PlayerMagicProvider;
+import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.registries.MobEffectRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -60,14 +60,7 @@ public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> e
 
     public boolean shouldRender(T entity) {
         TestMod.LOGGER.debug("AngelWingsLayer.shouldRender {} {}", entity.getName().getString(), entity.getActiveEffects().stream().map(x -> x.getEffect().getDisplayName().getString()).collect(Collectors.toSet()));
-
-        var capContainer = entity.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
-        if (capContainer.isPresent()) {
-            TestMod.LOGGER.debug("AngelWingsLayer.shouldRender caps present {}", capContainer.resolve().get().isCasting());
-        }
-
-
-        return entity.hasEffect(MobEffectRegistry.ANGEL_WINGS.get());
+        return entity.hasEffect(MobEffectRegistry.ANGEL_WINGS.get()) || ClientMagicData.getPlayerSyncedData(entity.getId()).getHasAngelWings();
     }
 
     public ResourceLocation getAngelWingsTexture(T entity) {

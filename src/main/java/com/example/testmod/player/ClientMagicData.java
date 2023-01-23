@@ -1,30 +1,28 @@
 package com.example.testmod.player;
 
-import com.example.testmod.capabilities.magic.CooldownInstance;
 import com.example.testmod.capabilities.magic.PlayerCooldowns;
-import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.capabilities.magic.PlayerMagicProvider;
+import com.example.testmod.capabilities.magic.PlayerSyncedData;
 import com.example.testmod.capabilities.spellbook.SpellBookData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 import org.apache.commons.compress.utils.Lists;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ClientMagicData {
     static {
         ClientMagicData.playerCooldowns = new PlayerCooldowns();
-
-        getPlayerMagicData(Minecraft.getInstance().player).getPlayerCooldowns()
-                .getSpellCooldowns()
-                .forEach((k, v) -> {
-                    ClientMagicData.playerCooldowns.getSpellCooldowns().put(k, new CooldownInstance(v.getSpellCooldown(), v.getCooldownRemaining()));
-                });
+//
+//        getPlayerMagicData(Minecraft.getInstance().player).getPlayerCooldowns()
+//                .getSpellCooldowns()
+//                .forEach((k, v) -> {
+//                    ClientMagicData.playerCooldowns.getSpellCooldowns().put(k, new CooldownInstance(v.getSpellCooldown(), v.getCooldownRemaining()));
+//                });
     }
 
     /**
@@ -120,16 +118,6 @@ public class ClientMagicData {
     /**
      * HELPER
      *************************/
-    public static PlayerMagicData getPlayerMagicData(Player player) {
-        if (player == null) {
-            var capContainer = player.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
-            if (capContainer.isPresent()) {
-                return capContainer.resolve().orElse(new PlayerMagicData());
-            }
-        }
-        return new PlayerMagicData();
-    }
-
     public static final int[][] SPELL_LAYOUT = {
             {1, 0, 0}, //1
             {2, 0, 0}, //2
@@ -149,12 +137,25 @@ public class ClientMagicData {
     };
 
     /**
+     * Player Synced Data
+     */
+    private static HashMap<Integer, PlayerSyncedData> playerSyncedDataLookup = new HashMap<>();
+
+    public static PlayerSyncedData getPlayerSyncedData(int serverPlayerId) {
+        return playerSyncedDataLookup.getOrDefault(serverPlayerId, new PlayerSyncedData(-1));
+    }
+
+
+    /**
      * Network Handling Wrapper
      */
-
     public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource) {
         var spell = AbstractSpell.getSpell(spellId, level);
         //var player = Minecraft.getInstance().player;
         spell.onClientCast(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
+    }
+
+    public static void handlePlayerSyncedData(PlayerSyncedData playerSyncedData) {
+        playerSyncedDataLookup.put(playerSyncedData.getServerPlayerId(), playerSyncedData);
     }
 }
