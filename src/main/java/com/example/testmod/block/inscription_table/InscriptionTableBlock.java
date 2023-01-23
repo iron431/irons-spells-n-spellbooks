@@ -28,22 +28,22 @@ public class InscriptionTableBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public InscriptionTableBlock() {
-        super(BlockBehaviour.Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion());
+        super(BlockBehaviour.Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).requiresCorrectToolForDrops().noOcclusion());
     }
 
-//    private static final VoxelShape LEG_NE = Block.box(12, 0, 12, 3, 10, 3);
+    //    private static final VoxelShape LEG_NE = Block.box(12, 0, 12, 3, 10, 3);
 //    private static final VoxelShape LEG_NW = Block.box(1, 0, 12, 3, 10, 3);
 //    private static final VoxelShape LEG_SE = Block.box(12, 0, 1, 3, 10, 3);
 //    private static final VoxelShape LEG_SW = Block.box(1, 0, 1, 3, 10, 3);
 //    private static final VoxelShape TABLE_TOP = Block.box(0, 10, 0, 16, 4, 16);
     //public static final VoxelShape SHAPE_COMMON = Shapes.or(SHAPE_WEST, SHAPE_POST);
-public static final VoxelShape SHAPE_TABLETOP = Block.box(0,10,0,16,14,16);
-    public static final VoxelShape SHAPE_LEG_1 = Block.box(1,0,1,4,10,4);
-    public static final VoxelShape SHAPE_LEG_2 = Block.box(12,0,1,15,10,4);
-    public static final VoxelShape SHAPE_LEG_3 = Block.box(1,0,12,4,10,15);
-    public static final VoxelShape SHAPE_LEG_4 = Block.box(12,0,12,15,10,15);
+    public static final VoxelShape SHAPE_TABLETOP = Block.box(0, 10, 0, 16, 14, 16);
+    public static final VoxelShape SHAPE_LEG_1 = Block.box(1, 0, 1, 4, 10, 4);
+    public static final VoxelShape SHAPE_LEG_2 = Block.box(12, 0, 1, 15, 10, 4);
+    public static final VoxelShape SHAPE_LEG_3 = Block.box(1, 0, 12, 4, 10, 15);
+    public static final VoxelShape SHAPE_LEG_4 = Block.box(12, 0, 12, 15, 10, 15);
 
-    public static final VoxelShape SHAPE = Shapes.or(SHAPE_LEG_1,SHAPE_LEG_2,SHAPE_LEG_3,SHAPE_LEG_4, SHAPE_TABLETOP);
+    public static final VoxelShape SHAPE = Shapes.or(SHAPE_LEG_1, SHAPE_LEG_2, SHAPE_LEG_3, SHAPE_LEG_4, SHAPE_TABLETOP);
 
     @Override
     @SuppressWarnings("deprecation")
@@ -101,7 +101,7 @@ public static final VoxelShape SHAPE_TABLETOP = Block.box(0,10,0,16,14,16);
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);
             if (entity instanceof InscriptionTableTile) {
-                NetworkHooks.openScreen(((ServerPlayer) player), (InscriptionTableTile) entity, pos) ;
+                NetworkHooks.openScreen(((ServerPlayer) player), (InscriptionTableTile) entity, pos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
