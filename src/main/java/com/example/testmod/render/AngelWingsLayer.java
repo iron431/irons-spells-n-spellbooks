@@ -20,8 +20,6 @@ import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.stream.Collectors;
-
 @OnlyIn(Dist.CLIENT)
 public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
     private static final ResourceLocation WINGS_LOCATION = new ResourceLocation(TestMod.MODID, "textures/entity/angel_wings.png");
@@ -59,7 +57,7 @@ public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> e
     }
 
     public boolean shouldRender(T entity) {
-        TestMod.LOGGER.debug("AngelWingsLayer.shouldRender {} {}", entity.getName().getString(), entity.getActiveEffects().stream().map(x -> x.getEffect().getDisplayName().getString()).collect(Collectors.toSet()));
+        //TestMod.LOGGER.debug("AngelWingsLayer.shouldRender {} {}", entity.getName().getString(), entity.getActiveEffects().stream().map(x -> x.getEffect().getDisplayName().getString()).collect(Collectors.toSet()));
         return entity.hasEffect(MobEffectRegistry.ANGEL_WINGS.get()) || ClientMagicData.getPlayerSyncedData(entity.getId()).getHasAngelWings();
     }
 
