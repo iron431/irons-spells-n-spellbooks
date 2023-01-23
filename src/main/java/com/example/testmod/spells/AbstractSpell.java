@@ -164,9 +164,7 @@ public abstract class AbstractSpell {
             MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, spellType, castSource);
         }
 
-        if (this.castType != CastType.INSTANT) {
-            Messages.sendToPlayer(new ClientboundOnClientCast(this.getID(), this.level, castSource), serverPlayer);
-        }
+        Messages.sendToPlayer(new ClientboundOnClientCast(this.getID(), this.level, castSource), serverPlayer);
 
         onCast(world, serverPlayer, playerMagicData);
 

@@ -1,5 +1,6 @@
 package com.example.testmod.spells.holy;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.AbstractSpell;
@@ -30,6 +31,7 @@ public class AngelWingsSpell extends AbstractSpell {
 
     @Override
     public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        TestMod.LOGGER.debug("AngelWingsSpell.onClientCast");
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(entity)), entity);
     }
 
