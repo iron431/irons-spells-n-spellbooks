@@ -14,7 +14,7 @@ public class AngelWingsEffect extends MobEffect {
 
     @Override
     public boolean isInstantenous() {
-        return false;
+        return true;
     }
 
 }
