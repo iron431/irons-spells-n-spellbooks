@@ -44,9 +44,9 @@ public class MagicManager {
     public static PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
         var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
         if (capContainer.isPresent()) {
-            return capContainer.resolve().orElse(new PlayerMagicData());
+            return capContainer.resolve().orElse(new PlayerMagicData(serverPlayer));
         }
-        return new PlayerMagicData();
+        return new PlayerMagicData(serverPlayer);
     }
 
     public void setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
