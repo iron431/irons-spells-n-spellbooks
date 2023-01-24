@@ -1,5 +1,6 @@
 package com.example.testmod.network;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,6 +31,7 @@ public class ClientboundSyncCooldown {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
+            TestMod.LOGGER.debug("ClientboundSyncCooldown");
             ClientMagicData.getCooldowns().addCooldown(SpellType.values()[spellId], duration);
         });
         return true;

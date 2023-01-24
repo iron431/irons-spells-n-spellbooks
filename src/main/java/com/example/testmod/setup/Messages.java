@@ -82,6 +82,12 @@ public class Messages {
                 .consumer(ClientboundSyncCooldown::handle)
                 .add();
 
+        net.messageBuilder(ClientboundSyncCooldowns.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncCooldowns::new)
+                .encoder(ClientboundSyncCooldowns::toBytes)
+                .consumer(ClientboundSyncCooldowns::handle)
+                .add();
+
         net.messageBuilder(ServerboundSetSpellBookActiveIndex.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundSetSpellBookActiveIndex::new)
                 .encoder(ServerboundSetSpellBookActiveIndex::toBytes)
