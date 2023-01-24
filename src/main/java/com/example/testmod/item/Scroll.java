@@ -36,7 +36,7 @@ public class Scroll extends Item {
     }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
-        TestMod.LOGGER.debug("removeScrollAfterCast {}", serverPlayer.getName().getString());
+        //TestMod.LOGGER.debug("removeScrollAfterCast {}", serverPlayer.getName().getString());
         if (!serverPlayer.isCreative()) {
             stack.shrink(1);
         }

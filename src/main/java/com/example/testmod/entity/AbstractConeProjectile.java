@@ -1,6 +1,5 @@
 package com.example.testmod.entity;
 
-import com.example.testmod.TestMod;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -137,7 +136,7 @@ public abstract class AbstractConeProjectile extends Projectile {
         if (!level.isClientSide) {
             if (dealDamageActive) {
                 for (Entity entity : getSubEntityCollisions()) {
-                    TestMod.LOGGER.debug("ConeOfColdHit : {}", entity.getName().getString());
+                    //TestMod.LOGGER.debug("ConeOfColdHit : {}", entity.getName().getString());
                     onHitEntity(new EntityHitResult(entity));
                 }
                 dealDamageActive = false;

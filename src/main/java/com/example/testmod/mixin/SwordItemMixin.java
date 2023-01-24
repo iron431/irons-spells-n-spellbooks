@@ -1,6 +1,5 @@
 package com.example.testmod.mixin;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.network.ServerboundCancelCast;
@@ -37,23 +36,23 @@ public abstract class SwordItemMixin extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         var spell = Utils.getScrollData(stack).getSpell();
-        TestMod.LOGGER.debug("SwordItemMixin.use.1");
+        //TestMod.LOGGER.debug("SwordItemMixin.use.1");
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
-            TestMod.LOGGER.debug("SwordItemMixin.use.2");
+            //TestMod.LOGGER.debug("SwordItemMixin.use.2");
             if (level.isClientSide) {
-                TestMod.LOGGER.debug("SwordItemMixin.use.3");
+                //TestMod.LOGGER.debug("SwordItemMixin.use.3");
                 if (ClientMagicData.isCasting) {
-                    TestMod.LOGGER.debug("SwordItemMixin.use.4");
+                    //TestMod.LOGGER.debug("SwordItemMixin.use.4");
                     return InteractionResultHolder.fail(stack);
                 } else if (ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
-                    TestMod.LOGGER.debug("SwordItemMixin.use.5");
+                    //TestMod.LOGGER.debug("SwordItemMixin.use.5");
                     return InteractionResultHolder.pass(stack);
                 } else {
-                    TestMod.LOGGER.debug("SwordItemMixin.use.6");
+                    //TestMod.LOGGER.debug("SwordItemMixin.use.6");
                     spell.onClientPreCast(level, player, hand, null);
 
                     if (spell.getCastType() == CastType.CONTINUOUS) {
-                        TestMod.LOGGER.debug("SwordItemMixin.use.7");
+                        //TestMod.LOGGER.debug("SwordItemMixin.use.7");
                         player.startUsingItem(hand);
                     }
                     return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());

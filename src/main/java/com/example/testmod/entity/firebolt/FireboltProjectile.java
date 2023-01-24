@@ -1,8 +1,6 @@
 package com.example.testmod.entity.firebolt;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
-import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
@@ -76,7 +74,7 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
 
     @Override
     protected void onHit(HitResult hitresult) {
-        TestMod.LOGGER.debug("MagicMissileProjectile.genericOnHit");
+        //TestMod.LOGGER.debug("MagicMissileProjectile.genericOnHit");
         if (hitresult.getType() == HitResult.Type.ENTITY) {
             onHitEntity((EntityHitResult) hitresult);
         } else if (hitresult.getType() == HitResult.Type.BLOCK) {

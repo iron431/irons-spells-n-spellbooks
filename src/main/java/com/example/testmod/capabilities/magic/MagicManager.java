@@ -1,6 +1,5 @@
 package com.example.testmod.capabilities.magic;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.network.ClientboundSyncCooldown;
 import com.example.testmod.network.ClientboundSyncMana;
@@ -73,7 +72,7 @@ public class MagicManager {
                     playerMagicData.handleCastDuration();
                     if (spell.getCastType() == CastType.LONG) {
                         if (!playerMagicData.isCasting()) {
-                            TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
+                            //TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                             Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                             spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                             playerMagicData.resetCastingState();
@@ -84,7 +83,7 @@ public class MagicManager {
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
                             if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || playerMagicData.getMana() - spell.getManaCost() * 2 < 0) {
-                                TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
+                                //TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                                 Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                                 spell.onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);

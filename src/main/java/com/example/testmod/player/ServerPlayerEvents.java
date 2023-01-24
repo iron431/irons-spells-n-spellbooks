@@ -55,7 +55,9 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onStartTracking(final PlayerEvent.StartTracking event) {
-        TestMod.LOGGER.debug("ServerPlayerEvents.onStartTracking: {} -> {}", event.getEntity().getName().getString(), event.getTarget().getName().getString());
+        if(event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof  ServerPlayer targetPlayer){
+            PlayerMagicData.getPlayerMagicData(serverPlayer).syncToPlayer(targetPlayer);
+        }
     }
 
     @SubscribeEvent

@@ -1,6 +1,5 @@
 package com.example.testmod.spells.evocation;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.HitscanFireworkRocketEntity;
 import com.example.testmod.spells.AbstractSpell;
@@ -44,7 +43,7 @@ public class FirecrackerSpell extends AbstractSpell {
         EntityHitResult entityHit = Utils.getTargetEntity(world, entity, entity.getEyePosition(), hitPos);
         if (entityHit != null) {
             hitPos = entityHit.getLocation();
-            TestMod.LOGGER.debug("FirecrackerSpell.onCast.raycastFoundEntity");
+            //TestMod.LOGGER.debug("FirecrackerSpell.onCast.raycastFoundEntity");
         }
         Vec3 spawn = hitPos.subtract(shootAngle.scale(.5f));
 

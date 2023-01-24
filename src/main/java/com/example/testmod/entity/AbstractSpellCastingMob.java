@@ -1,6 +1,5 @@
 package com.example.testmod.entity;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
@@ -68,7 +67,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
                 return;
             }
 
-            TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated {}", castingData);
+            //TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated {}", castingData);
 
             var spellType = SpellType.getTypeFromValue(castingData.spellId);
 
@@ -82,7 +81,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
     }
 
     private void castComplete() {
-        TestMod.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
+        //TestMod.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
         if (!level.isClientSide) {
             castingSpell.onCastComplete(level, this, playerMagicData);
         }
@@ -146,13 +145,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
     }
 
     public void castSpell(SpellType spellType, int spellLevel) {
-        TestMod.LOGGER.debug("ASCM.castSpell spellType:{} spellLevel:{} isClient:{}", spellType, spellLevel, level.isClientSide);
+        //TestMod.LOGGER.debug("ASCM.castSpell spellType:{} spellLevel:{} isClient:{}", spellType, spellLevel, level.isClientSide);
         setCastingSpell(spellType, spellLevel);
         startCasting();
     }
 
     private void setCastingSpell(SpellType spellType, int spellLevel) {
-        TestMod.LOGGER.debug("ASCM.setCastingSpell:spellType:{} spellLevel:{} isClient:{}}", spellType, spellLevel, level.isClientSide);
+        //TestMod.LOGGER.debug("ASCM.setCastingSpell:spellType:{} spellLevel:{} isClient:{}}", spellType, spellLevel, level.isClientSide);
         if (spellType == SpellType.NONE_SPELL) {
             castingSpell = null;
         } else {
