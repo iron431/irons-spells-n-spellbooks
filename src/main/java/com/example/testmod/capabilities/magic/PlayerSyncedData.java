@@ -1,5 +1,6 @@
 package com.example.testmod.capabilities.magic;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.network.ClientBoundSyncPlayerData;
 import com.example.testmod.setup.Messages;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +36,7 @@ public class PlayerSyncedData {
 
     public void setHasAngelWings(boolean hasAngelWings) {
         this.hasAngelWings = hasAngelWings;
+        TestMod.LOGGER.debug("setHasAngelWings: isPlayerNull: {}", player == null);
         Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), player);
     }
 }
