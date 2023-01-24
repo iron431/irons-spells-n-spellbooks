@@ -2,8 +2,11 @@ package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.network.ClientBoundSyncPlayerData;
+import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastSource;
+import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -81,6 +84,10 @@ public class PlayerMagicData {
         this.castDurationRemaining = 0;
         this.teleportTargetPosition = null;
         this.discardCone();
+    }
+
+    public static void serverSideCancelCast(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
+        ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
     }
 
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, CastSource castSource) {

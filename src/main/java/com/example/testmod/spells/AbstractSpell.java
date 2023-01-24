@@ -7,7 +7,6 @@ import com.example.testmod.item.SpellBook;
 import com.example.testmod.network.ClientboundOnClientCast;
 import com.example.testmod.network.ClientboundSyncMana;
 import com.example.testmod.network.ClientboundUpdateCastingState;
-import com.example.testmod.player.ServerPlayerEvents;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import net.minecraft.ChatFormatting;
@@ -145,7 +144,7 @@ public abstract class AbstractSpell {
             }
             return true;
         } else {
-            ServerPlayerEvents.serverSideCancelCast(serverPlayer, playerMagicData);
+            PlayerMagicData.serverSideCancelCast(serverPlayer, playerMagicData);
             return false;
         }
     }

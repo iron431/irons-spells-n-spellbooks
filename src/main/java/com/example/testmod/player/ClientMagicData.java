@@ -15,20 +15,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ClientMagicData {
-    static {
-        ClientMagicData.playerCooldowns = new PlayerCooldowns();
-//
-//        getPlayerMagicData(Minecraft.getInstance().player).getPlayerCooldowns()
-//                .getSpellCooldowns()
-//                .forEach((k, v) -> {
-//                    ClientMagicData.playerCooldowns.getSpellCooldowns().put(k, new CooldownInstance(v.getSpellCooldown(), v.getCooldownRemaining()));
-//                });
-    }
-
     /**
      * COOLDOWNS
      *************************/
-    private static PlayerCooldowns playerCooldowns;
+    private static final PlayerCooldowns playerCooldowns = new PlayerCooldowns();
 
     public static PlayerCooldowns getCooldowns() {
         return ClientMagicData.playerCooldowns;
