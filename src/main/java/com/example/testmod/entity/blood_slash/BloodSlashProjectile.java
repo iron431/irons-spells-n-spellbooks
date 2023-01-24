@@ -3,6 +3,7 @@ package com.example.testmod.entity.blood_slash;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.effect.BloodSlashed;
+import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BloodSlashProjectile extends Projectile implements ItemSupplier {
+public class BloodSlashProjectile extends Projectile{
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
     private static final double SPEED = 1d;
     private static final int EXPIRE_TIME = 10 * 20;
@@ -175,6 +176,8 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         damageEntity(entityHitResult.getEntity());
+        if(entityHitResult.getEntity() instanceof ShieldPart)
+            kill();
     }
 
     private void damageEntity(Entity entity) {
@@ -182,11 +185,6 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
             BloodSlashed.applyDamage(getEffectSource(), entity, damage);
             victims.add(entity);
         }
-    }
-
-    @Override
-    public ItemStack getItem() {
-        return ItemStack.EMPTY;
     }
 
     //https://forge.gemwire.uk/wiki/Particles
@@ -198,12 +196,6 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
             float radians = Mth.DEG_TO_RAD * getYRot();
             float speed = .1f;
             for (int i = 0; i < width / step; i++) {
-//                double x = getX() + step * (i - width / step / 2);
-//                double y = getY();
-//                double z = getZ();
-//
-//                double rotX = x * Math.cos(radians) - z * Math.sin(radians);
-//                double rotZ = z * Math.cos(radians) + x * Math.sin(radians);
                 double x = getX();
                 double y = getY();
                 double z = getZ();
@@ -214,10 +206,8 @@ public class BloodSlashProjectile extends Projectile implements ItemSupplier {
                 double dx = Math.random() * speed * 2 - speed;
                 double dy = Math.random() * speed * 2 - speed;
                 double dz = Math.random() * speed * 2 - speed;
-                //TODO: find out how to un-force these particles (the one with that argument seems to not be public)
                 level.addParticle(ParticleHelper.BLOOD, false, x + rotX + dx, y + dy, z + rotZ + dz, dx, dy, dz);
             }
-            //MagicManager.spawnParticles(level,ParticleRegistry.BLOOD_PARTICLE.get(), x, y, z, 5 + (int)(width * 5), width, 0, width, .1, false);
         }
     }
 

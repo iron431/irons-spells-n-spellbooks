@@ -1,6 +1,7 @@
 package com.example.testmod.spells.evocation;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class ShieldSpell extends AbstractSpell {
@@ -49,7 +51,11 @@ public class ShieldSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
-
+        ShieldEntity shield = new ShieldEntity(level);
+        shield.setPos(entity.getEyePosition().add(entity.getForward().scale(5)));
+        shield.setXRot(entity.getXRot());
+        shield.setYRot(entity.getYRot());
+        level.addFreshEntity(shield);
     }
 
 //    @Override

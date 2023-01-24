@@ -33,6 +33,9 @@ public class BloodSlashed extends MobEffect {
 
             targetEntity.hurt(damageSource, actualDamage);
             targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
+        }else{
+            target.hurt(DamageSources.BLOOD_MAGIC, baseDamage);
+
         }
     }
 
