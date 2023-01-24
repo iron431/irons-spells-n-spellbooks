@@ -61,7 +61,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
         double y = pos.y + owner.getEyeHeight() * .8f;
         double z = pos.z;
 
-        double speed = random.nextDouble() * .35 + .25;
+        double speed = random.nextDouble() * .35 + .55;
         for (int i = 0; i < 10; i++) {
             double offset = .05;
             double ox = Math.random() * 2 * offset - offset;

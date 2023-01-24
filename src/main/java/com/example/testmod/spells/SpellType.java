@@ -6,6 +6,7 @@ import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.evocation.FirecrackerSpell;
+import com.example.testmod.spells.evocation.ShieldSpell;
 import com.example.testmod.spells.evocation.SummonHorseSpell;
 import com.example.testmod.spells.evocation.SummonVexSpell;
 import com.example.testmod.spells.fire.BurningDashSpell;
@@ -48,7 +49,8 @@ public enum SpellType {
     ICICLE_SPELL(12),
     FIRECRACKER_SPELL(13),
     SUMMON_HORSE_SPELL(14),
-    ANGEL_WING_SPELL(15);
+    ANGEL_WING_SPELL(15),
+    SHIELD_SPELL(16);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -177,6 +179,9 @@ public enum SpellType {
             case ANGEL_WING_SPELL -> {
                 return new AngelWingsSpell(level);
             }
+            case SHIELD_SPELL -> {
+                return new ShieldSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -213,7 +218,7 @@ public enum SpellType {
     private static final SpellType[] BLOOD_SPELLS =
             {BLOOD_SLASH_SPELL};
     private static final SpellType[] EVOCATION_SPELLS =
-            {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL};
+            {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL};
 
     public MutableComponent getDisplayName() {
         return Component.translatable("spell." + TestMod.MODID + "." + this.getId());

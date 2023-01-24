@@ -92,7 +92,7 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        MagicManager.spawnParticles(level, ParticleTypes.LAVA, getX(), getY(), getZ(), 10, .1, .1, .1, .25, true);
+        serverSideImpactParticles();
         kill();
 
     }
@@ -105,8 +105,16 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
             target.hurt(DamageSource.MAGIC, damage);
             target.setSecondsOnFire(3);
 
+        }else{
+            serverSideImpactParticles();
         }
+
         kill();
+
+    }
+
+    private void serverSideImpactParticles(){
+        MagicManager.spawnParticles(level, ParticleTypes.LAVA, getX(), getY(), getZ(), 10, .1, .1, .1, .25, true);
 
     }
 

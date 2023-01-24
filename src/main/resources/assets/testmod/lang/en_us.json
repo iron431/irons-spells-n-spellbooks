@@ -74,6 +74,8 @@
   "spell.testmod.icicle": "Icicle",
   "spell.testmod.firecracker": "Firecracker",
   "spell.testmod.angel_wings": "Angel Wings",
+  "spell.testmod.summon_horse": "Summon Horse",
+  "spell.testmod.shield": "Shield",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

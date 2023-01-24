@@ -169,4 +169,9 @@ public class Utils {
             return null;
         }
     }
+
+    public static boolean LineOfSightBlockedByShield(Level level, LivingEntity entity, Vec3 start, Vec3 end){
+        AABB range = entity.getBoundingBox().expandTowards(end.subtract(start));
+
+    }
 }
