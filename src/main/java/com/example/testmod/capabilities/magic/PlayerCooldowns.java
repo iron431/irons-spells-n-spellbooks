@@ -1,5 +1,6 @@
 package com.example.testmod.capabilities.magic;
 
+import com.example.testmod.network.ClientboundSyncCooldowns;
 import com.example.testmod.spells.SpellType;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
@@ -50,6 +51,11 @@ public class PlayerCooldowns {
         spellCooldowns.put(spell, new CooldownInstance(durationTicks));
     }
 
+    public void addCooldown(SpellType spell, int durationTicks, int remaining) {
+        //TestMod.LOGGER.debug("addCooldown: {} {} {}", spell, durationTicks, remaining);
+        spellCooldowns.put(spell, new CooldownInstance(durationTicks, remaining));
+    }
+
     public boolean isOnCooldown(SpellType spell) {
         return spellCooldowns.containsKey(spell);
     }
@@ -61,6 +67,10 @@ public class PlayerCooldowns {
     private boolean decrementCooldown(CooldownInstance c, int amount) {
         c.decrementBy(amount);
         return c.getCooldownRemaining() <= tickBuffer;
+    }
+
+    public ClientboundSyncCooldowns getClientSyncCooldownsMessage(){
+        return new ClientboundSyncCooldowns(this.spellCooldowns);
     }
 
     public void saveNBTData(ListTag listTag) {

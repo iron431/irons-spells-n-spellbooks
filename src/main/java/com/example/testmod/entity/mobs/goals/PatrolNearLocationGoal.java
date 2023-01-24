@@ -1,6 +1,5 @@
 package com.example.testmod.entity.mobs.goals;
 
-import com.example.testmod.TestMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -42,7 +41,7 @@ public class PatrolNearLocationGoal extends Goal {
      * Reset the task's internal state. Called when this task is interrupted by another one
      */
     public void stop() {
-        TestMod.LOGGER.debug("PNLG.stop");
+        //TestMod.LOGGER.debug("PNLG.stop");
     }
 
     public void tick() {

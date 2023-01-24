@@ -1,8 +1,12 @@
 package com.example.testmod.capabilities.magic;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractConeProjectile;
+import com.example.testmod.network.ClientBoundSyncPlayerData;
+import com.example.testmod.network.ServerboundCancelCast;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastSource;
+import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,6 +18,17 @@ public class PlayerMagicData {
     public PlayerMagicData() {
     }
 
+    public PlayerMagicData(ServerPlayer serverPlayer) {
+        this.serverPlayer = serverPlayer;
+    }
+
+    public void setServerPlayer(ServerPlayer serverPlayer) {
+        if (this.serverPlayer == null) {
+            this.serverPlayer = serverPlayer;
+        }
+    }
+
+    private ServerPlayer serverPlayer = null;
     public static final String MANA = "mana";
     public static final String COOLDOWNS = "cooldowns";
 
@@ -37,12 +52,16 @@ public class PlayerMagicData {
 
     private PlayerSyncedData playerSyncedData;
 
-    public PlayerSyncedData getSyncedData(ServerPlayer serverPlayer) {
+    public PlayerSyncedData getSyncedData() {
         if (playerSyncedData == null) {
             playerSyncedData = new PlayerSyncedData(serverPlayer);
         }
 
         return playerSyncedData;
+    }
+
+    public void syncToPlayer(ServerPlayer serverPlayer) {
+        Messages.sendToPlayer(new ClientBoundSyncPlayerData(getSyncedData()), serverPlayer);
     }
 
     /********* CASTING *******************************************************/
@@ -67,6 +86,10 @@ public class PlayerMagicData {
         this.discardCone();
     }
 
+    public static void serverSideCancelCast(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
+        ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
+    }
+
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, CastSource castSource) {
         this.castSource = castSource;
         this.castingSpellId = castingSpellId;
@@ -80,7 +103,7 @@ public class PlayerMagicData {
         if (this.cone != null) {
             this.cone.discard();
             this.cone = null;
-            TestMod.LOGGER.debug("PlayerMagicData: discarding cone");
+            //TestMod.LOGGER.debug("PlayerMagicData: discarding cone");
             return true;
         }
         return false;
@@ -144,13 +167,20 @@ public class PlayerMagicData {
     public static PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
         var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
         if (capContainer.isPresent()) {
-            return capContainer.resolve().orElse(new PlayerMagicData());
+            var opt = capContainer.resolve();
+            if (opt.isEmpty()) {
+                return new PlayerMagicData(serverPlayer);
+            }
+
+            var pmd = opt.get();
+            pmd.setServerPlayer(serverPlayer);
+            return pmd;
         }
-        return new PlayerMagicData();
+        return new PlayerMagicData(serverPlayer);
     }
 
     public void saveNBTData(CompoundTag compound) {
-        TestMod.LOGGER.debug("PlayerMagicData: saving nbt");
+        //TestMod.LOGGER.debug("PlayerMagicData: saving nbt");
         compound.putInt(MANA, mana);
 
         if (playerCooldowns.hasCooldownsActive()) {
@@ -163,7 +193,7 @@ public class PlayerMagicData {
     }
 
     public void loadNBTData(CompoundTag compound) {
-        TestMod.LOGGER.debug("PlayerMagicData: loading nbt");
+        //TestMod.LOGGER.debug("PlayerMagicData: loading nbt");
         mana = compound.getInt(MANA);
         ListTag listTag = (ListTag) compound.get(COOLDOWNS);
 

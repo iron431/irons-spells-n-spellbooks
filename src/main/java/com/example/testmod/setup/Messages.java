@@ -62,13 +62,11 @@ public class Messages {
                 .decoder(ClientboundOnClientCast::new)
                 .encoder(ClientboundOnClientCast::toBytes)
                 .consumer(ClientboundOnClientCast::handle)
-                .consumer(ClientboundOnClientCast::handle)
                 .add();
 
         net.messageBuilder(ClientBoundSyncPlayerData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientBoundSyncPlayerData::new)
                 .encoder(ClientBoundSyncPlayerData::toBytes)
-                .consumer(ClientBoundSyncPlayerData::handle)
                 .consumer(ClientBoundSyncPlayerData::handle)
                 .add();
 
@@ -82,6 +80,12 @@ public class Messages {
                 .decoder(ClientboundSyncCooldown::new)
                 .encoder(ClientboundSyncCooldown::toBytes)
                 .consumer(ClientboundSyncCooldown::handle)
+                .add();
+
+        net.messageBuilder(ClientboundSyncCooldowns.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncCooldowns::new)
+                .encoder(ClientboundSyncCooldowns::toBytes)
+                .consumer(ClientboundSyncCooldowns::handle)
                 .add();
 
         net.messageBuilder(ServerboundSetSpellBookActiveIndex.class, id(), NetworkDirection.PLAY_TO_SERVER)

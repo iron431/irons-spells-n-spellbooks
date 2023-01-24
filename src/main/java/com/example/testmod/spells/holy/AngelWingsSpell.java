@@ -33,8 +33,8 @@ public class AngelWingsSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(entity)), entity);
 
-        if (entity instanceof ServerPlayer serverPlayer) {
-            playerMagicData.getSyncedData(serverPlayer).setHasAngelWings(true);
+        if (entity instanceof ServerPlayer) {
+            playerMagicData.getSyncedData().setHasAngelWings(true);
         }
     }
 }

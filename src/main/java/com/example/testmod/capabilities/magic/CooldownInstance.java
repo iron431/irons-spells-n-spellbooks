@@ -5,13 +5,13 @@ public class CooldownInstance {
     private final int spellCooldown;
 
     public CooldownInstance(int spellCooldown) {
-        this.cooldownRemaining = spellCooldown;
         this.spellCooldown = spellCooldown;
+        this.cooldownRemaining = spellCooldown;
     }
 
     public CooldownInstance(int spellCooldown, int cooldownRemaining) {
-        this.cooldownRemaining = spellCooldown;
-        this.spellCooldown = cooldownRemaining;
+        this.spellCooldown = spellCooldown;
+        this.cooldownRemaining = cooldownRemaining;
     }
 
     public void decrement() {

@@ -29,12 +29,18 @@ public class PlayerSyncedData {
         return serverPlayerId;
     }
 
+    private void doSync() {
+        if (this.player != null) {
+            Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), player);
+        }
+    }
+
     public boolean getHasAngelWings() {
         return hasAngelWings;
     }
 
     public void setHasAngelWings(boolean hasAngelWings) {
         this.hasAngelWings = hasAngelWings;
-        Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), player);
+        doSync();
     }
 }
