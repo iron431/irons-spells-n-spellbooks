@@ -1,6 +1,8 @@
 package com.example.testmod.spells.ender;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.network.spell.ClientboundTeleportParticles;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -61,10 +63,14 @@ public class TeleportSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
+
         var potentialTarget = playerMagicData.getTeleportTargetPosition();
         var dest = potentialTarget != null ? findTeleportLocation(entity, potentialTarget) : findTeleportLocation(level, entity);
 
+        Messages.sendToPlayersTrackingEntity(new ClientboundTeleportParticles(entity.position(), dest), entity);
+
         entity.teleportTo(dest.x, dest.y, dest.z);
+
         entity.resetFallDistance();
         playerMagicData.setTeleportTargetPosition(null);
     }
@@ -89,7 +95,7 @@ public class TeleportSpell extends AbstractSpell {
         }
     }
 
-    private void particleCloud(Level level, LivingEntity entity, Vec3 pos) {
+    public static void particleCloud(Level level, LivingEntity entity, Vec3 pos) {
         if (level.isClientSide) {
             double width = 0.5;
             float height = entity.getBbHeight() / 2;

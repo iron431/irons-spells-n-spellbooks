@@ -7,8 +7,10 @@ import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.spells.ender.TeleportSpell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.HashMap;
@@ -148,4 +150,10 @@ public class ClientMagicData {
     public static void handlePlayerSyncedData(PlayerSyncedData playerSyncedData) {
         playerSyncedDataLookup.put(playerSyncedData.getServerPlayerId(), playerSyncedData);
     }
+
+    public static void handleClientboundTeleport(Vec3 pos1, Vec3 pos2) {
+        TeleportSpell.particleCloud(Minecraft.getInstance().player.level, Minecraft.getInstance().player, pos1);
+        TeleportSpell.particleCloud(Minecraft.getInstance().player.level, Minecraft.getInstance().player, pos2);
+    }
+
 }

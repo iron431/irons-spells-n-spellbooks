@@ -6,6 +6,7 @@ import com.example.testmod.gui.inscription_table.network.ServerboundInscriptionT
 import com.example.testmod.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import com.example.testmod.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import com.example.testmod.network.*;
+import com.example.testmod.network.spell.ClientboundTeleportParticles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -46,12 +47,6 @@ public class Messages {
                 .consumer(ClientboundAddMotionToPlayer::handle)
                 .add();
 
-        net.messageBuilder(ServerboundCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundCancelCast::new)
-                .encoder(ServerboundCancelCast::toBytes)
-                .consumer(ServerboundCancelCast::handle)
-                .add();
-
         net.messageBuilder(ClientboundSyncMana.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundSyncMana::new)
                 .encoder(ClientboundSyncMana::toBytes)
@@ -88,6 +83,12 @@ public class Messages {
                 .consumer(ClientboundSyncCooldowns::handle)
                 .add();
 
+        net.messageBuilder(ClientboundTeleportParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundTeleportParticles::new)
+                .encoder(ClientboundTeleportParticles::toBytes)
+                .consumer(ClientboundTeleportParticles::handle)
+                .add();
+
         net.messageBuilder(ServerboundSetSpellBookActiveIndex.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundSetSpellBookActiveIndex::new)
                 .encoder(ServerboundSetSpellBookActiveIndex::toBytes)
@@ -104,6 +105,12 @@ public class Messages {
                 .decoder(ServerboundInscriptionTableSelectSpell::new)
                 .encoder(ServerboundInscriptionTableSelectSpell::toBytes)
                 .consumer(ServerboundInscriptionTableSelectSpell::handle)
+                .add();
+
+        net.messageBuilder(ServerboundCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundCancelCast::new)
+                .encoder(ServerboundCancelCast::toBytes)
+                .consumer(ServerboundCancelCast::handle)
                 .add();
     }
 

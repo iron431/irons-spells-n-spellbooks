@@ -17,6 +17,7 @@ public class ClientboundAddMotionToPlayer {
         this.z = z;
         this.preserveMomentum = preserveMomentum;
     }
+
     public ClientboundAddMotionToPlayer(Vec3 motion, boolean preserveMomentum) {
         this.x = motion.x;
         this.y = motion.y;
