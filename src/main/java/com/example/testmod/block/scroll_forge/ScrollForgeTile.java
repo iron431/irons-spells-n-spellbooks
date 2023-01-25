@@ -2,16 +2,15 @@ package com.example.testmod.block.scroll_forge;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.gui.scroll_forge.ScrollForgeMenu;
-import com.example.testmod.item.Scroll;
-import com.example.testmod.item.SpellBook;
 import com.example.testmod.registries.BlockRegistry;
-import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -19,6 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-
 public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     private ScrollForgeMenu menu;
+
     private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -41,11 +41,17 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
         }
     };
 
-    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
+    private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
+
+    public ScrollForgeTile(BlockPos pWorldPosition, BlockState pBlockState) {
+        super(BlockRegistry.SCROLL_FORGE_TILE.get(), pWorldPosition, pBlockState);
+    }
 
     private void updateMenuSlots() {
-        if (menu != null)
+        if (menu != null) {
             menu.onSlotsChanged();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
     }
 
     public ItemStackHandler getItemHandler() {
@@ -54,10 +60,6 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
 
     public ItemStack getStackInSlot(int slot) {
         return itemHandler.getStackInSlot(slot);
-    }
-
-    public ScrollForgeTile(BlockPos pWorldPosition, BlockState pBlockState) {
-        super(BlockRegistry.SCROLL_FORGE_TILE.get(), pWorldPosition, pBlockState);
     }
 
     @Override
@@ -76,25 +78,38 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
         menu.setRecipeSpell(SpellType.getTypeFromValue(spellId));
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
-        //TestMod.LOGGER.debug("ScrollForgeTile: getting ItemHandler Capability");
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            //TestMod.LOGGER.debug("ScrollForgeTile: size: {}", itemHandler.getSlots());
+//    @Override
+//    public void onLoad() {
+//        super.onLoad();
+//        lazyItemHandler = LazyOptional.of(() -> itemHandler);
+//        TestMod.LOGGER.debug("ScrollForgeTile.chunkOnLoad: {}", itemHandler.getSlots());
+//
+//    }
 
-            return lazyItemHandler.cast();
+
+    public void drops() {
+        SimpleContainer simpleContainer
+                = new SimpleContainer(itemHandler.getSlots());
+        for (int i = 0; i < itemHandler.getSlots() - 1; i++) {
+            simpleContainer.setItem(i, itemHandler.getStackInSlot(i));
         }
 
-        return super.getCapability(cap, side);
+        Containers.dropContents(this.level, this.worldPosition, simpleContainer);
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
-        TestMod.LOGGER.debug("ScrollForgeTile.chunkOnLoad: {}", itemHandler.getSlots());
+    public void load(CompoundTag nbt) {
+        TestMod.LOGGER.debug("ScrollForgeTile.loadingFromNBT: {}", nbt);
+        super.load(nbt);
+        if (nbt.contains("inventory")) {
+            itemHandler.deserializeNBT(nbt.getCompound("inventory"));
+        }
+    }
 
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        lazyItemHandler.invalidate();
     }
 
     @Override
@@ -103,41 +118,50 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
         lazyItemHandler.invalidate();
     }
 
-
     @Override
     protected void saveAdditional(@Nonnull CompoundTag tag) {
+        TestMod.LOGGER.debug("saveAdditional tag:{}", tag);
         tag.put("inventory", itemHandler.serializeNBT());
-        super.saveAdditional(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         tag.put("inventory", itemHandler.serializeNBT());
-        super.saveAdditional(tag);
-
+        TestMod.LOGGER.debug("getUpdateTag tag:{}", tag);
         return tag;
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        var packet = ClientboundBlockEntityDataPacket.create(this);
+        TestMod.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());
+        return packet;
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        itemHandler.deserializeNBT(nbt.getCompound("inventory"));
-        TestMod.LOGGER.debug("ScrollForgeTile.loadingFromNBT: {}", itemHandler.getStackInSlot(0));
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        TestMod.LOGGER.debug("onDataPacket: pkt.getTag:{}", pkt.getTag());
+        handleUpdateTag(pkt.getTag());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
-    public void drops() {
-        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-        for (int i = 0; i < itemHandler.getSlots() - 1; i++) {
-            inventory.setItem(i, itemHandler.getStackInSlot(i));
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        TestMod.LOGGER.debug("handleUpdateTag: tag:{}", tag);
+        if (tag != null) {
+            load(tag);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return lazyItemHandler.cast();
         }
 
-        Containers.dropContents(this.level, this.worldPosition, inventory);
+        return super.getCapability(cap, side);
     }
 
 //    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, InscriptionTableTile pBlockEntity) {
