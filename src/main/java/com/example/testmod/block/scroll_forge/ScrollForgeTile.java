@@ -1,6 +1,5 @@
 package com.example.testmod.block.scroll_forge;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.gui.scroll_forge.ScrollForgeMenu;
 import com.example.testmod.registries.BlockRegistry;
 import com.example.testmod.spells.SpellType;
@@ -99,7 +98,7 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
 
     @Override
     public void load(CompoundTag nbt) {
-        TestMod.LOGGER.debug("ScrollForgeTile.loadingFromNBT: {}", nbt);
+        //TestMod.LOGGER.debug("ScrollForgeTile.loadingFromNBT: {}", nbt);
         super.load(nbt);
         if (nbt.contains("inventory")) {
             itemHandler.deserializeNBT(nbt.getCompound("inventory"));
@@ -120,7 +119,7 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
 
     @Override
     protected void saveAdditional(@Nonnull CompoundTag tag) {
-        TestMod.LOGGER.debug("saveAdditional tag:{}", tag);
+        //TestMod.LOGGER.debug("saveAdditional tag:{}", tag);
         tag.put("inventory", itemHandler.serializeNBT());
     }
 
@@ -128,27 +127,27 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         tag.put("inventory", itemHandler.serializeNBT());
-        TestMod.LOGGER.debug("getUpdateTag tag:{}", tag);
+        //TestMod.LOGGER.debug("getUpdateTag tag:{}", tag);
         return tag;
     }
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         var packet = ClientboundBlockEntityDataPacket.create(this);
-        TestMod.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());
+        //TestMod.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());
         return packet;
     }
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        TestMod.LOGGER.debug("onDataPacket: pkt.getTag:{}", pkt.getTag());
+        //TestMod.LOGGER.debug("onDataPacket: pkt.getTag:{}", pkt.getTag());
         handleUpdateTag(pkt.getTag());
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     @Override
     public void handleUpdateTag(CompoundTag tag) {
-        TestMod.LOGGER.debug("handleUpdateTag: tag:{}", tag);
+        //TestMod.LOGGER.debug("handleUpdateTag: tag:{}", tag);
         if (tag != null) {
             load(tag);
         }
