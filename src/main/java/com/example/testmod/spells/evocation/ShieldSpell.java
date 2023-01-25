@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -29,8 +30,8 @@ public class ShieldSpell extends AbstractSpell {
         super(SpellType.SHIELD_SPELL);
         this.level = level;
         this.manaCostPerLevel = 5;
-        this.baseSpellPower = 32;
-        this.spellPowerPerLevel = 10;
+        this.baseSpellPower = 0;
+        this.spellPowerPerLevel = 2;
         this.baseManaCost = 35;
         this.cooldown = 200;
         this.castTime = 20;
@@ -51,14 +52,22 @@ public class ShieldSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
-        ShieldEntity shield = new ShieldEntity(level);
+        ShieldEntity shield = new ShieldEntity(level, getShieldHP(entity));
         shield.setPos(entity.getEyePosition().add(entity.getForward().scale(5)));
-        shield.setXRot(entity.getXRot());
-        shield.setYRot(entity.getYRot());
+        shield.setRotation(entity.getXRot(), entity.getYRot());
         level.addFreshEntity(shield);
     }
 
-//    @Override
+    private float getShieldHP(LivingEntity caster) {
+        return 10 + getSpellPower(caster);
+    }
+
+    @Override
+    public MutableComponent getUniqueInfo() {
+        return Component.translatable("ui.testmod.hp", Utils.stringTruncation(getShieldHP(null), 1));
+    }
+
+    //    @Override
 //    public MutableComponent getUniqueInfo() {
 //        return Component.translatable("ui.testmod.distance", Utils.stringTruncation(getDistance(null), 1));
 //    }

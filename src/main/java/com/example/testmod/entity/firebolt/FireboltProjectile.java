@@ -98,16 +98,14 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        if (entityHitResult.getEntity() instanceof LivingEntity target) {
-            //TODO: deal with the damage
-            target.hurt(DamageSource.MAGIC, damage);
-            target.setSecondsOnFire(3);
-
-        }else{
+        var target = entityHitResult.getEntity();
+        //TODO: deal with the damage
+        target.hurt(DamageSource.MAGIC, damage);
+        target.setSecondsOnFire(3);
+        if ((target instanceof LivingEntity)) {
             serverSideImpactParticles();
         }
-
-        kill();
+        discard();
 
     }
 

@@ -20,6 +20,7 @@
 
   "ui.testmod.no_spell_book": "No SpellBook",
   "ui.testmod.no_selection": "Select a Spell",
+  "ui.testmod.ink_rarity_error": "Obtain higher quality ink",
   "ui.testmod.empty_slot": "Empty Slot",
   "ui.testmod.level": "Level %d",
   "ui.testmod.lvl": "Lvl:",
@@ -34,7 +35,8 @@
   "ui.testmod.damage": "%d Damage",
   "ui.testmod.distance": "%d Block Range",
   "ui.testmod.summon_count": "%d Summons",
-  "ui.testmod.ink_rarity_error": "Obtain higher quality ink",
+  "ui.testmod.hp": "%d HP",
+  "ui.testmod.effect_length": "%d Effect Length",
 
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",

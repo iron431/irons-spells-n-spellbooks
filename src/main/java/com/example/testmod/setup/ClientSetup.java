@@ -15,6 +15,7 @@ import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardModel;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardRenderer;
 import com.example.testmod.entity.mobs.summons.SpectralSteed;
 import com.example.testmod.entity.mobs.summons.horse.MagicHorseRenderer;
+import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.item.armor.WanderMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
@@ -83,7 +84,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FIRE_BREATH_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SIMPLE_WIZARD.get(), SimpleWizardRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SPECTRAL_STEED.get(), MagicHorseRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.SHIELD_ENTITY.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SHIELD_ENTITY.get(), ShieldRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
 

@@ -29,7 +29,7 @@ public class ShieldPart extends PartEntity<ShieldEntity> {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        parentEntity.hurt(pSource,pAmount);
+        parentEntity.takeDamage(pSource, pAmount, this.position());
         return false;
     }
 

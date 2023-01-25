@@ -4,6 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.effect.BloodSlashed;
 import com.example.testmod.entity.ShieldPart;
+import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,10 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BloodSlashProjectile extends Projectile{
+public class BloodSlashProjectile extends Projectile {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
     private static final double SPEED = 1d;
-    private static final int EXPIRE_TIME = 10 * 20;
+    private static final int EXPIRE_TIME = 4 * 20;
     public final int animationSeed;
     private final float maxRadius;
     private EntityDimensions dimensions;
@@ -95,7 +96,7 @@ public class BloodSlashProjectile extends Projectile{
     @Override
     public void tick() {
         super.tick();
-        if (age > EXPIRE_TIME) {
+        if (++age > EXPIRE_TIME) {
             discard();
             return;
         }
@@ -107,10 +108,14 @@ public class BloodSlashProjectile extends Projectile{
             if (hitresult.getType() == HitResult.Type.BLOCK) {
                 onHitBlock((BlockHitResult) hitresult);
             }
-            for ( Entity entity : level.getEntities(this, this.getBoundingBox()).stream().filter(target -> target != getOwner() && target instanceof LivingEntity && !victims.contains(target)).collect(Collectors.toSet())){
+            for (Entity entity : level.getEntities(this, this.getBoundingBox()).stream().filter(target -> target != getOwner() && !victims.contains(target)).collect(Collectors.toSet())) {
                 damageEntity(entity);
                 TestMod.LOGGER.info(entity.getName().getString());
                 MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY(), entity.getZ(), 50, 0, 0, 0, .5, true);
+                if (entity instanceof ShieldPart || entity instanceof ShieldEntity) {
+                    discard();
+                    return;
+                }
             }
             //spawnParticles();
         }
@@ -124,7 +129,6 @@ public class BloodSlashProjectile extends Projectile{
 
         setPos(position().add(getDeltaMovement()));
         spawnParticles();
-        age++;
     }
 
     public EntityDimensions getDimensions(Pose p_19721_) {
@@ -151,40 +155,40 @@ public class BloodSlashProjectile extends Projectile{
 //        Vec3 to = bbOld.getCenter().add(newWidth, halfHeight, newWidth);
 //        this.setBoundingBox(new AABB(from.x,from.y,from.z,to.x,to.y,to.z));
 //    }
-    @Override
-    protected void onHit(HitResult hitresult) {
-        if (hitresult.getType() == HitResult.Type.ENTITY) {
-            onHitEntity((EntityHitResult) hitresult);
-        } else if (hitresult.getType() == HitResult.Type.BLOCK) {
-            onHitBlock((BlockHitResult) hitresult);
-        }
-        double x = hitresult.getLocation().x;
-        double y = hitresult.getLocation().y;
-        double z = hitresult.getLocation().z;
-
-        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, x, y, z, 50, 0, 0, 0, .5, true);
-
-
-    }
+//    @Override
+//    protected void onHit(HitResult hitresult) {
+//        if (hitresult.getType() == HitResult.Type.ENTITY) {
+//            onHitEntity((EntityHitResult) hitresult);
+//        } else if (hitresult.getType() == HitResult.Type.BLOCK) {
+//            onHitBlock((BlockHitResult) hitresult);
+//        }
+//        double x = hitresult.getLocation().x;
+//        double y = hitresult.getLocation().y;
+//        double z = hitresult.getLocation().z;
+//
+//        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, x, y, z, 50, 0, 0, 0, .5, true);
+//
+//
+//    }
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        kill();
+        discard();
     }
 
-    @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
-        damageEntity(entityHitResult.getEntity());
-        if(entityHitResult.getEntity() instanceof ShieldPart)
-            kill();
-    }
+//    @Override
+//    protected void onHitEntity(EntityHitResult entityHitResult) {
+//        damageEntity(entityHitResult.getEntity());
+//
+//    }
 
     private void damageEntity(Entity entity) {
-        if(!victims.contains(entity)){
+        if (!victims.contains(entity)) {
             BloodSlashed.applyDamage(getEffectSource(), entity, damage);
             victims.add(entity);
         }
+
     }
 
     //https://forge.gemwire.uk/wiki/Particles

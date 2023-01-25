@@ -1,13 +1,18 @@
 package com.example.testmod.entity.shield;
 
+import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -17,29 +22,34 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
 
+import javax.annotation.Nullable;
+
 public class ShieldEntity extends Entity {
     protected final ShieldPart[] subEntities;
     protected final Vec3[] subPositions;
     private static final EntityDataAccessor<Float> DATA_HEALTH_ID = SynchedEntityData.defineId(ShieldEntity.class, EntityDataSerializers.FLOAT);
-
+    protected final int LIFETIME;
     protected int width;
     protected int height;
+    protected int age;
 
     public ShieldEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        width = 3;
-        height = 6;
+        width = 4;
+        height = 4;
         subEntities = new ShieldPart[width * height];
         subPositions = new Vec3[width * height];
-        this.setHealth(10);
+        this.setHealth(100);
         //this.setXRot(45);
         //this.setYRot(45);
+        LIFETIME = 20 * 20;
         createShield();
 
     }
 
-    public ShieldEntity(Level level) {
+    public ShieldEntity(Level level, float health) {
         this(EntityRegistry.SHIELD_ENTITY.get(), level);
+        this.setHealth(health);
     }
 
     protected void createShield() {
@@ -52,19 +62,31 @@ public class ShieldEntity extends Entity {
         }
     }
 
-    @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public void setRotation(float x, float y) {
+        this.setXRot(x);
+        this.xRotO = x;
+        this.setYRot(y);
+        this.yRotO = y;
+    }
+
+    public void takeDamage(DamageSource source, float amount, @Nullable Vec3 location){
         if (!this.isInvulnerableTo(source)) {
             this.setHealth(this.getHealth() - amount);
         }
-        return false;
+        if (!level.isClientSide && location != null)
+            MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, location.x,location.y, location.z, 30, .1, .1, .1, .5, false);
     }
 
     @Override
     public void tick() {
-        if(getHealth()<=0){
+        if (getHealth() <= 0) {
             destroy();
-        }else{
+        } else if (++age > LIFETIME) {
+            if (!this.level.isClientSide) {
+                level.playSound(null, getX(), getY(), getZ(), SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.NEUTRAL, 1, 1.4f);
+            }
+            discard();
+        } else {
             for (int i = 0; i < subEntities.length; i++) {
                 var subEntity = subEntities[i];
 
@@ -82,7 +104,11 @@ public class ShieldEntity extends Entity {
         }
 
     }
-    protected void destroy(){
+
+    protected void destroy() {
+        if (!this.level.isClientSide) {
+            level.playSound(null, getX(), getY(), getZ(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 2, .65f);
+        }
         kill();
     }
 
