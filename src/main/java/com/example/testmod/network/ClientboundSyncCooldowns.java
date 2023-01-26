@@ -50,6 +50,8 @@ public class ClientboundSyncCooldowns {
                 //TestMod.LOGGER.debug("ClientboundSyncCooldowns {} {} {}", k, v.getSpellCooldown(), v.getCooldownRemaining());
                 ClientMagicData.getCooldowns().addCooldown(k, v.getSpellCooldown(), v.getCooldownRemaining());
             });
+            ClientMagicData.resetClientCastState();
+
         });
         return true;
     }

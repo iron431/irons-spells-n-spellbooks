@@ -57,6 +57,16 @@ public class ClientMagicData {
         return 1 - (castDurationRemaining / (float) castDuration);
     }
 
+    public static void resetClientCastState(){
+        isCasting = false;
+        castDurationRemaining = 0;
+        castDuration = 0;
+        castType = CastType.NONE;
+
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem()) {
+            Minecraft.getInstance().player.stopUsingItem();
+        }
+    }
 
     /**
      * SPIN ATTACK

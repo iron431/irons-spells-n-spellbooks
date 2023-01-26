@@ -2,7 +2,6 @@ package com.example.testmod.network;
 
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.CastType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -42,13 +41,7 @@ public class ClientboundUpdateCastingState {
             //TestMod.LOGGER.debug("PacketCastingState: spellId: " + spellId + ", castTime: " + castTime + ", castFinished:" + castFinished);
 
             if (this.castFinished) {
-                ClientMagicData.castDurationRemaining = 0;
-                ClientMagicData.castDuration = 0;
-                ClientMagicData.isCasting = false;
-                ClientMagicData.castType = CastType.NONE;
-                if (Minecraft.getInstance().player != null) {
-                    Minecraft.getInstance().player.stopUsingItem();
-                }
+                ClientMagicData.resetClientCastState();
             } else {
                 ClientMagicData.castDurationRemaining = castTime;
                 ClientMagicData.castDuration = castTime;

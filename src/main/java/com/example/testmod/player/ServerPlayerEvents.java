@@ -69,10 +69,26 @@ public class ServerPlayerEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            PlayerMagicData.getPlayerMagicData(serverPlayer).resetCastingState();
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         TestMod.LOGGER.debug("onPlayerCloned: {}", event.getEntity().getName().getString());
+    }
+
+    @SubscribeEvent
+    public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        TestMod.LOGGER.debug("PlayerChangedDimension: {}", event.getEntity().getName().getString());
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            TestMod.LOGGER.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
+            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            Messages.sendToPlayer(playerMagicData.getPlayerCooldowns().getClientSyncCooldownsMessage(), serverPlayer);
+        }
     }
 
     @SubscribeEvent

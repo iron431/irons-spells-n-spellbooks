@@ -1,6 +1,7 @@
 package com.example.testmod.spells.ice;
 
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.spells.AbstractSpell;
@@ -32,6 +33,7 @@ public class ConeOfColdSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        TestMod.LOGGER.debug("ConeOfColdSpell.onCast");
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
             playerMagicData.cone.setDealDamageActive();
         } else{
