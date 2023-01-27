@@ -1,8 +1,6 @@
 package com.example.testmod.entity.shield;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
-import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -16,7 +14,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 
 public class ShieldRenderer extends EntityRenderer<ShieldEntity> {
     //    private static final ResourceLocation[] TEXTURES = {
@@ -27,9 +24,10 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> {
 //            TestMod.id("textures/entity/blood_slash/blood_slash_5.png"),
 //            TestMod.id("textures/entity/blood_slash/blood_slash_6.png")
 //    };
-    private static ResourceLocation TEXTURE = TestMod.id("textures/entity/shield.png");
+    private static ResourceLocation TEXTURE = TestMod.id("textures/entity//shield/shield_overlay.png");
     //private static ResourceLocation TEXTURE = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
     private final ShieldModel model;
+
     public ShieldRenderer(Context context) {
         super(context);
         this.model = new ShieldModel(context.bakeLayer(ShieldModel.LAYER_LOCATION));
@@ -48,9 +46,9 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> {
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         float f = (entity.tickCount + partialTicks) * .02f;
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity), shittyNoise(1.2f * f), shittyNoise(f + 456)));
-        float width = entity.width * .5f;
-        poseStack.scale(width,width,width);
-        model.renderToBuffer(poseStack,consumer,LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0.0F, 0.2F, 1.0F, 0.5F);
+        float width = entity.width * .65f;
+        poseStack.scale(width, width, width);
+        model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.15F);
 //        float pixelScale = .25f;
 //        float halfWidth = width * .65f;
 //        //old color: 125, 0, 10

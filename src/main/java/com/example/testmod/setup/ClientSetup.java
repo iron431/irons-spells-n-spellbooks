@@ -58,8 +58,8 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
-        GeoArmorRenderer.registerArmorRenderer(WizardArmorItem.class, new WizardArmorRenderer());
-        GeoArmorRenderer.registerArmorRenderer(WanderMagicianArmorItem.class, new WanderingMagicianRenderer());
+        GeoArmorRenderer.registerArmorRenderer(WizardArmorItem.class, WizardArmorRenderer::new);
+        GeoArmorRenderer.registerArmorRenderer(WanderMagicianArmorItem.class, WanderingMagicianRenderer::new);
 
         TestMod.LOGGER.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
 
