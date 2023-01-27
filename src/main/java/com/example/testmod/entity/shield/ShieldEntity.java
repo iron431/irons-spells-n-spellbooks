@@ -3,6 +3,7 @@ package com.example.testmod.entity.shield;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.registries.SoundRegistry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -73,12 +74,15 @@ public class ShieldEntity extends Entity {
         this.yRotO = y;
     }
 
-    public void takeDamage(DamageSource source, float amount, @Nullable Vec3 location){
+    public void takeDamage(DamageSource source, float amount, @Nullable Vec3 location) {
         if (!this.isInvulnerableTo(source)) {
             this.setHealth(this.getHealth() - amount);
+            if (!level.isClientSide && location != null) {
+                MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, location.x, location.y, location.z, 30, .1, .1, .1, .5, false);
+                level.playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, .8f, 1f);
+            }
         }
-        if (!level.isClientSide && location != null)
-            MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, location.x,location.y, location.z, 30, .1, .1, .1, .5, false);
+
     }
 
     @Override
@@ -175,7 +179,7 @@ public class ShieldEntity extends Entity {
         return new ClientboundAddEntityPacket(this);
     }
 
-    public List<VoxelShape> getVoxels(){
+    public List<VoxelShape> getVoxels() {
         List<VoxelShape> voxels = new ArrayList<>();
         for (ShieldPart shieldPart : subEntities)
             voxels.add(Shapes.create(shieldPart.getBoundingBox()));

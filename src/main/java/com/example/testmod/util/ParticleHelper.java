@@ -1,4 +1,4 @@
-package com.example.testmod.particle;
+package com.example.testmod.util;
 
 import com.example.testmod.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;

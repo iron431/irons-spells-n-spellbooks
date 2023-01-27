@@ -1,7 +1,7 @@
 package com.example.testmod.block;
 
 import com.example.testmod.capabilities.magic.MagicManager;
-import com.example.testmod.particle.ParticleHelper;
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.sounds.SoundEvents;

@@ -1,5 +1,6 @@
 package com.example.testmod.particle;
 
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;

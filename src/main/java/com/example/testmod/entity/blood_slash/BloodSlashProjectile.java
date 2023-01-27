@@ -5,17 +5,15 @@ import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.effect.BloodSlashed;
 import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.entity.shield.ShieldEntity;
-import com.example.testmod.particle.ParticleHelper;
+import com.example.testmod.util.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 

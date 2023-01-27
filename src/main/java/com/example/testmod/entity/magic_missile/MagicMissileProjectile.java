@@ -1,7 +1,7 @@
 package com.example.testmod.entity.magic_missile;
 
 import com.example.testmod.capabilities.magic.MagicManager;
-import com.example.testmod.particle.ParticleHelper;
+import com.example.testmod.util.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;

@@ -1,13 +1,11 @@
 package com.example.testmod.particle;
 
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.Random;
 
 public class FireParticle extends TextureSheetParticle {
     private final SpriteSet sprites;

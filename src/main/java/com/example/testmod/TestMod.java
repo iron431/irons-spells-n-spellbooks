@@ -53,6 +53,7 @@ public class TestMod {
         LootRegistry.register(modEventBus);
         MobEffectRegistry.register(modEventBus);
         ParticleRegistry.register(modEventBus);
+        SoundRegistry.register(modEventBus);
 
 
         modEventBus.addListener(this::clientSetup);
