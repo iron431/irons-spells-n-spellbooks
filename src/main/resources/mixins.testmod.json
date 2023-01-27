@@ -10,7 +10,8 @@
     "LocalPlayerMixin",
     "SpinAttackEffectLayerMixin",
     "SwordItemMixin",
-    "TridentItemMixin"
+    "TridentItemMixin",
+    "ParticleMixin"
   ],
   "client": [],
   "injectors": {

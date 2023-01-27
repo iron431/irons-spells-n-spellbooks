@@ -1,5 +1,7 @@
 package com.example.testmod.entity;
 
+import com.example.testmod.entity.shield.ShieldEntity;
+import com.example.testmod.util.Utils;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -158,13 +160,15 @@ public abstract class AbstractConeProjectile extends Projectile {
         }
 
         return collisions.stream().filter(target ->
-                target != getOwner() && target instanceof LivingEntity && hasLineOfSightOnlyClip(this, target)
+                target != getOwner() && target instanceof LivingEntity && hasLineOfSight(this, target)
         ).collect(Collectors.toSet());
     }
 
-    protected static boolean hasLineOfSightOnlyClip(Entity start, Entity target) {
+    protected static boolean hasLineOfSight(Entity start, Entity target) {
         Vec3 vec3 = new Vec3(start.getX(), start.getEyeY(), start.getZ());
         Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
-        return start.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
+
+        boolean isShieldBlockingLOS = Utils.raycastForEntityOfClass(start.level, start, vec3, vec31, false, ShieldEntity.class).getType() == HitResult.Type.ENTITY;
+        return !isShieldBlockingLOS && start.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
     }
 }

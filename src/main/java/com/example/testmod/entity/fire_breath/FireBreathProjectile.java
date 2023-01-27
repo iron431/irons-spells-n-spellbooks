@@ -2,8 +2,10 @@ package com.example.testmod.entity.fire_breath;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractConeProjectile;
+import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.particle.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
@@ -37,10 +39,14 @@ public class FireBreathProjectile extends AbstractConeProjectile {
                     Vec3 cast = getOwner().getLookAngle().normalize().xRot(level.random.nextFloat() * range * 2 - range).yRot(level.random.nextFloat() * range * 2 - range);
                     HitResult hitResult = level.clip(new ClipContext(getOwner().getEyePosition(), getOwner().getEyePosition().add(cast.scale(10)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     if (hitResult.getType() == HitResult.Type.BLOCK) {
-                        Vec3 pos = hitResult.getLocation().subtract(cast.scale(.5));
-                        BlockPos blockPos = new BlockPos(pos.x, pos.y, pos.z);
-                        if (level.getBlockState(blockPos).isAir())
-                            level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level, blockPos));
+                        HitResult shieldResult = Utils.raycastForEntityOfClass(level, this, getOwner().getEyePosition(), hitResult.getLocation(), false, ShieldEntity.class);
+                        if (shieldResult.getType() == HitResult.Type.MISS) {
+                            Vec3 pos = hitResult.getLocation().subtract(cast.scale(.5));
+                            BlockPos blockPos = new BlockPos(pos.x, pos.y, pos.z);
+                            if (level.getBlockState(blockPos).isAir())
+                                level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level, blockPos));
+                        }
+
                     }
                 }
             }

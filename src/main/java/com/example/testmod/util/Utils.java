@@ -1,11 +1,13 @@
 package com.example.testmod.util;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.scroll.ScrollData;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +21,9 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.entity.PartEntity;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -138,40 +142,65 @@ public class Utils {
         return level.clip(new ClipContext(pos, dest, ClipContext.Block.COLLIDER, clipContext, entity));
     }
 
-    public static EntityHitResult getEntityIntersecting(Entity entity, Vec3 start, Vec3 end) {
-
-        Vec3 hitPos = entity.getBoundingBox().clip(start, end).orElse(null);
+    public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end) {
+        Vec3 hitPos = null;
+        if (entity.isMultipartEntity()) {
+            for (PartEntity p : entity.getParts()) {
+                var hit = p.getBoundingBox().clip(start, end).orElse(null);
+                if (hit != null) {
+                    hitPos = hit;
+                    break;
+                }
+            }
+        } else {
+            hitPos = entity.getBoundingBox().clip(start, end).orElse(null);
+        }
         if (hitPos != null)
             return new EntityHitResult(entity, hitPos);
         else
-            return null;
+            return BlockHitResult.miss(end, Direction.UP, new BlockPos(end));
 
     }
 
-    public static EntityHitResult getTargetEntity(Level level, LivingEntity entity, Vec3 start, Vec3 end) {
-        AABB range = entity.getBoundingBox().expandTowards(end.subtract(start));
-        //TestMod.LOGGER.debug("Utils.getTargetEntity.rangeStart: {}", new Vec3(range.minX, range.minY, range.minZ));
-        //TestMod.LOGGER.debug("Utils.getTargetEntity.rangeEnd: {}", new Vec3(range.maxX, range.maxY, range.maxZ));
+    public static HitResult raycastForEntity(Level level, Entity originEntity, float distance, boolean checkForBlocks) {
+        Vec3 start = originEntity.getEyePosition();
+        Vec3 end = originEntity.getLookAngle().normalize().scale(distance).add(start);
 
+        return raycastForEntity(level, originEntity, start, end, checkForBlocks);
+    }
 
-        List<EntityHitResult> hits = new ArrayList<>();
-        //TestMod.LOGGER.debug("Utils.getTargetEntity.foundEntityCount: {}",level.getEntities(player, range).size());
+    public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks) {
 
-        for (Entity target : level.getEntities(entity, range)) {
-            EntityHitResult hit = getEntityIntersecting(target, start, end);
-            if (hit != null)
+        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, null);
+    }
+
+    public static HitResult raycastForEntityOfClass(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Class<? extends Entity> c) {
+
+        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, c);
+    }
+
+    private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, @Nullable Class<? extends Entity> c) {
+        AABB range = originEntity.getBoundingBox().expandTowards(end.subtract(start));
+
+        if (checkForBlocks) {
+            BlockHitResult blockHitResult = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity));
+            end = blockHitResult.getLocation();
+        }
+
+        List<HitResult> hits = new ArrayList<>();
+        List<? extends Entity> entities = c == null ? level.getEntities(originEntity, range) : level.getEntitiesOfClass(c, range);
+        for (Entity target : entities) {
+            HitResult hit = checkEntityIntersecting(target, start, end);
+            if (hit.getType() != HitResult.Type.MISS)
                 hits.add(hit);
         }
+
         if (hits.size() > 0) {
             hits.sort((o1, o2) -> (int) (o1.getLocation().distanceToSqr(start) - o2.getLocation().distanceToSqr(start)));
             return hits.get(0);
         } else {
-            return null;
+            return BlockHitResult.miss(end, Direction.UP, new BlockPos(end));
         }
     }
 
-    public static boolean LineOfSightBlockedByShield(Level level, LivingEntity entity, Vec3 start, Vec3 end){
-        AABB range = entity.getBoundingBox().expandTowards(end.subtract(start));
-return false;
-    }
 }

@@ -20,9 +20,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShieldEntity extends Entity {
     protected final ShieldPart[] subEntities;
@@ -35,8 +39,8 @@ public class ShieldEntity extends Entity {
 
     public ShieldEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        width = 4;
-        height = 4;
+        width = 3;
+        height = 3;
         subEntities = new ShieldPart[width * height];
         subPositions = new Vec3[width * height];
         this.setHealth(100);
@@ -169,5 +173,12 @@ public class ShieldEntity extends Entity {
     public Packet<?> getAddEntityPacket() {
         //TODO: fill this out with real info
         return new ClientboundAddEntityPacket(this);
+    }
+
+    public List<VoxelShape> getVoxels(){
+        List<VoxelShape> voxels = new ArrayList<>();
+        for (ShieldPart shieldPart : subEntities)
+            voxels.add(Shapes.create(shieldPart.getBoundingBox()));
+        return voxels;
     }
 }

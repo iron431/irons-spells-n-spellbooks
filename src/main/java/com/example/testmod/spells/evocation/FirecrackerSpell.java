@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
@@ -39,12 +39,8 @@ public class FirecrackerSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         Vec3 shootAngle = entity.getLookAngle().normalize();
         float speed = 2.5f;
-        Vec3 hitPos = Utils.getTargetBlock(world, entity, ClipContext.Fluid.NONE, getRange(entity)).getLocation();
-        EntityHitResult entityHit = Utils.getTargetEntity(world, entity, entity.getEyePosition(), hitPos);
-        if (entityHit != null) {
-            hitPos = entityHit.getLocation();
-            //TestMod.LOGGER.debug("FirecrackerSpell.onCast.raycastFoundEntity");
-        }
+
+        Vec3 hitPos = Utils.raycastForEntity(world, entity, getRange(entity), true).getLocation();
         Vec3 spawn = hitPos.subtract(shootAngle.scale(.5f));
 
         HitscanFireworkRocketEntity firework = new HitscanFireworkRocketEntity(world, randomFireworkRocket(), entity, spawn.x, spawn.y, spawn.z, true, getDamage(entity));
