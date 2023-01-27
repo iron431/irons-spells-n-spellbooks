@@ -1,6 +1,8 @@
 package com.example.testmod.entity.shield;
 
 import com.example.testmod.TestMod;
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -12,25 +14,28 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 
-public class ShieldRenderer extends EntityRenderer<ShieldEntity> {
-    //    private static final ResourceLocation[] TEXTURES = {
-//            TestMod.id("textures/entity/blood_slash/blood_slash_1.png"),
-//            TestMod.id("textures/entity/blood_slash/blood_slash_2.png"),
-//            TestMod.id("textures/entity/blood_slash/blood_slash_3.png"),
-//            TestMod.id("textures/entity/blood_slash/blood_slash_4.png"),
-//            TestMod.id("textures/entity/blood_slash/blood_slash_5.png"),
-//            TestMod.id("textures/entity/blood_slash/blood_slash_6.png")
-//    };
-    private static ResourceLocation TEXTURE = TestMod.id("textures/entity//shield/shield_overlay.png");
+import java.util.ArrayList;
+import java.util.List;
+
+public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements RenderLayerParent<ShieldEntity, ShieldModel> {
+
+    private static ResourceLocation TEXTURE = TestMod.id("textures/entity/shield/shield_overlay.png");
+    private static ResourceLocation SIGIL_TEXTURE = TestMod.id("textures/block/scroll_forge_sigil.png");
     //private static ResourceLocation TEXTURE = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
     private final ShieldModel model;
+    protected final List<RenderLayer<ShieldEntity, ShieldModel>> layers = new ArrayList<>();
 
     public ShieldRenderer(Context context) {
         super(context);
         this.model = new ShieldModel(context.bakeLayer(ShieldModel.LAYER_LOCATION));
+        layers.add(new ShieldTrimLayer(this, context));
     }
 
     @Override
@@ -44,25 +49,39 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> {
         poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot()));
 
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        float f = (entity.tickCount + partialTicks) * .02f;
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity), shittyNoise(1.2f * f), shittyNoise(f + 456)));
-        float width = entity.width * .65f;
-        poseStack.scale(width, width, width);
-        model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.15F);
-//        float pixelScale = .25f;
-//        float halfWidth = width * .65f;
-//        //old color: 125, 0, 10
-//        consumer.vertex(poseMatrix, -halfWidth, -halfWidth, 0).color(0, 156, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-//        consumer.vertex(poseMatrix, halfWidth, -halfWidth, 0).color(0, 156, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-//        consumer.vertex(poseMatrix, halfWidth, halfWidth, 0).color(0, 156, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-//        consumer.vertex(poseMatrix, -halfWidth, halfWidth, 0).color(0, 156, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        poseStack.popPose();
+        var offset = getEnergySwirlOffset(entity, partialTicks);
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity), offset.x, offset.y));
 
+        float width = entity.width * .75f;
+        poseStack.scale(width, width, width);
+        RenderSystem.disableBlend();
+        model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0.65F, 0.65F, 0.65F, 1.0F);
+
+
+        for (RenderLayer<ShieldEntity, ShieldModel> layer : layers) {
+            layer.render(poseStack, bufferSource, light, entity, 0f, 0f, 0f, 0f, 0f, 0f);
+        }
+        
+        poseStack.popPose();
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    private float shittyNoise(float f) {
+    private static float shittyNoise(float f) {
         return (float) (Math.sin(f / 4) + 2 * Math.sin(f / 3) + 3 * Math.sin(f / 2) + 4 * Math.sin(f)) * .25f;
+    }
+
+    public static Vec2 getEnergySwirlOffset(ShieldEntity entity, float partialTicks, int offset) {
+        float f = (entity.tickCount + partialTicks) * .02f;
+        return new Vec2(shittyNoise(1.2f * f + offset), shittyNoise(f + 456 + offset));
+    }
+
+    public static Vec2 getEnergySwirlOffset(ShieldEntity entity, float partialTicks) {
+        return getEnergySwirlOffset(entity, partialTicks, 0);
+    }
+
+    @Override
+    public ShieldModel getModel() {
+        return this.model;
     }
 
     @Override

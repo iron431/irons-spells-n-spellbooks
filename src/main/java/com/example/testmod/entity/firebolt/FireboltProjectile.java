@@ -102,7 +102,7 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
         //TODO: deal with the damage
         target.hurt(DamageSource.MAGIC, damage);
         target.setSecondsOnFire(3);
-        if ((target instanceof LivingEntity)) {
+        if (!(target instanceof LivingEntity)) {
             serverSideImpactParticles();
         }
         discard();
