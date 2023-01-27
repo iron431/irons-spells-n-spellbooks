@@ -15,6 +15,7 @@ import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardModel;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardRenderer;
 import com.example.testmod.entity.mobs.summons.SpectralSteed;
 import com.example.testmod.entity.mobs.summons.horse.MagicHorseRenderer;
+import com.example.testmod.entity.shield.ShieldModel;
 import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.item.armor.WanderMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
@@ -51,6 +52,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(SimpleWizardModel.SIMPLE_WIZARD_LAYER, SimpleWizardModel::createBodyLayer);
+        event.registerLayerDefinition(ShieldModel.LAYER_LOCATION, ShieldModel::createBodyLayer);
         event.registerLayerDefinition(AngelWingsModel.ANGEL_WINGS_LAYER, AngelWingsModel::createLayer);
     }
 

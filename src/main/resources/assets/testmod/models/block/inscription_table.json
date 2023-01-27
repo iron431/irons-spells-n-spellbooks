@@ -7,7 +7,7 @@
 		"1": "testmod:block/inscription_table_top",
 		"2": "testmod:block/inscription_table_book",
 		"3": "testmod:block/inscription_table_ink",
-		"particle": "testmod:block/inscription_table_side"
+		"particle": "testmod:block/inscription_table_top"
 	},
 	"elements": [
 		{

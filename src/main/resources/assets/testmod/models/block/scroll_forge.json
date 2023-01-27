@@ -1,5 +1,7 @@
 {
 	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"ambientocclusion": false,
 	"textures": {
 		"0": "testmod:block/scroll_forge_bottom",
 		"1": "testmod:block/scroll_forge_side",
