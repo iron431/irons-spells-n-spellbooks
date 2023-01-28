@@ -4,9 +4,7 @@ import com.example.testmod.spells.SpellRarity;
 import com.example.testmod.spells.SpellType;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class CommonConfigs {
@@ -18,12 +16,10 @@ public class CommonConfigs {
 
     //https://forge.gemwire.uk/wiki/Configs
 
-    private static final Map<SpellType, SpellConfigParameters> SPELL_CONFIGS;
-    private static final Queue<DelayedConfigConstructor> CONFIG_QUEUE;
+    private static final Map<SpellType, SpellConfigParameters> SPELL_CONFIGS = new HashMap<>();
+    private static final Queue<DelayedConfigConstructor> CONFIG_LIST = new LinkedList<>();
 
     static {
-        SPELL_CONFIGS = new HashMap<>();
-        CONFIG_QUEUE = new LinkedList<>();
         BUILDER.comment("Individual Spell Configurations.");
 
         //TODO: Fill out all spells with real values
@@ -51,9 +47,9 @@ public class CommonConfigs {
 
         BUILDER.push(createTitle(spell.getId()));
 
-        CONFIG_QUEUE.add(new DelayedConfigConstructor(
+        CONFIG_LIST.add(new DelayedConfigConstructor(
                 BUILDER.define("MaxLevel", defaultMaxLevel),
-                BUILDER.define("MinRarity", defaultMinRarity),
+                BUILDER.defineEnum("MinRarity", defaultMinRarity),
                 spell
         ));
 
@@ -69,8 +65,8 @@ public class CommonConfigs {
     }
 
     public static void resolveQueue() {
-        while (!CONFIG_QUEUE.isEmpty())
-            CONFIG_QUEUE.remove().construct();
+        while (!CONFIG_LIST.isEmpty())
+            CONFIG_LIST.remove().construct();
     }
 
     //TODO: is this being static going to fuck shit up? (seems to work fine...)
