@@ -11,6 +11,7 @@ import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.mobs.summons.SpectralSteed;
 import com.example.testmod.entity.shield.ShieldEntity;
+import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -81,8 +82,14 @@ public class EntityRegistry {
                     .build(new ResourceLocation(TestMod.MODID, "spectral_steed").toString()));
 
     public static final RegistryObject<EntityType<ShieldEntity>> SHIELD_ENTITY =
-            ENTITIES.register("shield_entity", () -> EntityType.Builder.<ShieldEntity>of(ShieldEntity::new, MobCategory.MISC)
+            ENTITIES.register("shield", () -> EntityType.Builder.<ShieldEntity>of(ShieldEntity::new, MobCategory.MISC)
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(TestMod.MODID, "shield_entity").toString()));
+                    .build(new ResourceLocation(TestMod.MODID, "shield").toString()));
+
+    public static final RegistryObject<EntityType<WallOfFireEntity>> WALL_OF_FIRE_ENTITY =
+            ENTITIES.register("wall_of_fire", () -> EntityType.Builder.<WallOfFireEntity>of(WallOfFireEntity::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "wall_of_fire").toString()));
 }

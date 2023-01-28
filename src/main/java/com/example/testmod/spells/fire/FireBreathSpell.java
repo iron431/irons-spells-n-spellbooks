@@ -27,7 +27,7 @@ public class FireBreathSpell extends AbstractSpell {
 
     @Override
     public void onCastComplete(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        playerMagicData.discardCone();
+        playerMagicData.discardCastingEntity();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class FireBreathSpell extends AbstractSpell {
             fireBreathProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
             fireBreathProjectile.setDamage(getSpellPower(entity));
             world.addFreshEntity(fireBreathProjectile);
-            playerMagicData.discardCone();
+            playerMagicData.discardCastingEntity();
             playerMagicData.castingEntity = fireBreathProjectile;
         }
     }

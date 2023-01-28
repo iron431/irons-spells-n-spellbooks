@@ -1,6 +1,5 @@
 package com.example.testmod.entity;
 
-import com.example.testmod.entity.shield.ShieldEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -8,13 +7,13 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraftforge.entity.PartEntity;
 
-public class ShieldPart extends PartEntity<ShieldEntity> {
+public class ShieldPart extends PartEntity<AbstractShieldEntity> {
 
-    public final ShieldEntity parentEntity;
+    public final AbstractShieldEntity parentEntity;
     public final String name;
     private final EntityDimensions size;
 
-    public ShieldPart(ShieldEntity shieldEntity, String name, float scaleX, float scaleY) {
+    public ShieldPart(AbstractShieldEntity shieldEntity, String name, float scaleX, float scaleY) {
         super(shieldEntity);
         this.size = EntityDimensions.scalable(scaleX, scaleY);
         this.refreshDimensions();

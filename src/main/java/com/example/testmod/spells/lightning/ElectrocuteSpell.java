@@ -34,7 +34,7 @@ public class ElectrocuteSpell extends AbstractSpell {
             electrocuteProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
             electrocuteProjectile.setDamage(getSpellPower(entity));
             world.addFreshEntity(electrocuteProjectile);
-            playerMagicData.discardCone();
+            playerMagicData.discardCastingEntity();
             playerMagicData.castingEntity = electrocuteProjectile;
         }
     }

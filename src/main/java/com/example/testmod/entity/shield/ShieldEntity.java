@@ -1,38 +1,26 @@
 package com.example.testmod.entity.shield;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.entity.AbstractShieldEntity;
 import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.SoundRegistry;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
-public class ShieldEntity extends Entity {
-    protected final ShieldPart[] subEntities;
+public class ShieldEntity extends AbstractShieldEntity {
+    protected ShieldPart[] subEntities;
     protected final Vec3[] subPositions;
-    private static final EntityDataAccessor<Float> DATA_HEALTH_ID = SynchedEntityData.defineId(ShieldEntity.class, EntityDataSerializers.FLOAT);
     protected final int LIFETIME;
     protected int width;
     protected int height;
@@ -44,7 +32,7 @@ public class ShieldEntity extends Entity {
         height = 3;
         subEntities = new ShieldPart[width * height];
         subPositions = new Vec3[width * height];
-        this.setHealth(100);
+        this.setHealth(10);
         //this.setXRot(45);
         //this.setYRot(45);
         LIFETIME = 20 * 20;
@@ -57,7 +45,9 @@ public class ShieldEntity extends Entity {
         this.setHealth(health);
     }
 
+    @Override
     protected void createShield() {
+        TestMod.LOGGER.debug("ShieldEntity.createShield");
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int i = x * height + y;
@@ -74,6 +64,7 @@ public class ShieldEntity extends Entity {
         this.yRotO = y;
     }
 
+    @Override
     public void takeDamage(DamageSource source, float amount, @Nullable Vec3 location) {
         if (!this.isInvulnerableTo(source)) {
             this.setHealth(this.getHealth() - amount);
@@ -82,7 +73,6 @@ public class ShieldEntity extends Entity {
                 level.playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, .8f, 1f);
             }
         }
-
     }
 
     @Override
@@ -110,19 +100,9 @@ public class ShieldEntity extends Entity {
                 subEntity.zOld = pos.z;
             }
         }
+        TestMod.LOGGER.debug("ShieldEntity.tick: sub entities size: {}", subEntities.length);
 
-    }
 
-    protected void destroy() {
-        if (!this.level.isClientSide) {
-            level.playSound(null, getX(), getY(), getZ(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 2, .65f);
-        }
-        kill();
-    }
-
-    @Override
-    public boolean isMultipartEntity() {
-        return true;
     }
 
     @Override
@@ -131,58 +111,10 @@ public class ShieldEntity extends Entity {
     }
 
     @Override
-    public void setId(int id) {
-        super.setId(id);
-        for (int i = 0; i < this.subEntities.length; i++) // Forge: Fix MC-158205: Set part ids to successors of parent mob id
-            this.subEntities[i].setId(id + i + 1);
-    }
-
-    public float getHealth() {
-        return this.entityData.get(DATA_HEALTH_ID);
-    }
-
-    public void setHealth(float pHealth) {
-        this.entityData.set(DATA_HEALTH_ID, pHealth);
-    }
-
-    @Override
-    public boolean canCollideWith(Entity pEntity) {
-        return false;
-    }
-
-    @Override
-    public boolean canBeCollidedWith() {
-        return false;
-    }
-
-    @Override
-    protected void defineSynchedData() {
-        this.entityData.define(DATA_HEALTH_ID, 1.0F);
-    }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-        if (pCompound.contains("Health", 99)) {
-            this.setHealth(pCompound.getFloat("Health"));
+    protected void destroy() {
+        if (!this.level.isClientSide) {
+            level.playSound(null, getX(), getY(), getZ(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 2, .65f);
         }
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
-        pCompound.putFloat("Health", this.getHealth());
-
-    }
-
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        //TODO: fill this out with real info
-        return new ClientboundAddEntityPacket(this);
-    }
-
-    public List<VoxelShape> getVoxels() {
-        List<VoxelShape> voxels = new ArrayList<>();
-        for (ShieldPart shieldPart : subEntities)
-            voxels.add(Shapes.create(shieldPart.getBoundingBox()));
-        return voxels;
+        super.destroy();
     }
 }

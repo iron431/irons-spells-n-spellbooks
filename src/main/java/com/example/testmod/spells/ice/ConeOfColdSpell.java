@@ -29,7 +29,7 @@ public class ConeOfColdSpell extends AbstractSpell {
     @Override
     public void onCastComplete(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         //TestMod.LOGGER.debug("ConeOfColdSpell.onCast: {}, {}, {}", (playerMagicData.cone == null), playerMagicData.isCasting(), playerMagicData.getCastDurationRemaining());
-        playerMagicData.discardCone();
+        playerMagicData.discardCastingEntity();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ConeOfColdSpell extends AbstractSpell {
             coneOfColdProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
             coneOfColdProjectile.setDamage(getSpellPower(entity));
             world.addFreshEntity(coneOfColdProjectile);
-            playerMagicData.discardCone();
+            playerMagicData.discardCastingEntity();
             playerMagicData.castingEntity = coneOfColdProjectile;
         }
     }

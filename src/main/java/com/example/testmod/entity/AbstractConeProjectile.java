@@ -1,5 +1,6 @@
 package com.example.testmod.entity;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.util.Utils;
@@ -43,6 +44,7 @@ public abstract class AbstractConeProjectile extends Projectile implements Magic
                 new ConePart(this, "part3", 3.5F, 2.0F),
                 new ConePart(this, "part4", 4.5F, 3.0F)
         };
+        TestMod.LOGGER.debug("AbstractConeProjectile: Creating sub-entities");
 
         //this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
     }
@@ -175,6 +177,6 @@ public abstract class AbstractConeProjectile extends Projectile implements Magic
 
     public void onAntiMagic(PlayerMagicData playerMagicData){
         if(!level.isClientSide)
-            playerMagicData.discardCone();
+            playerMagicData.discardCastingEntity();
     }
 }

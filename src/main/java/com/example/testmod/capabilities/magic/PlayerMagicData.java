@@ -83,7 +83,7 @@ public class PlayerMagicData {
         this.castingSpellLevel = 0;
         this.castDurationRemaining = 0;
         this.teleportTargetPosition = null;
-        this.discardCone();
+        this.discardCastingEntity();
     }
 
     public static void serverSideCancelCast(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
@@ -99,7 +99,7 @@ public class PlayerMagicData {
         this.isCasting = true;
     }
 
-    public boolean discardCone() {
+    public boolean discardCastingEntity() {
         if (this.castingEntity != null) {
             this.castingEntity.discard();
             this.castingEntity = null;
@@ -107,6 +107,12 @@ public class PlayerMagicData {
             return true;
         }
         return false;
+    }
+
+    //used if we want the entity to persist after the casting
+    public void forgetCastingEntity(){
+        this.castingEntity = null;
+
     }
 
     public void setTeleportTargetPosition(Vec3 targetPosition) {
