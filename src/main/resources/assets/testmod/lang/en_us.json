@@ -7,6 +7,7 @@
   "item.testmod.blood_vial": "Blood Vial",
 
   "block.testmod.inscription_table": "Inscription Table",
+  "block.testmod.scroll_forge": "Scroll Forge",
 
   "tooltip.testmod.level": "Level %d",
   "tooltip.testmod.scroll_tooltip": "When in Spell Book:",
@@ -78,6 +79,7 @@
   "spell.testmod.angel_wings": "Angel Wings",
   "spell.testmod.summon_horse": "Summon Horse",
   "spell.testmod.shield": "Shield",
+  "spell.testmod.wall_of_fire": "Wall of Fire",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

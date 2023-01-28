@@ -2,6 +2,7 @@ package com.example.testmod.spells.fire;
 
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.entity.fire_breath.FireBreathProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -31,15 +32,15 @@ public class FireBreathSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
-            playerMagicData.cone.setDealDamageActive();
+        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.castingEntity != null && playerMagicData.castingEntity instanceof AbstractConeProjectile cone) {
+            cone.setDealDamageActive();
         } else {
             FireBreathProjectile fireBreathProjectile = new FireBreathProjectile(world, entity);
             fireBreathProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
             fireBreathProjectile.setDamage(getSpellPower(entity));
             world.addFreshEntity(fireBreathProjectile);
             playerMagicData.discardCone();
-            playerMagicData.cone = fireBreathProjectile;
+            playerMagicData.castingEntity = fireBreathProjectile;
         }
     }
 }

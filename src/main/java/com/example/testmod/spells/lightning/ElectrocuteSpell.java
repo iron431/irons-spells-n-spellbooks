@@ -1,6 +1,7 @@
 package com.example.testmod.spells.lightning;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -26,15 +27,15 @@ public class ElectrocuteSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.cone != null) {
-            playerMagicData.cone.setDealDamageActive();
+        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.castingEntity != null && playerMagicData.castingEntity instanceof AbstractConeProjectile cone) {
+            cone.setDealDamageActive();
         } else{
             ElectrocuteProjectile electrocuteProjectile = new ElectrocuteProjectile(world, entity);
             electrocuteProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
             electrocuteProjectile.setDamage(getSpellPower(entity));
             world.addFreshEntity(electrocuteProjectile);
             playerMagicData.discardCone();
-            playerMagicData.cone = electrocuteProjectile;
+            playerMagicData.castingEntity = electrocuteProjectile;
         }
     }
 }

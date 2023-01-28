@@ -9,10 +9,7 @@ import com.example.testmod.spells.evocation.FirecrackerSpell;
 import com.example.testmod.spells.evocation.ShieldSpell;
 import com.example.testmod.spells.evocation.SummonHorseSpell;
 import com.example.testmod.spells.evocation.SummonVexSpell;
-import com.example.testmod.spells.fire.BurningDashSpell;
-import com.example.testmod.spells.fire.FireBreathSpell;
-import com.example.testmod.spells.fire.FireballSpell;
-import com.example.testmod.spells.fire.FireboltSpell;
+import com.example.testmod.spells.fire.*;
 import com.example.testmod.spells.holy.AngelWingsSpell;
 import com.example.testmod.spells.holy.HealSpell;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
@@ -50,7 +47,8 @@ public enum SpellType {
     FIRECRACKER_SPELL(13),
     SUMMON_HORSE_SPELL(14),
     ANGEL_WING_SPELL(15),
-    SHIELD_SPELL(16);
+    SHIELD_SPELL(16),
+    WALL_OF_FIRE_SPELL(17);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -76,7 +74,7 @@ public enum SpellType {
     public CastType getCastType() {
         return switch (this) {
             case FIREBALL_SPELL -> CastType.LONG;
-            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL -> CastType.CONTINUOUS;
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL -> CastType.CONTINUOUS;
             default -> CastType.INSTANT;
         };
     }
@@ -182,6 +180,9 @@ public enum SpellType {
             case SHIELD_SPELL -> {
                 return new ShieldSpell(level);
             }
+            case WALL_OF_FIRE_SPELL -> {
+                return new WallOfFireSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -206,7 +207,7 @@ public enum SpellType {
     }
 
     private static final SpellType[] FIRE_SPELLS =
-            {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL};
+            {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL};
     private static final SpellType[] ICE_SPELLS =
             {CONE_OF_COLD_SPELL, ICICLE_SPELL};
     private static final SpellType[] LIGHTNING_SPELLS =

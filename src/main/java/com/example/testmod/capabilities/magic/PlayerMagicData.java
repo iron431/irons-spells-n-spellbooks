@@ -1,6 +1,5 @@
 package com.example.testmod.capabilities.magic;
 
-import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.network.ClientBoundSyncPlayerData;
 import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.setup.Messages;
@@ -10,6 +9,7 @@ import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
@@ -72,7 +72,7 @@ public class PlayerMagicData {
     private int castDurationRemaining = 0;
     private CastSource castSource;
 
-    public AbstractConeProjectile cone;
+    public Entity castingEntity;
     private int castDuration = 0;
     private ItemStack castingItemStack = ItemStack.EMPTY;
     private Vec3 teleportTargetPosition;
@@ -100,9 +100,9 @@ public class PlayerMagicData {
     }
 
     public boolean discardCone() {
-        if (this.cone != null) {
-            this.cone.discard();
-            this.cone = null;
+        if (this.castingEntity != null) {
+            this.castingEntity.discard();
+            this.castingEntity = null;
             //TestMod.LOGGER.debug("PlayerMagicData: discarding cone");
             return true;
         }

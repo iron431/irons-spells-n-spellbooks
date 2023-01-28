@@ -1,5 +1,6 @@
 package com.example.testmod.entity;
 
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.util.Utils;
 import net.minecraft.util.Mth;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class AbstractConeProjectile extends Projectile {
+public abstract class AbstractConeProjectile extends Projectile implements MagicEntity{
     protected static final int FAILSAFE_EXPIRE_TIME = 20 * 20;
     protected int age;
     protected float damage;
@@ -170,5 +171,10 @@ public abstract class AbstractConeProjectile extends Projectile {
 
         boolean isShieldBlockingLOS = Utils.raycastForEntityOfClass(start.level, start, vec3, vec31, false, ShieldEntity.class).getType() == HitResult.Type.ENTITY;
         return !isShieldBlockingLOS && start.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
+    }
+
+    public void onAntiMagic(PlayerMagicData playerMagicData){
+        if(!level.isClientSide)
+            playerMagicData.discardCone();
     }
 }
