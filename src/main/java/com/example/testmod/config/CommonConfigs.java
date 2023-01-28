@@ -20,7 +20,7 @@ public class CommonConfigs {
     private static final Queue<DelayedConfigConstructor> CONFIG_LIST = new LinkedList<>();
 
     static {
-        BUILDER.comment("Individual Spell Configurations.");
+        BUILDER.comment("Individual Spell Configuration");
 
         //TODO: Fill out all spells with real values
         createSpellConfigEntry(SpellType.FIREBALL_SPELL, 100, SpellRarity.LEGENDARY);
@@ -29,8 +29,9 @@ public class CommonConfigs {
         createSpellConfigEntry(SpellType.ELECTROCUTE_SPELL, 1000, SpellRarity.LEGENDARY);
         createSpellConfigEntry(SpellType.ICICLE_SPELL, 10, SpellRarity.EPIC);
 
-        BUILDER.comment("Misc.");
-        SWORDS_CONSUME_MANA = BUILDER.push(createTitle("Do swords consume mana")).define("Consume Mana", true);
+        BUILDER.comment("Other Configuration");
+        BUILDER.push("MISC");
+        SWORDS_CONSUME_MANA = BUILDER.define("swordsConsumeMana", true);
 
         SPEC = BUILDER.build();
     }
