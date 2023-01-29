@@ -36,7 +36,7 @@ public class EmberParticle extends TextureSheetParticle {
 
         this.setSpriteFromAge(this.sprites);
 
-         if (age > lifetime * .5 && this.random.nextFloat() <= .05f) {
+        if (removed && this.random.nextFloat() < .05) {
             this.level.addParticle(ParticleTypes.SMOKE, this.x, this.y, this.z, this.xd, this.yd, this.zd);
         }
     }

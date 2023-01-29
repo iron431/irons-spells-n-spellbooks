@@ -4,6 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractShieldEntity;
 import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -11,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
@@ -28,7 +30,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
     protected List<Vec3> partPositions = new ArrayList<>();
     protected List<Vec3> anchorPoints = new ArrayList<>();
 
-    private boolean tempCreateWall;
     @Nullable
     private UUID ownerUUID;
     @Nullable
@@ -42,7 +43,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
     }
 
     @Override
-    public void takeDamage(DamageSource source, float amount, @org.jetbrains.annotations.Nullable Vec3 location) {
+    public void takeDamage(DamageSource source, float amount, @Nullable Vec3 location) {
 
     }
 
@@ -53,45 +54,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
         setOwner(owner);
     }
-
-//    public void addAnchor(Vec3 anchor) {
-//        anchor = setOnGround(anchor);
-//        if (anchorPoints.size() == 0) {
-//            anchorPoints.add(anchor);
-//
-//        } else {
-//            int i = anchorPoints.size();
-//            float distance = (float) anchorPoints.get(i - 1).distanceTo(anchor);
-//            float maxDistance = this.maxTotalDistance - this.accumulatedDistance;
-//            if (distance <= maxDistance) {
-//                //point fits, continue
-//                accumulatedDistance += distance;
-//                anchorPoints.add(anchor);
-//                //TestMod.LOGGER.debug("WallOfFire: this anchor fits (length {})", distance);
-//
-//            } else {
-//                //too long, clip and cancel spell
-//                anchor = anchorPoints.get(i - 1).add(anchor.subtract(anchorPoints.get(i - 1)).normalize().scale(maxDistance));
-//                anchor = setOnGround(anchor);
-//                anchorPoints.add(anchor);
-//                createShield();
-//
-//            }
-//
-//            //TestMod.LOGGER.debug("WallOfFire.maxDistance: {}", this.maxTotalDistance);
-//            //TestMod.LOGGER.debug("WallOfFire.currentDistance: {}", this.accumulatedDistance);
-//        }
-//    }
-
-//    private Vec3 setOnGround(Vec3 in) {
-//        double y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) in.x, (int) in.z);
-//        if (Math.abs(y - in.y) > 3) {
-//            //too great of a gap
-//            y = in.y;
-//        }
-//        return new Vec3(in.x, y, in.z);
-//
-//    }
 
     @Override
     public void tick() {
@@ -105,30 +67,40 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             subEntity.xOld = pos.x;
             subEntity.yOld = pos.y;
             subEntity.zOld = pos.z;
+            if (level.isClientSide) {
+                for (int j = 0; j < 2; j++) {
+                    double offset = .25;
+                    double ox = Math.random() * 2 * offset - offset;
+                    double oy = Math.random() * 2 * offset - offset;
+                    double oz = Math.random() * 2 * offset - offset;
+                    level.addParticle(ParticleHelper.FIRE, pos.x + ox, pos.y + oy - .25, pos.z + oz, 0, Math.random() * .3, 0);
+                }
+            }else {
+                for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
+                    this.dealDamageTo(livingentity);
+                }
+            }
         }
-        //TestMod.LOGGER.debug("WallOfFire.getParts (array length: {}),", subEntities.length);
-//        if (!level.isClientSide) {
-//            for (int i = 0; i < anchorPoints.size(); i++) {
-//                var vec = anchorPoints.get(i);
-//                MagicManager.spawnParticles(level, ParticleTypes.SMOKE, vec.x, vec.y + .5, vec.z, 30, 0, 1, 0, .01, true);
-//
-//            }
-//            if (tempCreateWall) {
-//                for (int i = 0; i < anchorPoints.size() - 1; i++) {
-//                    Vec3 start = anchorPoints.get(i);
-//                    Vec3 end = anchorPoints.get(i + 1);
-//                    Vec3 lookVec = end.subtract(start).scale(.1f);
-//                    for (int x = 0; x < 10; x++) {
-//                        MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, start.x + lookVec.x * x, start.y + lookVec.y * x, start.z + lookVec.z * x, 1, 0, 0, 0, 0, true);
-//
-//                    }
-//                }
-//            }
-//        }
-
-        //TestMod.LOGGER.debug("WallOfFire.tick: sub entities size: {}", subEntities.size());
     }
+    private void dealDamageTo(LivingEntity pTarget) {
+        //TODO: power based damage
+        float damage = 2;
+        Entity owner = this.getOwner();
+        if (pTarget.isAlive() && !pTarget.isInvulnerable() && pTarget != owner) {
+            if (owner == null) {
+                pTarget.hurt(DamageSource.MAGIC, damage);
+                pTarget.setSecondsOnFire(3);
+            } else {
+                if (owner.isAlliedTo(pTarget)) {
+                    return;
+                }
 
+                pTarget.hurt(DamageSource.indirectMagic(this, owner), damage);
+                pTarget.setSecondsOnFire(3);
+            }
+
+        }
+    }
     @Override
     public void createShield() {
         TestMod.LOGGER.debug("Attempting to create shield, achor points length: {}", anchorPoints.size());
@@ -156,7 +128,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
                 Vec3 pos = new Vec3(x, y, z);
 
-
                 partPositions.add(pos);
                 TestMod.LOGGER.debug("WallOfFire:Creating shield: new sub entity {}", pos);
                 entitiesList.add(part);
@@ -166,14 +137,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
         //subEntities = new ShieldPart[entitiesList.size()];
         subEntities = entitiesList.toArray(subEntities);
         TestMod.LOGGER.debug("WallOfFire.createShield (array length: {}, real length: {}),", subEntities.length, entitiesList.size());
-
-//        Entity owner = getOwner();
-//        if (owner instanceof ServerPlayer serverPlayer) {
-//            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-//            playerMagicData.forgetCastingEntity();
-//            if (playerMagicData.isCasting())
-//                ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastSource() != CastSource.Scroll);
-//        }
 
     }
 
@@ -200,9 +163,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
     @Override
     public PartEntity<?>[] getParts() {
-        //var x = new PartEntity[subEntities.size()];
-        //this.subEntities.toArray(x);
-        //TestMod.LOGGER.debug("WallOfFire.getParts (array length: {}),", subEntities.length);
         return subEntities;
     }
 
@@ -246,7 +206,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
     @Override
     public Packet<?> getAddEntityPacket() {
-        //TODO: fill this out with real info
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }
