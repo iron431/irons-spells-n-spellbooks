@@ -1,6 +1,6 @@
 package com.example.testmod.loot;
 
-import com.example.testmod.config.CommonConfigs;
+import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.registries.LootRegistry;
 import com.example.testmod.spells.SpellType;
@@ -29,7 +29,7 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
         if (itemStack.getItem() instanceof Scroll scroll) {
 
             var spellId = lootContext.getRandom().nextInt(SpellType.values().length);
-            int maxLevel = CommonConfigs.getById(spellId).MAX_LEVEL;
+            int maxLevel = ServerConfigs.getSpellConfig(spellId).MAX_LEVEL;
             float quality = qualityRange.getFloat(lootContext);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
             var scrollData = scroll.getScrollData(itemStack);

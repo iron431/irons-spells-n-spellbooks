@@ -1,7 +1,6 @@
 package com.example.testmod.capabilities.spellbook;
 
 import com.example.testmod.spells.AbstractSpell;
-import com.example.testmod.spells.SpellRarity;
 import com.example.testmod.spells.SpellType;
 import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;

@@ -1,7 +1,7 @@
 package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.config.CommonConfigs;
+import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
@@ -15,11 +15,14 @@ import com.example.testmod.spells.holy.HealSpell;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ice.IcicleSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
+import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraftforge.common.util.LazyOptional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public enum SpellType {
     /*
@@ -55,16 +58,34 @@ public enum SpellType {
     private final LazyOptional<Integer> minRarity;
     private final int maxRarity;
 
+    private List<Double> rarityWeights;
+    private List<Double> rarityRawWeights;
+
     SpellType(final int newValue) {
         value = newValue;
-        maxLevel = LazyOptional.of(() -> (CommonConfigs.getByType(this).MAX_LEVEL));
-        minRarity = LazyOptional.of(() -> (CommonConfigs.getByType(this).MIN_RARITY.getValue()));
+        maxLevel = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).MAX_LEVEL));
+        minRarity = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).MIN_RARITY.getValue()));
         maxRarity = SpellRarity.LEGENDARY.getValue();
-
     }
 
     public int getValue() {
         return value;
+    }
+
+    public int getMinRarity() {
+        return minRarity.orElse(0);
+    }
+
+    public int getMaxRarity() {
+        return maxRarity;
+    }
+
+    public int getMinLevel() {
+        return 1;
+    }
+
+    public int getMaxLevel() {
+        return maxLevel.orElse(10);
     }
 
     public static SpellType getTypeFromValue(int value) {
@@ -79,23 +100,64 @@ public enum SpellType {
         };
     }
 
-    //private final float minLevel = 1;
-
-    //private float mappingConstant = (maxRarity - minRarity) / (maxLevel - minLevel);
+//    public SpellRarity getRarity(int level) {
+//        //float adjustedRarity = getRarityMapped(minLevel, maxLevel, minRarity, maxRarity, level);
+//        int maxLevel = this.maxLevel.resolve().get();
+//        int minRarity = this.minRarity.resolve().get();
+//        //https://www.desmos.com/calculator/fumipfwdfr
+//        float rarityPercent = level / (float) maxLevel;
+//        float scaledRarity = Mth.clamp(lerp(minRarity, maxRarity, rarityPercent * rarityPercent), minRarity, maxRarity);
+//        return SpellRarity.values()[(int) scaledRarity];
+//        //return SpellRarity.getRarityFromPercent(adjustedRarity);
+//    }
 
     public static float getRarityMapped(float levelMin, float levelMax, float rarityMin, float rarityMax, float levelToMap) {
         return rarityMin + ((levelToMap - levelMin) * (rarityMax - rarityMin)) / (levelMax - levelMin);
     }
 
     public SpellRarity getRarity(int level) {
-        //float adjustedRarity = getRarityMapped(minLevel, maxLevel, minRarity, maxRarity, level);
-        int maxLevel = this.maxLevel.resolve().get();
-        int minRarity = this.minRarity.resolve().get();
-        //https://www.desmos.com/calculator/fumipfwdfr
-        float rarityPercent = level / (float) maxLevel;
-        float scaledRarity = Mth.clamp(lerp(minRarity, maxRarity, rarityPercent * rarityPercent), minRarity, maxRarity);
-        return SpellRarity.values()[(int) scaledRarity];
-        //return SpellRarity.getRarityFromPercent(adjustedRarity);
+        int maxLevel = getMaxLevel();
+        int minRarity = getMinRarity();
+        int maxRarity = getMaxRarity();
+        double percentOfMaxLevel = (double) level / (double) maxLevel;
+
+        if (rarityWeights == null) {
+            List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
+            List<Double> rarityConfig = SpellRarity.getRarityConfig();
+
+            if (minRarity != 0) {
+                //Must balance remaining weights
+
+                var subList = rarityRawConfig.subList(minRarity, maxRarity + 1);
+                double subtotal = subList.stream().reduce(0d, Double::sum);
+                rarityRawWeights = subList.stream().map(item -> ((item / subtotal) * (1 - subtotal)) + item).toList();
+
+                var counter = new AtomicDouble();
+                rarityWeights = new ArrayList<>();
+                rarityRawWeights.forEach(item -> {
+                    rarityWeights.add(counter.addAndGet(item));
+                });
+            } else {
+                rarityRawWeights = rarityRawConfig;
+                rarityWeights = rarityConfig;
+            }
+        }
+
+        TestMod.LOGGER.debug("getRarity: {} {} {} {} {} {}", this.toString(), rarityRawWeights, rarityWeights, percentOfMaxLevel, minRarity, maxRarity);
+
+        int lookupOffset = maxRarity + 1 - rarityWeights.size();
+
+        for (int i = 0; i < rarityWeights.size(); i++) {
+            if (percentOfMaxLevel <= rarityWeights.get(i)) {
+                TestMod.LOGGER.debug("getRarity: {} ", i);
+                return SpellRarity.values()[i + lookupOffset];
+            }
+        }
+        return SpellRarity.COMMON;
+    }
+
+    public int getMinLevelForRarity(SpellRarity rarity) {
+        return 1;
     }
 
     public AbstractSpell getSpellForRarity(SpellRarity rarity) {

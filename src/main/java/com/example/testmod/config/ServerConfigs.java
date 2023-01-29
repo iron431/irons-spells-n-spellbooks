@@ -7,12 +7,13 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CommonConfigs {
+public class ServerConfigs {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
     public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(10, SpellRarity.COMMON);
     public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
 
     //https://forge.gemwire.uk/wiki/Configs
 
@@ -23,30 +24,35 @@ public class CommonConfigs {
         BUILDER.comment("Individual Spell Configuration");
 
         //TODO: Fill out all spells with real values
-        createSpellConfigEntry(SpellType.FIREBALL_SPELL, 100, SpellRarity.LEGENDARY);
-        createSpellConfigEntry(SpellType.FIREBOLT_SPELL, 15, SpellRarity.UNCOMMON);
-        createSpellConfigEntry(SpellType.MAGIC_MISSILE_SPELL, 1, SpellRarity.UNCOMMON);
-        createSpellConfigEntry(SpellType.ELECTROCUTE_SPELL, 1000, SpellRarity.LEGENDARY);
-        createSpellConfigEntry(SpellType.ICICLE_SPELL, 10, SpellRarity.EPIC);
+        createSpellConfig(SpellType.FIREBALL_SPELL, 5, SpellRarity.LEGENDARY);
+        createSpellConfig(SpellType.FIREBOLT_SPELL, 15, SpellRarity.UNCOMMON);
+        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, 1, SpellRarity.UNCOMMON);
+        createSpellConfig(SpellType.ELECTROCUTE_SPELL, 12, SpellRarity.LEGENDARY);
+        createSpellConfig(SpellType.ICICLE_SPELL, 10, SpellRarity.LEGENDARY);
 
         BUILDER.comment("Other Configuration");
         BUILDER.push("MISC");
-        SWORDS_CONSUME_MANA = BUILDER.define("swordsConsumeMana", true);
+
+        RARITY_CONFIG = BUILDER.worldRestart()
+                .comment(String.format("rarityConfig array values must sum to 1: [%s, %s, %s, %s, %s]", SpellRarity.COMMON, SpellRarity.UNCOMMON, SpellRarity.RARE, SpellRarity.EPIC, SpellRarity.LEGENDARY))
+                .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
+
+        SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
 
         SPEC = BUILDER.build();
     }
 
-    public static SpellConfigParameters getByType(SpellType spellType) {
+    public static SpellConfigParameters getSpellConfig(SpellType spellType) {
         return SPELL_CONFIGS.getOrDefault(spellType, DEFAULT_CONFIG);
     }
 
-    public static SpellConfigParameters getById(int spellId) {
-        return getByType(SpellType.getTypeFromValue(spellId));
+    public static SpellConfigParameters getSpellConfig(int spellId) {
+        return getSpellConfig(SpellType.getTypeFromValue(spellId));
     }
 
-    private static void createSpellConfigEntry(SpellType spell, int defaultMaxLevel, SpellRarity defaultMinRarity) {
+    private static void createSpellConfig(SpellType spell, int defaultMaxLevel, SpellRarity defaultMinRarity) {
 
-        BUILDER.push(createTitle(spell.getId()));
+        BUILDER.push(createSpellConfigTitle(spell.getId()));
 
         CONFIG_LIST.add(new DelayedConfigConstructor(
                 BUILDER.define("MaxLevel", defaultMaxLevel),
@@ -57,7 +63,7 @@ public class CommonConfigs {
         BUILDER.pop();
     }
 
-    private static String createTitle(String str) {
+    private static String createSpellConfigTitle(String str) {
         var words = str.split("[_| ]");
         for (int i = 0; i < words.length; i++) {
             words[i] = words[i].substring(0, 1).toUpperCase() + words[i].substring(1);
@@ -65,7 +71,7 @@ public class CommonConfigs {
         return Arrays.stream(words).sequential().collect(Collectors.joining("-"));
     }
 
-    public static void resolveQueue() {
+    public static void cacheConfigs() {
         while (!CONFIG_LIST.isEmpty())
             CONFIG_LIST.remove().construct();
     }

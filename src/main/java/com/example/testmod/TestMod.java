@@ -1,7 +1,6 @@
 package com.example.testmod;
 
-import com.example.testmod.config.ClientConfigs;
-import com.example.testmod.config.CommonConfigs;
+import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.gui.inscription_table.InscriptionTableScreen;
 import com.example.testmod.gui.scroll_forge.ScrollForgeScreen;
 import com.example.testmod.registries.*;
@@ -35,7 +34,6 @@ public class TestMod {
     public static final String MODID = "testmod";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    //public static InstancedEventHandler eventHandler = new InstancedEventHandler();
     public TestMod() {
 
         ModSetup.setup();
@@ -55,13 +53,10 @@ public class TestMod {
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
 
-
         modEventBus.addListener(this::clientSetup);
 
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"testmod-client.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfigs.SPEC,"testmod-common.toml");
-
+        //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"testmod-client.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s-server.toml", TestMod.MODID));
 
         //AttributesRegistry.register(eventBus);
         //MinecraftForge.EVENT_BUS.register(new AttributesRegistry().getClass());
@@ -74,11 +69,11 @@ public class TestMod {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 
 
-
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @SuppressWarnings("removal")
     private void clientSetup(final FMLClientSetupEvent e) {
 
         //TODO: find a better place for this

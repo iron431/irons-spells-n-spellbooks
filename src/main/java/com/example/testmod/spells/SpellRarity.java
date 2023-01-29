@@ -1,8 +1,17 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.TestMod;
+import com.example.testmod.config.ServerConfigs;
+import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraftforge.common.util.LazyOptional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public enum SpellRarity {
     COMMON(0),
@@ -14,6 +23,7 @@ public enum SpellRarity {
     ANCIENT(6)*/;
 
     private final int value;
+
 
     SpellRarity(final int newValue) {
         value = newValue;
@@ -27,6 +37,26 @@ public enum SpellRarity {
         return DISPLAYS[getValue()];
     }
 
+    private final static LazyOptional<List<Double>> rawRarityConfig = LazyOptional.of(() -> (List<Double>) ServerConfigs.RARITY_CONFIG.get());
+    private static List<Double> rarityConfig = null;
+
+    public static List<Double> getRawRarityConfig() {
+        return rawRarityConfig.resolve().get();
+    }
+
+    public static List<Double> getRarityConfig() {
+        if (rarityConfig == null) {
+            var counter = new AtomicDouble();
+            rarityConfig = new ArrayList<>();
+            getRawRarityConfig().forEach(item -> {
+                rarityConfig.add(counter.addAndGet(item));
+            });
+        }
+
+        return rarityConfig;
+    }
+
+
     /**
      * @return Returns positive if the other is less rare, negative if it is more rare, and zero if they are equal
      */
@@ -34,18 +64,28 @@ public enum SpellRarity {
         return Integer.compare(this.getValue(), other.getValue());
     }
 
-//    public static SpellRarity getRarityFromPercent(float f){
-//        if (f >= .9f)
-//            return SpellRarity.LEGENDARY;
-//        else if (f >= .8f)
-//            return SpellRarity.EPIC;
-//        else if (f >= .6f)
-//            return SpellRarity.RARE;
-//        else if (f >= .4f)
-//            return SpellRarity.UNCOMMON;
-//        else
-//            return SpellRarity.COMMON;
-//    }
+    public static void rarityTest() {
+        var sb = new StringBuilder();
+        Arrays.stream(SpellType.values()).forEach(s -> {
+            sb.append(String.format("\nSpellType:%s\n", s));
+            sb.append(String.format("\tMinRarity:%s, MaxRarity:%s\n", s.getMinRarity(), s.getMaxRarity()));
+            sb.append(String.format("\tMinLevel:%s, MaxLevel:%s\n", s.getMinLevel(), s.getMaxLevel()));
+            sb.append(String.format("\tRawRarityConfig:%s\n", getRawRarityConfig().stream().map(Object::toString).collect(Collectors.joining(","))));
+            sb.append(String.format("\tRarityConfig:%s\n", getRarityConfig().stream().map(Object::toString).collect(Collectors.joining(","))));
+
+            for (int i = s.getMinLevel(); i <= s.getMaxLevel(); i++) {
+                sb.append(String.format("\t\tLevel %s -> %s\n", i, s.getRarity(i)));
+            }
+
+            sb.append("\n");
+
+            for (int i = s.getMinRarity(); i <= s.getMaxRarity(); i++) {
+                sb.append(String.format("\t\t%s -> Level %s\n", SpellRarity.values()[i], s.getMinLevelForRarity(SpellRarity.values()[i])));
+            }
+        });
+
+        TestMod.LOGGER.debug(sb.toString());
+    }
 
     private final MutableComponent[] DISPLAYS = {
             Component.translatable("rarity.testmod.common").withStyle(ChatFormatting.GRAY),

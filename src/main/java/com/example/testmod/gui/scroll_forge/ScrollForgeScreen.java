@@ -1,7 +1,7 @@
 package com.example.testmod.gui.scroll_forge;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.config.CommonConfigs;
+import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import com.example.testmod.item.InkItem;
 import com.example.testmod.setup.Messages;
@@ -15,7 +15,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
@@ -57,7 +60,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     private void resetList() {
-        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(CommonConfigs.getByType(selectedSpell).MIN_RARITY) >= 0)))
+        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(ServerConfigs.getSpellConfig(selectedSpell).MIN_RARITY) >= 0)))
             selectedSpell = SpellType.NONE_SPELL;
         //TODO: reorder setting old focus to test if we actually need to reset the scroll... or just give ink its own path since we dont even need to regenerate the list anyways
         scrollOffset = 0;
@@ -110,12 +113,12 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         SpellRarity inkRarity = getRarityFromInk(inkStack.getItem());
 
-        availableSpells.sort((a, b) -> CommonConfigs.getByType(a.spell).MIN_RARITY.compareRarity(CommonConfigs.getByType(b.spell).MIN_RARITY));
+        availableSpells.sort((a, b) -> ServerConfigs.getSpellConfig(a.spell).MIN_RARITY.compareRarity(ServerConfigs.getSpellConfig(b.spell).MIN_RARITY));
         for (int i = 0; i < availableSpells.size(); i++) {
             SpellCardInfo spellCard = availableSpells.get(i);
 
             if (i - scrollOffset >= 0 && i - scrollOffset < 3) {
-                spellCard.button.active = inkRarity != null && CommonConfigs.getByType(spellCard.spell).MIN_RARITY.compareRarity(inkRarity) <= 0;
+                spellCard.button.active = inkRarity != null && ServerConfigs.getSpellConfig(spellCard.spell).MIN_RARITY.compareRarity(inkRarity) <= 0;
                 int x = leftPos + SPELL_LIST_X;
                 int y = topPos + SPELL_LIST_Y + (i - scrollOffset) * 19;
                 spellCard.button.x = x;
