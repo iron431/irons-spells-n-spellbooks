@@ -12,6 +12,7 @@ import com.example.testmod.spells.evocation.SummonVexSpell;
 import com.example.testmod.spells.fire.*;
 import com.example.testmod.spells.holy.AngelWingsSpell;
 import com.example.testmod.spells.holy.HealSpell;
+import com.example.testmod.spells.holy.WispSpell;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ice.IcicleSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
@@ -25,14 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum SpellType {
-    /*
-    When adding spell, add:
-        Spell Type
-        SpellType.Cast Type
-        SpellType.School Type
-        SpellType.getForType
-        Translation
-        Icon
+    /**
+     * When adding spell, add:
+     * Spell Type
+     * SpellType.getCastType
+     * SpellType.getSchoolType
+     * SpellType.getSpellForType
+     * Translation
+     * Icon
      */
     NONE_SPELL(0),
     FIREBALL_SPELL(1),
@@ -51,7 +52,8 @@ public enum SpellType {
     SUMMON_HORSE_SPELL(14),
     ANGEL_WING_SPELL(15),
     SHIELD_SPELL(16),
-    WALL_OF_FIRE_SPELL(17);
+    WALL_OF_FIRE_SPELL(17),
+    WISP_SPELL(18);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -94,7 +96,7 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL -> CastType.LONG;
+            case FIREBALL_SPELL, WISP_SPELL -> CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL -> CastType.CONTINUOUS;
             default -> CastType.INSTANT;
         };
@@ -277,6 +279,9 @@ public enum SpellType {
             case WALL_OF_FIRE_SPELL -> {
                 return new WallOfFireSpell(level);
             }
+            case WISP_SPELL -> {
+                return new WispSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -300,20 +305,13 @@ public enum SpellType {
         return EVOCATION_SPELLS;
     }
 
-    private static final SpellType[] FIRE_SPELLS =
-            {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL};
-    private static final SpellType[] ICE_SPELLS =
-            {CONE_OF_COLD_SPELL, ICICLE_SPELL};
-    private static final SpellType[] LIGHTNING_SPELLS =
-            {ELECTROCUTE_SPELL};
-    private static final SpellType[] HOLY_SPELLS =
-            {HEAL_SPELL, ANGEL_WING_SPELL};
-    private static final SpellType[] ENDER_SPELLS =
-            {TELEPORT_SPELL, MAGIC_MISSILE_SPELL};
-    private static final SpellType[] BLOOD_SPELLS =
-            {BLOOD_SLASH_SPELL};
-    private static final SpellType[] EVOCATION_SPELLS =
-            {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL};
+    private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL};
+    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL};
+    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL};
+    private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL};
+    private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL};
+    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL};
+    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL};
 
     public MutableComponent getDisplayName() {
         return Component.translatable("spell." + TestMod.MODID + "." + this.getId());
