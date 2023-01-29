@@ -13,7 +13,6 @@ import com.example.testmod.entity.mobs.summons.SpectralSteed;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import com.example.testmod.entity.wisp.WispEntity;
-import com.example.testmod.entity.wisp_projectile.WispProjectile;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -52,12 +51,6 @@ public class EntityRegistry {
                     .sized(2f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "blood_slash_projectile").toString()));
-
-    public static final RegistryObject<EntityType<WispProjectile>> WISP_PROJECTILE =
-            ENTITIES.register("wisp_projectile", () -> EntityType.Builder.<WispProjectile>of(WispProjectile::new, MobCategory.MISC)
-                    .sized(2f, .5f)
-                    .clientTrackingRange(64)
-                    .build(new ResourceLocation(TestMod.MODID, "wisp_projectile").toString()));
 
     public static final RegistryObject<EntityType<ElectrocuteProjectile>> ELECTROCUTE_PROJECTILE =
             ENTITIES.register("electrocute_projectile", () -> EntityType.Builder.<ElectrocuteProjectile>of(ElectrocuteProjectile::new, MobCategory.MISC)

@@ -20,7 +20,6 @@ import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.entity.shield.ShieldTrimModel;
 import com.example.testmod.entity.wisp.WispEntity;
 import com.example.testmod.entity.wisp.WispRenderer;
-import com.example.testmod.entity.wisp_projectile.WispProjectileRenderer;
 import com.example.testmod.item.armor.WanderMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
@@ -95,7 +94,6 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SHIELD_ENTITY.get(), ShieldRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_ENTITY.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WISP.get(), WispRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.WISP_PROJECTILE.get(), WispProjectileRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
     }
 
