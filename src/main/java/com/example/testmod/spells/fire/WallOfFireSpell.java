@@ -9,6 +9,7 @@ import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -104,7 +105,7 @@ public class WallOfFireSpell extends AbstractSpell {
 //            TestMod.LOGGER.debug("WallOfFireSpell: from serverplayer");
 
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.getAdditionalCastData() instanceof FireWallData firw){
+            if (playerMagicData.getAdditionalCastData() instanceof FireWallData firw) {
 //                TestMod.LOGGER.debug("WallOfFireSpell: playermagicdata data: {}", firw);
                 TestMod.LOGGER.debug("WallOfFireSpell: length: {}", firw.anchors.size());
 
@@ -113,13 +114,17 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     private Vec3 setOnGround(Vec3 in, Level level) {
-        double y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) in.x, (int) in.z);
-        if (Math.abs(y - in.y) > 3) {
-            //too great of a gap
-            y = in.y;
+        if (level.getBlockState(new BlockPos(in.x,in.y+.5f,in.z)).isAir()) {
+            for (int i = 0; i < 15; i++) {
+                if (!level.getBlockState(new BlockPos(in.x, in.y - i, in.z)).isAir()) {
+                    return new Vec3(in.x, in.y - i + 1, in.z);
+                }
+            }
+            return new Vec3(in.x, in.y - 15, in.z);
+        } else {
+            double y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) in.x, (int) in.z);
+            return new Vec3(in.x, y, in.z);
         }
-        return new Vec3(in.x, y, in.z);
-
     }
 
     public class FireWallData implements CastData {

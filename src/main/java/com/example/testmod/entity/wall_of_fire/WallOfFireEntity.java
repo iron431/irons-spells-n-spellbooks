@@ -7,15 +7,16 @@ import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.entity.PartEntity;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -37,8 +38,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
         super(pEntityType, pLevel);
         TestMod.LOGGER.debug("WallOfFire.attempting to create sub entities");
         subEntities = new ShieldPart[0];
-        if(level.isClientSide)
-            createShield();
+
     }
 
     @Override
@@ -141,10 +141,22 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             Vec3 end = anchorPoints.get(i + 1);
             Vec3 dirVec = end.subtract(start).normalize().scale(step);
             int steps = (int) (start.distanceTo(end) / step);
-            for (int x = 0; x < steps; x++) {
+            for (int currentStep = 0; currentStep < steps; currentStep++) {
                 //MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, start.x + dirVec.x * x, start.y + dirVec.y * x, start.z + dirVec.z * x, 1, 0, 0, 0, 0, true);
-                ShieldPart part = new ShieldPart(this, "part" + i * steps + x, step, height);
-                Vec3 pos = new Vec3(start.x + dirVec.x * x, start.y + dirVec.y * x, start.z + dirVec.z * x);
+                ShieldPart part = new ShieldPart(this, "part" + i * steps + currentStep, step, height);
+                double x = start.x + dirVec.x * currentStep;
+                double y = start.y + dirVec.y * currentStep;
+                double z = start.z + dirVec.z * currentStep;
+                double groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) x, (int) z);
+                //y += Math.min(5, Math.abs(y - groundY)) * y < groundY ? 1 : -1;
+
+                if (Math.abs(y - groundY) < 2)
+                    y += (groundY - y) * .75;
+                //Vec3 pos = new Vec3(, start.y + dirVec.y * x, start.z + dirVec.z * x);
+
+                Vec3 pos = new Vec3(x, y, z);
+
+
                 partPositions.add(pos);
                 TestMod.LOGGER.debug("WallOfFire:Creating shield: new sub entity {}", pos);
                 entitiesList.add(part);
@@ -211,7 +223,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
     }
 
-    @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
         TestMod.LOGGER.debug("WallOfFire.writeSpawnData");
         buffer.writeInt(anchorPoints.size());
@@ -222,7 +233,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
         }
     }
 
-    @Override
     public void readSpawnData(FriendlyByteBuf additionalData) {
         TestMod.LOGGER.debug("WallOfFire.readSpawnData");
 
@@ -231,12 +241,12 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
         for (int i = 0; i < length; i++) {
             anchorPoints.add(new Vec3(additionalData.readFloat(), additionalData.readFloat(), additionalData.readFloat()));
         }
-        //createShield();
+        createShield();
     }
 
     @Override
     public Packet<?> getAddEntityPacket() {
         //TODO: fill this out with real info
-        return new ClientboundAddEntityPacket(this);
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }
