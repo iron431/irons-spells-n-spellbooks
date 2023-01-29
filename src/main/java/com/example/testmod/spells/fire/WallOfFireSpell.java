@@ -2,6 +2,7 @@ package com.example.testmod.spells.fire;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.CastData;
+import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import com.example.testmod.network.ServerboundCancelCast;
@@ -10,7 +11,9 @@ import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -30,8 +33,8 @@ public class WallOfFireSpell extends AbstractSpell {
         super(SpellType.WALL_OF_FIRE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 1;
-        this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 1;
+        this.baseSpellPower = 4;
+        this.spellPowerPerLevel = 0;
         this.castTime = 100;
         this.baseManaCost = 5;
         this.cooldown = 100;
@@ -39,7 +42,7 @@ public class WallOfFireSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        var vec = Utils.getTargetBlock(world, entity, ClipContext.Fluid.ANY, 15).getLocation();
+        var vec = raycastForAnchor(world, entity);
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.getAdditionalCastData() == null) {
             TestMod.LOGGER.debug("WallOfFireSpell: creating new data");
             playerMagicData.setAdditionalCastData(new FireWallData(getWallLength()));
@@ -51,7 +54,16 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     private float getWallLength() {
-        return 10 + level * 3;
+        return 7 + level * 2;
+    }
+
+    private float getDamage(Entity sourceEntity) {
+        return getSpellPower(sourceEntity);
+    }
+
+    private Vec3 raycastForAnchor(Level level, LivingEntity entity) {
+        return Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, 10 + getWallLength() / 2).getLocation();
+
     }
 
     @Override
@@ -62,7 +74,9 @@ public class WallOfFireSpell extends AbstractSpell {
 //        }
         TestMod.LOGGER.debug("WallOfFireSpell.onCastComplete");
         if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
-            WallOfFireEntity fireWall = new WallOfFireEntity(level, entity, fireWallData.anchors);
+            if (fireWallData.anchors.size() == 1)
+                addAnchor(raycastForAnchor(level, entity), fireWallData, level, entity);
+            WallOfFireEntity fireWall = new WallOfFireEntity(level, entity, fireWallData.anchors, getDamage(entity));
             fireWall.setPos(fireWallData.getSafeFirstAnchor());
             level.addFreshEntity(fireWall);
         }
@@ -92,29 +106,21 @@ public class WallOfFireSpell extends AbstractSpell {
                 anchorPoints.add(anchor);
                 if (entity instanceof ServerPlayer serverPlayer) {
                     var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-                    ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastSource() != CastSource.Scroll);
+                    boolean triggerCooldown = playerMagicData.getCastSource() != CastSource.Scroll;
+                    if (!triggerCooldown)
+                        onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
+                    ServerboundCancelCast.cancelCast(serverPlayer, triggerCooldown);
                 }
             }
-
             //TestMod.LOGGER.debug("WallOfFire.maxDistance: {}", this.maxTotalDistance);
             //TestMod.LOGGER.debug("WallOfFire.currentDistance: {}", this.accumulatedDistance);
         }
+        MagicManager.spawnParticles(level, ParticleTypes.FLAME, anchor.x, anchor.y + 1.5, anchor.z, 10, 0, .5, 0, 0, true);
         TestMod.LOGGER.debug("WallOfFireSpell: adding anchor");
-
-        if (entity instanceof ServerPlayer serverPlayer) {
-//            TestMod.LOGGER.debug("WallOfFireSpell: from serverplayer");
-
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.getAdditionalCastData() instanceof FireWallData firw) {
-//                TestMod.LOGGER.debug("WallOfFireSpell: playermagicdata data: {}", firw);
-                TestMod.LOGGER.debug("WallOfFireSpell: length: {}", firw.anchors.size());
-
-            }
-        }
     }
 
     private Vec3 setOnGround(Vec3 in, Level level) {
-        if (level.getBlockState(new BlockPos(in.x,in.y+.5f,in.z)).isAir()) {
+        if (level.getBlockState(new BlockPos(in.x, in.y + .5f, in.z)).isAir()) {
             for (int i = 0; i < 15; i++) {
                 if (!level.getBlockState(new BlockPos(in.x, in.y - i, in.z)).isAir()) {
                     return new Vec3(in.x, in.y - i + 1, in.z);

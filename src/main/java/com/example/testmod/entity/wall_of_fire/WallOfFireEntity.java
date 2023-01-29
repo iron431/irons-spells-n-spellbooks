@@ -6,6 +6,8 @@ import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
@@ -34,6 +36,9 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
     private UUID ownerUUID;
     @Nullable
     private Entity cachedOwner;
+    protected float damage;
+
+    protected int lifetime = 8 * 20;
 
     public WallOfFireEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -47,11 +52,11 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
     }
 
-    public WallOfFireEntity(Level level, Entity owner, List<Vec3> anchors) {
+    public WallOfFireEntity(Level level, Entity owner, List<Vec3> anchors, float damage) {
         this(EntityRegistry.WALL_OF_FIRE_ENTITY.get(), level);
         this.anchorPoints = anchors;
         createShield();
-
+        this.damage = damage;
         setOwner(owner);
     }
 
@@ -68,23 +73,27 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             subEntity.yOld = pos.y;
             subEntity.zOld = pos.z;
             if (level.isClientSide) {
+                PartEntity<?> nextEntity = subEntities[i + 1 < subEntitiesLength ? i + 1 : i - 1];
+
                 for (int j = 0; j < 2; j++) {
                     double offset = .25;
-                    double ox = Math.random() * 2 * offset - offset;
+                    double ox = (Math.random() * 2 * offset - offset);
                     double oy = Math.random() * 2 * offset - offset;
                     double oz = Math.random() * 2 * offset - offset;
-                    level.addParticle(ParticleHelper.FIRE, pos.x + ox, pos.y + oy - .25, pos.z + oz, 0, Math.random() * .3, 0);
+                    Vec3 next = pos.subtract(nextEntity.position()).scale(.5f);
+                    level.addParticle(ParticleHelper.FIRE, pos.x + ox + next.x * j, pos.y + oy - .25 + next.y * j, pos.z + oz + next.z * j, 0, Math.random() * .3, 0);
                 }
-            }else {
-                for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
+            } else {
+                for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
                     this.dealDamageTo(livingentity);
                 }
             }
         }
+        if (!level.isClientSide && --lifetime < 0)
+            discard();
     }
+
     private void dealDamageTo(LivingEntity pTarget) {
-        //TODO: power based damage
-        float damage = 2;
         Entity owner = this.getOwner();
         if (pTarget.isAlive() && !pTarget.isInvulnerable() && pTarget != owner) {
             if (owner == null) {
@@ -101,11 +110,12 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
         }
     }
+
     @Override
     public void createShield() {
         TestMod.LOGGER.debug("Attempting to create shield, achor points length: {}", anchorPoints.size());
         float height = 3;
-        float step = .5f;
+        float step = .8f;
         List<ShieldPart> entitiesList = new ArrayList<>();
         TestMod.LOGGER.debug("WallOfFire:Creating shield");
         for (int i = 0; i < anchorPoints.size() - 1; i++) {
@@ -115,7 +125,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             int steps = (int) (start.distanceTo(end) / step);
             for (int currentStep = 0; currentStep < steps; currentStep++) {
                 //MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, start.x + dirVec.x * x, start.y + dirVec.y * x, start.z + dirVec.z * x, 1, 0, 0, 0, 0, true);
-                ShieldPart part = new ShieldPart(this, "part" + i * steps + currentStep, step, height);
+                ShieldPart part = new ShieldPart(this, "part" + i * steps + currentStep, .55f, height);
                 double x = start.x + dirVec.x * currentStep;
                 double y = start.y + dirVec.y * currentStep;
                 double z = start.z + dirVec.z * currentStep;
@@ -167,19 +177,42 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
+    protected void addAdditionalSaveData(CompoundTag compoundTag) {
         if (this.ownerUUID != null) {
-            pCompound.putUUID("Owner", this.ownerUUID);
+            compoundTag.putUUID("Owner", this.ownerUUID);
         }
-        super.addAdditionalSaveData(pCompound);
+        compoundTag.putInt("lifetime",lifetime);
+        ListTag anchors = new ListTag();
+        for (Vec3 vec : anchorPoints) {
+            CompoundTag anchor = new CompoundTag();
+            anchor.putFloat("x", (float) vec.x);
+            anchor.putFloat("y", (float) vec.y);
+            anchor.putFloat("z", (float) vec.z);
+            anchors.add(anchor);
+        }
+        compoundTag.put("Anchors", anchors);
+        super.addAdditionalSaveData(compoundTag);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-        if (pCompound.hasUUID("Owner")) {
-            this.ownerUUID = pCompound.getUUID("Owner");
+    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+        if (compoundTag.hasUUID("Owner")) {
+            this.ownerUUID = compoundTag.getUUID("Owner");
         }
-        super.readAdditionalSaveData(pCompound);
+        if(compoundTag.contains("lifetime"))
+            this.lifetime = compoundTag.getInt("lifetime");
+
+        //9 is list tag id
+        anchorPoints = new ArrayList<>();
+        if (compoundTag.contains("Anchors", 9)) {
+            ListTag anchors = (ListTag) compoundTag.get("Anchors");
+            for (Tag tag : anchors) {
+                if (tag instanceof CompoundTag anchor) {
+                    anchorPoints.add(new Vec3(anchor.getDouble("x"), anchor.getDouble("y"), anchor.getDouble("z")));
+                }
+            }
+        }
+        super.readAdditionalSaveData(compoundTag);
 
     }
 
