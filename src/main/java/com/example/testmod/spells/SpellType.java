@@ -115,49 +115,81 @@ public enum SpellType {
         return rarityMin + ((levelToMap - levelMin) * (rarityMax - rarityMin)) / (levelMax - levelMin);
     }
 
-    public SpellRarity getRarity(int level) {
-        int maxLevel = getMaxLevel();
+    private void initializeRarityWeights() {
         int minRarity = getMinRarity();
+        int maxRarity = getMaxRarity();
+        List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
+        List<Double> rarityConfig = SpellRarity.getRarityConfig();
+
+        if (minRarity != 0) {
+            //Must balance remaining weights
+
+            var subList = rarityRawConfig.subList(minRarity, maxRarity + 1);
+            double subtotal = subList.stream().reduce(0d, Double::sum);
+            rarityRawWeights = subList.stream().map(item -> ((item / subtotal) * (1 - subtotal)) + item).toList();
+
+            var counter = new AtomicDouble();
+            rarityWeights = new ArrayList<>();
+            rarityRawWeights.forEach(item -> {
+                rarityWeights.add(counter.addAndGet(item));
+            });
+        } else {
+            rarityRawWeights = rarityRawConfig;
+            rarityWeights = rarityConfig;
+        }
+    }
+
+    public SpellRarity getRarity(int level) {
+        if (rarityWeights == null) {
+            initializeRarityWeights();
+        }
+
+        int maxLevel = getMaxLevel();
         int maxRarity = getMaxRarity();
         double percentOfMaxLevel = (double) level / (double) maxLevel;
 
-        if (rarityWeights == null) {
-            List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
-            List<Double> rarityConfig = SpellRarity.getRarityConfig();
-
-            if (minRarity != 0) {
-                //Must balance remaining weights
-
-                var subList = rarityRawConfig.subList(minRarity, maxRarity + 1);
-                double subtotal = subList.stream().reduce(0d, Double::sum);
-                rarityRawWeights = subList.stream().map(item -> ((item / subtotal) * (1 - subtotal)) + item).toList();
-
-                var counter = new AtomicDouble();
-                rarityWeights = new ArrayList<>();
-                rarityRawWeights.forEach(item -> {
-                    rarityWeights.add(counter.addAndGet(item));
-                });
-            } else {
-                rarityRawWeights = rarityRawConfig;
-                rarityWeights = rarityConfig;
-            }
-        }
-
-        TestMod.LOGGER.debug("getRarity: {} {} {} {} {} {}", this.toString(), rarityRawWeights, rarityWeights, percentOfMaxLevel, minRarity, maxRarity);
+        //TestMod.LOGGER.debug("getRarity: {} {} {} {} {} {}", this.toString(), rarityRawWeights, rarityWeights, percentOfMaxLevel, minRarity, maxRarity);
 
         int lookupOffset = maxRarity + 1 - rarityWeights.size();
 
         for (int i = 0; i < rarityWeights.size(); i++) {
             if (percentOfMaxLevel <= rarityWeights.get(i)) {
-                TestMod.LOGGER.debug("getRarity: {} ", i);
                 return SpellRarity.values()[i + lookupOffset];
             }
         }
+
         return SpellRarity.COMMON;
     }
 
     public int getMinLevelForRarity(SpellRarity rarity) {
-        return 1;
+        if (rarityWeights == null) {
+            initializeRarityWeights();
+        }
+
+        int minRarity = getMinRarity();
+        int maxLevel = getMaxLevel();
+        if (rarity.getValue() < minRarity) {
+            return 0;
+        }
+
+        if (rarity.getValue() == minRarity) {
+            return 1;
+        }
+
+        TestMod.LOGGER.debug("getMinLevelForRarity: {} {} {} {} {} {} {}", this.toString(), rarity, rarityRawWeights, rarityWeights, maxLevel, minRarity, maxRarity);
+        return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
+
+
+//        int lookupOffset = maxRarity + 1 - rarityWeights.size();
+//        TestMod.LOGGER.debug("getMinLevelForRarity: {} {} {} {} {} {} {} {}", this.toString(), rarity, rarityRawWeights, rarityWeights, maxLevel, minRarity, maxRarity, lookupOffset);
+//        int index = rarity.getValue() - lookupOffset;
+//
+//        if (index < 0) {
+//            return 1;
+//        } else {
+//            double rarityWeight = rarityWeights.get(index);
+//            return (int) (maxLevel * rarityWeight);
+//        }
     }
 
     public AbstractSpell getSpellForRarity(SpellRarity rarity) {
