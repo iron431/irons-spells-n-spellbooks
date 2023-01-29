@@ -82,13 +82,15 @@ public class MagicManager {
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
-                            if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || playerMagicData.getMana() - spell.getManaCost() * 2 < 0) {
+                            if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || (playerMagicData.getCastSource() == CastSource.SpellBook && playerMagicData.getMana() - spell.getManaCost() * 2 < 0)) {
                                 //TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                                 Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                                 spell.onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
+                                if (playerMagicData.getCastSource() == CastSource.Scroll) {
+                                    Scroll.attemptRemoveScrollAfterCast(serverPlayer);
+                                }
                                 playerMagicData.resetCastingState();
-                                Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                             } else {
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), false);
                             }

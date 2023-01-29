@@ -94,6 +94,9 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         TestMod.LOGGER.debug("onPlayerRespawn: {}", event.getEntity().getName().getString());
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            PlayerMagicData.getPlayerMagicData(serverPlayer).resetCastingState();
+        }
     }
 
     @SubscribeEvent

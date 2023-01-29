@@ -176,7 +176,7 @@ public enum SpellType {
             return 1;
         }
 
-        TestMod.LOGGER.debug("getMinLevelForRarity: {} {} {} {} {} {} {}", this.toString(), rarity, rarityRawWeights, rarityWeights, maxLevel, minRarity, maxRarity);
+        //TestMod.LOGGER.debug("getMinLevelForRarity: {} {} {} {} {} {} {}", this.toString(), rarity, rarityRawWeights, rarityWeights, maxLevel, minRarity, maxRarity);
         return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
 
 
