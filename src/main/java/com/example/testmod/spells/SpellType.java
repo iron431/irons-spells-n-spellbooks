@@ -61,7 +61,6 @@ public enum SpellType {
     private final int maxRarity;
 
     private List<Double> rarityWeights;
-    private List<Double> rarityRawWeights;
 
     SpellType(final int newValue) {
         value = newValue;
@@ -123,6 +122,7 @@ public enum SpellType {
         List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
         List<Double> rarityConfig = SpellRarity.getRarityConfig();
 
+        List<Double> rarityRawWeights;
         if (minRarity != 0) {
             //Must balance remaining weights
 
@@ -136,7 +136,7 @@ public enum SpellType {
                 rarityWeights.add(counter.addAndGet(item));
             });
         } else {
-            rarityRawWeights = rarityRawConfig;
+            //rarityRawWeights = rarityRawConfig;
             rarityWeights = rarityConfig;
         }
     }

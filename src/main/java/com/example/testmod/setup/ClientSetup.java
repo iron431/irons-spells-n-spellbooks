@@ -18,6 +18,9 @@ import com.example.testmod.entity.mobs.summons.horse.MagicHorseRenderer;
 import com.example.testmod.entity.shield.ShieldModel;
 import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.entity.shield.ShieldTrimModel;
+import com.example.testmod.entity.wisp.WispEntity;
+import com.example.testmod.entity.wisp.WispRenderer;
+import com.example.testmod.entity.wisp_projectile.WispProjectileRenderer;
 import com.example.testmod.item.armor.WanderMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
@@ -48,6 +51,7 @@ public class ClientSetup {
     public static void onAttributeCreate(EntityAttributeCreationEvent event) {
         event.put(EntityRegistry.SIMPLE_WIZARD.get(), SimpleWizard.prepareAttributes().build());
         event.put(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteed.prepareAttributes().build());
+        event.put(EntityRegistry.WISP.get(), WispEntity.prepareAttributes().build());
     }
 
     @SubscribeEvent
@@ -90,9 +94,9 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SPECTRAL_STEED.get(), MagicHorseRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SHIELD_ENTITY.get(), ShieldRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_ENTITY.get(), NoopRenderer::new);
-
+        event.registerEntityRenderer(EntityRegistry.WISP.get(), WispRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.WISP_PROJECTILE.get(), WispProjectileRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
-
     }
 
     @SubscribeEvent

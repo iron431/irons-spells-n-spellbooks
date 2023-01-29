@@ -59,7 +59,11 @@
 - https://www.reddit.com/r/feedthebeast/comments/102jpqk/i_ported_the_mighty_architect_to_fabric_1192/
 
 ### Rendering
-- OpenGL Blending used by Minecraft: https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBlendFuncSeparate.xhtml 
+- OpenGL Blending used by Minecraft: https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBlendFuncSeparate.xhtml
+
+### Geckolib
+- https://www.youtube.com/watch?v=62GMA9Yg938
+- https://www.youtube.com/watch?v=3srLEdFTgVI
 
 ###
 - Hit Detection
