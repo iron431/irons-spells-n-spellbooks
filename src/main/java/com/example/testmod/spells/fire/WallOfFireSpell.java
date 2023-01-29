@@ -1,5 +1,6 @@
 package com.example.testmod.spells.fire;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.CastData;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
@@ -38,18 +39,11 @@ public class WallOfFireSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         var vec = Utils.getTargetBlock(world, entity, ClipContext.Fluid.ANY, 15).getLocation();
-        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.castingEntity != null && playerMagicData.castingEntity instanceof WallOfFireEntity fireWall) {
-
-        } else {
-//            WallOfFireEntity fireWall = new WallOfFireEntity(world, entity);
-//            fireWall.setPos(vec);
-//            world.addFreshEntity(fireWall);
-//            playerMagicData.discardCastingEntity();
-//            playerMagicData.castingEntity = fireWall;
-
+        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.getAdditionalCastData() == null) {
+            TestMod.LOGGER.debug("WallOfFireSpell: creating new data");
             playerMagicData.setAdditionalCastData(new FireWallData(getWallLength()));
-
         }
+
         if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData)
             addAnchor(vec, fireWallData, world, entity);
 
@@ -65,8 +59,9 @@ public class WallOfFireSpell extends AbstractSpell {
 //            TestMod.LOGGER.debug(vec.toString());
 //
 //        }
+        TestMod.LOGGER.debug("WallOfFireSpell.onCastComplete");
         if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
-            WallOfFireEntity fireWall = new WallOfFireEntity(level, entity, playerMagicData);
+            WallOfFireEntity fireWall = new WallOfFireEntity(level, entity, fireWallData.anchors);
             fireWall.setPos(fireWallData.getSafeFirstAnchor());
             level.addFreshEntity(fireWall);
         }
@@ -102,6 +97,18 @@ public class WallOfFireSpell extends AbstractSpell {
 
             //TestMod.LOGGER.debug("WallOfFire.maxDistance: {}", this.maxTotalDistance);
             //TestMod.LOGGER.debug("WallOfFire.currentDistance: {}", this.accumulatedDistance);
+        }
+        TestMod.LOGGER.debug("WallOfFireSpell: adding anchor");
+
+        if (entity instanceof ServerPlayer serverPlayer) {
+//            TestMod.LOGGER.debug("WallOfFireSpell: from serverplayer");
+
+            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            if (playerMagicData.getAdditionalCastData() instanceof FireWallData firw){
+//                TestMod.LOGGER.debug("WallOfFireSpell: playermagicdata data: {}", firw);
+                TestMod.LOGGER.debug("WallOfFireSpell: length: {}", firw.anchors.size());
+
+            }
         }
     }
 

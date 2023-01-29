@@ -30,6 +30,8 @@ public class ConeOfColdSpell extends AbstractSpell {
     public void onCastComplete(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         //TestMod.LOGGER.debug("ConeOfColdSpell.onCast: {}, {}, {}", (playerMagicData.cone == null), playerMagicData.isCasting(), playerMagicData.getCastDurationRemaining());
         playerMagicData.discardCastingEntity();
+        TestMod.LOGGER.debug("ConeOfColdSpell.onCastComplete");
+
     }
 
     @Override
