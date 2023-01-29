@@ -1,5 +1,6 @@
 package com.example.testmod.entity;
 
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -42,7 +43,7 @@ public abstract class AbstractShieldEntity extends Entity {
         this.setHealth(health);
     }
 
-    protected abstract void createShield();
+    protected abstract void createShield(@Nullable PlayerMagicData playerMagicData);
 
 //    public void setRotation(float x, float y) {
 //        this.setXRot(x);

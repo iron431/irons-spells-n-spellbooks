@@ -2,6 +2,7 @@ package com.example.testmod.entity.shield;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.AbstractShieldEntity;
 import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
@@ -36,7 +37,7 @@ public class ShieldEntity extends AbstractShieldEntity {
         //this.setXRot(45);
         //this.setYRot(45);
         LIFETIME = 20 * 20;
-        createShield();
+        createShield(null);
 
     }
 
@@ -46,7 +47,7 @@ public class ShieldEntity extends AbstractShieldEntity {
     }
 
     @Override
-    protected void createShield() {
+    protected void createShield(PlayerMagicData playerMagicData) {
         TestMod.LOGGER.debug("ShieldEntity.createShield");
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {

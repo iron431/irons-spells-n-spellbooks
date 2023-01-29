@@ -71,6 +71,7 @@ public class PlayerMagicData {
     private int castingSpellLevel = 0;
     private int castDurationRemaining = 0;
     private CastSource castSource;
+    private CastData additionalCastData;
 
     public Entity castingEntity;
     private int castDuration = 0;
@@ -83,6 +84,7 @@ public class PlayerMagicData {
         this.castingSpellLevel = 0;
         this.castDurationRemaining = 0;
         this.teleportTargetPosition = null;
+        additionalCastData = null;
         this.discardCastingEntity();
     }
 
@@ -110,7 +112,7 @@ public class PlayerMagicData {
     }
 
     //used if we want the entity to persist after the casting
-    public void forgetCastingEntity(){
+    public void forgetCastingEntity() {
         this.castingEntity = null;
 
     }
@@ -121,6 +123,18 @@ public class PlayerMagicData {
 
     public Vec3 getTeleportTargetPosition() {
         return this.teleportTargetPosition;
+    }
+
+    public CastData getAdditionalCastData() {
+        return additionalCastData;
+    }
+
+    public void setAdditionalCastData(CastData newCastData) {
+        additionalCastData = newCastData;
+    }
+
+    public void resetAdditionCastData() {
+        additionalCastData = null;
     }
 
     public boolean isCasting() {
