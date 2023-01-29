@@ -1,10 +1,19 @@
 {
   "item.testmod.spell_book": "Spell Book",
   "item.testmod.wimpy_spell_book": "Wimpy Spell Book",
+  "item.testmod.netherite_spell_book": "Ancient Codex",
+  "item.testmod.diamond_spell_book": "Enchanted Spell Book",
+  "item.testmod.gold_spell_book": "Apprentice's Spell Book",
+  "item.testmod.iron_spell_book": "Ironbound Tome",
+  "item.testmod.copper_spell_book": "Flimsy Journal",
   "item.testmod.scroll": "Scroll",
   "item.testmod.lightning_bottle": "Bottle o' Lightning",
   "item.testmod.frozen_bone": "Frozen Bone Shard",
   "item.testmod.blood_vial": "Blood Vial",
+  "item.testmod.hogskin": "Hogskin",
+  "item.testmod.magic_thread": "Magic Thread",
+  "item.testmod.enchanted_thread": "Enchanted Thread",
+  "item.testmod.ruined_book": "Ruined Book",
 
   "block.testmod.inscription_table": "Inscription Table",
   "block.testmod.scroll_forge": "Scroll Forge",
@@ -18,6 +27,7 @@
   "tooltip.testmod.cast_type": " %s Cast",
   "tooltip.testmod.selected_spell": "[%s %d]",
   "tooltip.testmod.rarity": "(%s)",
+  "tooltip.testmod.spellbook_rarity": "%s Spell Book",
 
   "ui.testmod.no_spell_book": "No SpellBook",
   "ui.testmod.no_selection": "Select a Spell",

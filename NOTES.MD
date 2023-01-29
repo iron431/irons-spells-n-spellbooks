@@ -105,4 +105,7 @@ it calculates the pitch and yaw (rotation around the x and y axes, respectively)
 pitch and yaw of the projectile using the setXRot and setYRot methods, and stores the pitch and yaw in the xRotO and yRotO fields, respectively. Finally,
 it calls the moveTo method to update the position and rotation of the projectile.
 
+### Recipes
+- https://forge.gemwire.uk/wiki/Tags
+
 ![img.png](img.png)

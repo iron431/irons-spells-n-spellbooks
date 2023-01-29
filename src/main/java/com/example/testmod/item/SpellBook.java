@@ -95,7 +95,8 @@ public class SpellBook extends Item implements ISpellBook {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        lines.add(this.rarity.getDisplayName());
+        var rarity = this.rarity.getDisplayName();
+        lines.add(Component.translatable("tooltip.testmod.spellbook_rarity",rarity).withStyle(rarity.getStyle()));
 
         var selectedSpellText = getSpellBookData(itemStack).getHoverText();
         if (selectedSpellText.size() > 0) {

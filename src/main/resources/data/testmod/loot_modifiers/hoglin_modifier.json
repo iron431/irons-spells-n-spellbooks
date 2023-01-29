@@ -1,0 +1,13 @@
+{
+  "type": "testmod:append_loot",
+  "conditions": [
+    {
+      "condition": "minecraft:entity_properties",
+      "entity": "this",
+      "predicate": {
+        "type": "minecraft:hoglin"
+      }
+    }
+  ],
+  "key": "testmod:entities/additional_hoglin_loot"
+}

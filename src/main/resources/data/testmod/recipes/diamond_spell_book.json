@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "HDD",
+    "HET",
+    "HDD"
+  ],
+  "key":
+  {
+    "D":
+    {
+      "tag": "forge:gems/diamond"
+    },
+    "E":
+    {
+      "item": "minecraft:enchanted_book"
+    },
+    "T":
+    {
+      "item": "testmod:enchanted_thread"
+    },
+    "H":
+    {
+      "item": "testmod:hogskin"
+    }
+  },
+  "result":
+  {
+    "item": "testmod:diamond_spell_book",
+    "count": 1
+  }
+}

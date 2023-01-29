@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "GMM",
+    "LHH",
+    "GMM"
+  ],
+  "key":
+  {
+    "G":
+    {
+      "tag": "forge:ingots/gold"
+    },
+    "L":
+    {
+      "tag": "forge:gems/lapis"
+    },
+    "M":
+    {
+      "item": "testmod:magic_thread"
+    },
+    "H":
+    {
+      "item": "testmod:hogskin"
+    }
+  },
+  "result":
+  {
+    "item": "testmod:gold_spell_book",
+    "count": 1
+  }
+}
