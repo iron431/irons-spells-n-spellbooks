@@ -100,9 +100,6 @@ public class ShieldEntity extends AbstractShieldEntity {
                 subEntity.zOld = pos.z;
             }
         }
-        TestMod.LOGGER.debug("ShieldEntity.tick: sub entities size: {}", subEntities.length);
-
-
     }
 
     @Override

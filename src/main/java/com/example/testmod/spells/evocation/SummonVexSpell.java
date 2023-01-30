@@ -4,7 +4,9 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 
 public class SummonVexSpell extends AbstractSpell {
@@ -28,6 +30,7 @@ public class SummonVexSpell extends AbstractSpell {
         for (int i = 0; i < this.level; i++) {
             SummonedVex vex = new SummonedVex(world, entity);
             vex.setPos(entity.getEyePosition());
+            vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
             world.addFreshEntity(vex);
         }
     }

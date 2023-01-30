@@ -40,7 +40,7 @@ public class ServerConfigs {
                 .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
 
         SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
-        CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", false);
+        CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", true);
 
         SPEC = BUILDER.build();
     }

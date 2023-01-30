@@ -9,8 +9,8 @@ import com.example.testmod.entity.firebolt.FireboltProjectile;
 import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.entity.mobs.SummonedVex;
-import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
+import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import com.example.testmod.entity.wisp.WispEntity;
@@ -102,9 +102,9 @@ public class EntityRegistry {
                     .build(new ResourceLocation(TestMod.MODID, "wall_of_fire").toString()));
 
     public static final RegistryObject<EntityType<SummonedVex>> SUMMONED_VEX =
-            ENTITIES.register("summoned_vex", () -> EntityType.Builder.<SummonedVex>of(SummonedVex::new, MobCategory.CREATURE)
-                    .fireImmune().sized(0.4F, 0.8F).clientTrackingRange(8)
+            ENTITIES.register("summoned_vex", () -> EntityType.Builder.<SummonedVex>of(SummonedVex::new, MobCategory.MONSTER)
+                    .sized(0.4F, 0.8F)
+                    .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "summoned_vex").toString()));
-
 
 }
