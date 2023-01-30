@@ -4,9 +4,11 @@ import com.example.testmod.TestMod;
 import com.example.testmod.entity.mobs.goals.AcquireTargetNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WispAttackGoal;
 import com.example.testmod.registries.EntityRegistry;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Monster;
@@ -47,11 +49,11 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     public WispEntity(EntityType<? extends WispEntity> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
-        this.flyingSpeed = 1;
     }
 
     public WispEntity(Level levelIn, LivingEntity owner, Vec3 targetSearchStart, int durationToLive) {
         this(EntityRegistry.WISP.get(), levelIn);
+        this.moveControl = new FlyingMoveControl(this, 20, true);
         this.targetSearchStart = targetSearchStart;
         this.durationToLive = durationToLive;
         setOwner(owner);
@@ -75,7 +77,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
         this.targetSelector.addGoal(1, new AcquireTargetNearLocationGoal<>(
                 this,
                 LivingEntity.class,
-                10,
+                0,
                 false,
                 true,
                 this::isValidTarget));
@@ -115,7 +117,15 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
 
     @Override
     protected @NotNull PathNavigation createNavigation(Level pLevel) {
-        FlyingPathNavigation flyingpathnavigation = new FlyingPathNavigation(this, pLevel);
+        FlyingPathNavigation flyingpathnavigation = new FlyingPathNavigation(this, pLevel) {
+            public boolean isStableDestination(BlockPos blockPos) {
+                return !this.level.getBlockState(blockPos.below()).isAir();
+            }
+
+            public void tick() {
+                super.tick();
+            }
+        };
         flyingpathnavigation.setCanOpenDoors(false);
         flyingpathnavigation.setCanFloat(true);
         flyingpathnavigation.setCanPassDoors(true);
@@ -186,7 +196,9 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
                 .add(Attributes.MAX_HEALTH, 20.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
-                .add(Attributes.MOVEMENT_SPEED, 1);
+                .add(Attributes.FLYING_SPEED, .2)
+                .add(Attributes.MOVEMENT_SPEED, .2);
+
     }
 
     @Override

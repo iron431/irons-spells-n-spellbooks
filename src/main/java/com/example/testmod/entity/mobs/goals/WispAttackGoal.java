@@ -54,7 +54,8 @@ public class WispAttackGoal extends Goal {
     public void tick() {
         double distanceSquared = this.target.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         boolean hasLineOfSight = this.wisp.getSensing().hasLineOfSight(this.target);
-        var moveResult = this.wisp.getNavigation().moveTo(this.target, this.speedModifier);
+        var moveResult = this.wisp.getNavigation().moveTo(target.getX(), target.getY(), target.getZ(), this.speedModifier);
+
         TestMod.LOGGER.debug("WispAttackGoal.tick: moveResult:{}, hasLineOfSight:{}", moveResult, hasLineOfSight);
 
         this.wisp.getLookControl().setLookAt(this.target, 180, 180);
