@@ -54,6 +54,7 @@
   "ui.testmod.distance": "%d Block Range",
   "ui.testmod.summon_count": "%d Summons",
   "ui.testmod.fang_count": "%d Fangs",
+  "ui.testmod.ring_count": "%d Rings",
   "ui.testmod.hp": "%d HP",
   "ui.testmod.effect_length": "%d Effect Length",
 
@@ -100,6 +101,7 @@
   "spell.testmod.wall_of_fire": "Wall of Fire",
   "spell.testmod.wisp": "Wisp",
   "spell.testmod.fang_strike": "Fang Strike",
+  "spell.testmod.fang_ward": "Fang Ward",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

@@ -51,7 +51,8 @@ public enum SpellType {
     SHIELD_SPELL(16),
     WALL_OF_FIRE_SPELL(17),
     WISP_SPELL(18),
-    FANG_STRIKE_SPELL(19);
+    FANG_STRIKE_SPELL(19),
+    FANG_WARD_SPELL(20);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -93,7 +94,7 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL -> CastType.LONG;
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL -> CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL -> CastType.CONTINUOUS;
             default -> CastType.INSTANT;
         };
@@ -283,6 +284,9 @@ public enum SpellType {
             case FANG_STRIKE_SPELL -> {
                 return new FangStrikeSpell(level);
             }
+            case FANG_WARD_SPELL -> {
+                return new FangWardSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -312,7 +316,7 @@ public enum SpellType {
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL};
-    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL};
+    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL};
 
     public MutableComponent getDisplayName() {
         return Component.translatable("spell." + TestMod.MODID + "." + this.getId());
