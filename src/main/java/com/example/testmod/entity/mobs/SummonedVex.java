@@ -1,12 +1,13 @@
 package com.example.testmod.entity.mobs;
 
-import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.entity.mobs.goals.GenericFollowOwnerGoal;
 import com.example.testmod.entity.mobs.goals.GenericHurtByTargetGoal;
 import com.example.testmod.entity.mobs.goals.GenericOwnerHurtByTargetGoal;
 import com.example.testmod.entity.mobs.goals.GenericOwnerHurtTargetGoal;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -14,7 +15,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -29,15 +32,27 @@ public class SummonedVex extends Vex implements MagicSummon {
 
     protected LivingEntity cachedSummoner;
     protected UUID summonerUUID;
+    protected int summonLife;
 
     public SummonedVex(EntityType<? extends Vex> pEntityType, Level pLevel) {
         super(EntityRegistry.SUMMONED_VEX.get(), pLevel);
+        summonLife = 10 * 20;
         xpReward = 0;
     }
 
-    public SummonedVex(Level pLevel, LivingEntity owner) {
+    public SummonedVex(Level pLevel, LivingEntity owner, int durationInTicks) {
         this(EntityRegistry.SUMMONED_VEX.get(), pLevel);
         setSummoner(owner);
+        this.summonLife = durationInTicks;
+    }
+
+    @Override
+    public void tick() {
+        if (--summonLife <= 0) {
+            onUnSummon();
+            return;
+        }
+        super.tick();
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -47,7 +62,6 @@ public class SummonedVex extends Vex implements MagicSummon {
         }
     }
 
-    @Nullable
     public LivingEntity getSummoner() {
         if (this.cachedSummoner != null && !this.cachedSummoner.isRemoved()) {
             return this.cachedSummoner;
@@ -60,23 +74,12 @@ public class SummonedVex extends Vex implements MagicSummon {
         }
     }
 
-//    @Nullable
-//    public UUID getSummonerUUID() {
-//        return this.entityData.get(DATA_ID_SUMMONER_UUID).orElse((UUID) null);
-//    }
-//
-//    public void setSummonerUUID(@Nullable UUID uuid) {
-//        TestMod.LOGGER.debug("Setting Vex Summoner UUID ({})", uuid);
-//        this.entityData.set(DATA_ID_SUMMONER_UUID, Optional.ofNullable(uuid));
-//        if (cachedSummoner == null || cachedSummoner.getUUID() != uuid) {
-//            if (level instanceof ServerLevel serverLevel) {
-//                cachedSummoner = serverLevel.getPlayerByUUID(uuid);
-//                TestMod.LOGGER.debug("Setting Vex Summoner ({})", serverLevel.getPlayerByUUID(uuid));
-//
-//            }
-//        }
-//
-//    }
+    public void onUnSummon() {
+        if (!level.isClientSide) {
+            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
+            discard();
+        }
+    }
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
@@ -104,45 +107,25 @@ public class SummonedVex extends Vex implements MagicSummon {
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        TestMod.LOGGER.debug("Reading Summoned Vex save data");
+        //TestMod.LOGGER.debug("Reading Summoned Vex save data");
 
-//        UUID uuid;
-//        if (compoundTag.contains("Summoner")) {
-//            TestMod.LOGGER.debug("Vex Save Data has SUMMONER");
-//            uuid = compoundTag.getUUID("Summoner");
-//            setSummonerUUID(uuid);
-//        }
         if (compoundTag.hasUUID("Summoner")) {
             this.summonerUUID = compoundTag.getUUID("Summoner");
         }
+        if (compoundTag.contains("SummonLife"))
+            this.summonLife = compoundTag.getInt("SummonLife");
 
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
-        TestMod.LOGGER.debug("Writing Summoned Vex save data");
-
         super.addAdditionalSaveData(compoundTag);
-//        UUID uuid;
-//        if (cachedSummoner != null)
-//            uuid = cachedSummoner.getUUID();
-//        else
-//            uuid = getSummonerUUID();
-//
-//        if (uuid != null) {
-//            TestMod.LOGGER.debug("Writing summoner UUID ({})", uuid);
-//            compoundTag.putUUID("Summoner", uuid);
-//        }
+        //TestMod.LOGGER.debug("Writing Summoned Vex save data");
+
         if (this.summonerUUID != null) {
             compoundTag.putUUID("Summoner", this.summonerUUID);
         }
-
-    }
-
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        //this.entityData.define(DATA_ID_SUMMONER_UUID, Optional.empty());
+        compoundTag.putInt("SummonLife", summonLife);
 
     }
 

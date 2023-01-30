@@ -94,7 +94,7 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL -> CastType.LONG;
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL -> CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL -> CastType.CONTINUOUS;
             default -> CastType.INSTANT;
         };
