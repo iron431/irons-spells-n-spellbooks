@@ -36,7 +36,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> GOLD_SPELL_BOOK = ITEMS.register("gold_spell_book", ()-> new SpellBook(5, SpellRarity.RARE));
     public static final RegistryObject<Item> IRON_SPELL_BOOK = ITEMS.register("iron_spell_book", ()-> new SpellBook(4, SpellRarity.UNCOMMON));
     public static final RegistryObject<Item> COPPER_SPELL_BOOK = ITEMS.register("copper_spell_book", ()-> new SpellBook(3, SpellRarity.COMMON));
-    public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", ()-> new UniqueSpellBook(SpellRarity.RARE, new AbstractSpell[]{new FangStrikeSpell(4), new FangWardSpell(3)}));
+    public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", ()-> new UniqueSpellBook(SpellRarity.COMMON, new AbstractSpell[]{new FangStrikeSpell(4), new FangWardSpell(3)}));
     public static final RegistryObject<Item> SCROLL = ITEMS.register("scroll", Scroll::new);
 
     /**

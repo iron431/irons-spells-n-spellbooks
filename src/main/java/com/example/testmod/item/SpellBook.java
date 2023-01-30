@@ -12,6 +12,7 @@ import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellRarity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -99,8 +100,13 @@ public class SpellBook extends Item implements ISpellBook {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
-        var rarity = this.rarity.getDisplayName();
-        lines.add(Component.translatable("tooltip.testmod.spellbook_rarity", rarity).withStyle(rarity.getStyle()));
+        if(!this.isUnique()){
+            var rarity = this.rarity.getDisplayName();
+            lines.add(Component.translatable("tooltip.testmod.spellbook_rarity", rarity).withStyle(rarity.getStyle()));
+        }else{
+            lines.add(Component.translatable("tooltip.testmod.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324)));
+        }
+
 
         var selectedSpellText = getSpellBookData(itemStack).getHoverText();
         if (selectedSpellText.size() > 0) {

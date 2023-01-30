@@ -76,6 +76,7 @@
 - ```data get entity @s ForgeCaps```
 - ```data get entity @s Pos```
 - ```effect give @s resistance 10000 4 true```
+- ```summon minecraft:creeper ~1 ~ ~1 {NoAI:1b}```
 - Fill floor directly below you
   - ```fill ~-5 ~-1 ~-5 ~5 ~-1 ~5 quartz_block```
 

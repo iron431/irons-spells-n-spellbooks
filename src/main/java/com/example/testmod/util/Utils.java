@@ -1,6 +1,5 @@
 package com.example.testmod.util;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.scroll.ScrollData;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
 import com.example.testmod.item.Scroll;
@@ -160,6 +159,11 @@ public class Utils {
         else
             return BlockHitResult.miss(end, Direction.UP, new BlockPos(end));
 
+    }
+
+    public static Vec3 getPositionFromEntityLookDirection(Entity originEntity, float distance) {
+        Vec3 start = originEntity.getEyePosition();
+        return originEntity.getLookAngle().normalize().scale(distance).add(start);
     }
 
     public static HitResult raycastForEntity(Level level, Entity originEntity, float distance, boolean checkForBlocks) {

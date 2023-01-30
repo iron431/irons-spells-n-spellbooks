@@ -33,6 +33,7 @@
   "tooltip.testmod.selected_spell": "[%s %d]",
   "tooltip.testmod.rarity": "(%s)",
   "tooltip.testmod.spellbook_rarity": "%s Spell Book",
+  "tooltip.testmod.spellbook_unique": "Unique Spell Book",
   "tooltip.testmod.cast_continuous": "%s Cast Duration",
   "tooltip.testmod.cast_long": "%s Cast Time",
 
@@ -110,6 +111,7 @@
   "effect.testmod.blood_slashed": "Blood Slashed",
 
   "commands.testmod.create_scroll.failed":"Create Scroll Failed",
-  "commands.testmod.create_spell_book.failed": "Create SpellBook Failed"
+  "commands.testmod.create_spell_book.failed": "Create SpellBook Failed",
 
+  "entity.testmod.wisp": "Wisp"
 }

@@ -62,6 +62,11 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
     @Override
     public void tick() {
+        if(anchorPoints.size() <= 1 || subEntities.length <= 1){
+            discard();
+            return;
+        }
+
         for (int i = 0, subEntitiesLength = subEntities.length; i < subEntitiesLength; i++) {
             PartEntity<?> subEntity = subEntities[i];
             Vec3 pos = partPositions.get(i);
