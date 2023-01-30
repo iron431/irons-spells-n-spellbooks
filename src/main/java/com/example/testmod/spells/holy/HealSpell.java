@@ -17,7 +17,6 @@ public class HealSpell extends AbstractSpell {
     }
 
     final float twoPi = 6.283f;
-    public final MutableComponent uniqueText;
 
     public HealSpell(int level) {
         super(SpellType.HEAL_SPELL);
@@ -28,7 +27,7 @@ public class HealSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 30;
         this.cooldown = 400;
-        uniqueText = Component.translatable("ui.testmod.healing", Utils.stringTruncation(getSpellPower(null), 1));
+        uniqueInfo.add(Component.translatable("ui.testmod.healing", Utils.stringTruncation(getSpellPower(null), 1)));
     }
 
     @Override
@@ -45,8 +44,4 @@ public class HealSpell extends AbstractSpell {
         }
     }
 
-    @Override
-    public MutableComponent getUniqueInfo() {
-        return uniqueText;
-    }
 }

@@ -7,12 +7,11 @@ import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
@@ -22,7 +21,6 @@ public class FirecrackerSpell extends AbstractSpell {
         this(1);
     }
 
-    //public final MutableComponent uniqueText;
     public FirecrackerSpell(int level) {
         super(SpellType.FIRECRACKER_SPELL);
         this.level = level;
@@ -32,7 +30,7 @@ public class FirecrackerSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 5;
         this.cooldown = 0;
-        //uniqueText = Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1));
+        uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getDamage(null), 1)));
     }
 
     @Override

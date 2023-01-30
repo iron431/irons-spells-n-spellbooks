@@ -15,8 +15,6 @@ public class IcicleSpell extends AbstractSpell {
         this(1);
     }
 
-    public final MutableComponent uniqueText;
-
     public IcicleSpell(int level) {
         super(SpellType.ICICLE_SPELL);
         this.level = level;
@@ -26,7 +24,7 @@ public class IcicleSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 5;
         this.cooldown = 0;
-        uniqueText = Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1));
+        uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1))) ;
     }
 
     @Override
@@ -36,10 +34,5 @@ public class IcicleSpell extends AbstractSpell {
         icicle.shoot(entity.getLookAngle());
         icicle.setDamage(getSpellPower(entity));
         world.addFreshEntity(icicle);
-    }
-
-    @Override
-    public MutableComponent getUniqueInfo() {
-        return uniqueText;
     }
 }

@@ -3,8 +3,8 @@ package com.example.testmod.gui.inscription_table;
 import com.example.testmod.TestMod;
 import com.example.testmod.gui.inscription_table.network.ServerboundInscribeSpell;
 import com.example.testmod.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
-import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.Scroll;
+import com.example.testmod.item.SpellBook;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -17,8 +17,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -234,8 +236,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         //  Unique Info
         //
-        if (spell.getUniqueInfo() != null)
-            drawText(font, poseStack, spell.getUniqueInfo(), x + margin, descLine, textColor.getColor().getValue(), 1);
+        for (MutableComponent component : spell.getUniqueInfo()) {
+            drawText(font, poseStack, component, x + margin, descLine, textColor.getColor().getValue(), 1);
+            descLine += font.lineHeight;
+        }
+
 
         poseStack.scale(reverseScale, reverseScale, reverseScale);
     }
@@ -355,7 +360,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         //Is the spellbook a high enough rarity?
         if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellBook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
-            var scrollData = scroll.getScrollData( menu.getScrollSlot().getItem());
+            var scrollData = scroll.getScrollData(menu.getScrollSlot().getItem());
             if (spellBook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
                 return;
         }

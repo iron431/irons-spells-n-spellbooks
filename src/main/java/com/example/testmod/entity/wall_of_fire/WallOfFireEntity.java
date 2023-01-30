@@ -122,7 +122,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             Vec3 start = anchorPoints.get(i);
             Vec3 end = anchorPoints.get(i + 1);
             Vec3 dirVec = end.subtract(start).normalize().scale(step);
-            int steps = (int) (start.distanceTo(end) / step);
+            int steps = (int) ((start.distanceTo(end) + .5) / step);
             for (int currentStep = 0; currentStep < steps; currentStep++) {
                 //MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, start.x + dirVec.x * x, start.y + dirVec.y * x, start.z + dirVec.z * x, 1, 0, 0, 0, 0, true);
                 ShieldPart part = new ShieldPart(this, "part" + i * steps + currentStep, .55f, height);
@@ -181,7 +181,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
         if (this.ownerUUID != null) {
             compoundTag.putUUID("Owner", this.ownerUUID);
         }
-        compoundTag.putInt("lifetime",lifetime);
+        compoundTag.putInt("lifetime", lifetime);
         ListTag anchors = new ListTag();
         for (Vec3 vec : anchorPoints) {
             CompoundTag anchor = new CompoundTag();
@@ -199,7 +199,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
         if (compoundTag.hasUUID("Owner")) {
             this.ownerUUID = compoundTag.getUUID("Owner");
         }
-        if(compoundTag.contains("lifetime"))
+        if (compoundTag.contains("lifetime"))
             this.lifetime = compoundTag.getInt("lifetime");
 
         //9 is list tag id

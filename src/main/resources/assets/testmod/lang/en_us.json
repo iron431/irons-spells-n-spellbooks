@@ -33,6 +33,8 @@
   "tooltip.testmod.selected_spell": "[%s %d]",
   "tooltip.testmod.rarity": "(%s)",
   "tooltip.testmod.spellbook_rarity": "%s Spell Book",
+  "tooltip.testmod.cast_continuous": "%s Cast Duration",
+  "tooltip.testmod.cast_long": "%s Cast Time",
 
   "ui.testmod.no_spell_book": "No SpellBook",
   "ui.testmod.no_selection": "Select a Spell",
@@ -51,6 +53,7 @@
   "ui.testmod.damage": "%d Damage",
   "ui.testmod.distance": "%d Block Range",
   "ui.testmod.summon_count": "%d Summons",
+  "ui.testmod.fang_count": "%d Fangs",
   "ui.testmod.hp": "%d HP",
   "ui.testmod.effect_length": "%d Effect Length",
 
@@ -96,6 +99,7 @@
   "spell.testmod.shield": "Shield",
   "spell.testmod.wall_of_fire": "Wall of Fire",
   "spell.testmod.wisp": "Wisp",
+  "spell.testmod.fang_strike": "Fang Strike",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

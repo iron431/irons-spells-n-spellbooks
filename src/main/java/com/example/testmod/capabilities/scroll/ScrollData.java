@@ -1,6 +1,7 @@
 package com.example.testmod.capabilities.scroll;
 
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
@@ -47,6 +48,7 @@ public class ScrollData {
         this.spellId = spellId;
         this.spellLevel = spellLevel;
     }
+
     public void setData(AbstractSpell spell) {
         this.spellId = spell.getID();
         this.spellLevel = spell.getLevel();
@@ -62,18 +64,22 @@ public class ScrollData {
     public List<MutableComponent> getHoverText() {
         if (hoverText == null) {
             hoverText = Lists.newArrayList();
-            var s = getSpell();
-            if (s.getSpellType() != SpellType.NONE_SPELL) {
+            var spell = getSpell();
+            if (spell.getSpellType() != SpellType.NONE_SPELL) {
                 //hoverText.add(s.getRarity().getDisplayName().copy());
                 //hoverText.add(Component.translatable("tooltip.testmod.level", s.getLevel()).withStyle(ChatFormatting.GRAY));
-                hoverText.add(Component.translatable("tooltip.testmod.level",s.getLevel()).append(" ").append(Component.translatable("tooltip.testmod.rarity",getSpell().getRarity().getDisplayName().getString())).withStyle(getSpell().getRarity().getDisplayName().getStyle()));
-                if (s.getUniqueInfo() != null)
-                    hoverText.add(s.getUniqueInfo().withStyle(ChatFormatting.GRAY));
+                hoverText.add(Component.translatable("tooltip.testmod.level", spell.getLevel()).append(" ").append(Component.translatable("tooltip.testmod.rarity", getSpell().getRarity().getDisplayName().getString())).withStyle(getSpell().getRarity().getDisplayName().getStyle()));
+                for (MutableComponent component : spell.getUniqueInfo())
+                    hoverText.add(component.withStyle(ChatFormatting.GRAY));
+                if (spell.getCastType() != CastType.INSTANT) {
+                    String castKey = spell.getCastType() == CastType.CONTINUOUS ? "tooltip.testmod.cast_continuous" : "tooltip.testmod.cast_long";
+                    hoverText.add(Component.translatable(castKey, Utils.timeFromTicks(spell.getCastTime(), 1)).withStyle(ChatFormatting.GRAY));
+                }
                 hoverText.add(Component.empty());
                 hoverText.add(Component.translatable("tooltip.testmod.scroll_tooltip").withStyle(ChatFormatting.GRAY));
-                hoverText.add(Component.translatable("tooltip.testmod.mana_cost", s.getManaCost()).withStyle(ChatFormatting.BLUE));
-                hoverText.add(Component.translatable("tooltip.testmod.cooldown_length_seconds", Utils.timeFromTicks(s.getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
-                hoverText.add(s.getSchoolType().getDisplayName().copy());
+                hoverText.add(Component.translatable("tooltip.testmod.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE));
+                hoverText.add(Component.translatable("tooltip.testmod.cooldown_length_seconds", Utils.timeFromTicks(spell.getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
+                hoverText.add(spell.getSchoolType().getDisplayName().copy());
             }
 
         }

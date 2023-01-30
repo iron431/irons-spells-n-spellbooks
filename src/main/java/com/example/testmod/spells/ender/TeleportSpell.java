@@ -8,7 +8,6 @@ import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -39,6 +38,8 @@ public class TeleportSpell extends AbstractSpell {
         this.baseManaCost = 1;
         this.cooldown = 0;
         this.castTime = 0;
+
+        uniqueInfo.add(Component.translatable("ui.testmod.distance", Utils.stringTruncation(getDistance(null), 1)));
 
     }
 
@@ -115,8 +116,4 @@ public class TeleportSpell extends AbstractSpell {
         return getSpellPower(sourceEntity);
     }
 
-    @Override
-    public MutableComponent getUniqueInfo() {
-        return Component.translatable("ui.testmod.distance", Utils.stringTruncation(getDistance(null), 1));
-    }
 }

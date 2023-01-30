@@ -12,6 +12,7 @@ import com.example.testmod.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -106,8 +107,12 @@ public abstract class SwordItemMixin extends Item {
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             lines.add(Component.translatable("tooltip.testmod.imbued_tooltip").withStyle(ChatFormatting.GRAY));
             lines.add(Component.literal(" ").append(Component.translatable("tooltip.testmod.spell_title", spell.getSpellType().getDisplayName(), spell.getLevel()).withStyle(spell.getSpellType().getSchoolType().getDisplayName().getStyle())));
-            if (spell.getUniqueInfo() != null)
-                lines.add(Component.literal(" ").append(spell.getUniqueInfo().withStyle(ChatFormatting.DARK_GREEN)));
+            for (MutableComponent component : spell.getUniqueInfo())
+                lines.add(Component.literal(" ").append(component.withStyle(ChatFormatting.DARK_GREEN)));
+            if (spell.getCastType() != CastType.INSTANT) {
+                String castKey = spell.getCastType() == CastType.CONTINUOUS ? "tooltip.testmod.cast_continuous" : "tooltip.testmod.cast_long";
+                lines.add(Component.literal(" ").append(Component.translatable(castKey, Utils.timeFromTicks(spell.getCastTime(), 1)).withStyle(ChatFormatting.BLUE)));
+            }
             lines.add(Component.translatable("tooltip.testmod.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE));
             lines.add(Component.translatable("tooltip.testmod.cooldown_length_seconds", Utils.timeFromTicks(spell.getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
         }

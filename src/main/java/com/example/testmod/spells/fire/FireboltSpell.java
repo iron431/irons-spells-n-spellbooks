@@ -15,8 +15,6 @@ public class FireboltSpell extends AbstractSpell {
         this(1);
     }
 
-    public final MutableComponent uniqueText;
-
     public FireboltSpell(int level) {
         super(SpellType.FIREBOLT_SPELL);
         this.level = level;
@@ -26,7 +24,7 @@ public class FireboltSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 5;
         this.cooldown = 0;
-        uniqueText = Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1));
+        uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1)));
     }
 
     @Override
@@ -36,10 +34,5 @@ public class FireboltSpell extends AbstractSpell {
         firebolt.shoot(entity.getLookAngle());
         firebolt.setDamage(getSpellPower(entity));
         world.addFreshEntity(firebolt);
-    }
-
-    @Override
-    public MutableComponent getUniqueInfo() {
-        return uniqueText;
     }
 }

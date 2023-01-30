@@ -16,6 +16,8 @@ public class EnhancedEvokerFang extends EvokerFangs {
     public EnhancedEvokerFang(Level pLevel, double pX, double pY, double pZ, float pYRot, int pWarmupDelay, LivingEntity pOwner, float damage) {
         super(pLevel, pX, pY, pZ, pYRot, pWarmupDelay, pOwner);
         this.warmupDelayTicks = pWarmupDelay;
+        if (warmupDelayTicks < 0)
+            warmupDelayTicks = 0;
         this.damage = damage;
     }
 
@@ -26,7 +28,6 @@ public class EnhancedEvokerFang extends EvokerFangs {
     @Override
     public void tick() {
         baseTick();
-        warmupDelayTicks--;
         if (warmupDelayTicks == 0) {
             attackStarted = true;
             this.level.broadcastEntityEvent(this, (byte) 4);
@@ -50,7 +51,7 @@ public class EnhancedEvokerFang extends EvokerFangs {
                 }
             }
         }
-        if (warmupDelayTicks < -22)
+        if (--warmupDelayTicks < -22)
             this.discard();
 
     }
@@ -76,7 +77,7 @@ public class EnhancedEvokerFang extends EvokerFangs {
         if (!this.attackStarted) {
             return 0.0F;
         } else {
-            int lifeTicks = warmupDelayTicks+22;
+            int lifeTicks = warmupDelayTicks + 22;
             int i = lifeTicks - 2;
             return i <= 0 ? 1.0F : 1.0F - ((float) i - pPartialTicks) / 20.0F;
         }

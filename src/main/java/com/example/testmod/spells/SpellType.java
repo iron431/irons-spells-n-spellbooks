@@ -5,10 +5,7 @@ import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
-import com.example.testmod.spells.evocation.FirecrackerSpell;
-import com.example.testmod.spells.evocation.ShieldSpell;
-import com.example.testmod.spells.evocation.SummonHorseSpell;
-import com.example.testmod.spells.evocation.SummonVexSpell;
+import com.example.testmod.spells.evocation.*;
 import com.example.testmod.spells.fire.*;
 import com.example.testmod.spells.holy.AngelWingsSpell;
 import com.example.testmod.spells.holy.HealSpell;
@@ -53,7 +50,8 @@ public enum SpellType {
     ANGEL_WING_SPELL(15),
     SHIELD_SPELL(16),
     WALL_OF_FIRE_SPELL(17),
-    WISP_SPELL(18);
+    WISP_SPELL(18),
+    FANG_STRIKE_SPELL(19);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -95,7 +93,7 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL -> CastType.LONG;
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL -> CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL -> CastType.CONTINUOUS;
             default -> CastType.INSTANT;
         };
@@ -282,6 +280,9 @@ public enum SpellType {
             case WISP_SPELL -> {
                 return new WispSpell(level);
             }
+            case FANG_STRIKE_SPELL -> {
+                return new FangStrikeSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -311,7 +312,7 @@ public enum SpellType {
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL};
-    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL};
+    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL};
 
     public MutableComponent getDisplayName() {
         return Component.translatable("spell." + TestMod.MODID + "." + this.getId());

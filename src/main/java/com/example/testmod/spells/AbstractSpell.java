@@ -22,6 +22,9 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.example.testmod.registries.AttributeRegistry.COOLDOWN_REDUCTION;
 
 public abstract class AbstractSpell {
@@ -35,6 +38,8 @@ public abstract class AbstractSpell {
     //All time values in ticks
     protected int castTime;
     protected int cooldown;
+
+    protected final List<MutableComponent> uniqueInfo = new ArrayList<>();
 
     public AbstractSpell(SpellType spellType) {
         this.spellType = spellType;
@@ -227,8 +232,8 @@ public abstract class AbstractSpell {
 
     }
 
-    public MutableComponent getUniqueInfo() {
-        return null;
+    public List<MutableComponent> getUniqueInfo() {
+        return uniqueInfo;
     }
 
     @Override
