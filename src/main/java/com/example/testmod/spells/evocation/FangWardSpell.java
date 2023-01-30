@@ -31,7 +31,7 @@ public class FangWardSpell extends AbstractSpell {
         this.baseManaCost = 5;
         this.cooldown = 0;
 
-        uniqueInfo.add(Component.translatable("ui.testmod.fang_count", getRings()));
+        uniqueInfo.add(Component.translatable("ui.testmod.ring_count", getRings()));
         uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getDamage(null), 1)));
     }
 
