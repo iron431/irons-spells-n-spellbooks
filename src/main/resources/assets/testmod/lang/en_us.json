@@ -110,6 +110,7 @@
   "effect.testmod.blood_slashed": "Blood Slashed",
 
   "commands.testmod.create_scroll.failed":"Create Scroll Failed",
-  "commands.testmod.create_spell_book.failed": "Create SpellBook Failed"
+  "commands.testmod.create_spell_book.failed": "Create SpellBook Failed",
 
+  "entity.testmod.wisp": "Wisp"
 }

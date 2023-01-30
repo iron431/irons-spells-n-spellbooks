@@ -1,5 +1,6 @@
 package com.example.testmod.entity.mobs.goals;
 
+import com.example.testmod.TestMod;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -18,7 +19,9 @@ public class AcquireTargetNearLocationGoal<T extends LivingEntity> extends Targe
     protected final int randomInterval;
     @Nullable
     protected LivingEntity target;
-    /** This filter is applied to the Entity search. Only matching entities will be targeted. */
+    /**
+     * This filter is applied to the Entity search. Only matching entities will be targeted.
+     */
     protected TargetingConditions targetConditions;
 
     public AcquireTargetNearLocationGoal(Mob pMob, Class<T> pTargetType, int pRandomInterval, boolean pMustSee, boolean pMustReach, @Nullable Predicate<LivingEntity> pTargetPredicate) {
@@ -35,9 +38,11 @@ public class AcquireTargetNearLocationGoal<T extends LivingEntity> extends Targe
      */
     public boolean canUse() {
         if (this.randomInterval > 0 && this.mob.getRandom().nextInt(this.randomInterval) != 0) {
+            TestMod.LOGGER.debug("AcquireTargetNearLocationGoal.canUse: false");
             return false;
         } else {
             this.findTarget();
+            TestMod.LOGGER.debug("AcquireTargetNearLocationGoal.canUse: {}", this.target);
             return this.target != null;
         }
     }
@@ -48,13 +53,17 @@ public class AcquireTargetNearLocationGoal<T extends LivingEntity> extends Targe
 
     protected void findTarget() {
         if (this.targetType != Player.class && this.targetType != ServerPlayer.class) {
-            this.target = this.mob.level.getNearestEntity(this.mob.level.getEntitiesOfClass(this.targetType, this.getTargetSearchArea(this.getFollowDistance()), (p_148152_) -> {
+            var targetSearchArea = this.getTargetSearchArea(this.getFollowDistance());
+            TestMod.LOGGER.debug("AcquireTargetNearLocationGoal.findTarget.1 {}", targetSearchArea);
+            var entitiesOfClass = this.mob.level.getEntitiesOfClass(this.targetType, targetSearchArea, (potentialTarget) -> {
+                TestMod.LOGGER.debug("AcquireTargetNearLocationGoal.findTarget.2 {}", potentialTarget.getName().getString());
                 return true;
-            }), this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+            });
+            this.target = this.mob.level.getNearestEntity(entitiesOfClass, this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         } else {
+            TestMod.LOGGER.debug("AcquireTargetNearLocationGoal.findTarget.6");
             this.target = this.mob.level.getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         }
-
     }
 
     /**

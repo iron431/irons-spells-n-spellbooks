@@ -1,5 +1,6 @@
 package com.example.testmod.spells.holy;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.wisp.WispEntity;
 import com.example.testmod.spells.AbstractSpell;
@@ -26,12 +27,14 @@ public class WispSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 40;
         this.baseManaCost = 30;
-        this.cooldown = 400;
+        this.cooldown = 40;
     }
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        var wispEntity = new WispEntity(world, entity, getTargetLocation(world, entity));
+        int duration = (int) ((getSpellPower(entity) + baseSpellPower) * 100);
+        TestMod.LOGGER.debug("WispSpell.onCast entityDuration:{}", duration);
+        var wispEntity = new WispEntity(world, entity, getTargetLocation(world, entity), duration);
         wispEntity.setPos(Utils.getPositionFromEntityLookDirection(entity, 2));
         world.addFreshEntity(wispEntity);
     }
