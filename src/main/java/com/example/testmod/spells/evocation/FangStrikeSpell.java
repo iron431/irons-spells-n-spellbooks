@@ -1,7 +1,7 @@
 package com.example.testmod.spells.evocation;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.entity.EnhancedEvokerFang;
+import com.example.testmod.entity.mobs.EnhancedEvokerFang;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;

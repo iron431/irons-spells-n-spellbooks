@@ -1,4 +1,4 @@
-package com.example.testmod.entity;
+package com.example.testmod.entity.mobs;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;

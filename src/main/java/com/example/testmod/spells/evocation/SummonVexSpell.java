@@ -1,6 +1,7 @@
 package com.example.testmod.spells.evocation;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,9 +26,9 @@ public class SummonVexSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         for (int i = 0; i < this.level; i++) {
-//            Vex vex = EntityType.VEX.create(world);
-//            vex.setOwner(player);
-//            vex.setBoundOrigin(blockpos);
+            SummonedVex vex = new SummonedVex(world, entity);
+            vex.setPos(entity.getEyePosition());
+            world.addFreshEntity(vex);
         }
     }
 }

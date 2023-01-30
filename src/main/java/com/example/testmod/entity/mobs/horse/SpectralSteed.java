@@ -1,9 +1,7 @@
-package com.example.testmod.entity.mobs.summons;
+package com.example.testmod.entity.mobs.horse;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.util.Utils;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -43,6 +41,7 @@ public class SpectralSteed extends AbstractHorse {
     @Override
     protected void followMommy() {
         // Called from server
+        //TODO: Register goals dont do this
         Player owner = Utils.getServerPlayer(level, getOwnerUUID());
         if (owner != null && owner.position().distanceToSqr(position()) > 100){
             this.navigation.createPath(owner, 0);

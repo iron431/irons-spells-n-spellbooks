@@ -1,7 +1,7 @@
 package com.example.testmod.spells.evocation;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.entity.HitscanFireworkRocketEntity;
+import com.example.testmod.entity.mobs.HitscanFireworkRocketEntity;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;

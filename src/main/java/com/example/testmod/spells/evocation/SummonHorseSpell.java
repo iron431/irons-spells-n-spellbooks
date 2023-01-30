@@ -1,7 +1,7 @@
 package com.example.testmod.spells.evocation;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.entity.mobs.summons.SpectralSteed;
+import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.LivingEntity;

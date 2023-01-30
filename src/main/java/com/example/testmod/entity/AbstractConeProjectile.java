@@ -2,6 +2,7 @@ package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.entity.mobs.MagicEntity;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.util.Utils;
 import net.minecraft.util.Mth;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class AbstractConeProjectile extends Projectile implements MagicEntity{
+public abstract class AbstractConeProjectile extends Projectile implements MagicEntity {
     protected static final int FAILSAFE_EXPIRE_TIME = 20 * 20;
     protected int age;
     protected float damage;
