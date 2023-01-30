@@ -26,11 +26,11 @@ import java.util.List;
 
 public class SpellBook extends Item implements ISpellBook {
 
-    private static final String PARENT = "Parent";
+    protected static final String PARENT = "Parent";
     public static final String TAG = "tag";
     public static final String CAP = "cap";
-    private final SpellRarity rarity;
-    private final int spellSlots;
+    protected final SpellRarity rarity;
+    protected final int spellSlots;
 
     public SpellBook() {
         this(1, SpellRarity.COMMON);
@@ -93,10 +93,14 @@ public class SpellBook extends Item implements ISpellBook {
         super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
     }
 
+    public boolean isUnique() {
+        return false;
+    }
+
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
         var rarity = this.rarity.getDisplayName();
-        lines.add(Component.translatable("tooltip.testmod.spellbook_rarity",rarity).withStyle(rarity.getStyle()));
+        lines.add(Component.translatable("tooltip.testmod.spellbook_rarity", rarity).withStyle(rarity.getStyle()));
 
         var selectedSpellText = getSpellBookData(itemStack).getHoverText();
         if (selectedSpellText.size() > 0) {

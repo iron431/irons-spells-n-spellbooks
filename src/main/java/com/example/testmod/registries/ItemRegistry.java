@@ -4,9 +4,13 @@ import com.example.testmod.TestMod;
 import com.example.testmod.item.InkItem;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.item.UniqueSpellBook;
 import com.example.testmod.item.armor.WanderMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
+import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellRarity;
+import com.example.testmod.spells.evocation.FangStrikeSpell;
+import com.example.testmod.spells.evocation.FangWardSpell;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -32,6 +36,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> GOLD_SPELL_BOOK = ITEMS.register("gold_spell_book", ()-> new SpellBook(5, SpellRarity.RARE));
     public static final RegistryObject<Item> IRON_SPELL_BOOK = ITEMS.register("iron_spell_book", ()-> new SpellBook(4, SpellRarity.UNCOMMON));
     public static final RegistryObject<Item> COPPER_SPELL_BOOK = ITEMS.register("copper_spell_book", ()-> new SpellBook(3, SpellRarity.COMMON));
+    public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", ()-> new UniqueSpellBook(SpellRarity.RARE, new AbstractSpell[]{new FangStrikeSpell(4), new FangWardSpell(3)}));
     public static final RegistryObject<Item> SCROLL = ITEMS.register("scroll", Scroll::new);
 
     /**

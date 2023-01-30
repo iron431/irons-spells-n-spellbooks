@@ -5,6 +5,7 @@ import com.example.testmod.gui.inscription_table.network.ServerboundInscribeSpel
 import com.example.testmod.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.item.UniqueSpellBook;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
@@ -145,11 +146,14 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private void renderSpellSlot(PoseStack poseStack, Vec2 pos, int mouseX, int mouseY, int index, SpellSlotInfo slot) {
         //setTexture(TEXTURE);
-        int iconToDraw = isHovering((int) pos.x, (int) pos.y, 19, 19, mouseX, mouseY) ? 38 : slot.hasSpell() ? 19 : 0;
+        boolean hovering = isHovering((int) pos.x, (int) pos.y, 19, 19, mouseX, mouseY);
+        int iconToDraw = hovering ? 38 : slot.hasSpell() ? 19 : 0;
         this.blit(poseStack, (int) pos.x, (int) pos.y, iconToDraw, 166, 19, 19);
         if (slot.hasSpell()) {
             drawSpellIcon(poseStack, pos, slot);
             setTexture(TEXTURE);
+            if(hovering && menu.getSpellBookSlot().getItem().getItem() instanceof UniqueSpellBook)
+                this.blit(poseStack, (int) pos.x, (int) pos.y, 76, 166, 19, 19);
         }
         if (index == selectedSpellIndex)
             this.blit(poseStack, (int) pos.x, (int) pos.y, 57, 166, 19, 19);
@@ -340,37 +344,43 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //  Called when inscription button clicked
         //
 
-        //  Is the spell book bricked?
-        if (spellSlots.size() <= 0)
-            return;
-
-        //  Quick inscribe
-        if (selectedSpellIndex < 0 || spellSlots.get(selectedSpellIndex).hasSpell()) {
-            for (int i = selectedSpellIndex + 1; i < spellSlots.size(); i++) {
-                if (!spellSlots.get(i).hasSpell()) {
-                    setSelectedIndex(i);
-                    break;
-                }
-            }
-        }
-        //  Is this slot already taken?
-        if (spellSlots.get(selectedSpellIndex).hasSpell()) {
-            return;
-        }
-
-        //Is the spellbook a high enough rarity?
         if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellBook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
+
+            //  Is the spell book bricked?
+            if (spellSlots.size() <= 0)
+                return;
+
+            //  Is the spellbook a high enough rarity?
             var scrollData = scroll.getScrollData(menu.getScrollSlot().getItem());
             if (spellBook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
                 return;
+
+            //  Is the Spell Book unique? (shouldn't even be possible to get this far but...)
+            if (spellBook.isUnique())
+                return;
+
+            //  Quick inscribe
+            if (selectedSpellIndex < 0 || spellSlots.get(selectedSpellIndex).hasSpell()) {
+                for (int i = selectedSpellIndex + 1; i < spellSlots.size(); i++) {
+                    if (!spellSlots.get(i).hasSpell()) {
+                        setSelectedIndex(i);
+                        break;
+                    }
+                }
+            }
+            //  Is this slot already taken?
+            if (spellSlots.get(selectedSpellIndex).hasSpell()) {
+                return;
+            }
+
+            //
+            //  Good to inscribe
+            //
+
+            isDirty = true;
+            Messages.sendToServer(new ServerboundInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
         }
 
-        //
-        //  Good to inscribe
-        //
-
-        isDirty = true;
-        Messages.sendToServer(new ServerboundInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
 
     }
 
