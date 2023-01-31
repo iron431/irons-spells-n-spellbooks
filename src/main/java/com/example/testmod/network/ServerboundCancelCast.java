@@ -49,9 +49,9 @@ public class ServerboundCancelCast {
 
                 if (triggerCooldown) {
                     MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
-                    AbstractSpell.getSpell(spellId, 0).onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                 }
 
+                AbstractSpell.getSpell(spellId, 0).onCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                 playerMagicData.resetCastingState();
 
                 Messages.sendToPlayer(new ClientboundUpdateCastingState(spellId, 0, CastType.NONE, true), serverPlayer);

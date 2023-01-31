@@ -101,6 +101,11 @@ public class PlayerMagicData {
         this.isCasting = true;
     }
 
+    public void setCastingEntity(Entity castingEntity) {
+        discardCastingEntity();
+        this.castingEntity = castingEntity;
+    }
+
     public boolean discardCastingEntity() {
         if (this.castingEntity != null) {
             this.castingEntity.discard();

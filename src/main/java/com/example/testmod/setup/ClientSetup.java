@@ -96,6 +96,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SPECTRAL_STEED.get(), MagicHorseRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SHIELD_ENTITY.get(), ShieldRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_ENTITY.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_CAST_TRACKER.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WISP.get(), WispRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_VEX.get(), VexRenderer::new);
 
