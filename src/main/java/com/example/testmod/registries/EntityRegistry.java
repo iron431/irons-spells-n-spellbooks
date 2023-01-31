@@ -102,7 +102,7 @@ public class EntityRegistry {
                     .build(new ResourceLocation(TestMod.MODID, "wall_of_fire").toString()));
 
     public static final RegistryObject<EntityType<SummonedVex>> SUMMONED_VEX =
-            ENTITIES.register("summoned_vex", () -> EntityType.Builder.<SummonedVex>of(SummonedVex::new, MobCategory.MONSTER)
+            ENTITIES.register("summoned_vex", () -> EntityType.Builder.<SummonedVex>of(SummonedVex::new, MobCategory.CREATURE)
                     .sized(0.4F, 0.8F)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "summoned_vex").toString()));

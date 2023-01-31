@@ -10,6 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class SummonVexSpell extends AbstractSpell {
@@ -40,13 +41,15 @@ public class SummonVexSpell extends AbstractSpell {
 
     @Override
     public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        entity.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
     }
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        entity.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
         for (int i = 0; i < this.level; i++) {
             SummonedVex vex = new SummonedVex(world, entity, 5 * 60 * 20);
-            vex.setPos(entity.getEyePosition().add(0, 1, 1).yRot(i * 25));
+            vex.setPos(entity.getEyePosition().add(new Vec3(1, 1, 1).yRot(i * 25)));
             vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
             world.addFreshEntity(vex);
         }

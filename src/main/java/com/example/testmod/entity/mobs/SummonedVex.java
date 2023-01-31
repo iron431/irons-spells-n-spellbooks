@@ -1,5 +1,6 @@
 package com.example.testmod.entity.mobs;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.entity.mobs.goals.GenericFollowOwnerGoal;
 import com.example.testmod.entity.mobs.goals.GenericHurtByTargetGoal;
@@ -33,6 +34,7 @@ public class SummonedVex extends Vex implements MagicSummon {
     protected LivingEntity cachedSummoner;
     protected UUID summonerUUID;
     protected int summonLife;
+    int counter;
 
     public SummonedVex(EntityType<? extends Vex> pEntityType, Level pLevel) {
         super(EntityRegistry.SUMMONED_VEX.get(), pLevel);
@@ -48,10 +50,12 @@ public class SummonedVex extends Vex implements MagicSummon {
 
     @Override
     public void tick() {
-        if (--summonLife <= 0) {
-            onUnSummon();
-            return;
-        }
+        //For some reason this breaks the vex... is
+//        summonLife--;
+//        if (summonLife <= 0) {
+//            onUnSummon();
+//            return;
+//        }
         super.tick();
     }
 
@@ -125,6 +129,7 @@ public class SummonedVex extends Vex implements MagicSummon {
         if (this.summonerUUID != null) {
             compoundTag.putUUID("Summoner", this.summonerUUID);
         }
+        TestMod.LOGGER.debug("Serialzing Summon LIfe");
         compoundTag.putInt("SummonLife", summonLife);
 
     }
