@@ -3,10 +3,10 @@ package com.example.testmod.entity.blood_slash;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.effect.BloodSlashed;
+import com.example.testmod.entity.AbstractShieldEntity;
 import com.example.testmod.entity.ShieldPart;
-import com.example.testmod.entity.shield.ShieldEntity;
-import com.example.testmod.util.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -15,7 +15,10 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +113,7 @@ public class BloodSlashProjectile extends Projectile {
                 damageEntity(entity);
                 TestMod.LOGGER.info(entity.getName().getString());
                 MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY(), entity.getZ(), 50, 0, 0, 0, .5, true);
-                if (entity instanceof ShieldPart || entity instanceof ShieldEntity) {
+                if (entity instanceof ShieldPart || entity instanceof AbstractShieldEntity) {
                     discard();
                     return;
                 }

@@ -172,7 +172,7 @@ public abstract class AbstractConeProjectile extends Projectile implements Magic
         Vec3 vec3 = new Vec3(start.getX(), start.getEyeY(), start.getZ());
         Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
 
-        boolean isShieldBlockingLOS = Utils.raycastForEntityOfClass(start.level, start, vec3, vec31, false, ShieldEntity.class).getType() == HitResult.Type.ENTITY;
+        boolean isShieldBlockingLOS = Utils.raycastForEntityOfClass(start.level, start, vec3, vec31, false, AbstractShieldEntity.class).getType() == HitResult.Type.ENTITY;
         return !isShieldBlockingLOS && start.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
     }
 

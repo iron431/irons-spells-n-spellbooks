@@ -1,9 +1,9 @@
 package com.example.testmod.entity.fire_breath;
 
 import com.example.testmod.entity.AbstractConeProjectile;
-import com.example.testmod.entity.shield.ShieldEntity;
-import com.example.testmod.util.ParticleHelper;
+import com.example.testmod.entity.AbstractShieldEntity;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.util.ParticleHelper;
 import com.example.testmod.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -30,12 +30,13 @@ public class FireBreathProjectile extends AbstractConeProjectile {
     public void tick() {
         if (!level.isClientSide && getOwner() != null)
             if (dealDamageActive) {
+                //Set Fire Blocks
                 float range = 15 * Mth.DEG_TO_RAD;
                 for (int i = 0; i < 3; i++) {
                     Vec3 cast = getOwner().getLookAngle().normalize().xRot(level.random.nextFloat() * range * 2 - range).yRot(level.random.nextFloat() * range * 2 - range);
                     HitResult hitResult = level.clip(new ClipContext(getOwner().getEyePosition(), getOwner().getEyePosition().add(cast.scale(10)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     if (hitResult.getType() == HitResult.Type.BLOCK) {
-                        HitResult shieldResult = Utils.raycastForEntityOfClass(level, this, getOwner().getEyePosition(), hitResult.getLocation(), false, ShieldEntity.class);
+                        HitResult shieldResult = Utils.raycastForEntityOfClass(level, this, getOwner().getEyePosition(), hitResult.getLocation(), false, AbstractShieldEntity.class);
                         if (shieldResult.getType() == HitResult.Type.MISS) {
                             Vec3 pos = hitResult.getLocation().subtract(cast.scale(.5));
                             BlockPos blockPos = new BlockPos(pos.x, pos.y, pos.z);
@@ -57,20 +58,21 @@ public class FireBreathProjectile extends AbstractConeProjectile {
             return;
         }
         Vec3 rotation = owner.getLookAngle().normalize();
-        var pos = owner.position().add(rotation);
+        var pos = owner.position().add(rotation.scale(1.6));
 
         double x = pos.x;
-        double y = pos.y + owner.getEyeHeight() * .8f;
+        double y = pos.y + owner.getEyeHeight() * .9f;
         double z = pos.z;
 
-        double speed = random.nextDouble() * .35 + .55;
+        double speed = random.nextDouble() * .35 + .35;
         for (int i = 0; i < 10; i++) {
-            double offset = .05;
+            double offset = .15;
             double ox = Math.random() * 2 * offset - offset;
             double oy = Math.random() * 2 * offset - offset;
             double oz = Math.random() * 2 * offset - offset;
 
-            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
+            double angularness = .5;
+            Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
             level.addParticle(ParticleHelper.FIRE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }

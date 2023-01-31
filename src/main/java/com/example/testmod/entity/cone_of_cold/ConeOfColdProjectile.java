@@ -28,22 +28,23 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
             return;
         }
         Vec3 rotation = owner.getLookAngle().normalize();
-        var pos = owner.position().add(rotation);
+        var pos = owner.position().add(rotation.scale(1.6));
 
         double x = pos.x;
-        double y = pos.y + owner.getEyeHeight() * .8f;
+        double y = pos.y + owner.getEyeHeight() * .9f;
         double z = pos.z;
 
         double speed = random.nextDouble() * .35 + .25;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 15; i++) {
             double offset = .25;
             double ox = Math.random() * 2 * offset - offset;
             double oy = Math.random() * 2 * offset - offset;
             double oz = Math.random() * 2 * offset - offset;
 
-            Vec3 randomVec = new Vec3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1).normalize();
+            double angularness = .8;
+            Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random()  * 2 * angularness - angularness, Math.random()  * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(Math.random() > .1 ? ParticleTypes.SNOWFLAKE : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level.addParticle(Math.random() > .05 ? ParticleTypes.SNOWFLAKE : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }
 
 

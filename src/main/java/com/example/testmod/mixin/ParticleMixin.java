@@ -1,6 +1,6 @@
 package com.example.testmod.mixin;
 
-import com.example.testmod.entity.shield.ShieldEntity;
+import com.example.testmod.entity.AbstractShieldEntity;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.phys.AABB;
@@ -27,7 +27,7 @@ public class ParticleMixin {
     )
     private List<VoxelShape> mixin(List<VoxelShape> in) {
         List<VoxelShape> shieldCollisions = new ArrayList<>();
-        level.getEntitiesOfClass(ShieldEntity.class, bb.inflate(0.25)).stream().forEach((s) -> shieldCollisions.addAll(s.getVoxels()));
+        level.getEntitiesOfClass(AbstractShieldEntity.class, bb.inflate(0.25)).stream().forEach((s) -> shieldCollisions.addAll(s.getVoxels()));
         return shieldCollisions;
     }
 }
