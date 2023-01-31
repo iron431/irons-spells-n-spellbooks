@@ -5,6 +5,7 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.network.ClientboundOnClientCast;
+import com.example.testmod.network.ClientboundSuppressRightClicks;
 import com.example.testmod.network.ClientboundSyncMana;
 import com.example.testmod.network.ClientboundUpdateCastingState;
 import com.example.testmod.registries.AttributeRegistry;
@@ -209,6 +210,8 @@ public abstract class AbstractSpell {
      */
     public void onCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         //TestMod.LOGGER.debug("AbstractSpell.: onCastComplete:{}", level.isClientSide);
+        if (entity instanceof ServerPlayer player)
+            Messages.sendToPlayer(new ClientboundSuppressRightClicks(), player);
     }
 
     /**

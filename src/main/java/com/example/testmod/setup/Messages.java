@@ -112,6 +112,13 @@ public class Messages {
                 .encoder(ServerboundCancelCast::toBytes)
                 .consumer(ServerboundCancelCast::handle)
                 .add();
+
+        net.messageBuilder(ClientboundSuppressRightClicks.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSuppressRightClicks::new)
+                .encoder(ClientboundSuppressRightClicks::toBytes)
+                .consumer(ClientboundSuppressRightClicks::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {

@@ -36,11 +36,11 @@ public class WizardAttackGoal extends Goal {
         this.attackRadiusSqr = attackRadius * attackRadius;
 
         //spellList.add(SpellType.ELECTROCUTE_SPELL);
-//        spellList.add(SpellType.CONE_OF_COLD_SPELL);
-        //spellList.add(SpellType.FIRE_BREATH_SPELL);
-        spellList.add(SpellType.BLOOD_SLASH_SPELL);
+        spellList.add(SpellType.CONE_OF_COLD_SPELL);
+        spellList.add(SpellType.FIRE_BREATH_SPELL);
+        //spellList.add(SpellType.BLOOD_SLASH_SPELL);
 //        spellList.add(SpellType.TELEPORT_SPELL);
-        spellList.add(SpellType.MAGIC_MISSILE_SPELL);
+        //spellList.add(SpellType.MAGIC_MISSILE_SPELL);
 
     }
 

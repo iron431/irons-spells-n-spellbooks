@@ -52,6 +52,7 @@ public class ClientMagicData {
     public static int castDurationRemaining = 0;
     public static int castDuration = 0;
     public static CastType castType = CastType.NONE;
+    public static boolean supressRightClicks;
 
     public static float getCastCompletionPercent() {
         return 1 - (castDurationRemaining / (float) castDuration);

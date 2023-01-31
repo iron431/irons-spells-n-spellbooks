@@ -53,6 +53,7 @@ public class WallOfFireSpell extends AbstractSpell {
 //            TestMod.LOGGER.debug(vec.toString());
 //
 //        }
+        super.onCastComplete(level, entity, playerMagicData);
         TestMod.LOGGER.debug("WallOfFireSpell.onCastComplete");
         if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
             if (fireWallData.anchors.size() == 1)

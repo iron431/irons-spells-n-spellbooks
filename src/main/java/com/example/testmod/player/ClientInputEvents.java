@@ -1,12 +1,13 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import com.example.testmod.gui.overlays.SpellWheelOverlay;
+import com.example.testmod.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.util.Utils;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -22,11 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = TestMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
-public final class ClientKeyHandler {
+public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
+
+    private static KeyMapping useKeyMapping;
+    public static boolean isUseKeyDown;
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
@@ -99,6 +103,38 @@ public final class ClientKeyHandler {
 
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
+        //TestMod.LOGGER.debug("onUseInput: keymapping: {} ({})", useKeyMapping.getKey(), useKeyMapping.getKey().getValue());
+        if (event.isUseItem()) {
+            useKeyMapping = event.getKeyMapping();
+            if (ClientMagicData.supressRightClicks) {
+                event.setSwingHand(false);
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onKeyInput(InputEvent.Key event) {
+        handleRightClickSuppression(event.getKey(), event.getAction());
+    }
+
+    @SubscribeEvent
+    public static void onMouseInput(InputEvent.MouseButton.Pre event) {
+        handleRightClickSuppression(event.getButton(), event.getAction());
+    }
+
+    private static void handleRightClickSuppression(int button, int action) {
+        if (useKeyMapping != null && button == useKeyMapping.getKey().getValue())
+            if (action == InputConstants.RELEASE) {
+                ClientMagicData.supressRightClicks = false;
+                isUseKeyDown = false;
+            } else if (action == InputConstants.PRESS) {
+                isUseKeyDown = true;
+            }
     }
 
     private static void Update() {
