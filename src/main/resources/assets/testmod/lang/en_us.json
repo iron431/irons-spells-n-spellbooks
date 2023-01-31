@@ -1,6 +1,8 @@
 {
   "item.testmod.spell_book": "Spell Book",
   "item.testmod.wimpy_spell_book": "Wimpy Spell Book",
+  "item.testmod.evoker_spell_book": "Grimoire of Evokation",
+  "item.testmod.illusioner_spell_book": "Book of Illusions",
   "item.testmod.netherite_spell_book": "Ancient Codex",
   "item.testmod.diamond_spell_book": "Enchanted Spell Book",
   "item.testmod.gold_spell_book": "Apprentice's Spell Book",

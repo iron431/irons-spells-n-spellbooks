@@ -2,6 +2,7 @@
   "replace": false,
   "entries": [
     "testmod:stray_modifier",
-    "testmod:hoglin_modifier"
+    "testmod:hoglin_modifier",
+    "testmod:evoker_modifier"
   ]
 }
