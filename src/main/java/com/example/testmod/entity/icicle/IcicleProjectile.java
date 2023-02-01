@@ -1,10 +1,10 @@
 package com.example.testmod.entity.icicle;
 
 import com.example.testmod.capabilities.magic.MagicManager;
-import com.example.testmod.util.ParticleHelper;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -98,8 +98,9 @@ public class IcicleProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, DamageSources.ICE_MAGIC, getOwner());
         if (entityHitResult.getEntity() instanceof LivingEntity target) {
-            target.hurt(DamageSource.MAGIC, damage);
+            //target.hurt(DamageSource.MAGIC, damage);
             target.setTicksFrozen(target.getTicksFrozen() + 165);
 
         }

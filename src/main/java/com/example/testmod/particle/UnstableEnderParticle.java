@@ -18,7 +18,7 @@ public class UnstableEnderParticle extends TextureSheetParticle {
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
-        this.quadSize = 0.1F * (this.random.nextFloat() * 0.2F + 0.5F);
+        this.quadSize = 0.1F * (this.random.nextFloat() * 0.15F + 0.3F);
         this.scale(2.5f);
         this.lifetime = 5 + (int) (Math.random() * 25);
         sprites = spriteSet;

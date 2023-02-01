@@ -106,14 +106,12 @@ public class PlayerMagicData {
         this.castingEntity = castingEntity;
     }
 
-    public boolean discardCastingEntity() {
+    public void discardCastingEntity() {
         if (this.castingEntity != null) {
             this.castingEntity.discard();
             this.castingEntity = null;
             //TestMod.LOGGER.debug("PlayerMagicData: discarding cone");
-            return true;
         }
-        return false;
     }
 
     //used if we want the entity to persist after the casting
