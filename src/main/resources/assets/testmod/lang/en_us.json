@@ -109,6 +109,7 @@
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
   "death.attack.blood_magic.player": "%1$s blood magic 3",
+  "death.attack.blood_cauldron": "%1$s was cooked alive.",
 
   "effect.testmod.blood_slashed": "Blood Slashed",
 

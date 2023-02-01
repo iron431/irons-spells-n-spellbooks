@@ -1,6 +1,7 @@
 package com.example.testmod.block;
 
 import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -8,7 +9,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -82,7 +82,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
             if (CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
                 if (level.getBlockState(pos).getBlock() instanceof AbstractCauldronBlock cauldron) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity.getBoundingBox().intersects(cauldron.getInteractionShape(blockState, level, pos).bounds().move(pos))) {
-                        livingEntity.hurt(DamageSource.HOT_FLOOR, 2);
+                        livingEntity.hurt(DamageSources.CAULDRON, 2);
                         MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
                         if (level.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
                             execution.execute();

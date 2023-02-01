@@ -27,6 +27,8 @@ public class DamageSources {
         return new EntityDamageSource(BLOOD_MAGIC_ID, player);
     }
 
+    public static DamageSource CAULDRON = new DamageSource("blood_cauldron");
+
     public static DamageSource BLOOD_MAGIC = new DamageSource(BLOOD_MAGIC_ID);
     public static DamageSource FIRE_MAGIC = new DamageSource(FIRE_MAGIC_ID).setIsFire();
     public static DamageSource ICE_MAGIC = new DamageSource(ICE_MAGIC_ID);
