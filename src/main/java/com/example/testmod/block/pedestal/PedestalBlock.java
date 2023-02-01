@@ -2,8 +2,10 @@ package com.example.testmod.block.pedestal;
 
 import com.example.testmod.TestMod;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -45,18 +47,46 @@ public class PedestalBlock extends BaseEntityBlock {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);
             TestMod.LOGGER.debug("PedestalBlock.use");
-            if(entity instanceof PedestalTile pedestalTile){
-                TestMod.LOGGER.debug("PedestalBlock: found pedestal tile");
+            if (entity instanceof PedestalTile pedestalTile) {
 
-                //TODO: max stack size of 1
-                ItemStack currentHeldItem = pedestalTile.getHeldItem();
+                ItemStack currentPedestalItem = pedestalTile.getHeldItem();
                 ItemStack handItem = player.getItemInHand(hand);
-                player.setItemInHand(hand,currentHeldItem);
-                pedestalTile.setHeldItem(handItem);
+
+                //Drop Current Item
+                ItemStack playerItem = currentPedestalItem.copy();
+                if (handItem.isEmpty()) {
+                    player.setItemInHand(hand, playerItem);
+                } else {
+                    dropItem(playerItem, player);
+                }
+                pedestalTile.setHeldItem(ItemStack.EMPTY);
+
+
+                //Place a singular new Item
+                currentPedestalItem = handItem.copy();
+                if (!currentPedestalItem.isEmpty()) {
+                    currentPedestalItem.setCount(1);
+                    pedestalTile.setHeldItem(currentPedestalItem);
+                    handItem.shrink(1);
+                }
+                //Let clients know to update rendered item
+                pLevel.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+                //handItem.setCount(1);
+                //player.setItemInHand(hand,currentPedestalItem);
             }
         }
 
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
+    }
+
+    private void dropItem(ItemStack itemstack, Player owner) {
+        if (owner instanceof ServerPlayer serverplayer) {
+            ItemEntity itementity = serverplayer.drop(itemstack, false);
+            if (itementity != null) {
+                itementity.setNoPickUpDelay();
+                itementity.setOwner(serverplayer.getUUID());
+            }
+        }
     }
 
     @Override

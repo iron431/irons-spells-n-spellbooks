@@ -61,51 +61,32 @@ public class PedestalTile extends BlockEntity {
     public void load(CompoundTag nbt) {
         super.load(nbt);
         TestMod.LOGGER.debug("Loading Pedestal NBT");
-        if (nbt.contains(NBT_HELD_ITEM)) {
-            //itemHandler.deserializeNBT(nbt.getCompound("inventory"));
-            TestMod.LOGGER.debug("Pedestal NBT contains held item ({})", nbt.getCompound(NBT_HELD_ITEM));
-
-            //heldItem.deserializeNBT(nbt.getCompound(NBT_HELD_ITEM));
-            heldItem = ItemStack.of(nbt.getCompound(NBT_HELD_ITEM));
-            TestMod.LOGGER.debug("Held Item: {}", heldItem);
-
-        }
+        readNBT(nbt);
 
     }
-
-//    @Override
-//    public void setRemoved() {
-//        super.setRemoved();
-//        lazyItemHandler.invalidate();
-//    }
-//
-//    @Override
-//    public void invalidateCaps() {
-//        super.invalidateCaps();
-//        lazyItemHandler.invalidate();
-//    }
 
     @Override
     protected void saveAdditional(@Nonnull CompoundTag tag) {
         //TestMod.LOGGER.debug("saveAdditional tag:{}", tag);
         //tag.put("inventory", itemHandler.serializeNBT());
-        tag.put(NBT_HELD_ITEM, heldItem.serializeNBT());
+        writeNBT(tag);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         //tag.put("inventory", itemHandler.serializeNBT());
-        tag.put(NBT_HELD_ITEM, heldItem.serializeNBT());
+        writeNBT(tag);
         //TestMod.LOGGER.debug("getUpdateTag tag:{}", tag);
         return tag;
     }
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        var packet = ClientboundBlockEntityDataPacket.create(this);
+        //var packet = ClientboundBlockEntityDataPacket.create(this);
         //TestMod.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());
-        return packet;
+        CompoundTag nbt = writeNBT(new CompoundTag());
+        return ClientboundBlockEntityDataPacket.create(this, (block) -> nbt);
     }
 
     @Override
@@ -123,7 +104,7 @@ public class PedestalTile extends BlockEntity {
         }
     }
 
-//    @Nonnull
+    //    @Nonnull
 //    @Override
 //    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
 //        if (cap == ForgeCapabilities.ITEM_HANDLER) {
@@ -133,30 +114,22 @@ public class PedestalTile extends BlockEntity {
 //        return super.getCapability(cap, side);
 //    }
 
-//    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, InscriptionTableTile pBlockEntity) {
-//        if(hasRecipe(pBlockEntity) && hasNotReachedStackLimit(pBlockEntity)) {
-//            craftItem(pBlockEntity);
-//        }
-//    }
-//
-//    private static void craftItem(GemCuttingStationBlockEntity entity) {
-//        entity.itemHandler.extractItem(0, 1, false);
-//        entity.itemHandler.extractItem(1, 1, false);
-//        entity.itemHandler.getStackInSlot(2).hurt(1, new Random(), null);
-//
-//        entity.itemHandler.setStackInSlot(3, new ItemStack(ModItems.CITRINE.get(),
-//                entity.itemHandler.getStackInSlot(3).getCount() + 1));
-//    }
-//
-//    private static boolean hasRecipe(GemCuttingStationBlockEntity entity) {
-//        boolean hasItemInWaterSlot = PotionUtils.getPotion(entity.itemHandler.getStackInSlot(0)) == Potions.WATER;
-//        boolean hasItemInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.RAW_CITRINE.get();
-//        boolean hasItemInSecondSlot = entity.itemHandler.getStackInSlot(2).getItem() == ModItems.GEM_CUTTER_TOOL.get();
-//
-//        return hasItemInWaterSlot && hasItemInFirstSlot && hasItemInSecondSlot;
-//    }
-//
-//    private static boolean hasNotReachedStackLimit(GemCuttingStationBlockEntity entity) {
-//        return entity.itemHandler.getStackInSlot(3).getCount() < entity.itemHandler.getStackInSlot(3).getMaxStackSize();
-//    }
+    private CompoundTag writeNBT(CompoundTag nbt) {
+        nbt.put(NBT_HELD_ITEM, heldItem.serializeNBT());
+        //TestMod.LOGGER.debug("getUpdateTag tag:{}", tag);
+        return nbt;
+    }
+
+    private CompoundTag readNBT(CompoundTag nbt) {
+        if (nbt.contains(NBT_HELD_ITEM)) {
+            //itemHandler.deserializeNBT(nbt.getCompound("inventory"));
+            TestMod.LOGGER.debug("Pedestal NBT contains held item ({})", nbt.getCompound(NBT_HELD_ITEM));
+
+            //heldItem.deserializeNBT(nbt.getCompound(NBT_HELD_ITEM));
+            heldItem = ItemStack.of(nbt.getCompound(NBT_HELD_ITEM));
+            TestMod.LOGGER.debug("Held Item: {}", heldItem);
+
+        }
+        return nbt;
+    }
 }

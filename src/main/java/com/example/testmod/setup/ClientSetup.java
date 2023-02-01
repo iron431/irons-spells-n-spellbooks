@@ -1,6 +1,7 @@
 package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.block.pedestal.PedestalRenderer;
 import com.example.testmod.block.scroll_forge.ScrollForgeRenderer;
 import com.example.testmod.entity.armor.simple_wizard.WizardArmorRenderer;
 import com.example.testmod.entity.armor.wandering_magician.WanderingMagicianRenderer;
@@ -101,6 +102,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_VEX.get(), VexRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
+        event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
     }
 
     @SubscribeEvent
