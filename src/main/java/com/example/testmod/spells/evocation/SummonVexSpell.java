@@ -49,12 +49,16 @@ public class SummonVexSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
+        int summonTime = 20 * 60 * 3;
         for (int i = 0; i < this.level; i++) {
             SummonedVex vex = new SummonedVex(world, entity, 5 * 60 * 20);
             vex.setPos(entity.getEyePosition().add(new Vec3(1, 1, 1).yRot(i * 25)));
             vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
-            vex.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_TIMER.get(), 20 * 180, 0, false, false, false));
+            vex.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_TIMER.get(), summonTime, 0, false, false, false));
             world.addFreshEntity(vex);
         }
+        //TODO: replace with per-summon effect so the player knows when what summons run out
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_TIMER.get(), summonTime, 0, false, false, true));
+
     }
 }
