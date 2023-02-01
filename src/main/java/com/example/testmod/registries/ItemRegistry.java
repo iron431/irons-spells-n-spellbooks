@@ -56,8 +56,12 @@ public class ItemRegistry {
     public static final RegistryObject<Item> FROZEN_BONE_SHARD = ITEMS.register("frozen_bone", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
     public static final RegistryObject<Item> BLOOD_VIAL = ITEMS.register("blood_vial", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
     public static final RegistryObject<Item> HOGSKIN = ITEMS.register("hogskin", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
-    public static final RegistryObject<Item> MAGIC_THREAD = ITEMS.register("magic_thread", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
-    public static final RegistryObject<Item> ENCHANTED_THREAD = ITEMS.register("enchanted_thread", () -> new SimpleFoiledItem((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> CLOTH = ITEMS.register("cloth", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
+    public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
+    public static final RegistryObject<Item> FIRE_RUNE = ITEMS.register("fire_rune", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
+    public static final RegistryObject<Item> FIRE_CLOTH = ITEMS.register("fire_cloth", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
+    //public static final RegistryObject<Item> MAGIC_THREAD = ITEMS.register("magic_thread", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS)));
+    //public static final RegistryObject<Item> ENCHANTED_THREAD = ITEMS.register("enchanted_thread", () -> new SimpleFoiledItem((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> RUINED_BOOK = ITEMS.register("ruined_book", () -> new Item((new Item.Properties()).tab(CreativeModeTab.TAB_MATERIALS).rarity(Rarity.EPIC)));
 
     /**
