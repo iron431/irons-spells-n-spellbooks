@@ -1,11 +1,11 @@
 package com.example.testmod.damage;
 
 import com.example.testmod.registries.AttributeRegistry;
+import com.example.testmod.spells.SchoolType;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.Nullable;
 
@@ -17,27 +17,23 @@ import javax.annotation.Nullable;
 
 public class DamageSources {
 
-    public static final String BLOOD_MAGIC_ID = "blood_magic";
-    public static final String FIRE_MAGIC_ID = "fire_magic";
-    public static final String ICE_MAGIC_ID = "ice_magic";
-    public static final String HOLY_MAGIC_ID = "holy_magic";
-    public static final String ENDER_MAGIC_ID = "ender_magic";
 
-    public static EntityDamageSource bloodSlash(Player player) {
-        return new EntityDamageSource(BLOOD_MAGIC_ID, player);
-    }
+//    public static EntityDamageSource bloodSlash(Player player) {
+//        return new EntityDamageSource(BLOOD_MAGIC_ID, player);
+//    }
 
     public static DamageSource CAULDRON = new DamageSource("blood_cauldron");
 
-    public static DamageSource BLOOD_MAGIC = new DamageSource(BLOOD_MAGIC_ID);
-    public static DamageSource FIRE_MAGIC = new DamageSource(FIRE_MAGIC_ID).setIsFire();
-    public static DamageSource ICE_MAGIC = new DamageSource(ICE_MAGIC_ID);
-    public static DamageSource HOLY_MAGIC = new DamageSource(HOLY_MAGIC_ID);
-    public static DamageSource ENDER_MAGIC = new DamageSource(ENDER_MAGIC_ID);
+//    public static DamageSource BLOOD_MAGIC = new DamageSource(BLOOD_MAGIC_ID);
+//    public static DamageSource FIRE_MAGIC = new DamageSource(FIRE_MAGIC_ID).setIsFire();
+//    public static DamageSource ICE_MAGIC = new DamageSource(ICE_MAGIC_ID);
+//    public static DamageSource HOLY_MAGIC = new DamageSource(HOLY_MAGIC_ID);
+//    public static DamageSource ENDER_MAGIC = new DamageSource(ENDER_MAGIC_ID);
 
-    public static float applyDamage(Entity target, float baseAmount, DamageSource damageSource, @Nullable Entity attacker) {
+    //TODO: decide if we want per-school death messages or per-spell death messages
+    public static float applyDamage(Entity target, float baseAmount, DamageSource damageSource, SchoolType damageSchool, @Nullable Entity attacker) {
         if (target instanceof LivingEntity livingTarget) {
-            float adjustedDamage = baseAmount * getResist(livingTarget, damageSource);
+            float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
             if (attacker != null) {
                 livingTarget.hurt(new EntityDamageSource(damageSource.getMsgId(), attacker), adjustedDamage);
                 if (attacker instanceof LivingEntity livingAttacker)
@@ -53,10 +49,15 @@ public class DamageSources {
 
     }
 
-    public static float getResist(LivingEntity entity, DamageSource damageSource) {
-        return switch (damageSource.getMsgId()) {
-            case BLOOD_MAGIC_ID -> 2 - (float) entity.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
-            case ICE_MAGIC_ID -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ICE_MAGIC_RESIST.get());
+    public static float getResist(LivingEntity entity, SchoolType damageSchool) {
+        return switch (damageSchool) {
+            case FIRE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.FIRE_MAGIC_RESIST.get());
+            case ICE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ICE_MAGIC_RESIST.get());
+            case LIGHTNING -> 2 - (float) entity.getAttributeValue(AttributeRegistry.LIGHTNING_MAGIC_RESIST.get());
+            case HOLY -> 2 - (float) entity.getAttributeValue(AttributeRegistry.HOLY_MAGIC_RESIST.get());
+            case ENDER -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ENDER_MAGIC_RESIST.get());
+            case BLOOD -> 2 - (float) entity.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
+            case EVOCATION -> 2 - (float) entity.getAttributeValue(AttributeRegistry.EVOCATION_MAGIC_RESIST.get());
             default -> 1;
         };
     }

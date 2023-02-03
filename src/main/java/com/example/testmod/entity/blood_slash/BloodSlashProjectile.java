@@ -2,15 +2,19 @@ package com.example.testmod.entity.blood_slash;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
-import com.example.testmod.effect.BloodSlashed;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.AbstractShieldEntity;
 import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.registries.MobEffectRegistry;
+import com.example.testmod.spells.SchoolType;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -25,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BloodSlashProjectile extends Projectile {
+    public static DamageSource BLOOD_SLASH_DAMAGE = new DamageSource("blood_slash_spell");
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
     private static final double SPEED = 1d;
     private static final int EXPIRE_TIME = 4 * 20;
@@ -186,10 +191,15 @@ public class BloodSlashProjectile extends Projectile {
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            BloodSlashed.applyDamage(getEffectSource(), entity, damage);
+            DamageSources.applyDamage(entity, damage, BLOOD_SLASH_DAMAGE, SchoolType.BLOOD, getOwner());
+            if (entity instanceof LivingEntity livingEntity) {
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
+                if (getOwner() instanceof LivingEntity livingOwner) {
+                    livingOwner.heal(damage * .1f * DamageSources.getResist(livingEntity, SchoolType.BLOOD));
+                }
+            }
             victims.add(entity);
         }
-
     }
 
     //https://forge.gemwire.uk/wiki/Particles

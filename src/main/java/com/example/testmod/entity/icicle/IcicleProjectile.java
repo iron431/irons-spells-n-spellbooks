@@ -3,8 +3,10 @@ package com.example.testmod.entity.icicle;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.spells.SchoolType;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,8 +26,10 @@ import net.minecraft.world.phys.Vec3;
 //https://github.com/maximumpower55/Aura
 
 public class IcicleProjectile extends Projectile implements ItemSupplier {
+    public static DamageSource ICICLE_DAMAGE = new DamageSource("icicle_spell");
     private static final double SPEED = 2d;
     private static final int EXPIRE_TIME = 5 * 20;
+
 
     private int age;
     private float damage;
@@ -98,7 +102,7 @@ public class IcicleProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, DamageSources.ICE_MAGIC, getOwner());
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, ICICLE_DAMAGE, SchoolType.ICE, getOwner());
         if (entityHitResult.getEntity() instanceof LivingEntity target) {
             //target.hurt(DamageSource.MAGIC, damage);
             target.setTicksFrozen(target.getTicksFrozen() + 165);
