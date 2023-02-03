@@ -82,6 +82,11 @@ public class PedestalTile extends BlockEntity {
     }
 
     @Override
+    public boolean triggerEvent(int pId, int pType) {
+        return super.triggerEvent(pId, pType);
+    }
+
+    @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         //var packet = ClientboundBlockEntityDataPacket.create(this);
         //TestMod.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());

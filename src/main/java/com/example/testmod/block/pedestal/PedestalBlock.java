@@ -2,7 +2,9 @@ package com.example.testmod.block.pedestal;
 
 import com.example.testmod.TestMod;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -20,7 +22,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 //https://youtu.be/CUHEKcaIpOk?t=451
 public class PedestalBlock extends BaseEntityBlock {
@@ -30,6 +35,10 @@ public class PedestalBlock extends BaseEntityBlock {
 
     public static final VoxelShape SHAPE = Shapes.or(SHAPE_BOTTOM, SHAPE_TOP, SHAPE_COLUMN);
 
+    //Copied from enchantment table block
+    public static final List<BlockPos> BOOKSHELF_OFFSETS = BlockPos.betweenClosedStream(-3, -1, -3, 3, 1, 3).filter((blockPos) -> {
+        return Math.abs(blockPos.getX()) == 3 || Math.abs(blockPos.getZ()) == 3;
+    }).map(BlockPos::immutable).toList();
 
     public PedestalBlock() {
         super(Properties.copy(Blocks.LODESTONE).noOcclusion());
@@ -54,7 +63,7 @@ public class PedestalBlock extends BaseEntityBlock {
 
                 //Drop Current Item
                 ItemStack playerItem = currentPedestalItem.copy();
-                if (handItem.isEmpty()) {
+                if (handItem.isEmpty() || handItem.getCount() == 1) {
                     player.setItemInHand(hand, playerItem);
                 } else {
                     dropItem(playerItem, player);
@@ -77,6 +86,19 @@ public class PedestalBlock extends BaseEntityBlock {
         }
 
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
+    }
+
+    public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
+        super.animateTick(pState, pLevel, pPos, pRandom);
+        TestMod.LOGGER.debug("Pedestal Block: animate tick");
+        for (BlockPos blockpos : BOOKSHELF_OFFSETS) {
+            TestMod.LOGGER.debug("Pedestal Block: {}", blockpos);
+
+            if (pRandom.nextInt(16) == 0 && pLevel.getBlockState(pPos.offset(blockpos)).is(Tags.Blocks.BOOKSHELVES)) {
+                pLevel.addParticle(ParticleTypes.ENCHANT, (double) pPos.getX() + 0.5D, (double) pPos.getY() + 2.0D, (double) pPos.getZ() + 0.5D, (double) ((float) blockpos.getX() + pRandom.nextFloat()) - 0.5D, (double) ((float) blockpos.getY() - pRandom.nextFloat() - 1.0F), (double) ((float) blockpos.getZ() + pRandom.nextFloat()) - 0.5D);
+            }
+        }
+
     }
 
     private void dropItem(ItemStack itemstack, Player owner) {
