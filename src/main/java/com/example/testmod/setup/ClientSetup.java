@@ -22,7 +22,7 @@ import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.entity.shield.ShieldTrimModel;
 import com.example.testmod.entity.wisp.WispEntity;
 import com.example.testmod.entity.wisp.WispRenderer;
-import com.example.testmod.item.armor.WanderMagicianArmorItem;
+import com.example.testmod.item.armor.WanderingMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
 import com.example.testmod.registries.BlockRegistry;
@@ -68,7 +68,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
         GeoArmorRenderer.registerArmorRenderer(WizardArmorItem.class, WizardArmorRenderer::new);
-        GeoArmorRenderer.registerArmorRenderer(WanderMagicianArmorItem.class, WanderingMagicianRenderer::new);
+        GeoArmorRenderer.registerArmorRenderer(WanderingMagicianArmorItem.class, WanderingMagicianRenderer::new);
 
         TestMod.LOGGER.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
 

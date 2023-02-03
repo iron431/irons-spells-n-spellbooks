@@ -5,7 +5,7 @@ import com.example.testmod.item.InkItem;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.UniqueSpellBook;
-import com.example.testmod.item.armor.WanderMagicianArmorItem;
+import com.example.testmod.item.armor.WanderingMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellRarity;
@@ -80,10 +80,10 @@ public class ItemRegistry {
     public static final RegistryObject<Item> WIZARD_PANTS = ITEMS.register("wizard_pants", () -> new WizardArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
     public static final RegistryObject<Item> WIZARD_BOOTS = ITEMS.register("wizard_boots", () -> new WizardArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_HAT = ITEMS.register("wandering_magician_helmet", () -> new WanderMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_ROBE = ITEMS.register("wandering_magician_chestplate", () -> new WanderMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.CHEST, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_PANTS = ITEMS.register("wandering_magician_leggings", () -> new WanderMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_BOOTS = ITEMS.register("wandering_magician_boots", () -> new WanderMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_HAT = ITEMS.register("wandering_magician_helmet", () -> new WanderingMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_ROBE = ITEMS.register("wandering_magician_chestplate", () -> new WanderingMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.CHEST, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_PANTS = ITEMS.register("wandering_magician_leggings", () -> new WanderingMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_BOOTS = ITEMS.register("wandering_magician_boots", () -> new WanderingMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
 
 }

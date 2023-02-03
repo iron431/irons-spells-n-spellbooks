@@ -1,14 +1,13 @@
 package com.example.testmod.entity.armor.wandering_magician;
 
-import com.example.testmod.item.armor.WanderMagicianArmorItem;
-import com.example.testmod.item.armor.WizardArmorItem;
+import com.example.testmod.item.armor.WanderingMagicianArmorItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 import software.bernie.geckolib3.util.GeoUtils;
 
-public class WanderingMagicianRenderer extends GeoArmorRenderer<WanderMagicianArmorItem> {
+public class WanderingMagicianRenderer extends GeoArmorRenderer<WanderingMagicianArmorItem> {
     public String leggingTorsoLayer = "armorLeggingTorsoLayer";
     private final GeoBone leggingTorsoLayerBone;
 
