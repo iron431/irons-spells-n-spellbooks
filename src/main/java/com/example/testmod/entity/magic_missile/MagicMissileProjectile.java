@@ -83,7 +83,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
         double y = hitresult.getLocation().y;
         double z = hitresult.getLocation().z;
 
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 50, .1, .1, .1, .25, true);
+        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 25, 0, 0, 0, .18, true);
 
 
     }
@@ -123,7 +123,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     public void spawnParticles() {
 
         for (int i = 0; i < 2; i++) {
-            double speed = .05;
+            double speed = .02;
             double dx = level.random.nextDouble() * 2 * speed - speed;
             double dy = level.random.nextDouble() * 2 * speed - speed;
             double dz = level.random.nextDouble() * 2 * speed - speed;

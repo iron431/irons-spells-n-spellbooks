@@ -1,0 +1,23 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "testmod:scroll",
+          "functions": [
+            {
+              "function": "testmod:randomize_scroll",
+              "quality": {
+                "min": 0.0,
+                "max": 1.0
+              },
+              "school": "fire"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

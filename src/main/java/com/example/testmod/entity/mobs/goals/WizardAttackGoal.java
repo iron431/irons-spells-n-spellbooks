@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.projectile.Projectile;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -70,6 +71,20 @@ public class WizardAttackGoal extends Goal {
 
     }
 
+    public WizardAttackGoal setSpells(SpellType[] attackSpells, SpellType[] defenseSpells, SpellType[] movementSpells, SpellType[] supportSpells) {
+        this.attackSpells.clear();
+        this.defenseSpells.clear();
+        this.movementSpells.clear();
+        this.supportSpells.clear();
+
+        this.attackSpells.addAll(List.of(attackSpells));
+        this.defenseSpells.addAll(List.of(defenseSpells));
+        this.movementSpells.addAll(List.of(movementSpells));
+        this.supportSpells.addAll(List.of(supportSpells));
+
+        return this;
+    }
+
     /**
      * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
      * method as well.
@@ -127,8 +142,7 @@ public class WizardAttackGoal extends Goal {
             //TestMod.LOGGER.debug("WizardAttackGoal.tick.1: distanceSquared: {},attackRadiusSqr: {}, seeTime: {}, attackTime: {}", distanceSquared, attackRadiusSqr, seeTime, attackTime);
             this.mob.getNavigation().stop();
             if (++strafeTime > 25) {
-                if (mob.getRandom().nextDouble() < .1)
-                {
+                if (mob.getRandom().nextDouble() < .1) {
                     strafingClockwise = !strafingClockwise;
                     strafeTime = 0;
                 }
@@ -175,6 +189,9 @@ public class WizardAttackGoal extends Goal {
         if (spellType == SpellType.TELEPORT_SPELL) {
             mob.setTeleportLocationBehindTarget(15);
         }
+//        if (spellType == SpellType.WALL_OF_FIRE_SPELL) {
+//            mob.setTeleportLocationBehindTarget(15);
+//        }
 
         mob.castSpell(spellType, mob.getRandom().nextInt(3) + 1);
     }
@@ -210,11 +227,17 @@ public class WizardAttackGoal extends Goal {
 //            spellListIndex = -1;
 //        }
 //        return spellList.get(++spellListIndex);
-        int seed = mob.getRandom().nextInt(total);
-        var spellList = weightedSpells.higherEntry(seed).getValue();
-        lastSpellCategory = spellList;
-        TestMod.LOGGER.info("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} ({}/{})", attackWeight, defenseWeight, movementWeight, supportWeight, seed, total);
-        return (SpellType) spellList.get(mob.getRandom().nextInt(spellList.size()));
+        if (total > 0) {
+            int seed = mob.getRandom().nextInt(total);
+            var spellList = weightedSpells.higherEntry(seed).getValue();
+            lastSpellCategory = spellList;
+            TestMod.LOGGER.info("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} ({}/{})", attackWeight, defenseWeight, movementWeight, supportWeight, seed, total);
+            return (SpellType) spellList.get(mob.getRandom().nextInt(spellList.size()));
+        } else {
+            TestMod.LOGGER.info("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} (no spell)", attackWeight, defenseWeight, movementWeight, supportWeight);
+            return SpellType.NONE_SPELL;
+        }
+
     }
 
     private int getAttackWeight() {

@@ -1,5 +1,6 @@
 package com.example.testmod.entity;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
@@ -134,6 +135,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
             if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.INSTANT) {
                 forceLookAtTarget(getTarget());
                 castingSpell.onCast(level, this, playerMagicData);
+                TestMod.LOGGER.debug("AbstractSpellCastingMob: Casting {}", castingSpell.getSpellType());
             }
             castComplete();
         } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
@@ -160,6 +162,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
     }
 
     private void startCasting() {
+        if (castingSpell == null)
+            return;
         if (!level.isClientSide) {
 
             var data = new SpellCastSyncedData();

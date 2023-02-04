@@ -31,21 +31,26 @@ public class FireBreathProjectile extends AbstractConeProjectile {
         if (!level.isClientSide && getOwner() != null)
             if (dealDamageActive) {
                 //Set Fire Blocks
-                float range = 15 * Mth.DEG_TO_RAD;
-                for (int i = 0; i < 3; i++) {
-                    Vec3 cast = getOwner().getLookAngle().normalize().xRot(level.random.nextFloat() * range * 2 - range).yRot(level.random.nextFloat() * range * 2 - range);
-                    HitResult hitResult = level.clip(new ClipContext(getOwner().getEyePosition(), getOwner().getEyePosition().add(cast.scale(10)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
-                    if (hitResult.getType() == HitResult.Type.BLOCK) {
-                        HitResult shieldResult = Utils.raycastForEntityOfClass(level, this, getOwner().getEyePosition(), hitResult.getLocation(), false, AbstractShieldEntity.class);
-                        if (shieldResult.getType() == HitResult.Type.MISS) {
-                            Vec3 pos = hitResult.getLocation().subtract(cast.scale(.5));
-                            BlockPos blockPos = new BlockPos(pos.x, pos.y, pos.z);
-                            if (level.getBlockState(blockPos).isAir())
-                                level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level, blockPos));
-                        }
+                boolean doFire = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
 
+                if(doFire){
+                    float range = 15 * Mth.DEG_TO_RAD;
+                    for (int i = 0; i < 3; i++) {
+                        Vec3 cast = getOwner().getLookAngle().normalize().xRot(level.random.nextFloat() * range * 2 - range).yRot(level.random.nextFloat() * range * 2 - range);
+                        HitResult hitResult = level.clip(new ClipContext(getOwner().getEyePosition(), getOwner().getEyePosition().add(cast.scale(10)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                        if (hitResult.getType() == HitResult.Type.BLOCK) {
+                            HitResult shieldResult = Utils.raycastForEntityOfClass(level, this, getOwner().getEyePosition(), hitResult.getLocation(), false, AbstractShieldEntity.class);
+                            if (shieldResult.getType() == HitResult.Type.MISS) {
+                                Vec3 pos = hitResult.getLocation().subtract(cast.scale(.5));
+                                BlockPos blockPos = new BlockPos(pos.x, pos.y, pos.z);
+                                if (level.getBlockState(blockPos).isAir())
+                                    level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level, blockPos));
+                            }
+
+                        }
                     }
                 }
+
             }
         super.tick();
     }

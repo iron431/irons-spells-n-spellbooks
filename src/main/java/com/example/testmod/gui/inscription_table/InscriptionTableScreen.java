@@ -152,7 +152,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         if (slot.hasSpell()) {
             drawSpellIcon(poseStack, pos, slot);
             setTexture(TEXTURE);
-            if(hovering && menu.getSpellBookSlot().getItem().getItem() instanceof UniqueSpellBook)
+            if (hovering && menu.getSpellBookSlot().getItem().getItem() instanceof UniqueSpellBook)
                 this.blit(poseStack, (int) pos.x, (int) pos.y, 76, 166, 19, 19);
         }
         if (index == selectedSpellIndex)
@@ -335,8 +335,15 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private void onSpellBookSlotChanged() {
 
         isDirty = true;
-        if (!(menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook))
+        if (menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook spellBook) {
+            var spellData = (spellBook).getSpellBookData(menu.slots.get(SPELLBOOK_SLOT).getItem());
+            if (spellData.getSpellSlots() <= selectedSpellIndex)
+                resetSelectedSpell();
+
+        } else {
             resetSelectedSpell();
+        }
+
     }
 
     private void onInscription() {
