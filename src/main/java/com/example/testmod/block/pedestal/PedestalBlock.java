@@ -90,9 +90,9 @@ public class PedestalBlock extends BaseEntityBlock {
 
     public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
         super.animateTick(pState, pLevel, pPos, pRandom);
-        TestMod.LOGGER.debug("Pedestal Block: animate tick");
+        //TestMod.LOGGER.debug("Pedestal Block: animate tick");
         for (BlockPos blockpos : BOOKSHELF_OFFSETS) {
-            TestMod.LOGGER.debug("Pedestal Block: {}", blockpos);
+            //TestMod.LOGGER.debug("Pedestal Block: {}", blockpos);
 
             if (pRandom.nextInt(16) == 0 && pLevel.getBlockState(pPos.offset(blockpos)).is(Tags.Blocks.BOOKSHELVES)) {
                 pLevel.addParticle(ParticleTypes.ENCHANT, (double) pPos.getX() + 0.5D, (double) pPos.getY() + 2.0D, (double) pPos.getZ() + 0.5D, (double) ((float) blockpos.getX() + pRandom.nextFloat()) - 0.5D, (double) ((float) blockpos.getY() - pRandom.nextFloat() - 1.0F), (double) ((float) blockpos.getZ() + pRandom.nextFloat()) - 0.5D);

@@ -204,7 +204,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
     }
 
     private void forceLookAtTarget(LivingEntity target) {
-        lookAt(target, 180, 180);
+        if (target != null)
+            lookAt(target, 180, 180);
     }
 
     private void addClientSideParticles() {
