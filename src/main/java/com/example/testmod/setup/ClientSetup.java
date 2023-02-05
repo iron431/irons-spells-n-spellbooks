@@ -11,18 +11,13 @@ import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
 import com.example.testmod.entity.firebolt.FireboltRenderer;
 import com.example.testmod.entity.icicle.IcicleRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
-import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.horse.MagicHorseRenderer;
-import com.example.testmod.entity.mobs.horse.SpectralSteed;
-import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardModel;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardRenderer;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerRenderer;
-import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerWizard;
 import com.example.testmod.entity.shield.ShieldModel;
 import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.entity.shield.ShieldTrimModel;
-import com.example.testmod.entity.wisp.WispEntity;
 import com.example.testmod.entity.wisp.WispRenderer;
 import com.example.testmod.item.armor.WanderingMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
@@ -43,7 +38,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
@@ -52,16 +46,6 @@ import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 @Mod.EventBusSubscriber(modid = TestMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
-
-
-    @SubscribeEvent
-    public static void onAttributeCreate(EntityAttributeCreationEvent event) {
-        event.put(EntityRegistry.SIMPLE_WIZARD.get(), SimpleWizard.prepareAttributes().build());
-        event.put(EntityRegistry.PYROMANCER.get(), PyromancerWizard.prepareAttributes().build());
-        event.put(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteed.prepareAttributes().build());
-        event.put(EntityRegistry.WISP.get(), WispEntity.prepareAttributes().build());
-        event.put(EntityRegistry.SUMMONED_VEX.get(), SummonedVex.createAttributes().build());
-    }
 
     @SubscribeEvent
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
