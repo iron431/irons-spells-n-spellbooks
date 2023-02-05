@@ -110,6 +110,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_ENTITY.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_CAST_TRACKER.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WISP.get(), WispRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DEBUG.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_VEX.get(), VexRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);

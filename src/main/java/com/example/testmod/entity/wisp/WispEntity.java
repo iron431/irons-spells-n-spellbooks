@@ -80,6 +80,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
                 0,
                 false,
                 true,
+                targetSearchStart,
                 this::isValidTarget));
     }
 
@@ -104,7 +105,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
         super.tick();
         durationToLive--;
         if (durationToLive <= 0) {
-            kill();
+            discard();
         }
     }
 
@@ -171,7 +172,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     public void setTarget(@org.jetbrains.annotations.Nullable LivingEntity target) {
         super.setTarget(target);
 
-        TestMod.LOGGER.debug("WispEntity.setTarget: {}", target);
+        //TestMod.LOGGER.debug("WispEntity.setTarget: {}", target);
     }
 
     @Override

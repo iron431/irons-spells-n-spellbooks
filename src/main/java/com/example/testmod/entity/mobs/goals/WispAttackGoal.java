@@ -1,6 +1,5 @@
 package com.example.testmod.entity.mobs.goals;
 
-import com.example.testmod.TestMod;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -56,7 +55,7 @@ public class WispAttackGoal extends Goal {
         boolean hasLineOfSight = this.wisp.getSensing().hasLineOfSight(this.target);
         var moveResult = this.wisp.getNavigation().moveTo(target.getX(), target.getY(), target.getZ(), this.speedModifier);
 
-        TestMod.LOGGER.debug("WispAttackGoal.tick: moveResult:{}, hasLineOfSight:{}", moveResult, hasLineOfSight);
+        //TestMod.LOGGER.debug("WispAttackGoal.tick: moveResult:{}, hasLineOfSight:{}", moveResult, hasLineOfSight);
 
         this.wisp.getLookControl().setLookAt(this.target, 180, 180);
     }
