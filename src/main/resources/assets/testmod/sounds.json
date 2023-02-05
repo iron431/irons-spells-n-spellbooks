@@ -13,5 +13,10 @@
     "sounds": [
       "testmod:magic_spell_reverse_3"
     ]
+  },
+  "dark_magic_buff_03_custom_1": {
+    "sounds": [
+      "testmod:dark_magic_buff_03_custom_1"
+    ]
   }
 }
