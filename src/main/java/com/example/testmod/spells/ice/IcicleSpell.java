@@ -6,9 +6,11 @@ import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public class IcicleSpell extends AbstractSpell {
     public IcicleSpell() {
@@ -28,11 +30,22 @@ public class IcicleSpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
+    }
+
+    @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         IcicleProjectile icicle = new IcicleProjectile(world, entity);
         icicle.setPos(entity.position().add(0, entity.getEyeHeight() - icicle.getBoundingBox().getYsize() * .5f, 0));
         icicle.shoot(entity.getLookAngle());
         icicle.setDamage(getSpellPower(entity));
         world.addFreshEntity(icicle);
+        super.onCast(world, entity, playerMagicData);
     }
 }

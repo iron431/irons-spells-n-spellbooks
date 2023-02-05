@@ -194,12 +194,7 @@ public enum SpellType {
     }
 
     public AbstractSpell getSpellForRarity(SpellRarity rarity) {
-        int minRarity = this.minRarity.resolve().get();
-        float maxLevel = this.maxLevel.resolve().get();
-        var x = rarity.getValue();
-        var a = minRarity;
-        var b = maxRarity;
-        int level = (int) (maxLevel * Math.sqrt((x - a) / (double) (b - a)));
+        int level = getMinLevelForRarity(rarity);
 
         return getSpellForType(level);
     }

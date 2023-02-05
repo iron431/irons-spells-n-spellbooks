@@ -4,8 +4,11 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public class SummonHorseSpell extends AbstractSpell {
     public SummonHorseSpell() {
@@ -24,9 +27,20 @@ public class SummonHorseSpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
+    }
+
+    @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         SpectralSteed horse = new SpectralSteed(world, entity);
         horse.setPos(entity.position());
         world.addFreshEntity(horse);
+        super.onCast(world, entity, playerMagicData);
     }
 }

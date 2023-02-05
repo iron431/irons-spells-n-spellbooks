@@ -7,14 +7,15 @@ import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class FangStrikeSpell extends AbstractSpell {
     public FangStrikeSpell() {
@@ -36,17 +37,13 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.EVOKER_PREPARE_ATTACK, 1.0f, 1.0f);
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(SoundEvents.EVOKER_PREPARE_SUMMON);
     }
 
     @Override
-    public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.EVOKER_PREPARE_ATTACK, 1.0f, 1.0f);
-    }
-
-    @Override
-    public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
     }
 
     @Override
@@ -63,6 +60,7 @@ public class FangStrikeSpell extends AbstractSpell {
             }
 
         }
+        super.onCast(world, entity, playerMagicData);
     }
 
     private int getGroundLevel(Level level, Vec3 start, int maxSteps) {

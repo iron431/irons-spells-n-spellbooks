@@ -6,10 +6,13 @@ import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public class ShieldSpell extends AbstractSpell {
 
@@ -37,18 +40,22 @@ public class ShieldSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
 
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.of(SoundEvents.ILLUSIONER_CAST_SPELL);
     }
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
         ShieldEntity shield = new ShieldEntity(level, getShieldHP(entity));
         shield.setPos(entity.getEyePosition().add(entity.getForward().scale(5)));
         shield.setRotation(entity.getXRot(), entity.getYRot());
         level.addFreshEntity(shield);
+        super.onCast(level, entity, playerMagicData);
     }
 
     private float getShieldHP(LivingEntity caster) {

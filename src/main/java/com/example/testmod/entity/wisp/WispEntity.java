@@ -6,7 +6,6 @@ import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.mobs.goals.AcquireTargetNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WispAttackGoal;
 import com.example.testmod.registries.EntityRegistry;
-import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.holy.WispSpell;
 import com.example.testmod.util.ParticleHelper;
@@ -120,7 +119,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
                 if (this.getBoundingBox().inflate(.3).intersects(target.getBoundingBox())) {
                     TestMod.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
                     DamageSources.applyDamage(target, damageAmount, WispSpell.WISP_DAMAGE, SchoolType.HOLY, cachedOwner);
-                    this.playSound(SoundRegistry.DARK_MAGIC_BUFF_03_CUSTOM_1.get(), 1.0f, 1.0f);
+                    this.playSound(WispSpell.getImpactSound(), 1.0f, 1.0f);
                     var p = target.getEyePosition();
                     MagicManager.spawnParticles(level, ParticleHelper.WISP, p.x, p.y, p.z, 25, 0, 0, 0, .18, true);
                     discard();

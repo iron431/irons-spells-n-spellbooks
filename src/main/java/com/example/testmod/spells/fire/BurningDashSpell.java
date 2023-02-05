@@ -7,11 +7,14 @@ import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Optional;
 
 
 public class BurningDashSpell extends AbstractSpell {
@@ -35,6 +38,17 @@ public class BurningDashSpell extends AbstractSpell {
     @Override
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
         ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.FIRE;
+        super.onClientPreCast(level, entity, hand, playerMagicData);
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
     }
 
     @Override
@@ -48,6 +62,7 @@ public class BurningDashSpell extends AbstractSpell {
             player.startAutoSpinAttack(10 + level);
             Messages.sendToPlayer(new ClientboundAddMotionToPlayer(vec, true), (ServerPlayer) entity);
         }
+        super.onCast(world, entity, playerMagicData);
 
         /*
         //in degrees

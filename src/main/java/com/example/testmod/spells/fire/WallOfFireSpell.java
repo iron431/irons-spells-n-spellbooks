@@ -7,6 +7,7 @@ import com.example.testmod.entity.wall_of_fire.WallOfFireCastTracker;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -14,6 +15,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class WallOfFireSpell extends AbstractSpell {
@@ -33,6 +35,16 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
+    }
+
+    @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.getAdditionalCastData() == null) {
             TestMod.LOGGER.debug("WallOfFireSpell: creating new data");
@@ -45,6 +57,7 @@ public class WallOfFireSpell extends AbstractSpell {
         TestMod.LOGGER.debug(playerMagicData.toString());
         //if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData)
 
+        super.onCast(world, entity, playerMagicData);
     }
 
     @Override

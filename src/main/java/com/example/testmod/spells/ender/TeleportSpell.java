@@ -8,7 +8,7 @@ import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,6 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Optional;
 
 public class TeleportSpell extends AbstractSpell {
 
@@ -45,7 +47,6 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
         particleCloud(level, entity, entity.getPosition(1));
 
         Vec3 dest = null;
@@ -59,11 +60,21 @@ public class TeleportSpell extends AbstractSpell {
         }
 
         particleCloud(level, entity, dest);
+        super.onClientPreCast(level, entity, hand, playerMagicData);
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
     }
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 1.0f, 1.0f);
 
         var potentialTarget = playerMagicData.getTeleportTargetPosition();
         var dest = potentialTarget != null ? findTeleportLocation(entity, potentialTarget) : findTeleportLocation(level, entity);
@@ -74,6 +85,7 @@ public class TeleportSpell extends AbstractSpell {
 
         entity.resetFallDistance();
         playerMagicData.setTeleportTargetPosition(null);
+        super.onCast(level, entity, playerMagicData);
     }
 
     public Vec3 findTeleportLocation(LivingEntity entity, Vec3 location) {

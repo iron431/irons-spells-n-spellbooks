@@ -7,8 +7,11 @@ import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public class ConeOfColdSpell extends AbstractSpell {
     public ConeOfColdSpell() {
@@ -27,6 +30,16 @@ public class ConeOfColdSpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
+    }
+
+    @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         TestMod.LOGGER.debug("ConeOfColdSpell.onCast");
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.castingEntity != null && playerMagicData.castingEntity instanceof AbstractConeProjectile cone) {
@@ -38,6 +51,7 @@ public class ConeOfColdSpell extends AbstractSpell {
             world.addFreshEntity(coneOfColdProjectile);
             playerMagicData.discardCastingEntity();
             playerMagicData.castingEntity = coneOfColdProjectile;
+            super.onCast(world, entity, playerMagicData);
         }
     }
 }

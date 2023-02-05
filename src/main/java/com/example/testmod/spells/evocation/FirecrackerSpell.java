@@ -8,12 +8,14 @@ import com.example.testmod.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
 import java.util.Random;
 
 public class FirecrackerSpell extends AbstractSpell {
@@ -34,6 +36,16 @@ public class FirecrackerSpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
+    }
+
+    @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         Vec3 shootAngle = entity.getLookAngle().normalize();
         float speed = 2.5f;
@@ -44,6 +56,7 @@ public class FirecrackerSpell extends AbstractSpell {
         HitscanFireworkRocketEntity firework = new HitscanFireworkRocketEntity(world, randomFireworkRocket(), entity, spawn.x, spawn.y, spawn.z, true, getDamage(entity));
         world.addFreshEntity(firework);
         firework.shoot(shootAngle.x, shootAngle.y, shootAngle.z, speed, 0);
+        super.onCast(world, entity, playerMagicData);
     }
 
     private int getRange(LivingEntity entity) {

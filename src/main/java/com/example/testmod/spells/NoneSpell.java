@@ -1,8 +1,11 @@
 package com.example.testmod.spells;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public class NoneSpell extends AbstractSpell {
     public NoneSpell() {
@@ -17,6 +20,16 @@ public class NoneSpell extends AbstractSpell {
         this.baseSpellPower = 0;
         this.spellPowerPerLevel = 0;
         this.cooldown = 0;
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
     }
 
     @Override

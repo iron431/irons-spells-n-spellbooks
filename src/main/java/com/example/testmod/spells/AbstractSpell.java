@@ -14,6 +14,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,9 +23,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.testmod.registries.AttributeRegistry.COOLDOWN_REDUCTION;
 
@@ -86,6 +87,10 @@ public abstract class AbstractSpell {
     public int getCastTime() {
         return this.castTime;
     }
+
+    public abstract Optional<SoundEvent> getCastStartSound();
+
+    public abstract Optional<SoundEvent> getCastFinishSound();
 
     public float getSpellPower(Entity sourceEntity) {
         float entitySpellPowerModifer = 1;
@@ -198,12 +203,19 @@ public abstract class AbstractSpell {
      */
     public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         //TestMod.LOGGER.debug("AbstractSpell.: onClientCast:{}", level.isClientSide);
+        playSound(getCastFinishSound(), entity);
     }
 
     /**
      * The primary spell effect handling goes here. Called Server Side
      */
-    public abstract void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData);
+    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        playSound(getCastFinishSound(), entity);
+    }
+
+    private void playSound(Optional<SoundEvent> sound, Entity entity) {
+        sound.ifPresent((soundEvent) -> entity.playSound(soundEvent, 1.0f, 1.0f));
+    }
 
     /**
      * Called on the server when a long spell casts, or a continuous spell is done casting or cancelled
@@ -219,6 +231,7 @@ public abstract class AbstractSpell {
      */
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
         //TestMod.LOGGER.debug("AbstractSpell.onClientPreCast: isClient:{}", level.isClientSide);
+        playSound(getCastStartSound(), entity);
     }
 
     /**
@@ -226,6 +239,7 @@ public abstract class AbstractSpell {
      */
     public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
         //TestMod.LOGGER.debug("AbstractSpell.: onServerPreCast:{}", level.isClientSide);
+        playSound(getCastStartSound(), entity);
     }
 
     /**

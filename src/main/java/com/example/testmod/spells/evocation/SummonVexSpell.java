@@ -6,6 +6,7 @@ import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,6 +15,8 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class SummonVexSpell extends AbstractSpell {
     public SummonVexSpell() {
@@ -32,23 +35,17 @@ public class SummonVexSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.EVOKER_PREPARE_SUMMON, 1.0f, 1.0f);
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(SoundEvents.EVOKER_PREPARE_SUMMON);
     }
 
     @Override
-    public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.EVOKER_PREPARE_SUMMON, 1.0f, 1.0f);
-    }
-
-    @Override
-    public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.of(SoundEvents.EVOKER_CAST_SPELL);
     }
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.playSound(SoundEvents.EVOKER_CAST_SPELL, 1.0f, 1.0f);
         int summonTime = 20 * 60 * 3;
         for (int i = 0; i < this.level; i++) {
             SummonedVex vex = new SummonedVex(world, entity, 5 * 60 * 20);
@@ -59,6 +56,6 @@ public class SummonVexSpell extends AbstractSpell {
         }
         //TODO: replace with per-summon effect so the player knows when what summons run out
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_TIMER.get(), summonTime, 0, false, false, true));
-
+        super.onCast(world, entity, playerMagicData);
     }
 }

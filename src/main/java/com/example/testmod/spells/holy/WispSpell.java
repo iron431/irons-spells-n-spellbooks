@@ -8,7 +8,7 @@ import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -19,7 +19,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -32,6 +31,7 @@ public class WispSpell extends AbstractSpell {
 
     public WispSpell(int level) {
         super(SpellType.WISP_SPELL);
+
         this.level = level;
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 5;
@@ -42,23 +42,21 @@ public class WispSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
-        entity.playSound(SoundRegistry.MAGIC_SPELL_REVERSE_3.get(), 1.0f, 1.0f);
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(SoundRegistry.MAGIC_SPELL_REVERSE_3.get());
     }
 
     @Override
-    public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
-        entity.playSound(SoundRegistry.MAGIC_SPELL_REVERSE_3.get(), 1.0f, 1.0f);
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.of(SoundRegistry.ARIAL_SUMMONING_5_CUSTOM_1.get());
     }
 
-    @Override
-    public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.playSound(SoundRegistry.ARIAL_SUMMONING_5_CUSTOM_1.get(), 1.0f, 1.0f);
+    public static SoundEvent getImpactSound(){
+        return SoundRegistry.DARK_MAGIC_BUFF_03_CUSTOM_1.get();
     }
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.playSound(SoundRegistry.ARIAL_SUMMONING_5_CUSTOM_1.get(), 1.0f, 1.0f);
         var wispEntity = new WispEntity(world, entity, getTargetLocation(world, entity), getSpellPower(entity));
         wispEntity.setPos(Utils.getPositionFromEntityLookDirection(entity, 2).subtract(0, .2, 0));
         wispEntity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_TIMER.get(), (int) getDuration(entity), 0, false, false, false));
@@ -68,6 +66,7 @@ public class WispSpell extends AbstractSpell {
 
         target.ifPresent(wispEntity::setTarget);
         world.addFreshEntity(wispEntity);
+        super.onCast(world, entity, playerMagicData);
     }
 
     private Optional<LivingEntity> getTarget(Level level, LivingEntity entity) {
