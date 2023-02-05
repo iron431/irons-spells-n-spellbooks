@@ -3,5 +3,15 @@
     "sounds": [
       "testmod:force_impact"
     ]
+  },
+  "arial_summoning_5_custom_1": {
+    "sounds": [
+      "testmod:arial_summoning_5_custom_1"
+    ]
+  },
+  "magic_spell_reverse_3": {
+    "sounds": [
+      "testmod:magic_spell_reverse_3"
+    ]
   }
 }
