@@ -1,9 +1,12 @@
 package com.example.testmod.entity.wisp;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.mobs.goals.AcquireTargetNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WispAttackGoal;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.holy.WispSpell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -11,8 +14,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -44,29 +46,31 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("animation.wisp.flying", true);
 
     private Vec3 targetSearchStart;
-    private int durationToLive;
+    private float damageAmount;
 
     public WispEntity(EntityType<? extends WispEntity> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
     }
 
-    public WispEntity(Level levelIn, LivingEntity owner, Vec3 targetSearchStart, int durationToLive) {
+    public WispEntity(Level levelIn, LivingEntity owner, Vec3 targetSearchStart, float damageAmount) {
         this(EntityRegistry.WISP.get(), levelIn);
         this.moveControl = new FlyingMoveControl(this, 20, true);
         this.targetSearchStart = targetSearchStart;
-        this.durationToLive = durationToLive;
+        this.damageAmount = damageAmount;
+
         setOwner(owner);
 
         var xRot = owner.getXRot();
         var yRot = owner.getYRot();
+        var yHeadRot = owner.getYHeadRot();
 
         this.setYRot(yRot);
         this.setXRot(xRot);
         this.setYBodyRot(yRot);
-        this.setYHeadRot(yRot);
+        this.setYHeadRot(yHeadRot);
 
-        TestMod.LOGGER.debug("WispEntity: Owner - xRot:{}, yRot:{}", xRot, yRot);
+        TestMod.LOGGER.debug("WispEntity: Owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
         TestMod.LOGGER.debug("WispEntity: Wisp - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
     }
 
@@ -81,14 +85,13 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
                 false,
                 true,
                 targetSearchStart,
-                this::isValidTarget));
+                WispEntity::isValidTarget));
     }
 
-    public boolean isValidTarget(@Nullable LivingEntity livingEntity) {
-        if (livingEntity != null &&
+    public static boolean isValidTarget(@Nullable Entity entity) {
+        if (entity instanceof LivingEntity livingEntity &&
                 livingEntity.isAlive() &&
-                (livingEntity instanceof Monster || livingEntity instanceof Player) &&
-                livingEntity.getUUID() != ownerUUID) {
+                livingEntity instanceof Enemy) {
             return true;
         }
         return false;
@@ -103,9 +106,13 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     @Override
     public void tick() {
         super.tick();
-        durationToLive--;
-        if (durationToLive <= 0) {
-            discard();
+        var target = this.getTarget();
+        if (target != null) {
+            if (this.getBoundingBox().inflate(.3).intersects(target.getBoundingBox())) {
+                TestMod.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
+                DamageSources.applyDamage(target, damageAmount, WispSpell.WISP_DAMAGE, SchoolType.HOLY, cachedOwner);
+                discard();
+            }
         }
     }
 
@@ -178,7 +185,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     @Override
     protected void customServerAiStep() {
         if (this.cachedOwner == null || !this.cachedOwner.isAlive()) {
-            this.kill();
+            this.discard();
         }
     }
 
