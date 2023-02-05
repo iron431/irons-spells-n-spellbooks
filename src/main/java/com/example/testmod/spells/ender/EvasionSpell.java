@@ -1,0 +1,34 @@
+package com.example.testmod.spells.ender;
+
+import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.registries.MobEffectRegistry;
+import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+
+public class EvasionSpell extends AbstractSpell {
+    public EvasionSpell() {
+        this(1);
+    }
+
+    public EvasionSpell(int level) {
+        super(SpellType.EVASION_SPELL);
+        this.level = level;
+        this.manaCostPerLevel = 20;
+        this.baseSpellPower = 2;
+        this.spellPowerPerLevel = 2;
+        this.castTime = 0;
+        this.baseManaCost = 5;
+        this.cooldown = 6000;
+        uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1)));
+    }
+
+    @Override
+    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), (int) getSpellPower(entity) * 100, 1));
+    }
+}
