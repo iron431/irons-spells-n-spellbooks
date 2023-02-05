@@ -18,6 +18,7 @@ public class PyromancerWizard extends AbstractSpellCastingMob {
 
     public PyromancerWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        xpReward = 25;
     }
 
     @Override

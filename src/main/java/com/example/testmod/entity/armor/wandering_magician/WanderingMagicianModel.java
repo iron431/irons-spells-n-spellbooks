@@ -13,12 +13,12 @@ public class WanderingMagicianModel extends AnimatedGeoModel<WanderingMagicianAr
     }
     @Override
     public ResourceLocation getModelResource(WanderingMagicianArmorItem object) {
-        return new ResourceLocation(TestMod.MODID, "geo/wandering_magician_armor.geo.json");
+        return new ResourceLocation(TestMod.MODID, "geo/pyromancer_armor.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(WanderingMagicianArmorItem object) {
-        return new ResourceLocation(TestMod.MODID, "textures/models/armor/wandering_magician.png");
+        return new ResourceLocation(TestMod.MODID, "textures/models/armor/pyromancer.png");
     }
 
     @Override

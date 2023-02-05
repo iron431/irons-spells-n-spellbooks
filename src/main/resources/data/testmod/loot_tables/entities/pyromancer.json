@@ -35,29 +35,20 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "name": "testmod:scroll",
           "functions": [
             {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 0.0
+              "function": "testmod:randomize_scroll",
+              "quality": {
+                "min": 0.15,
+                "max": 0.75
               },
-              "function": "minecraft:set_count"
-            },
-            {
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 0.0
-              },
-              "function": "minecraft:looting_enchant"
+              "school": "fire"
             }
-          ],
-          "name": "minecraft:bone"
+          ]
         }
       ],
-      "rolls": 1.0
+      "rolls": 1
     }
   ]
 }
