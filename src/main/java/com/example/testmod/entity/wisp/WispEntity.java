@@ -47,6 +47,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("animation.wisp.flying", true);
 
     private Vec3 targetSearchStart;
+    private Vec3 lastTickPos;
     private float damageAmount;
 
     public WispEntity(EntityType<? extends WispEntity> entityType, Level level) {
@@ -70,6 +71,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
         this.setXRot(xRot);
         this.setYBodyRot(yRot);
         this.setYHeadRot(yHeadRot);
+        this.lastTickPos = this.position();
 
         TestMod.LOGGER.debug("WispEntity: Owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
         TestMod.LOGGER.debug("WispEntity: Wisp - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
@@ -120,6 +122,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
                 }
             }
         }
+        lastTickPos = this.position();
     }
 
     public void setOwner(@Nullable Entity pOwner) {
@@ -237,14 +240,14 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
 
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
-        TestMod.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}", this.level.isClientSide, this.position());
         for (int i = 0; i < 2; i++) {
             double speed = .02;
             double dx = level.random.nextDouble() * 2 * speed - speed;
             double dy = level.random.nextDouble() * 2 * speed - speed;
             double dz = level.random.nextDouble() * 2 * speed - speed;
             var tmp = ParticleHelper.UNSTABLE_ENDER;
-            level.addParticle(ParticleHelper.WISP, this.getX() + dx / 2, this.getY() + .3, this.getZ() + dz / 2, dx, dy, dz);
+            TestMod.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}, {} {} {}", this.level.isClientSide, this.position(), dx, dy, dz);
+            level.addParticle(ParticleHelper.WISP, this.xOld - dx, this.position().y + .3, this.zOld - dz, dx, dy, dz);
             //level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx / 2, this.getY() + dy / 2, this.getZ() + dz / 2, dx, dy, dz);
         }
     }
