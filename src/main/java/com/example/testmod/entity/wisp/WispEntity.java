@@ -1,9 +1,15 @@
 package com.example.testmod.entity.wisp;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.mobs.goals.AcquireTargetNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WispAttackGoal;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.registries.SoundRegistry;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.holy.WispSpell;
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -11,8 +17,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -44,29 +49,33 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("animation.wisp.flying", true);
 
     private Vec3 targetSearchStart;
-    private int durationToLive;
+    private Vec3 lastTickPos;
+    private float damageAmount;
 
     public WispEntity(EntityType<? extends WispEntity> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
     }
 
-    public WispEntity(Level levelIn, LivingEntity owner, Vec3 targetSearchStart, int durationToLive) {
+    public WispEntity(Level levelIn, LivingEntity owner, Vec3 targetSearchStart, float damageAmount) {
         this(EntityRegistry.WISP.get(), levelIn);
         this.moveControl = new FlyingMoveControl(this, 20, true);
         this.targetSearchStart = targetSearchStart;
-        this.durationToLive = durationToLive;
+        this.damageAmount = damageAmount;
+
         setOwner(owner);
 
         var xRot = owner.getXRot();
         var yRot = owner.getYRot();
+        var yHeadRot = owner.getYHeadRot();
 
         this.setYRot(yRot);
         this.setXRot(xRot);
         this.setYBodyRot(yRot);
-        this.setYHeadRot(yRot);
+        this.setYHeadRot(yHeadRot);
+        this.lastTickPos = this.position();
 
-        TestMod.LOGGER.debug("WispEntity: Owner - xRot:{}, yRot:{}", xRot, yRot);
+        TestMod.LOGGER.debug("WispEntity: Owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
         TestMod.LOGGER.debug("WispEntity: Wisp - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
     }
 
@@ -80,14 +89,14 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
                 0,
                 false,
                 true,
-                this::isValidTarget));
+                targetSearchStart,
+                WispEntity::isValidTarget));
     }
 
-    public boolean isValidTarget(@Nullable LivingEntity livingEntity) {
-        if (livingEntity != null &&
+    public static boolean isValidTarget(@Nullable Entity entity) {
+        if (entity instanceof LivingEntity livingEntity &&
                 livingEntity.isAlive() &&
-                (livingEntity instanceof Monster || livingEntity instanceof Player) &&
-                livingEntity.getUUID() != ownerUUID) {
+                livingEntity instanceof Enemy) {
             return true;
         }
         return false;
@@ -102,10 +111,23 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     @Override
     public void tick() {
         super.tick();
-        durationToLive--;
-        if (durationToLive <= 0) {
-            kill();
+
+        if (level.isClientSide) {
+            spawnParticles();
+        } else {
+            var target = this.getTarget();
+            if (target != null) {
+                if (this.getBoundingBox().inflate(.3).intersects(target.getBoundingBox())) {
+                    TestMod.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
+                    DamageSources.applyDamage(target, damageAmount, WispSpell.WISP_DAMAGE, SchoolType.HOLY, cachedOwner);
+                    this.playSound(SoundRegistry.DARK_MAGIC_BUFF_03_CUSTOM_1.get(), 1.0f, 1.0f);
+                    var p = target.getEyePosition();
+                    MagicManager.spawnParticles(level, ParticleHelper.WISP, p.x, p.y, p.z, 25, 0, 0, 0, .18, true);
+                    discard();
+                }
+            }
         }
+        lastTickPos = this.position();
     }
 
     public void setOwner(@Nullable Entity pOwner) {
@@ -171,13 +193,13 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     public void setTarget(@org.jetbrains.annotations.Nullable LivingEntity target) {
         super.setTarget(target);
 
-        TestMod.LOGGER.debug("WispEntity.setTarget: {}", target);
+        //TestMod.LOGGER.debug("WispEntity.setTarget: {}", target);
     }
 
     @Override
     protected void customServerAiStep() {
         if (this.cachedOwner == null || !this.cachedOwner.isAlive()) {
-            this.kill();
+            this.discard();
         }
     }
 
@@ -219,5 +241,19 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     @Override
     public HumanoidArm getMainArm() {
         return HumanoidArm.LEFT;
+    }
+
+    //https://forge.gemwire.uk/wiki/Particles
+    public void spawnParticles() {
+        for (int i = 0; i < 2; i++) {
+            double speed = .02;
+            double dx = level.random.nextDouble() * 2 * speed - speed;
+            double dy = level.random.nextDouble() * 2 * speed - speed;
+            double dz = level.random.nextDouble() * 2 * speed - speed;
+            var tmp = ParticleHelper.UNSTABLE_ENDER;
+            TestMod.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}, {} {} {}", this.level.isClientSide, this.position(), dx, dy, dz);
+            level.addParticle(ParticleHelper.WISP, this.xOld - dx, this.position().y + .3, this.zOld - dz, dx, dy, dz);
+            //level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx / 2, this.getY() + dy / 2, this.getZ() + dz / 2, dx, dy, dz);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.entity.DebugEntity;
 import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
@@ -30,6 +31,12 @@ public class EntityRegistry {
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);
     }
+
+    public static final RegistryObject<EntityType<DebugEntity>> DEBUG =
+            ENTITIES.register("debug", () -> EntityType.Builder.<DebugEntity>of(DebugEntity::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "debug").toString()));
 
     public static final RegistryObject<EntityType<WispEntity>> WISP =
             ENTITIES.register("wisp", () -> EntityType.Builder.<WispEntity>of(WispEntity::new, MobCategory.MISC)
