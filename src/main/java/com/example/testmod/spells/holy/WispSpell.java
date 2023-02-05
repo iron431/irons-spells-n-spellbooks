@@ -51,7 +51,7 @@ public class WispSpell extends AbstractSpell {
         return Optional.of(SoundRegistry.ARIAL_SUMMONING_5_CUSTOM_1.get());
     }
 
-    public static SoundEvent getImpactSound(){
+    public static SoundEvent getImpactSound() {
         return SoundRegistry.DARK_MAGIC_BUFF_03_CUSTOM_1.get();
     }
 

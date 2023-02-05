@@ -18,5 +18,10 @@
     "sounds": [
       "testmod:dark_magic_buff_03_custom_1"
     ]
+  },
+  "dark_spell_02": {
+    "sounds": [
+      "testmod:dark_spell_02"
+    ]
   }
 }

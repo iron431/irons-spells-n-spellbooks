@@ -35,6 +35,7 @@ public class PlayerSyncedData {
     }
 
     private void doSync() {
+        //this.player will only be null on the client side
         if (this.player != null) {
             Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), player);
         }
@@ -57,5 +58,4 @@ public class PlayerSyncedData {
         this.hasEvasion = hasEvasion;
         doSync();
     }
-
 }

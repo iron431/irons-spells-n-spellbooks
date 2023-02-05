@@ -2,13 +2,17 @@ package com.example.testmod.spells.ender;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.registries.MobEffectRegistry;
+import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+
+import java.util.Optional;
 
 public class EvasionSpell extends AbstractSpell {
     public EvasionSpell() {
@@ -28,7 +32,18 @@ public class EvasionSpell extends AbstractSpell {
     }
 
     @Override
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.of(SoundRegistry.DARK_SPELL_02.get());
+    }
+
+    @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), (int) getSpellPower(entity) * 100, 1));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), (int) getSpellPower(entity) * 1000, 1));
+        super.onCast(world, entity, playerMagicData);
     }
 }
