@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -196,7 +197,22 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob {
         if (target != null) {
             var rotation = target.getLookAngle().normalize().scale(-distance);
             var pos = target.position();
-            playerMagicData.setTeleportTargetPosition(rotation.add(pos));
+            var teleportPos = rotation.add(pos);
+
+            int y = target.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) teleportPos.x, (int) teleportPos.z);
+
+            if (Math.abs(teleportPos.y - y) > 3) {
+                rotation = target.getLookAngle().normalize().scale(-((float) distance / 2));
+                teleportPos = rotation.add(pos);
+                y = target.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) teleportPos.x, (int) teleportPos.z);
+
+                if (Math.abs(teleportPos.y - y) > 3) {
+                    rotation = target.getLookAngle().normalize().scale(-1);
+                    teleportPos = rotation.add(pos);
+                }
+            }
+
+            playerMagicData.setTeleportTargetPosition(teleportPos);
         }
     }
 
