@@ -7,6 +7,7 @@ import com.example.testmod.entity.mobs.goals.WispAttackGoal;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.holy.WispSpell;
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -106,12 +107,17 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     @Override
     public void tick() {
         super.tick();
-        var target = this.getTarget();
-        if (target != null) {
-            if (this.getBoundingBox().inflate(.3).intersects(target.getBoundingBox())) {
-                TestMod.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
-                DamageSources.applyDamage(target, damageAmount, WispSpell.WISP_DAMAGE, SchoolType.HOLY, cachedOwner);
-                discard();
+
+        if (level.isClientSide) {
+            spawnParticles();
+        } else {
+            var target = this.getTarget();
+            if (target != null) {
+                if (this.getBoundingBox().inflate(.3).intersects(target.getBoundingBox())) {
+                    TestMod.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
+                    DamageSources.applyDamage(target, damageAmount, WispSpell.WISP_DAMAGE, SchoolType.HOLY, cachedOwner);
+                    discard();
+                }
             }
         }
     }
@@ -227,5 +233,19 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     @Override
     public HumanoidArm getMainArm() {
         return HumanoidArm.LEFT;
+    }
+
+    //https://forge.gemwire.uk/wiki/Particles
+    public void spawnParticles() {
+        TestMod.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}", this.level.isClientSide, this.position());
+        for (int i = 0; i < 2; i++) {
+            double speed = .02;
+            double dx = level.random.nextDouble() * 2 * speed - speed;
+            double dy = level.random.nextDouble() * 2 * speed - speed;
+            double dz = level.random.nextDouble() * 2 * speed - speed;
+            var tmp = ParticleHelper.UNSTABLE_ENDER;
+            level.addParticle(ParticleHelper.WISP, this.getX() + dx / 2, this.getY() + .3, this.getZ() + dz / 2, dx, dy, dz);
+            //level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx / 2, this.getY() + dy / 2, this.getZ() + dz / 2, dx, dy, dz);
+        }
     }
 }

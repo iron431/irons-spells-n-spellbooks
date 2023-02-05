@@ -119,6 +119,7 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerParticles(RegisterParticleProvidersEvent event) {
+        event.register(ParticleRegistry.WISP_PARTICLE.get(), WispParticle.Provider::new);
         event.register(ParticleRegistry.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
         event.register(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), BloodGroundParticle.Provider::new);
         event.register(ParticleRegistry.SNOWFLAKE_PARTICLE.get(), SnowflakeParticle.Provider::new);
