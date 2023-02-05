@@ -26,7 +26,7 @@ import software.bernie.geckolib3.item.GeoArmorItem;
 import java.util.Map;
 import java.util.UUID;
 
-public class WanderingMagicianArmorItem extends GeoArmorItem implements IAnimatable {
+public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable {
     private static final UUID[] ARMOR_MODIFIER_UUID_PER_SLOT = new UUID[]{UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")};
     private final Multimap<Attribute, AttributeModifier> ARMOR_ATTRIBUTES;
     private AnimationFactory factory = new AnimationFactory(this);
@@ -35,7 +35,7 @@ public class WanderingMagicianArmorItem extends GeoArmorItem implements IAnimata
             (new ImmutableMap.Builder<ArmorMaterial, MobEffectInstance>()).build();
     //.put(ModArmorMaterials., new MobEffectInstance(MobEffects.LUCK, 200, 1)).build();
 
-    public WanderingMagicianArmorItem(ArmorMaterial material, EquipmentSlot slot, Properties settings) {
+    public PyromancerArmorItem(ArmorMaterial material, EquipmentSlot slot, Properties settings) {
         super(material, slot, settings);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ARMOR, new AttributeModifier("Armor", getDefense(), AttributeModifier.Operation.ADDITION));
@@ -43,7 +43,7 @@ public class WanderingMagicianArmorItem extends GeoArmorItem implements IAnimata
         if (this.knockbackResistance > 0) {
             builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Armor knockback resistance", this.knockbackResistance, AttributeModifier.Operation.ADDITION));
         }
-        builder.put(AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 15, AttributeModifier.Operation.ADDITION));
+        builder.put(AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 50, AttributeModifier.Operation.ADDITION));
 
         ARMOR_ATTRIBUTES = builder.build();
 
@@ -62,7 +62,7 @@ public class WanderingMagicianArmorItem extends GeoArmorItem implements IAnimata
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<WanderingMagicianArmorItem>(this, "controller", 20, this::predicate));
+        data.addAnimationController(new AnimationController<PyromancerArmorItem>(this, "controller", 20, this::predicate));
     }
 
     @Override

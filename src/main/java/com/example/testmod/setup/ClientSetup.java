@@ -3,6 +3,8 @@ package com.example.testmod.setup;
 import com.example.testmod.TestMod;
 import com.example.testmod.block.pedestal.PedestalRenderer;
 import com.example.testmod.block.scroll_forge.ScrollForgeRenderer;
+import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
+import com.example.testmod.entity.armor.pyromancer.PyromancerArmorModel;
 import com.example.testmod.entity.armor.simple_wizard.WizardArmorRenderer;
 import com.example.testmod.entity.armor.wandering_magician.WanderingMagicianRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
@@ -20,6 +22,7 @@ import com.example.testmod.entity.shield.ShieldModel;
 import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.entity.shield.ShieldTrimModel;
 import com.example.testmod.entity.wisp.WispRenderer;
+import com.example.testmod.item.armor.PyromancerArmorItem;
 import com.example.testmod.item.armor.WanderingMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
@@ -28,6 +31,8 @@ import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
 import com.example.testmod.render.AngelWingsLayer;
 import com.example.testmod.render.AngelWingsModel;
+import com.example.testmod.render.ArmorCapeLayer;
+import com.example.testmod.render.ArmorCapeModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -63,12 +68,14 @@ public class ClientSetup {
         event.registerLayerDefinition(ShieldModel.LAYER_LOCATION, ShieldModel::createBodyLayer);
         event.registerLayerDefinition(ShieldTrimModel.LAYER_LOCATION, ShieldTrimModel::createBodyLayer);
         event.registerLayerDefinition(AngelWingsModel.ANGEL_WINGS_LAYER, AngelWingsModel::createLayer);
+        event.registerLayerDefinition(ArmorCapeModel.ARMOR_CAPE_LAYER, ArmorCapeModel::createLayer);
     }
 
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
         GeoArmorRenderer.registerArmorRenderer(WizardArmorItem.class, WizardArmorRenderer::new);
         GeoArmorRenderer.registerArmorRenderer(WanderingMagicianArmorItem.class, WanderingMagicianRenderer::new);
+        GeoArmorRenderer.registerArmorRenderer(PyromancerArmorItem.class, () -> new GenericCustomArmorRenderer(new PyromancerArmorModel()));
 
         TestMod.LOGGER.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
 
@@ -81,6 +88,7 @@ public class ClientSetup {
         EntityRenderer<? extends Player> render = event.getSkin(skinName);
         if (render instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
+            livingRenderer.addLayer(new ArmorCapeLayer(livingRenderer));
         }
     }
 

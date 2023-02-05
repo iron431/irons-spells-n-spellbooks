@@ -1,18 +1,20 @@
-package com.example.testmod.entity.armor.wandering_magician;
+package com.example.testmod.entity.armor;
 
-import com.example.testmod.item.armor.WanderingMagicianArmorItem;
 import net.minecraft.world.entity.EquipmentSlot;
+import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib3.item.GeoArmorItem;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 import software.bernie.geckolib3.util.GeoUtils;
 
-public class WanderingMagicianRenderer extends GeoArmorRenderer<WanderingMagicianArmorItem> {
+public class GenericCustomArmorRenderer <T extends GeoArmorItem & IAnimatable> extends GeoArmorRenderer<T> {
     public String leggingTorsoLayer = "armorLeggingTorsoLayer";
     private final GeoBone leggingTorsoLayerBone;
 
-    public WanderingMagicianRenderer() {
-        super(new WanderingMagicianModel());
+    public GenericCustomArmorRenderer(AnimatedGeoModel model) {
+        super(model);
 
         this.headBone = "armorHead";
         this.bodyBone = "armorBody";
@@ -24,8 +26,8 @@ public class WanderingMagicianRenderer extends GeoArmorRenderer<WanderingMagicia
         this.leftBootBone = "armorLeftBoot";
         leggingTorsoLayerBone = new GeoBone();
         leggingTorsoLayerBone.name = "armorLeggingTorsoLayer";
-        var model = getGeoModelProvider();
-        model.registerBone(leggingTorsoLayerBone);
+        var m = getGeoModelProvider();
+        m.registerBone(leggingTorsoLayerBone);
 
 
     }
