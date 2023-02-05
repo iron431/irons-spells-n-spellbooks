@@ -1,6 +1,7 @@
 package com.example.testmod.entity.wisp;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.mobs.goals.AcquireTargetNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WispAttackGoal;
@@ -118,6 +119,8 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
                 if (this.getBoundingBox().inflate(.3).intersects(target.getBoundingBox())) {
                     TestMod.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
                     DamageSources.applyDamage(target, damageAmount, WispSpell.WISP_DAMAGE, SchoolType.HOLY, cachedOwner);
+                    var p = target.getEyePosition();
+                    MagicManager.spawnParticles(level, ParticleHelper.WISP, p.x, p.y, p.z, 25, 0, 0, 0, .18, true);
                     discard();
                 }
             }
