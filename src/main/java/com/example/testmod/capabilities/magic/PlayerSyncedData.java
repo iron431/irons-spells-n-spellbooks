@@ -10,13 +10,18 @@ public class PlayerSyncedData {
     private final int serverPlayerId;
     private Player player;
 
+    /**
+     * REMINDER: Need to update ClientBoundSyncPlayerData when adding fields to this class
+     **/
     private boolean hasAngelWings;
+    private boolean hasEvasion;
 
     //Use this on the client
     public PlayerSyncedData(int serverPlayerId) {
         this.player = null;
         this.serverPlayerId = serverPlayerId;
         this.hasAngelWings = false;
+        this.hasEvasion = false;
     }
 
     //Use this on the server
@@ -30,6 +35,7 @@ public class PlayerSyncedData {
     }
 
     private void doSync() {
+        //this.player will only be null on the client side
         if (this.player != null) {
             Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), player);
         }
@@ -41,6 +47,15 @@ public class PlayerSyncedData {
 
     public void setHasAngelWings(boolean hasAngelWings) {
         this.hasAngelWings = hasAngelWings;
+        doSync();
+    }
+
+    public boolean getHasEvasion() {
+        return hasEvasion;
+    }
+
+    public void setHasEvasion(boolean hasEvasion) {
+        this.hasEvasion = hasEvasion;
         doSync();
     }
 }

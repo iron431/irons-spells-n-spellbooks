@@ -17,11 +17,13 @@ public class ClientBoundSyncPlayerData {
 
     public ClientBoundSyncPlayerData(FriendlyByteBuf buf) {
         playerSyncedData = new PlayerSyncedData(buf.readInt());
+        playerSyncedData.setHasEvasion(buf.readBoolean());
         playerSyncedData.setHasAngelWings(buf.readBoolean());
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(playerSyncedData.getServerPlayerId());
+        buf.writeBoolean(playerSyncedData.getHasEvasion());
         buf.writeBoolean(playerSyncedData.getHasAngelWings());
     }
 

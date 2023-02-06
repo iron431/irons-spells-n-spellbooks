@@ -2,6 +2,7 @@ package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.effect.EvasionEffect;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
@@ -113,6 +114,11 @@ public class ServerPlayerEvents {
                     event.getSource() != DamageSource.ON_FIRE &&
                     event.getSource() != DamageSource.WITHER) {
                 PlayerMagicData.serverSideCancelCast(serverPlayer, playerMagicData);
+            }
+
+            if (playerMagicData.getSyncedData().getHasEvasion()) {
+                event.setCanceled(true);
+                EvasionEffect.doEffect(serverPlayer, event.getSource().getEntity());
             }
         }
     }
