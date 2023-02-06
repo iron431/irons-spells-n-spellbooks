@@ -1,9 +1,11 @@
 package com.example.testmod.item.armor;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.registries.AttributeRegistry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -26,7 +28,7 @@ import software.bernie.geckolib3.item.GeoArmorItem;
 import java.util.Map;
 import java.util.UUID;
 
-public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable {
+public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable, ArmorCapeProvider {
     private static final UUID[] ARMOR_MODIFIER_UUID_PER_SLOT = new UUID[]{UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")};
     private final Multimap<Attribute, AttributeModifier> ARMOR_ATTRIBUTES;
     private AnimationFactory factory = new AnimationFactory(this);
@@ -129,5 +131,11 @@ public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable {
 
         return helmet.getMaterial() == material && breastplate.getMaterial() == material &&
                 leggings.getMaterial() == material && boots.getMaterial() == material;
+    }
+
+    @Override
+    public ResourceLocation getCapeResourceLocation() {
+        return new ResourceLocation(TestMod.MODID, "textures/models/armor/pyromancer_cape.png");
+
     }
 }

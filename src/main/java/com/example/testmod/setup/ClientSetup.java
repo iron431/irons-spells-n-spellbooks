@@ -31,8 +31,6 @@ import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
 import com.example.testmod.render.AngelWingsLayer;
 import com.example.testmod.render.AngelWingsModel;
-import com.example.testmod.render.ArmorCapeLayer;
-import com.example.testmod.render.ArmorCapeModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -68,7 +66,6 @@ public class ClientSetup {
         event.registerLayerDefinition(ShieldModel.LAYER_LOCATION, ShieldModel::createBodyLayer);
         event.registerLayerDefinition(ShieldTrimModel.LAYER_LOCATION, ShieldTrimModel::createBodyLayer);
         event.registerLayerDefinition(AngelWingsModel.ANGEL_WINGS_LAYER, AngelWingsModel::createLayer);
-        event.registerLayerDefinition(ArmorCapeModel.ARMOR_CAPE_LAYER, ArmorCapeModel::createLayer);
     }
 
     @SubscribeEvent
@@ -88,7 +85,6 @@ public class ClientSetup {
         EntityRenderer<? extends Player> render = event.getSkin(skinName);
         if (render instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
-            livingRenderer.addLayer(new ArmorCapeLayer(livingRenderer));
         }
     }
 

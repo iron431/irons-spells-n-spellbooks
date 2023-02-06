@@ -11,9 +11,12 @@
     "SpinAttackEffectLayerMixin",
     "SwordItemMixin",
     "TridentItemMixin",
-    "ParticleMixin"
+    "AbstractClientPlayerMixin",
+    "CapeLayerMixin"
+
   ],
-  "client": [],
+  "client": [
+  ],
   "injectors": {
     "defaultRequire": 1
   },
