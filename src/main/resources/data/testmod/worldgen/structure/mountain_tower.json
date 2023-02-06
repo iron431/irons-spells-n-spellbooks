@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:jigsaw",
+  "start_pool": "testmod:mountain_tower_pool",
+  "size": 2,
+
+  // Maximum distance away from center that pieces can spawn. Cannot be greater than 128
+  "max_distance_from_center": 20,
+
+  // The generation step for when to generate the structure. there are 10 stages you can pick from!
+  // This surface structure stage places the structure before plants and ores are generated
+  // See GenerationStep.Feature enum for all the stages you can use and what order they are in
+  "step": "surface_structures",
+
+  "use_expansion_hack": false,
+
+  "start_height": {
+    "absolute": -1
+  },
+
+  "project_start_to_heightmap": "WORLD_SURFACE_WG",
+
+  "biomes": "#testmod:has_structure/mountain_tower",
+  "terrain_adaptation": "beard_thin",
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "piece",
+      "spawns": [
+        {
+          "type": "minecraft:illusioner",
+          "weight": 1,
+          "minCount": 1,
+          "maxCount": 2
+        },
+        {
+          "type": "minecraft:pillager",
+          "weight": 2,
+          "minCount": 1,
+          "maxCount": 4
+        }
+      ]
+    }
+  }
+}
