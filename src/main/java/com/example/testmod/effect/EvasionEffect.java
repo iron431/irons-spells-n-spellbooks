@@ -1,10 +1,10 @@
 package com.example.testmod.effect;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.registries.SoundRegistry;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -49,8 +49,8 @@ public class EvasionEffect extends MobEffect {
 
             if (serverPlayer.randomTeleport(x, y, z, true)) {
                 serverPlayer.lookAt(EntityAnchorArgument.Anchor.EYES, damageSource, EntityAnchorArgument.Anchor.EYES);
-                level.playSound((Player) null, d0, d1, d2, SoundRegistry.DARK_SPELL_02.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-                serverPlayer.playSound(SoundRegistry.DARK_SPELL_02.get(), 1.0F, 1.0F);
+                level.playSound((Player) null, d0, d1, d2, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                serverPlayer.playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.0F);
                 break;
             }
         }

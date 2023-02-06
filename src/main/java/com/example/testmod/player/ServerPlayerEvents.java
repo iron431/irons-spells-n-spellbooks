@@ -14,6 +14,7 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -101,12 +102,18 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onPlayerTakeDamage(LivingDamageEvent event) {
-        //THIS EVENT IS SERVER SIDE ONLY
-        if (event.getEntity().level.isClientSide) {
-            return;
+    public static void onPlayerHurt(LivingHurtEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            if (playerMagicData.getSyncedData().getHasEvasion()) {
+                event.setCanceled(true);
+                EvasionEffect.doEffect(serverPlayer, event.getSource().getEntity());
+            }
         }
+    }
 
+    @SubscribeEvent
+    public static void onPlayerTakeDamage(LivingDamageEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting() &&
@@ -114,11 +121,6 @@ public class ServerPlayerEvents {
                     event.getSource() != DamageSource.ON_FIRE &&
                     event.getSource() != DamageSource.WITHER) {
                 PlayerMagicData.serverSideCancelCast(serverPlayer, playerMagicData);
-            }
-
-            if (playerMagicData.getSyncedData().getHasEvasion()) {
-                event.setCanceled(true);
-                EvasionEffect.doEffect(serverPlayer, event.getSource().getEntity());
             }
         }
     }

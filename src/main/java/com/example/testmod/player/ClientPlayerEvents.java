@@ -20,4 +20,11 @@ public class ClientPlayerEvents {
             }
         }
     }
+
+//    @SubscribeEvent
+//    public static void onRenderPlayer(RenderPlayerEvent.Post event) {
+//        var player = event.getEntity();
+//        var renderer = event.getRenderer();
+//
+//    }
 }
