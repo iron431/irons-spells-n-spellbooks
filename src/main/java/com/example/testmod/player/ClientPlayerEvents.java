@@ -2,6 +2,7 @@ package com.example.testmod.player;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,10 +22,10 @@ public class ClientPlayerEvents {
         }
     }
 
-//    @SubscribeEvent
-//    public static void onRenderPlayer(RenderPlayerEvent.Post event) {
-//        var player = event.getEntity();
-//        var renderer = event.getRenderer();
-//
-//    }
+    @SubscribeEvent
+    public static void onRenderPlayer(RenderPlayerEvent.Post event) {
+        var player = event.getEntity();
+        var renderer = event.getRenderer();
+        var hasEvasion = ClientMagicData.getPlayerSyncedData(player.getId()).getHasEvasion();
+    }
 }

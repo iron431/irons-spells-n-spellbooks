@@ -31,6 +31,7 @@ import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
 import com.example.testmod.render.AngelWingsLayer;
 import com.example.testmod.render.AngelWingsModel;
+import com.example.testmod.render.EvasionLayer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -85,6 +86,7 @@ public class ClientSetup {
         EntityRenderer<? extends Player> render = event.getSkin(skinName);
         if (render instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
+            livingRenderer.addLayer(new EvasionLayer(livingRenderer));
         }
     }
 
