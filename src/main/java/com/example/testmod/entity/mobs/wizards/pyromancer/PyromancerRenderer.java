@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public class PyromancerRenderer extends HumanoidMobRenderer<PyromancerWizard,PyromancerModel > {
+public class PyromancerRenderer extends HumanoidMobRenderer<PyromancerEntity,PyromancerModel > {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/entity/pyromancer.png");
 
@@ -28,7 +28,7 @@ public class PyromancerRenderer extends HumanoidMobRenderer<PyromancerWizard,Pyr
 
     @Nonnull
     @Override
-    public ResourceLocation getTextureLocation(PyromancerWizard entity) {
+    public ResourceLocation getTextureLocation(PyromancerEntity entity) {
         return TEXTURE;
     }
 }

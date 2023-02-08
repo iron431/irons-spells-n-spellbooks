@@ -12,7 +12,7 @@ import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
-import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerWizard;
+import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.entity.wall_of_fire.WallOfFireCastTracker;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
@@ -124,8 +124,8 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "summoned_vex").toString()));
 
-    public static final RegistryObject<EntityType<PyromancerWizard>> PYROMANCER =
-            ENTITIES.register("pyromancer", () -> EntityType.Builder.<PyromancerWizard>of(PyromancerWizard::new, MobCategory.MONSTER)
+    public static final RegistryObject<EntityType<PyromancerEntity>> PYROMANCER =
+            ENTITIES.register("pyromancer", () -> EntityType.Builder.<PyromancerEntity>of(PyromancerEntity::new, MobCategory.MONSTER)
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "pyromancer").toString()));

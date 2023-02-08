@@ -14,13 +14,13 @@
   "use_expansion_hack": false,
 
   "start_height": {
-    "absolute": -4
+    "absolute": -3
   },
 
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
 
   "biomes": "#testmod:has_structure/mangrove_hut",
-  "terrain_adaptation": "beard_thin",
+  "terrain_adaptation": "none",
   "spawn_overrides": {
     "monster": {
       "bounding_box": "piece",

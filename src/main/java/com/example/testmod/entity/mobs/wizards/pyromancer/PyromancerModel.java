@@ -6,7 +6,7 @@ import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
-public class PyromancerModel extends HumanoidModel<PyromancerWizard> {
+public class PyromancerModel extends HumanoidModel<PyromancerEntity> {
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = createMesh(CubeDeformation.NONE, 0f);
