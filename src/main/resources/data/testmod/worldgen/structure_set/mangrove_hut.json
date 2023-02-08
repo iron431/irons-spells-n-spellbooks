@@ -3,16 +3,16 @@
     // If two or more structures in this list can spawn in a biome at a spot, a random one based on weight is chosen to spawn
   "structures": [
     {
-      "structure": "testmod:mountain_tower",
+      "structure": "testmod:mangrove_hut",
       "weight": 1
     }
   ],
   "placement": {
       // Make sure this is unique and does not match any other structure set's salt
-    "salt": 194767080,
+    "salt": 169476080,
 
       // The average distance apart in chunks for spawn attempts
-    "spacing": 32,
+    "spacing": 24,
 
       // Minimum distance apart in chunks for spawn attempts
       // MUST ALWAYS BE SMALLER THAN spacing ABOVE

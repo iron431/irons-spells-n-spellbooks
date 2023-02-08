@@ -14,7 +14,7 @@
             {
               "function": "testmod:randomize_scroll",
               "quality": {
-                "min": 0.0,
+                "min": 0.2,
                 "max": 0.8
               }
             }
@@ -26,37 +26,22 @@
       "rolls": 5,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "testmod:frozen_bone"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "testmod:blood_vial"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "testmod:lightning_bottle"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:blaze_powder"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:amethyst_shard"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:ender_pearl"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:emerald"
+          "type": "minecraft:loot_table",
+          "name": "testmod:magic_items/all_focuses"
         }
       ]
     },
     {
-      "rolls": 5,
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "testmod:magic_items/decent_ink"
+        }
+      ]
+    },
+    {
+      "rolls": 8,
       "entries": [
         {
           "type": "minecraft:item",
