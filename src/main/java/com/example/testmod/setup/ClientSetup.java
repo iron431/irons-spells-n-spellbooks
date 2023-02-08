@@ -86,7 +86,7 @@ public class ClientSetup {
         EntityRenderer<? extends Player> render = event.getSkin(skinName);
         if (render instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
-            livingRenderer.addLayer(new EvasionLayer(livingRenderer, event.getEntityModels()));
+            livingRenderer.addLayer(new EvasionLayer(livingRenderer));
         }
     }
 

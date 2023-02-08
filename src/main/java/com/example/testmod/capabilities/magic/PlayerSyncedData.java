@@ -38,7 +38,6 @@ public class PlayerSyncedData {
     private void doSync() {
         //this.player will only be null on the client side
         if (this.player != null) {
-            //TODO: consider sending a packed to to self also.  This might add some consistency to the custom layers so can check for this instead of the effect instance
             Messages.sendToPlayer(new ClientBoundSyncPlayerData(this), (ServerPlayer) player);
             Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), player);
         }

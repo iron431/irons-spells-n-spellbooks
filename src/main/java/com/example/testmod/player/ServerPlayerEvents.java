@@ -107,7 +107,7 @@ public class ServerPlayerEvents {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.getSyncedData().getHasEvasion()) {
                 event.setCanceled(true);
-                EvasionEffect.doEffect(serverPlayer, event.getSource().getEntity());
+                EvasionEffect.doEffect(serverPlayer, event.getSource());
             }
         }
     }
