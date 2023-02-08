@@ -35,6 +35,14 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> BLOOD_MAGIC_RESIST = newResistanceAttribute("blood");
     public static final RegistryObject<Attribute> EVOCATION_MAGIC_RESIST = newResistanceAttribute("evocation");
 
+    public static final RegistryObject<Attribute> FIRE_SPELL_POWER = newPowerAttribute("fire");
+    public static final RegistryObject<Attribute> ICE_SPELL_POWER = newPowerAttribute("ice");
+    public static final RegistryObject<Attribute> LIGHTNING_SPELL_POWER = newPowerAttribute("lightning");
+    public static final RegistryObject<Attribute> HOLY_SPELL_POWER = newPowerAttribute("holy");
+    public static final RegistryObject<Attribute> ENDER_SPELL_POWER = newPowerAttribute("ender");
+    public static final RegistryObject<Attribute> BLOOD_SPELL_POWER = newPowerAttribute("blood");
+    public static final RegistryObject<Attribute> EVOCATION_SPELL_POWER = newPowerAttribute("evocation");
+
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(entity -> {
@@ -50,10 +58,22 @@ public class AttributeRegistry {
             e.add(entity, ENDER_MAGIC_RESIST.get());
             e.add(entity, BLOOD_MAGIC_RESIST.get());
             e.add(entity, EVOCATION_MAGIC_RESIST.get());
+
+            e.add(entity, FIRE_SPELL_POWER.get());
+            e.add(entity, ICE_SPELL_POWER.get());
+            e.add(entity, LIGHTNING_SPELL_POWER.get());
+            e.add(entity, HOLY_SPELL_POWER .get());
+            e.add(entity, ENDER_SPELL_POWER.get());
+            e.add(entity, BLOOD_SPELL_POWER.get());
+            e.add(entity, EVOCATION_SPELL_POWER.get());
         });
     }
 
     private static RegistryObject<Attribute> newResistanceAttribute(String id) {
         return ATTRIBUTES.register(id + "_magic_resist", () -> (new RangedAttribute("attribute.testmod." + id + "_magic_resist", 1.0D, 1, 2).setSyncable(true)));
+    }
+
+    private static RegistryObject<Attribute> newPowerAttribute(String id) {
+        return ATTRIBUTES.register(id + "_spell_power", () -> (new RangedAttribute("attribute.testmod." + id + "_spell_power", 1.0D, 1, 2).setSyncable(true)));
     }
 }
