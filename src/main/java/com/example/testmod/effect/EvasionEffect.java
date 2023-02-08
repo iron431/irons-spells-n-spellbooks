@@ -21,15 +21,10 @@ public class EvasionEffect extends MobEffect {
 
     @Override
     public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
-        if (pLivingEntity instanceof ServerPlayer serverPlayer) {
-            PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().setHasEvasion(false);
-        }
-    }
+        super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
 
-    @Override
-    public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         if (pLivingEntity instanceof ServerPlayer serverPlayer) {
-            PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().setHasEvasion(true);
+            PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().setHasAngelWings(false);
         }
     }
 
