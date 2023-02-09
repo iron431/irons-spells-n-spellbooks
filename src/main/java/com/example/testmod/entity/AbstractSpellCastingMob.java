@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -25,7 +26,7 @@ import java.util.EnumMap;
 
 import static com.example.testmod.entity.SpellCastSyncedData.SPELL_SYNCED_DATA;
 
-public abstract class AbstractSpellCastingMob extends PathfinderMob {
+public abstract class AbstractSpellCastingMob extends PathfinderMob implements Enemy {
     //TODO: probably need a way to control the spell level dynamically.
     // I'm not going to add this until we have an idea of what we want
 

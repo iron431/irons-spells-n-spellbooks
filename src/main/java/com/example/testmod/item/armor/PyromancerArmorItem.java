@@ -46,6 +46,7 @@ public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable, Ar
             builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Armor knockback resistance", this.knockbackResistance, AttributeModifier.Operation.ADDITION));
         }
         builder.put(AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 50, AttributeModifier.Operation.ADDITION));
+        builder.put(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Power", .075, AttributeModifier.Operation.MULTIPLY_BASE));
 
         ARMOR_ATTRIBUTES = builder.build();
 
@@ -53,11 +54,11 @@ public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable, Ar
 
     @Override
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
-        if(pEquipmentSlot == this.slot){
+        if (pEquipmentSlot == this.slot) {
             //var attributes = super.getDefaultAttributeModifiers(pEquipmentSlot);
             //attributes.putAll(MANA_ATTRIBUTES);
             return ARMOR_ATTRIBUTES;
-        }else{
+        } else {
             return ImmutableMultimap.of();
         }
     }
