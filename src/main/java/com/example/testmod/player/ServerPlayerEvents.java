@@ -12,9 +12,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -102,15 +102,28 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onPlayerHurt(LivingHurtEvent event) {
+    public static void onLivingAttack(LivingAttackEvent event){
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.getSyncedData().getHasEvasion()) {
-                event.setCanceled(true);
-                EvasionEffect.doEffect(serverPlayer, event.getSource());
+                if (EvasionEffect.doEffect(serverPlayer, event.getSource())) {
+                    event.setCanceled(true);
+                }
             }
         }
     }
+
+//    @SubscribeEvent
+//    public static void onPlayerHurt(LivingHurtEvent event) {
+//        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+//            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+//            if (playerMagicData.getSyncedData().getHasEvasion()) {
+//                if (EvasionEffect.doEffect(serverPlayer, event.getSource())) {
+//                    event.setCanceled(true);
+//                }
+//            }
+//        }
+//    }
 
     @SubscribeEvent
     public static void onPlayerTakeDamage(LivingDamageEvent event) {

@@ -53,18 +53,19 @@ public class EvasionEffect extends MobEffect {
         double d0 = serverPlayer.getX();
         double d1 = serverPlayer.getY();
         double d2 = serverPlayer.getZ();
-        double maxRadius = 16d;
+        double maxRadius = 18d;
         var level = serverPlayer.level;
         var random = serverPlayer.getRandom();
 
-
         for (int i = 0; i < 16; ++i) {
             var minRadius = maxRadius / 2;
-            Vec3 vec = new Vec3((double) random.nextInt((int) minRadius, (int) maxRadius), 0, 0).yRot(random.nextInt(360));
+            Vec3 vec = new Vec3((double) random.nextInt((int) minRadius, (int) maxRadius), 0, 0);
+            int degrees = random.nextInt(360);
+            vec = vec.yRot(degrees);
 
-            double x = serverPlayer.getX() + vec.x;
+            double x = d0 + vec.x;
             double y = Mth.clamp(serverPlayer.getY() + (double) (serverPlayer.getRandom().nextInt((int) maxRadius) - maxRadius / 2), (double) level.getMinBuildHeight(), (double) (level.getMinBuildHeight() + ((ServerLevel) level).getLogicalHeight() - 1));
-            double z = serverPlayer.getZ() + vec.z;
+            double z = d2 + vec.z;
 
             if (serverPlayer.isPassenger()) {
                 serverPlayer.stopRiding();
