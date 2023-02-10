@@ -1,6 +1,7 @@
 package com.example.testmod.entity.armor;
 
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
@@ -9,9 +10,8 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 import software.bernie.geckolib3.util.GeoUtils;
 
-public class GenericCustomArmorRenderer <T extends GeoArmorItem & IAnimatable> extends GeoArmorRenderer<T> {
-    public String leggingTorsoLayerBoneName = "armorLeggingTorsoLayer";
-    public String capeBoneName = "cape";
+public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> extends GeoArmorRenderer<T> {
+    public String leggingTorsoLayerBone = "armorLeggingTorsoLayer";
 
     public GenericCustomArmorRenderer(AnimatedGeoModel model) {
         super(model);
@@ -26,29 +26,38 @@ public class GenericCustomArmorRenderer <T extends GeoArmorItem & IAnimatable> e
         this.leftBootBone = "armorLeftBoot";
 
         GeoBone leggingTorsoLayerBone = new GeoBone();
-        leggingTorsoLayerBone.name = "armorLeggingTorsoLayer";
-        GeoBone capeBone = new GeoBone();
-        capeBone.name = "cape";
+        leggingTorsoLayerBone.name = this.leggingTorsoLayerBone;
         var m = getGeoModelProvider();
         m.registerBone(leggingTorsoLayerBone);
-        m.registerBone(capeBone);
-
 
     }
 
     @Override
     protected void fitToBiped() {
         super.fitToBiped();
-        if (this.leggingTorsoLayerBoneName != null) {
-            IBone torsoLayerBone = this.getGeoModelProvider().getBone(this.leggingTorsoLayerBoneName);
+        if (this.leggingTorsoLayerBone != null) {
+            IBone torsoLayerBone = this.getGeoModelProvider().getBone(this.leggingTorsoLayerBone);
 
             GeoUtils.copyRotations(this.body, torsoLayerBone);
             torsoLayerBone.setPositionX(this.body.x);
             torsoLayerBone.setPositionY(-this.body.y);
             torsoLayerBone.setPositionZ(this.body.z);
         }
-        //TestMod.LOGGER.debug("WizardArmorRenderer.fitToBiped all bones: {}", WizardArmorModel.listOfBonesToString(getGeoModelProvider().getAnimationProcessor().getModelRendererList()));
     }
+//
+//    private float smoothstep(float a, float b, float x) {
+//        //6x^5 - 15x^4 + 10x^3
+//        x = 6 * (x * x * x * x * x) - 15 * (x * x * x * x) + 10 * (x * x * x);
+//        return a + (b - a) * x;
+//    }
+//
+//    float smoothClamp(float edge0, float edge1, float x) {
+//        // Scale, and clamp x to 0..1 range
+//        x = (float) Mth.clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+//        // Evaluate polynomial
+//        return x * x * x * (x * (x * 6 - 15) + 10);
+//    }
+
 
     @Override
     public GeoArmorRenderer applySlot(EquipmentSlot slot) {
@@ -64,7 +73,7 @@ public class GenericCustomArmorRenderer <T extends GeoArmorItem & IAnimatable> e
         setBoneVisibility(this.rightBootBone, false);
         setBoneVisibility(this.rightBootBone, false);
         setBoneVisibility(this.leftBootBone, false);
-        setBoneVisibility(this.leggingTorsoLayerBoneName, false);
+        setBoneVisibility(this.leggingTorsoLayerBone, false);
 
         switch (slot) {
             case HEAD -> setBoneVisibility(this.headBone, true);
@@ -76,7 +85,7 @@ public class GenericCustomArmorRenderer <T extends GeoArmorItem & IAnimatable> e
             case LEGS -> {
                 setBoneVisibility(this.rightLegBone, true);
                 setBoneVisibility(this.leftLegBone, true);
-                setBoneVisibility(this.leggingTorsoLayerBoneName, true);
+                setBoneVisibility(this.leggingTorsoLayerBone, true);
 
             }
             case FEET -> {
