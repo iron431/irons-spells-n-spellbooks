@@ -2,6 +2,7 @@ package com.example.testmod.gui.arcane_anvil;
 
 import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.item.Scroll;
+import com.example.testmod.item.UniqueItem;
 import com.example.testmod.registries.BlockRegistry;
 import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.registries.MenuRegistry;
@@ -61,8 +62,9 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                     }
                 }
             }
+            else
             //Weapon Imbuement
-            if (baseItemStack.getItem() instanceof SwordItem && modifierItemStack.getItem() instanceof Scroll) {
+            if (baseItemStack.getItem() instanceof SwordItem swordItem && !(swordItem instanceof UniqueItem) && modifierItemStack.getItem() instanceof Scroll) {
                 result = baseItemStack.copy();
                 var resultData = Utils.getScrollData(result);
                 var scrollData = Utils.getScrollData(modifierItemStack);

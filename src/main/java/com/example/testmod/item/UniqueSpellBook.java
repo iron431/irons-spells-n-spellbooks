@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
-public class UniqueSpellBook extends SpellBook {
+public class UniqueSpellBook extends SpellBook implements UniqueItem {
 
     AbstractSpell[] spells;
 

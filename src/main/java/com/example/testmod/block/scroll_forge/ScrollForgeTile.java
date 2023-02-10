@@ -63,7 +63,7 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
 
     @Override
     public MutableComponent getDisplayName() {
-        return Component.literal("Scroll Forge");
+        return Component.translatable("ui.testmod.scroll_forge_title");
     }
 
     @Nullable

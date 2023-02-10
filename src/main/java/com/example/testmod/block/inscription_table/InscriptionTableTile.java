@@ -5,7 +5,6 @@ import com.example.testmod.gui.inscription_table.InscriptionTableMenu;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.registries.BlockRegistry;
-import com.example.testmod.registries.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +16,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,7 +55,7 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
 
     @Override
     public MutableComponent getDisplayName() {
-        return Component.literal("Inscription Table");
+        return Component.translatable("ui.testmod.inscription_table_title");
     }
 
     @Nullable

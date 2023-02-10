@@ -1,6 +1,7 @@
 package com.example.testmod.gui.arcane_anvil;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.item.UniqueItem;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
@@ -14,6 +15,8 @@ public class ArcaneAnvilScreen extends ItemCombinerScreen<ArcaneAnvilMenu> {
 
     public ArcaneAnvilScreen(ArcaneAnvilMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, ANVIL_LOCATION);
+        this.titleLabelX = 48;
+        this.titleLabelY = 24;
     }
 
     @Override
@@ -24,10 +27,10 @@ public class ArcaneAnvilScreen extends ItemCombinerScreen<ArcaneAnvilMenu> {
 
         int leftPos = (this.width - this.imageWidth) / 2;
         int topPos = (this.height - this.imageHeight) / 2;
-        
+
         this.blit(pPoseStack, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight);
 
-        if ((this.menu.getSlot(0).hasItem() || this.menu.getSlot(1).hasItem()) && !this.menu.getSlot(2).hasItem()) {
+        if (((this.menu.getSlot(0).hasItem() && this.menu.getSlot(1).hasItem()) && !this.menu.getSlot(2).hasItem())||this.menu.getSlot(0).getItem().getItem() instanceof UniqueItem) {
             this.blit(pPoseStack, leftPos + 99, topPos + 45, this.imageWidth, 0, 28, 21);
         }
 
