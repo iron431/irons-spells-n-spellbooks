@@ -4,6 +4,7 @@ package com.example.testmod.registries;
 import com.example.testmod.TestMod;
 import com.example.testmod.block.BloodCauldronBlock;
 import com.example.testmod.block.BloodSlashBlock;
+import com.example.testmod.block.arcane_anvil.ArcaneAnvilBlock;
 import com.example.testmod.block.inscription_table.InscriptionTableBlock;
 import com.example.testmod.block.inscription_table.InscriptionTableTile;
 import com.example.testmod.block.pedestal.PedestalBlock;
@@ -31,6 +32,7 @@ public class BlockRegistry {
     public static final RegistryObject<Block> BLOOD_SLASH_BLOCK = BLOCKS.register("blood_slash", BloodSlashBlock::new);
     public static final RegistryObject<Block> PEDESTAL_BLOCK = BLOCKS.register("pedestal", PedestalBlock::new);
     public static final RegistryObject<Block> BLOOD_CAULDRON_BLOCK = BLOCKS.register("blood_cauldron", BloodCauldronBlock::new);
+    public static final RegistryObject<Block> ARCANE_ANVIL_BLOCK = BLOCKS.register("arcane_anvil", ArcaneAnvilBlock::new);
 
     public static final RegistryObject<BlockEntityType<InscriptionTableTile>> INSCRIPTION_TABLE_TILE = BLOCK_ENTITIES.register("inscription_table", () -> BlockEntityType.Builder.of(InscriptionTableTile::new, INSCRIPTION_TABLE_BLOCK.get()).build(null));
     public static final RegistryObject<BlockEntityType<ScrollForgeTile>> SCROLL_FORGE_TILE = BLOCK_ENTITIES.register("scroll_forge", () -> BlockEntityType.Builder.of(ScrollForgeTile::new, SCROLL_FORGE_BLOCK.get()).build(null));

@@ -1,6 +1,7 @@
 package com.example.testmod;
 
 import com.example.testmod.config.ServerConfigs;
+import com.example.testmod.gui.arcane_anvil.ArcaneAnvilScreen;
 import com.example.testmod.gui.inscription_table.InscriptionTableScreen;
 import com.example.testmod.gui.scroll_forge.ScrollForgeScreen;
 import com.example.testmod.registries.*;
@@ -79,6 +80,7 @@ public class TestMod {
         //TODO: find a better place for this
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
+        MenuScreens.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
 
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
         //ItemBlockRenderTypes.setRenderLayer(BlockRegistry.SCROLL_FORGE_BLOCK.get(), RenderType.cutout());

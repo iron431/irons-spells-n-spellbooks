@@ -1,6 +1,7 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.gui.arcane_anvil.ArcaneAnvilMenu;
 import com.example.testmod.gui.inscription_table.InscriptionTableMenu;
 import com.example.testmod.gui.scroll_forge.ScrollForgeMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -24,5 +25,6 @@ public class MenuRegistry {
 
     public static final RegistryObject<MenuType<InscriptionTableMenu>> INSCRIPTION_TABLE_MENU = registerMenuType(InscriptionTableMenu::new,"inscription_table_menu");
     public static final RegistryObject<MenuType<ScrollForgeMenu>> SCROLL_FORGE_MENU = registerMenuType(ScrollForgeMenu::new,"scroll_forge_menu");
+    public static final RegistryObject<MenuType<ArcaneAnvilMenu>> ARCANE_ANVIL_MENU = registerMenuType(ArcaneAnvilMenu::new,"arcane_anvil_menu");
 
 }
