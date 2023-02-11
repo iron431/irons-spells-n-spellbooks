@@ -114,6 +114,8 @@ public class MagicManager {
     }
 
     public void addCooldown(ServerPlayer serverPlayer, SpellType spellType, CastSource castSource) {
+        if(castSource == CastSource.Scroll)
+            return;
         double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
 
         int itemCoolDownModifer = 1;
