@@ -20,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class PyromancerEntity extends AbstractSpellCastingMob {
 
@@ -32,10 +33,10 @@ public class PyromancerEntity extends AbstractSpellCastingMob {
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.25f, 25, 50).setSpells(
-                new SpellType[]{SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIRE_BREATH_SPELL},
-                new SpellType[]{},
-                new SpellType[]{},
-                new SpellType[]{SpellType.HEAL_SPELL}
+                List.of(SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIRE_BREATH_SPELL),
+                List.of(),
+                List.of(),
+                List.of(SpellType.HEAL_SPELL)
         ));
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .2f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));

@@ -1,7 +1,7 @@
 package com.example.testmod.network;
 
 
-import com.example.testmod.capabilities.magic.PlayerSyncedData;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -9,14 +9,14 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class ClientBoundSyncPlayerData {
-    PlayerSyncedData playerSyncedData;
+    SyncedSpellData playerSyncedData;
 
-    public ClientBoundSyncPlayerData(PlayerSyncedData playerSyncedData) {
+    public ClientBoundSyncPlayerData(SyncedSpellData playerSyncedData) {
         this.playerSyncedData = playerSyncedData;
     }
 
     public ClientBoundSyncPlayerData(FriendlyByteBuf buf) {
-        playerSyncedData = new PlayerSyncedData(buf.readInt());
+        playerSyncedData = new SyncedSpellData(buf.readInt());
         playerSyncedData.setHasEvasion(buf.readBoolean());
         playerSyncedData.setHasAngelWings(buf.readBoolean());
         playerSyncedData.setHasHeartstop(buf.readBoolean());
