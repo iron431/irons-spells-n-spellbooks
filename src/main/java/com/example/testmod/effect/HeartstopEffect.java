@@ -22,15 +22,37 @@ public class HeartstopEffect extends MobEffect {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
 
             playerMagicData.getSyncedData().setHasHeartstop(false);
-            serverPlayer.hurt(DamageSources.HEARTSTOP, playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+
+            //Whether or not player has spawn immunity (we want to damage them regardless)
+            if (serverPlayer.tickCount > 60) {
+                serverPlayer.hurt(DamageSources.HEARTSTOP, playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+                //TestMod.LOGGER.debug("{} had no spawn immunity", pLivingEntity.getName().getString());
+
+            } else {
+                //TODO: find a better way to apply damage
+                serverPlayer.kill();
+//                serverPlayer.setHealth(serverPlayer.getHealth() - playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+
+                //TestMod.LOGGER.debug("{} had spawn immunity", pLivingEntity.getName().getString());
+
+            }
             playerMagicData.getSyncedData().setHeartstopAccumulatedDamage(0);
         }
     }
 
     @Override
+    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+        //TestMod.LOGGER.debug("{} ticks existed: {}", pLivingEntity.getName().getString(), pLivingEntity.tickCount);
+    }
+
+    @Override
+    public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+        return true;
+    }
+
+    @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-
         if (pLivingEntity instanceof ServerPlayer serverPlayer) {
             PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().setHasHeartstop(true);
         }
