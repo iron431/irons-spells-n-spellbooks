@@ -4,11 +4,10 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.scroll.ScrollData;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
-import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
+import com.example.testmod.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -103,7 +102,9 @@ public class Scroll extends Item {
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         entity.stopUsingItem();
         if (getUseDuration(itemStack) - ticksUsed >= 10)
-            Messages.sendToServer(new ServerboundCancelCast(true));
+            if(entity instanceof ServerPlayer serverPlayer){
+                Utils.serverSideCancelCast(serverPlayer);
+            }
         super.releaseUsing(itemStack, level, entity, ticksUsed);
     }
 

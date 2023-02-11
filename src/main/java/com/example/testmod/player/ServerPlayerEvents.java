@@ -36,7 +36,7 @@ public class ServerPlayerEvents {
             if (playerMagicData.isCasting()
                     && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1)
                     && (event.getFrom().getItem() instanceof SpellBook || event.getFrom().getItem() instanceof Scroll || event.getFrom().getItem() instanceof SwordItem)) {
-                Utils.serverSideCancelCast(serverPlayer, playerMagicData);
+                Utils.serverSideCancelCast(serverPlayer);
             }
         }
     }
@@ -51,7 +51,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
-                Utils.serverSideCancelCast(serverPlayer, playerMagicData);
+                Utils.serverSideCancelCast(serverPlayer);
             }
         }
     }
@@ -141,7 +141,7 @@ public class ServerPlayerEvents {
                     SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
                     event.getSource() != DamageSource.ON_FIRE &&
                     event.getSource() != DamageSource.WITHER) {
-                Utils.serverSideCancelCast(serverPlayer, playerMagicData);
+                Utils.serverSideCancelCast(serverPlayer);
             }
         }
     }
@@ -155,7 +155,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
-                Utils.serverSideCancelCast(serverPlayer, playerMagicData);
+                Utils.serverSideCancelCast(serverPlayer);
             }
         }
     }

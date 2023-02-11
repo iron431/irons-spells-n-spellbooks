@@ -3,15 +3,15 @@ package com.example.testmod.item;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.spellbook.SpellBookData;
 import com.example.testmod.capabilities.spellbook.SpellBookDataProvider;
-import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.SpellRarity;
+import com.example.testmod.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -88,7 +88,10 @@ public class SpellBook extends Item implements ISpellBook {
     @Override
     public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
         entity.stopUsingItem();
-        Messages.sendToServer(new ServerboundCancelCast(true));
+
+        if(entity instanceof ServerPlayer serverPlayer){
+            Utils.serverSideCancelCast(serverPlayer);
+        }
         TestMod.LOGGER.debug("SpellBook: Stop Using");
         super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
     }

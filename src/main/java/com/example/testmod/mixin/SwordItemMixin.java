@@ -3,9 +3,7 @@ package com.example.testmod.mixin;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
 import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.item.Scroll;
-import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
@@ -14,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -93,7 +92,9 @@ public abstract class SwordItemMixin extends Item {
         var spell = Utils.getScrollData(itemStack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             entity.stopUsingItem();
-            Messages.sendToServer(new ServerboundCancelCast(true));
+            if(entity instanceof ServerPlayer serverPlayer){
+                Utils.serverSideCancelCast(serverPlayer);
+            }
         }
 
         super.releaseUsing(itemStack, level, entity, ticksUsed);

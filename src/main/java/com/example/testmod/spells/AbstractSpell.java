@@ -174,7 +174,7 @@ public abstract class AbstractSpell {
             }
             return true;
         } else {
-            Utils.serverSideCancelCast(serverPlayer, playerMagicData);
+            Utils.serverSideCancelCast(serverPlayer);
             return false;
         }
     }

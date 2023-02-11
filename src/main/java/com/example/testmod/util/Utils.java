@@ -210,7 +210,7 @@ public class Utils {
         }
     }
 
-    public static void serverSideCancelCast(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
-        ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
+    public static void serverSideCancelCast(ServerPlayer serverPlayer) {
+        ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[PlayerMagicData.getPlayerMagicData(serverPlayer).getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
     }
 }
