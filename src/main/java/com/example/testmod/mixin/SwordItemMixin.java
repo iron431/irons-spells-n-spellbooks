@@ -1,6 +1,7 @@
 package com.example.testmod.mixin;
 
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
+import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.player.ClientMagicData;
@@ -45,22 +46,21 @@ public abstract class SwordItemMixin extends Item {
                 if (ClientMagicData.isCasting) {
                     //TestMod.LOGGER.debug("SwordItemMixin.use.4");
                     return InteractionResultHolder.fail(stack);
-                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
+                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType()) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost())) {
                     //TestMod.LOGGER.debug("SwordItemMixin.use.5");
                     return InteractionResultHolder.pass(stack);
                 } else {
                     //TestMod.LOGGER.debug("SwordItemMixin.use.6");
                     spell.onClientPreCast(level, player, hand, null);
 
-                    if (spell.getCastType() == CastType.CONTINUOUS) {
-                        //TestMod.LOGGER.debug("SwordItemMixin.use.7");
-                        player.startUsingItem(hand);
-                    }
                     return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
                 }
             }
 
             if (spell.attemptInitiateCast(stack, level, player, CastSource.Sword, false)) {
+                if (spell.getCastType().holdToCast()) {
+                    player.startUsingItem(hand);
+                }
                 return InteractionResultHolder.success(stack);
             } else {
                 return InteractionResultHolder.fail(stack);

@@ -38,7 +38,7 @@ public class LightningLanceSpell extends AbstractSpell {
     @Override
     public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
         //TODO: not this
-        entity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, castTime, 0, false, false, false));
+        entity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, castTime * 2, 0, false, false, false));
         super.onServerPreCast(level, entity, playerMagicData);
     }
 

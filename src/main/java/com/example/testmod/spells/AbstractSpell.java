@@ -2,7 +2,6 @@ package com.example.testmod.spells;
 
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.network.ClientboundOnClientCast;
@@ -148,7 +147,7 @@ public abstract class AbstractSpell {
             boolean hasEnoughMana = playerMana - getManaCost() >= 0;
             boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
 
-            if ((castSource == CastSource.SpellBook || castSource == CastSource.Sword) && !hasEnoughMana) {
+            if (castSource.consumesMana() && !hasEnoughMana) {
                 player.sendSystemMessage(Component.literal("Not enough mana to cast spell").withStyle(ChatFormatting.RED));
                 return false;
             }
@@ -163,7 +162,7 @@ public abstract class AbstractSpell {
                  * Immediately cast spell
                  */
                 castSpell(level, serverPlayer, castSource, triggerCooldown);
-            } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
+            } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS || this.castType == CastType.CHARGE) {
                 //TODO: effective cast time needs better logic (it reduces continuous cast duration and will need to be utilized in faster charge casting)
                 /*
                  * Prepare to cast spell (magic manager will pick it up by itself)
@@ -184,7 +183,7 @@ public abstract class AbstractSpell {
         MagicManager magicManager = MagicManager.get(serverPlayer.level);
         PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
 
-        if (castSource == CastSource.SpellBook || (castSource == CastSource.Sword && ServerConfigs.SWORDS_CONSUME_MANA.get())) {
+        if (castSource.consumesMana()) {
             //TODO: sword mana multiplier?
             int newMana = playerMagicData.getMana() - getManaCost();
             magicManager.setPlayerCurrentMana(serverPlayer, newMana);

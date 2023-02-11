@@ -8,7 +8,6 @@ import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
-import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellRarity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -62,14 +61,14 @@ public class SpellBook extends Item implements ISpellBook {
                 return InteractionResultHolder.pass(itemStack);
             } else {
                 spell.onClientPreCast(level, player, hand, null);
-                if (spell.getCastType() == CastType.CONTINUOUS) {
-                    player.startUsingItem(hand);
-                }
                 return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
             }
         }
 
         if (spell.attemptInitiateCast(itemStack, level, player, CastSource.SpellBook, true)) {
+            if (spell.getCastType().holdToCast()) {
+                player.startUsingItem(hand);
+            }
             return InteractionResultHolder.success(itemStack);
         } else {
             return InteractionResultHolder.fail(itemStack);

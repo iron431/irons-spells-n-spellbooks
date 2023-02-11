@@ -72,10 +72,6 @@ public class Scroll extends Item {
                 return InteractionResultHolder.fail(stack);
             } else {
                 spell.onClientPreCast(level, player, hand, null);
-
-                if (spell.getCastType() == CastType.CONTINUOUS) {
-                    player.startUsingItem(hand);
-                }
                 return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
             }
         }
@@ -83,6 +79,9 @@ public class Scroll extends Item {
         if (spell.attemptInitiateCast(stack, level, player, CastSource.Scroll, false)) {
             if (spell.getCastType() == CastType.INSTANT) {
                 removeScrollAfterCast((ServerPlayer) player, stack);
+            }
+            if (spell.getCastType().holdToCast()) {
+                player.startUsingItem(hand);
             }
             return InteractionResultHolder.success(stack);
         } else {

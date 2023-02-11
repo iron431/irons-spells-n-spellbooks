@@ -1,6 +1,9 @@
 package com.example.testmod.capabilities.magic;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.spells.CastSource;
+import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -119,10 +122,22 @@ public class PlayerMagicData extends AbstractMagicData {
 
     public void handleCastDuration() {
         castDurationRemaining--;
+        //TestMod.LOGGER.debug("PlayerMagicData: isUsingItem: {} ", serverPlayer.isUsingItem());
 
         if (castDurationRemaining <= 0) {
+//            TestMod.LOGGER.debug("PlayerMagicData: ready to cast");
+//            TestMod.LOGGER.debug("PlayerMagicData: cast type: {} ", SpellType.getTypeFromValue(castingSpellId).getCastType());
+//            TestMod.LOGGER.debug("PlayerMagicData: isUsingItem: {} ", serverPlayer.isUsingItem());
+
+            //Wait for charge cast to release
+            if (SpellType.getTypeFromValue(castingSpellId).getCastType() == CastType.CHARGE) {
+                if (serverPlayer != null && serverPlayer.isUsingItem())
+                    return;
+            }
+
             isCasting = false;
             castDurationRemaining = 0;
+
         }
     }
 

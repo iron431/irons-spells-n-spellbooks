@@ -46,6 +46,9 @@ public class ServerboundCancelCast {
             if (playerMagicData.isCasting()) {
                 TestMod.LOGGER.debug("PacketCancelCast.cancelCast currently casting");
                 int spellId = playerMagicData.getCastingSpellId();
+                //TODO: find a better place for this?
+                if (SpellType.getTypeFromValue(spellId).getCastType() == CastType.CHARGE && playerMagicData.getCastDurationRemaining() < 0)
+                    return;
 
                 if (triggerCooldown) {
                     MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());

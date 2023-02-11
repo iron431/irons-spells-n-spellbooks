@@ -68,9 +68,9 @@ public class MagicManager {
                 playerMagicData.getPlayerCooldowns().tick(1);
 
                 if (playerMagicData.isCasting()) {
-                    var spell = AbstractSpell.getSpell(playerMagicData.getCastingSpellId(), playerMagicData.getCastingSpellLevel());
                     playerMagicData.handleCastDuration();
-                    if (spell.getCastType() == CastType.LONG) {
+                    var spell = AbstractSpell.getSpell(playerMagicData.getCastingSpellId(), playerMagicData.getCastingSpellLevel());
+                    if (spell.getCastType() == CastType.LONG || spell.getCastType() == CastType.CHARGE) {
                         if (!playerMagicData.isCasting()) {
                             //TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                             Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
@@ -82,7 +82,7 @@ public class MagicManager {
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
-                            if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || (playerMagicData.getCastSource() == CastSource.SpellBook && playerMagicData.getMana() - spell.getManaCost() * 2 < 0)) {
+                            if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost() * 2 < 0)) {
                                 //TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                                 Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
@@ -114,7 +114,7 @@ public class MagicManager {
     }
 
     public void addCooldown(ServerPlayer serverPlayer, SpellType spellType, CastSource castSource) {
-        if(castSource == CastSource.Scroll)
+        if (castSource == CastSource.Scroll)
             return;
         double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
 

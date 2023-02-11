@@ -7,16 +7,10 @@ import com.example.testmod.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 public class CastBarOverlay extends GuiComponent {
     public final static ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/gui/icons.png");
@@ -25,12 +19,14 @@ public class CastBarOverlay extends GuiComponent {
     static final int IMAGE_HEIGHT = 21;
 
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
-        if (!ClientMagicData.isCasting || ClientMagicData.castDurationRemaining <= 0)
+        if (!ClientMagicData.isCasting)
             return;
 
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
         String castTimeString = Utils.timeFromTicks((1 - castCompletionPercent) * ClientMagicData.castDuration, 1);
-        if(ClientMagicData.castType != CastType.LONG) {
+        if (ClientMagicData.castType == CastType.CHARGE && ClientMagicData.castDurationRemaining < 0) {
+            castCompletionPercent = 1;
+        } else if (ClientMagicData.castType == CastType.CONTINUOUS) {
             castCompletionPercent = 1 - castCompletionPercent;
         }
 
