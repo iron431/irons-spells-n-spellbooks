@@ -118,7 +118,7 @@ public class MagicManager {
 
         int itemCoolDownModifer = 1;
         if (castSource == CastSource.Sword) {
-            itemCoolDownModifer = 20;
+            itemCoolDownModifer = 2;
         }
 
         int effectiveCooldown = getEffectiveSpellCooldown(AbstractSpell.getSpell(spellType, 1).getSpellCooldown(), playerCooldownModifier) * itemCoolDownModifer;
