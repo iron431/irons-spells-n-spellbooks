@@ -5,7 +5,7 @@ import com.example.testmod.setup.Messages;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-public class PlayerSyncedData {
+public class SyncedSpellData {
 
     //TODO: may want to switch this to ServerPlayer.UUID
     private final int serverPlayerId;
@@ -20,7 +20,7 @@ public class PlayerSyncedData {
     private float hearstopDamage;
 
     //Use this on the client
-    public PlayerSyncedData(int serverPlayerId) {
+    public SyncedSpellData(int serverPlayerId) {
         this.player = null;
         this.serverPlayerId = serverPlayerId;
         this.hasAngelWings = false;
@@ -28,8 +28,8 @@ public class PlayerSyncedData {
     }
 
     //Use this on the server
-    public PlayerSyncedData(Player player) {
-        this(player.getId());
+    public SyncedSpellData(Player player) {
+        this(player == null ? -1 : player.getId());
         this.player = player;
     }
 
@@ -43,6 +43,10 @@ public class PlayerSyncedData {
             Messages.sendToPlayer(new ClientBoundSyncPlayerData(this), (ServerPlayer) player);
             Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), player);
         }
+    }
+
+    public void syncToPlayer(ServerPlayer serverPlayer) {
+        Messages.sendToPlayer(new ClientBoundSyncPlayerData(this), serverPlayer);
     }
 
     public boolean getHasAngelWings() {

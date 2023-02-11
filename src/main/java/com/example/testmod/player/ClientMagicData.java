@@ -1,7 +1,7 @@
 package com.example.testmod.player;
 
 import com.example.testmod.capabilities.magic.PlayerCooldowns;
-import com.example.testmod.capabilities.magic.PlayerSyncedData;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.capabilities.spellbook.SpellBookData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
@@ -142,10 +142,10 @@ public class ClientMagicData {
     /**
      * Player Synced Data
      */
-    private static HashMap<Integer, PlayerSyncedData> playerSyncedDataLookup = new HashMap<>();
+    private static HashMap<Integer, SyncedSpellData> playerSyncedDataLookup = new HashMap<>();
 
-    public static PlayerSyncedData getPlayerSyncedData(int serverPlayerId) {
-        return playerSyncedDataLookup.getOrDefault(serverPlayerId, new PlayerSyncedData(-1));
+    public static SyncedSpellData getPlayerSyncedData(int serverPlayerId) {
+        return playerSyncedDataLookup.getOrDefault(serverPlayerId, new SyncedSpellData(-1));
     }
 
 
@@ -158,7 +158,7 @@ public class ClientMagicData {
         spell.onClientCastComplete(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
     }
 
-    public static void handlePlayerSyncedData(PlayerSyncedData playerSyncedData) {
+    public static void handlePlayerSyncedData(SyncedSpellData playerSyncedData) {
         playerSyncedDataLookup.put(playerSyncedData.getServerPlayerId(), playerSyncedData);
     }
 

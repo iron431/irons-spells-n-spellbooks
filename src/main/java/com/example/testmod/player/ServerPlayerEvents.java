@@ -8,6 +8,7 @@ import com.example.testmod.item.SpellBook;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.SwordItem;
@@ -35,7 +36,7 @@ public class ServerPlayerEvents {
             if (playerMagicData.isCasting()
                     && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1)
                     && (event.getFrom().getItem() instanceof SpellBook || event.getFrom().getItem() instanceof Scroll || event.getFrom().getItem() instanceof SwordItem)) {
-                PlayerMagicData.serverSideCancelCast(serverPlayer, playerMagicData);
+                Utils.serverSideCancelCast(serverPlayer, playerMagicData);
             }
         }
     }
@@ -50,7 +51,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
-                PlayerMagicData.serverSideCancelCast(serverPlayer, playerMagicData);
+                Utils.serverSideCancelCast(serverPlayer, playerMagicData);
             }
         }
     }
@@ -58,7 +59,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onStartTracking(final PlayerEvent.StartTracking event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ServerPlayer targetPlayer) {
-            PlayerMagicData.getPlayerMagicData(serverPlayer).syncToPlayer(targetPlayer);
+            PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().syncToPlayer(targetPlayer);
         }
     }
 
@@ -140,7 +141,7 @@ public class ServerPlayerEvents {
                     SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
                     event.getSource() != DamageSource.ON_FIRE &&
                     event.getSource() != DamageSource.WITHER) {
-                PlayerMagicData.serverSideCancelCast(serverPlayer, playerMagicData);
+                Utils.serverSideCancelCast(serverPlayer, playerMagicData);
             }
         }
     }
@@ -154,7 +155,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
-                PlayerMagicData.serverSideCancelCast(serverPlayer, playerMagicData);
+                Utils.serverSideCancelCast(serverPlayer, playerMagicData);
             }
         }
     }

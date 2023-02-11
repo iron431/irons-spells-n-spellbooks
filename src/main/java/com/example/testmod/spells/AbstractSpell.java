@@ -12,6 +12,7 @@ import com.example.testmod.player.ClientInputEvents;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
+import com.example.testmod.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -174,7 +175,7 @@ public abstract class AbstractSpell {
             }
             return true;
         } else {
-            PlayerMagicData.serverSideCancelCast(serverPlayer, playerMagicData);
+            Utils.serverSideCancelCast(serverPlayer, playerMagicData);
             return false;
         }
     }

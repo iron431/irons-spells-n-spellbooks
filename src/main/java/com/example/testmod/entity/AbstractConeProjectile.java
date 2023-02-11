@@ -3,7 +3,6 @@ package com.example.testmod.entity;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.mobs.MagicEntity;
-import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.util.Utils;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -176,8 +175,9 @@ public abstract class AbstractConeProjectile extends Projectile implements Magic
         return !isShieldBlockingLOS && start.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
     }
 
-    public void onAntiMagic(PlayerMagicData playerMagicData){
-        if(!level.isClientSide)
-            playerMagicData.discardCastingEntity();
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        if (!level.isClientSide) {
+            playerMagicData.resetAdditionCastData();
+        }
     }
 }

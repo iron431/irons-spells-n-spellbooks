@@ -1,19 +1,12 @@
 package com.example.testmod.capabilities.magic;
 
-import com.example.testmod.network.ClientBoundSyncPlayerData;
-import com.example.testmod.network.ServerboundCancelCast;
-import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastSource;
-import com.example.testmod.spells.CastType;
-import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
-public class PlayerMagicData {
+public class PlayerMagicData extends AbstractMagicData {
 
     public PlayerMagicData() {
     }
@@ -50,19 +43,16 @@ public class PlayerMagicData {
 
     /********* SYNC DATA *******************************************************/
 
-    private PlayerSyncedData playerSyncedData;
+    private SyncedSpellData playerSyncedData;
 
-    public PlayerSyncedData getSyncedData() {
+    public SyncedSpellData getSyncedData() {
         if (playerSyncedData == null) {
-            playerSyncedData = new PlayerSyncedData(serverPlayer);
+            playerSyncedData = new SyncedSpellData(serverPlayer);
         }
 
         return playerSyncedData;
     }
 
-    public void syncToPlayer(ServerPlayer serverPlayer) {
-        Messages.sendToPlayer(new ClientBoundSyncPlayerData(getSyncedData()), serverPlayer);
-    }
 
     /********* CASTING *******************************************************/
 
@@ -73,59 +63,23 @@ public class PlayerMagicData {
     private CastSource castSource;
     private CastData additionalCastData;
 
-    public Entity castingEntity;
-    private int castDuration = 0;
     private ItemStack castingItemStack = ItemStack.EMPTY;
-    private Vec3 teleportTargetPosition;
+
 
     public void resetCastingState() {
         this.isCasting = false;
         this.castingSpellId = 0;
         this.castingSpellLevel = 0;
         this.castDurationRemaining = 0;
-        this.teleportTargetPosition = null;
-        additionalCastData = null;
-        this.discardCastingEntity();
-    }
-
-    public static void serverSideCancelCast(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
-        ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
+        resetAdditionCastData();
     }
 
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, CastSource castSource) {
         this.castSource = castSource;
         this.castingSpellId = castingSpellId;
         this.castingSpellLevel = castingSpellLevel;
-        this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
         this.isCasting = true;
-    }
-
-    public void setCastingEntity(Entity castingEntity) {
-        discardCastingEntity();
-        this.castingEntity = castingEntity;
-    }
-
-    public void discardCastingEntity() {
-        if (this.castingEntity != null) {
-            this.castingEntity.discard();
-            this.castingEntity = null;
-            //TestMod.LOGGER.debug("PlayerMagicData: discarding cone");
-        }
-    }
-
-    //used if we want the entity to persist after the casting
-    public void forgetCastingEntity() {
-        this.castingEntity = null;
-
-    }
-
-    public void setTeleportTargetPosition(Vec3 targetPosition) {
-        this.teleportTargetPosition = targetPosition;
-    }
-
-    public Vec3 getTeleportTargetPosition() {
-        return this.teleportTargetPosition;
     }
 
     public CastData getAdditionalCastData() {
@@ -137,7 +91,10 @@ public class PlayerMagicData {
     }
 
     public void resetAdditionCastData() {
-        additionalCastData = null;
+        if (additionalCastData != null) {
+            additionalCastData.reset();
+            additionalCastData = null;
+        }
     }
 
     public boolean isCasting() {

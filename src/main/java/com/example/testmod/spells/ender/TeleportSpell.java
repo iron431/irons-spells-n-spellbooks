@@ -1,5 +1,6 @@
 package com.example.testmod.spells.ender;
 
+import com.example.testmod.capabilities.magic.CastData;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.network.spell.ClientboundTeleportParticles;
 import com.example.testmod.setup.Messages;
@@ -52,11 +53,15 @@ public class TeleportSpell extends AbstractSpell {
 
         Vec3 dest = null;
 
-        if (playerMagicData != null && playerMagicData.getTeleportTargetPosition() != null) {
-            var tmp = playerMagicData.getTeleportTargetPosition();
-            int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) tmp.x, (int) tmp.z);
-            dest = new Vec3(tmp.x, y, tmp.z);
-        } else {
+        if (playerMagicData != null) {
+            if (playerMagicData.getAdditionalCastData() instanceof TeleportData teleportData) {
+                var tmp = teleportData.getTeleportTargetPosition();
+                int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) tmp.x, (int) tmp.z);
+                dest = new Vec3(tmp.x, y, tmp.z);
+            }
+        }
+
+        if (dest == null) {
             dest = findTeleportLocation(level, entity);
         }
 
@@ -76,16 +81,26 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        var teleportData = (TeleportData) playerMagicData.getAdditionalCastData();
 
-        var potentialTarget = playerMagicData.getTeleportTargetPosition();
-        var dest = potentialTarget != null ? findTeleportLocation(entity, potentialTarget) : findTeleportLocation(level, entity);
+        Vec3 dest = null;
+        if (teleportData != null) {
+            var potentialTarget = teleportData.getTeleportTargetPosition();
+            if (potentialTarget != null) {
+                dest = findTeleportLocation(entity, potentialTarget);
+            }
+        }
+
+        if (dest == null) {
+            dest = findTeleportLocation(level, entity);
+        }
 
         Messages.sendToPlayersTrackingEntity(new ClientboundTeleportParticles(entity.position(), dest), entity);
-
         entity.teleportTo(dest.x, dest.y, dest.z);
-
         entity.resetFallDistance();
-        playerMagicData.setTeleportTargetPosition(null);
+
+        playerMagicData.resetAdditionCastData();
+
         super.onCast(level, entity, playerMagicData);
     }
 
@@ -127,6 +142,27 @@ public class TeleportSpell extends AbstractSpell {
 
     private float getDistance(Entity sourceEntity) {
         return getSpellPower(sourceEntity);
+    }
+
+    public static class TeleportData implements CastData {
+        private Vec3 teleportTargetPosition;
+
+        public TeleportData(Vec3 teleportTargetPosition) {
+            this.teleportTargetPosition = teleportTargetPosition;
+        }
+
+        public void setTeleportTargetPosition(Vec3 targetPosition) {
+            this.teleportTargetPosition = targetPosition;
+        }
+
+        public Vec3 getTeleportTargetPosition() {
+            return this.teleportTargetPosition;
+        }
+
+        @Override
+        public void reset() {
+            //Nothing needed here for teleport
+        }
     }
 
 }

@@ -66,21 +66,22 @@ public class WizardAttackGoal extends Goal {
         attackSpells.add(SpellType.FANG_STRIKE_SPELL);
         attackSpells.add(SpellType.ELECTROCUTE_SPELL);
         defenseSpells.add(SpellType.SHIELD_SPELL);
+        defenseSpells.add(SpellType.EVASION_SPELL);
         movementSpells.add(SpellType.TELEPORT_SPELL);
         supportSpells.add(SpellType.HEAL_SPELL);
 
     }
 
-    public WizardAttackGoal setSpells(SpellType[] attackSpells, SpellType[] defenseSpells, SpellType[] movementSpells, SpellType[] supportSpells) {
+    public WizardAttackGoal setSpells(List<SpellType> attackSpells, List<SpellType> defenseSpells, List<SpellType> movementSpells, List<SpellType> supportSpells) {
         this.attackSpells.clear();
         this.defenseSpells.clear();
         this.movementSpells.clear();
         this.supportSpells.clear();
 
-        this.attackSpells.addAll(List.of(attackSpells));
-        this.defenseSpells.addAll(List.of(defenseSpells));
-        this.movementSpells.addAll(List.of(movementSpells));
-        this.supportSpells.addAll(List.of(supportSpells));
+        this.attackSpells.addAll(attackSpells);
+        this.defenseSpells.addAll(defenseSpells);
+        this.movementSpells.addAll(movementSpells);
+        this.supportSpells.addAll(supportSpells);
 
         return this;
     }
@@ -124,6 +125,10 @@ public class WizardAttackGoal extends Goal {
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
+        if (target == null) {
+            return;
+        }
+
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         hasLineOfSight = this.mob.getSensing().hasLineOfSight(this.target);
         if (hasLineOfSight) {
@@ -244,6 +249,10 @@ public class WizardAttackGoal extends Goal {
         //We want attack to be a common action in any circumstance, but the more "confident" we are the more likely we are to attack (we have health or our target is weak)
         int baseWeight = 80;
 
+        if (target == null) {
+            return baseWeight;
+        }
+
         float targetHealth = target.getHealth() / target.getMaxHealth();
         int targetHealthWeight = (int) ((1 - targetHealth) * baseWeight * .75f);
 
@@ -260,6 +269,10 @@ public class WizardAttackGoal extends Goal {
         //We want defensive spells to be used when we feel "threatened", meaning we aren't confident, or we're actively being attacked
         int baseWeight = -20;
 
+        if (target == null) {
+            return baseWeight;
+        }
+
         //https://www.desmos.com/calculator/tqs7dudcmv
         float x = mob.getHealth();
         float m = mob.getMaxHealth();
@@ -275,6 +288,9 @@ public class WizardAttackGoal extends Goal {
     }
 
     private int getMovementWeight() {
+        if (target == null) {
+            return 0;
+        }
         //We want to move if we're in a disadvantageous spot, or we need a better angle on our target
 
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
@@ -296,11 +312,13 @@ public class WizardAttackGoal extends Goal {
         //We want to support/buff ourselves if we are weak
         int baseWeight = -15;
 
+        if (target == null) {
+            return baseWeight;
+        }
+
         float health = 1 - mob.getHealth() / mob.getMaxHealth();
         int healthWeight = (int) (200 * health);
 
         return baseWeight + healthWeight;
     }
-
-
 }

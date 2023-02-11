@@ -1,6 +1,5 @@
 package com.example.testmod.entity.magic_missile;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.util.ParticleHelper;
@@ -122,8 +121,6 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
 
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
-
-        TestMod.LOGGER.debug("MagicMissile.spawnParticles {}", level.isClientSide);
         for (int i = 0; i < 2; i++) {
             double speed = .02;
             double dx = level.random.nextDouble() * 2 * speed - speed;

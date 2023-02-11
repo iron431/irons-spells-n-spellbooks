@@ -3,6 +3,7 @@ package com.example.testmod.entity.mobs.simple_wizard;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.PatrolNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WizardAttackGoal;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -12,6 +13,8 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+
 public class SimpleWizard extends AbstractSpellCastingMob {
 
     public SimpleWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
@@ -20,8 +23,11 @@ public class SimpleWizard extends AbstractSpellCastingMob {
 
     @Override
     protected void registerGoals() {
+        var wizardAttackGoal = new WizardAttackGoal(this, 1.25f, 25, 50);
+        wizardAttackGoal.setSpells( List.of(SpellType.EVASION_SPELL), List.of(SpellType.EVASION_SPELL), List.of(), List.of());
+
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.25f, 25, 50));
+        this.goalSelector.addGoal(2, wizardAttackGoal);
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .2f));
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));

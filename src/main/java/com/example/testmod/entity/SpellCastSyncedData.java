@@ -4,11 +4,19 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 
 public class SpellCastSyncedData {
+    public int spellId;
+    public int spellLevel;
+    public boolean usePosition;
+    public boolean hasEvasion;
+    public int x;
+    public int y;
+    public int z;
 
     public static final EntityDataSerializer<SpellCastSyncedData> SPELL_SYNCED_DATA = new EntityDataSerializer.ForValueType<SpellCastSyncedData>() {
         public void write(FriendlyByteBuf buffer, SpellCastSyncedData data) {
             buffer.writeInt(data.spellId);
             buffer.writeInt(data.spellLevel);
+            buffer.writeBoolean(data.hasEvasion);
             buffer.writeBoolean(data.usePosition);
             buffer.writeInt(data.x);
             buffer.writeInt(data.y);
@@ -19,6 +27,7 @@ public class SpellCastSyncedData {
             var data = new SpellCastSyncedData();
             data.spellId = buffer.readInt();
             data.spellLevel = buffer.readInt();
+            data.hasEvasion = buffer.readBoolean();
             data.usePosition = buffer.readBoolean();
             data.x = buffer.readInt();
             data.y = buffer.readInt();
@@ -26,13 +35,6 @@ public class SpellCastSyncedData {
             return data;
         }
     };
-
-    public int spellId;
-    public int spellLevel;
-    public boolean usePosition;
-    public int x;
-    public int y;
-    public int z;
 
     @Override
     public String toString() {

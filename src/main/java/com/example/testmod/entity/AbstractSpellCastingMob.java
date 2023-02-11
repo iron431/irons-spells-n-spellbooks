@@ -6,6 +6,7 @@ import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.spells.ender.TeleportSpell;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -38,6 +39,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
 
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
     private final PlayerMagicData playerMagicData = new PlayerMagicData();
+
     private AbstractSpell castingSpell;
     private final SpellCastSyncedData emptySyncedData = new SpellCastSyncedData();
 
@@ -55,7 +57,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
         super.defineSynchedData();
         this.entityData.define(DATA_CASTING, emptySyncedData);
     }
-
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
@@ -76,7 +77,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
 
 
             if (castingData.usePosition) {
-                playerMagicData.setTeleportTargetPosition(new Vec3(castingData.x, castingData.y, castingData.z));
+                playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(new Vec3(castingData.x, castingData.y, castingData.z)));
             }
 
             castSpell(spellType, castingData.spellLevel);
@@ -171,11 +172,12 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
             var data = new SpellCastSyncedData();
             data.spellId = castingSpell.getID();
             data.spellLevel = castingSpell.getLevel();
-            if (playerMagicData.getTeleportTargetPosition() != null) {
+
+            if (playerMagicData.getAdditionalCastData() instanceof TeleportSpell.TeleportData teleportData) {
                 data.usePosition = true;
-                data.x = (int) playerMagicData.getTeleportTargetPosition().x;
-                data.y = (int) playerMagicData.getTeleportTargetPosition().y;
-                data.z = (int) playerMagicData.getTeleportTargetPosition().z;
+                data.x = (int) teleportData.getTeleportTargetPosition().x;
+                data.y = (int) teleportData.getTeleportTargetPosition().y;
+                data.z = (int) teleportData.getTeleportTargetPosition().z;
             }
 
             entityData.set(DATA_CASTING, data);
@@ -213,7 +215,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
                 }
             }
 
-            playerMagicData.setTeleportTargetPosition(teleportPos);
+            playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
         }
     }
 

@@ -1,11 +1,11 @@
 package com.example.testmod.spells.ice;
 
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.EntityCastData;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,16 +41,17 @@ public class ConeOfColdSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        TestMod.LOGGER.debug("ConeOfColdSpell.onCast");
-        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.castingEntity != null && playerMagicData.castingEntity instanceof AbstractConeProjectile cone) {
+        if (playerMagicData.isCasting()
+                && playerMagicData.getCastingSpellId() == this.getID()
+                && playerMagicData.getAdditionalCastData() instanceof EntityCastData entityCastData
+                && entityCastData.getCastingEntity() instanceof AbstractConeProjectile cone) {
             cone.setDealDamageActive();
-        } else{
+        } else {
             ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, entity);
             coneOfColdProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
             coneOfColdProjectile.setDamage(getSpellPower(entity));
             world.addFreshEntity(coneOfColdProjectile);
-            playerMagicData.discardCastingEntity();
-            playerMagicData.castingEntity = coneOfColdProjectile;
+            playerMagicData.setAdditionalCastData(new EntityCastData(coneOfColdProjectile));
             super.onCast(world, entity, playerMagicData);
         }
     }

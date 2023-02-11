@@ -1,9 +1,12 @@
 package com.example.testmod.util;
 
+import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.scroll.ScrollData;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.network.ServerboundCancelCast;
+import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -207,4 +210,7 @@ public class Utils {
         }
     }
 
+    public static void serverSideCancelCast(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
+        ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
+    }
 }
