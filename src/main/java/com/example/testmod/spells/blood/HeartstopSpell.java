@@ -1,8 +1,7 @@
-package com.example.testmod.spells.ender;
+package com.example.testmod.spells.blood;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.registries.MobEffectRegistry;
-import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -14,21 +13,22 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-public class EvasionSpell extends AbstractSpell {
-    public EvasionSpell() {
+public class HeartstopSpell extends AbstractSpell {
+    public HeartstopSpell() {
         this(1);
     }
 
-    public EvasionSpell(int level) {
-        super(SpellType.EVASION_SPELL);
+    public HeartstopSpell(int level) {
+        super(SpellType.HEARTSTOP_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 20;
-        this.baseSpellPower = 200;
-        this.spellPowerPerLevel = 50;
+        this.manaCostPerLevel = 5;
+        this.baseSpellPower = 300;
+        this.spellPowerPerLevel = 20;
         this.castTime = 0;
-        this.baseManaCost = 5;
-        this.cooldown = 6000;
+        this.baseManaCost = 20;
+        this.cooldown = 100;
         uniqueInfo.add(Component.translatable("ui.testmod.duration", Utils.timeFromTicks(getSpellPower(null), 1) ));
+
     }
 
     @Override
@@ -38,12 +38,12 @@ public class EvasionSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.DARK_SPELL_02.get());
+        return Optional.empty();
     }
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), (int) getSpellPower(entity), 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.HEARTSTOP.get(), (int) getSpellPower(entity), 0, false, false, true));
         super.onCast(world, entity, playerMagicData);
     }
 }

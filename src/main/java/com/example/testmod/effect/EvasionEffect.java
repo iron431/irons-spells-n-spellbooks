@@ -44,9 +44,18 @@ public class EvasionEffect extends MobEffect {
         }
     }
 
+    @Override
+    public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
+        super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+
+        if (pLivingEntity instanceof ServerPlayer serverPlayer) {
+            PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().setHasEvasion(true);
+        }
+    }
+
     public static boolean doEffect(ServerPlayer serverPlayer, DamageSource damageSource) {
 
-        if (excludeDamageSources.contains(damageSource) || damageSource.isFall()) {
+        if (excludeDamageSources.contains(damageSource) || damageSource.isFall() || damageSource.isBypassMagic() || damageSource.isBypassInvul()) {
             return false;
         }
 

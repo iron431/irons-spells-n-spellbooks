@@ -102,7 +102,7 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onLivingAttack(LivingAttackEvent event){
+    public static void onLivingAttack(LivingAttackEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.getSyncedData().getHasEvasion()) {
@@ -126,9 +126,16 @@ public class ServerPlayerEvents {
 //    }
 
     @SubscribeEvent
-    public static void onPlayerTakeDamage(LivingDamageEvent event) {
+    public static void onLivingTakeDamage(LivingDamageEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            if (playerMagicData.getSyncedData().getHasHeartstop()) {
+                playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount());
+                TestMod.LOGGER.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+                event.setCanceled(true);
+                return;
+            }
+
             if (playerMagicData.isCasting() &&
                     SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
                     event.getSource() != DamageSource.ON_FIRE &&

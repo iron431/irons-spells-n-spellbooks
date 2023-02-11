@@ -124,13 +124,16 @@
   "spell.testmod.fang_strike": "Fang Strike",
   "spell.testmod.fang_ward": "Fang Ward",
   "spell.testmod.evasion": "Evasion",
+  "spell.testmod.heartstop": "Heartstop",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
   "death.attack.blood_magic.player": "%1$s blood magic 3",
   "death.attack.blood_cauldron": "%1$s was cooked alive.",
+  "death.attack.heartstop": "%1$s's heart ruptured.",
 
   "effect.testmod.blood_slashed": "Blood Slashed",
+  "effect.testmod.heartstop": "Heartstop",
 
   "commands.testmod.create_scroll.failed":"Create Scroll Failed",
   "commands.testmod.create_spell_book.failed": "Create SpellBook Failed",

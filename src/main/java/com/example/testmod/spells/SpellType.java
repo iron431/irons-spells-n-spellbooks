@@ -3,6 +3,7 @@ package com.example.testmod.spells;
 import com.example.testmod.TestMod;
 import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.spells.blood.BloodSlashSpell;
+import com.example.testmod.spells.blood.HeartstopSpell;
 import com.example.testmod.spells.ender.EvasionSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
@@ -54,7 +55,8 @@ public enum SpellType {
     WISP_SPELL(18),
     FANG_STRIKE_SPELL(19),
     FANG_WARD_SPELL(20),
-    EVASION_SPELL(21);
+    EVASION_SPELL(21),
+    HEARTSTOP_SPELL(22);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -102,7 +104,88 @@ public enum SpellType {
         };
     }
 
-//    public SpellRarity getRarity(int level) {
+    private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL};
+    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL};
+    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL};
+    private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL};
+    private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL};
+    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL};
+    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL};
+
+    public AbstractSpell getSpellForType(int level) {
+        switch (this) {
+            case BURNING_DASH_SPELL -> {
+                return new BurningDashSpell(level);
+            }
+            case FIREBALL_SPELL -> {
+                return new FireballSpell(level);
+            }
+            case TELEPORT_SPELL -> {
+                return new TeleportSpell(level);
+            }
+            case MAGIC_MISSILE_SPELL -> {
+                return new MagicMissileSpell(level);
+            }
+            case CONE_OF_COLD_SPELL -> {
+                return new ConeOfColdSpell(level);
+            }
+            case ELECTROCUTE_SPELL -> {
+                return new ElectrocuteSpell(level);
+            }
+            case HEAL_SPELL -> {
+                return new HealSpell(level);
+            }
+            case BLOOD_SLASH_SPELL -> {
+                return new BloodSlashSpell(level);
+            }
+            case SUMMON_VEX_SPELL -> {
+                return new SummonVexSpell(level);
+            }
+            case FIREBOLT_SPELL -> {
+                return new FireboltSpell(level);
+            }
+            case FIRE_BREATH_SPELL -> {
+                return new FireBreathSpell(level);
+            }
+            case ICICLE_SPELL -> {
+                return new IcicleSpell(level);
+            }
+            case FIRECRACKER_SPELL -> {
+                return new FirecrackerSpell(level);
+            }
+            case SUMMON_HORSE_SPELL -> {
+                return new SummonHorseSpell(level);
+            }
+            case ANGEL_WING_SPELL -> {
+                return new AngelWingsSpell(level);
+            }
+            case SHIELD_SPELL -> {
+                return new ShieldSpell(level);
+            }
+            case WALL_OF_FIRE_SPELL -> {
+                return new WallOfFireSpell(level);
+            }
+            case WISP_SPELL -> {
+                return new WispSpell(level);
+            }
+            case FANG_STRIKE_SPELL -> {
+                return new FangStrikeSpell(level);
+            }
+            case FANG_WARD_SPELL -> {
+                return new FangWardSpell(level);
+            }
+            case EVASION_SPELL -> {
+                return new EvasionSpell(level);
+            }
+            case HEARTSTOP_SPELL -> {
+                return new HeartstopSpell(level);
+            }
+            default -> {
+                return new NoneSpell(0);
+            }
+        }
+    }
+    //    public SpellRarity getRarity(int level) {
 //        //float adjustedRarity = getRarityMapped(minLevel, maxLevel, minRarity, maxRarity, level);
 //        int maxLevel = this.maxLevel.resolve().get();
 //        int minRarity = this.minRarity.resolve().get();
@@ -222,76 +305,6 @@ public enum SpellType {
         return SchoolType.EVOCATION;
     }
 
-    public AbstractSpell getSpellForType(int level) {
-        switch (this) {
-            case BURNING_DASH_SPELL -> {
-                return new BurningDashSpell(level);
-            }
-            case FIREBALL_SPELL -> {
-                return new FireballSpell(level);
-            }
-            case TELEPORT_SPELL -> {
-                return new TeleportSpell(level);
-            }
-            case MAGIC_MISSILE_SPELL -> {
-                return new MagicMissileSpell(level);
-            }
-            case CONE_OF_COLD_SPELL -> {
-                return new ConeOfColdSpell(level);
-            }
-            case ELECTROCUTE_SPELL -> {
-                return new ElectrocuteSpell(level);
-            }
-            case HEAL_SPELL -> {
-                return new HealSpell(level);
-            }
-            case BLOOD_SLASH_SPELL -> {
-                return new BloodSlashSpell(level);
-            }
-            case SUMMON_VEX_SPELL -> {
-                return new SummonVexSpell(level);
-            }
-            case FIREBOLT_SPELL -> {
-                return new FireboltSpell(level);
-            }
-            case FIRE_BREATH_SPELL -> {
-                return new FireBreathSpell(level);
-            }
-            case ICICLE_SPELL -> {
-                return new IcicleSpell(level);
-            }
-            case FIRECRACKER_SPELL -> {
-                return new FirecrackerSpell(level);
-            }
-            case SUMMON_HORSE_SPELL -> {
-                return new SummonHorseSpell(level);
-            }
-            case ANGEL_WING_SPELL -> {
-                return new AngelWingsSpell(level);
-            }
-            case SHIELD_SPELL -> {
-                return new ShieldSpell(level);
-            }
-            case WALL_OF_FIRE_SPELL -> {
-                return new WallOfFireSpell(level);
-            }
-            case WISP_SPELL -> {
-                return new WispSpell(level);
-            }
-            case FANG_STRIKE_SPELL -> {
-                return new FangStrikeSpell(level);
-            }
-            case FANG_WARD_SPELL -> {
-                return new FangWardSpell(level);
-            }
-            case EVASION_SPELL -> {
-                return new EvasionSpell(level);
-            }
-            default -> {
-                return new NoneSpell(0);
-            }
-        }
-    }
 
     public static SpellType[] getSpellsFromSchool(SchoolType school) {
         if (school.equals(SchoolType.FIRE))
@@ -309,14 +322,6 @@ public enum SpellType {
         //else if (school.equals(SchoolType.EVOCATION))
         return EVOCATION_SPELLS;
     }
-
-    private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL};
-    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL};
-    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL};
-    private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL};
-    private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL};
-    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL};
-    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL};
 
     public MutableComponent getDisplayName() {
         return Component.translatable("spell." + TestMod.MODID + "." + this.getId());

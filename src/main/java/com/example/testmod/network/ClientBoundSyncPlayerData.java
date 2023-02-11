@@ -19,12 +19,14 @@ public class ClientBoundSyncPlayerData {
         playerSyncedData = new PlayerSyncedData(buf.readInt());
         playerSyncedData.setHasEvasion(buf.readBoolean());
         playerSyncedData.setHasAngelWings(buf.readBoolean());
+        playerSyncedData.setHasHeartstop(buf.readBoolean());
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(playerSyncedData.getServerPlayerId());
         buf.writeBoolean(playerSyncedData.getHasEvasion());
         buf.writeBoolean(playerSyncedData.getHasAngelWings());
+        buf.writeBoolean(playerSyncedData.getHasHeartstop());
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {

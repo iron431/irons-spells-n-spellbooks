@@ -16,6 +16,8 @@ public class PlayerSyncedData {
      **/
     private boolean hasAngelWings;
     private boolean hasEvasion;
+    private boolean hasHeartstop;
+    private float hearstopDamage;
 
     //Use this on the client
     public PlayerSyncedData(int serverPlayerId) {
@@ -58,6 +60,29 @@ public class PlayerSyncedData {
 
     public void setHasEvasion(boolean hasEvasion) {
         this.hasEvasion = hasEvasion;
+        doSync();
+    }
+
+    public boolean getHasHeartstop() {
+        return hasHeartstop;
+    }
+
+    public void setHasHeartstop(boolean hasHeartstop) {
+        this.hasHeartstop = hasHeartstop;
+        doSync();
+    }
+
+    public float getHeartstopAccumulatedDamage() {
+        return hearstopDamage;
+    }
+
+    public void setHeartstopAccumulatedDamage(float damage) {
+        this.hearstopDamage = damage;
+        doSync();
+    }
+
+    public void addHeartstopDamage(float amount) {
+        this.hearstopDamage += amount;
         doSync();
     }
 }

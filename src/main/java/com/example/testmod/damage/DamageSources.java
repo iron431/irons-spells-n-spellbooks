@@ -23,6 +23,7 @@ public class DamageSources {
 //    }
 
     public static DamageSource CAULDRON = new DamageSource("blood_cauldron");
+    public static DamageSource HEARTSTOP = new DamageSource("heartstop").bypassArmor().bypassMagic();
 
 //    public static DamageSource BLOOD_MAGIC = new DamageSource(BLOOD_MAGIC_ID);
 //    public static DamageSource FIRE_MAGIC = new DamageSource(FIRE_MAGIC_ID).setIsFire();
