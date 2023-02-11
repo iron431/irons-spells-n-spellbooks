@@ -13,7 +13,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -28,8 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.testmod.damage.DamageSources.BLOOD_SLASH_DAMAGE;
+
 public class BloodSlashProjectile extends Projectile {
-    public static DamageSource BLOOD_SLASH_DAMAGE = new DamageSource("blood_slash_spell");
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
     private static final double SPEED = 1d;
     private static final int EXPIRE_TIME = 4 * 20;

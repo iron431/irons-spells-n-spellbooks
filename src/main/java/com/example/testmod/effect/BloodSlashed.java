@@ -2,14 +2,14 @@ package com.example.testmod.effect;
 
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.spells.SchoolType;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
+import static com.example.testmod.damage.DamageSources.BLEED_DAMAGE;
+
 public class BloodSlashed extends MobEffect {
 
-    public static DamageSource BLEED_DAMAGE = new DamageSource("bleed_effect");
 
     public BloodSlashed(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);

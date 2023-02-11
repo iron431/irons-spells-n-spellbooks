@@ -15,6 +15,7 @@ import com.example.testmod.spells.holy.WispSpell;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ice.IcicleSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
+import com.example.testmod.spells.lightning.LightningLanceSpell;
 import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -56,7 +57,8 @@ public enum SpellType {
     FANG_STRIKE_SPELL(19),
     FANG_WARD_SPELL(20),
     EVASION_SPELL(21),
-    HEARTSTOP_SPELL(22);
+    HEARTSTOP_SPELL(22),
+    LIGHTNING_LANCE_SPELL(23);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -98,7 +100,7 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL -> CastType.LONG;
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, LIGHTNING_LANCE_SPELL -> CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL -> CastType.CONTINUOUS;
             default -> CastType.INSTANT;
         };
@@ -106,7 +108,7 @@ public enum SpellType {
 
     private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL};
     private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL};
-    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL};
+    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL};
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL};
@@ -179,6 +181,9 @@ public enum SpellType {
             }
             case HEARTSTOP_SPELL -> {
                 return new HeartstopSpell(level);
+            }
+            case LIGHTNING_LANCE_SPELL -> {
+                return new LightningLanceSpell(level);
             }
             default -> {
                 return new NoneSpell(0);

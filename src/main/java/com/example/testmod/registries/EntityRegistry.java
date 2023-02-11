@@ -8,6 +8,7 @@ import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
 import com.example.testmod.entity.fire_breath.FireBreathProjectile;
 import com.example.testmod.entity.firebolt.FireboltProjectile;
 import com.example.testmod.entity.icicle.IcicleProjectile;
+import com.example.testmod.entity.lightning_lance.LightningLanceProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
@@ -129,5 +130,11 @@ public class EntityRegistry {
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "pyromancer").toString()));
+
+    public static final RegistryObject<EntityType<LightningLanceProjectile>> LIGHTNING_LANCE_PROJECTILE =
+            ENTITIES.register("lightning_lance_projectile", () -> EntityType.Builder.<LightningLanceProjectile>of(LightningLanceProjectile::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "lightning_lance_projectile").toString()));
 
 }

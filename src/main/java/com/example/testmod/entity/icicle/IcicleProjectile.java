@@ -6,7 +6,6 @@ import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,13 +19,14 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import static com.example.testmod.damage.DamageSources.ICICLE_DAMAGE;
+
 //https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
 //https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
 //https://github.com/CammiePone/Arcanus/blob/1.18-dev/src/main/java/dev/cammiescorner/arcanus/common/entities/MagicMissileEntity.java#L51
 //https://github.com/maximumpower55/Aura
 
 public class IcicleProjectile extends Projectile implements ItemSupplier {
-    public static DamageSource ICICLE_DAMAGE = new DamageSource("icicle_spell");
     private static final double SPEED = 2d;
     private static final int EXPIRE_TIME = 5 * 20;
 

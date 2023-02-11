@@ -25,7 +25,7 @@ public class EvasionEffect extends MobEffect {
             DamageSource.WITHER,
             DamageSource.FREEZE,
             DamageSources.CAULDRON,
-            BloodSlashed.BLEED_DAMAGE,
+            DamageSources.BLEED_DAMAGE,
             DamageSource.STARVE,
             DamageSource.DROWN,
             DamageSource.STALAGMITE,

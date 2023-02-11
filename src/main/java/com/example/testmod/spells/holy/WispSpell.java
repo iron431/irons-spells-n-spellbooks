@@ -23,7 +23,6 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 
 public class WispSpell extends AbstractSpell {
-    public static DamageSource WISP_DAMAGE = new DamageSource("wisp_damage");
 
     public WispSpell() {
         this(1);

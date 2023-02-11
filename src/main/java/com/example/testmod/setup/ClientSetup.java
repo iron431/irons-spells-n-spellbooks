@@ -12,6 +12,7 @@ import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
 import com.example.testmod.entity.firebolt.FireboltRenderer;
 import com.example.testmod.entity.icicle.IcicleRenderer;
+import com.example.testmod.entity.lightning_lance.LightningLanceRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
 import com.example.testmod.entity.mobs.horse.MagicHorseRenderer;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardModel;
@@ -108,6 +109,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.WISP.get(), WispRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEBUG.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_VEX.get(), VexRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.LIGHTNING_LANCE_PROJECTILE.get(), LightningLanceRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
