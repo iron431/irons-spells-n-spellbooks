@@ -1,8 +1,13 @@
 package com.example.testmod.effect;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.damage.DamageSources;
+import com.example.testmod.player.ClientMagicData;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,6 +18,8 @@ public class HeartstopEffect extends MobEffect {
     public HeartstopEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
+
+    private int duration;
 
     @Override
     public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
@@ -43,10 +50,23 @@ public class HeartstopEffect extends MobEffect {
     @Override
     public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         //TestMod.LOGGER.debug("{} ticks existed: {}", pLivingEntity.getName().getString(), pLivingEntity.tickCount);
+
+        //Heart beats once every 2 seconds at 0% damage, and 2 times per second at 100% damage (relative to health)
+        if (pLivingEntity instanceof LocalPlayer player) {
+            float damage = ClientMagicData.getPlayerSyncedData(player.getId()).getHeartstopAccumulatedDamage();
+            float f = 1 - Mth.clamp(damage / player.getHealth(), 0, 1);
+            int i = (int) (10 + (40 - 10) * f);
+            TestMod.LOGGER.debug("{} ({}/{} = {})", i, damage, player.getHealth(), f);
+            if (this.duration % Math.max(i, 1) == 0) {
+                player.playSound(SoundEvents.WARDEN_HEARTBEAT, 1, 0.85f);
+            }
+
+        }
     }
 
     @Override
     public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
+        this.duration = pDuration;
         return true;
     }
 

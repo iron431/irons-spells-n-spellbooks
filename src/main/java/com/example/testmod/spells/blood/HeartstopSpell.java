@@ -2,6 +2,7 @@ package com.example.testmod.spells.blood;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.registries.MobEffectRegistry;
+import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -27,7 +28,7 @@ public class HeartstopSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 20;
         this.cooldown = 100;
-        uniqueInfo.add(Component.translatable("ui.testmod.duration", Utils.timeFromTicks(getSpellPower(null), 1) ));
+        uniqueInfo.add(Component.translatable("ui.testmod.duration", Utils.timeFromTicks(getSpellPower(null), 1)));
 
     }
 
@@ -38,7 +39,7 @@ public class HeartstopSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.HEARTSTOP_CAST.get());
     }
 
     @Override

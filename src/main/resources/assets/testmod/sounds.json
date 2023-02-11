@@ -23,5 +23,10 @@
     "sounds": [
       "testmod:dark_spell_02"
     ]
+  },
+  "heartstop_cast": {
+    "sounds": [
+      "testmod:heartstop_cast"
+    ]
   }
 }

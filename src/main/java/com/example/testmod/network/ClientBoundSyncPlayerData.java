@@ -20,6 +20,7 @@ public class ClientBoundSyncPlayerData {
         playerSyncedData.setHasEvasion(buf.readBoolean());
         playerSyncedData.setHasAngelWings(buf.readBoolean());
         playerSyncedData.setHasHeartstop(buf.readBoolean());
+        playerSyncedData.setHeartstopAccumulatedDamage(buf.readFloat());
     }
 
     public void toBytes(FriendlyByteBuf buf) {
@@ -27,6 +28,7 @@ public class ClientBoundSyncPlayerData {
         buf.writeBoolean(playerSyncedData.getHasEvasion());
         buf.writeBoolean(playerSyncedData.getHasAngelWings());
         buf.writeBoolean(playerSyncedData.getHasHeartstop());
+        buf.writeFloat(playerSyncedData.getHeartstopAccumulatedDamage());
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
