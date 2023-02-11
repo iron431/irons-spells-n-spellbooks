@@ -155,7 +155,7 @@ public class ClientMagicData {
     public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource) {
         var spell = AbstractSpell.getSpell(spellId, level);
         //var player = Minecraft.getInstance().player;
-        spell.onClientCast(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
+        spell.onClientCastComplete(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
     }
 
     public static void handlePlayerSyncedData(PlayerSyncedData playerSyncedData) {

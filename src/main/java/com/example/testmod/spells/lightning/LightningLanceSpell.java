@@ -53,8 +53,8 @@ public class LightningLanceSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCastServerComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.removeEffect(MobEffects.LEVITATION);
-        super.onCastComplete(level, entity, playerMagicData);
+        super.onCastServerComplete(level, entity, playerMagicData);
     }
 }

@@ -86,7 +86,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
     private void castComplete() {
         //TestMod.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
         if (!level.isClientSide) {
-            castingSpell.onCastComplete(level, this, playerMagicData);
+            castingSpell.onCastServerComplete(level, this, playerMagicData);
         }
 
         playerMagicData.resetCastingState();

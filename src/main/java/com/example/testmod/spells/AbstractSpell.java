@@ -2,12 +2,14 @@ package com.example.testmod.spells;
 
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.network.ClientboundOnClientCast;
-import com.example.testmod.network.ClientboundSuppressRightClicks;
 import com.example.testmod.network.ClientboundSyncMana;
 import com.example.testmod.network.ClientboundUpdateCastingState;
+import com.example.testmod.player.ClientInputEvents;
+import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import net.minecraft.ChatFormatting;
@@ -145,7 +147,7 @@ public abstract class AbstractSpell {
             boolean hasEnoughMana = playerMana - getManaCost() >= 0;
             boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
 
-            if (castSource == CastSource.SpellBook && !hasEnoughMana) {
+            if ((castSource == CastSource.SpellBook || castSource == CastSource.Sword) && !hasEnoughMana) {
                 player.sendSystemMessage(Component.literal("Not enough mana to cast spell").withStyle(ChatFormatting.RED));
                 return false;
             }
@@ -156,8 +158,15 @@ public abstract class AbstractSpell {
             }
 
             if (this.castType == CastType.INSTANT) {
-                return castSpell(level, serverPlayer, castSource, triggerCooldown);
+                /*
+                 * Immediately cast spell
+                 */
+                castSpell(level, serverPlayer, castSource, triggerCooldown);
             } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
+                //TODO: effective cast time needs better logic (it reduces continuous cast duration and will need to be utilized in faster charge casting)
+                /*
+                 * Prepare to cast spell (magic manager will pick it up by itself)
+                 */
                 int effectiveCastTime = getEffectiveCastTime(player);
                 playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, castSource);
                 onServerPreCast(player.level, player, playerMagicData);
@@ -170,13 +179,15 @@ public abstract class AbstractSpell {
         }
     }
 
-    public boolean castSpell(Level world, ServerPlayer serverPlayer, CastSource castSource, boolean triggerCooldown) {
+    public void castSpell(Level world, ServerPlayer serverPlayer, CastSource castSource, boolean triggerCooldown) {
         MagicManager magicManager = MagicManager.get(serverPlayer.level);
         PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
 
-        if (castSource == CastSource.SpellBook) {
+        if (castSource == CastSource.SpellBook || (castSource == CastSource.Sword && ServerConfigs.SWORDS_CONSUME_MANA.get())) {
+            //TODO: sword mana multiplier?
             int newMana = playerMagicData.getMana() - getManaCost();
             magicManager.setPlayerCurrentMana(serverPlayer, newMana);
+            Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
         }
 
         if (triggerCooldown) {
@@ -188,11 +199,7 @@ public abstract class AbstractSpell {
         onCast(world, serverPlayer, playerMagicData);
 
         if (this.castType != CastType.CONTINUOUS) {
-            onCastComplete(world, serverPlayer, playerMagicData);
-        }
-
-        if (castSource == CastSource.SpellBook) {
-            Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
+            onCastServerComplete(world, serverPlayer, playerMagicData);
         }
 
         if (serverPlayer.getMainHandItem().getItem() instanceof SpellBook || serverPlayer.getMainHandItem().getItem() instanceof Scroll)
@@ -200,7 +207,6 @@ public abstract class AbstractSpell {
         else
             playerMagicData.setPlayerCastingItem(serverPlayer.getOffhandItem());
 
-        return true;
     }
 
     private int getCooldownLength(ServerPlayer serverPlayer) {
@@ -211,9 +217,11 @@ public abstract class AbstractSpell {
     /**
      * The primary spell effect sound and particle handling goes here. Called Client Side only
      */
-    public void onClientCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onClientCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         //TestMod.LOGGER.debug("AbstractSpell.: onClientCast:{}", level.isClientSide);
         playSound(getCastFinishSound(), entity);
+        if(ClientInputEvents.isUseKeyDown)
+            ClientMagicData.supressRightClicks = true;
     }
 
     /**
@@ -228,12 +236,12 @@ public abstract class AbstractSpell {
     }
 
     /**
-     * Called on the server when a long spell casts, or a continuous spell is done casting or cancelled
+     * Called on the server when a spell finishes casting or is cancelled, used for any cleanup or extra functionality
      */
-    public void onCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCastServerComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         //TestMod.LOGGER.debug("AbstractSpell.: onCastComplete:{}", level.isClientSide);
-        if (entity instanceof ServerPlayer player)
-            Messages.sendToPlayer(new ClientboundSuppressRightClicks(), player);
+//        if (entity instanceof ServerPlayer player)
+//            Messages.sendToPlayer(new ClientboundSuppressRightClicks(), player);
     }
 
     /**
@@ -253,7 +261,7 @@ public abstract class AbstractSpell {
     }
 
     /**
-     * Called on the server each tick while casting LONG and CONTINUOUS only
+     * Called on the server each tick while casting
      */
     public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
 
