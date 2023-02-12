@@ -82,7 +82,7 @@ public abstract class SwordItemMixin extends Item {
     public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
         var spell = Utils.getScrollData(itemStack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL)
-            return UseAnim.BOW;
+            return  spell.getSpellType().getUseAnim();
         else
             return getUseAnimation(itemStack);
     }

@@ -2,11 +2,10 @@ package com.example.testmod.spells.lightning;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.lightning_lance.LightningLanceProjectile;
+import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +19,7 @@ public class LightningLanceSpell extends AbstractSpell {
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
-        this.castTime = 50;
+        this.castTime = 40;
         this.baseManaCost = 10;
         this.cooldown = 100;
     }
@@ -32,29 +31,26 @@ public class LightningLanceSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.DARK_MAGIC_BUFF_03_CUSTOM_1.get());
     }
 
     @Override
     public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
-        //TODO: not this
-        entity.addEffect(new MobEffectInstance(MobEffects.LEVITATION, castTime * 2, 0, false, false, false));
         super.onServerPreCast(level, entity, playerMagicData);
     }
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        LightningLanceProjectile firebolt = new LightningLanceProjectile(level, entity);
-        firebolt.setPos(entity.position().add(0, entity.getEyeHeight() - firebolt.getBoundingBox().getYsize() * .5f, 0));
-        firebolt.shoot(entity.getLookAngle());
-        //firebolt.setDamage(getSpellPower(entity));
-        level.addFreshEntity(firebolt);
+        LightningLanceProjectile lance = new LightningLanceProjectile(level, entity);
+        lance.setPos(entity.position().add(0, entity.getEyeHeight() + lance.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
+        lance.shoot(entity.getLookAngle());
+        //lance.setDamage(getSpellPower(entity));
+        level.addFreshEntity(lance);
         super.onCast(level, entity, playerMagicData);
     }
 
     @Override
     public void onCastServerComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.removeEffect(MobEffects.LEVITATION);
         super.onCastServerComplete(level, entity, playerMagicData);
     }
 }

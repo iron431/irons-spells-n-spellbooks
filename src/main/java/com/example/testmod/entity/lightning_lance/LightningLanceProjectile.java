@@ -88,7 +88,7 @@ public class LightningLanceProjectile extends Projectile {
             Vec3 pos = pResult.getLocation();
             MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, pos.x, pos.y, pos.z, 75, .1, .1, .1, 2, true);
             MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, pos.x, pos.y, pos.z, 75, .1, .1, .1, .5, false);
-            this.playSound(SoundEvents.TRIDENT_THUNDER, 4, .65f);
+            this.playSound(SoundEvents.TRIDENT_THUNDER, 6, .65f);
 //            TestMod.LOGGER.debug("{}",pos);
 //            //Beam
 //            for (int i = 0; i < 40; i++) {

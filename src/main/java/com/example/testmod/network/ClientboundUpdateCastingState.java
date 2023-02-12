@@ -43,6 +43,7 @@ public class ClientboundUpdateCastingState {
             if (this.castFinished) {
                 ClientMagicData.resetClientCastState();
             } else {
+                ClientMagicData.spellId = spellId;
                 ClientMagicData.castDurationRemaining = castTime;
                 ClientMagicData.castDuration = castTime;
                 ClientMagicData.isCasting = true;

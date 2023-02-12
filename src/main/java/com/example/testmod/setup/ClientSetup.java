@@ -32,6 +32,7 @@ import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ParticleRegistry;
 import com.example.testmod.render.AngelWingsLayer;
 import com.example.testmod.render.AngelWingsModel;
+import com.example.testmod.render.ChargeSpellLayer;
 import com.example.testmod.render.EvasionLayer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
@@ -88,7 +89,9 @@ public class ClientSetup {
         if (render instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
             livingRenderer.addLayer(new EvasionLayer(livingRenderer));
+            livingRenderer.addLayer(new ChargeSpellLayer(livingRenderer));
         }
+        //EntityRenderer<? extends AbstractSpellCastingMob> renderer = event.getRenderer(EntityRegistry.PYROMANCER.get());
     }
 
     @SubscribeEvent

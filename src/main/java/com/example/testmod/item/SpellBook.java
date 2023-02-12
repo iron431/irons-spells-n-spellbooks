@@ -81,8 +81,8 @@ public class SpellBook extends Item implements ISpellBook {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack p_41452_) {
-        return UseAnim.BOW;
+    public UseAnim getUseAnimation(ItemStack itemStack) {
+        return getSpellBookData(itemStack).getActiveSpell().getSpellType().getUseAnim();
     }
 
     @Override

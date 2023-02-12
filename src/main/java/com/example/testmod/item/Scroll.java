@@ -95,7 +95,7 @@ public class Scroll extends Item {
 
     @Override
     public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
-        return UseAnim.BOW;
+        return getScrollData(itemStack).getSpell().getSpellType().getUseAnim();
     }
 
     @Override

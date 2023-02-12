@@ -20,6 +20,7 @@ import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.UseAnim;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
@@ -104,6 +105,13 @@ public enum SpellType {
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL -> CastType.CONTINUOUS;
             case LIGHTNING_LANCE_SPELL -> CastType.CHARGE;
             default -> CastType.INSTANT;
+        };
+    }
+
+    public UseAnim getUseAnim(){
+        return switch (this){
+            case LIGHTNING_LANCE_SPELL -> UseAnim.SPEAR;
+            default -> UseAnim.BOW;
         };
     }
 

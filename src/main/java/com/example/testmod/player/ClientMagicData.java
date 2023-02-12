@@ -48,6 +48,7 @@ public class ClientMagicData {
     /**
      * CASTING
      *************************/
+    public static int spellId = 0;
     public static boolean isCasting = false;
     public static int castDurationRemaining = 0;
     public static int castDuration = 0;
@@ -59,6 +60,7 @@ public class ClientMagicData {
     }
 
     public static void resetClientCastState(){
+        spellId = 0;
         isCasting = false;
         castDurationRemaining = 0;
         castDuration = 0;
