@@ -118,6 +118,7 @@
   "spell.testmod.heartstop": "Heartstop",
   "spell.testmod.lightning_lance": "Lightning Lance",
   "spell.testmod.lightning_bolt": "Lightning Bolt",
+  "spell.testmod.raise_dead": "Raise Dead",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -129,6 +130,8 @@
 
   "effect.testmod.blood_slashed": "Blood Slashed",
   "effect.testmod.heartstop": "Heartstop",
+  "effect.testmod.vex_timer": "Summoned Vexes",
+  "effect.testmod.raise_dead_timer": "Summoned Dead",
 
   "commands.testmod.create_scroll.failed": "Create Scroll Failed",
   "commands.testmod.create_spell_book.failed": "Create Spell Book Failed",

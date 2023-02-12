@@ -6,10 +6,10 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 
-public class CopyOwnerTargetGoal extends TargetGoal {
+public class GenericCopyOwnerTargetGoal extends TargetGoal {
     private final OwnerGetter ownerGetter;
 
-    public CopyOwnerTargetGoal(PathfinderMob pMob, OwnerGetter ownerGetter) {
+    public GenericCopyOwnerTargetGoal(PathfinderMob pMob, OwnerGetter ownerGetter) {
         super(pMob, false);
         this.ownerGetter = ownerGetter;
 

@@ -3,6 +3,7 @@ package com.example.testmod.setup;
 import com.example.testmod.TestMod;
 import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.entity.mobs.SummonedVex;
+import com.example.testmod.entity.mobs.SummonedZombie;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
@@ -41,6 +42,7 @@ public class CommonSetup {
         event.put(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteed.prepareAttributes().build());
         event.put(EntityRegistry.WISP.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_VEX.get(), SummonedVex.createAttributes().build());
+        event.put(EntityRegistry.SUMMONED_ZOMBIE.get(), SummonedZombie.createAttributes().build());
 
 
     }

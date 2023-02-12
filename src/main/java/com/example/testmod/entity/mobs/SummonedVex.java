@@ -1,6 +1,5 @@
 package com.example.testmod.entity.mobs;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.entity.mobs.goals.*;
 import com.example.testmod.registries.EntityRegistry;
@@ -30,19 +29,15 @@ public class SummonedVex extends Vex implements MagicSummon {
 
     protected LivingEntity cachedSummoner;
     protected UUID summonerUUID;
-    protected int summonLife;
-    int counter;
 
     public SummonedVex(EntityType<? extends Vex> pEntityType, Level pLevel) {
         super(EntityRegistry.SUMMONED_VEX.get(), pLevel);
-        summonLife = 10 * 20;
         xpReward = 0;
     }
 
-    public SummonedVex(Level pLevel, LivingEntity owner, int durationInTicks) {
+    public SummonedVex(Level pLevel, LivingEntity owner) {
         this(EntityRegistry.SUMMONED_VEX.get(), pLevel);
         setSummoner(owner);
-        this.summonLife = durationInTicks;
     }
 
     @Override
@@ -56,20 +51,9 @@ public class SummonedVex extends Vex implements MagicSummon {
 
         this.targetSelector.addGoal(1, new GenericOwnerHurtByTargetGoal(this, this::getSummoner));
         this.targetSelector.addGoal(2, new GenericOwnerHurtTargetGoal(this, this::getSummoner));
-        this.targetSelector.addGoal(3, new CopyOwnerTargetGoal(this, this::getSummoner));
+        this.targetSelector.addGoal(3, new GenericCopyOwnerTargetGoal(this, this::getSummoner));
         this.targetSelector.addGoal(4, (new GenericHurtByTargetGoal(this, (entity) -> entity == getSummoner())).setAlertOthers());
 
-    }
-
-    @Override
-    public void tick() {
-        //For some reason this breaks the vex... is
-//        summonLife--;
-//        if (summonLife <= 0) {
-//            onUnSummon();
-//            return;
-//        }
-        super.tick();
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -106,7 +90,11 @@ public class SummonedVex extends Vex implements MagicSummon {
         return super.hurt(pSource, pAmount);
     }
 
-
+    @Override
+    protected boolean shouldDespawnInPeaceful() {
+        return false;
+    }
+    
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
@@ -115,8 +103,7 @@ public class SummonedVex extends Vex implements MagicSummon {
         if (compoundTag.hasUUID("Summoner")) {
             this.summonerUUID = compoundTag.getUUID("Summoner");
         }
-        if (compoundTag.contains("SummonLife"))
-            this.summonLife = compoundTag.getInt("SummonLife");
+
 
     }
 
@@ -128,8 +115,6 @@ public class SummonedVex extends Vex implements MagicSummon {
         if (this.summonerUUID != null) {
             compoundTag.putUUID("Summoner", this.summonerUUID);
         }
-        TestMod.LOGGER.debug("Serialzing Summon LIfe");
-        compoundTag.putInt("SummonLife", summonLife);
 
     }
 

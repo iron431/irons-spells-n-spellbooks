@@ -1,7 +1,7 @@
-package com.example.testmod.spells.evocation;
+package com.example.testmod.spells.blood;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.entity.mobs.SummonedVex;
+import com.example.testmod.entity.mobs.SummonedZombie;
 import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -16,13 +16,13 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
-public class SummonVexSpell extends AbstractSpell {
-    public SummonVexSpell() {
+public class RaiseDeadSpell extends AbstractSpell {
+    public RaiseDeadSpell() {
         this(1);
     }
 
-    public SummonVexSpell(int level) {
-        super(SpellType.SUMMON_VEX_SPELL);
+    public RaiseDeadSpell(int level) {
+        super(SpellType.RAISE_DEAD_SPELL);
         this.level = level;
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 1;
@@ -46,13 +46,13 @@ public class SummonVexSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         int summonTime = 20 * 60 * 3;
         for (int i = 0; i < this.level; i++) {
-            SummonedVex vex = new SummonedVex(world, entity);
-            vex.setPos(entity.getEyePosition().add(new Vec3(1, 1, 1).yRot(i * 25)));
-            vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
-            vex.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, 0, false, false, false));
-            world.addFreshEntity(vex);
+            SummonedZombie zombie = new SummonedZombie(world, entity);
+            zombie.setPos(entity.getEyePosition().add(new Vec3(1, 1, 1).yRot(i * 25)));
+            zombie.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(zombie.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
+            zombie.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
+            world.addFreshEntity(zombie);
         }
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, true));
         super.onCast(world, entity, playerMagicData);
     }
 }
