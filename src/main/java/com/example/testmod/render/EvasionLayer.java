@@ -21,7 +21,7 @@ public class EvasionLayer<T extends LivingEntity> extends AbstractEnergySwirlLay
     }
 
     protected float xOffset(float offset) {
-        return offset * 0.01F;
+        return offset * 0.02F;
     }
 
     protected ResourceLocation getTextureLocation() {

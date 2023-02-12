@@ -16,8 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -29,7 +28,7 @@ import java.util.EnumMap;
 import static com.example.testmod.capabilities.magic.SyncedSpellData.SYNCED_SPELL_DATA;
 import static com.example.testmod.entity.MobSyncedCastingData.MOB_SYNCED_CASTING_DATA;
 
-public abstract class AbstractSpellCastingMob extends PathfinderMob implements Enemy {
+public abstract class AbstractSpellCastingMob extends Monster {
     //TODO: probably need a way to control the spell level dynamically.
     // I'm not going to add this until we have an idea of what we want
 
@@ -46,7 +45,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
     private AbstractSpell castingSpell;
     private final MobSyncedCastingData emptyMobSyncedCastingData = new MobSyncedCastingData();
 
-    protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
+    protected AbstractSpellCastingMob(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         playerMagicData.setSyncedData(new SyncedSpellData(this));
     }

@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -23,7 +24,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class PyromancerEntity extends AbstractSpellCastingMob {
+public class PyromancerEntity extends AbstractSpellCastingMob implements Enemy {
 
     public PyromancerEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -39,7 +40,7 @@ public class PyromancerEntity extends AbstractSpellCastingMob {
                 List.of(),
                 List.of(SpellType.HEAL_SPELL)
         ));
-        this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .35f));
+        this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .45f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -73,6 +74,6 @@ public class PyromancerEntity extends AbstractSpellCastingMob {
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
                 .add(Attributes.MAX_HEALTH, 50.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
-                .add(Attributes.MOVEMENT_SPEED, .4);
+                .add(Attributes.MOVEMENT_SPEED, .25);
     }
 }

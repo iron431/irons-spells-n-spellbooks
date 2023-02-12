@@ -9,7 +9,11 @@ import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.wisp.WispEntity;
 import com.example.testmod.registries.EntityRegistry;
+import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
@@ -37,6 +41,13 @@ public class CommonSetup {
         event.put(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteed.prepareAttributes().build());
         event.put(EntityRegistry.WISP.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_VEX.get(), SummonedVex.createAttributes().build());
+
+
+    }
+
+    @SubscribeEvent
+    public static void spawnPlacements(SpawnPlacementRegisterEvent event){
+        event.register(EntityRegistry.NECROMANCER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, SpawnPlacementRegisterEvent.Operation.OR);
     }
 
 }

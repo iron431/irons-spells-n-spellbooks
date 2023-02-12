@@ -2,7 +2,6 @@ package com.example.testmod.entity.mobs.necromancer;
 
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.WizardAttackGoal;
-import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
@@ -15,6 +14,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -23,7 +23,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class NecromancerEntity extends AbstractSpellCastingMob {
+public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy {
 
     public NecromancerEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -34,8 +34,8 @@ public class NecromancerEntity extends AbstractSpellCastingMob {
     protected void registerGoals() {
         this.goalSelector.addGoal(2, new RestrictSunGoal(this));
         this.goalSelector.addGoal(3, new FleeSunGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new WizardAttackGoal(this, 1.25f, 25, 50).setSpells(
-                List.of(SpellType.FANG_STRIKE_SPELL, SpellType.FANG_STRIKE_SPELL, SpellType.ICICLE_SPELL, SpellType.ICICLE_SPELL, SpellType.MAGIC_MISSILE_SPELL, SpellType.MAGIC_MISSILE_SPELL, SpellType.CONE_OF_COLD_SPELL),
+        this.goalSelector.addGoal(4, new WizardAttackGoal(this, 1.25f, 35, 50).setSpells(
+                List.of(SpellType.FANG_STRIKE_SPELL, SpellType.FANG_STRIKE_SPELL, SpellType.ICICLE_SPELL, SpellType.ICICLE_SPELL, SpellType.MAGIC_MISSILE_SPELL, SpellType.MAGIC_MISSILE_SPELL),
                 List.of(SpellType.FANG_WARD_SPELL, SpellType.FANG_WARD_SPELL, SpellType.EVASION_SPELL),
                 List.of(),
                 List.of(SpellType.HEAL_SPELL)
@@ -62,10 +62,10 @@ public class NecromancerEntity extends AbstractSpellCastingMob {
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_HAT.get()));
+       /*this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_HAT.get()));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
         this.setDropChance(EquipmentSlot.HEAD, 0.0F);
-        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
+        this.setDropChance(EquipmentSlot.CHEST, 0.0F);*/
     }
 
     @Override
@@ -94,7 +94,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob {
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
                 .add(Attributes.MAX_HEALTH, 25.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
-                .add(Attributes.MOVEMENT_SPEED, .3);
+                .add(Attributes.MOVEMENT_SPEED, .25);
     }
 
 }

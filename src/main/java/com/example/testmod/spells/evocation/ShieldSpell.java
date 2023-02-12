@@ -8,9 +8,9 @@ import com.example.testmod.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -52,7 +52,8 @@ public class ShieldSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         ShieldEntity shield = new ShieldEntity(level, getShieldHP(entity));
-        shield.setPos(entity.getEyePosition().add(entity.getForward().scale(5)));
+        Vec3 spawn = Utils.raycastForEntity(level, entity, 5, true).getLocation();
+        shield.setPos(spawn);
         shield.setRotation(entity.getXRot(), entity.getYRot());
         level.addFreshEntity(shield);
         super.onCast(level, entity, playerMagicData);
