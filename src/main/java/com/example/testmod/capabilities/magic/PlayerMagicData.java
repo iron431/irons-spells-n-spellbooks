@@ -1,12 +1,13 @@
 package com.example.testmod.capabilities.magic;
 
-import com.example.testmod.TestMod;
+import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class PlayerMagicData extends AbstractMagicData {
@@ -46,14 +47,18 @@ public class PlayerMagicData extends AbstractMagicData {
 
     /********* SYNC DATA *******************************************************/
 
-    private SyncedSpellData playerSyncedData;
+    private SyncedSpellData syncedSpellData;
 
     public SyncedSpellData getSyncedData() {
-        if (playerSyncedData == null) {
-            playerSyncedData = new SyncedSpellData(serverPlayer);
+        if (syncedSpellData == null) {
+            syncedSpellData = new SyncedSpellData(serverPlayer);
         }
 
-        return playerSyncedData;
+        return syncedSpellData;
+    }
+
+    public void setSyncedData(SyncedSpellData syncedSpellData) {
+        this.syncedSpellData = syncedSpellData;
     }
 
     /********* CASTING *******************************************************/
@@ -158,7 +163,13 @@ public class PlayerMagicData extends AbstractMagicData {
 
     /********* SYSTEM *******************************************************/
 
-    public static PlayerMagicData getPlayerMagicData(ServerPlayer serverPlayer) {
+    public static PlayerMagicData getPlayerMagicData(LivingEntity livingEntity) {
+        if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+            return abstractSpellCastingMob.getPlayerMagicData();
+        }
+
+        ServerPlayer serverPlayer = (ServerPlayer) livingEntity;
+
         var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
         if (capContainer.isPresent()) {
             var opt = capContainer.resolve();

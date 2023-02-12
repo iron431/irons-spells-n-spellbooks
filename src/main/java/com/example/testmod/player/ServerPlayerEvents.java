@@ -3,6 +3,7 @@ package com.example.testmod.player;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.effect.EvasionEffect;
+import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.spells.CastType;
@@ -105,12 +106,19 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLivingAttack(LivingAttackEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.getSyncedData().getHasEvasion()) {
-                if (EvasionEffect.doEffect(serverPlayer, event.getSource())) {
-                    event.setCanceled(true);
-                }
+        var livingEntity = event.getEntity();
+        //TestMod.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
+
+        if (!(livingEntity instanceof ServerPlayer) && !(livingEntity instanceof AbstractSpellCastingMob)) {
+            return;
+        }
+
+        //TestMod.LOGGER.debug("onLivingAttack.2: {}", livingEntity);
+
+        var playerMagicData = PlayerMagicData.getPlayerMagicData(livingEntity);
+        if (playerMagicData.getSyncedData().getHasEvasion()) {
+            if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
+                event.setCanceled(true);
             }
         }
     }

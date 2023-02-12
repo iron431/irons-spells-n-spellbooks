@@ -3,10 +3,8 @@ package com.example.testmod.effect;
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.damage.DamageSources;
-import com.example.testmod.entity.AbstractSpellCastingMob;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -40,40 +38,28 @@ public class EvasionEffect extends MobEffect {
     @Override
     public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-
-        if (pLivingEntity instanceof ServerPlayer serverPlayer) {
-            PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().setHasEvasion(false);
-        } else if (pLivingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
-            TestMod.LOGGER.debug("EvasionEffect.removeAttributeModifiers {}", pLivingEntity);
-            abstractSpellCastingMob.getPlayerMagicData().getSyncedData().setHasEvasion(false);
-        }
+        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setHasEvasion(false);
     }
 
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-
-
-        if (pLivingEntity instanceof ServerPlayer serverPlayer) {
-            PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().setHasEvasion(true);
-        } else if (pLivingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
-            TestMod.LOGGER.debug("EvasionEffect.addAttributeModifiers {}", pLivingEntity);
-            abstractSpellCastingMob.getPlayerMagicData().getSyncedData().setHasEvasion(true);
-        }
+        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setHasEvasion(true);
     }
 
-    public static boolean doEffect(ServerPlayer serverPlayer, DamageSource damageSource) {
+    public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
+        TestMod.LOGGER.debug("EvasionEffect.doEffect {}", livingEntity);
 
         if (excludeDamageSources.contains(damageSource) || damageSource.isFall() || damageSource.isBypassMagic() || damageSource.isBypassInvul()) {
             return false;
         }
 
-        double d0 = serverPlayer.getX();
-        double d1 = serverPlayer.getY();
-        double d2 = serverPlayer.getZ();
+        double d0 = livingEntity.getX();
+        double d1 = livingEntity.getY();
+        double d2 = livingEntity.getZ();
         double maxRadius = 18d;
-        var level = serverPlayer.level;
-        var random = serverPlayer.getRandom();
+        var level = livingEntity.level;
+        var random = livingEntity.getRandom();
 
         for (int i = 0; i < 16; ++i) {
             var minRadius = maxRadius / 2;
@@ -82,19 +68,19 @@ public class EvasionEffect extends MobEffect {
             vec = vec.yRot(degrees);
 
             double x = d0 + vec.x;
-            double y = Mth.clamp(serverPlayer.getY() + (double) (serverPlayer.getRandom().nextInt((int) maxRadius) - maxRadius / 2), (double) level.getMinBuildHeight(), (double) (level.getMinBuildHeight() + ((ServerLevel) level).getLogicalHeight() - 1));
+            double y = Mth.clamp(livingEntity.getY() + (double) (livingEntity.getRandom().nextInt((int) maxRadius) - maxRadius / 2), (double) level.getMinBuildHeight(), (double) (level.getMinBuildHeight() + ((ServerLevel) level).getLogicalHeight() - 1));
             double z = d2 + vec.z;
 
-            if (serverPlayer.isPassenger()) {
-                serverPlayer.stopRiding();
+            if (livingEntity.isPassenger()) {
+                livingEntity.stopRiding();
             }
 
-            if (serverPlayer.randomTeleport(x, y, z, true)) {
+            if (livingEntity.randomTeleport(x, y, z, true)) {
                 if (damageSource.getEntity() != null) {
-                    serverPlayer.lookAt(EntityAnchorArgument.Anchor.EYES, damageSource.getEntity(), EntityAnchorArgument.Anchor.EYES);
+                    livingEntity.lookAt(EntityAnchorArgument.Anchor.EYES, damageSource.getEntity().getEyePosition());
                 }
                 level.playSound((Player) null, d0, d1, d2, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 1.0F, 1.0F);
-                serverPlayer.playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.0F);
+                livingEntity.playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.0F);
                 break;
             }
 

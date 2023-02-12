@@ -2,6 +2,7 @@ package com.example.testmod.entity;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
@@ -25,7 +26,8 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 
-import static com.example.testmod.entity.SpellCastSyncedData.SPELL_SYNCED_DATA;
+import static com.example.testmod.capabilities.magic.SyncedSpellData.SYNCED_SPELL_DATA;
+import static com.example.testmod.entity.MobSyncedCastingData.MOB_SYNCED_CASTING_DATA;
 
 public abstract class AbstractSpellCastingMob extends PathfinderMob implements Enemy {
     //TODO: probably need a way to control the spell level dynamically.
@@ -35,16 +37,18 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
 //    private static final EntityDataAccessor<Integer> DATA_CASTING_SPELL_LEVEL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.INT);
 //    private static final EntityDataAccessor<Optional<BlockPos>> DATA_CASTING_TELEPORT_LOC = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
 
-    private static final EntityDataAccessor<SpellCastSyncedData> DATA_CASTING = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SPELL_SYNCED_DATA);
+    private static final EntityDataAccessor<MobSyncedCastingData> DATA_CASTING = SynchedEntityData.defineId(AbstractSpellCastingMob.class, MOB_SYNCED_CASTING_DATA);
+    private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SYNCED_SPELL_DATA);
 
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
     private final PlayerMagicData playerMagicData = new PlayerMagicData();
 
     private AbstractSpell castingSpell;
-    private final SpellCastSyncedData emptySyncedData = new SpellCastSyncedData();
+    private final MobSyncedCastingData emptyMobSyncedCastingData = new MobSyncedCastingData();
 
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        playerMagicData.setSyncedData(new SyncedSpellData(this));
     }
 
     public PlayerMagicData getPlayerMagicData() {
@@ -59,14 +63,19 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(DATA_CASTING, emptySyncedData);
+        this.entityData.define(DATA_CASTING, emptyMobSyncedCastingData);
+        this.entityData.define(DATA_SPELL, null);
     }
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
         super.onSyncedDataUpdated(pKey);
 
-        if (level.isClientSide && pKey == DATA_CASTING) {
+        if (!level.isClientSide) {
+            return;
+        }
+
+        if (pKey == DATA_CASTING) {
             var castingData = entityData.get(DATA_CASTING);
 
             //noinspection ConstantValue
@@ -81,11 +90,15 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
                 playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(new Vec3(castingData.x, castingData.y, castingData.z)));
             }
 
-            TestMod.LOGGER.debug("AbstractSpellCastingMob.onSyncedDataUpdated castingData.hasEvasion:{}", castingData.hasEvasion);
-            playerMagicData.getSyncedData().setHasEvasion(castingData.hasEvasion);
-
             castSpell(spellType, castingData.spellLevel);
+        } else if (pKey == DATA_SPELL) {
+            var syncedSpellData = entityData.get(DATA_SPELL);
+            playerMagicData.setSyncedData(syncedSpellData);
         }
+    }
+
+    public void doSyncSpellData() {
+        entityData.set(DATA_SPELL, playerMagicData.getSyncedData());
     }
 
     private void castComplete() {
@@ -98,7 +111,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
         castingSpell = null;
 
         if (!level.isClientSide) {
-            entityData.set(DATA_CASTING, emptySyncedData);
+            entityData.set(DATA_CASTING, emptyMobSyncedCastingData);
         }
     }
 
@@ -173,7 +186,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
             return;
         if (!level.isClientSide) {
 
-            var data = new SpellCastSyncedData();
+            var data = new MobSyncedCastingData();
             data.spellId = castingSpell.getID();
             data.spellLevel = castingSpell.getLevel();
 
@@ -183,8 +196,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
                 data.y = (int) teleportData.getTeleportTargetPosition().y;
                 data.z = (int) teleportData.getTeleportTargetPosition().z;
             }
-
-            data.hasEvasion = playerMagicData.getSyncedData().getHasEvasion();
 
             entityData.set(DATA_CASTING, data);
         }

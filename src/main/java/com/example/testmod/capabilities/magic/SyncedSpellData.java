@@ -1,16 +1,19 @@
 package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.network.ClientBoundSyncPlayerData;
 import com.example.testmod.setup.Messages;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 
 public class SyncedSpellData {
 
     //TODO: may want to switch this to ServerPlayer.UUID
     private final int serverPlayerId;
-    private Player player;
+    private LivingEntity livingEntity;
 
     /**
      * REMINDER: Need to update ClientBoundSyncPlayerData when adding fields to this class
@@ -18,21 +21,42 @@ public class SyncedSpellData {
     private boolean hasAngelWings;
     private boolean hasEvasion;
     private boolean hasHeartstop;
-    private float hearstopDamage;
+    private float heartStopDamage;
 
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {
-        this.player = null;
+        this.livingEntity = null;
         this.serverPlayerId = serverPlayerId;
         this.hasAngelWings = false;
         this.hasEvasion = false;
+        this.hasHeartstop = false;
+        this.heartStopDamage = 0;
     }
 
     //Use this on the server
-    public SyncedSpellData(Player player) {
-        this(player == null ? -1 : player.getId());
-        this.player = player;
+    public SyncedSpellData(LivingEntity livingEntity) {
+        this(livingEntity == null ? -1 : livingEntity.getId());
+        this.livingEntity = livingEntity;
     }
+
+    public static final EntityDataSerializer<SyncedSpellData> SYNCED_SPELL_DATA = new EntityDataSerializer.ForValueType<SyncedSpellData>() {
+        public void write(FriendlyByteBuf buffer, SyncedSpellData data) {
+            buffer.writeInt(data.serverPlayerId);
+            buffer.writeBoolean(data.hasAngelWings);
+            buffer.writeBoolean(data.hasEvasion);
+            buffer.writeBoolean(data.hasHeartstop);
+            buffer.writeFloat(data.heartStopDamage);
+        }
+
+        public SyncedSpellData read(FriendlyByteBuf buffer) {
+            var data = new SyncedSpellData(buffer.readInt());
+            data.hasAngelWings = buffer.readBoolean();
+            data.hasEvasion = buffer.readBoolean();
+            data.hasHeartstop = buffer.readBoolean();
+            data.heartStopDamage = buffer.readFloat();
+            return data;
+        }
+    };
 
     public int getServerPlayerId() {
         return serverPlayerId;
@@ -40,11 +64,13 @@ public class SyncedSpellData {
 
     private void doSync() {
         //this.player will only be null on the client side
-        TestMod.LOGGER.debug("SyncedSpellData.doSync player:{}", player);
+        TestMod.LOGGER.debug("SyncedSpellData.doSync livingEntity:{}", livingEntity);
 
-        if (this.player != null) {
-            Messages.sendToPlayer(new ClientBoundSyncPlayerData(this), (ServerPlayer) player);
-            Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), player);
+        if (livingEntity instanceof ServerPlayer serverPlayer) {
+            Messages.sendToPlayer(new ClientBoundSyncPlayerData(this), serverPlayer);
+            Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), serverPlayer);
+        } else if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+            abstractSpellCastingMob.doSyncSpellData();
         }
     }
 
@@ -80,16 +106,16 @@ public class SyncedSpellData {
     }
 
     public float getHeartstopAccumulatedDamage() {
-        return hearstopDamage;
+        return heartStopDamage;
     }
 
     public void setHeartstopAccumulatedDamage(float damage) {
-        this.hearstopDamage = damage;
+        this.heartStopDamage = damage;
         doSync();
     }
 
     public void addHeartstopDamage(float amount) {
-        this.hearstopDamage += amount;
+        this.heartStopDamage += amount;
         doSync();
     }
 }

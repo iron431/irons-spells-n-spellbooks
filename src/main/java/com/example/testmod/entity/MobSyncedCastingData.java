@@ -3,7 +3,7 @@ package com.example.testmod.entity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 
-public class SpellCastSyncedData {
+public class MobSyncedCastingData {
     public int spellId;
     public int spellLevel;
     public boolean usePosition;
@@ -12,8 +12,8 @@ public class SpellCastSyncedData {
     public int y;
     public int z;
 
-    public static final EntityDataSerializer<SpellCastSyncedData> SPELL_SYNCED_DATA = new EntityDataSerializer.ForValueType<SpellCastSyncedData>() {
-        public void write(FriendlyByteBuf buffer, SpellCastSyncedData data) {
+    public static final EntityDataSerializer<MobSyncedCastingData> MOB_SYNCED_CASTING_DATA = new EntityDataSerializer.ForValueType<MobSyncedCastingData>() {
+        public void write(FriendlyByteBuf buffer, MobSyncedCastingData data) {
             buffer.writeInt(data.spellId);
             buffer.writeInt(data.spellLevel);
             buffer.writeBoolean(data.hasEvasion);
@@ -23,8 +23,8 @@ public class SpellCastSyncedData {
             buffer.writeInt(data.z);
         }
 
-        public SpellCastSyncedData read(FriendlyByteBuf buffer) {
-            var data = new SpellCastSyncedData();
+        public MobSyncedCastingData read(FriendlyByteBuf buffer) {
+            var data = new MobSyncedCastingData();
             data.spellId = buffer.readInt();
             data.spellLevel = buffer.readInt();
             data.hasEvasion = buffer.readBoolean();

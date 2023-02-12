@@ -4,7 +4,6 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,10 +44,6 @@ public class AngelWingsSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(entity)), entity);
-
-        if (entity instanceof ServerPlayer) {
-            playerMagicData.getSyncedData().setHasAngelWings(true);
-        }
         super.onCast(world, entity, playerMagicData);
     }
 }
