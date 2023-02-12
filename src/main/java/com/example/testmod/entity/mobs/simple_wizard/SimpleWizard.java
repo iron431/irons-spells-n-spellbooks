@@ -24,7 +24,7 @@ public class SimpleWizard extends AbstractSpellCastingMob {
     @Override
     protected void registerGoals() {
         var wizardAttackGoal = new WizardAttackGoal(this, 1.25f, 25, 50);
-        wizardAttackGoal.setSpells( List.of(SpellType.EVASION_SPELL), List.of(SpellType.EVASION_SPELL), List.of(), List.of());
+        wizardAttackGoal.setSpells(List.of(SpellType.EVASION_SPELL), List.of(SpellType.EVASION_SPELL), List.of(), List.of());
 
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, wizardAttackGoal);

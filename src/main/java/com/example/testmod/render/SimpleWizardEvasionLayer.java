@@ -31,7 +31,7 @@ public class SimpleWizardEvasionLayer extends AbstractEnergySwirlLayer<SimpleWiz
     }
 
     @Override
-    protected boolean shouldRender(SimpleWizard entity) {
-        return false;// entity.getPlayerMagicData().getSyncedData().getHasEvasion();
+    protected boolean shouldRender(SimpleWizard simpleWizard) {
+        return simpleWizard.getPlayerMagicData().getSyncedData().getHasEvasion();
     }
 }

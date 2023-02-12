@@ -47,6 +47,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
         super(pEntityType, pLevel);
     }
 
+    public PlayerMagicData getPlayerMagicData() {
+        return playerMagicData;
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -71,14 +75,14 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
                 return;
             }
 
-            //TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated {}", castingData);
-
             var spellType = SpellType.getTypeFromValue(castingData.spellId);
-
 
             if (castingData.usePosition) {
                 playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(new Vec3(castingData.x, castingData.y, castingData.z)));
             }
+
+            TestMod.LOGGER.debug("AbstractSpellCastingMob.onSyncedDataUpdated castingData.hasEvasion:{}", castingData.hasEvasion);
+            playerMagicData.getSyncedData().setHasEvasion(castingData.hasEvasion);
 
             castSpell(spellType, castingData.spellLevel);
         }
@@ -179,6 +183,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements E
                 data.y = (int) teleportData.getTeleportTargetPosition().y;
                 data.z = (int) teleportData.getTeleportTargetPosition().z;
             }
+
+            data.hasEvasion = playerMagicData.getSyncedData().getHasEvasion();
 
             entityData.set(DATA_CASTING, data);
         }

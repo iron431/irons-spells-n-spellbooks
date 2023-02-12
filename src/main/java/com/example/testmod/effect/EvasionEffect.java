@@ -1,7 +1,9 @@
 package com.example.testmod.effect;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.damage.DamageSources;
+import com.example.testmod.entity.AbstractSpellCastingMob;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,6 +43,9 @@ public class EvasionEffect extends MobEffect {
 
         if (pLivingEntity instanceof ServerPlayer serverPlayer) {
             PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().setHasEvasion(false);
+        } else if (pLivingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+            TestMod.LOGGER.debug("EvasionEffect.removeAttributeModifiers {}", pLivingEntity);
+            abstractSpellCastingMob.getPlayerMagicData().getSyncedData().setHasEvasion(false);
         }
     }
 
@@ -48,8 +53,12 @@ public class EvasionEffect extends MobEffect {
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
 
+
         if (pLivingEntity instanceof ServerPlayer serverPlayer) {
             PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().setHasEvasion(true);
+        } else if (pLivingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+            TestMod.LOGGER.debug("EvasionEffect.addAttributeModifiers {}", pLivingEntity);
+            abstractSpellCastingMob.getPlayerMagicData().getSyncedData().setHasEvasion(true);
         }
     }
 

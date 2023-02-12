@@ -21,6 +21,7 @@ public class WizardAttackGoal extends Goal {
     private final int attackIntervalMax;
     private final float attackRadius;
     private final float attackRadiusSqr;
+    private boolean shortCircuitTemp = false;
 
     private boolean hasLineOfSight;
     private int seeTime = 0;
@@ -29,17 +30,11 @@ public class WizardAttackGoal extends Goal {
     private int attackTime = -1;
     private int projectileCount;
 
-    //private final ArrayList<SpellType> singleAttackSpells = new ArrayList<>();
-    //private final ArrayList<SpellType> areaAttackSpells = new ArrayList<>();
     private final ArrayList<SpellType> attackSpells = new ArrayList<>();
     private final ArrayList<SpellType> defenseSpells = new ArrayList<>();
     private final ArrayList<SpellType> movementSpells = new ArrayList<>();
     private final ArrayList<SpellType> supportSpells = new ArrayList<>();
-    private final ArrayList[] spellList = {
-            attackSpells, defenseSpells, movementSpells, supportSpells
-    };
-    private ArrayList lastSpellCategory = attackSpells;
-    private int spellListIndex = -1;
+    private ArrayList<SpellType> lastSpellCategory = attackSpells;
 
     public WizardAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
         this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
@@ -189,6 +184,12 @@ public class WizardAttackGoal extends Goal {
     }
 
     private void doAction() {
+        if(shortCircuitTemp)
+            return;
+
+        shortCircuitTemp = true;
+
+
         var spellType = getNextSpellType();
 
         if (spellType == SpellType.TELEPORT_SPELL) {

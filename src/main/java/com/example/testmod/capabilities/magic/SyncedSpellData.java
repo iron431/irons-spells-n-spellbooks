@@ -1,5 +1,6 @@
 package com.example.testmod.capabilities.magic;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.network.ClientBoundSyncPlayerData;
 import com.example.testmod.setup.Messages;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,6 +40,8 @@ public class SyncedSpellData {
 
     private void doSync() {
         //this.player will only be null on the client side
+        TestMod.LOGGER.debug("SyncedSpellData.doSync player:{}", player);
+
         if (this.player != null) {
             Messages.sendToPlayer(new ClientBoundSyncPlayerData(this), (ServerPlayer) player);
             Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), player);
