@@ -2,7 +2,7 @@ package com.example.testmod.entity.mobs.simple_wizard;
 
 
 import com.example.testmod.TestMod;
-import com.example.testmod.render.SimpleWizardEvasionLayer;
+import com.example.testmod.render.EvasionLayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +15,7 @@ public class SimpleWizardRenderer extends HumanoidMobRenderer<SimpleWizard, Simp
 
     public SimpleWizardRenderer(EntityRendererProvider.Context context) {
         super(context, new SimpleWizardModel(context.bakeLayer(SimpleWizardModel.SIMPLE_WIZARD_LAYER)), 1f);
-        this.layers.add(new SimpleWizardEvasionLayer(this));
+        this.layers.add(new EvasionLayer(this));
     }
 
     @Nonnull

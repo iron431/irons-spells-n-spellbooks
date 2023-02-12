@@ -1,6 +1,7 @@
 package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.entity.AbstractSpellCastingMob;
+import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
@@ -8,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class PlayerMagicData extends AbstractMagicData {
@@ -182,6 +184,17 @@ public class PlayerMagicData extends AbstractMagicData {
             return pmd;
         }
         return new PlayerMagicData(serverPlayer);
+    }
+
+    public static SyncedSpellData clientGetSyncedSpellData(LivingEntity livingEntity) {
+        if (livingEntity instanceof Player) {
+            return ClientMagicData.getPlayerSyncedData(livingEntity.getId());
+        }
+        if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+            return abstractSpellCastingMob.getPlayerMagicData().getSyncedData();
+        }
+        return new SyncedSpellData(null);
+
     }
 
     public void saveNBTData(CompoundTag compound) {

@@ -47,7 +47,7 @@ public class EvasionEffect extends MobEffect {
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (excludeDamageSources.contains(damageSource) || damageSource.isFall() || damageSource.isBypassMagic() || damageSource.isBypassInvul()) {
+        if (livingEntity.level.isClientSide || excludeDamageSources.contains(damageSource) || damageSource.isFall() || damageSource.isBypassMagic() || damageSource.isBypassInvul()) {
             return false;
         }
 
