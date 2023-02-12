@@ -269,9 +269,11 @@ public class WizardAttackGoal extends Goal {
         }
 
         //https://www.desmos.com/calculator/tqs7dudcmv
+        //https://www.desmos.com/calculator/7skhcvpic0
         float x = mob.getHealth();
         float m = mob.getMaxHealth();
-        int healthWeight = (int) (50 * (Math.pow(-(x / m) * (x - m), 3) / Math.pow(m / 2, 3)) * 8);
+        //int healthWeight = (int) (50 * (Math.pow(-(x / m) * (x - m), 3) / Math.pow(m / 2, 3)) * 8);
+        int healthWeight = (int) (50 * (-(x * x * x) / (m * m * m) + 1));
 
         float targetHealth = target.getHealth() / target.getMaxHealth();
         int targetHealthWeight = (int) (1 - targetHealth) * -35;
