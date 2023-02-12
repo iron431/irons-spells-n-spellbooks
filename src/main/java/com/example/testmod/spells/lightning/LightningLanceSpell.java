@@ -5,6 +5,8 @@ import com.example.testmod.entity.lightning_lance.LightningLanceProjectile;
 import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -22,6 +24,8 @@ public class LightningLanceSpell extends AbstractSpell {
         this.castTime = 40;
         this.baseManaCost = 50;
         this.cooldown = 600;
+        uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1))) ;
+
     }
 
     @Override
