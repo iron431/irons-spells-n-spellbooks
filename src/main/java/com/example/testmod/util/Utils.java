@@ -213,4 +213,11 @@ public class Utils {
     public static void serverSideCancelCast(ServerPlayer serverPlayer) {
         ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[PlayerMagicData.getPlayerMagicData(serverPlayer).getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
     }
+
+
+    public static float smoothstep(float a, float b, float x) {
+        //6x^5 - 15x^4 + 10x^3
+        x = 6 * (x * x * x * x * x) - 15 * (x * x * x * x) + 10 * (x * x * x);
+        return a + (b - a) * x;
+    }
 }

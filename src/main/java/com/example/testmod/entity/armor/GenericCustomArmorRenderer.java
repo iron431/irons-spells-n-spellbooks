@@ -1,7 +1,6 @@
 package com.example.testmod.entity.armor;
 
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
@@ -44,19 +43,7 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
             torsoLayerBone.setPositionZ(this.body.z);
         }
     }
-//
-//    private float smoothstep(float a, float b, float x) {
-//        //6x^5 - 15x^4 + 10x^3
-//        x = 6 * (x * x * x * x * x) - 15 * (x * x * x * x) + 10 * (x * x * x);
-//        return a + (b - a) * x;
-//    }
-//
-//    float smoothClamp(float edge0, float edge1, float x) {
-//        // Scale, and clamp x to 0..1 range
-//        x = (float) Mth.clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-//        // Evaluate polynomial
-//        return x * x * x * (x * (x * 6 - 15) + 10);
-//    }
+
 
 
     @Override

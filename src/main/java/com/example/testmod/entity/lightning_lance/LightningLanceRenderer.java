@@ -103,7 +103,7 @@ public class LightningLanceRenderer extends EntityRenderer<LightningLanceProject
     }
 
     public static ResourceLocation getTextureLocation(int offset) {
-        float ticksPerFrame = 1.5f;
+        float ticksPerFrame = 1f;
         return TEXTURES[(int) (offset / ticksPerFrame) % TEXTURES.length];
     }
 }
