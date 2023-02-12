@@ -1,10 +1,12 @@
 package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.network.ClientboundSyncCooldowns;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.SpellType;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
 
@@ -69,8 +71,8 @@ public class PlayerCooldowns {
         return c.getCooldownRemaining() <= tickBuffer;
     }
 
-    public ClientboundSyncCooldowns getClientSyncCooldownsMessage(){
-        return new ClientboundSyncCooldowns(this.spellCooldowns);
+    public void syncToPlayer(ServerPlayer serverPlayer) {
+        Messages.sendToPlayer(new ClientboundSyncCooldowns(this.spellCooldowns), serverPlayer);
     }
 
     public void saveNBTData(ListTag listTag) {

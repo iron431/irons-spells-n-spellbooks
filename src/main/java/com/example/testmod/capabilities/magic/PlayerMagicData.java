@@ -56,7 +56,6 @@ public class PlayerMagicData extends AbstractMagicData {
         return playerSyncedData;
     }
 
-
     /********* CASTING *******************************************************/
 
     private boolean isCasting = false;

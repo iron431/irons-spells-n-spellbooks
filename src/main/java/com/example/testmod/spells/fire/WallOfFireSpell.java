@@ -63,12 +63,12 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCastServerComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
 //        for (Vec3 vec : spawnAnchors) {
 //            TestMod.LOGGER.debug(vec.toString());
 //
 //        }
-        super.onCastServerComplete(level, entity, playerMagicData);
+        super.onServerCastComplete(level, entity, playerMagicData);
         TestMod.LOGGER.debug("WallOfFireSpell.onCastComplete");
         if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
             if (fireWallData.anchors.size() == 1) {

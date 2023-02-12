@@ -86,7 +86,7 @@ public class MagicManager {
                                 //TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                                 Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
-                                spell.onCastServerComplete(serverPlayer.level, serverPlayer, playerMagicData);
+                                spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                                 if (playerMagicData.getCastSource() == CastSource.Scroll) {
                                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                                 }

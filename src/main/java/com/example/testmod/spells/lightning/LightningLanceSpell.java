@@ -48,9 +48,4 @@ public class LightningLanceSpell extends AbstractSpell {
         level.addFreshEntity(lance);
         super.onCast(level, entity, playerMagicData);
     }
-
-    @Override
-    public void onCastServerComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        super.onCastServerComplete(level, entity, playerMagicData);
-    }
 }

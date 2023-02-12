@@ -5,7 +5,6 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.effect.EvasionEffect;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
-import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -68,7 +67,8 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             TestMod.LOGGER.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            Messages.sendToPlayer(playerMagicData.getPlayerCooldowns().getClientSyncCooldownsMessage(), serverPlayer);
+            playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
+            playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
         }
     }
 
@@ -90,7 +90,8 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             TestMod.LOGGER.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            Messages.sendToPlayer(playerMagicData.getPlayerCooldowns().getClientSyncCooldownsMessage(), serverPlayer);
+            playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
+            playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
         }
     }
 
