@@ -1,6 +1,5 @@
 package com.example.testmod.effect;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.damage.DamageSources;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -48,8 +47,6 @@ public class EvasionEffect extends MobEffect {
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        TestMod.LOGGER.debug("EvasionEffect.doEffect {}", livingEntity);
-
         if (excludeDamageSources.contains(damageSource) || damageSource.isFall() || damageSource.isBypassMagic() || damageSource.isBypassInvul()) {
             return false;
         }
