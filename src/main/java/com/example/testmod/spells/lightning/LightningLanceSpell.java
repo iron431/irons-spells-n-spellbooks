@@ -16,22 +16,22 @@ public class LightningLanceSpell extends AbstractSpell {
     public LightningLanceSpell(int level) {
         super(SpellType.LIGHTNING_LANCE_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 2;
-        this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 1;
+        this.manaCostPerLevel = 20;
+        this.baseSpellPower = 10;
+        this.spellPowerPerLevel = 5;
         this.castTime = 40;
-        this.baseManaCost = 10;
-        this.cooldown = 100;
+        this.baseManaCost = 50;
+        this.cooldown = 600;
     }
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.LIGHTNING_LANCE_CAST.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.DARK_MAGIC_BUFF_03_CUSTOM_1.get());
+        return Optional.of(SoundRegistry.LIGHTNING_WOOSH_01.get());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class LightningLanceSpell extends AbstractSpell {
         LightningLanceProjectile lance = new LightningLanceProjectile(level, entity);
         lance.setPos(entity.position().add(0, entity.getEyeHeight() + lance.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
         lance.shoot(entity.getLookAngle());
-        //lance.setDamage(getSpellPower(entity));
+        lance.setDamage(getSpellPower(entity));
         level.addFreshEntity(lance);
         super.onCast(level, entity, playerMagicData);
     }

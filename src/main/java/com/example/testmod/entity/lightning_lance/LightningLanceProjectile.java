@@ -21,6 +21,7 @@ import static com.example.testmod.damage.DamageSources.LIGHTNING_LANCE_DAMAGE;
 public class LightningLanceProjectile extends Projectile {
     private static final int EXPIRE_TIME = 20 * 20;
     public int age;
+    private float damage;
 
     public LightningLanceProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -58,7 +59,6 @@ public class LightningLanceProjectile extends Projectile {
         setPos(position().add(getDeltaMovement()));
 
         age++;
-        Vec3 vec3 = this.getDeltaMovement();
 
         if (!this.isNoGravity()) {
             Vec3 vec34 = this.getDeltaMovement();
@@ -67,7 +67,8 @@ public class LightningLanceProjectile extends Projectile {
     }
 
     private void spawnParticles() {
-
+        Vec3 vec3 = this.position().subtract(getDeltaMovement());
+        level.addParticle(ParticleHelper.ELECTRICITY, vec3.x, vec3.y, vec3.z, 0, 0, 0);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class LightningLanceProjectile extends Projectile {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        DamageSources.applyDamage(entityHitResult.getEntity(), 100, LIGHTNING_LANCE_DAMAGE, SchoolType.LIGHTNING, getOwner());
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, LIGHTNING_LANCE_DAMAGE, SchoolType.LIGHTNING, getOwner());
     }
 
     @Override
@@ -104,5 +105,9 @@ public class LightningLanceProjectile extends Projectile {
         super.onHit(pResult);
 
         this.discard();
+    }
+
+    public void setDamage(float damage) {
+        this.damage = damage;
     }
 }

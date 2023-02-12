@@ -28,5 +28,15 @@
     "sounds": [
       "testmod:heartstop_cast"
     ]
+  },
+  "lightning_lance_cast": {
+    "sounds": [
+      "testmod:lightning_lance_cast"
+    ]
+  },
+  "lightning_woosh_01": {
+    "sounds": [
+      "testmod:lightning_woosh_01"
+    ]
   }
 }
