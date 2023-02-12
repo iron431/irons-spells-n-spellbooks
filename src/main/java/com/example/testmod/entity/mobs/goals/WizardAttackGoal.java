@@ -184,12 +184,6 @@ public class WizardAttackGoal extends Goal {
     }
 
     private void doAction() {
-        if(shortCircuitTemp)
-            return;
-
-        shortCircuitTemp = true;
-
-
         var spellType = getNextSpellType();
 
         if (spellType == SpellType.TELEPORT_SPELL) {
@@ -206,7 +200,7 @@ public class WizardAttackGoal extends Goal {
 
         NavigableMap<Integer, ArrayList> weightedSpells = new TreeMap<>();
         int attackWeight = getAttackWeight();
-        int defenseWeight = getDefenseWeight() - (lastSpellCategory == defenseSpells ? 80 : 0);
+        int defenseWeight = getDefenseWeight() - (lastSpellCategory == defenseSpells ? 100 : 0);
         int movementWeight = getMovementWeight() - (lastSpellCategory == movementSpells ? 50 : 0);
         int supportWeight = getSupportWeight() - (lastSpellCategory == supportSpells ? 35 : 0);
         int total = 0;
@@ -277,13 +271,13 @@ public class WizardAttackGoal extends Goal {
         //https://www.desmos.com/calculator/tqs7dudcmv
         float x = mob.getHealth();
         float m = mob.getMaxHealth();
-        int healthWeight = (int) (40 * (Math.pow(-(x / m) * (x - m), 3) / Math.pow(m / 2, 3)) * 8);
+        int healthWeight = (int) (80 * (Math.pow(-(x / m) * (x - m), 3) / Math.pow(m / 2, 3)) * 8);
 
         float targetHealth = target.getHealth() / target.getMaxHealth();
         int targetHealthWeight = (int) (1 - targetHealth) * -35;
 
         //this count be finicky due to the fact that projectiles don't stick around for long, so it might be easy to miss them
-        int threatWeight = projectileCount * 55;
+        int threatWeight = projectileCount * 95;
 
         return baseWeight + healthWeight + targetHealthWeight + threatWeight;
     }

@@ -41,10 +41,9 @@ public class DamageSources {
     public static float applyDamage(Entity target, float baseAmount, DamageSource damageSource, SchoolType damageSchool, @Nullable Entity attacker) {
         if (target instanceof LivingEntity livingTarget) {
             float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
-            if (attacker != null) {
-                livingTarget.hurt(new EntityDamageSource(damageSource.getMsgId(), attacker), adjustedDamage);
-                if (attacker instanceof LivingEntity livingAttacker)
-                    livingAttacker.setLastHurtMob(target);
+            if (attacker instanceof LivingEntity livingAttacker) {
+                livingTarget.hurt(new EntityDamageSource(damageSource.getMsgId(), livingAttacker), adjustedDamage);
+                livingAttacker.setLastHurtMob(target);
             } else {
                 livingTarget.hurt(damageSource, adjustedDamage);
             }

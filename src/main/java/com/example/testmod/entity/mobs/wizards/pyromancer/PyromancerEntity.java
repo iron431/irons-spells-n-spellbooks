@@ -13,6 +13,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -33,17 +34,18 @@ public class PyromancerEntity extends AbstractSpellCastingMob {
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.25f, 25, 50).setSpells(
-                List.of(SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIRE_BREATH_SPELL),
+                List.of(SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIRE_BREATH_SPELL, SpellType.FIREBALL_SPELL),
                 List.of(),
                 List.of(),
                 List.of(SpellType.HEAL_SPELL)
         ));
-        this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .2f));
+        this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .35f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isValidTarget));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
     @Override

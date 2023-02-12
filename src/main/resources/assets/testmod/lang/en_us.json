@@ -21,11 +21,9 @@
   "item.testmod.magic_thread": "Magic Thread",
   "item.testmod.enchanted_thread": "Enchanted Thread",
   "item.testmod.ruined_book": "Ruined Book",
-
   "block.testmod.inscription_table": "Inscription Table",
   "block.testmod.scroll_forge": "Scroll Forge",
   "block.testmod.pedestal": "Pedestal",
-
   "tooltip.testmod.level": "Level %d",
   "tooltip.testmod.scroll_tooltip": "When in Spell Book:",
   "tooltip.testmod.imbued_tooltip": "Imbued Spell:",
@@ -39,7 +37,6 @@
   "tooltip.testmod.spellbook_unique": "Unique Spell Book",
   "tooltip.testmod.cast_continuous": "%s Cast Duration",
   "tooltip.testmod.cast_long": "%s Cast Time",
-
   "ui.testmod.arcane_anvil_title": "Arcane Anvil",
   "ui.testmod.inscription_table_title": "Inscription Table",
   "ui.testmod.scroll_forge_title": "Scroll Forge",
@@ -64,7 +61,6 @@
   "ui.testmod.ring_count": "%d Rings",
   "ui.testmod.hp": "%d HP",
   "ui.testmod.effect_length": "%d Effect Length",
-
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",
   "school.testmod.lightning": "Lightning",
@@ -72,36 +68,31 @@
   "school.testmod.ender": "Ender",
   "school.testmod.blood": "Blood",
   "school.testmod.evocation": "Evocation",
-
   "rarity.testmod.common": "Common",
   "rarity.testmod.uncommon": "Uncommon",
   "rarity.testmod.rare": "Rare",
   "rarity.testmod.epic": "Epic",
   "rarity.testmod.legendary": "Legendary",
-
-  "attribute.testmod.max_mana":"Max Mana",
-  "attribute.testmod.spell_power":"Spell Power",
-  "attribute.testmod.cast_time_reduction":"Cast Time Reduction",
-  "attribute.testmod.cooldown_reduction":"Cooldown Reduction",
-
-  "attribute.testmod.fire_magic_resist":"Fire Magic Resistance",
-  "attribute.testmod.ice_magic_resist":"Ice Magic Resistance",
-  "attribute.testmod.lightning_magic_resist":"Lightning Magic Resistance",
-  "attribute.testmod.holy_magic_resist":"Holy Magic Resistance",
-  "attribute.testmod.ender_magic_resist":"Ender Magic Resistance",
-  "attribute.testmod.blood_magic_resist":"Blood Magic Resistance",
-  "attribute.testmod.evocation_magic_resist":"Evocation Magic Resistance",
-  "attribute.testmod.fire_spell_power":"Fire Spell Power",
-  "attribute.testmod.ice_spell_power":"Ice Spell Power",
-  "attribute.testmod.lightning_spell_power":"Lightning Spell Power",
-  "attribute.testmod.holy_spell_power":"Holy Spell Power",
-  "attribute.testmod.ender_spell_power":"Ender Spell Power",
-  "attribute.testmod.blood_spell_power":"Blood Spell Power",
-  "attribute.testmod.evocation_spell_power":"Evocation Spell Power",
-
+  "attribute.testmod.max_mana": "Max Mana",
+  "attribute.testmod.spell_power": "Spell Power",
+  "attribute.testmod.cast_time_reduction": "Cast Time Reduction",
+  "attribute.testmod.cooldown_reduction": "Cooldown Reduction",
+  "attribute.testmod.fire_magic_resist": "Fire Magic Resistance",
+  "attribute.testmod.ice_magic_resist": "Ice Magic Resistance",
+  "attribute.testmod.lightning_magic_resist": "Lightning Magic Resistance",
+  "attribute.testmod.holy_magic_resist": "Holy Magic Resistance",
+  "attribute.testmod.ender_magic_resist": "Ender Magic Resistance",
+  "attribute.testmod.blood_magic_resist": "Blood Magic Resistance",
+  "attribute.testmod.evocation_magic_resist": "Evocation Magic Resistance",
+  "attribute.testmod.fire_spell_power": "Fire Spell Power",
+  "attribute.testmod.ice_spell_power": "Ice Spell Power",
+  "attribute.testmod.lightning_spell_power": "Lightning Spell Power",
+  "attribute.testmod.holy_spell_power": "Holy Spell Power",
+  "attribute.testmod.ender_spell_power": "Ender Spell Power",
+  "attribute.testmod.blood_spell_power": "Blood Spell Power",
+  "attribute.testmod.evocation_spell_power": "Evocation Spell Power",
   "key.testmod.spell_wheel": "Open Spell Wheel",
   "key.testmod.spell_bar_modifier": "Spell Bar Scroll Modifier",
-
   "spell.testmod.none": "None",
   "spell.testmod.fireball": "Fireball",
   "spell.testmod.burning_dash": "Burning Dash",
@@ -127,18 +118,18 @@
   "spell.testmod.heartstop": "Heartstop",
   "spell.testmod.lightning_lance": "Lightning Lance",
   "spell.testmod.lightning_bolt": "Lightning Bolt",
-
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
   "death.attack.blood_magic.player": "%1$s blood magic 3",
   "death.attack.blood_cauldron": "%1$s was cooked alive.",
   "death.attack.heartstop": "%1$s's heart ruptured.",
-
   "effect.testmod.blood_slashed": "Blood Slashed",
   "effect.testmod.heartstop": "Heartstop",
+  "commands.testmod.create_scroll.failed": "Create Scroll Failed",
+  "commands.testmod.create_spell_book.failed": "Create Spell Book Failed",
 
-  "commands.testmod.create_scroll.failed":"Create Scroll Failed",
-  "commands.testmod.create_spell_book.failed": "Create SpellBook Failed",
-
-  "entity.testmod.wisp": "Wisp"
+  "entity.testmod.wisp": "Wisp",
+  "entity.testmod.summoned_vex": "Vex",
+  "entity.testmod.pyromancer": "Pyromancer",
+  "entity.testmod.necromancer": "Necromancer"
 }

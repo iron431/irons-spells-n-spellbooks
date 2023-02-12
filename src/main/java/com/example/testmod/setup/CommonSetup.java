@@ -4,6 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
+import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.wisp.WispEntity;
@@ -32,6 +33,7 @@ public class CommonSetup {
     public static void onAttributeCreate(EntityAttributeCreationEvent event) {
         event.put(EntityRegistry.SIMPLE_WIZARD.get(), SimpleWizard.prepareAttributes().build());
         event.put(EntityRegistry.PYROMANCER.get(), PyromancerEntity.prepareAttributes().build());
+        event.put(EntityRegistry.NECROMANCER.get(), NecromancerEntity.prepareAttributes().build());
         event.put(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteed.prepareAttributes().build());
         event.put(EntityRegistry.WISP.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_VEX.get(), SummonedVex.createAttributes().build());

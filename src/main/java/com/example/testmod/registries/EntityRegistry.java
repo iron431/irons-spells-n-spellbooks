@@ -12,6 +12,7 @@ import com.example.testmod.entity.lightning_lance.LightningLanceProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
+import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.shield.ShieldEntity;
@@ -126,7 +127,7 @@ public class EntityRegistry {
                     .build(new ResourceLocation(TestMod.MODID, "summoned_vex").toString()));
 
     public static final RegistryObject<EntityType<PyromancerEntity>> PYROMANCER =
-            ENTITIES.register("pyromancer", () -> EntityType.Builder.<PyromancerEntity>of(PyromancerEntity::new, MobCategory.MONSTER)
+            ENTITIES.register("pyromancer", () -> EntityType.Builder.of(PyromancerEntity::new, MobCategory.MONSTER)
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "pyromancer").toString()));
@@ -136,5 +137,11 @@ public class EntityRegistry {
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "lightning_lance_projectile").toString()));
+
+    public static final RegistryObject<EntityType<NecromancerEntity>> NECROMANCER =
+            ENTITIES.register("necromancer", () -> EntityType.Builder.of(NecromancerEntity::new, MobCategory.MONSTER)
+                    .sized(.6f, 1.8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "necromancer").toString()));
 
 }

@@ -2,10 +2,7 @@ package com.example.testmod.entity.mobs;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
-import com.example.testmod.entity.mobs.goals.GenericFollowOwnerGoal;
-import com.example.testmod.entity.mobs.goals.GenericHurtByTargetGoal;
-import com.example.testmod.entity.mobs.goals.GenericOwnerHurtByTargetGoal;
-import com.example.testmod.entity.mobs.goals.GenericOwnerHurtTargetGoal;
+import com.example.testmod.entity.mobs.goals.*;
 import com.example.testmod.registries.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -46,6 +43,22 @@ public class SummonedVex extends Vex implements MagicSummon {
         this(EntityRegistry.SUMMONED_VEX.get(), pLevel);
         setSummoner(owner);
         this.summonLife = durationInTicks;
+    }
+
+    @Override
+    public void registerGoals() {
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(4, new VexChargeAttackGoal());
+        this.goalSelector.addGoal(7, new GenericFollowOwnerGoal(this, this::getSummoner, .65f, 15, 5, true, 25));
+        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
+        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
+        this.goalSelector.addGoal(16, new VexRandomMoveGoal());
+
+        this.targetSelector.addGoal(1, new GenericOwnerHurtByTargetGoal(this, this::getSummoner));
+        this.targetSelector.addGoal(2, new GenericOwnerHurtTargetGoal(this, this::getSummoner));
+        this.targetSelector.addGoal(3, new CopyOwnerTargetGoal(this, this::getSummoner));
+        this.targetSelector.addGoal(4, (new GenericHurtByTargetGoal(this, (entity) -> entity == getSummoner())).setAlertOthers());
+
     }
 
     @Override
@@ -93,20 +106,6 @@ public class SummonedVex extends Vex implements MagicSummon {
         return super.hurt(pSource, pAmount);
     }
 
-    @Override
-    public void registerGoals() {
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(4, new VexChargeAttackGoal());
-        this.goalSelector.addGoal(7, new GenericFollowOwnerGoal(this, this::getSummoner, .65f, 15, 5, true, 25));
-        this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
-        this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
-        this.goalSelector.addGoal(16, new VexRandomMoveGoal());
-
-        this.targetSelector.addGoal(1, new GenericOwnerHurtByTargetGoal(this, this::getSummoner));
-        this.targetSelector.addGoal(2, new GenericOwnerHurtTargetGoal(this, this::getSummoner));
-        this.targetSelector.addGoal(3, (new GenericHurtByTargetGoal(this, (entity) -> entity == getSummoner())).setAlertOthers());
-
-    }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
