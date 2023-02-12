@@ -56,7 +56,7 @@ public abstract class SwordItemMixin extends Item {
                 }
             }
 
-            if (spell.attemptInitiateCast(stack, level, player, CastSource.Sword, false)) {
+            if (spell.attemptInitiateCast(stack, level, player, CastSource.Sword, true)) {
                 if (spell.getCastType().holdToCast()) {
                     player.startUsingItem(hand);
                 }
