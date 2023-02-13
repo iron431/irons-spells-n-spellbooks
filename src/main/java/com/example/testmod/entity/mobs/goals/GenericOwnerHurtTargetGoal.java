@@ -31,9 +31,12 @@ public class GenericOwnerHurtTargetGoal extends TargetGoal {
         if (owner == null) {
             return false;
         } else {
+            //mob.getLastHurtByMobTimestamp() == mob.tickCount - 1
             this.ownerLastHurt = owner.getLastHurtMob();
             int i = owner.getLastHurtMobTimestamp();
-            return i != this.timestamp && this.canAttack(this.ownerLastHurt, TargetingConditions.DEFAULT) && !(this.ownerLastHurt instanceof MagicSummon summon && summon.getSummoner() == this.owner.get());
+
+
+            return i != this.timestamp && this.canAttack(this.ownerLastHurt, TargetingConditions.DEFAULT) && !(this.ownerLastHurt instanceof MagicSummon summon && summon.getSummoner() == owner);
         }
     }
 

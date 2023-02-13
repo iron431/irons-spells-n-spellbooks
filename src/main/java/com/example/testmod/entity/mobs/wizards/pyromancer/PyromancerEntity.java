@@ -40,7 +40,7 @@ public class PyromancerEntity extends AbstractSpellCastingMob implements Enemy {
                 List.of(),
                 List.of(SpellType.HEAL_SPELL)
         ));
-        this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .45f));
+        this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));

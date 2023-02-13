@@ -1,5 +1,6 @@
 package com.example.testmod.entity.mobs.goals;
 
+import com.example.testmod.entity.mobs.MagicSummon;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -32,7 +33,7 @@ public class GenericOwnerHurtByTargetGoal extends TargetGoal {
         } else {
             this.ownerLastHurtBy = owner.getLastHurtByMob();
             int i = owner.getLastHurtByMobTimestamp();
-            return i != this.timestamp && this.canAttack(this.ownerLastHurtBy, TargetingConditions.DEFAULT)/* && this.entity.wantsToAttack(this.ownerLastHurtBy, owner)*/;
+            return i != this.timestamp && this.canAttack(this.ownerLastHurtBy, TargetingConditions.DEFAULT) && !(this.ownerLastHurtBy instanceof MagicSummon summon && summon.getSummoner() == owner);
         }
     }
 

@@ -10,6 +10,7 @@ import com.example.testmod.entity.firebolt.FireboltProjectile;
 import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.lightning_lance.LightningLanceProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
+import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.SummonedZombie;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
@@ -150,5 +151,10 @@ public class EntityRegistry {
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "summoned_zombie").toString()));
-
+    
+    public static final RegistryObject<EntityType<SummonedSkeleton>> SUMMONED_SKELETON =
+            ENTITIES.register("summoned_skeleton", () -> EntityType.Builder.<SummonedSkeleton>of(SummonedSkeleton::new, MobCategory.MONSTER)
+                    .sized(.6f, 1.8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "summoned_skeleton").toString()));
 }

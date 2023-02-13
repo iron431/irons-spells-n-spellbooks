@@ -11,9 +11,8 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,15 +22,15 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class SummonedZombie extends Zombie implements MagicSummon {
-    public SummonedZombie(EntityType<? extends Zombie> pEntityType, Level pLevel) {
+public class SummonedSkeleton extends Skeleton implements MagicSummon {
+    public SummonedSkeleton(EntityType<? extends Skeleton> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 0;
 
     }
 
-    public SummonedZombie(Level level, LivingEntity owner) {
-        this(EntityRegistry.SUMMONED_ZOMBIE.get(), level);
+    public SummonedSkeleton(Level level, LivingEntity owner) {
+        this(EntityRegistry.SUMMONED_SKELETON.get(), level);
         setSummoner(owner);
     }
 
@@ -40,8 +39,8 @@ public class SummonedZombie extends Zombie implements MagicSummon {
 
     @Override
     public void registerGoals() {
+
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2f, true));
         this.goalSelector.addGoal(7, new GenericFollowOwnerGoal(this, this::getSummoner, 1.1f, 15, 5, false, 25));
         this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 0.8D));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
@@ -62,7 +61,7 @@ public class SummonedZombie extends Zombie implements MagicSummon {
     }
 
     @Override
-    protected boolean isSunSensitive() {
+    protected boolean isSunBurnTick() {
         return false;
     }
 
@@ -70,8 +69,10 @@ public class SummonedZombie extends Zombie implements MagicSummon {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         RandomSource randomsource = pLevel.getRandom();
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        if (randomsource.nextDouble() < .15)
+        if (randomsource.nextDouble() < .3)
             this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+
+        this.reassessWeaponGoal();
 
         return pSpawnData;
     }

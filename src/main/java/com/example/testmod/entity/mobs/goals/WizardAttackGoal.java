@@ -6,7 +6,6 @@ import com.example.testmod.spells.SpellType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.projectile.Projectile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,11 @@ public class WizardAttackGoal extends Goal {
     private boolean strafingClockwise;
     private int attackTime = -1;
     private int projectileCount;
+
+    private SpellType singleUseSpell = SpellType.NONE_SPELL;
+    private int singleUseDelay;
+    private int singleUseLevel;
+    private int singleUseCooldown;
 
     private final ArrayList<SpellType> attackSpells = new ArrayList<>();
     private final ArrayList<SpellType> defenseSpells = new ArrayList<>();
@@ -77,6 +81,15 @@ public class WizardAttackGoal extends Goal {
         this.defenseSpells.addAll(defenseSpells);
         this.movementSpells.addAll(movementSpells);
         this.supportSpells.addAll(supportSpells);
+
+        return this;
+    }
+
+    public WizardAttackGoal setSingleUseSpell(SpellType spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+        this.singleUseSpell = spellType;
+        this.singleUseDelay = mob.level.random.nextInt(minDelay, maxDelay);
+        this.singleUseCooldown = singleUseDelay;
+        this.singleUseLevel = mob.level.random.nextInt(minLevel, maxLevel);
 
         return this;
     }
@@ -132,10 +145,10 @@ public class WizardAttackGoal extends Goal {
             this.seeTime = 0;
         }
 
-        //search for projectiles around the mob
-        if (mob.tickCount % 3 == 0) {
-            projectileCount = mob.level.getEntitiesOfClass(Projectile.class, mob.getBoundingBox().inflate(24), (projectile) -> projectile.getOwner() != mob).size();
-        }
+//        //search for projectiles around the mob
+//        if (mob.tickCount % 3 == 0) {
+//            projectileCount = mob.level.getEntitiesOfClass(Projectile.class, mob.getBoundingBox().inflate(24), (projectile) -> projectile.getOwner() != mob && !projectile.isOnGround()).size();
+//        }
 
         //move closer to target or strafe around
         if (distanceSquared < attackRadiusSqr && seeTime >= 5) {
@@ -181,9 +194,15 @@ public class WizardAttackGoal extends Goal {
             this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(distanceSquared) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
             //TestMod.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
         }
+
+        //handle single use spell
+        if (this.singleUseCooldown > 0)
+            singleUseCooldown--;
     }
 
     private void doAction() {
+        int spellLevel = singleUseCooldown <= 0 ? singleUseLevel : mob.getRandom().nextInt(3) + 1;
+
         var spellType = getNextSpellType();
 
         if (spellType == SpellType.TELEPORT_SPELL) {
@@ -192,11 +211,15 @@ public class WizardAttackGoal extends Goal {
 //        if (spellType == SpellType.WALL_OF_FIRE_SPELL) {
 //            mob.setTeleportLocationBehindTarget(15);
 //        }
-
-        mob.castSpell(spellType, mob.getRandom().nextInt(3) + 1);
+        mob.castSpell(spellType, spellLevel);
     }
 
     private SpellType getNextSpellType() {
+
+        if (this.singleUseCooldown <= 0) {
+            singleUseCooldown = 6000 + singleUseDelay;
+            return singleUseSpell;
+        }
 
         NavigableMap<Integer, ArrayList> weightedSpells = new TreeMap<>();
         int attackWeight = getAttackWeight();

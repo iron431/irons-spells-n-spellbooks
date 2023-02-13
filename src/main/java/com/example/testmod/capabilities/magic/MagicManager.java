@@ -21,7 +21,7 @@ import static com.example.testmod.registries.AttributeRegistry.MAX_MANA;
 
 public class MagicManager {
 
-    public static final int TICKS_PER_CYCLE = 20;
+    public static final int TICKS_PER_CYCLE = 10;
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
     private int counter = 0;

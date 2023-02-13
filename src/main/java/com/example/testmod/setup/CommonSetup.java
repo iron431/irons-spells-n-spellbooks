@@ -2,6 +2,7 @@ package com.example.testmod.setup;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.config.ServerConfigs;
+import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.SummonedZombie;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
@@ -43,6 +44,7 @@ public class CommonSetup {
         event.put(EntityRegistry.WISP.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_VEX.get(), SummonedVex.createAttributes().build());
         event.put(EntityRegistry.SUMMONED_ZOMBIE.get(), SummonedZombie.createAttributes().build());
+        event.put(EntityRegistry.SUMMONED_SKELETON.get(), SummonedSkeleton.createAttributes().build());
 
 
     }

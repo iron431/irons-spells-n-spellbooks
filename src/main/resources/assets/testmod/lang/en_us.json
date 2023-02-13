@@ -136,8 +136,11 @@
   "commands.testmod.create_scroll.failed": "Create Scroll Failed",
   "commands.testmod.create_spell_book.failed": "Create Spell Book Failed",
 
+  "entity.testmod.summoned_entity": "%s's %s",
   "entity.testmod.wisp": "Wisp",
-  "entity.testmod.summoned_vex": "Vex",
+  "entity.testmod.summoned_vex": "Summoned Vex",
+  "entity.testmod.summoned_zombie": "Summoned Zombie",
+  "entity.testmod.summoned_skeleton": "Summoned Skeleton",
   "entity.testmod.pyromancer": "Pyromancer",
   "entity.testmod.necromancer": "Necromancer"
 }
