@@ -151,7 +151,7 @@ public abstract class AbstractSpellCastingMob extends Monster {
         playerMagicData.handleCastDuration();
 
         if (playerMagicData.getCastDurationRemaining() <= 0) {
-            if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.INSTANT) {
+            if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.CHARGE || castingSpell.getCastType() == CastType.INSTANT) {
                 forceLookAtTarget(getTarget());
                 castingSpell.onCast(level, this, playerMagicData);
                 TestMod.LOGGER.debug("AbstractSpellCastingMob: Casting {}", castingSpell.getSpellType());
@@ -198,7 +198,7 @@ public abstract class AbstractSpellCastingMob extends Monster {
 
             entityData.set(DATA_CASTING, data);
         }
-
+        this.startUsingItem(InteractionHand.MAIN_HAND);
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.Mob);
 
         //TODO: this may be in the wrong spot.. i don't think this works for all cast types here
@@ -208,7 +208,15 @@ public abstract class AbstractSpellCastingMob extends Monster {
     }
 
     public boolean isCasting() {
-        return playerMagicData != null && playerMagicData.isCasting();
+        if (level.isClientSide) {
+            return entityData.get(DATA_CASTING).spellId != 0;
+        } else {
+            return playerMagicData != null && playerMagicData.isCasting();
+        }
+    }
+
+    public SpellType getCastingSpell(){
+        return SpellType.getTypeFromValue(entityData.get(DATA_CASTING).spellId) ;
     }
 
     public void setTeleportLocationBehindTarget(int distance) {

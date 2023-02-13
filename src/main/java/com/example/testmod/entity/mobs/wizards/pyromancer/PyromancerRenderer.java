@@ -2,6 +2,7 @@ package com.example.testmod.entity.mobs.wizards.pyromancer;
 
 
 import com.example.testmod.TestMod;
+import com.example.testmod.render.ChargeSpellLayer;
 import com.example.testmod.render.EvasionLayer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -25,6 +26,8 @@ public class PyromancerRenderer extends HumanoidMobRenderer<PyromancerEntity,Pyr
         var outer = new PyromancerModel(context.bakeLayer(PYROMANCER_OUTER_ARMOR));
         this.addLayer(new HumanoidArmorLayer<>(this, inner, outer));
         this.layers.add(new EvasionLayer(this));
+        this.addLayer(new ChargeSpellLayer(this));
+
 
     }
 

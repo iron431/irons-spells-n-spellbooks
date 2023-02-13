@@ -1,6 +1,7 @@
 package com.example.testmod.entity.mobs.necromancer;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.render.ChargeSpellLayer;
 import com.example.testmod.render.EvasionLayer;
 import com.example.testmod.render.NecromancerClothingLayer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -21,6 +22,7 @@ public class NecromancerRenderer extends HumanoidMobRenderer<NecromancerEntity, 
         var outer = new NecromancerModel(context.bakeLayer(NECROMANCER_OUTER_ARMOR));
         this.addLayer(new HumanoidArmorLayer<>(this, inner, outer));
         this.addLayer(new EvasionLayer(this));
+        this.addLayer(new ChargeSpellLayer(this));
     }
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/entity/necromancer/necromancer.png");
