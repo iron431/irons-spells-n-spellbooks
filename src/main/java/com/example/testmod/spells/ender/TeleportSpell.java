@@ -99,7 +99,7 @@ public class TeleportSpell extends AbstractSpell {
         entity.teleportTo(dest.x, dest.y, dest.z);
         entity.resetFallDistance();
 
-        playerMagicData.resetAdditionCastData();
+        playerMagicData.resetAdditionlCastData();
 
         super.onCast(level, entity, playerMagicData);
     }

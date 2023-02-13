@@ -2,6 +2,7 @@ package com.example.testmod.capabilities.magic;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -14,15 +15,21 @@ import javax.annotation.Nullable;
 
 public class PlayerMagicProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-    public static Capability<PlayerMagicData> PLAYER_MAGIC = CapabilityManager.get(new CapabilityToken<>(){});
+    public static Capability<PlayerMagicData> PLAYER_MAGIC = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
     private PlayerMagicData playerMagicData = null;
     private final LazyOptional<PlayerMagicData> opt = LazyOptional.of(this::createPlayerMagicData);
+    private ServerPlayer serverPlayer;
+
+    public PlayerMagicProvider(ServerPlayer serverPlayer) {
+        this.serverPlayer = serverPlayer;
+    }
 
     @Nonnull
     private PlayerMagicData createPlayerMagicData() {
         if (playerMagicData == null) {
-            playerMagicData = new PlayerMagicData();
+            playerMagicData = new PlayerMagicData(serverPlayer);
         }
         return playerMagicData;
     }

@@ -4,6 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.network.ClientBoundSyncPlayerData;
 import com.example.testmod.setup.Messages;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,11 +59,25 @@ public class SyncedSpellData {
         }
     };
 
+    public void saveNBTData(CompoundTag compound) {
+        compound.putBoolean("hasAngelWings", this.hasAngelWings);
+        compound.putBoolean("hasEvasion", this.hasEvasion);
+        compound.putBoolean("hasHeartstop", this.hasHeartstop);
+        compound.putFloat("heartStopDamage", this.heartStopDamage);
+    }
+
+    public void loadNBTData(CompoundTag compound) {
+        this.hasAngelWings = compound.getBoolean("hasAngelWings");
+        this.hasEvasion = compound.getBoolean("hasEvasion");
+        this.hasHeartstop = compound.getBoolean("hasHeartstop");
+        this.heartStopDamage = compound.getFloat("heartStopDamage");
+    }
+
     public int getServerPlayerId() {
         return serverPlayerId;
     }
 
-    private void doSync() {
+    public void doSync() {
         //this.player will only be null on the client side
         TestMod.LOGGER.debug("SyncedSpellData.doSync livingEntity:{}", livingEntity);
 
@@ -117,5 +132,10 @@ public class SyncedSpellData {
     public void addHeartstopDamage(float amount) {
         this.heartStopDamage += amount;
         doSync();
+    }
+
+    @Override
+    protected SyncedSpellData clone() {
+        return new SyncedSpellData(this.livingEntity);
     }
 }

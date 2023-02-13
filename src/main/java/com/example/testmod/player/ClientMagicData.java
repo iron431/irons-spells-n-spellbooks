@@ -59,7 +59,7 @@ public class ClientMagicData {
         return 1 - (castDurationRemaining / (float) castDuration);
     }
 
-    public static void resetClientCastState(){
+    public static void resetClientCastState() {
         spellId = 0;
         isCasting = false;
         castDurationRemaining = 0;
@@ -146,8 +146,10 @@ public class ClientMagicData {
      */
     private static HashMap<Integer, SyncedSpellData> playerSyncedDataLookup = new HashMap<>();
 
+    private static SyncedSpellData emptySyncedData = new SyncedSpellData(-999);
+
     public static SyncedSpellData getPlayerSyncedData(int serverPlayerId) {
-        return playerSyncedDataLookup.getOrDefault(serverPlayerId, new SyncedSpellData(-1));
+        return playerSyncedDataLookup.getOrDefault(serverPlayerId, emptySyncedData);
     }
 
 

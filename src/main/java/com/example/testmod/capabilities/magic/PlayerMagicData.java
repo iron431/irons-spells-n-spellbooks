@@ -80,7 +80,8 @@ public class PlayerMagicData extends AbstractMagicData {
         this.castingSpellId = 0;
         this.castingSpellLevel = 0;
         this.castDurationRemaining = 0;
-        resetAdditionCastData();
+        resetAdditionlCastData();
+        resetSyncedData();
     }
 
     public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, CastSource castSource) {
@@ -99,10 +100,17 @@ public class PlayerMagicData extends AbstractMagicData {
         additionalCastData = newCastData;
     }
 
-    public void resetAdditionCastData() {
+    public void resetAdditionlCastData() {
         if (additionalCastData != null) {
             additionalCastData.reset();
             additionalCastData = null;
+        }
+    }
+
+    public void resetSyncedData() {
+        if (syncedSpellData != null) {
+            syncedSpellData = syncedSpellData.clone();
+            syncedSpellData.doSync();
         }
     }
 
@@ -198,7 +206,6 @@ public class PlayerMagicData extends AbstractMagicData {
     }
 
     public void saveNBTData(CompoundTag compound) {
-        //TestMod.LOGGER.debug("PlayerMagicData: saving nbt");
         compound.putInt(MANA, mana);
 
         if (playerCooldowns.hasCooldownsActive()) {
@@ -208,16 +215,18 @@ public class PlayerMagicData extends AbstractMagicData {
                 compound.put(COOLDOWNS, listTag);
             }
         }
+
+        getSyncedData().saveNBTData(compound);
     }
 
     public void loadNBTData(CompoundTag compound) {
-        //TestMod.LOGGER.debug("PlayerMagicData: loading nbt");
         mana = compound.getInt(MANA);
-        ListTag listTag = (ListTag) compound.get(COOLDOWNS);
 
+        ListTag listTag = (ListTag) compound.get(COOLDOWNS);
         if (listTag != null && !listTag.isEmpty()) {
             playerCooldowns.loadNBTData(listTag);
         }
 
+        getSyncedData().loadNBTData(compound);
     }
 }

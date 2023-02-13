@@ -73,12 +73,13 @@ public class ServerPlayerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            PlayerMagicData.getPlayerMagicData(serverPlayer).resetCastingState();
-        }
-    }
+//This causes an issue with saving the PlayerMagicData to nbt. you can't save it if you clear it.
+//    @SubscribeEvent
+//    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+//        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+//            PlayerMagicData.getPlayerMagicData(serverPlayer).resetCastingState();
+//        }
+//    }
 
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
@@ -98,9 +99,10 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        TestMod.LOGGER.debug("onPlayerRespawn: {}", event.getEntity().getName().getString());
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            PlayerMagicData.getPlayerMagicData(serverPlayer).resetCastingState();
+            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            playerMagicData.resetCastingState();
+            playerMagicData.getSyncedData().doSync();
         }
     }
 

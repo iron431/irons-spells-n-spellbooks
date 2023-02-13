@@ -2,8 +2,8 @@ package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -13,9 +13,9 @@ public class MagicEvents {
     public static final ResourceLocation PLAYER_MAGIC_RESOURCE = new ResourceLocation(TestMod.MODID, "player_magic");
 
     public static void onAttachCapabilitiesPlayer(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player) {
+        if (event.getObject() instanceof ServerPlayer serverPlayer) {
             if (!event.getObject().getCapability(PlayerMagicProvider.PLAYER_MAGIC).isPresent()) {
-                event.addCapability(PLAYER_MAGIC_RESOURCE, new PlayerMagicProvider());
+                event.addCapability(PLAYER_MAGIC_RESOURCE, new PlayerMagicProvider(serverPlayer));
             }
         }
     }

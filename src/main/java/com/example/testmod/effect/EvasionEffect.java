@@ -46,6 +46,8 @@ public class EvasionEffect extends MobEffect {
         PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setHasEvasion(true);
     }
 
+
+
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
         if (livingEntity.level.isClientSide || excludeDamageSources.contains(damageSource) || damageSource.isFall() || damageSource.isBypassMagic() || damageSource.isBypassInvul()) {
             return false;
