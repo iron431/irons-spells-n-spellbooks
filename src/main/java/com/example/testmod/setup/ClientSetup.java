@@ -4,6 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.block.pedestal.PedestalRenderer;
 import com.example.testmod.block.scroll_forge.ScrollForgeRenderer;
 import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
+import com.example.testmod.entity.armor.TarnishedCrownModel;
 import com.example.testmod.entity.armor.pyromancer.PyromancerArmorModel;
 import com.example.testmod.entity.armor.simple_wizard.WizardArmorRenderer;
 import com.example.testmod.entity.armor.wandering_magician.WanderingMagicianRenderer;
@@ -26,6 +27,7 @@ import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.entity.shield.ShieldTrimModel;
 import com.example.testmod.entity.wisp.WispRenderer;
 import com.example.testmod.item.armor.PyromancerArmorItem;
+import com.example.testmod.item.armor.TarnishedCrownArmorItem;
 import com.example.testmod.item.armor.WanderingMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.particle.*;
@@ -82,6 +84,7 @@ public class ClientSetup {
         GeoArmorRenderer.registerArmorRenderer(WizardArmorItem.class, WizardArmorRenderer::new);
         GeoArmorRenderer.registerArmorRenderer(WanderingMagicianArmorItem.class, WanderingMagicianRenderer::new);
         GeoArmorRenderer.registerArmorRenderer(PyromancerArmorItem.class, () -> new GenericCustomArmorRenderer(new PyromancerArmorModel()));
+        GeoArmorRenderer.registerArmorRenderer(TarnishedCrownArmorItem.class, () -> new GenericCustomArmorRenderer(new TarnishedCrownModel()));
 
         TestMod.LOGGER.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
 

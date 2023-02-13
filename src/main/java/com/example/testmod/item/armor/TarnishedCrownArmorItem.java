@@ -1,11 +1,9 @@
 package com.example.testmod.item.armor;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.registries.AttributeRegistry;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -28,7 +26,7 @@ import software.bernie.geckolib3.item.GeoArmorItem;
 import java.util.Map;
 import java.util.UUID;
 
-public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable {
+public class TarnishedCrownArmorItem extends GeoArmorItem implements IAnimatable {
     private static final UUID[] ARMOR_MODIFIER_UUID_PER_SLOT = new UUID[]{UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")};
     private final Multimap<Attribute, AttributeModifier> ARMOR_ATTRIBUTES;
     private AnimationFactory factory = new AnimationFactory(this);
@@ -37,7 +35,7 @@ public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable {
             (new ImmutableMap.Builder<ArmorMaterial, MobEffectInstance>()).build();
     //.put(ModArmorMaterials., new MobEffectInstance(MobEffects.LUCK, 200, 1)).build();
 
-    public PyromancerArmorItem(ArmorMaterial material, EquipmentSlot slot, Properties settings) {
+    public TarnishedCrownArmorItem(ArmorMaterial material, EquipmentSlot slot, Properties settings) {
         super(material, slot, settings);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ARMOR, new AttributeModifier("Armor", getDefense(), AttributeModifier.Operation.ADDITION));
@@ -45,8 +43,8 @@ public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable {
         if (this.knockbackResistance > 0) {
             builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Armor knockback resistance", this.knockbackResistance, AttributeModifier.Operation.ADDITION));
         }
-        builder.put(AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 50, AttributeModifier.Operation.ADDITION));
-        builder.put(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Power", .075, AttributeModifier.Operation.MULTIPLY_BASE));
+        builder.put(AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier("minus damage", -.15, AttributeModifier.Operation.MULTIPLY_TOTAL));
 
         ARMOR_ATTRIBUTES = builder.build();
 
@@ -54,18 +52,18 @@ public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable {
 
     @Override
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
-        if (pEquipmentSlot == this.slot) {
+        if(pEquipmentSlot == this.slot){
             //var attributes = super.getDefaultAttributeModifiers(pEquipmentSlot);
             //attributes.putAll(MANA_ATTRIBUTES);
             return ARMOR_ATTRIBUTES;
-        } else {
+        }else{
             return ImmutableMultimap.of();
         }
     }
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<PyromancerArmorItem>(this, "controller", 20, this::predicate));
+        data.addAnimationController(new AnimationController<TarnishedCrownArmorItem>(this, "controller", 20, this::predicate));
     }
 
     @Override
@@ -133,5 +131,4 @@ public class PyromancerArmorItem extends GeoArmorItem implements IAnimatable {
         return helmet.getMaterial() == material && breastplate.getMaterial() == material &&
                 leggings.getMaterial() == material && boots.getMaterial() == material;
     }
-
 }

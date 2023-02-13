@@ -6,6 +6,7 @@ import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.UniqueSpellBook;
 import com.example.testmod.item.armor.PyromancerArmorItem;
+import com.example.testmod.item.armor.TarnishedCrownArmorItem;
 import com.example.testmod.item.armor.WanderingMagicianArmorItem;
 import com.example.testmod.item.armor.WizardArmorItem;
 import com.example.testmod.spells.AbstractSpell;
@@ -92,5 +93,6 @@ public class ItemRegistry {
     public static final RegistryObject<Item> PYROMANCER_PANTS = ITEMS.register("pyromancer_leggings", () -> new PyromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
     public static final RegistryObject<Item> PYROMANCER_BOOTS = ITEMS.register("pyromancer_boots", () -> new PyromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
+    public static final RegistryObject<Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON)));
 
 }

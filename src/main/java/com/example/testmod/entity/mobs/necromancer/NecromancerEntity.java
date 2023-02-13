@@ -2,6 +2,7 @@ package com.example.testmod.entity.mobs.necromancer;
 
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.WizardAttackGoal;
+import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
@@ -62,10 +63,10 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-       /*this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_HAT.get()));
-        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
-        this.setDropChance(EquipmentSlot.HEAD, 0.0F);
-        this.setDropChance(EquipmentSlot.CHEST, 0.0F);*/
+       this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.TARNISHED_CROWN.get()));
+        this.setDropChance(EquipmentSlot.HEAD, 0.12f);
+//        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
+//        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
     }
 
     @Override
