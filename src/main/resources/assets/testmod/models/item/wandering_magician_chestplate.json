@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "minecraft:item/diamond_chestplate"
+    "layer0": "testmod:item/wandering_magician_chestplate"
   }
 }

@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "minecraft:item/diamond_helmet"
+    "layer0": "testmod:item/wandering_magician_helmet"
+
   }
 }
