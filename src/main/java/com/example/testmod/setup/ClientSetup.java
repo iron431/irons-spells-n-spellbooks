@@ -15,7 +15,7 @@ import com.example.testmod.entity.firebolt.FireboltRenderer;
 import com.example.testmod.entity.icicle.IcicleRenderer;
 import com.example.testmod.entity.lightning_lance.LightningLanceRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
-import com.example.testmod.entity.mobs.horse.MagicHorseRenderer;
+import com.example.testmod.entity.mobs.horse.SpectralSteedRenderer;
 import com.example.testmod.entity.mobs.necromancer.NecromancerModel;
 import com.example.testmod.entity.mobs.necromancer.NecromancerRenderer;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardModel;
@@ -115,7 +115,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SIMPLE_WIZARD.get(), SimpleWizardRenderer::new);
         event.registerEntityRenderer(EntityRegistry.PYROMANCER.get(), PyromancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.NECROMANCER.get(), NecromancerRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.SPECTRAL_STEED.get(), MagicHorseRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteedRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SHIELD_ENTITY.get(), ShieldRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_ENTITY.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_CAST_TRACKER.get(), NoopRenderer::new);

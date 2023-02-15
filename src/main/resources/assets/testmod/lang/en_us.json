@@ -151,5 +151,6 @@
   "entity.testmod.summoned_zombie": "Summoned Zombie",
   "entity.testmod.summoned_skeleton": "Summoned Skeleton",
   "entity.testmod.pyromancer": "Pyromancer",
-  "entity.testmod.necromancer": "Necromancer"
+  "entity.testmod.necromancer": "Necromancer",
+  "entity.testmod.spectral_steed": "Spectral Steed"
 }

@@ -15,6 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -63,10 +64,8 @@ public class RaiseDeadSpell extends AbstractSpell {
                 skeleton.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
                 //skeleton.setCustomName(Component.translatable("testmod.entity.summoned_entity", entity.getName(), skeleton.getName()));
                 //skeleton.setCustomNameVisible(false);
-                skeleton.setItemSlot(EquipmentSlot.FEET, equipment[0]);
-                skeleton.setItemSlot(EquipmentSlot.LEGS, equipment[1]);
-                skeleton.setItemSlot(EquipmentSlot.CHEST, equipment[2]);
-                skeleton.setItemSlot(EquipmentSlot.HEAD, equipment[3]);
+                equip(skeleton, equipment);
+
                 world.addFreshEntity(skeleton);
             } else {
                 SummonedZombie zombie = new SummonedZombie(world, entity);
@@ -75,16 +74,25 @@ public class RaiseDeadSpell extends AbstractSpell {
                 zombie.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
                 //zombie.setCustomName(Component.translatable("entity.testmod.summoned_entity", entity.getName(), zombie.getName()));
                 //zombie.setCustomNameVisible(false);
-                zombie.setItemSlot(EquipmentSlot.FEET, equipment[0]);
-                zombie.setItemSlot(EquipmentSlot.LEGS, equipment[1]);
-                zombie.setItemSlot(EquipmentSlot.CHEST, equipment[2]);
-                zombie.setItemSlot(EquipmentSlot.HEAD, equipment[3]);
+                equip(zombie, equipment);
+
                 world.addFreshEntity(zombie);
             }
 
         }
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, true));
         super.onCast(world, entity, playerMagicData);
+    }
+
+    private void equip(Mob mob, ItemStack[] equipment) {
+        mob.setItemSlot(EquipmentSlot.FEET, equipment[0]);
+        mob.setItemSlot(EquipmentSlot.LEGS, equipment[1]);
+        mob.setItemSlot(EquipmentSlot.CHEST, equipment[2]);
+        mob.setItemSlot(EquipmentSlot.HEAD, equipment[3]);
+        mob.setDropChance(EquipmentSlot.FEET, 0.0F);
+        mob.setDropChance(EquipmentSlot.LEGS, 0.0F);
+        mob.setDropChance(EquipmentSlot.CHEST, 0.0F);
+        mob.setDropChance(EquipmentSlot.HEAD, 0.0F);
     }
 
     private ItemStack[] getEquipment(float power, RandomSource random) {

@@ -3,6 +3,7 @@
   "values": [
     "testmod:summoned_vex",
     "testmod:summoned_zombie",
-    "testmod:summoned_skeleton"
+    "testmod:summoned_skeleton",
+    "testmod:spectral_steed"
   ]
 }

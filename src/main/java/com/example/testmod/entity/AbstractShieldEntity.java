@@ -23,6 +23,8 @@ import java.util.List;
 public abstract class AbstractShieldEntity extends Entity {
     private static final EntityDataAccessor<Float> DATA_HEALTH_ID = SynchedEntityData.defineId(AbstractShieldEntity.class, EntityDataSerializers.FLOAT);
 
+    protected boolean canDoEffects;
+
     public AbstractShieldEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
 //        width = 3;
@@ -51,19 +53,13 @@ public abstract class AbstractShieldEntity extends Entity {
 //        this.yRotO = y;
 //    }
 
-    public abstract void takeDamage(DamageSource source, float amount, @Nullable Vec3 location);/* {
-        if (!this.isInvulnerableTo(source)) {
-            this.setHealth(this.getHealth() - amount);
-            if (!level.isClientSide && location != null) {
-                MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, location.x, location.y, location.z, 30, .1, .1, .1, .5, false);
-                level.playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, .8f, 1f);
-            }
-        }
-
-    }*/
+    public void takeDamage(DamageSource source, float amount, @Nullable Vec3 location) {
+        canDoEffects = false;
+    }
 
     @Override
     public void tick() {
+        canDoEffects = true;
         for (PartEntity<?> subEntity : getParts()) {
             Vec3 pos = subEntity.position();
             subEntity.setPos(pos);

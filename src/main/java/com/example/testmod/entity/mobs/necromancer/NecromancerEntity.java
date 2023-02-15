@@ -5,8 +5,11 @@ import com.example.testmod.entity.mobs.goals.WizardAttackGoal;
 import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -54,6 +57,22 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
     }
 
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.SKELETON_AMBIENT;
+    }
+
+    protected SoundEvent getHurtSound(DamageSource pDamageSource) {
+        return SoundEvents.SKELETON_HURT;
+    }
+
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.SKELETON_DEATH;
+    }
+
+    protected SoundEvent getStepSound() {
+        return SoundEvents.SKELETON_STEP;
+    }
+
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         RandomSource randomsource = pLevel.getRandom();
@@ -63,7 +82,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-       this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.TARNISHED_CROWN.get()));
+        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.TARNISHED_CROWN.get()));
         this.setDropChance(EquipmentSlot.HEAD, 0.12f);
 //        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
 //        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
