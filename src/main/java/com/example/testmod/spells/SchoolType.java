@@ -1,12 +1,10 @@
 package com.example.testmod.spells;
 
-import com.example.testmod.registries.ItemRegistry;
+import com.example.testmod.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public enum SchoolType {
     FIRE(0),
@@ -31,30 +29,25 @@ public enum SchoolType {
         return DISPLAYS[getValue()];
     }
 
-    public static SchoolType getSchoolFromItem(Item item) {
-        //TODO: make each of these json tags
-        if (Items.BLAZE_ROD.equals(item)) {
+    public static SchoolType getSchoolFromItem(ItemStack stack) {
+        if (stack.is(ModTags.FIRE_FOCUS)) {
             return FIRE;
-        } else if (ItemRegistry.FROZEN_BONE_SHARD.get().equals(item)) {
+        } else if (stack.is(ModTags.ICE_FOCUS)) {
             return ICE;
-        } else if (ItemRegistry.LIGHTNING_BOTTLE.get().equals(item)) {
+        } else if (stack.is(ModTags.LIGHTNING_FOCUS)) {
             return LIGHTNING;
-        } else if (ItemRegistry.DIVINE_PEARL.get().equals(item)) {
+        } else if (stack.is(ModTags.HOLY_FOCUS)) {
             return HOLY;
-        } else if (Items.ENDER_PEARL.equals(item)) {
+        } else if (stack.is(ModTags.ENDER_FOCUS)) {
             return ENDER;
-        } else if (ItemRegistry.BLOOD_VIAL.get().equals(item)) {
+        } else if (stack.is(ModTags.BLOOD_FOCUS)) {
             return BLOOD;
             //TODO: evocation gem?
-        } else if (Items.EMERALD.equals(item)) {
+        } else if (stack.is(ModTags.EVOCATION_FOCUS)) {
             return EVOCATION;
         }/*else if (Items.ECHO_SHARD.equals(item)) {
             return VOID;
         }*/ else return null;
-    }
-
-    public static SchoolType getSchoolFromItem(ItemStack stack) {
-        return getSchoolFromItem(stack.getItem());
     }
 
     public static final Component DISPLAY_FIRE = Component.translatable("school.testmod.fire").withStyle(ChatFormatting.GOLD);

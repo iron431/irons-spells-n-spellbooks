@@ -28,7 +28,7 @@ public class HeartstopSpell extends AbstractSpell {
         this.castTime = 0;
         this.baseManaCost = 20;
         this.cooldown = 100;
-        uniqueInfo.add(Component.translatable("ui.testmod.duration", Utils.timeFromTicks(getSpellPower(null), 1)));
+        uniqueInfo.add(Component.translatable("ui.testmod.effect_length", Utils.timeFromTicks(getSpellPower(null), 1)));
 
     }
 

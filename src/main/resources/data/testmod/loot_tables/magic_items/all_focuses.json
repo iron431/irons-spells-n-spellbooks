@@ -4,32 +4,39 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "testmod:frozen_bone"
+          "type": "minecraft:tag",
+          "name": "testmod:fire_focus",
+          "expand": true
         },
         {
-          "type": "minecraft:item",
-          "name": "testmod:blood_vial"
+          "type": "minecraft:tag",
+          "name": "testmod:ice_focus",
+          "expand": true
         },
         {
-          "type": "minecraft:item",
-          "name": "testmod:lightning_bottle"
+          "type": "minecraft:tag",
+          "name": "testmod:lightning_focus",
+          "expand": true
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:blaze_rod"
+          "type": "minecraft:tag",
+          "name": "testmod:holy_focus",
+          "expand": true
         },
         {
-          "type": "minecraft:item",
-          "name": "testmod:divine_pearl"
+          "type": "minecraft:tag",
+          "name": "testmod:ender_focus",
+          "expand": true
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:ender_pearl"
+          "type": "minecraft:tag",
+          "name": "testmod:blood_focus",
+          "expand": true
         },
         {
-          "type": "minecraft:item",
-          "name": "minecraft:emerald"
+          "type": "minecraft:tag",
+          "name": "testmod:evocation_focus",
+          "expand": true
         }
       ]
     }

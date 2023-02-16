@@ -1,13 +1,12 @@
 {
   "replace": false,
   "values": [
-    "minecraft:blaze_rod",
-    "minecraft:ender_pearl",
-    "minecraft:echo_shard",
-    "minecraft:emerald",
-    "testmod:divine_pearl",
-    "testmod:lightning_bottle",
-    "testmod:frozen_bone",
-    "testmod:blood_vial"
+    "#testmod:fire_focus",
+    "#testmod:ice_focus",
+    "#testmod:lightning_focus",
+    "#testmod:holy_focus",
+    "#testmod:ender_focus",
+    "#testmod:blood_focus",
+    "#testmod:evocation_focus"
   ]
 }

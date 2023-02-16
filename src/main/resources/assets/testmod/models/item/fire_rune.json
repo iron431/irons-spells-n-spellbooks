@@ -1,6 +1,1 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "testmod:item/fire_rune"
-  }
-}
+{  "parent": "item/generated",  "textures": {    "layer0": "testmod:item/fire_rune"  }}

@@ -90,7 +90,8 @@ public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile
 
         poseStack.translate(offset.x, offset.y, offset.z);
         poseStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(yRot));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-yRot));
 
         //poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
         poseStack.scale(0.45f, 0.45f, 0.45f);

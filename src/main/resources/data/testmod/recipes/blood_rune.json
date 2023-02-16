@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FFF",
+    "FRF",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "tag": "testmod:blood_focus"
+    },
+    "R": {
+      "item": "testmod:blank_rune"
+    }
+  },
+  "result": {
+    "item": "testmod:blood_rune",
+    "count": 1
+  }
+}
