@@ -53,14 +53,16 @@ public class SummonHorseSpell extends AbstractSpell {
         horse.setPos(spawn);
         horse.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, false));
         setAttributes(horse, getSpellPower(entity));
-        world.addFreshEntity(horse);
 
+        //Remove pre-existing horses
+        world.getEntitiesOfClass(SpectralSteed.class, entity.getBoundingBox().inflate(100), (spectralSteed) -> spectralSteed.getSummoner() == entity).forEach((SpectralSteed::onUnSummon));
+        world.addFreshEntity(horse);
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, true));
         super.onCast(world, entity, playerMagicData);
     }
 
     private void setAttributes(AbstractHorse horse, float power) {
-        int maxPower = baseSpellPower + (ServerConfigs.getSpellConfig(SpellType.RAISE_DEAD_SPELL).MAX_LEVEL - 1) * spellPowerPerLevel;
+        int maxPower = baseSpellPower + (ServerConfigs.getSpellConfig(SpellType.SUMMON_HORSE_SPELL).MAX_LEVEL - 1) * spellPowerPerLevel;
         float quality = power / (float) maxPower;
 
         float minSpeed = .2f;

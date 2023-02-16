@@ -1,11 +1,11 @@
 {
   "replace": false,
   "values": [
-    "minecraft:blaze_powder",
+    "minecraft:blaze_rod",
     "minecraft:ender_pearl",
     "minecraft:echo_shard",
     "minecraft:emerald",
-    "minecraft:amethyst_shard",
+    "testmod:divine_pearl",
     "testmod:lightning_bottle",
     "testmod:frozen_bone",
     "testmod:blood_vial"

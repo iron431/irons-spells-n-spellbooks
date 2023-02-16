@@ -32,26 +32,28 @@ public enum SchoolType {
     }
 
     public static SchoolType getSchoolFromItem(Item item) {
-        if (Items.BLAZE_POWDER.equals(item)) {
+        //TODO: make each of these json tags
+        if (Items.BLAZE_ROD.equals(item)) {
             return FIRE;
         } else if (ItemRegistry.FROZEN_BONE_SHARD.get().equals(item)) {
             return ICE;
-        }else if (ItemRegistry.LIGHTNING_BOTTLE.get().equals(item)) {
+        } else if (ItemRegistry.LIGHTNING_BOTTLE.get().equals(item)) {
             return LIGHTNING;
-        }else if (Items.AMETHYST_SHARD.equals(item)) {
+        } else if (ItemRegistry.DIVINE_PEARL.get().equals(item)) {
             return HOLY;
-        }else if (Items.ENDER_PEARL.equals(item)) {
+        } else if (Items.ENDER_PEARL.equals(item)) {
             return ENDER;
-        }else if (ItemRegistry.BLOOD_VIAL.get().equals(item)) {
+        } else if (ItemRegistry.BLOOD_VIAL.get().equals(item)) {
             return BLOOD;
-        }else if (Items.EMERALD.equals(item)) {
+            //TODO: evocation gem?
+        } else if (Items.EMERALD.equals(item)) {
             return EVOCATION;
         }/*else if (Items.ECHO_SHARD.equals(item)) {
             return VOID;
-        }*/
-        else return null;
+        }*/ else return null;
     }
-    public static SchoolType getSchoolFromItem(ItemStack stack){
+
+    public static SchoolType getSchoolFromItem(ItemStack stack) {
         return getSchoolFromItem(stack.getItem());
     }
 

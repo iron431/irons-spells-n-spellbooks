@@ -17,11 +17,11 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:blaze_powder"
+          "name": "minecraft:blaze_rod"
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:amethyst_shard"
+          "name": "testmod:divine_pearl"
         },
         {
           "type": "minecraft:item",

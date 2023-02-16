@@ -36,7 +36,7 @@
         {
           "type": "minecraft:item",
           "weight": 8,
-          "name": "minecraft:blaze_powder"
+          "name": "minecraft:blaze_rod"
         }
       ]
     },

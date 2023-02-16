@@ -3,15 +3,12 @@ package com.example.testmod.block.scroll_forge;
 import com.example.testmod.TestMod;
 import com.example.testmod.item.InkItem;
 import com.example.testmod.util.ModTags;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -19,21 +16,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 
-import static net.minecraft.core.Direction.SOUTH;
 
-
-public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile> {
+public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile> {
     private static final ResourceLocation PAPER_TEXTURE = new ResourceLocation(TestMod.MODID, "textures/block/scroll_forge_paper.png");
     private static final ResourceLocation SIGIL_TEXTURE = new ResourceLocation(TestMod.MODID, "textures/block/scroll_forge_sigil.png");
     ItemRenderer itemRenderer;
@@ -73,6 +63,8 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
 
         }
 
+        /*
+        //Test Sigil
         float angle = (Minecraft.getInstance().player.tickCount + partialTick )%360;
         poseStack.pushPose();
         rotatePoseWithBlock(poseStack, scrollForgeTile);
@@ -82,6 +74,8 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(SIGIL_TEXTURE));
         drawQuad(.5f, poseStack.last(), consumer, LightTexture.FULL_BRIGHT);
         poseStack.popPose();
+
+        */
 
 
     }
