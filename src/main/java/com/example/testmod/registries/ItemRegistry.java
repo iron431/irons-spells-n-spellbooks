@@ -91,21 +91,21 @@ public class ItemRegistry {
 //    public static final RegistryObject<Item> WIZARD_PANTS = ITEMS.register("wizard_pants", () -> new WizardArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 //    public static final RegistryObject<Item> WIZARD_BOOTS = ITEMS.register("wizard_boots", () -> new WizardArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_HAT = ITEMS.register("wandering_magician_helmet", () -> new WanderingMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_ROBE = ITEMS.register("wandering_magician_chestplate", () -> new WanderingMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.CHEST, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_PANTS = ITEMS.register("wandering_magician_leggings", () -> new WanderingMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_BOOTS = ITEMS.register("wandering_magician_boots", () -> new WanderingMagicianArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_HAT = ITEMS.register("wandering_magician_helmet", () -> new WanderingMagicianArmorItem(EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_ROBE = ITEMS.register("wandering_magician_chestplate", () -> new WanderingMagicianArmorItem(EquipmentSlot.CHEST, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_PANTS = ITEMS.register("wandering_magician_leggings", () -> new WanderingMagicianArmorItem( EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_BOOTS = ITEMS.register("wandering_magician_boots", () -> new WanderingMagicianArmorItem(EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
-    public static final RegistryObject<Item> PYROMANCER_HAT = ITEMS.register("pyromancer_helmet", () -> new PyromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> PYROMANCER_ROBE = ITEMS.register("pyromancer_chestplate", () -> new PyromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.CHEST, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> PYROMANCER_PANTS = ITEMS.register("pyromancer_leggings", () -> new PyromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> PYROMANCER_BOOTS = ITEMS.register("pyromancer_boots", () -> new PyromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> PYROMANCER_HAT = ITEMS.register("pyromancer_helmet", () -> new PyromancerArmorItem(EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> PYROMANCER_ROBE = ITEMS.register("pyromancer_chestplate", () -> new PyromancerArmorItem(EquipmentSlot.CHEST, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> PYROMANCER_PANTS = ITEMS.register("pyromancer_leggings", () -> new PyromancerArmorItem(EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> PYROMANCER_BOOTS = ITEMS.register("pyromancer_boots", () -> new PyromancerArmorItem(EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
-    public static final RegistryObject<Item> ELECTROMANCER_HAT = ITEMS.register("electromancer_helmet", () -> new ElectromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> ELECTROMANCER_ROBE = ITEMS.register("electromancer_chestplate", () -> new ElectromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.CHEST, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> ELECTROMANCER_PANTS = ITEMS.register("electromancer_leggings", () -> new ElectromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
-    public static final RegistryObject<Item> ELECTROMANCER_BOOTS = ITEMS.register("electromancer_boots", () -> new ElectromancerArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> ELECTROMANCER_HAT = ITEMS.register("electromancer_helmet", () -> new ElectromancerArmorItem(EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> ELECTROMANCER_ROBE = ITEMS.register("electromancer_chestplate", () -> new ElectromancerArmorItem(EquipmentSlot.CHEST, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> ELECTROMANCER_PANTS = ITEMS.register("electromancer_leggings", () -> new ElectromancerArmorItem(EquipmentSlot.LEGS, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
+    public static final RegistryObject<Item> ELECTROMANCER_BOOTS = ITEMS.register("electromancer_boots", () -> new ElectromancerArmorItem(EquipmentSlot.FEET, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT)));
 
-    public static final RegistryObject<Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(EquipmentSlot.HEAD, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON)));
 
 }
