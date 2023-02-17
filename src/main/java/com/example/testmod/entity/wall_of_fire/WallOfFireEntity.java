@@ -80,19 +80,17 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             subEntity.yOld = pos.y;
             subEntity.zOld = pos.z;
             if (level.isClientSide) {
-                PartEntity<?> nextEntity = subEntities[i + 1 < subEntitiesLength ? i + 1 : i - 1];
-
-                for (int j = 0; j < 2; j++) {
-                    double offset = .25;
+                for (int j = 0; j < 3; j++) {
+                    double offset = .5;
                     double ox = (Math.random() * 2 * offset - offset);
                     double oy = Math.random() * 2 * offset - offset;
                     double oz = Math.random() * 2 * offset - offset;
-                    Vec3 next = pos.subtract(nextEntity.position()).scale(.5f);
-                    level.addParticle(ParticleTypes.FLAME, pos.x + ox + next.x * j, pos.y + oy - .25 + next.y * j, pos.z + oz + next.z * j, 0, Math.random() * .3, 0);
+                    level.addParticle(ParticleTypes.FLAME, pos.x + ox, pos.y + oy - .25, pos.z + oz, 0, Math.random() * .3, 0);
                 }
+
             } else {
                 for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
-                    if (livingentity != getOwner()){
+                    if (livingentity != getOwner()) {
                         DamageSources.applyDamage(livingentity, damage, DamageSources.WALL_OF_FIRE_DAMAGE, SchoolType.FIRE, getOwner());
                         livingentity.setSecondsOnFire(3);
                     }

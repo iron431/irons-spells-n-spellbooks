@@ -18,7 +18,6 @@ import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.shield.ShieldEntity;
-import com.example.testmod.entity.wall_of_fire.WallOfFireCastTracker;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import com.example.testmod.entity.wisp.WispEntity;
 import net.minecraft.resources.ResourceLocation;
@@ -110,17 +109,9 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<WallOfFireEntity>> WALL_OF_FIRE_ENTITY =
             ENTITIES.register("wall_of_fire", () -> EntityType.Builder.<WallOfFireEntity>of(WallOfFireEntity::new, MobCategory.MISC)
-                    .sized(1f, 1f)
+                    .sized(10f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "wall_of_fire").toString()));
-
-    public static final RegistryObject<EntityType<WallOfFireCastTracker>> WALL_OF_FIRE_CAST_TRACKER =
-            ENTITIES.register("wall_of_fire_cast_tracker", () -> EntityType.Builder.<WallOfFireCastTracker>of(WallOfFireCastTracker::new, MobCategory.MISC)
-                    .sized(1f, 1f)
-                    .clientTrackingRange(64)
-                    .noSummon()
-                    .noSave()
-                    .build(new ResourceLocation(TestMod.MODID, "wall_of_fire_cast_tracker").toString()));
 
     public static final RegistryObject<EntityType<SummonedVex>> SUMMONED_VEX =
             ENTITIES.register("summoned_vex", () -> EntityType.Builder.<SummonedVex>of(SummonedVex::new, MobCategory.CREATURE)

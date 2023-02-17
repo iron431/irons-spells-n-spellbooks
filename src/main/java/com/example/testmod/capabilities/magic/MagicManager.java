@@ -77,8 +77,6 @@ public class MagicManager {
                             spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                             playerMagicData.resetCastingState();
                             Scroll.attemptRemoveScrollAfterCast(serverPlayer);
-                        } else {
-                            spell.onServerCastTick(serverPlayer.level, serverPlayer, playerMagicData);
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
@@ -96,6 +94,8 @@ public class MagicManager {
                             }
                         }
                     }
+                    if(playerMagicData.isCasting())
+                        spell.onServerCastTick(serverPlayer.level, serverPlayer, playerMagicData);
                 }
 
                 if (counter <= 0) {
