@@ -106,7 +106,7 @@ public class SpellBook extends Item implements ISpellBook {
         if(!this.isUnique()){
             lines.add(Component.translatable("tooltip.testmod.spellbook_rarity", this.rarity.getDisplayName()).withStyle(ChatFormatting.GRAY));
         }else{
-            lines.add(Component.translatable("tooltip.testmod.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324)));
+            lines.add(Component.translatable("tooltip.testmod.spellbook_rarity", Component.translatable("tooltip.testmod.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324))).withStyle(ChatFormatting.GRAY));
         }
 
 

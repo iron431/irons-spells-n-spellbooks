@@ -83,7 +83,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.TARNISHED_CROWN.get()));
-        this.setDropChance(EquipmentSlot.HEAD, 0.12f);
+        this.setDropChance(EquipmentSlot.HEAD, 0.05f);
 //        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
 //        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
     }
