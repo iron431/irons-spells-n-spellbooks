@@ -23,7 +23,7 @@
 						{
 							"origin": [-4, 24, -4],
 							"size": [8, 8, 8],
-							"inflate": 1,
+							"inflate": 0.85,
 							"uv": {
 								"north": {"uv": [8, 8], "uv_size": [8, 8]},
 								"east": {"uv": [0, 8], "uv_size": [8, 8]},
@@ -42,9 +42,9 @@
 					"rotation": [-20, 0, 0],
 					"cubes": [
 						{
-							"origin": [-4, 29.94, 4.58],
+							"origin": [-4, 29.9, 4.33],
 							"size": [8, 2, 2],
-							"inflate": 0.99,
+							"inflate": 0.84,
 							"uv": {
 								"north": {"uv": [26, 10], "uv_size": [8, 2]},
 								"east": {"uv": [24, 12], "uv_size": [2, -2]},

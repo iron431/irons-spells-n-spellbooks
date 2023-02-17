@@ -8,6 +8,7 @@ import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.SpellRarity;
 import com.example.testmod.util.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -103,8 +104,7 @@ public class SpellBook extends Item implements ISpellBook {
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
         if(!this.isUnique()){
-            var rarity = this.rarity.getDisplayName();
-            lines.add(Component.translatable("tooltip.testmod.spellbook_rarity", rarity).withStyle(rarity.getStyle()));
+            lines.add(Component.translatable("tooltip.testmod.spellbook_rarity", this.rarity.getDisplayName()).withStyle(ChatFormatting.GRAY));
         }else{
             lines.add(Component.translatable("tooltip.testmod.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324)));
         }

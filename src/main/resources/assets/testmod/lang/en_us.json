@@ -31,6 +31,11 @@
   "item.testmod.pyromancer_chestplate": "Pyromancer Robe",
   "item.testmod.pyromancer_leggings": "Pyromancer Pants",
   "item.testmod.pyromancer_boots": "Pyromancer Boots",
+  "item.testmod.electromancer_helmet": "Electromancer Hood",
+  "item.testmod.electromancer_chestplate": "Electromancer Robe",
+  "item.testmod.electromancer_leggings": "Electromancer Pants",
+  "item.testmod.electromancer_boots": "Electromancer Boots",
+
   "item.testmod.tarnished_crown": "Tarnished Crown",
   "item.testmod.blank_rune": "Blank Runestone",
   "item.testmod.fire_rune": "Fire Rune",

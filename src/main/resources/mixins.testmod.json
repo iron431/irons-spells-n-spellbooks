@@ -10,7 +10,8 @@
     "LocalPlayerMixin",
     "SpinAttackEffectLayerMixin",
     "SwordItemMixin",
-    "TridentItemMixin"
+    "TridentItemMixin",
+    "AbstractClientPlayerMixin"
 
   ],
   "client": [
