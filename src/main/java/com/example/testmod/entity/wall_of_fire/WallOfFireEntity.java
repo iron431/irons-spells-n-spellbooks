@@ -1,10 +1,12 @@
 package com.example.testmod.entity.wall_of_fire;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.AbstractShieldEntity;
 import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
-import com.example.testmod.util.ParticleHelper;
+import com.example.testmod.spells.SchoolType;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -62,7 +64,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
     @Override
     public void tick() {
-        if(anchorPoints.size() <= 1 || subEntities.length <= 1){
+        if (anchorPoints.size() <= 1 || subEntities.length <= 1) {
             discard();
             return;
         }
@@ -86,34 +88,19 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
                     double oy = Math.random() * 2 * offset - offset;
                     double oz = Math.random() * 2 * offset - offset;
                     Vec3 next = pos.subtract(nextEntity.position()).scale(.5f);
-                    level.addParticle(ParticleHelper.FIRE, pos.x + ox + next.x * j, pos.y + oy - .25 + next.y * j, pos.z + oz + next.z * j, 0, Math.random() * .3, 0);
+                    level.addParticle(ParticleTypes.FLAME, pos.x + ox + next.x * j, pos.y + oy - .25 + next.y * j, pos.z + oz + next.z * j, 0, Math.random() * .3, 0);
                 }
             } else {
                 for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
-                    this.dealDamageTo(livingentity);
+                    if (livingentity != getOwner()){
+                        DamageSources.applyDamage(livingentity, damage, DamageSources.WALL_OF_FIRE_DAMAGE, SchoolType.FIRE, getOwner());
+                        livingentity.setSecondsOnFire(3);
+                    }
                 }
             }
         }
         if (!level.isClientSide && --lifetime < 0)
             discard();
-    }
-
-    private void dealDamageTo(LivingEntity pTarget) {
-        Entity owner = this.getOwner();
-        if (pTarget.isAlive() && !pTarget.isInvulnerable() && pTarget != owner) {
-            if (owner == null) {
-                pTarget.hurt(DamageSource.MAGIC, damage);
-                pTarget.setSecondsOnFire(3);
-            } else {
-                if (owner.isAlliedTo(pTarget)) {
-                    return;
-                }
-
-                pTarget.hurt(DamageSource.indirectMagic(this, owner), damage);
-                pTarget.setSecondsOnFire(3);
-            }
-
-        }
     }
 
     @Override

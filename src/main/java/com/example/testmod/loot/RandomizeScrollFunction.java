@@ -1,9 +1,9 @@
 package com.example.testmod.loot;
 
-import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.registries.LootRegistry;
 import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellRarity;
 import com.example.testmod.spells.SpellType;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -19,6 +19,8 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 public class RandomizeScrollFunction extends LootItemConditionalFunction {
     final NumberProvider qualityRange;
@@ -35,14 +37,42 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
         //TestMod.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof Scroll scroll) {
 
-            var spellId = applicableSpells[lootContext.getRandom().nextInt(applicableSpells.length)].getValue();
-            int maxLevel = ServerConfigs.getSpellConfig(spellId).MAX_LEVEL;
+            var spellList = getWeightedSpellList(applicableSpells);
+            int total = spellList.floorKey(Integer.MAX_VALUE);
+            SpellType spellType = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
+
+            var spellId = spellType.getValue();
+            int maxLevel = spellType.getMaxLevel();
             float quality = qualityRange.getFloat(lootContext);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
             var scrollData = scroll.getScrollData(itemStack);
             scrollData.setData(spellId, spellLevel);
         }
         return itemStack;
+    }
+
+    private NavigableMap<Integer, SpellType> getWeightedSpellList(SpellType[] entries) {
+        int total = 0;
+        NavigableMap<Integer, SpellType> weightedSpells = new TreeMap<>();
+
+        for (SpellType entry : entries) {
+            if(entry !=SpellType.NONE_SPELL){
+                total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
+                weightedSpells.put(total, entry);
+            }
+        }
+
+        return weightedSpells;
+    }
+
+    private int getWeightFromRarity(SpellRarity rarity) {
+        return switch (rarity) {
+            case COMMON -> 20;
+            case UNCOMMON -> 18;
+            case RARE -> 15;
+            case EPIC -> 11;
+            case LEGENDARY -> 6;
+        };
     }
 
     @Override
@@ -91,8 +121,8 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
                 List<SpellType> applicableSpellList = new ArrayList<>();
                 for (JsonElement element : spellsFromJson) {
                     String spell = element.getAsString();
-                    for(SpellType spellType : SpellType.values()){
-                        if(spellType.getId().equalsIgnoreCase(spell))
+                    for (SpellType spellType : SpellType.values()) {
+                        if (spellType.getId().equalsIgnoreCase(spell))
                             applicableSpellList.add(spellType);
                     }
                 }

@@ -31,6 +31,7 @@ public class DamageSources {
     public static DamageSource ICICLE_DAMAGE = new DamageSource("icicle_spell");
     public static DamageSource WISP_DAMAGE = new DamageSource("wisp_spell");
     public static DamageSource LIGHTNING_LANCE_DAMAGE = new DamageSource("lightning_lance_spell");
+    public static DamageSource WALL_OF_FIRE_DAMAGE = new DamageSource("wall_of_fire_spell");
 //    public static DamageSource BLOOD_MAGIC = new DamageSource(BLOOD_MAGIC_ID);
 //    public static DamageSource FIRE_MAGIC = new DamageSource(FIRE_MAGIC_ID).setIsFire();
 //    public static DamageSource ICE_MAGIC = new DamageSource(ICE_MAGIC_ID);

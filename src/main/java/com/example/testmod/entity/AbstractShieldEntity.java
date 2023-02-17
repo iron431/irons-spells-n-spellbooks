@@ -23,8 +23,6 @@ import java.util.List;
 public abstract class AbstractShieldEntity extends Entity {
     private static final EntityDataAccessor<Float> DATA_HEALTH_ID = SynchedEntityData.defineId(AbstractShieldEntity.class, EntityDataSerializers.FLOAT);
 
-    protected boolean canDoEffects;
-
     public AbstractShieldEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
 //        width = 3;
@@ -53,13 +51,10 @@ public abstract class AbstractShieldEntity extends Entity {
 //        this.yRotO = y;
 //    }
 
-    public void takeDamage(DamageSource source, float amount, @Nullable Vec3 location) {
-        canDoEffects = false;
-    }
+    public abstract void takeDamage(DamageSource source, float amount, @Nullable Vec3 location);
 
     @Override
     public void tick() {
-        canDoEffects = true;
         for (PartEntity<?> subEntity : getParts()) {
             Vec3 pos = subEntity.position();
             subEntity.setPos(pos);
