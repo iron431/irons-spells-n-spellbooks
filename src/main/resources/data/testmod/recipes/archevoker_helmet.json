@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CRC"
+  ],
+  "key": {
+    "C": {
+      "item": "testmod:magic_cloth"
+    },
+    "R": {
+      "item": "testmod:evocation_rune"
+    }
+  },
+  "result": {
+    "item": "testmod:archevoker_helmet",
+    "count": 1
+  }
+}

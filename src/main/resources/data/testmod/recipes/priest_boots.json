@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C C",
+    "CRC"
+  ],
+  "key": {
+    "C": {
+      "item": "testmod:magic_cloth"
+    },
+    "R": {
+      "item": "testmod:holy_rune"
+    }
+  },
+  "result": {
+    "item": "testmod:priest_boots",
+    "count": 1
+  }
+}

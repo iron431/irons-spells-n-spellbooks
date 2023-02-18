@@ -1,0 +1,1 @@
+{  "type": "minecraft:crafting_shaped",  "pattern":  [    "CRC",    "CCC",    "CCC"  ],  "key":  {    "C":    {      "item": "testmod:magic_cloth"    },    "R":    {      "item": "testmod:blank_rune"    }  },  "result":  {    "item": "testmod:cultist_chestplate",    "count": 1  }}

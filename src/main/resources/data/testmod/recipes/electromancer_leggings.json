@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CRC",
+    "C C"
+  ],
+  "key": {
+    "C": {
+      "item": "testmod:magic_cloth"
+    },
+    "R": {
+      "item": "testmod:lightning_rune"
+    }
+  },
+  "result": {
+    "item": "testmod:electromancer_leggings",
+    "count": 1
+  }
+}

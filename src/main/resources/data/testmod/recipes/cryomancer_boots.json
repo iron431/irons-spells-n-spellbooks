@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C C",
+    "CRC"
+  ],
+  "key": {
+    "C": {
+      "item": "testmod:magic_cloth"
+    },
+    "R": {
+      "item": "testmod:ice_rune"
+    }
+  },
+  "result": {
+    "item": "testmod:cryomancer_boots",
+    "count": 1
+  }
+}
