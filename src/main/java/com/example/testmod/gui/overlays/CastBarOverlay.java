@@ -44,6 +44,11 @@ public class CastBarOverlay extends GuiComponent {
         int textX, textY;
         var textColor = ChatFormatting.WHITE;
         var font = gui.getFont();
+
+        if(castCompletionPercent == 1){
+            castTimeString = "Ready";
+        }
+
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;
         textY = barY + IMAGE_HEIGHT / 2 - font.lineHeight / 2 + 1;
 
