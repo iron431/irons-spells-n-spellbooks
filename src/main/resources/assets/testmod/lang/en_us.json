@@ -36,6 +36,10 @@
   "item.testmod.electromancer_chestplate": "Electromancer Robe",
   "item.testmod.electromancer_leggings": "Electromancer Pants",
   "item.testmod.electromancer_boots": "Electromancer Boots",
+  "item.testmod.archevoker_helmet": "Archevoker Hat",
+  "item.testmod.archevoker_chestplate": "Archevoker Coat",
+  "item.testmod.archevoker_leggings": "Archevoker Pants",
+  "item.testmod.archevoker_boots": "Archevoker Boots",
 
   "item.testmod.tarnished_crown": "Tarnished Crown",
   "item.testmod.blank_rune": "Blank Runestone",
