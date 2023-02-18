@@ -6,6 +6,7 @@ import com.example.testmod.block.scroll_forge.ScrollForgeRenderer;
 import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
 import com.example.testmod.entity.armor.TarnishedCrownModel;
 import com.example.testmod.entity.armor.archevoker.ArchevokerArmorModel;
+import com.example.testmod.entity.armor.culist.archevoker.CultistArmorModel;
 import com.example.testmod.entity.armor.electromancer.ElectromancerArmorModel;
 import com.example.testmod.entity.armor.pyromancer.PyromancerArmorModel;
 import com.example.testmod.entity.armor.simple_wizard.WizardArmorRenderer;
@@ -85,6 +86,7 @@ public class ClientSetup {
         GeoArmorRenderer.registerArmorRenderer(PyromancerArmorItem.class, () -> new GenericCustomArmorRenderer(new PyromancerArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(ElectromancerArmorItem.class, () -> new GenericCustomArmorRenderer(new ElectromancerArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(ArchevokerArmorItem.class, () -> new GenericCustomArmorRenderer(new ArchevokerArmorModel()));
+        GeoArmorRenderer.registerArmorRenderer(CultistArmorItem.class, () -> new GenericCustomArmorRenderer(new CultistArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(TarnishedCrownArmorItem.class, () -> new GenericCustomArmorRenderer(new TarnishedCrownModel()));
 
         TestMod.LOGGER.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());

@@ -35,16 +35,22 @@ public abstract class ExtendedArmorItem extends GeoArmorItem implements IAnimata
             (new ImmutableMap.Builder<ArmorMaterial, MobEffectInstance>()).build();
     //.put(ModArmorMaterials., new MobEffectInstance(MobEffects.LUCK, 200, 1)).build();
 
-public ExtendedArmorItem(ExtendedArmorMaterials material, EquipmentSlot slot, Properties settings) {
+    public ExtendedArmorItem(ExtendedArmorMaterials material, EquipmentSlot slot, Properties settings) {
         super(material, slot, settings);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ARMOR, new AttributeModifier("Armor", getDefense(), AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier("Armor toughness", getToughness(), AttributeModifier.Operation.ADDITION));
-        if (this.knockbackResistance > 0) {
-            builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier("Armor knockback resistance", this.knockbackResistance, AttributeModifier.Operation.ADDITION));
+        float defense = material.getDefenseForSlot(slot);
+        float toughness = material.getToughness();
+        float knockbackResistance = material.getKnockbackResistance();
+        UUID uuid = ARMOR_MODIFIER_UUID_PER_SLOT[slot.getIndex()];
+        builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", defense, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", toughness, AttributeModifier.Operation.ADDITION));
+        if (knockbackResistance > 0) {
+            builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", knockbackResistance, AttributeModifier.Operation.ADDITION));
         }
-        for(Map.Entry<Attribute,AttributeModifier> modifierEntry : material.getAdditionalAttributes().entrySet()){
-            builder.put(modifierEntry.getKey(),modifierEntry.getValue());
+        for (Map.Entry<Attribute, AttributeModifier> modifierEntry : material.getAdditionalAttributes().entrySet()) {
+            AttributeModifier atr = modifierEntry.getValue();
+            atr = new AttributeModifier(uuid, atr.getName(), atr.getAmount(), atr.getOperation());
+            builder.put(modifierEntry.getKey(), atr);
         }
 
         ARMOR_ATTRIBUTES = builder.build();
