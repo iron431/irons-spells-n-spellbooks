@@ -1,11 +1,11 @@
 package com.example.testmod.capabilities.magic;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
-import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -79,6 +79,7 @@ public class PlayerMagicData extends AbstractMagicData {
 
 
     public void resetCastingState() {
+        TestMod.LOGGER.debug("resetCastingState: {}", serverPlayer);
         this.isCasting = false;
         this.castingSpellId = 0;
         this.castingSpellLevel = 0;
@@ -130,6 +131,10 @@ public class PlayerMagicData extends AbstractMagicData {
         return castingSpellId;
     }
 
+    public AbstractSpell getCastingSpell() {
+        return AbstractSpell.getSpell(castingSpellId, castingSpellLevel);
+    }
+
     public int getCastingSpellLevel() {
         return castingSpellLevel;
     }
@@ -143,6 +148,10 @@ public class PlayerMagicData extends AbstractMagicData {
     }
 
     public float getCastCompletionPercent() {
+        if (castDuration == 0) {
+            return 1;
+        }
+
         return 1 - (castDurationRemaining / (float) castDuration);
     }
 
@@ -156,23 +165,9 @@ public class PlayerMagicData extends AbstractMagicData {
 
     public void handleCastDuration() {
         castDurationRemaining--;
-        //TestMod.LOGGER.debug("PlayerMagicData: isUsingItem: {} ", serverPlayer.isUsingItem());
 
         if (castDurationRemaining <= 0) {
-//            TestMod.LOGGER.debug("PlayerMagicData: ready to cast");
-//            TestMod.LOGGER.debug("PlayerMagicData: cast type: {} ", SpellType.getTypeFromValue(castingSpellId).getCastType());
-//            TestMod.LOGGER.debug("PlayerMagicData: isUsingItem: {} ", serverPlayer.isUsingItem());
-
-            //Wait for charge cast to release
-            if (SpellType.getTypeFromValue(castingSpellId).getCastType() == CastType.CHARGE) {
-                if (serverPlayer != null && serverPlayer.isUsingItem())
-                    return;
-            }
-
-            //TODO: should this reset casting state instead of this?
-            isCasting = false;
             castDurationRemaining = 0;
-
         }
     }
 
@@ -215,6 +210,7 @@ public class PlayerMagicData extends AbstractMagicData {
         return new PlayerMagicData(serverPlayer);
     }
 
+    //TODO: clean this up based on new clientmagicdata
     public static SyncedSpellData clientGetSyncedSpellData(LivingEntity livingEntity) {
         if (livingEntity instanceof Player) {
             return ClientMagicData.getPlayerSyncedData(livingEntity.getId());
@@ -249,5 +245,17 @@ public class PlayerMagicData extends AbstractMagicData {
         }
 
         getSyncedData().loadNBTData(compound);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("isCasting:%s, spellID:%d, spellLevel:%s, duration:%s, durationRemaining:%s, source:%s, type:%s",
+                isCasting,
+                castingSpellId,
+                castingSpellLevel,
+                castDuration,
+                castDurationRemaining,
+                castSource,
+                castType);
     }
 }

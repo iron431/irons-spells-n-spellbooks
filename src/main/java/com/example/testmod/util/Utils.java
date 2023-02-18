@@ -71,10 +71,6 @@ public class Utils {
         return stringTruncation(time, decimalPlaces) + affix;
     }
 
-    public static String decimalToPercent(double decimal) {
-        return stringTruncation(decimal, 2) + "%";
-    }
-
     public static boolean isPlayerHoldingSpellBook(Player player) {
         return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
     }
@@ -110,13 +106,7 @@ public class Utils {
     }
 
     public static String stringTruncation(double f, int places) {
-        int whole = (int) f;
-        if (f % 1 == 0) {
-            return ("" + whole);
-        }
-        String s = "" + f;
-        int decimalIndex = s.indexOf(".");
-        return whole + s.substring(decimalIndex, Math.min(decimalIndex + places + 1, s.length()));
+        return String.format("%." + places + "f", f);
     }
 
     public static float getAngle(Vec2 a, Vec2 b) {
@@ -184,6 +174,16 @@ public class Utils {
     public static HitResult raycastForEntityOfClass(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Class<? extends Entity> c) {
 
         return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, c);
+    }
+
+    public static void releaseUsingHelper(LivingEntity entity) {
+        if (entity instanceof ServerPlayer serverPlayer) {
+            var pmd = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            if (pmd.isCasting() && (pmd.getCastType() != CastType.CHARGE ||
+                    (pmd.getCastType() == CastType.CHARGE && pmd.getCastDurationRemaining() > 0))) {
+                Utils.serverSideCancelCast(serverPlayer);
+            }
+        }
     }
 
     private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, @Nullable Class<? extends Entity> c) {

@@ -101,10 +101,9 @@ public class Scroll extends Item {
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         entity.stopUsingItem();
-        if (getUseDuration(itemStack) - ticksUsed >= 10)
-            if(entity instanceof ServerPlayer serverPlayer){
-                Utils.serverSideCancelCast(serverPlayer);
-            }
+        if (getUseDuration(itemStack) - ticksUsed >= 10) {
+            Utils.releaseUsingHelper(entity);
+        }
         super.releaseUsing(itemStack, level, entity, ticksUsed);
     }
 

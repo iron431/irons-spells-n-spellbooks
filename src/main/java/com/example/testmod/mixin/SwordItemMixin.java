@@ -12,7 +12,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -82,7 +81,7 @@ public abstract class SwordItemMixin extends Item {
     public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
         var spell = Utils.getScrollData(itemStack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL)
-            return  spell.getSpellType().getUseAnim();
+            return spell.getSpellType().getUseAnim();
         else
             return getUseAnimation(itemStack);
     }
@@ -90,11 +89,10 @@ public abstract class SwordItemMixin extends Item {
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         var spell = Utils.getScrollData(itemStack).getSpell();
+
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             entity.stopUsingItem();
-            if(entity instanceof ServerPlayer serverPlayer){
-                Utils.serverSideCancelCast(serverPlayer);
-            }
+            Utils.releaseUsingHelper(entity);
         }
 
         super.releaseUsing(itemStack, level, entity, ticksUsed);

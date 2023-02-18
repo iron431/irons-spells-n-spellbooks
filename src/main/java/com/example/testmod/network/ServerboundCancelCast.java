@@ -5,7 +5,6 @@ import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.setup.Messages;
-import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -46,15 +45,12 @@ public class ServerboundCancelCast {
             if (playerMagicData.isCasting()) {
                 TestMod.LOGGER.debug("PacketCancelCast.cancelCast currently casting");
                 int spellId = playerMagicData.getCastingSpellId();
-                //TODO: find a better place for this?
-                if (SpellType.getTypeFromValue(spellId).getCastType() == CastType.CHARGE && playerMagicData.getCastDurationRemaining() < 0)
-                    return;
 
                 if (triggerCooldown) {
                     MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
                 }
 
-                AbstractSpell.getSpell(spellId, 0).onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
+                playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                 playerMagicData.resetCastingState();
 
                 Messages.sendToPlayer(new ClientboundUpdateCastingState(spellId, 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
