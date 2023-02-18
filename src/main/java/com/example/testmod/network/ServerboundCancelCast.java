@@ -57,7 +57,7 @@ public class ServerboundCancelCast {
                 AbstractSpell.getSpell(spellId, 0).onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                 playerMagicData.resetCastingState();
 
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(spellId, 0, CastType.NONE, true), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(spellId, 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                 if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
             }

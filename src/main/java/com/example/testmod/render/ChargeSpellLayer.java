@@ -27,20 +27,20 @@ public class ChargeSpellLayer<T extends LivingEntity, M extends HumanoidModel<T>
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight, T entity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         //TODO: remove this after clientmagicdata refactor
-        if(!(entity instanceof Player))
+        if (!(entity instanceof Player))
             return;
 
 
         var spellData = PlayerMagicData.clientGetSyncedSpellData(entity);
         boolean isCharging = false;
         if (entity instanceof Player) {
-            isCharging = ClientMagicData.isCasting && ClientMagicData.castType == CastType.CHARGE;
+            isCharging = ClientMagicData.isCasting() && ClientMagicData.getCastType() == CastType.CHARGE;
         } else if (entity instanceof AbstractSpellCastingMob mob) {
             isCharging = mob.getCastingSpell().getCastType() == CastType.CHARGE;
         }
         if (isCharging) {
             poseStack.pushPose();
-            var spell = SpellType.getTypeFromValue(ClientMagicData.spellId);
+            var spell = SpellType.getTypeFromValue(ClientMagicData.getCastingSpellId());
             if (spell == SpellType.LIGHTNING_LANCE_SPELL) {
                 //TODO: arm based on handedness
                 var arm = HumanoidArm.RIGHT;
@@ -56,6 +56,4 @@ public class ChargeSpellLayer<T extends LivingEntity, M extends HumanoidModel<T>
 
         }
     }
-
-
 }

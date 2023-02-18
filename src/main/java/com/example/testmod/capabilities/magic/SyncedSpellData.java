@@ -2,7 +2,7 @@ package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractSpellCastingMob;
-import com.example.testmod.network.ClientBoundSyncPlayerData;
+import com.example.testmod.network.ClientboundSyncPlayerData;
 import com.example.testmod.setup.Messages;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -82,18 +82,18 @@ public class SyncedSpellData {
         TestMod.LOGGER.debug("SyncedSpellData.doSync livingEntity:{}", livingEntity);
 
         if (livingEntity instanceof ServerPlayer serverPlayer) {
-            Messages.sendToPlayer(new ClientBoundSyncPlayerData(this), serverPlayer);
-            Messages.sendToPlayersTrackingEntity(new ClientBoundSyncPlayerData(this), serverPlayer);
+            Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);
+            Messages.sendToPlayersTrackingEntity(new ClientboundSyncPlayerData(this), serverPlayer);
         } else if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
             abstractSpellCastingMob.doSyncSpellData();
         }
     }
 
     public void syncToPlayer(ServerPlayer serverPlayer) {
-        Messages.sendToPlayer(new ClientBoundSyncPlayerData(this), serverPlayer);
+        Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);
     }
 
-    public boolean getHasAngelWings() {
+    public boolean hasAngelWings() {
         return hasAngelWings;
     }
 
@@ -102,7 +102,7 @@ public class SyncedSpellData {
         doSync();
     }
 
-    public boolean getHasEvasion() {
+    public boolean hasEvasion() {
         return hasEvasion;
     }
 
@@ -111,7 +111,7 @@ public class SyncedSpellData {
         doSync();
     }
 
-    public boolean getHasHeartstop() {
+    public boolean hasHeartstop() {
         return hasHeartstop;
     }
 

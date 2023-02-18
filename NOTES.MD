@@ -42,6 +42,8 @@
 - https://www.youtube.com/watch?v=DM69u76tXMI
 
 ### Structures
+- Great jigsaw information: https://www.youtube.com/watch?v=BIa_gqc93ok
+- Build school: https://www.youtube.com/watch?v=u9mJcQ79AQ8&list=PLU2851hDb3SHAwj82FZCIkjuQ4d3FwZFB
 - https://github.com/TelepathicGrunt/StructureTutorialMod/tree/1.18.2-Forge-Jigsaw
 - https://www.mcjty.eu/docs/1.18/ep5
 - Getting resource registry issue

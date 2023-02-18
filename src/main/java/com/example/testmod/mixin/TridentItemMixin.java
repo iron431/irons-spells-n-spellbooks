@@ -1,6 +1,6 @@
 package com.example.testmod.mixin;
 
-import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.player.ClientRenderCache;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TridentItem;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class TridentItemMixin {
     @Inject(method = "releaseUsing", at = @At(value = "TAIL"))
     public void releaseUsing(ItemStack p_43394_, Level p_43395_, LivingEntity p_43396_, int p_43397_, CallbackInfo ci) {
-        ClientMagicData.lastSpinAttack = ClientMagicData.SpinAttackType.RIPTIDE;
+        ClientRenderCache.lastSpinAttack = ClientRenderCache.SpinAttackType.RIPTIDE;
     }
 
 }

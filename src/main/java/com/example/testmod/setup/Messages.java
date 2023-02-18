@@ -59,10 +59,10 @@ public class Messages {
                 .consumer(ClientboundOnClientCast::handle)
                 .add();
 
-        net.messageBuilder(ClientBoundSyncPlayerData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientBoundSyncPlayerData::new)
-                .encoder(ClientBoundSyncPlayerData::toBytes)
-                .consumer(ClientBoundSyncPlayerData::handle)
+        net.messageBuilder(ClientboundSyncPlayerData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncPlayerData::new)
+                .encoder(ClientboundSyncPlayerData::toBytes)
+                .consumer(ClientboundSyncPlayerData::handle)
                 .add();
 
         net.messageBuilder(ServerboundInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)

@@ -8,7 +8,7 @@ import com.example.testmod.network.ClientboundOnClientCast;
 import com.example.testmod.network.ClientboundSyncMana;
 import com.example.testmod.network.ClientboundUpdateCastingState;
 import com.example.testmod.player.ClientInputEvents;
-import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.player.ClientRenderCache;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.util.Utils;
@@ -152,7 +152,7 @@ public abstract class AbstractSpell {
                 return false;
             }
 
-            if ((castSource == CastSource.SpellBook || castSource == CastSource.Sword) && isSpellOnCooldown) {
+            if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
                 player.sendSystemMessage(spellType.getDisplayName().append(" is on cooldown").withStyle(ChatFormatting.RED));
                 return false;
             }
@@ -170,7 +170,7 @@ public abstract class AbstractSpell {
                 int effectiveCastTime = getEffectiveCastTime(player);
                 playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, castSource);
                 onServerPreCast(player.level, player, playerMagicData);
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), effectiveCastTime, castType, false), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(), effectiveCastTime, castSource, false), serverPlayer);
             }
             return true;
         } else {
@@ -220,8 +220,9 @@ public abstract class AbstractSpell {
     public void onClientCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         //TestMod.LOGGER.debug("AbstractSpell.: onClientCast:{}", level.isClientSide);
         playSound(getCastFinishSound(), entity);
-        if(ClientInputEvents.isUseKeyDown)
-            ClientMagicData.supressRightClicks = true;
+        if (ClientInputEvents.isUseKeyDown) {
+            ClientRenderCache.setSuppressRightClicks(true);
+        }
     }
 
     /**

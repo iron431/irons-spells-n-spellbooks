@@ -67,7 +67,7 @@ public class Scroll extends Item {
         var spell = getScrollData(stack).getSpell();
 
         if (level.isClientSide) {
-            if (ClientMagicData.isCasting) {
+            if (ClientMagicData.isCasting()) {
                 return InteractionResultHolder.fail(stack);
             } else {
                 spell.onClientPreCast(level, player, hand, null);
@@ -75,7 +75,7 @@ public class Scroll extends Item {
             }
         }
 
-        if (spell.attemptInitiateCast(stack, level, player, CastSource.Scroll, false)) {
+        if (spell.attemptInitiateCast(stack, level, player, CastSource.SCROLL, false)) {
             if (spell.getCastType() == CastType.INSTANT) {
                 removeScrollAfterCast((ServerPlayer) player, stack);
             }

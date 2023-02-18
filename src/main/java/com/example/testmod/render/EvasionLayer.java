@@ -34,6 +34,6 @@ public class EvasionLayer<T extends LivingEntity> extends AbstractEnergySwirlLay
 
     @Override
     protected boolean shouldRender(T entity) {
-        return PlayerMagicData.clientGetSyncedSpellData(entity).getHasEvasion();
+        return PlayerMagicData.clientGetSyncedSpellData(entity).hasEvasion();
     }
 }

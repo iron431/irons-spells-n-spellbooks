@@ -1,6 +1,6 @@
 package com.example.testmod.network.spell;
 
-import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.player.ClientSpellCastHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
@@ -43,7 +43,7 @@ public class ClientboundTeleportParticles {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            ClientMagicData.handleClientboundTeleport(pos1, pos2);
+            ClientSpellCastHelper.handleClientboundTeleport(pos1, pos2);
         });
         return true;
     }

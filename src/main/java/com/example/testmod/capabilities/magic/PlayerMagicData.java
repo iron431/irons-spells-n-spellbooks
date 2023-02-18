@@ -2,6 +2,7 @@ package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
@@ -68,8 +69,10 @@ public class PlayerMagicData extends AbstractMagicData {
     private boolean isCasting = false;
     private int castingSpellId = 0;
     private int castingSpellLevel = 0;
+    private int castDuration = 0;
     private int castDurationRemaining = 0;
     private CastSource castSource;
+    private CastType castType;
     private CastData additionalCastData;
 
     private ItemStack castingItemStack = ItemStack.EMPTY;
@@ -79,16 +82,21 @@ public class PlayerMagicData extends AbstractMagicData {
         this.isCasting = false;
         this.castingSpellId = 0;
         this.castingSpellLevel = 0;
+        this.castDuration = 0;
         this.castDurationRemaining = 0;
-        resetAdditionlCastData();
+        this.castSource = CastSource.NONE;
+        this.castType = CastType.NONE;
+        resetAdditionalCastData();
         resetSyncedData();
     }
 
-    public void initiateCast(int castingSpellId, int castingSpellLevel, int castDuration, CastSource castSource) {
-        this.castSource = castSource;
-        this.castingSpellId = castingSpellId;
-        this.castingSpellLevel = castingSpellLevel;
+    public void initiateCast(int spellId, int spellLevel, int castDuration, CastSource castSource) {
+        this.castingSpellId = spellId;
+        this.castingSpellLevel = spellLevel;
+        this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
+        this.castSource = castSource;
+        this.castType = AbstractSpell.getSpell(spellId, spellLevel).getCastType();
         this.isCasting = true;
     }
 
@@ -100,7 +108,7 @@ public class PlayerMagicData extends AbstractMagicData {
         additionalCastData = newCastData;
     }
 
-    public void resetAdditionlCastData() {
+    public void resetAdditionalCastData() {
         if (additionalCastData != null) {
             additionalCastData.reset();
             additionalCastData = null;
@@ -130,8 +138,20 @@ public class PlayerMagicData extends AbstractMagicData {
         return castSource;
     }
 
+    public CastType getCastType() {
+        return castType;
+    }
+
+    public float getCastCompletionPercent() {
+        return 1 - (castDurationRemaining / (float) castDuration);
+    }
+
     public int getCastDurationRemaining() {
         return castDurationRemaining;
+    }
+
+    public int getCastDuration() {
+        return castDuration;
     }
 
     public void handleCastDuration() {
@@ -149,6 +169,7 @@ public class PlayerMagicData extends AbstractMagicData {
                     return;
             }
 
+            //TODO: should this reset casting state instead of this?
             isCasting = false;
             castDurationRemaining = 0;
 

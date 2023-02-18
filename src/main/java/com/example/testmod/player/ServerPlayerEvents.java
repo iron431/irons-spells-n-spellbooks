@@ -118,7 +118,7 @@ public class ServerPlayerEvents {
         //TestMod.LOGGER.debug("onLivingAttack.2: {}", livingEntity);
 
         var playerMagicData = PlayerMagicData.getPlayerMagicData(livingEntity);
-        if (playerMagicData.getSyncedData().getHasEvasion()) {
+        if (playerMagicData.getSyncedData().hasEvasion()) {
             if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
                 event.setCanceled(true);
             }
@@ -141,7 +141,7 @@ public class ServerPlayerEvents {
     public static void onLivingTakeDamage(LivingDamageEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.getSyncedData().getHasHeartstop()) {
+            if (playerMagicData.getSyncedData().hasHeartstop()) {
                 playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount());
                 TestMod.LOGGER.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
                 event.setCanceled(true);

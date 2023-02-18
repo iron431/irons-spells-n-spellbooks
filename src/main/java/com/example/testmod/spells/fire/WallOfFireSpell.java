@@ -138,7 +138,7 @@ public class WallOfFireSpell extends AbstractSpell {
                 anchorPoints.add(anchor);
                 if (entity instanceof ServerPlayer serverPlayer) {
                     var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-                    boolean triggerCooldown = playerMagicData.getCastSource() != CastSource.Scroll;
+                    boolean triggerCooldown = playerMagicData.getCastSource() != CastSource.SCROLL;
                     ServerboundCancelCast.cancelCast(serverPlayer, triggerCooldown);
                 }
             }

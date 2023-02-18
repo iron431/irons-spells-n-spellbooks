@@ -73,7 +73,7 @@ public class MagicManager {
                     if (spell.getCastType() == CastType.LONG || spell.getCastType() == CastType.CHARGE) {
                         if (!playerMagicData.isCasting()) {
                             //TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
-                            Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
+                            Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                             spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                             playerMagicData.resetCastingState();
                             Scroll.attemptRemoveScrollAfterCast(serverPlayer);
@@ -82,10 +82,10 @@ public class MagicManager {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
                             if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost() * 2 < 0)) {
                                 //TestMod.LOGGER.debug("MagicManager.tick: handle spell casting complete");
-                                Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, spell.getCastType(), true), serverPlayer);
+                                Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
                                 spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
-                                if (playerMagicData.getCastSource() == CastSource.Scroll) {
+                                if (playerMagicData.getCastSource() == CastSource.SCROLL) {
                                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                                 }
                                 playerMagicData.resetCastingState();
@@ -94,7 +94,7 @@ public class MagicManager {
                             }
                         }
                     }
-                    if(playerMagicData.isCasting())
+                    if (playerMagicData.isCasting())
                         spell.onServerCastTick(serverPlayer.level, serverPlayer, playerMagicData);
                 }
 
@@ -114,12 +114,12 @@ public class MagicManager {
     }
 
     public void addCooldown(ServerPlayer serverPlayer, SpellType spellType, CastSource castSource) {
-        if (castSource == CastSource.Scroll)
+        if (castSource == CastSource.SCROLL)
             return;
         double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
 
         int itemCoolDownModifer = 1;
-        if (castSource == CastSource.Sword) {
+        if (castSource == CastSource.SWORD) {
             itemCoolDownModifer = 2;
         }
 

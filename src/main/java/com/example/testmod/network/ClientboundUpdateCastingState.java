@@ -1,7 +1,7 @@
 package com.example.testmod.network;
 
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.CastSource;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -10,44 +10,42 @@ import java.util.function.Supplier;
 public class ClientboundUpdateCastingState {
 
     private final int spellId;
+    private final int spellLevel;
     private final int castTime;
-    private final CastType castType;
+    private final CastSource castSource;
     private final boolean castFinished;
 
-    public ClientboundUpdateCastingState(int spellId, int castTime, CastType castType, boolean castFinished) {
+    public ClientboundUpdateCastingState(int spellId, int spellLevel, int castTime, CastSource castSource, boolean castFinished) {
         this.spellId = spellId;
+        this.spellLevel = spellLevel;
         this.castTime = castTime;
-        this.castType = castType;
+        this.castSource = castSource;
         this.castFinished = castFinished;
     }
 
     public ClientboundUpdateCastingState(FriendlyByteBuf buf) {
         this.spellId = buf.readInt();
+        this.spellLevel = buf.readInt();
         this.castTime = buf.readInt();
-        this.castType = CastType.values()[buf.readInt()];
+        this.castSource = buf.readEnum(CastSource.class);
         this.castFinished = buf.readBoolean();
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(this.spellId);
+        buf.writeInt(this.spellLevel);
         buf.writeInt(this.castTime);
-        buf.writeInt(this.castType.getValue());
+        buf.writeEnum(this.castSource);
         buf.writeBoolean(this.castFinished);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            //TestMod.LOGGER.debug("PacketCastingState: spellId: " + spellId + ", castTime: " + castTime + ", castFinished:" + castFinished);
-
             if (this.castFinished) {
                 ClientMagicData.resetClientCastState();
             } else {
-                ClientMagicData.spellId = spellId;
-                ClientMagicData.castDurationRemaining = castTime;
-                ClientMagicData.castDuration = castTime;
-                ClientMagicData.isCasting = true;
-                ClientMagicData.castType = castType;
+                ClientMagicData.setClientCastState(spellId, spellLevel, castTime, castSource);
             }
         });
         return true;

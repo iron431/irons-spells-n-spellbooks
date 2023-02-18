@@ -6,7 +6,7 @@ import com.example.testmod.gui.inscription_table.network.ServerboundInscriptionT
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.item.UniqueSpellBook;
-import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.player.ClientRenderCache;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastType;
@@ -427,7 +427,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         RenderSystem.setShaderTexture(0, texture);
     }
 
-    private final int[][] LAYOUT = ClientMagicData.SPELL_LAYOUT;
+    private final int[][] LAYOUT = ClientRenderCache.SPELL_LAYOUT;
 
     private class SpellSlotInfo {
         public AbstractSpell containedSpell;

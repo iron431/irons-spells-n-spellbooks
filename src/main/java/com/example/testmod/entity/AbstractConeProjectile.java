@@ -177,7 +177,7 @@ public abstract class AbstractConeProjectile extends Projectile implements Magic
 
     public void onAntiMagic(PlayerMagicData playerMagicData) {
         if (!level.isClientSide) {
-            playerMagicData.resetAdditionlCastData();
+            playerMagicData.resetAdditionalCastData();
         }
     }
 }

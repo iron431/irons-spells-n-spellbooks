@@ -3,30 +3,18 @@ package com.example.testmod.gui.overlays;
 import com.example.testmod.TestMod;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.player.ClientMagicData;
-import com.example.testmod.spells.CastType;
+import com.example.testmod.player.ClientRenderCache;
 import com.example.testmod.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import org.apache.commons.compress.utils.Lists;
-import org.checkerframework.checker.units.qual.C;
-
-import java.util.List;
-
-import static com.ibm.icu.text.PluralRules.Operand.i;
 
 public class SpellBarOverlay extends GuiComponent {
     public final static ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/gui/icons.png");
@@ -58,11 +46,11 @@ public class SpellBarOverlay extends GuiComponent {
         var spellBookData = ((SpellBook) spellbook.getItem()).getSpellBookData(spellbook);
         if (spellbook != lastSpellBook) {
             lastSpellBook = spellbook;
-            ClientMagicData.generateRelativeLocations(spellBookData, 20, 22);
+            ClientRenderCache.generateRelativeLocations(spellBookData, 20, 22);
         }
 
         var spells = spellBookData.getInscribedSpells();
-        var locations = ClientMagicData.relativeSpellBarSlotLocations;
+        var locations = ClientRenderCache.relativeSpellBarSlotLocations;
         int approximateWidth = locations.size()/3;
         //Move spellbar away from hotbar as it gets bigger
         centerX -= approximateWidth * 5;

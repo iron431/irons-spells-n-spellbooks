@@ -43,7 +43,9 @@ public abstract class AbstractSpellCastingMob extends Monster {
     private final PlayerMagicData playerMagicData = new PlayerMagicData();
 
     private AbstractSpell castingSpell;
-    private final MobSyncedCastingData emptyMobSyncedCastingData = new MobSyncedCastingData();
+
+    private MobSyncedCastingData emptyMobSyncedCastingData;
+    private SyncedSpellData emptySyncedSpellData;
 
     protected AbstractSpellCastingMob(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -62,8 +64,12 @@ public abstract class AbstractSpellCastingMob extends Monster {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
+
+        emptyMobSyncedCastingData = new MobSyncedCastingData();
+        emptySyncedSpellData = new SyncedSpellData(-1);
+
         this.entityData.define(DATA_CASTING, emptyMobSyncedCastingData);
-        this.entityData.define(DATA_SPELL, null);
+        this.entityData.define(DATA_SPELL, emptySyncedSpellData);
     }
 
     @Override
@@ -92,7 +98,8 @@ public abstract class AbstractSpellCastingMob extends Monster {
             castSpell(spellType, castingData.spellLevel);
         } else if (pKey == DATA_SPELL) {
             var syncedSpellData = entityData.get(DATA_SPELL);
-            playerMagicData.setSyncedData(syncedSpellData);
+            if (syncedSpellData != null)
+                playerMagicData.setSyncedData(syncedSpellData);
         }
     }
 
@@ -199,7 +206,7 @@ public abstract class AbstractSpellCastingMob extends Monster {
             entityData.set(DATA_CASTING, data);
         }
         this.startUsingItem(InteractionHand.MAIN_HAND);
-        playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.Mob);
+        playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.MOB);
 
         //TODO: this may be in the wrong spot.. i don't think this works for all cast types here
         if (!level.isClientSide) {
@@ -215,8 +222,8 @@ public abstract class AbstractSpellCastingMob extends Monster {
         }
     }
 
-    public SpellType getCastingSpell(){
-        return SpellType.getTypeFromValue(entityData.get(DATA_CASTING).spellId) ;
+    public SpellType getCastingSpell() {
+        return SpellType.getTypeFromValue(entityData.get(DATA_CASTING).spellId);
     }
 
     public void setTeleportLocationBehindTarget(int distance) {

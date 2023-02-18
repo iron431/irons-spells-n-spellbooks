@@ -1,7 +1,7 @@
 package com.example.testmod.network;
 
 import com.example.testmod.player.ClientInputEvents;
-import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.player.ClientRenderCache;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -21,8 +21,8 @@ public class ClientboundSuppressRightClicks {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            if(ClientInputEvents.isUseKeyDown)
-                ClientMagicData.supressRightClicks = true;
+            if (ClientInputEvents.isUseKeyDown)
+                ClientRenderCache.setSuppressRightClicks(true);
         });
 
         return true;

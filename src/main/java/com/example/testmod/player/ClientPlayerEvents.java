@@ -15,8 +15,8 @@ public class ClientPlayerEvents {
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.side.isClient() && event.phase == TickEvent.Phase.END && event.player == Minecraft.getInstance().player) {
             ClientMagicData.getCooldowns().tick(1);
-            if (ClientMagicData.castDurationRemaining > 0) {
-                ClientMagicData.castDurationRemaining--;
+            if (ClientMagicData.getCastDuration() > 0) {
+                ClientMagicData.handleCastDuration();
             }
         }
     }

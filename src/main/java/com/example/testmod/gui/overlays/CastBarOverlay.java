@@ -19,14 +19,14 @@ public class CastBarOverlay extends GuiComponent {
     static final int IMAGE_HEIGHT = 21;
 
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
-        if (!ClientMagicData.isCasting)
+        if (!ClientMagicData.isCasting())
             return;
 
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
-        String castTimeString = Utils.timeFromTicks((1 - castCompletionPercent) * ClientMagicData.castDuration, 1);
-        if (ClientMagicData.castType == CastType.CHARGE && ClientMagicData.castDurationRemaining < 0) {
+        String castTimeString = Utils.timeFromTicks((1 - castCompletionPercent) * ClientMagicData.getCastDuration(), 1);
+        if (ClientMagicData.getCastType() == CastType.CHARGE && ClientMagicData.getCastDurationRemaining() < 0) {
             castCompletionPercent = 1;
-        } else if (ClientMagicData.castType == CastType.CONTINUOUS) {
+        } else if (ClientMagicData.getCastType() == CastType.CONTINUOUS) {
             castCompletionPercent = 1 - castCompletionPercent;
         }
 

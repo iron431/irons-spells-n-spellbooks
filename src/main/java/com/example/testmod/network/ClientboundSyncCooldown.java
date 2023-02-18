@@ -14,8 +14,8 @@ public class ClientboundSyncCooldown {
 
     public ClientboundSyncCooldown(int spellId, int duration) {
 
-        this.spellId=spellId;
-        this.duration=duration;
+        this.spellId = spellId;
+        this.duration = duration;
     }
 
     public ClientboundSyncCooldown(FriendlyByteBuf buf) {
@@ -31,7 +31,7 @@ public class ClientboundSyncCooldown {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            TestMod.LOGGER.debug("ClientboundSyncCooldown");
+            TestMod.LOGGER.debug("ClientboundSyncCooldown: {}", duration);
             ClientMagicData.getCooldowns().addCooldown(SpellType.values()[spellId], duration);
         });
         return true;

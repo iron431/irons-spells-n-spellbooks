@@ -1,7 +1,7 @@
 package com.example.testmod.mixin;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.player.ClientRenderCache;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -24,7 +23,7 @@ public class SpinAttackEffectLayerMixin {
         //will need more refining if there become more ways to spin attack
         //Item usedItem = livingEntity.getItemInHand(livingEntity.getUsedItemHand()).getItem();
         TestMod.LOGGER.debug("Selecting Spin Attack Texture: {}", livingEntity.getName().getString());
-        switch(ClientMagicData.lastSpinAttack){
+        switch(ClientRenderCache.lastSpinAttack){
             case FIRE:
                 return  buffer.getBuffer(RenderType.entityCutoutNoCull(FIRE_TEXTURE));
             default: return original;

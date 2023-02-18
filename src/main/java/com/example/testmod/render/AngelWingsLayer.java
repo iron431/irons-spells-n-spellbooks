@@ -57,7 +57,7 @@ public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> e
 
     public boolean shouldRender(T entity) {
         //TestMod.LOGGER.debug("AngelWingsLayer.shouldRender {} {}", entity.getName().getString(), entity.getActiveEffects().stream().map(x -> x.getEffect().getDisplayName().getString()).collect(Collectors.toSet()));
-        return ClientMagicData.getPlayerSyncedData(entity.getId()).getHasAngelWings();
+        return ClientMagicData.getPlayerSyncedData(entity.getId()).hasAngelWings();
     }
 
     public ResourceLocation getAngelWingsTexture(T entity) {

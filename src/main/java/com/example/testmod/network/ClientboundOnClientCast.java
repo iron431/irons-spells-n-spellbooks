@@ -1,6 +1,6 @@
 package com.example.testmod.network;
 
-import com.example.testmod.player.ClientMagicData;
+import com.example.testmod.player.ClientSpellCastHelper;
 import com.example.testmod.spells.CastSource;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,7 +35,7 @@ public class ClientboundOnClientCast {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientMagicData.handleClientboundOnClientCast(spellId, level, castSource));
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientSpellCastHelper.handleClientboundOnClientCast(spellId, level, castSource));
         });
         return true;
     }

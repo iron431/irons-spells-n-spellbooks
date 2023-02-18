@@ -10,14 +10,14 @@ import java.util.function.Supplier;
 
 import static com.example.testmod.capabilities.magic.SyncedSpellData.SYNCED_SPELL_DATA;
 
-public class ClientBoundSyncPlayerData {
+public class ClientboundSyncPlayerData {
     SyncedSpellData syncedSpellData;
 
-    public ClientBoundSyncPlayerData(SyncedSpellData playerSyncedData) {
+    public ClientboundSyncPlayerData(SyncedSpellData playerSyncedData) {
         this.syncedSpellData = playerSyncedData;
     }
 
-    public ClientBoundSyncPlayerData(FriendlyByteBuf buf) {
+    public ClientboundSyncPlayerData(FriendlyByteBuf buf) {
         syncedSpellData = SYNCED_SPELL_DATA.read(buf);
     }
 

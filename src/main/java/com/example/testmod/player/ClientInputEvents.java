@@ -110,7 +110,7 @@ public final class ClientInputEvents {
         //TestMod.LOGGER.debug("onUseInput: keymapping: {} ({})", useKeyMapping.getKey(), useKeyMapping.getKey().getValue());
         if (event.isUseItem()) {
             useKeyMapping = event.getKeyMapping();
-            if (ClientMagicData.supressRightClicks) {
+            if (ClientRenderCache.suppressRightClicks()) {
                 event.setSwingHand(false);
                 event.setCanceled(true);
             }
@@ -130,7 +130,7 @@ public final class ClientInputEvents {
     private static void handleRightClickSuppression(int button, int action) {
         if (useKeyMapping != null && button == useKeyMapping.getKey().getValue())
             if (action == InputConstants.RELEASE) {
-                ClientMagicData.supressRightClicks = false;
+                ClientRenderCache.setSuppressRightClicks(false);
                 isUseKeyDown = false;
             } else if (action == InputConstants.PRESS) {
                 isUseKeyDown = true;

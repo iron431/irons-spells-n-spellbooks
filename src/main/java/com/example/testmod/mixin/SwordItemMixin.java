@@ -42,7 +42,7 @@ public abstract class SwordItemMixin extends Item {
             //TestMod.LOGGER.debug("SwordItemMixin.use.2");
             if (level.isClientSide) {
                 //TestMod.LOGGER.debug("SwordItemMixin.use.3");
-                if (ClientMagicData.isCasting) {
+                if (ClientMagicData.isCasting()) {
                     //TestMod.LOGGER.debug("SwordItemMixin.use.4");
                     return InteractionResultHolder.fail(stack);
                 } else if (ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType()) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost())) {
@@ -56,7 +56,7 @@ public abstract class SwordItemMixin extends Item {
                 }
             }
 
-            if (spell.attemptInitiateCast(stack, level, player, CastSource.Sword, true)) {
+            if (spell.attemptInitiateCast(stack, level, player, CastSource.SWORD, true)) {
                 if (spell.getCastType().holdToCast()) {
                     player.startUsingItem(hand);
                 }
