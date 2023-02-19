@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "addition": {
+    "item": "testmod:magic_dust"
+  },
+  "base": {
+    "item": "minecraft:leather_chestplate"
+  },
+  "result": {
+    "item": "testmod:wandering_magician_chestplate"
+  }
+}

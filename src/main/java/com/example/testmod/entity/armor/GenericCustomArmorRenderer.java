@@ -24,10 +24,8 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
         this.rightBootBone = "armorRightBoot";
         this.leftBootBone = "armorLeftBoot";
 
-        GeoBone leggingTorsoLayerBone = new GeoBone();
-        leggingTorsoLayerBone.name = this.leggingTorsoLayerBone;
         var m = getGeoModelProvider();
-        m.registerBone(leggingTorsoLayerBone);
+        m.registerBone(customBone(this.leggingTorsoLayerBone));
 
     }
 
@@ -42,6 +40,7 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
             torsoLayerBone.setPositionY(-this.body.y);
             torsoLayerBone.setPositionZ(this.body.z);
         }
+
     }
 
 
@@ -84,5 +83,11 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
         }
 
         return this;
+    }
+
+    protected GeoBone customBone(String name) {
+        GeoBone bone = new GeoBone();
+        bone.name = name;
+        return bone;
     }
 }

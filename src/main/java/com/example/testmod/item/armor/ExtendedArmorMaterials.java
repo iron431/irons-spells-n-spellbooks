@@ -23,12 +23,17 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
         return Ingredient.of(Items.DIAMOND);
     }, new HashMap<>()),
     /////////////////////////////////////////////////////////
+
+    //Name must match model/texture namespace
     TARNISHED("tarnished", 15, new int[]{0, 0, 0, 0}, 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.0F, 0.0F, () -> Ingredient.of(Items.IRON_INGOT), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             Attributes.ATTACK_DAMAGE, new AttributeModifier("minus damage", -.15, AttributeModifier.Operation.MULTIPLY_TOTAL)
     )),
-    WANDERING_MAGICIAN("wandering_magician", 5, new int[]{1, 2, 3, 1}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Items.LEATHER), Map.of(
+    WANDERING_MAGICIAN("wandering_magician", 10, new int[]{1, 2, 3, 1}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Items.LEATHER), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 15, AttributeModifier.Operation.ADDITION)
+    )),
+    PUMPKIN("pumpkin", 25, new int[]{2, 4, 6, 2}, 15, SoundEvents.ARMOR_EQUIP_TURTLE, 0.0F, 0.0F, () -> Ingredient.of(Items.HAY_BLOCK), Map.of(
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 25, AttributeModifier.Operation.ADDITION)
     )),
     PYROMANCER("pyromancer", 33, new int[]{2, 5, 7, 2}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 50, AttributeModifier.Operation.ADDITION),
