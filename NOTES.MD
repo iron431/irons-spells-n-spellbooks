@@ -49,6 +49,10 @@
 - Getting resource registry issue
   - Template Pool: https://www.youtube.com/watch?v=TD1lDaw4zfY
 - Great Structure Resouce: https://github.com/TelepathicGrunt/StructureTutorialMod
+- Structure 
+  - Structure Blocks go in the NW corner
+  - Air: Blue
+  - Void: Pink
 
 ### World Edit
 - Cylinders https://www.youtube.com/watch?v=FZj4-Y2qvm8
