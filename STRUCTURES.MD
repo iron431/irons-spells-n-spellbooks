@@ -13,13 +13,13 @@
 
 ##### Approach
 - dungeon_pool (only contains the origin structure)
-- hallway_pool
-- room_or_hallway_pool
-- room_pool
-- secret_room_pool
-- treasure_or_mob_pool
-- treasure_pool
-- mob_pool
+- hallway_pool (jigsaw target name: room_or_hallway)
+- room_or_hallway_pool (jigsaw target name: room_or_hallway)
+- room_pool (jigsaw target name: room_or_hallway)
+- secret_room_pool (jigsaw target name: secret_room)
+- treasure_or_mob_pool (jigsaw target name: treasure_or_mob)
+- treasure_pool (jigsaw target name: treasure_or_mob)
+- mob_pool (jigsaw target name: treasure_or_mob)
 
 ##### Structures
 - Core
