@@ -20,6 +20,7 @@ import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import com.example.testmod.entity.wisp.WispEntity;
+import com.example.testmod.entity.wither_skull.WitherSkullProjectile;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -148,4 +149,10 @@ public class EntityRegistry {
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "summoned_skeleton").toString()));
+
+    public static final RegistryObject<EntityType<WitherSkullProjectile>> WITHER_SKULL_PROJECTILE =
+            ENTITIES.register("wither_skull_projectile", () -> EntityType.Builder.<WitherSkullProjectile>of(WitherSkullProjectile::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "wither_skull_projectile").toString()));
 }

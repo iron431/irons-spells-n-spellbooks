@@ -90,6 +90,7 @@
   "ui.testmod.cast_type": "%s Cast",
   "ui.testmod.cooldown": "%s Cooldown",
   "ui.testmod.healing": "%d Healing",
+  "ui.testmod.greater_healing": "Max Healing",
   "ui.testmod.damage": "%d Damage",
   "ui.testmod.distance": "%d Block Range",
   "ui.testmod.summon_count": "%d Summons",
@@ -155,6 +156,9 @@
   "spell.testmod.lightning_lance": "Lightning Lance",
   "spell.testmod.lightning_bolt": "Lightning Bolt",
   "spell.testmod.raise_dead": "Raise Dead",
+  "spell.testmod.wither_skull": "Wither Skull",
+  "spell.testmod.greater_heal": "Greater Heal",
+  "spell.testmod.cloud_of_regeneration": "Cloud of Regeneration",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

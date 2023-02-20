@@ -6,6 +6,7 @@ import com.example.testmod.gui.inscription_table.network.ServerboundInscriptionT
 import com.example.testmod.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import com.example.testmod.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import com.example.testmod.network.*;
+import com.example.testmod.network.spell.ClientboundHealParticles;
 import com.example.testmod.network.spell.ClientboundTeleportParticles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -117,6 +118,12 @@ public class Messages {
                 .decoder(ClientboundSuppressRightClicks::new)
                 .encoder(ClientboundSuppressRightClicks::toBytes)
                 .consumer(ClientboundSuppressRightClicks::handle)
+                .add();
+
+        net.messageBuilder(ClientboundHealParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundHealParticles::new)
+                .encoder(ClientboundHealParticles::toBytes)
+                .consumer(ClientboundHealParticles::handle)
                 .add();
 
     }

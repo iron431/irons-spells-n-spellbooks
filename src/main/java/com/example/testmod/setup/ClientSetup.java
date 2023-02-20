@@ -125,6 +125,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_ZOMBIE.get(), ZombieRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_SKELETON.get(), SkeletonRenderer::new);
         event.registerEntityRenderer(EntityRegistry.LIGHTNING_LANCE_PROJECTILE.get(), LightningLanceRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.WITHER_SKULL_PROJECTILE.get(), WitherSkullRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

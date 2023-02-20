@@ -28,9 +28,10 @@ public class ServerConfigs {
         //TODO: Fill out all spells with real values
         createSpellConfig(SpellType.FIREBALL_SPELL, 5, SpellRarity.LEGENDARY);
         createSpellConfig(SpellType.FIREBOLT_SPELL, 15, SpellRarity.UNCOMMON);
-        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, 1, SpellRarity.UNCOMMON);
+        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, 10, SpellRarity.UNCOMMON);
         createSpellConfig(SpellType.ELECTROCUTE_SPELL, 12, SpellRarity.LEGENDARY);
         createSpellConfig(SpellType.ICICLE_SPELL, 10, SpellRarity.LEGENDARY);
+        createSpellConfig(SpellType.GREATER_HEAL, 1, SpellRarity.LEGENDARY);
 
         BUILDER.comment("Other Configuration");
         BUILDER.push("MISC");

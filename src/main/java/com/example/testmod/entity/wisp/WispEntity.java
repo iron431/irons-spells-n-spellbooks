@@ -83,7 +83,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     @Override
     protected void registerGoals() {
         TestMod.LOGGER.debug("WispEntity.registerGoals");
-        this.goalSelector.addGoal(2, new WispAttackGoal(this, .5));
+        this.goalSelector.addGoal(2, new WispAttackGoal(this, 1));
         this.targetSelector.addGoal(1, new AcquireTargetNearLocationGoal<>(
                 this,
                 LivingEntity.class,

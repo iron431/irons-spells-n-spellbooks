@@ -5,14 +5,13 @@ import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.spells.blood.BloodSlashSpell;
 import com.example.testmod.spells.blood.HeartstopSpell;
 import com.example.testmod.spells.blood.RaiseDeadSpell;
+import com.example.testmod.spells.blood.WitherSkullSpell;
 import com.example.testmod.spells.ender.EvasionSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.evocation.*;
 import com.example.testmod.spells.fire.*;
-import com.example.testmod.spells.holy.AngelWingsSpell;
-import com.example.testmod.spells.holy.HealSpell;
-import com.example.testmod.spells.holy.WispSpell;
+import com.example.testmod.spells.holy.*;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ice.IcicleSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
@@ -63,7 +62,10 @@ public enum SpellType {
     HEARTSTOP_SPELL(22),
     LIGHTNING_LANCE_SPELL(23),
     LIGHTNING_BOLT_SPELL(24),
-    RAISE_DEAD_SPELL(25);
+    RAISE_DEAD_SPELL(25),
+    WITHER_SKULL_SPELL(26),
+    GREATER_HEAL(27),
+    CLOUD_OF_REGENERATION(28);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -105,8 +107,8 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL -> CastType.LONG;
-            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL -> CastType.CONTINUOUS;
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL -> CastType.LONG;
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION -> CastType.CONTINUOUS;
             case LIGHTNING_LANCE_SPELL -> CastType.CHARGE;
             default -> CastType.INSTANT;
         };
@@ -122,9 +124,9 @@ public enum SpellType {
     private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL};
     private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL};
     private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL};
-    private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL};
+    private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL};
-    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL};
+    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL};
     private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL};
 
     public AbstractSpell getSpellForType(int level) {
@@ -203,6 +205,15 @@ public enum SpellType {
             }
             case RAISE_DEAD_SPELL -> {
                 return new RaiseDeadSpell(level);
+            }
+            case WITHER_SKULL_SPELL -> {
+                return new WitherSkullSpell(level);
+            }
+            case GREATER_HEAL -> {
+                return new GreaterHealSpell(level);
+            }
+            case CLOUD_OF_REGENERATION -> {
+                return new CloudOfRegenerationSpell(level);
             }
             default -> {
                 return new NoneSpell(0);

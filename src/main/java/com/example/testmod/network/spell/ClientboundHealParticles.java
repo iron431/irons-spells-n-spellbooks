@@ -7,24 +7,20 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ClientboundTeleportParticles implements ParticlePacket {
+public class ClientboundHealParticles implements ParticlePacket {
 
-    private Vec3 pos1;
-    private Vec3 pos2;
+    private Vec3 pos;
 
-    public ClientboundTeleportParticles(Vec3 pos1, Vec3 pos2) {
-        this.pos1 = pos1;
-        this.pos2 = pos2;
+    public ClientboundHealParticles(Vec3 pos) {
+        this.pos = pos;
     }
 
-    public ClientboundTeleportParticles(FriendlyByteBuf buf) {
-        pos1 = readVec3(buf);
-        pos2 = readVec3(buf);
+    public ClientboundHealParticles(FriendlyByteBuf buf) {
+        pos = readVec3(buf);
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        writeVec3(pos1, buf);
-        writeVec3(pos2, buf);
+        writeVec3(pos, buf);
     }
 
     public Vec3 readVec3(FriendlyByteBuf buf) {
@@ -43,7 +39,7 @@ public class ClientboundTeleportParticles implements ParticlePacket {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientboundTeleport(pos1, pos2);
+            ClientSpellCastHelper.doTargetHealParticles(pos);
         });
         return true;
     }
