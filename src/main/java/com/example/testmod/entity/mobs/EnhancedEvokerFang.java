@@ -45,7 +45,7 @@ public class EnhancedEvokerFang extends EvokerFangs {
                         this.level.addParticle(ParticleTypes.CRIT, d0, d1 + 1.0D, d2, d3, d4, d5);
                     }
                 } else {
-                    for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
+                    for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.4D, 0.0D, 0.4D))) {
                         this.dealDamageTo(livingentity);
                     }
                 }

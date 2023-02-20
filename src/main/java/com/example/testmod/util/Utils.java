@@ -1,8 +1,10 @@
 package com.example.testmod.util;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.scroll.ScrollData;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
+import com.example.testmod.entity.ConePart;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.network.ServerboundCancelCast;
@@ -13,10 +15,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.ClipContext;
@@ -25,11 +29,11 @@ import net.minecraft.world.phys.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.entity.PartEntity;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class Utils {
     public static String getStackTraceAsString() {
@@ -167,13 +171,12 @@ public class Utils {
     }
 
     public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks) {
-
-        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, null);
+        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, Utils::canHitWithRaycast);
     }
 
     public static HitResult raycastForEntityOfClass(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Class<? extends Entity> c) {
 
-        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, c);
+        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, (entity) -> entity.getClass() == c);
     }
 
     public static void releaseUsingHelper(LivingEntity entity) {
@@ -186,7 +189,7 @@ public class Utils {
         }
     }
 
-    private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, @Nullable Class<? extends Entity> c) {
+    private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Predicate<? super Entity> filter) {
         AABB range = originEntity.getBoundingBox().expandTowards(end.subtract(start));
 
         if (checkForBlocks) {
@@ -195,7 +198,7 @@ public class Utils {
         }
 
         List<HitResult> hits = new ArrayList<>();
-        List<? extends Entity> entities = c == null ? level.getEntities(originEntity, range) : level.getEntitiesOfClass(c, range);
+        List<? extends Entity> entities = level.getEntities(originEntity, range, filter);
         for (Entity target : entities) {
             HitResult hit = checkEntityIntersecting(target, start, end);
             if (hit.getType() != HitResult.Type.MISS)
@@ -219,5 +222,10 @@ public class Utils {
         //6x^5 - 15x^4 + 10x^3
         x = 6 * (x * x * x * x * x) - 15 * (x * x * x * x) + 10 * (x * x * x);
         return a + (b - a) * x;
+    }
+
+    private static boolean canHitWithRaycast(Entity entity) {
+        TestMod.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
+        return !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart);
     }
 }

@@ -110,18 +110,22 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     private Vec3 findTeleportLocation(Level level, LivingEntity entity) {
-        //TODO: potentially cache this result
         var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, getDistance(entity));
         var pos = blockHitResult.getBlockPos();
 
-        //TODO: if this is a performance hit can just manually check the few blocks over this position
-        int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
+        Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() / 3, 0, entity.getBbHeight() / 3);
+        Vec3 rawImpact = blockHitResult.getLocation().subtract(bbOffset);
+        int ledgeY = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
+        Vec3 correctedPos = new Vec3(pos.getX(), ledgeY, pos.getZ());
+        boolean los = level.clip(new ClipContext(rawImpact, rawImpact.add(0, ledgeY - pos.getY(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getType() == HitResult.Type.MISS;
 
-        if (y - pos.getY() > 3 || blockHitResult.getType() == HitResult.Type.MISS) {
-            return blockHitResult.getLocation();
+        if (los && Math.abs(ledgeY - pos.getY()) <= 3) {
+            return correctedPos.add(0.5, 0, 0.5);
         } else {
-            return new Vec3(pos.getX(), y, pos.getZ());
+            Vec3 anchoredImpact = level.clip(new ClipContext(rawImpact, rawImpact.add(0, -entity.getEyeHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getLocation();
+            return anchoredImpact;
         }
+
     }
 
     public static void particleCloud(Level level, LivingEntity entity, Vec3 pos) {

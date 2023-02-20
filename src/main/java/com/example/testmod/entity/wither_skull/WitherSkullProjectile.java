@@ -45,7 +45,7 @@ public class WitherSkullProjectile extends WitherSkull {
     protected void onHit(HitResult hitResult) {
 
         if (!this.level.isClientSide) {
-            float explosionRadius = 1;
+            float explosionRadius = 2;
             var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
