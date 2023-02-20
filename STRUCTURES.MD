@@ -16,6 +16,10 @@
     - Set: Show Invisible Blocks to ON
         - Air: Blue, Void: Pink
 
+##### Approach
+- Target pools
+- Name and Target Name on a Jigsaw block can be blank to prevent doing a lookup or being looked up 
+
 ##### Pools
 - dungeon1_start_pool (only contains the origin structure)
 - dungeon1_hallway_pool (jigsaw target name: room_or_hallway)
