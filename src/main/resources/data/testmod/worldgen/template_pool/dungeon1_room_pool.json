@@ -1,6 +1,6 @@
 {
   "name": "testmod:dungeon1_room_pool",
-  "fallback": "minecraft:empty",
+  "fallback": "testmod:dungeon1_fallback_pool",
   "elements": [
     {
       "weight": 1,
@@ -33,6 +33,15 @@
       "weight": 1,
       "element": {
         "location": "testmod:dungeon1/room_4",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "testmod:dungeon1/room_5",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

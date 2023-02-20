@@ -1,6 +1,6 @@
 {
   "name": "testmod:dungeon1_hallway_pool",
-  "fallback": "minecraft:empty",
+  "fallback": "testmod:dungeon1_fallback_pool",
   "elements": [
     {
       "weight": 6,

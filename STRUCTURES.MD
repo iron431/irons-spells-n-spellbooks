@@ -16,7 +16,7 @@
     - Set: Show Invisible Blocks to ON
         - Air: Blue, Void: Pink
 
-##### Approach
+##### Pools
 - dungeon1_start_pool (only contains the origin structure)
 - dungeon1_hallway_pool (jigsaw target name: room_or_hallway)
 - room_or_hallway_pool (jigsaw target name: room_or_hallway)
@@ -45,7 +45,8 @@
     - testmod:hallway_turn_1
     - testmod:hallway_turn_2
 - Utility (Treasure/Mobs)
-    - testmod:chest_1 (single chest)
+  - testmod:chest_1 (single chest)
+    - testmod:chest_horiz (single chest)
 - Other
     - testmod:end_room_wall (can be used to end a chain where nothing else will fit)
     - testmod:end_hall_wall (can be used to end a chain where nothing else will fit)
