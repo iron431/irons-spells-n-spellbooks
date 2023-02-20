@@ -1,8 +1,13 @@
+##### Links
+- https://www.youtube.com/watch?v=BIa_gqc93ok
+- https://minecraft.fandom.com/wiki/Custom_structure
+- 
+
 ##### Jigsaw Blocks
 - target pool: testmod:basic_dungeon
     - basically the name of the data pack?
-- name: name of this connector jigsaw
-- target name: names of eligible connector jigsaws that it can be connected to
+- name: name of this connector jigsaw. this is used by other jigsaw pieces looking for a match
+- target name: this block will look for other blocks that match this in the target pool
 
 ##### Structure Blocks
 - General
@@ -12,9 +17,10 @@
         - Air: Blue, Void: Pink
 
 ##### Approach
-- dungeon_pool (only contains the origin structure)
-- hallway_pool (jigsaw target name: room_or_hallway)
+- dungeon1_start_pool (only contains the origin structure)
+- dungeon1_hallway_pool (jigsaw target name: room_or_hallway)
 - room_or_hallway_pool (jigsaw target name: room_or_hallway)
+- room_origin_pool (jigsaw target name: room_origin)
 - room_pool (jigsaw target name: room_or_hallway)
 - secret_room_pool (jigsaw target name: secret_room)
 - treasure_or_mob_pool (jigsaw target name: treasure_or_mob)
@@ -30,6 +36,7 @@
     - testmod:room_1 (necromancer with wooden platform, 0 connection points)
     - testmod:room_2 (zig zag with dead end, 0 connection points)
     - testmod:room_3 (zig zag, 1 hallway connection point)
+    - testmod:room_4 (giant jail, 0 hallway connection points)
 - Secret Rooms
     - testmod:secret_room_1 (dead end, two utility spawnpoints)
 - Halls
@@ -42,3 +49,17 @@
 - Other
     - testmod:end_room_wall (can be used to end a chain where nothing else will fit)
     - testmod:end_hall_wall (can be used to end a chain where nothing else will fit)
+
+#####
+testmod:dungeon1_start_pool
+testmod:dungeon1_room_or_hallway_pool
+testmod:dungeon1_hallway_pool
+testmod:dungeon1_room_pool
+testmod:dungeon1_treasure_pool
+testmod:dungeon1_secret_room_pool
+
+testmod:room_or_hallway
+testmod:treasure_or_mob
+testmod:secret_room
+
+minecraft:stone_bricks

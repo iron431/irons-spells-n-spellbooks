@@ -1,0 +1,15 @@
+{
+  "name": "testmod:dungeon1_start_pool",
+  "fallback": "testmod:dungeon1_fallback_pool",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "testmod:dungeon1/dungeon_origin",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}
