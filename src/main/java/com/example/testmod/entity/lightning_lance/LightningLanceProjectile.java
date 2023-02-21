@@ -4,6 +4,7 @@ import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
@@ -15,8 +16,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-
-import static com.example.testmod.damage.DamageSources.LIGHTNING_LANCE_DAMAGE;
 
 public class LightningLanceProjectile extends Projectile {
     private static final int EXPIRE_TIME = 20 * 20;
@@ -78,7 +77,7 @@ public class LightningLanceProjectile extends Projectile {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, LIGHTNING_LANCE_DAMAGE, SchoolType.LIGHTNING, getOwner());
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.LIGHTNING_LANCE_SPELL.getDamageSource(), SchoolType.LIGHTNING, getOwner());
     }
 
     @Override

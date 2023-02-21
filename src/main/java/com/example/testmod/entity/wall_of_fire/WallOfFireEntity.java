@@ -6,6 +6,7 @@ import com.example.testmod.entity.AbstractShieldEntity;
 import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -91,7 +92,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             } else {
                 for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
                     if (livingentity != getOwner()) {
-                        DamageSources.applyDamage(livingentity, damage, DamageSources.WALL_OF_FIRE_DAMAGE, SchoolType.FIRE, getOwner());
+                        DamageSources.applyDamage(livingentity, damage, SpellType.WALL_OF_FIRE_SPELL.getDamageSource(), SchoolType.FIRE, getOwner());
                         livingentity.setSecondsOnFire(3);
                     }
                 }

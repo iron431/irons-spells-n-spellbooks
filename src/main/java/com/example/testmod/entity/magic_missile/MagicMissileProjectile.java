@@ -1,9 +1,11 @@
 package com.example.testmod.entity.magic_missile;
 
 import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.ParticleHelper;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -100,11 +102,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         //TestMod.LOGGER.debug("MagicMissileProjectile.onHitEntity");
-        if (entityHitResult.getEntity() instanceof LivingEntity target) {
-            //TODO: deal with the damage
-            target.hurt(DamageSource.MAGIC, damage);
-
-        }
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.MAGIC_MISSILE_SPELL.getDamageSource(), SchoolType.ENDER, getOwner());
         kill();
 
     }

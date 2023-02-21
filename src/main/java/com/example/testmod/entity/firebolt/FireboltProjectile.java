@@ -1,10 +1,12 @@
 package com.example.testmod.entity.firebolt;
 
 import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -99,8 +101,7 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         var target = entityHitResult.getEntity();
-        //TODO: deal with the damage
-        target.hurt(DamageSource.MAGIC, damage);
+        DamageSources.applyDamage(target, damage, SpellType.FIREBOLT_SPELL.getDamageSource(), SchoolType.FIRE, getOwner());
         target.setSecondsOnFire(3);
         if (!(target instanceof LivingEntity)) {
             serverSideImpactParticles();
@@ -110,7 +111,7 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
     }
 
     private void serverSideImpactParticles(){
-        MagicManager.spawnParticles(level, ParticleTypes.LAVA, getX(), getY(), getZ(), 10, .1, .1, .1, .25, true);
+        MagicManager.spawnParticles(level, ParticleTypes.LAVA, getX(), getY(), getZ(), 5, .1, .1, .1, .25, true);
 
     }
 

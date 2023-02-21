@@ -18,6 +18,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -68,6 +69,10 @@ public abstract class AbstractSpell {
 
     public SchoolType getSchoolType() {
         return spellType.getSchoolType();
+    }
+
+    public DamageSource getDamageSource() {
+        return this.spellType.getDamageSource();
     }
 
     public int getLevel() {

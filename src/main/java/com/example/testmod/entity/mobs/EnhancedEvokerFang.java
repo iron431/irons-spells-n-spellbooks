@@ -1,7 +1,9 @@
 package com.example.testmod.entity.mobs;
 
+import com.example.testmod.damage.DamageSources;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.level.Level;
@@ -59,15 +61,7 @@ public class EnhancedEvokerFang extends EvokerFangs {
     private void dealDamageTo(LivingEntity pTarget) {
         LivingEntity livingentity = this.getOwner();
         if (pTarget.isAlive() && !pTarget.isInvulnerable() && pTarget != livingentity) {
-            if (livingentity == null) {
-                pTarget.hurt(DamageSource.MAGIC, damage);
-            } else {
-                if (livingentity.isAlliedTo(pTarget)) {
-                    return;
-                }
-
-                pTarget.hurt(DamageSource.indirectMagic(this, livingentity), damage);
-            }
+            DamageSources.applyDamage(pTarget, damage, SpellType.FANG_STRIKE_SPELL.getDamageSource(), SchoolType.EVOCATION, getOwner());
 
         }
     }

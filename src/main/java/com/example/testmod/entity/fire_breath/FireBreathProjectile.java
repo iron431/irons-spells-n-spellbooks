@@ -1,13 +1,15 @@
 package com.example.testmod.entity.fire_breath;
 
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.AbstractConeProjectile;
 import com.example.testmod.entity.AbstractShieldEntity;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.ParticleHelper;
 import com.example.testmod.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -86,7 +88,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        entity.hurt(DamageSource.MAGIC, damage);
+        DamageSources.applyDamage(entity, damage, SpellType.FIRE_BREATH_SPELL.getDamageSource(), SchoolType.FIRE, getOwner());
         entity.setSecondsOnFire(4);
     }
 }

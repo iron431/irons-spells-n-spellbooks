@@ -1,10 +1,12 @@
 package com.example.testmod.entity.cone_of_cold;
 
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.AbstractConeProjectile;
-import com.example.testmod.util.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -54,7 +56,7 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         //TestMod.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         var entity = entityHitResult.getEntity();
-        entity.hurt(DamageSource.MAGIC, damage);
+        DamageSources.applyDamage(entity, damage, SpellType.CONE_OF_COLD_SPELL.getDamageSource(), SchoolType.ICE, getOwner());
         entity.setTicksFrozen(entity.getTicksFrozen() + 80);
     }
 

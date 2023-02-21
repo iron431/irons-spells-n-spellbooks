@@ -7,6 +7,7 @@ import com.example.testmod.entity.mobs.goals.AcquireTargetNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WispAttackGoal;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.holy.WispSpell;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
@@ -32,8 +33,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.UUID;
-
-import static com.example.testmod.damage.DamageSources.WISP_DAMAGE;
 
 public class WispEntity extends PathfinderMob implements IAnimatable {
 
@@ -120,7 +119,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
             if (target != null) {
                 if (this.getBoundingBox().inflate(.3).intersects(target.getBoundingBox())) {
                     TestMod.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
-                    DamageSources.applyDamage(target, damageAmount, WISP_DAMAGE, SchoolType.HOLY, cachedOwner);
+                    DamageSources.applyDamage(target, damageAmount, SpellType.WISP_SPELL.getDamageSource(), SchoolType.HOLY, cachedOwner);
                     this.playSound(WispSpell.getImpactSound(), 1.0f, 1.0f);
                     var p = target.getEyePosition();
                     MagicManager.spawnParticles(level, ParticleHelper.WISP, p.x, p.y, p.z, 25, 0, 0, 0, .18, true);

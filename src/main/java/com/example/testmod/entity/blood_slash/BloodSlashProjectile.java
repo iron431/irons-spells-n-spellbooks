@@ -8,6 +8,7 @@ import com.example.testmod.entity.ShieldPart;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -26,8 +27,6 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.example.testmod.damage.DamageSources.BLOOD_SLASH_DAMAGE;
 
 public class BloodSlashProjectile extends Projectile {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
@@ -191,7 +190,7 @@ public class BloodSlashProjectile extends Projectile {
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            DamageSources.applyDamage(entity, damage, BLOOD_SLASH_DAMAGE, SchoolType.BLOOD, getOwner());
+            DamageSources.applyDamage(entity, damage, SpellType.BLOOD_SLASH_SPELL.getDamageSource(), SchoolType.BLOOD, getOwner());
             if (entity instanceof LivingEntity livingEntity) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
                 if (getOwner() instanceof LivingEntity livingOwner) {

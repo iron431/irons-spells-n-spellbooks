@@ -1,9 +1,11 @@
 package com.example.testmod.entity.mobs;
 
+import com.example.testmod.damage.DamageSources;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
@@ -61,7 +63,7 @@ public class HitscanFireworkRocketEntity extends FireworkRocketEntity {
                 }
 
                 if (los) {
-                    livingentity.hurt(DamageSource.fireworks(this, this.getOwner()), this.getDamage());
+                    DamageSources.applyDamage(livingentity, this.getDamage(), SpellType.FIRECRACKER_SPELL.getDamageSource(), SchoolType.EVOCATION, getOwner());
                 }
             }
         }

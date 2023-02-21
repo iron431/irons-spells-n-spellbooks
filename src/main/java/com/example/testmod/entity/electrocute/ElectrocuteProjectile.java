@@ -1,10 +1,12 @@
 package com.example.testmod.entity.electrocute;
 
 import com.example.testmod.capabilities.magic.MagicManager;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.AbstractConeProjectile;
-import com.example.testmod.util.ParticleHelper;
 import com.example.testmod.registries.EntityRegistry;
-import net.minecraft.world.damagesource.DamageSource;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -108,7 +110,8 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        entity.hurt(DamageSource.MAGIC, damage);
+        DamageSources.applyDamage(entity, damage, SpellType.ELECTROCUTE_SPELL.getDamageSource(), SchoolType.LIGHTNING, getOwner());
+
         MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 10, entity.getBbWidth() / 3, entity.getBbHeight() / 3, entity.getBbWidth() / 3, 0.1, false);
     }
 }

@@ -4,6 +4,7 @@ import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
@@ -18,8 +19,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-
-import static com.example.testmod.damage.DamageSources.ICICLE_DAMAGE;
 
 //https://github.com/TobyNguyen710/kyomod/blob/56d3a9dc6b45f7bc5ecdb0d6de9d201cea2603f5/Mod/build/tmp/expandedArchives/forge-1.19.2-43.1.7_mapped_official_1.19.2-sources.jar_b6309abf8a7e6a853ce50598293fb2e7/net/minecraft/world/entity/projectile/ShulkerBullet.java
 //https://github.com/maximumpower55/Aura/blob/1.18/src/main/java/me/maximumpower55/aura/entity/SpellProjectileEntity.java
@@ -102,9 +101,8 @@ public class IcicleProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, ICICLE_DAMAGE, SchoolType.ICE, getOwner());
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.ICICLE_SPELL.getDamageSource(), SchoolType.ICE, getOwner());
         if (entityHitResult.getEntity() instanceof LivingEntity target) {
-            //target.hurt(DamageSource.MAGIC, damage);
             target.setTicksFrozen(target.getTicksFrozen() + 165);
 
         }
