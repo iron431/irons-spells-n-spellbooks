@@ -2,16 +2,16 @@ package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.entity.AbstractSpellCastingMob;
-import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class PlayerMagicData extends AbstractMagicData {
 
@@ -66,39 +66,34 @@ public class PlayerMagicData extends AbstractMagicData {
 
     /********* CASTING *******************************************************/
 
-    private boolean isCasting = false;
-    private int castingSpellId = 0;
     private int castingSpellLevel = 0;
     private int castDuration = 0;
     private int castDurationRemaining = 0;
     private CastSource castSource;
     private CastType castType;
-    private CastData additionalCastData;
+    private @Nullable CastData additionalCastData;
 
     private ItemStack castingItemStack = ItemStack.EMPTY;
 
 
     public void resetCastingState() {
         TestMod.LOGGER.debug("resetCastingState: {}", serverPlayer);
-        this.isCasting = false;
-        this.castingSpellId = 0;
         this.castingSpellLevel = 0;
         this.castDuration = 0;
         this.castDurationRemaining = 0;
         this.castSource = CastSource.NONE;
         this.castType = CastType.NONE;
+        this.getSyncedData().setIsCasting(false, SpellType.NONE_SPELL.getValue());
         resetAdditionalCastData();
-        resetSyncedData();
     }
 
     public void initiateCast(int spellId, int spellLevel, int castDuration, CastSource castSource) {
-        this.castingSpellId = spellId;
         this.castingSpellLevel = spellLevel;
         this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
         this.castSource = castSource;
         this.castType = AbstractSpell.getSpell(spellId, spellLevel).getCastType();
-        this.isCasting = true;
+        this.syncedSpellData.setIsCasting(true, spellId);
     }
 
     public CastData getAdditionalCastData() {
@@ -124,15 +119,15 @@ public class PlayerMagicData extends AbstractMagicData {
     }
 
     public boolean isCasting() {
-        return isCasting;
+        return getSyncedData().isCasting();
     }
 
     public int getCastingSpellId() {
-        return castingSpellId;
+        return getSyncedData().getCastingSpellId();
     }
 
     public AbstractSpell getCastingSpell() {
-        return AbstractSpell.getSpell(castingSpellId, castingSpellLevel);
+        return AbstractSpell.getSpell(getSyncedData().getCastingSpellId(), castingSpellLevel);
     }
 
     public int getCastingSpellLevel() {
@@ -210,18 +205,6 @@ public class PlayerMagicData extends AbstractMagicData {
         return new PlayerMagicData(serverPlayer);
     }
 
-    //TODO: clean this up based on new clientmagicdata
-    public static SyncedSpellData clientGetSyncedSpellData(LivingEntity livingEntity) {
-        if (livingEntity instanceof Player) {
-            return ClientMagicData.getPlayerSyncedData(livingEntity.getId());
-        }
-        if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
-            return abstractSpellCastingMob.getPlayerMagicData().getSyncedData();
-        }
-        return new SyncedSpellData(null);
-
-    }
-
     public void saveNBTData(CompoundTag compound) {
         compound.putInt(MANA, mana);
 
@@ -250,8 +233,8 @@ public class PlayerMagicData extends AbstractMagicData {
     @Override
     public String toString() {
         return String.format("isCasting:%s, spellID:%d, spellLevel:%s, duration:%s, durationRemaining:%s, source:%s, type:%s",
-                isCasting,
-                castingSpellId,
+                getSyncedData().isCasting(),
+                getSyncedData().getCastingSpellId(),
                 castingSpellLevel,
                 castDuration,
                 castDurationRemaining,
