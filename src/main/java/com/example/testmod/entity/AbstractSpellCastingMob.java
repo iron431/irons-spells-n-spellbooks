@@ -36,7 +36,9 @@ public abstract class AbstractSpellCastingMob extends Monster {
 //    private static final EntityDataAccessor<Integer> DATA_CASTING_SPELL_LEVEL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.INT);
 //    private static final EntityDataAccessor<Optional<BlockPos>> DATA_CASTING_TELEPORT_LOC = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
 
+    //TODO: this can get cleaned up now that synced data handles most of it.
     private static final EntityDataAccessor<MobSyncedCastingData> DATA_CASTING = SynchedEntityData.defineId(AbstractSpellCastingMob.class, MOB_SYNCED_CASTING_DATA);
+
     private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SYNCED_SPELL_DATA);
 
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);

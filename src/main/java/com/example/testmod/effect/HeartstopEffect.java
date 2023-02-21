@@ -55,9 +55,9 @@ public class HeartstopEffect extends MobEffect {
         //TestMod.LOGGER.debug("{} ticks existed: {}", pLivingEntity.getName().getString(), pLivingEntity.tickCount);
 
         //Heart beats once every 2 seconds at 0% damage, and 2 times per second at 100% damage (relative to health)
-        if(pLivingEntity.level.isClientSide){
+        if (pLivingEntity.level.isClientSide) {
             if (pLivingEntity instanceof LocalPlayer player) {
-                float damage = ClientMagicData.getPlayerSyncedData(player.getId()).getHeartstopAccumulatedDamage();
+                float damage = ClientMagicData.getSyncedSpellData(player).getHeartstopAccumulatedDamage();
                 float f = 1 - Mth.clamp(damage / player.getHealth(), 0, 1);
                 int i = (int) (10 + (40 - 10) * f);
                 TestMod.LOGGER.debug("{} ({}/{} = {})", i, damage, player.getHealth(), f);

@@ -3,10 +3,13 @@ package com.example.testmod.player;
 import com.example.testmod.capabilities.magic.PlayerCooldowns;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
+import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 
@@ -80,8 +83,15 @@ public class ClientMagicData {
         }
     }
 
-    public static SyncedSpellData getPlayerSyncedData(int serverPlayerId) {
-        return playerSyncedDataLookup.getOrDefault(serverPlayerId, emptySyncedData);
+    public static SyncedSpellData getSyncedSpellData(LivingEntity livingEntity) {
+        if (livingEntity instanceof Player) {
+            return playerSyncedDataLookup.getOrDefault(livingEntity.getId(), emptySyncedData);
+        }
+        if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+            return abstractSpellCastingMob.getPlayerMagicData().getSyncedData();
+        }
+        return new SyncedSpellData(null);
+
     }
 
     public static void handlePlayerSyncedData(SyncedSpellData playerSyncedData) {

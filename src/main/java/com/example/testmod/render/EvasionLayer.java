@@ -1,7 +1,7 @@
 package com.example.testmod.render;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.player.ClientMagicData;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -34,6 +34,6 @@ public class EvasionLayer<T extends LivingEntity> extends AbstractEnergySwirlLay
 
     @Override
     protected boolean shouldRender(T entity) {
-        return PlayerMagicData.clientGetSyncedSpellData(entity).hasEvasion();
+        return ClientMagicData.getSyncedSpellData(entity).hasEvasion();
     }
 }
