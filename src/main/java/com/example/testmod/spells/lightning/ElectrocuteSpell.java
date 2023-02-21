@@ -6,6 +6,8 @@ import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.EntityCastData;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -21,12 +23,14 @@ public class ElectrocuteSpell extends AbstractSpell {
     public ElectrocuteSpell(int level) {
         super(SpellType.ELECTROCUTE_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 2;
+        this.manaCostPerLevel = 1;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 10;
         this.cooldown = 100;
+        uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1)));
+
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -41,6 +42,8 @@ public class WallOfFireSpell extends AbstractSpell {
         this.castTime = 100;
         this.baseManaCost = 5;
         this.cooldown = 100;
+        uniqueInfo.add(Component.translatable("ui.testmod.distance", Utils.stringTruncation(getWallLength(), 1)));
+
     }
 
     @Override

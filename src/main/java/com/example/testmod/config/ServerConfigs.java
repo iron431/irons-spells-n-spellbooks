@@ -31,7 +31,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, 10, SpellRarity.UNCOMMON);
         createSpellConfig(SpellType.ELECTROCUTE_SPELL, 12, SpellRarity.LEGENDARY);
         createSpellConfig(SpellType.ICICLE_SPELL, 10, SpellRarity.LEGENDARY);
-        createSpellConfig(SpellType.GREATER_HEAL, 1, SpellRarity.LEGENDARY);
+        createSpellConfig(SpellType.GREATER_HEAL_SPELL, 1, SpellRarity.LEGENDARY);
 
         BUILDER.comment("Other Configuration");
         BUILDER.push("MISC");

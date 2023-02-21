@@ -7,6 +7,8 @@ import com.example.testmod.entity.fire_breath.FireBreathProjectile;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.EntityCastData;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -27,6 +29,8 @@ public class FireBreathSpell extends AbstractSpell {
         this.castTime = 100;
         this.baseManaCost = 5;
         this.cooldown = 100;
+        uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getSpellPower(null), 1)));
+
     }
 
     @Override

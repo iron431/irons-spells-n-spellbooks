@@ -18,7 +18,7 @@ public class GreaterHealSpell extends AbstractSpell {
     }
 
     public GreaterHealSpell(int level) {
-        super(SpellType.GREATER_HEAL);
+        super(SpellType.GREATER_HEAL_SPELL);
         this.level = level;
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 4;

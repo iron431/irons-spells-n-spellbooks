@@ -31,18 +31,12 @@ public class TeleportSpell extends AbstractSpell {
     public TeleportSpell(int level) {
         super(SpellType.TELEPORT_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 5;
-        this.baseSpellPower = 32;
-        this.spellPowerPerLevel = 10;
-        this.baseManaCost = 35;
+        this.baseSpellPower = 10;
+        this.spellPowerPerLevel = 6;
+        this.baseManaCost = 15;
+        this.manaCostPerLevel = 3;
         this.cooldown = 200;
-        this.castTime = 20;
-
-        //TODO: remove these after tsting
-        this.baseManaCost = 1;
-        this.cooldown = 0;
         this.castTime = 0;
-
         uniqueInfo.add(Component.translatable("ui.testmod.distance", Utils.stringTruncation(getDistance(null), 1)));
 
     }

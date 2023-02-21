@@ -24,7 +24,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
     final float radius = 5;
 
     public CloudOfRegenerationSpell(int level) {
-        super(SpellType.CLOUD_OF_REGENERATION);
+        super(SpellType.CLOUD_OF_REGENERATION_SPELL);
         this.level = level;
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 1;

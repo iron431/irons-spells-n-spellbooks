@@ -1,12 +1,15 @@
 package com.example.testmod.capabilities.spellbook;
 
 import com.example.testmod.spells.AbstractSpell;
+import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
@@ -177,10 +180,16 @@ public class SpellBookData {
         if (hoverText == null || dirty) {
             hoverText = Lists.newArrayList();
             if (activeSpellIndex > -1) {
-                AbstractSpell activeSpell = getActiveSpell();
-                hoverText.add(Component.translatable("tooltip.testmod.selected_spell",
-                        activeSpell.getSpellType().getDisplayName(),
-                        activeSpell.getLevel()).withStyle(ChatFormatting.WHITE));
+                AbstractSpell spell = getActiveSpell();
+                hoverText.add(Component.translatable("tooltip.testmod.selected_spell", spell.getSpellType().getDisplayName(), spell.getLevel()).withStyle(spell.getSpellType().getSchoolType().getDisplayName().getStyle()));
+                for (MutableComponent component : spell.getUniqueInfo())
+                    hoverText.add(Component.literal(" ").append(component.withStyle(ChatFormatting.DARK_GREEN)));
+                if (spell.getCastType() != CastType.INSTANT) {
+                    String castKey = spell.getCastType() == CastType.CONTINUOUS ? "tooltip.testmod.cast_continuous" : "tooltip.testmod.cast_long";
+                    hoverText.add(Component.literal(" ").append(Component.translatable(castKey, Utils.timeFromTicks(spell.getCastTime(), 1)).withStyle(ChatFormatting.BLUE)));
+                }
+                hoverText.add(Component.translatable("tooltip.testmod.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE));
+                hoverText.add(Component.translatable("tooltip.testmod.cooldown_length_seconds", Utils.timeFromTicks(spell.getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
             }
         }
         return hoverText;

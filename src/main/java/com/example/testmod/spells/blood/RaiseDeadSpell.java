@@ -7,6 +7,7 @@ import com.example.testmod.entity.mobs.SummonedZombie;
 import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -39,6 +40,7 @@ public class RaiseDeadSpell extends AbstractSpell {
         this.castTime = 20;
         this.baseManaCost = 50;
         this.cooldown = 300;
+        uniqueInfo.add(Component.translatable("ui.testmod.summon_count", this.level));
     }
 
     @Override
