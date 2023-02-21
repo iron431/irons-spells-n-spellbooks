@@ -46,7 +46,7 @@ public class LightningLanceSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         LightningLanceProjectile lance = new LightningLanceProjectile(level, entity);
-        lance.setPos(entity.position().add(0, entity.getEyeHeight() + lance.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
+        lance.setPos(entity.position().add(0, entity.getEyeHeight(), 0).add(entity.getForward()));
         lance.shoot(entity.getLookAngle());
         lance.setDamage(getSpellPower(entity));
         level.addFreshEntity(lance);

@@ -4,6 +4,7 @@ import com.example.testmod.TestMod;
 import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.spells.blood.*;
 import com.example.testmod.spells.ender.EvasionSpell;
+import com.example.testmod.spells.ender.MagicArrowSpell;
 import com.example.testmod.spells.ender.MagicMissileSpell;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.spells.evocation.*;
@@ -64,7 +65,8 @@ public enum SpellType {
     WITHER_SKULL_SPELL(26),
     GREATER_HEAL_SPELL(27),
     CLOUD_OF_REGENERATION_SPELL(28),
-    RAY_OF_SIPHONING_SPELL(29);
+    RAY_OF_SIPHONING_SPELL(29),
+    MAGIC_ARROW_SPELL(30);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -107,8 +109,8 @@ public enum SpellType {
     public CastType getCastType() {
         return switch (this) {
             case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL -> CastType.LONG;
-            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL,RAY_OF_SIPHONING_SPELL -> CastType.CONTINUOUS;
-            case LIGHTNING_LANCE_SPELL -> CastType.CHARGE;
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL -> CastType.CONTINUOUS;
+            case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL -> CastType.CHARGE;
             default -> CastType.INSTANT;
         };
     }
@@ -116,6 +118,7 @@ public enum SpellType {
     public UseAnim getUseAnim(){
         return switch (this){
             case LIGHTNING_LANCE_SPELL -> UseAnim.SPEAR;
+            case RAY_OF_SIPHONING_SPELL -> UseAnim.TOOT_HORN;
             default -> UseAnim.BOW;
         };
     }
@@ -124,7 +127,7 @@ public enum SpellType {
     private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL};
     private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL};
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL};
-    private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL};
+    private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL,RAY_OF_SIPHONING_SPELL};
     private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL};
 
@@ -216,6 +219,9 @@ public enum SpellType {
             }
             case RAY_OF_SIPHONING_SPELL -> {
                 return new RayOfSiphoning(level);
+            }
+            case MAGIC_ARROW_SPELL -> {
+                return new MagicArrowSpell(level);
             }
             default -> {
                 return new NoneSpell(0);

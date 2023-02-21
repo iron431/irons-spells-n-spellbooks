@@ -38,5 +38,15 @@
     "sounds": [
       "testmod:lightning_woosh_01"
     ]
+  },
+  "magic_arrow_release": {
+    "sounds": [
+      "testmod:magic_arrow_release"
+    ]
+  },
+  "magic_arrow_charge": {
+    "sounds": [
+      "testmod:magic_arrow_charge"
+    ]
   }
 }

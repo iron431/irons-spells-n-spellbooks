@@ -160,6 +160,7 @@
   "spell.testmod.greater_heal": "Greater Heal",
   "spell.testmod.cloud_of_regeneration": "Cloud of Regeneration",
   "spell.testmod.ray_of_siphoning": "Ray of Siphoning",
+  "spell.testmod.magic_arrow": "Magic Arrow",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

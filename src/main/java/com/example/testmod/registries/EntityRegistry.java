@@ -9,6 +9,7 @@ import com.example.testmod.entity.fire_breath.FireBreathProjectile;
 import com.example.testmod.entity.firebolt.FireboltProjectile;
 import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.lightning_lance.LightningLanceProjectile;
+import com.example.testmod.entity.magic_arrow.MagicArrowProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedVex;
@@ -128,7 +129,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<LightningLanceProjectile>> LIGHTNING_LANCE_PROJECTILE =
             ENTITIES.register("lightning_lance_projectile", () -> EntityType.Builder.<LightningLanceProjectile>of(LightningLanceProjectile::new, MobCategory.MISC)
-                    .sized(1f, 1f)
+                    .sized(1.25f, 1.25f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "lightning_lance_projectile").toString()));
 
@@ -155,4 +156,10 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "wither_skull_projectile").toString()));
+
+    public static final RegistryObject<EntityType<MagicArrowProjectile>> MAGIC_ARROW_PROJECTILE =
+            ENTITIES.register("magic_arrow_projectile", () -> EntityType.Builder.<MagicArrowProjectile>of(MagicArrowProjectile::new, MobCategory.MISC)
+                    .sized(.5f, 0.5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "magic_arrow_projectile").toString()));
 }
