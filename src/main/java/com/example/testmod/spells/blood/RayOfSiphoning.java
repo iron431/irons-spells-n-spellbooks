@@ -2,6 +2,8 @@ package com.example.testmod.spells.blood;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.damage.DamageSources;
+import com.example.testmod.network.spell.ClientboundBloodSiphonParticles;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;
@@ -51,9 +53,11 @@ public class RayOfSiphoning extends AbstractSpell {
         var hitResult = Utils.raycastForEntity(level, entity, getRange(), true);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
-            DamageSources.applyDamage(target, getTickDamage(entity), getSpellType().getDamageSource(), SchoolType.BLOOD, entity);
             if (target instanceof LivingEntity) {
+                DamageSources.applyDamage(target, getTickDamage(entity), getSpellType().getDamageSource(), SchoolType.BLOOD, entity);
                 entity.heal(getTickDamage(entity) * .35f);
+                Messages.sendToPlayersTrackingEntity(new ClientboundBloodSiphonParticles(target.position().add(0, target.getBbHeight() / 2, 0), entity.position().add(0, entity.getBbHeight() / 2, 0)), entity, true);
+
             }
         }
     }

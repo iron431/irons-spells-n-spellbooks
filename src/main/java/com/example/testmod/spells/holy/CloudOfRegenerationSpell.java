@@ -1,8 +1,8 @@
 package com.example.testmod.spells.holy;
 
-import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.network.spell.ClientboundHealParticles;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -55,7 +55,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(radius)).forEach((target) -> {
             if (target.distanceToSqr(entity.position()) < radius * radius) {
                 target.heal(getHealing(entity));
-                MagicManager.distrobuteParticlePacket(level, new ClientboundHealParticles(target.position()));
+                Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(target.position()), entity,true);
             }
         });
         super.onCast(level, entity, playerMagicData);

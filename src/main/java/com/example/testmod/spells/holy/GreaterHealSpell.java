@@ -1,8 +1,8 @@
 package com.example.testmod.spells.holy;
 
-import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.network.spell.ClientboundHealParticles;
+import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.network.chat.Component;
@@ -42,7 +42,7 @@ public class GreaterHealSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.heal(entity.getMaxHealth());
-        MagicManager.distrobuteParticlePacket(world, new ClientboundHealParticles(entity.position()));
+        Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(entity.position()), entity,true);
 
         super.onCast(world, entity, playerMagicData);
     }

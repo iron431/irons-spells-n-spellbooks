@@ -5,7 +5,6 @@ import com.example.testmod.item.Scroll;
 import com.example.testmod.network.ClientboundSyncCooldown;
 import com.example.testmod.network.ClientboundSyncMana;
 import com.example.testmod.network.ClientboundUpdateCastingState;
-import com.example.testmod.network.spell.ParticlePacket;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
@@ -138,11 +137,6 @@ public class MagicManager {
 
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
         level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
-    }
-
-    public static void distrobuteParticlePacket(Level level, ParticlePacket packet) {
-        level.getServer().getPlayerList().getPlayers().forEach(player -> Messages.sendToPlayer(packet, player));
-
     }
 
 //    public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double radiusX, double radiusY, double radiusZ, double speed, boolean force) {

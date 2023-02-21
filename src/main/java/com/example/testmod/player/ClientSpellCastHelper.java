@@ -3,6 +3,7 @@ package com.example.testmod.player;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.ender.TeleportSpell;
+import com.example.testmod.util.ParticleHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.alchemy.Potion;
@@ -28,7 +29,20 @@ public class ClientSpellCastHelper {
         }
     }
 
-    public static void doTargetHealParticles(Vec3 pos) {
+    public static void handleClientboundBloodSiphonParticles(Vec3 pos1, Vec3 pos2) {
+        if (Minecraft.getInstance().player == null)
+            return;
+        var level = Minecraft.getInstance().player.level;
+        Vec3 direction = pos2.subtract(pos1).scale(.1f);
+        for (int i = 0; i < 40; i++) {
+            Vec3 scaledDirection = direction.scale(1 + getRandomScaled(.35));
+            Vec3 random = new Vec3(getRandomScaled(.08f), getRandomScaled(.08f), getRandomScaled(.08f));
+            level.addParticle(ParticleHelper.BLOOD, pos1.x, pos1.y, pos1.z, scaledDirection.x + random.x, scaledDirection.y + random.y, scaledDirection.z + random.z);
+        }
+
+    }
+
+    public static void handleClientboundHealParticles(Vec3 pos) {
         //Copied from arrow because these particles use their motion for color??
         var player = Minecraft.getInstance().player;
 

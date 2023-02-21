@@ -7,7 +7,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ClientboundTeleportParticles implements ParticlePacket {
+public class ClientboundTeleportParticles {
 
     private Vec3 pos1;
     private Vec3 pos2;
