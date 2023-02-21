@@ -23,13 +23,13 @@
 ##### Pools
 - dungeon1_start_pool (only contains the origin structure)
 - dungeon1_hallway_pool (jigsaw target name: room_or_hallway)
-- room_or_hallway_pool (jigsaw target name: room_or_hallway)
-- room_origin_pool (jigsaw target name: room_origin)
-- room_pool (jigsaw target name: room_or_hallway)
-- secret_room_pool (jigsaw target name: secret_room)
-- treasure_or_mob_pool (jigsaw target name: treasure_or_mob)
-- treasure_pool (jigsaw target name: treasure_or_mob)
-- mob_pool (jigsaw target name: treasure_or_mob)
+- dungeon1_room_or_hallway_pool (jigsaw target name: room_or_hallway)
+- dungeon1_room_origin_pool (jigsaw target name: room_origin)
+- dungeon1_room_pool (jigsaw target name: room_or_hallway)
+- dungeon1_secret_room_pool (jigsaw target name: secret_room)
+- dungeon1_treasure_or_mob_pool (jigsaw target name: treasure_or_mob)
+- dungeon1_treasure_pool (jigsaw target name: treasure_or_mob)
+- dungeon1_mob_pool (jigsaw target name: treasure_or_mob)
 
 ##### Structures
 - Core

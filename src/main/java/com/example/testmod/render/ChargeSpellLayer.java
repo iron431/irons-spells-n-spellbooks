@@ -26,11 +26,6 @@ public class ChargeSpellLayer<T extends LivingEntity, M extends HumanoidModel<T>
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight, T entity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-        //TODO: remove this after clientmagicdata refactor
-        if (!(entity instanceof Player))
-            return;
-
-
         var spellData = PlayerMagicData.clientGetSyncedSpellData(entity);
         boolean isCharging = false;
         if (entity instanceof Player) {
