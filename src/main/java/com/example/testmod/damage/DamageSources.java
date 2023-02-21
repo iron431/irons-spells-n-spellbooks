@@ -37,6 +37,7 @@ public class DamageSources {
 
     public static float applyDamage(Entity target, float baseAmount, DamageSource damageSource, SchoolType damageSchool, @Nullable Entity attacker) {
         //TODO: check for "isAlliedTo"?
+        //TODO: return boolean?
         if (target instanceof LivingEntity livingTarget) {
             float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
             if (attacker instanceof LivingEntity livingAttacker) {

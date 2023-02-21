@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "H H",
+    "CLC",
+    "CLC"
+  ],
+  "key": {
+    "C": {
+      "item": "testmod:magic_cloth"
+    },
+    "H": {
+      "item": "minecraft:hay_block"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "item": "testmod:pumpkin_chestplate",
+    "count": 1
+  }
+}

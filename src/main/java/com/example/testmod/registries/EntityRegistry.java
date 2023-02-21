@@ -21,6 +21,7 @@ import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import com.example.testmod.entity.wisp.WispEntity;
+import com.example.testmod.entity.wither_skull.CreeperHeadProjectile;
 import com.example.testmod.entity.wither_skull.WitherSkullProjectile;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -159,7 +160,13 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<MagicArrowProjectile>> MAGIC_ARROW_PROJECTILE =
             ENTITIES.register("magic_arrow_projectile", () -> EntityType.Builder.<MagicArrowProjectile>of(MagicArrowProjectile::new, MobCategory.MISC)
-                    .sized(.5f, 0.5f)
+                    .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "magic_arrow_projectile").toString()));
+
+    public static final RegistryObject<EntityType<CreeperHeadProjectile>> CREEPER_HEAD_PROJECTILE =
+            ENTITIES.register("creeper_head_projectile", () -> EntityType.Builder.<CreeperHeadProjectile>of(CreeperHeadProjectile::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "creeper_head_projectile").toString()));
 }

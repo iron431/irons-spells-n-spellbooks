@@ -36,13 +36,12 @@ public class ChargeSpellLayer<T extends LivingEntity, M extends HumanoidModel<T>
             poseStack.scale(castCompletion, castCompletion, castCompletion);
             LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
             poseStack.popPose();
-        }else
-        if (spell == SpellType.MAGIC_ARROW_SPELL) {
+        } else if (spell == SpellType.MAGIC_ARROW_SPELL) {
             //TODO: arm based on handedness
             var arm = HumanoidArm.RIGHT;
             this.getParentModel().translateToHand(arm, poseStack);
             boolean flag = arm == HumanoidArm.LEFT;
-            poseStack.translate((double) ((float) (flag ? -1 : 1) / 32.0F) + .125, .5, 0);
+            poseStack.translate((double) ((float) (flag ? -1 : 1) / 32.0F) - .225, .5, 0);
             poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
             poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
             float castCompletion = Utils.smoothstep(.65f, 1, ClientMagicData.getCastCompletionPercent());
