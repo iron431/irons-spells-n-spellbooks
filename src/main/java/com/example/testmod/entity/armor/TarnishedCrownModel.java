@@ -18,7 +18,7 @@ public class TarnishedCrownModel extends AnimatedGeoModel<TarnishedCrownArmorIte
 
     @Override
     public ResourceLocation getTextureResource(TarnishedCrownArmorItem object) {
-        return new ResourceLocation(TestMod.MODID, "textures/models/armor/tarnished_crown.png");
+        return new ResourceLocation(TestMod.MODID, "textures/models/armor/tarnished.png");
     }
 
     @Override

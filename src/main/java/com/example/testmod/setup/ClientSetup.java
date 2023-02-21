@@ -4,9 +4,15 @@ import com.example.testmod.TestMod;
 import com.example.testmod.block.pedestal.PedestalRenderer;
 import com.example.testmod.block.scroll_forge.ScrollForgeRenderer;
 import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
-import com.example.testmod.entity.armor.GenericGeoArmorModel;
 import com.example.testmod.entity.armor.PumpkinArmorRenderer;
+import com.example.testmod.entity.armor.TarnishedCrownModel;
+import com.example.testmod.entity.armor.archevoker.ArchevokerArmorModel;
+import com.example.testmod.entity.armor.culist.archevoker.CultistArmorModel;
+import com.example.testmod.entity.armor.electromancer.ElectromancerArmorModel;
+import com.example.testmod.entity.armor.pumpkin.PumpkinArmorModel;
+import com.example.testmod.entity.armor.pyromancer.PyromancerArmorModel;
 import com.example.testmod.entity.armor.simple_wizard.WizardArmorRenderer;
+import com.example.testmod.entity.armor.wandering_magician.WanderingMagicianModel;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
@@ -78,14 +84,13 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
         GeoArmorRenderer.registerArmorRenderer(WizardArmorItem.class, WizardArmorRenderer::new);
-        var genericArmor = new GenericCustomArmorRenderer(new GenericGeoArmorModel());
-        GeoArmorRenderer.registerArmorRenderer(WanderingMagicianArmorItem.class, () -> genericArmor);
-        GeoArmorRenderer.registerArmorRenderer(PyromancerArmorItem.class, () -> genericArmor);
-        GeoArmorRenderer.registerArmorRenderer(ElectromancerArmorItem.class, () -> genericArmor);
-        GeoArmorRenderer.registerArmorRenderer(ArchevokerArmorItem.class, () -> genericArmor);
-        GeoArmorRenderer.registerArmorRenderer(CultistArmorItem.class, () -> genericArmor);
-        GeoArmorRenderer.registerArmorRenderer(TarnishedCrownArmorItem.class, () -> genericArmor);
-        GeoArmorRenderer.registerArmorRenderer(PumpkinArmorItem.class, () -> new PumpkinArmorRenderer(new GenericGeoArmorModel()));
+        GeoArmorRenderer.registerArmorRenderer(WanderingMagicianArmorItem.class, () -> new GenericCustomArmorRenderer(new WanderingMagicianModel()));
+        GeoArmorRenderer.registerArmorRenderer(PyromancerArmorItem.class, () -> new GenericCustomArmorRenderer(new PyromancerArmorModel()));
+        GeoArmorRenderer.registerArmorRenderer(ElectromancerArmorItem.class, () -> new GenericCustomArmorRenderer(new ElectromancerArmorModel()));
+        GeoArmorRenderer.registerArmorRenderer(ArchevokerArmorItem.class, () -> new GenericCustomArmorRenderer(new ArchevokerArmorModel()));
+        GeoArmorRenderer.registerArmorRenderer(CultistArmorItem.class, () -> new GenericCustomArmorRenderer(new CultistArmorModel()));
+        GeoArmorRenderer.registerArmorRenderer(TarnishedCrownArmorItem.class, () -> new GenericCustomArmorRenderer(new TarnishedCrownModel()));
+        GeoArmorRenderer.registerArmorRenderer(PumpkinArmorItem.class, () -> new PumpkinArmorRenderer(new PumpkinArmorModel()));
 
         TestMod.LOGGER.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
 

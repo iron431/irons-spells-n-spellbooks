@@ -24,7 +24,6 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
     }, new HashMap<>()),
     /////////////////////////////////////////////////////////
 
-    //Name must match model/texture namespace
     TARNISHED("tarnished", 15, new int[]{0, 0, 0, 0}, 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.0F, 0.0F, () -> Ingredient.of(Items.IRON_INGOT), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             Attributes.ATTACK_DAMAGE, new AttributeModifier("minus damage", -.15, AttributeModifier.Operation.MULTIPLY_TOTAL)
