@@ -138,6 +138,10 @@ public class Utils {
         return level.clip(new ClipContext(pos, dest, ClipContext.Block.COLLIDER, clipContext, entity));
     }
 
+    public static BlockHitResult raycastForBlock(Level level,Vec3 start, Vec3 end, ClipContext.Fluid clipContext){
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, null));
+    }
+
     public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end) {
         Vec3 hitPos = null;
         if (entity.isMultipartEntity()) {
@@ -226,6 +230,12 @@ public class Utils {
 
     private static boolean canHitWithRaycast(Entity entity) {
         TestMod.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
-        return !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart);
+        return !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart || entity instanceof ItemEntity);
+    }
+
+    public static Vec2 rotationFromDirection(Vec3 vector){
+        float pitch = (float) Math.asin(vector.y);
+        float yaw = (float) Math.atan2(vector.x, vector.z);
+        return new Vec2(pitch, yaw);
     }
 }

@@ -67,7 +67,9 @@ public enum SpellType {
     CLOUD_OF_REGENERATION_SPELL(28),
     RAY_OF_SIPHONING_SPELL(29),
     MAGIC_ARROW_SPELL(30),
-    LOB_CREEPER_SPELL(31);
+    LOB_CREEPER_SPELL(31),
+    CHAIN_CREEPER_SPELL(32),
+    BLAZE_STORM_SPELL(33);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -109,8 +111,8 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL -> CastType.LONG;
-            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL -> CastType.CONTINUOUS;
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL -> CastType.LONG;
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL -> CastType.CONTINUOUS;
             case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL -> CastType.CHARGE;
             default -> CastType.INSTANT;
         };
@@ -119,18 +121,17 @@ public enum SpellType {
     public UseAnim getUseAnim(){
         return switch (this){
             case LIGHTNING_LANCE_SPELL -> UseAnim.SPEAR;
-            case RAY_OF_SIPHONING_SPELL -> UseAnim.TOOT_HORN;
             default -> UseAnim.BOW;
         };
     }
 
-    private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL};
+    private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, BLAZE_STORM_SPELL};
     private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL};
     private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL};
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL,RAY_OF_SIPHONING_SPELL};
-    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL};
+    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL};
 
     public AbstractSpell getSpellForType(int level) {
         switch (this) {
@@ -226,6 +227,12 @@ public enum SpellType {
             }
             case LOB_CREEPER_SPELL -> {
                 return new LobCreeperSpell(level);
+            }
+            case CHAIN_CREEPER_SPELL -> {
+                return new ChainCreeperSpell(level);
+            }
+            case BLAZE_STORM_SPELL -> {
+                return new BlazeStormSpell(level);
             }
             default -> {
                 return new NoneSpell(0);

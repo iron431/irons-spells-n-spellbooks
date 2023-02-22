@@ -98,6 +98,7 @@
   "ui.testmod.ring_count": "%d Rings",
   "ui.testmod.hp": "%d HP",
   "ui.testmod.effect_length": "%d Effect Length",
+  "ui.testmod.projectile_count": "%d Projectiles",
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",
   "school.testmod.lightning": "Lightning",
@@ -162,6 +163,8 @@
   "spell.testmod.ray_of_siphoning": "Ray of Siphoning",
   "spell.testmod.magic_arrow": "Magic Arrow",
   "spell.testmod.lob_creeper": "Lob Creeper",
+  "spell.testmod.creeper_revenge": "Revenge of the Creeper",
+  "spell.testmod.chain_creeper": "Chain Creeper",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

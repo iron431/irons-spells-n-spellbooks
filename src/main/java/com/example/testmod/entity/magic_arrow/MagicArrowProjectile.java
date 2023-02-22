@@ -1,5 +1,6 @@
 package com.example.testmod.entity.magic_arrow;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
@@ -7,6 +8,8 @@ import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.ParticleHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -87,22 +90,30 @@ public class MagicArrowProjectile extends Projectile {
         if (!victims.contains(entity)) {
             DamageSources.applyDamage(entity, damage, SpellType.MAGIC_ARROW_SPELL.getDamageSource(), SchoolType.ENDER, getOwner());
             victims.add(entity);
-            this.playSound(SoundRegistry.FORCE_IMPACT.get(), 2, .65f);
         }
     }
 
 
     @Override
-    protected void onHit(HitResult pResult) {
-        //TestMod.LOGGER.debug("Boom");
+    protected void onHit(HitResult result) {
+        TestMod.LOGGER.debug("onHit ({})", result.getType());
 
         penetration++;
         if (!level.isClientSide) {
-            Vec3 pos = pResult.getLocation();
+            Vec3 pos = result.getLocation();
             MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, pos.x, pos.y, pos.z, 15, .1, .1, .1, .5, false);
-        }
 
-        super.onHit(pResult);
+            if (result.getType() == HitResult.Type.ENTITY) {
+                level.playSound(null, new BlockPos(position()), SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2, .65f);
+                TestMod.LOGGER.debug("Playing Sound");
+
+            }
+
+        }
+//        if (result.getType() == HitResult.Type.ENTITY)
+//            this.playSound(SoundRegistry.FORCE_IMPACT.get(), 2, .65f);
+
+        super.onHit(result);
     }
 
     public void setDamage(float damage) {

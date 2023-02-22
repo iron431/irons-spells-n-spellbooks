@@ -4,6 +4,7 @@ import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.spells.evocation.ChainCreeperSpell;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -20,12 +21,14 @@ import net.minecraftforge.network.NetworkHooks;
 public class CreeperHeadProjectile extends WitherSkull {
     public CreeperHeadProjectile(EntityType<? extends WitherSkull> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        chainOnKill = false;
     }
 
     protected float damage;
+    protected boolean chainOnKill;
 
     public CreeperHeadProjectile(LivingEntity shooter, Level level, float speed, float damage) {
-        super(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
+        this(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
         setOwner(shooter);
 
         Vec3 power = shooter.getLookAngle().normalize().scale(speed);
@@ -35,6 +38,21 @@ public class CreeperHeadProjectile extends WitherSkull {
         this.zPower = power.z;
         setDeltaMovement(xPower, yPower, zPower);
         this.damage = damage;
+    }
+
+    public CreeperHeadProjectile(LivingEntity shooter, Level level, Vec3 power, float damage) {
+        this(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), level);
+        setOwner(shooter);
+
+        this.xPower = power.x;
+        this.yPower = power.y;
+        this.zPower = power.z;
+        setDeltaMovement(xPower, yPower, zPower);
+        this.damage = damage;
+    }
+
+    public void setChainOnKill(boolean chain) {
+        chainOnKill = chain;
     }
 
     @Override
@@ -71,13 +89,18 @@ public class CreeperHeadProjectile extends WitherSkull {
     @Override
     protected void onHit(HitResult hitResult) {
         if (!this.level.isClientSide) {
-            float explosionRadius = 3;
+            float explosionRadius = 3.5f;
             var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
-                double distance = entity.distanceToSqr(hitResult.getLocation());
-                if (distance < explosionRadius * explosionRadius) {
-                    float damage = (float) (this.damage * (1 - distance / (explosionRadius * explosionRadius)));
+                double distance = entity.position().distanceTo(hitResult.getLocation());
+                if (distance < explosionRadius) {
+                    //Prevent duplicate chains
+                    if (entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying())
+                        break;
+                    float damage = (float) (this.damage * (1 - Math.pow(distance / (explosionRadius), 2)));
                     DamageSources.applyDamage(entity, damage, SpellType.LOB_CREEPER_SPELL.getDamageSource(), SchoolType.EVOCATION, getOwner());
+                    if (chainOnKill && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying())
+                        ChainCreeperSpell.summonCreeperRing(this.level, this.getOwner() instanceof LivingEntity livingOwner ? livingOwner : null, livingEntity.getEyePosition(), this.damage * .85f, 3);
                 }
             }
 
