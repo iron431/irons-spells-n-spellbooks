@@ -3,6 +3,7 @@ package com.example.testmod.spells.ice;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import com.example.testmod.network.spell.ClientboundTeleportParticles;
+import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -12,7 +13,6 @@ import com.example.testmod.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -71,7 +71,7 @@ public class FrostStepSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.ILLUSIONER_MIRROR_MOVE);
+        return Optional.of(SoundRegistry.FROST_STEP.get());
     }
 
     @Override
@@ -125,11 +125,11 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     private float getDistance(Entity sourceEntity) {
-        return getSpellPower(sourceEntity);
+        return getSpellPower(sourceEntity) * .65f;
     }
 
     private float getDamage(Entity caster) {
-        return this.getSpellPower(caster) / 4;
+        return this.getSpellPower(caster) / 3;
     }
 
 }

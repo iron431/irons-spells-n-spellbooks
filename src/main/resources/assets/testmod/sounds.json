@@ -48,5 +48,15 @@
     "sounds": [
       "testmod:magic_arrow_charge"
     ]
+  },
+  "frost_step": {
+    "sounds": [
+      "testmod:frost_step"
+    ]
+  },
+  "ice_impact": {
+    "sounds": [
+      "testmod:ice_impact"
+    ]
   }
 }

@@ -3,10 +3,12 @@ package com.example.testmod.entity.icicle;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -92,14 +94,14 @@ public class IcicleProjectile extends Projectile implements ItemSupplier {
         double z = hitresult.getLocation().z;
 
         MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 15, .1, .1, .1, .1, true);
-
+        level.playSound(null, getX(), getY(), getZ(), SoundRegistry.ICE_IMPACT.get(), SoundSource.NEUTRAL, 1, .9f + level.random.nextFloat() * .2f);
+        kill();
 
     }
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        kill();
 
     }
 
@@ -111,7 +113,6 @@ public class IcicleProjectile extends Projectile implements ItemSupplier {
             target.setTicksFrozen(target.getTicksFrozen() + 165);
 
         }
-        kill();
 
     }
 

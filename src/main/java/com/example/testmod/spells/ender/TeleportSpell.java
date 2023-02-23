@@ -70,7 +70,7 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.ILLUSIONER_MIRROR_MOVE);
+        return Optional.of(SoundEvents.ENDERMAN_TELEPORT);
     }
 
     @Override

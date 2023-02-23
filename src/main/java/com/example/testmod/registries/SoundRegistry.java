@@ -16,6 +16,8 @@ public class SoundRegistry {
     }
 
     public static RegistryObject<SoundEvent> FORCE_IMPACT = registerSoundEvent("force_impact");
+    public static RegistryObject<SoundEvent> ICE_IMPACT = registerSoundEvent("ice_impact");
+
     public static RegistryObject<SoundEvent> MAGIC_SPELL_REVERSE_3 = registerSoundEvent("magic_spell_reverse_3");
     public static RegistryObject<SoundEvent> ARIAL_SUMMONING_5_CUSTOM_1 = registerSoundEvent("arial_summoning_5_custom_1");
     public static RegistryObject<SoundEvent> DARK_MAGIC_BUFF_03_CUSTOM_1 = registerSoundEvent("dark_magic_buff_03_custom_1");
@@ -26,6 +28,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> LIGHTNING_LANCE_CAST = registerSoundEvent("lightning_lance_cast");
     public static RegistryObject<SoundEvent> MAGIC_ARROW_RELEASE = registerSoundEvent("magic_arrow_release");
     public static RegistryObject<SoundEvent> MAGIC_ARROW_CHARGE = registerSoundEvent("magic_arrow_charge");
+    public static RegistryObject<SoundEvent> FROST_STEP = registerSoundEvent("frost_step");
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {
         return SOUND_EVENTS.register(name, () -> new SoundEvent(new ResourceLocation(TestMod.MODID, name)));
