@@ -1,11 +1,13 @@
-package com.example.testmod.spells.ender;
+package com.example.testmod.spells.ice;
 
-import com.example.testmod.capabilities.magic.CastData;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import com.example.testmod.network.spell.ClientboundTeleportParticles;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.spells.ender.TeleportSpell;
+import com.example.testmod.util.ParticleHelper;
 import com.example.testmod.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -14,30 +16,29 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
-public class TeleportSpell extends AbstractSpell {
+public class FrostStepSpell extends AbstractSpell {
 
-    public TeleportSpell() {
+    public FrostStepSpell() {
         this(1);
     }
 
-    public TeleportSpell(int level) {
-        super(SpellType.TELEPORT_SPELL);
+    public FrostStepSpell(int level) {
+        super(SpellType.FROST_STEP);
         this.level = level;
-        this.baseSpellPower = 10;
-        this.spellPowerPerLevel = 6;
+        this.baseSpellPower = 14;
+        this.spellPowerPerLevel = 3;
         this.baseManaCost = 15;
         this.manaCostPerLevel = 3;
         this.cooldown = 200;
         this.castTime = 0;
         uniqueInfo.add(Component.translatable("ui.testmod.distance", Utils.stringTruncation(getDistance(null), 1)));
+        uniqueInfo.add(Component.translatable("ui.testmod.shatter_damage", Utils.stringTruncation(getDamage(null), 1)));
 
     }
 
@@ -48,7 +49,7 @@ public class TeleportSpell extends AbstractSpell {
         Vec3 dest = null;
 
         if (playerMagicData != null) {
-            if (playerMagicData.getAdditionalCastData() instanceof TeleportData teleportData) {
+            if (playerMagicData.getAdditionalCastData() instanceof TeleportSpell.TeleportData teleportData) {
                 var tmp = teleportData.getTeleportTargetPosition();
                 int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) tmp.x, (int) tmp.z);
                 dest = new Vec3(tmp.x, y, tmp.z);
@@ -56,7 +57,7 @@ public class TeleportSpell extends AbstractSpell {
         }
 
         if (dest == null) {
-            dest = findTeleportLocation(level, entity, getDistance(entity));
+            dest = findTeleportLocation(level, entity);
         }
 
         particleCloud(level, entity, dest);
@@ -75,8 +76,12 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        var teleportData = (TeleportData) playerMagicData.getAdditionalCastData();
+        var teleportData = (TeleportSpell.TeleportData) playerMagicData.getAdditionalCastData();
 
+        FrozenHumanoid shadow = new FrozenHumanoid(level, entity);
+        shadow.setShatterDamage(getDamage(entity));
+        shadow.setDeathTimer(60);
+        level.addFreshEntity(shadow);
         Vec3 dest = null;
         if (teleportData != null) {
             var potentialTarget = teleportData.getTeleportTargetPosition();
@@ -86,7 +91,7 @@ public class TeleportSpell extends AbstractSpell {
         }
 
         if (dest == null) {
-            dest = findTeleportLocation(level, entity, getDistance(entity));
+            dest = findTeleportLocation(level, entity);
         }
 
         Messages.sendToPlayersTrackingEntity(new ClientboundTeleportParticles(entity.position(), dest), entity);
@@ -98,36 +103,23 @@ public class TeleportSpell extends AbstractSpell {
         super.onCast(level, entity, playerMagicData);
     }
 
-    public static Vec3 findTeleportLocation(Level level, LivingEntity entity, float maxDistance) {
-        var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, maxDistance);
-        var pos = blockHitResult.getBlockPos();
-
-        Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() / 3, 0, entity.getBbHeight() / 3);
-        Vec3 rawImpact = blockHitResult.getLocation().subtract(bbOffset);
-        int ledgeY = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
-        Vec3 correctedPos = new Vec3(pos.getX(), ledgeY, pos.getZ());
-        boolean los = level.clip(new ClipContext(rawImpact, rawImpact.add(0, ledgeY - pos.getY(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getType() == HitResult.Type.MISS;
-
-        if (los && Math.abs(ledgeY - pos.getY()) <= 3) {
-            return correctedPos.add(0.5, 0, 0.5);
-        } else {
-            return level.clip(new ClipContext(rawImpact, rawImpact.add(0, -entity.getEyeHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getLocation();
-        }
-
+    private Vec3 findTeleportLocation(Level level, LivingEntity entity) {
+        return TeleportSpell.findTeleportLocation(level, entity, getDistance(entity));
     }
 
     public static void particleCloud(Level level, LivingEntity entity, Vec3 pos) {
         if (level.isClientSide) {
             double width = 0.5;
             float height = entity.getBbHeight() / 2;
-            for (int i = 0; i < 55; i++) {
+            for (int i = 0; i < 25; i++) {
                 double x = pos.x + level.random.nextDouble() * width * 2 - width;
                 double y = pos.y + height + level.random.nextDouble() * height * 1.2 * 2 - height * 1.2;
                 double z = pos.z + level.random.nextDouble() * width * 2 - width;
                 double dx = level.random.nextDouble() * .1 * (level.random.nextBoolean() ? 1 : -1);
                 double dy = level.random.nextDouble() * .1 * (level.random.nextBoolean() ? 1 : -1);
                 double dz = level.random.nextDouble() * .1 * (level.random.nextBoolean() ? 1 : -1);
-                level.addParticle(ParticleTypes.PORTAL, true, x, y, z, dx, dy, dz);
+                level.addParticle(ParticleHelper.SNOWFLAKE, true, x, y, z, dx, dy, dz);
+                level.addParticle(ParticleTypes.SNOWFLAKE, true, x, y, z, -dx, -dy, -dz);
             }
         }
     }
@@ -136,25 +128,8 @@ public class TeleportSpell extends AbstractSpell {
         return getSpellPower(sourceEntity);
     }
 
-    public static class TeleportData implements CastData {
-        private Vec3 teleportTargetPosition;
-
-        public TeleportData(Vec3 teleportTargetPosition) {
-            this.teleportTargetPosition = teleportTargetPosition;
-        }
-
-        public void setTeleportTargetPosition(Vec3 targetPosition) {
-            this.teleportTargetPosition = targetPosition;
-        }
-
-        public Vec3 getTeleportTargetPosition() {
-            return this.teleportTargetPosition;
-        }
-
-        @Override
-        public void reset() {
-            //Nothing needed here for teleport
-        }
+    private float getDamage(Entity caster) {
+        return this.getSpellPower(caster) / 4;
     }
 
 }

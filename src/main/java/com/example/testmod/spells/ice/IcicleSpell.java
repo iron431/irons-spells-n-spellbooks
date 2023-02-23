@@ -45,6 +45,7 @@ public class IcicleSpell extends AbstractSpell {
         icicle.setPos(entity.position().add(0, entity.getEyeHeight() - icicle.getBoundingBox().getYsize() * .5f, 0));
         icicle.shoot(entity.getLookAngle());
         icicle.setDamage(getSpellPower(entity));
+        icicle.setNoGravity(true);
         world.addFreshEntity(icicle);
         super.onCast(world, entity, playerMagicData);
     }

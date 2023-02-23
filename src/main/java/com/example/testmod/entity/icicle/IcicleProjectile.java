@@ -72,6 +72,11 @@ public class IcicleProjectile extends Projectile implements ItemSupplier {
         }
         setPos(position().add(getDeltaMovement()));
 
+        if (!this.isNoGravity()) {
+            Vec3 vec34 = this.getDeltaMovement();
+            this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
+        }
+
         age++;
     }
 

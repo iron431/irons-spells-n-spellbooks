@@ -41,7 +41,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
         this.goalSelector.addGoal(4, new WizardAttackGoal(this, 1.25f, 35, 50).setSpells(
                 List.of(SpellType.FANG_STRIKE_SPELL, SpellType.FANG_STRIKE_SPELL, SpellType.ICICLE_SPELL, SpellType.ICICLE_SPELL, SpellType.MAGIC_MISSILE_SPELL, SpellType.MAGIC_MISSILE_SPELL),
                 List.of(SpellType.FANG_WARD_SPELL, SpellType.FANG_WARD_SPELL, SpellType.EVASION_SPELL),
-                List.of(),
+                List.of(SpellType.FROST_STEP),
                 List.of(SpellType.HEAL_SPELL)
         ).setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 80, 350, 3, 5));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));

@@ -11,6 +11,7 @@ import com.example.testmod.spells.evocation.*;
 import com.example.testmod.spells.fire.*;
 import com.example.testmod.spells.holy.*;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
+import com.example.testmod.spells.ice.FrostStepSpell;
 import com.example.testmod.spells.ice.IcicleSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import com.example.testmod.spells.lightning.LightningBoltSpell;
@@ -69,7 +70,8 @@ public enum SpellType {
     MAGIC_ARROW_SPELL(30),
     LOB_CREEPER_SPELL(31),
     CHAIN_CREEPER_SPELL(32),
-    BLAZE_STORM_SPELL(33);
+    BLAZE_STORM_SPELL(33),
+    FROST_STEP(34);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -126,7 +128,7 @@ public enum SpellType {
     }
 
     private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, BLAZE_STORM_SPELL};
-    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL};
+    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL, FROST_STEP};
     private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL};
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL};
@@ -233,6 +235,9 @@ public enum SpellType {
             }
             case BLAZE_STORM_SPELL -> {
                 return new BlazeStormSpell(level);
+            }
+            case FROST_STEP -> {
+                return new FrostStepSpell(level);
             }
             default -> {
                 return new NoneSpell(0);

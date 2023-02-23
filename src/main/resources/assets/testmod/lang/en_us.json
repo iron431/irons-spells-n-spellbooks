@@ -94,6 +94,7 @@
   "ui.testmod.damage": "%d Damage",
   "ui.testmod.distance": "%d Block Range",
   "ui.testmod.summon_count": "%d Summons",
+  "ui.testmod.shatter_damage": "%d Shatter Damage",
   "ui.testmod.fang_count": "%d Fangs",
   "ui.testmod.ring_count": "%d Rings",
   "ui.testmod.hp": "%d HP",
@@ -165,6 +166,7 @@
   "spell.testmod.lob_creeper": "Lob Creeper",
   "spell.testmod.creeper_revenge": "Revenge of the Creeper",
   "spell.testmod.chain_creeper": "Chain Creeper",
+  "spell.testmod.frost_step": "Frost Step",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

@@ -14,6 +14,7 @@ import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
 import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.SummonedZombie;
+import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
@@ -169,4 +170,10 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "creeper_head_projectile").toString()));
+
+    public static final RegistryObject<EntityType<FrozenHumanoid>> FROZEN_HUMANOID =
+            ENTITIES.register("frozen_humanoid", () -> EntityType.Builder.<FrozenHumanoid>of(FrozenHumanoid::new, MobCategory.MISC)
+                    .sized(0.6F, 1.8F)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "frozen_humanoid").toString()));
 }

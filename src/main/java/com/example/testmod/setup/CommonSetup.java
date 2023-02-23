@@ -5,6 +5,7 @@ import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.SummonedZombie;
+import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
 import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
@@ -45,6 +46,7 @@ public class CommonSetup {
         event.put(EntityRegistry.SUMMONED_VEX.get(), SummonedVex.createAttributes().build());
         event.put(EntityRegistry.SUMMONED_ZOMBIE.get(), SummonedZombie.createAttributes().build());
         event.put(EntityRegistry.SUMMONED_SKELETON.get(), SummonedSkeleton.createAttributes().build());
+        event.put(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoid.prepareAttributes().build());
 
 
     }

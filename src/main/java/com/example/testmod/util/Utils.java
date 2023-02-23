@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.entity.PartEntity;
@@ -237,5 +238,10 @@ public class Utils {
         float pitch = (float) Math.asin(vector.y);
         float yaw = (float) Math.atan2(vector.x, vector.z);
         return new Vec2(pitch, yaw);
+    }
+
+    public static Vec3 putVectorOnWorldSurface(Level level,Vec3 location){
+        int y = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) location.x, (int) location.z);
+        return new Vec3(location.x, y, location.z);
     }
 }
