@@ -24,6 +24,7 @@ public class SyncedSpellData {
     private boolean hasEvasion;
     private boolean hasHeartstop;
     private float heartStopDamage;
+    private boolean hasAbyssalShroud;
 
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {
@@ -35,6 +36,7 @@ public class SyncedSpellData {
         this.hasEvasion = false;
         this.hasHeartstop = false;
         this.heartStopDamage = 0;
+        this.hasAbyssalShroud = false;
     }
 
     //Use this on the server
@@ -52,6 +54,8 @@ public class SyncedSpellData {
             buffer.writeBoolean(data.hasEvasion);
             buffer.writeBoolean(data.hasHeartstop);
             buffer.writeFloat(data.heartStopDamage);
+            buffer.writeBoolean(data.hasAbyssalShroud);
+
         }
 
         public SyncedSpellData read(FriendlyByteBuf buffer) {
@@ -62,6 +66,7 @@ public class SyncedSpellData {
             data.hasEvasion = buffer.readBoolean();
             data.hasHeartstop = buffer.readBoolean();
             data.heartStopDamage = buffer.readFloat();
+            data.hasAbyssalShroud = buffer.readBoolean();
             return data;
         }
     };
@@ -73,6 +78,7 @@ public class SyncedSpellData {
         compound.putBoolean("hasEvasion", this.hasEvasion);
         compound.putBoolean("hasHeartstop", this.hasHeartstop);
         compound.putFloat("heartStopDamage", this.heartStopDamage);
+        compound.putBoolean("hasAbyssalShroud", this.hasAbyssalShroud);
     }
 
     public void loadNBTData(CompoundTag compound) {
@@ -82,6 +88,7 @@ public class SyncedSpellData {
         this.hasEvasion = compound.getBoolean("hasEvasion");
         this.hasHeartstop = compound.getBoolean("hasHeartstop");
         this.heartStopDamage = compound.getFloat("heartStopDamage");
+        this.hasAbyssalShroud = compound.getBoolean("hasAbyssalShroud");
     }
 
     public int getServerPlayerId() {
@@ -112,6 +119,15 @@ public class SyncedSpellData {
 
     public void setHasAngelWings(boolean hasAngelWings) {
         this.hasAngelWings = hasAngelWings;
+        doSync();
+    }
+
+    public boolean hasAbyssalShroud() {
+        return hasAbyssalShroud;
+    }
+
+    public void setHasAbyssalShroud(boolean hasAbyssalShroud) {
+        this.hasAbyssalShroud = hasAbyssalShroud;
         doSync();
     }
 

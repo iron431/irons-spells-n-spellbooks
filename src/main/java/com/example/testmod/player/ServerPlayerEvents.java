@@ -2,6 +2,7 @@ package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.effect.AbyssalShroudEffect;
 import com.example.testmod.effect.EvasionEffect;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.item.Scroll;
@@ -120,6 +121,10 @@ public class ServerPlayerEvents {
         var playerMagicData = PlayerMagicData.getPlayerMagicData(livingEntity);
         if (playerMagicData.getSyncedData().hasEvasion()) {
             if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
+                event.setCanceled(true);
+            }
+        }else if (playerMagicData.getSyncedData().hasAbyssalShroud()) {
+            if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                 event.setCanceled(true);
             }
         }

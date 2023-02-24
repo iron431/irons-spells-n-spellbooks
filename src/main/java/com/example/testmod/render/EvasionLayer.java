@@ -11,11 +11,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class EvasionLayer<T extends LivingEntity> extends AbstractEnergySwirlLayer<T, HumanoidModel<T>> {
+public class EvasionLayer<T extends LivingEntity, M extends HumanoidModel<T>> extends AbstractEnergySwirlLayer<T, M> {
     private static final ResourceLocation EVASION_TEXTURE = new ResourceLocation(TestMod.MODID, "textures/entity/evasion.png");
     private final HumanoidModel<T> model;
 
-    public EvasionLayer(RenderLayerParent<T, HumanoidModel<T>> pRenderer) {
+    public EvasionLayer(RenderLayerParent<T, M> pRenderer) {
         super(pRenderer);
         this.model = pRenderer.getModel();
     }

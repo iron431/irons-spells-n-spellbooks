@@ -63,7 +63,7 @@ public class HitscanFireworkRocketEntity extends FireworkRocketEntity {
                 }
 
                 if (los) {
-                    DamageSources.applyDamage(livingentity, this.getDamage(), SpellType.FIRECRACKER_SPELL.getDamageSource(), SchoolType.EVOCATION, getOwner());
+                    DamageSources.applyDamage(livingentity, this.getDamage(), SpellType.FIRECRACKER_SPELL.getDamageSource(this,getOwner()), SchoolType.EVOCATION);
                 }
             }
         }

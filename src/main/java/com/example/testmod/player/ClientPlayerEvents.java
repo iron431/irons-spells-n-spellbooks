@@ -1,5 +1,6 @@
 package com.example.testmod.player;
 
+import com.example.testmod.effect.AbyssalShroudEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
@@ -18,6 +19,15 @@ public class ClientPlayerEvents {
             if (ClientMagicData.getCastDuration() > 0) {
                 ClientMagicData.handleCastDuration();
             }
+
+            //TODO: what about spellcasting mobs?
+            var level = Minecraft.getInstance().level;
+            level.players().forEach((player) -> {
+                var spellData = ClientMagicData.getSyncedSpellData(player);
+                if (spellData.hasAbyssalShroud()) {
+                    AbyssalShroudEffect.ambientParticles(level, player);
+                }
+            });
         }
     }
 }

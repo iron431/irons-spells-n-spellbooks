@@ -15,5 +15,6 @@ public class ModTags {
     public static final TagKey<Item> HOLY_FOCUS = ItemTags.create(new ResourceLocation(TestMod.MODID,"holy_focus"));
     public static final TagKey<Item> BLOOD_FOCUS = ItemTags.create(new ResourceLocation(TestMod.MODID,"blood_focus"));
     public static final TagKey<Item> EVOCATION_FOCUS = ItemTags.create(new ResourceLocation(TestMod.MODID,"evocation_focus"));
+    public static final TagKey<Item> VOID_FOCUS = ItemTags.create(new ResourceLocation(TestMod.MODID,"void_focus"));
 
 }

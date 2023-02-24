@@ -98,7 +98,7 @@ public class CreeperHeadProjectile extends WitherSkull {
                     if (entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying())
                         break;
                     float damage = (float) (this.damage * (1 - Math.pow(distance / (explosionRadius), 2)));
-                    DamageSources.applyDamage(entity, damage, SpellType.LOB_CREEPER_SPELL.getDamageSource(), SchoolType.EVOCATION, getOwner());
+                    DamageSources.applyDamage(entity, damage, SpellType.LOB_CREEPER_SPELL.getDamageSource(this, getOwner()), SchoolType.EVOCATION);
                     if (chainOnKill && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying())
                         ChainCreeperSpell.summonCreeperRing(this.level, this.getOwner() instanceof LivingEntity livingOwner ? livingOwner : null, livingEntity.getEyePosition(), this.damage * .85f, 3);
                 }

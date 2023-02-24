@@ -102,7 +102,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         //TestMod.LOGGER.debug("MagicMissileProjectile.onHitEntity");
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.MAGIC_MISSILE_SPELL.getDamageSource(), SchoolType.ENDER, getOwner());
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.MAGIC_MISSILE_SPELL.getDamageSource(this, getOwner()), SchoolType.ENDER);
         kill();
 
     }

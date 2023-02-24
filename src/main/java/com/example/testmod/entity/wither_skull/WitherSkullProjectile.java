@@ -3,8 +3,8 @@ package com.example.testmod.entity.wither_skull;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,7 +38,7 @@ public class WitherSkullProjectile extends WitherSkull {
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
         Entity entity = pResult.getEntity();
-        DamageSources.applyDamage(entity, damage, DamageSource.witherSkull(this, getOwner()), SchoolType.BLOOD, getOwner());
+        DamageSources.applyDamage(entity, damage, SpellType.WITHER_SKULL_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class WitherSkullProjectile extends WitherSkull {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
                 if (distance < explosionRadius * explosionRadius) {
                     float damage = (float) (this.damage * (1 - distance / (explosionRadius * explosionRadius)));
-                    DamageSources.applyDamage(entity, damage, DamageSource.witherSkull(this, getOwner()), SchoolType.BLOOD, getOwner());
+                    DamageSources.applyDamage(entity, damage, SpellType.WITHER_SKULL_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
                 }
             }
 

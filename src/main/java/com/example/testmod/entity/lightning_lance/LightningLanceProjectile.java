@@ -77,7 +77,7 @@ public class LightningLanceProjectile extends Projectile {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.LIGHTNING_LANCE_SPELL.getDamageSource(), SchoolType.LIGHTNING, getOwner());
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.LIGHTNING_LANCE_SPELL.getDamageSource(this, getOwner()), SchoolType.LIGHTNING);
     }
 
     @Override

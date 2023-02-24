@@ -107,6 +107,7 @@
   "school.testmod.ender": "Ender",
   "school.testmod.blood": "Blood",
   "school.testmod.evocation": "Evocation",
+  "school.testmod.void": "Void",
   "rarity.testmod.common": "Common",
   "rarity.testmod.uncommon": "Uncommon",
   "rarity.testmod.rare": "Rare",
@@ -167,6 +168,7 @@
   "spell.testmod.creeper_revenge": "Revenge of the Creeper",
   "spell.testmod.chain_creeper": "Chain Creeper",
   "spell.testmod.frost_step": "Frost Step",
+  "spell.testmod.abyssal_shroud": "Abyssal Shroud",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -180,6 +182,7 @@
   "effect.testmod.heartstop": "Heartstop",
   "effect.testmod.vex_timer": "Summoned Vexes",
   "effect.testmod.raise_dead_timer": "Summoned Dead",
+  "effect.testmod.abyssal_shroud": "Abyssal Shroud",
 
   "commands.testmod.create_scroll.failed": "Create Scroll Failed",
   "commands.testmod.create_spell_book.failed": "Create Spell Book Failed",

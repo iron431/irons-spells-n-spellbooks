@@ -190,7 +190,7 @@ public class BloodSlashProjectile extends Projectile {
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            DamageSources.applyDamage(entity, damage, SpellType.BLOOD_SLASH_SPELL.getDamageSource(), SchoolType.BLOOD, getOwner());
+            DamageSources.applyDamage(entity, damage, SpellType.BLOOD_SLASH_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
             if (entity instanceof LivingEntity livingEntity) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
                 if (getOwner() instanceof LivingEntity livingOwner) {

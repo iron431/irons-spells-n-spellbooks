@@ -56,7 +56,7 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         //TestMod.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         var entity = entityHitResult.getEntity();
-        DamageSources.applyDamage(entity, damage, SpellType.CONE_OF_COLD_SPELL.getDamageSource(), SchoolType.ICE, getOwner());
+        DamageSources.applyDamage(entity, damage, SpellType.CONE_OF_COLD_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
         entity.setTicksFrozen(entity.getTicksFrozen() + 80);
     }
 

@@ -88,7 +88,7 @@ public class MagicArrowProjectile extends Projectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
         if (!victims.contains(entity)) {
-            DamageSources.applyDamage(entity, damage, SpellType.MAGIC_ARROW_SPELL.getDamageSource(), SchoolType.ENDER, getOwner());
+            DamageSources.applyDamage(entity, damage, SpellType.MAGIC_ARROW_SPELL.getDamageSource(this, getOwner()), SchoolType.ENDER);
             victims.add(entity);
         }
     }

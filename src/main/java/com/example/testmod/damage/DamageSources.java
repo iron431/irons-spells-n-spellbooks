@@ -4,6 +4,7 @@ import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.spells.SchoolType;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -35,23 +36,28 @@ public class DamageSources {
     public static DamageSource ENDER_MAGIC = new DamageSource("ender_magic_damage");
     public static DamageSource EVOCATION_MAGIC = new DamageSource("evocation_magic_damage");
 
-    public static float applyDamage(Entity target, float baseAmount, DamageSource damageSource, SchoolType damageSchool, @Nullable Entity attacker) {
-        //TODO: check for "isAlliedTo"?
-        //TODO: return boolean?
+    public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource, SchoolType damageSchool) {
         if (target instanceof LivingEntity livingTarget) {
             float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
-            if (attacker instanceof LivingEntity livingAttacker) {
-                livingTarget.hurt(new EntityDamageSource(damageSource.getMsgId(), livingAttacker), adjustedDamage);
+
+            if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
+                if (livingAttacker.isAlliedTo(livingTarget))
+                    return false;
                 livingAttacker.setLastHurtMob(target);
-            } else {
-                livingTarget.hurt(damageSource, adjustedDamage);
             }
-            return adjustedDamage;
+            return livingTarget.hurt(damageSource, adjustedDamage);
         } else {
-            target.hurt(damageSource, baseAmount);
-            return 0;
+            return target.hurt(damageSource, baseAmount);
         }
 
+    }
+
+    public static DamageSource directDamageSource(DamageSource source, Entity attacker) {
+        return new EntityDamageSource(source.getMsgId(), attacker);
+    }
+
+    public static DamageSource proxyDamageSource(DamageSource source, Entity projectile, @Nullable Entity attacker) {
+        return new IndirectEntityDamageSource(source.msgId, projectile, attacker);
     }
 
     public static float getResist(LivingEntity entity, SchoolType damageSchool) {

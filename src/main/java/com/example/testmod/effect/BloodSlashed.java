@@ -50,6 +50,6 @@ public class BloodSlashed extends MobEffect {
 //        }
 //
 //        entity.hurt(DamageSources.BLOOD_MAGIC, amount * resist);
-        DamageSources.applyDamage(entity, amount, BLEED_DAMAGE, SchoolType.BLOOD, null);
+        DamageSources.applyDamage(entity, amount, BLEED_DAMAGE, SchoolType.BLOOD);
     }
 }

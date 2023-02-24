@@ -58,5 +58,10 @@
     "sounds": [
       "testmod:ice_impact"
     ]
+  },
+  "abyssal_teleport": {
+    "sounds": [
+      "testmod:abyssal_teleport"
+    ]
   }
 }

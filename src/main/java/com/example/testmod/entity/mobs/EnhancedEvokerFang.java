@@ -61,7 +61,7 @@ public class EnhancedEvokerFang extends EvokerFangs {
     private void dealDamageTo(LivingEntity pTarget) {
         LivingEntity livingentity = this.getOwner();
         if (pTarget.isAlive() && !pTarget.isInvulnerable() && pTarget != livingentity) {
-            DamageSources.applyDamage(pTarget, damage, SpellType.FANG_STRIKE_SPELL.getDamageSource(), SchoolType.EVOCATION, getOwner());
+            DamageSources.applyDamage(pTarget, damage, SpellType.FANG_STRIKE_SPELL.getDamageSource(this,getOwner()), SchoolType.EVOCATION);
 
         }
     }

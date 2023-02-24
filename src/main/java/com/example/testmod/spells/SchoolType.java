@@ -13,7 +13,8 @@ public enum SchoolType {
     HOLY(3),
     ENDER(4),
     BLOOD(5),
-    EVOCATION(6);
+    EVOCATION(6),
+    VOID(7);
 
     private final int value;
 
@@ -42,12 +43,11 @@ public enum SchoolType {
             return ENDER;
         } else if (stack.is(ModTags.BLOOD_FOCUS)) {
             return BLOOD;
-            //TODO: evocation gem?
         } else if (stack.is(ModTags.EVOCATION_FOCUS)) {
             return EVOCATION;
-        }/*else if (Items.ECHO_SHARD.equals(item)) {
+        }else if (stack.is(ModTags.VOID_FOCUS)) {
             return VOID;
-        }*/ else return null;
+        } else return null;
     }
 
     public static final Component DISPLAY_FIRE = Component.translatable("school.testmod.fire").withStyle(ChatFormatting.GOLD);
@@ -57,7 +57,8 @@ public enum SchoolType {
     public static final Component DISPLAY_ENDER = Component.translatable("school.testmod.ender").withStyle(ChatFormatting.LIGHT_PURPLE);
     public static final Component DISPLAY_BLOOD = Component.translatable("school.testmod.blood").withStyle(ChatFormatting.DARK_RED);
     public static final Component DISPLAY_EVOCATION = Component.translatable("school.testmod.evocation").withStyle(ChatFormatting.WHITE);
-    public static final Component[] DISPLAYS = {DISPLAY_FIRE, DISPLAY_ICE, DISPLAY_LIGHTNING, DISPLAY_HOLY, DISPLAY_ENDER, DISPLAY_BLOOD, DISPLAY_EVOCATION};
+    public static final Component DISPLAY_VOID = Component.translatable("school.testmod.void").withStyle(ChatFormatting.DARK_PURPLE);
+    public static final Component[] DISPLAYS = {DISPLAY_FIRE, DISPLAY_ICE, DISPLAY_LIGHTNING, DISPLAY_HOLY, DISPLAY_ENDER, DISPLAY_BLOOD, DISPLAY_EVOCATION, DISPLAY_VOID};
 
 
 }

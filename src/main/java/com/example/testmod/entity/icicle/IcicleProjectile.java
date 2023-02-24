@@ -108,10 +108,9 @@ public class IcicleProjectile extends Projectile implements ItemSupplier {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.ICICLE_SPELL.getDamageSource(), SchoolType.ICE, getOwner());
-        if (entityHitResult.getEntity() instanceof LivingEntity target) {
+        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.ICICLE_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
+        if (hit && entityHitResult.getEntity() instanceof LivingEntity target) {
             target.setTicksFrozen(target.getTicksFrozen() + 165);
-
         }
 
     }

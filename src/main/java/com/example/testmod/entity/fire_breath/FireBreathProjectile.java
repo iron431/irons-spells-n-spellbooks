@@ -88,7 +88,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        DamageSources.applyDamage(entity, damage, SpellType.FIRE_BREATH_SPELL.getDamageSource(), SchoolType.FIRE, getOwner());
+        DamageSources.applyDamage(entity, damage, SpellType.FIRE_BREATH_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE);
         entity.setSecondsOnFire(4);
     }
 }

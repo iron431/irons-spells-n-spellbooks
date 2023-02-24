@@ -2,6 +2,7 @@ package com.example.testmod.spells;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.config.ServerConfigs;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.spells.blood.*;
 import com.example.testmod.spells.ender.EvasionSpell;
 import com.example.testmod.spells.ender.MagicArrowSpell;
@@ -16,11 +17,13 @@ import com.example.testmod.spells.ice.IcicleSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import com.example.testmod.spells.lightning.LightningBoltSpell;
 import com.example.testmod.spells.lightning.LightningLanceSpell;
+import com.example.testmod.spells.void_school.AbyssalShroudSpell;
 import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.UseAnim;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -71,7 +74,8 @@ public enum SpellType {
     LOB_CREEPER_SPELL(31),
     CHAIN_CREEPER_SPELL(32),
     BLAZE_STORM_SPELL(33),
-    FROST_STEP(34);
+    FROST_STEP(34),
+    ABYSSAL_SHROUD_SPELL(35);
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -134,6 +138,7 @@ public enum SpellType {
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL,RAY_OF_SIPHONING_SPELL};
     private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL};
+    private static final SpellType[] VOID_SPELLS = {ABYSSAL_SHROUD_SPELL};
 
     public AbstractSpell getSpellForType(int level) {
         switch (this) {
@@ -238,6 +243,9 @@ public enum SpellType {
             }
             case FROST_STEP -> {
                 return new FrostStepSpell(level);
+            }
+            case ABYSSAL_SHROUD_SPELL -> {
+                return new AbyssalShroudSpell(level);
             }
             default -> {
                 return new NoneSpell(0);
@@ -360,8 +368,10 @@ public enum SpellType {
             return SchoolType.ENDER;
         if (quickSearch(BLOOD_SPELLS, this))
             return SchoolType.BLOOD;
-        //if (quickSearch(EVOCATION_SPELLS, this))
-        return SchoolType.EVOCATION;
+        if (quickSearch(VOID_SPELLS, this))
+            return SchoolType.VOID;
+        else
+            return SchoolType.EVOCATION;
     }
 
 
@@ -378,8 +388,9 @@ public enum SpellType {
             return ENDER_SPELLS;
         else if (school.equals(SchoolType.BLOOD))
             return BLOOD_SPELLS;
-        //else if (school.equals(SchoolType.EVOCATION))
-        return EVOCATION_SPELLS;
+        else if (school.equals(SchoolType.EVOCATION))
+            return EVOCATION_SPELLS;
+        else return VOID_SPELLS;
     }
 
     public MutableComponent getDisplayName() {
@@ -392,6 +403,14 @@ public enum SpellType {
 
     public DamageSource getDamageSource() {
         return new DamageSource(this.getId() + "_spell");
+    }
+
+    public DamageSource getDamageSource(Entity attacker) {
+        return DamageSources.directDamageSource(getDamageSource(), attacker);
+    }
+
+    public DamageSource getDamageSource(Entity projectile, Entity attacker) {
+        return DamageSources.proxyDamageSource(getDamageSource(), projectile, attacker);
     }
 
     public String getId() {

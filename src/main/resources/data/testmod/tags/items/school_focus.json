@@ -7,6 +7,7 @@
     "#testmod:holy_focus",
     "#testmod:ender_focus",
     "#testmod:blood_focus",
-    "#testmod:evocation_focus"
+    "#testmod:evocation_focus",
+    "#testmod:void_focus"
   ]
 }
