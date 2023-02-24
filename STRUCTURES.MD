@@ -63,8 +63,8 @@ testmod:dungeon1_room_pool
 testmod:dungeon1_treasure_pool
 testmod:dungeon1_secret_room_pool
 
-testmod:room_or_hallway
-testmod:treasure_or_mob
-testmod:secret_room
+room_or_hallway
+treasure_or_mob
+secret_room
 
 minecraft:stone_bricks
