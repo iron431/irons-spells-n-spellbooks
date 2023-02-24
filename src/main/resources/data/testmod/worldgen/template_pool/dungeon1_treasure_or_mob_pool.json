@@ -5,7 +5,16 @@
     {
       "weight": 1,
       "element": {
-        "location": "testmod:dungeon1/chest_horizontal",
+        "location": "testmod:dungeon1/chest_rightside",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "testmod:dungeon1/chest_rightside_empty",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
