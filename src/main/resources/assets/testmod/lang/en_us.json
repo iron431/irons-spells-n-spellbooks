@@ -100,6 +100,7 @@
   "ui.testmod.hp": "%d HP",
   "ui.testmod.effect_length": "%d Effect Length",
   "ui.testmod.projectile_count": "%d Projectiles",
+  "ui.testmod.frostbite_success_chance": "Auto-Success Threshold: %d% Chance",
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",
   "school.testmod.lightning": "Lightning",
@@ -169,6 +170,7 @@
   "spell.testmod.chain_creeper": "Chain Creeper",
   "spell.testmod.frost_step": "Frost Step",
   "spell.testmod.abyssal_shroud": "Abyssal Shroud",
+  "spell.testmod.ascension": "Ascension",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

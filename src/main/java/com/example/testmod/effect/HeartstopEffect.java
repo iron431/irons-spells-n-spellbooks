@@ -4,13 +4,13 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.player.ClientMagicData;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -56,7 +56,7 @@ public class HeartstopEffect extends MobEffect {
 
         //Heart beats once every 2 seconds at 0% damage, and 2 times per second at 100% damage (relative to health)
         if (pLivingEntity.level.isClientSide) {
-            if (pLivingEntity instanceof LocalPlayer player) {
+            if (pLivingEntity instanceof Player player) {
                 float damage = ClientMagicData.getSyncedSpellData(player).getHeartstopAccumulatedDamage();
                 float f = 1 - Mth.clamp(damage / player.getHealth(), 0, 1);
                 int i = (int) (10 + (40 - 10) * f);

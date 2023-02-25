@@ -25,6 +25,7 @@ public class SyncedSpellData {
     private boolean hasHeartstop;
     private float heartStopDamage;
     private boolean hasAbyssalShroud;
+    private boolean hasAscension;
 
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {
@@ -37,6 +38,7 @@ public class SyncedSpellData {
         this.hasHeartstop = false;
         this.heartStopDamage = 0;
         this.hasAbyssalShroud = false;
+        this.hasAscension = false;
     }
 
     //Use this on the server
@@ -55,6 +57,7 @@ public class SyncedSpellData {
             buffer.writeBoolean(data.hasHeartstop);
             buffer.writeFloat(data.heartStopDamage);
             buffer.writeBoolean(data.hasAbyssalShroud);
+            buffer.writeBoolean(data.hasAscension);
 
         }
 
@@ -67,6 +70,7 @@ public class SyncedSpellData {
             data.hasHeartstop = buffer.readBoolean();
             data.heartStopDamage = buffer.readFloat();
             data.hasAbyssalShroud = buffer.readBoolean();
+            data.hasAscension = buffer.readBoolean();
             return data;
         }
     };
@@ -79,6 +83,7 @@ public class SyncedSpellData {
         compound.putBoolean("hasHeartstop", this.hasHeartstop);
         compound.putFloat("heartStopDamage", this.heartStopDamage);
         compound.putBoolean("hasAbyssalShroud", this.hasAbyssalShroud);
+        compound.putBoolean("hasAscension", this.hasAscension);
     }
 
     public void loadNBTData(CompoundTag compound) {
@@ -89,6 +94,7 @@ public class SyncedSpellData {
         this.hasHeartstop = compound.getBoolean("hasHeartstop");
         this.heartStopDamage = compound.getFloat("heartStopDamage");
         this.hasAbyssalShroud = compound.getBoolean("hasAbyssalShroud");
+        this.hasAscension = compound.getBoolean("hasAscension");
     }
 
     public int getServerPlayerId() {
@@ -128,6 +134,15 @@ public class SyncedSpellData {
 
     public void setHasAbyssalShroud(boolean hasAbyssalShroud) {
         this.hasAbyssalShroud = hasAbyssalShroud;
+        doSync();
+    }
+
+    public boolean hasAscension() {
+        return hasAscension;
+    }
+
+    public void setHasAscension(boolean hasAscension) {
+        this.hasAscension = hasAscension;
         doSync();
     }
 

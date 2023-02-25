@@ -7,6 +7,7 @@ import com.example.testmod.effect.EvasionEffect;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -127,7 +128,15 @@ public class ServerPlayerEvents {
             if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                 event.setCanceled(true);
             }
+        } else if (playerMagicData.getSyncedData().hasAscension() && event.getSource() == DamageSource.LIGHTNING_BOLT) {
+            event.getEntity().getActiveEffects().forEach((effect) -> {
+                TestMod.LOGGER.debug(effect.getDescriptionId());
+                if (effect.getEffect() == MobEffectRegistry.ASCENSION.get() && effect.getDuration() <= 5)
+                    event.setCanceled(true);
+
+            });
         }
+
     }
 
 //    @SubscribeEvent

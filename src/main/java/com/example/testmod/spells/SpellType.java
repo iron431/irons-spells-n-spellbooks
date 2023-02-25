@@ -13,7 +13,9 @@ import com.example.testmod.spells.fire.*;
 import com.example.testmod.spells.holy.*;
 import com.example.testmod.spells.ice.ConeOfColdSpell;
 import com.example.testmod.spells.ice.FrostStepSpell;
+import com.example.testmod.spells.ice.FrostbiteSpell;
 import com.example.testmod.spells.ice.IcicleSpell;
+import com.example.testmod.spells.lightning.AscensionSpell;
 import com.example.testmod.spells.lightning.ElectrocuteSpell;
 import com.example.testmod.spells.lightning.LightningBoltSpell;
 import com.example.testmod.spells.lightning.LightningLanceSpell;
@@ -75,7 +77,10 @@ public enum SpellType {
     CHAIN_CREEPER_SPELL(32),
     BLAZE_STORM_SPELL(33),
     FROST_STEP(34),
-    ABYSSAL_SHROUD_SPELL(35);
+    ABYSSAL_SHROUD_SPELL(35),
+    FROSTBITE(36),
+    ASCENSION(37)
+    ;
 
     private final int value;
     private final LazyOptional<Integer> maxLevel;
@@ -132,8 +137,8 @@ public enum SpellType {
     }
 
     private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, BLAZE_STORM_SPELL};
-    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL, FROST_STEP};
-    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL};
+    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL, FROST_STEP, FROSTBITE};
+    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL, ASCENSION};
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL,RAY_OF_SIPHONING_SPELL};
@@ -246,6 +251,12 @@ public enum SpellType {
             }
             case ABYSSAL_SHROUD_SPELL -> {
                 return new AbyssalShroudSpell(level);
+            }
+            case FROSTBITE -> {
+                return new FrostbiteSpell(level);
+            }
+            case ASCENSION -> {
+                return new AscensionSpell(level);
             }
             default -> {
                 return new NoneSpell(0);
