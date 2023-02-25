@@ -245,9 +245,6 @@ public abstract class AbstractSpell {
      * Called on the server when a spell finishes casting or is cancelled, used for any cleanup or extra functionality
      */
     public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        //TestMod.LOGGER.debug("AbstractSpell.: onCastComplete:{}", level.isClientSide);
-//        if (entity instanceof ServerPlayer player)
-//            Messages.sendToPlayer(new ClientboundSuppressRightClicks(), player);
     }
 
     /**
