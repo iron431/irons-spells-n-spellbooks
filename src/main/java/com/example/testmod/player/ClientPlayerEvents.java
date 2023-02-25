@@ -1,12 +1,15 @@
 package com.example.testmod.player;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.effect.AbyssalShroudEffect;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -39,6 +42,23 @@ public class ClientPlayerEvents {
                 });
             }
 
+        }
+    }
+
+    @SubscribeEvent
+    public static void beforeLivingRender(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
+        var player = Minecraft.getInstance().player;
+        if (player == null)
+            return;
+
+        var livingEntity = event.getEntity();
+        if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
+
+            var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
+            if (syncedData.hasTrueInvis() && livingEntity.isInvisibleTo(player)) {
+                TestMod.LOGGER.debug("{} has true invisibility", event.getEntity().getDisplayName().getString());
+                event.setCanceled(true);
+            }
         }
     }
 }

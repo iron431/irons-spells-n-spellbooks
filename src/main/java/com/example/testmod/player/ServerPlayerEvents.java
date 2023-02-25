@@ -136,9 +136,18 @@ public class ServerPlayerEvents {
 
             });
         }
-
     }
-
+//
+//    @SubscribeEvent
+//    public static void onMobTarget(LivingChangeTargetEvent event) {
+//        var newTarget = event.getNewTarget();
+//        var oldTarget = event.getOriginalTarget();
+//        if (newTarget == null || oldTarget == null)
+//            return;
+//
+//        if (newTarget.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY.get()))
+//            event.setNewTarget(oldTarget);
+//    }
 //    @SubscribeEvent
 //    public static void onPlayerHurt(LivingHurtEvent event) {
 //        if (event.getEntity() instanceof ServerPlayer serverPlayer) {

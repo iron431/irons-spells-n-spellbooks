@@ -26,6 +26,7 @@ public class SyncedSpellData {
     private float heartStopDamage;
     private boolean hasAbyssalShroud;
     private boolean hasAscension;
+    private boolean hasTrueInvis;
 
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {
@@ -39,6 +40,7 @@ public class SyncedSpellData {
         this.heartStopDamage = 0;
         this.hasAbyssalShroud = false;
         this.hasAscension = false;
+        this.hasTrueInvis = false;
     }
 
     //Use this on the server
@@ -58,6 +60,7 @@ public class SyncedSpellData {
             buffer.writeFloat(data.heartStopDamage);
             buffer.writeBoolean(data.hasAbyssalShroud);
             buffer.writeBoolean(data.hasAscension);
+            buffer.writeBoolean(data.hasTrueInvis);
 
         }
 
@@ -71,6 +74,7 @@ public class SyncedSpellData {
             data.heartStopDamage = buffer.readFloat();
             data.hasAbyssalShroud = buffer.readBoolean();
             data.hasAscension = buffer.readBoolean();
+            data.hasTrueInvis = buffer.readBoolean();
             return data;
         }
     };
@@ -84,6 +88,7 @@ public class SyncedSpellData {
         compound.putFloat("heartStopDamage", this.heartStopDamage);
         compound.putBoolean("hasAbyssalShroud", this.hasAbyssalShroud);
         compound.putBoolean("hasAscension", this.hasAscension);
+        compound.putBoolean("hasTrueInvis", this.hasTrueInvis);
     }
 
     public void loadNBTData(CompoundTag compound) {
@@ -95,6 +100,7 @@ public class SyncedSpellData {
         this.heartStopDamage = compound.getFloat("heartStopDamage");
         this.hasAbyssalShroud = compound.getBoolean("hasAbyssalShroud");
         this.hasAscension = compound.getBoolean("hasAscension");
+        this.hasTrueInvis = compound.getBoolean("hasTrueInvis");
     }
 
     public int getServerPlayerId() {
@@ -143,6 +149,15 @@ public class SyncedSpellData {
 
     public void setHasAscension(boolean hasAscension) {
         this.hasAscension = hasAscension;
+        doSync();
+    }
+
+    public boolean hasTrueInvis() {
+        return hasTrueInvis;
+    }
+
+    public void setHasTrueInvis(boolean hasTrueInvis) {
+        this.hasTrueInvis = hasTrueInvis;
         doSync();
     }
 
