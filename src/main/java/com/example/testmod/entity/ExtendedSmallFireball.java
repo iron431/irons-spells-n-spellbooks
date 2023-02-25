@@ -18,15 +18,20 @@ public class ExtendedSmallFireball extends SmallFireball {
         super(pEntityType, pLevel);
     }
 
-    public ExtendedSmallFireball(LivingEntity shooter, Level level, float speed, float damage) {
+    public ExtendedSmallFireball(LivingEntity shooter, Level level, float speed, float damage, float inaccuracy) {
         this(EntityRegistry.SMALL_FIREBALL_PROJECTILE.get(), level);
         this.damage = damage;
         setOwner(shooter);
 
         Vec3 power = shooter.getLookAngle().normalize().scale(speed);
-        this.xPower = power.x;
-        this.yPower = power.y;
-        this.zPower = power.z;
+        Vec3 inaccuracyVec = new Vec3(
+                (random.nextFloat() - .5f) * inaccuracy,
+                (random.nextFloat() - .5f) * inaccuracy,
+                (random.nextFloat() - .5f) * inaccuracy
+        );
+        this.xPower = power.x + inaccuracyVec.x;
+        this.yPower = power.y + inaccuracyVec.y;
+        this.zPower = power.z + inaccuracyVec.z;
     }
 
     @Override

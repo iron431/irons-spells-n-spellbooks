@@ -32,8 +32,8 @@ public class BloodStepSpell extends AbstractSpell {
     public BloodStepSpell(int level) {
         super(SpellType.BLOOD_STEP_SPELL);
         this.level = level;
-        this.baseSpellPower = 8;
-        this.spellPowerPerLevel = 4;
+        this.baseSpellPower = 12;
+        this.spellPowerPerLevel = 2;
         this.baseManaCost = 15;
         this.manaCostPerLevel = 3;
         this.cooldown = 200;
@@ -76,7 +76,7 @@ public class BloodStepSpell extends AbstractSpell {
                     break;
 
             }
-            entity.teleportTo(dest.x, dest.y + .25f, dest.z);
+            entity.teleportTo(dest.x, dest.y + 1f, dest.z);
             entity.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition().subtract(0, .15, 0));
         } else {
             dest = TeleportSpell.findTeleportLocation(level, entity, getDistance(entity));
@@ -84,6 +84,8 @@ public class BloodStepSpell extends AbstractSpell {
 
         }
         entity.resetFallDistance();
+        //Invis take 1 tick to set in
+        entity.setInvisible(true);
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), 100, 0, false, false, true));
 
 

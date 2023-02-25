@@ -27,9 +27,9 @@ public class BlazeStormSpell extends AbstractSpell {
         super(SpellType.BLAZE_STORM_SPELL);
         this.level = level;
         this.manaCostPerLevel = 1;
-        this.baseSpellPower = 0;
+        this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
-        this.castTime = 80 + 5 * level;
+        this.castTime = 80 + 10 * level;
         this.baseManaCost = 5;
         this.cooldown = 100;
         uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getDamage(null), 1)));
@@ -54,7 +54,7 @@ public class BlazeStormSpell extends AbstractSpell {
     @Override
     public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
         super.onServerCastTick(level, entity, playerMagicData);
-        if ((playerMagicData.getCastDurationRemaining() + 1) % 5 == 0)
+        if ((playerMagicData.getCastDurationRemaining()) % 5 == 0)
             shootBlazeFireball(level, entity);
     }
 
@@ -63,10 +63,10 @@ public class BlazeStormSpell extends AbstractSpell {
     }
 
     public void shootBlazeFireball(Level world, LivingEntity entity) {
-        float speed = 1.25f;
+        float speed = 0.45f;
         Vec3 origin = entity.getEyePosition();
-        SmallFireball fireball = new ExtendedSmallFireball(entity, world, speed, getDamage(entity));
-        fireball.setPos(origin.subtract(0, fireball.getBbHeight() / 2, 0));
+        SmallFireball fireball = new ExtendedSmallFireball(entity, world, speed, getDamage(entity),.05f);
+        fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
         world.playSound(null, origin.x, origin.y, origin.z, SoundEvents.BLAZE_SHOOT, SoundSource.AMBIENT, 1.0f, 1.0f);
         world.addFreshEntity(fireball);
     }
