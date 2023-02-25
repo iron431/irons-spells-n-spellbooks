@@ -1,7 +1,7 @@
 package com.example.testmod.spells.evocation;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.entity.mobs.EnhancedEvokerFang;
+import com.example.testmod.entity.ExtendedEvokerFang;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -55,7 +55,7 @@ public class FangStrikeSpell extends AbstractSpell {
             Vec3 spawn = start.add(forward.scale(i));
             spawn = new Vec3(spawn.x, getGroundLevel(world, spawn, 8), spawn.z);
             if (!world.getBlockState(new BlockPos(spawn).below()).isAir()) {
-                EnhancedEvokerFang fang = new EnhancedEvokerFang(world, spawn.x, spawn.y, spawn.z, (entity.getYRot() - 90) * Mth.DEG_TO_RAD, i, entity, getDamage(entity));
+                ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, (entity.getYRot() - 90) * Mth.DEG_TO_RAD, i, entity, getDamage(entity));
                 world.addFreshEntity(fang);
             }
 

@@ -1,7 +1,7 @@
 package com.example.testmod.spells.blood;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.entity.wither_skull.WitherSkullProjectile;
+import com.example.testmod.entity.ExtendedWitherSkull;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;
@@ -45,7 +45,7 @@ public class WitherSkullSpell extends AbstractSpell {
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         float speed = (8 + this.level) * .01f;
         float damage = getDamage(entity);
-        WitherSkullProjectile skull = new WitherSkullProjectile(entity, level, speed, damage);
+        ExtendedWitherSkull skull = new ExtendedWitherSkull(entity, level, speed, damage);
         Vec3 spawn = entity.getEyePosition().add(entity.getForward());
         skull.moveTo(spawn.x, spawn.y - skull.getBoundingBox().getYsize() / 2, spawn.z, entity.getYRot() + 180, entity.getXRot());
         level.addFreshEntity(skull);

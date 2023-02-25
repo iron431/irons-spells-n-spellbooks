@@ -1,4 +1,4 @@
-package com.example.testmod.entity.mobs;
+package com.example.testmod.entity;
 
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.spells.SchoolType;
@@ -8,14 +8,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.level.Level;
 
-public class EnhancedEvokerFang extends EvokerFangs {
+public class ExtendedEvokerFang extends EvokerFangs {
 
     private final float damage;
     private boolean sentSpikeEvent;
     private int warmupDelayTicks;
     private boolean attackStarted;
 
-    public EnhancedEvokerFang(Level pLevel, double pX, double pY, double pZ, float pYRot, int pWarmupDelay, LivingEntity pOwner, float damage) {
+    public ExtendedEvokerFang(Level pLevel, double pX, double pY, double pZ, float pYRot, int pWarmupDelay, LivingEntity pOwner, float damage) {
         super(pLevel, pX, pY, pZ, pYRot, pWarmupDelay, pOwner);
         this.warmupDelayTicks = pWarmupDelay;
         if (warmupDelayTicks < 0)

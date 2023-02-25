@@ -1,4 +1,4 @@
-package com.example.testmod.entity.mobs;
+package com.example.testmod.entity;
 
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.spells.SchoolType;
@@ -16,10 +16,10 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class HitscanFireworkRocketEntity extends FireworkRocketEntity {
-    protected static final EntityDataAccessor<ItemStack> DATA_ID_FIREWORKS_ITEM = SynchedEntityData.defineId(HitscanFireworkRocketEntity.class, EntityDataSerializers.ITEM_STACK);
+public class ExtendedFireworkRocket extends FireworkRocketEntity {
+    protected static final EntityDataAccessor<ItemStack> DATA_ID_FIREWORKS_ITEM = SynchedEntityData.defineId(ExtendedFireworkRocket.class, EntityDataSerializers.ITEM_STACK);
 
-    public HitscanFireworkRocketEntity(Level pLevel, ItemStack pStack, Entity pShooter, double pX, double pY, double pZ, boolean pShotAtAngle, float damage) {
+    public ExtendedFireworkRocket(Level pLevel, ItemStack pStack, Entity pShooter, double pX, double pY, double pZ, boolean pShotAtAngle, float damage) {
         super(pLevel, pStack, pShooter, pX, pY, pZ, pShotAtAngle);
         this.damage = damage;
     }

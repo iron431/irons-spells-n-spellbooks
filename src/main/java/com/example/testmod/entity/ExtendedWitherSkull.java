@@ -1,4 +1,4 @@
-package com.example.testmod.entity.wither_skull;
+package com.example.testmod.entity;
 
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;
@@ -16,14 +16,14 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
-public class WitherSkullProjectile extends WitherSkull {
-    public WitherSkullProjectile(EntityType<? extends WitherSkull> pEntityType, Level pLevel) {
+public class ExtendedWitherSkull extends WitherSkull {
+    public ExtendedWitherSkull(EntityType<? extends WitherSkull> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
     protected float damage;
 
-    public WitherSkullProjectile(LivingEntity shooter, Level level, float speed, float damage) {
+    public ExtendedWitherSkull(LivingEntity shooter, Level level, float speed, float damage) {
         super(EntityRegistry.WITHER_SKULL_PROJECTILE.get(), level);
         setOwner(shooter);
 

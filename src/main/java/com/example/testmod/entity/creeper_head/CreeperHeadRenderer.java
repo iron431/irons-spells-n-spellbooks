@@ -1,4 +1,4 @@
-package com.example.testmod.entity.wither_skull;
+package com.example.testmod.entity.creeper_head;
 
 import com.example.testmod.TestMod;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

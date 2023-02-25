@@ -89,19 +89,19 @@ public class IcicleProjectile extends Projectile implements ItemSupplier {
         } else if (hitresult.getType() == HitResult.Type.BLOCK) {
             onHitBlock((BlockHitResult) hitresult);
         }
-        double x = hitresult.getLocation().x;
-        double y = hitresult.getLocation().y;
-        double z = hitresult.getLocation().z;
+        double x = xOld;
+        double y = yOld;
+        double z = zOld;
 
         MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 15, .1, .1, .1, .1, true);
         level.playSound(null, getX(), getY(), getZ(), SoundRegistry.ICE_IMPACT.get(), SoundSource.NEUTRAL, 1, .9f + level.random.nextFloat() * .2f);
-        kill();
 
     }
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
+        kill();
 
     }
 

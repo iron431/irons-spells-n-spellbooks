@@ -1,4 +1,4 @@
-package com.example.testmod.entity.wither_skull;
+package com.example.testmod.entity.creeper_head;
 
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.EntityRegistry;

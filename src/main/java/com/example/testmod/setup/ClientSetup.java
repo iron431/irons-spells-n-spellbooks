@@ -33,7 +33,7 @@ import com.example.testmod.entity.shield.ShieldModel;
 import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.entity.shield.ShieldTrimModel;
 import com.example.testmod.entity.wisp.WispRenderer;
-import com.example.testmod.entity.wither_skull.CreeperHeadRenderer;
+import com.example.testmod.entity.creeper_head.CreeperHeadRenderer;
 import com.example.testmod.item.armor.*;
 import com.example.testmod.particle.*;
 import com.example.testmod.registries.BlockRegistry;
@@ -135,6 +135,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.MAGIC_ARROW_PROJECTILE.get(), MagicArrowRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), CreeperHeadRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoidRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SMALL_FIREBALL_PROJECTILE.get(), (p_174082_) -> new ThrownItemRenderer<>(p_174082_, 0.75F, true));
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

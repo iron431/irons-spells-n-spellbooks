@@ -2,9 +2,7 @@ package com.example.testmod.spells.ice;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
-import com.example.testmod.network.spell.ClientboundTeleportParticles;
 import com.example.testmod.registries.SoundRegistry;
-import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.ender.TeleportSpell;
@@ -94,7 +92,6 @@ public class FrostStepSpell extends AbstractSpell {
             dest = findTeleportLocation(level, entity);
         }
 
-        Messages.sendToPlayersTrackingEntity(new ClientboundTeleportParticles(entity.position(), dest), entity);
         entity.teleportTo(dest.x, dest.y, dest.z);
         entity.resetFallDistance();
 

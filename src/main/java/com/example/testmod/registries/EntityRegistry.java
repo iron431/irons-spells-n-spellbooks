@@ -11,6 +11,7 @@ import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.lightning_lance.LightningLanceProjectile;
 import com.example.testmod.entity.magic_arrow.MagicArrowProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
+import com.example.testmod.entity.ExtendedSmallFireball;
 import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.SummonedZombie;
@@ -22,8 +23,8 @@ import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import com.example.testmod.entity.wisp.WispEntity;
-import com.example.testmod.entity.wither_skull.CreeperHeadProjectile;
-import com.example.testmod.entity.wither_skull.WitherSkullProjectile;
+import com.example.testmod.entity.creeper_head.CreeperHeadProjectile;
+import com.example.testmod.entity.ExtendedWitherSkull;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -153,8 +154,8 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "summoned_skeleton").toString()));
 
-    public static final RegistryObject<EntityType<WitherSkullProjectile>> WITHER_SKULL_PROJECTILE =
-            ENTITIES.register("wither_skull_projectile", () -> EntityType.Builder.<WitherSkullProjectile>of(WitherSkullProjectile::new, MobCategory.MISC)
+    public static final RegistryObject<EntityType<ExtendedWitherSkull>> WITHER_SKULL_PROJECTILE =
+            ENTITIES.register("wither_skull_projectile", () -> EntityType.Builder.<ExtendedWitherSkull>of(ExtendedWitherSkull::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "wither_skull_projectile").toString()));
@@ -176,4 +177,10 @@ public class EntityRegistry {
                     .sized(0.6F, 1.8F)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "frozen_humanoid").toString()));
+
+    public static final RegistryObject<EntityType<ExtendedSmallFireball>> SMALL_FIREBALL_PROJECTILE =
+            ENTITIES.register("small_fireball", () -> EntityType.Builder.<ExtendedSmallFireball>of(ExtendedSmallFireball::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "small_fireball").toString()));
 }

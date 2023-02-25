@@ -80,7 +80,8 @@ public enum SpellType {
     ABYSSAL_SHROUD_SPELL(35),
     FROSTBITE_SPELL(36),
     ASCENSION_SPELL(37),
-    INVISIBILITY_SPELL(38)
+    INVISIBILITY_SPELL(38),
+    BLOOD_STEP_SPELL(39)
     ;
 
     private final int value;
@@ -142,7 +143,7 @@ public enum SpellType {
     private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL, ASCENSION_SPELL};
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL};
-    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL,RAY_OF_SIPHONING_SPELL};
+    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL,RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL};
     private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL,INVISIBILITY_SPELL};
     private static final SpellType[] VOID_SPELLS = {ABYSSAL_SHROUD_SPELL};
 
@@ -261,6 +262,9 @@ public enum SpellType {
             }
             case INVISIBILITY_SPELL -> {
                 return new InvisibilitySpell(level);
+            }
+            case BLOOD_STEP_SPELL -> {
+                return new BloodStepSpell(level);
             }
             default -> {
                 return new NoneSpell(0);
