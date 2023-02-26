@@ -44,7 +44,7 @@ public class AscensionSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
 
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ASCENSION.get(), 60, getDamage(entity), false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ASCENSION.get(), 40, getDamage(entity), false, false, true));
 
         super.onCast(level, entity, playerMagicData);
     }

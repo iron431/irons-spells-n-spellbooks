@@ -129,13 +129,6 @@ public class ServerPlayerEvents {
             if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                 event.setCanceled(true);
             }
-        } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ASCENSION) && event.getSource() == DamageSource.LIGHTNING_BOLT) {
-            event.getEntity().getActiveEffects().forEach((effect) -> {
-                TestMod.LOGGER.debug(effect.getDescriptionId());
-                if (effect.getEffect() == MobEffectRegistry.ASCENSION.get() && effect.getDuration() <= 5)
-                    event.setCanceled(true);
-
-            });
         }
     }
 //
