@@ -2,6 +2,7 @@ package com.example.testmod.spells.holy;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.network.spell.ClientboundHealParticles;
+import com.example.testmod.network.spell.ClientboundRegenCloudParticles;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
@@ -21,7 +22,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         this(1);
     }
 
-    final float radius = 5;
+    public final float radius = 5;
 
     public CloudOfRegenerationSpell(int level) {
         super(SpellType.CLOUD_OF_REGENERATION_SPELL);
@@ -58,6 +59,8 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
                 Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(target.position()), entity,true);
             }
         });
+        Messages.sendToPlayersTrackingEntity(new ClientboundRegenCloudParticles(entity.position()), entity,true);
+
         super.onCast(level, entity, playerMagicData);
     }
 

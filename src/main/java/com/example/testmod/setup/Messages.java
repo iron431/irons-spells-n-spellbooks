@@ -8,6 +8,7 @@ import com.example.testmod.gui.scroll_forge.network.ServerboundScrollForgeSelect
 import com.example.testmod.network.*;
 import com.example.testmod.network.spell.ClientboundBloodSiphonParticles;
 import com.example.testmod.network.spell.ClientboundHealParticles;
+import com.example.testmod.network.spell.ClientboundRegenCloudParticles;
 import com.example.testmod.network.spell.ClientboundTeleportParticles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -131,6 +132,12 @@ public class Messages {
                 .decoder(ClientboundBloodSiphonParticles::new)
                 .encoder(ClientboundBloodSiphonParticles::toBytes)
                 .consumer(ClientboundBloodSiphonParticles::handle)
+                .add();
+
+        net.messageBuilder(ClientboundRegenCloudParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundRegenCloudParticles::new)
+                .encoder(ClientboundRegenCloudParticles::toBytes)
+                .consumer(ClientboundRegenCloudParticles::handle)
                 .add();
 
     }

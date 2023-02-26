@@ -5,7 +5,9 @@ import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
@@ -57,7 +59,24 @@ public class ClientSpellCastHelper {
                 level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.x + getRandomScaled(0.25D), pos.y + getRandomScaled(1), pos.z + getRandomScaled(0.25D), d0, d1, d2);
             }
         }
+    }
 
+    public static void handleClientboundRegenCloudParticles(Vec3 pos) {
+        var player = Minecraft.getInstance().player;
+
+        if (player != null) {
+            var level = player.level;
+            int ySteps = 16;
+            int xSteps = 48;
+            float yDeg = 180 / ySteps * Mth.DEG_TO_RAD;
+            float xDeg = 360 / xSteps * Mth.DEG_TO_RAD;
+            for (int x = 0; x < xSteps; x++) {
+                for (int y = 0; y < ySteps; y++) {
+                    Vec3 offset = new Vec3(0, 0, 5).yRot(y * yDeg).xRot(x * xDeg).zRot(-Mth.PI / 2).multiply(1, .85f, 1);
+                    level.addParticle(DustParticleOptions.REDSTONE, pos.x + offset.x, pos.y + offset.y, pos.z + offset.z, 0, 0, 0);
+                }
+            }
+        }
     }
 
     private static double getRandomScaled(double scale) {
