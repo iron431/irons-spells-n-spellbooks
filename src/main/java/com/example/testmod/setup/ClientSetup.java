@@ -9,25 +9,25 @@ import com.example.testmod.entity.armor.pumpkin.PumpkinArmorModel;
 import com.example.testmod.entity.armor.simple_wizard.WizardArmorRenderer;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
+import com.example.testmod.entity.creeper_head.CreeperHeadRenderer;
 import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
 import com.example.testmod.entity.firebolt.FireboltRenderer;
 import com.example.testmod.entity.icicle.IcicleRenderer;
 import com.example.testmod.entity.lightning_lance.LightningLanceRenderer;
 import com.example.testmod.entity.magic_arrow.MagicArrowRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
+import com.example.testmod.entity.mobs.debug_wizard.DebugWizardModel;
+import com.example.testmod.entity.mobs.debug_wizard.DebugWizardRenderer;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import com.example.testmod.entity.mobs.horse.SpectralSteedRenderer;
 import com.example.testmod.entity.mobs.necromancer.NecromancerModel;
 import com.example.testmod.entity.mobs.necromancer.NecromancerRenderer;
-import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardModel;
-import com.example.testmod.entity.mobs.simple_wizard.SimpleWizardRenderer;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerModel;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerRenderer;
 import com.example.testmod.entity.shield.ShieldModel;
 import com.example.testmod.entity.shield.ShieldRenderer;
 import com.example.testmod.entity.shield.ShieldTrimModel;
 import com.example.testmod.entity.wisp.WispRenderer;
-import com.example.testmod.entity.creeper_head.CreeperHeadRenderer;
 import com.example.testmod.item.armor.*;
 import com.example.testmod.particle.*;
 import com.example.testmod.registries.BlockRegistry;
@@ -56,7 +56,7 @@ public class ClientSetup {
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         //LayerDefinition basicHumanLayer = LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64);
 
-        event.registerLayerDefinition(SimpleWizardModel.SIMPLE_WIZARD_LAYER, SimpleWizardModel::createBodyLayer);
+        event.registerLayerDefinition(DebugWizardModel.SIMPLE_WIZARD_LAYER, DebugWizardModel::createBodyLayer);
         //See LayerDefinitions.createRoots
         LayerDefinition energyOverlayLayer = LayerDefinition.create(HumanoidModel.createMesh(new CubeDeformation(1.25F), 0.0F), 64, 32);
         LayerDefinition outerLayer = LayerDefinition.create(HumanoidModel.createMesh(LayerDefinitions.OUTER_ARMOR_DEFORMATION, 0.0F), 64, 32);
@@ -114,14 +114,13 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FIREBOLT_PROJECTILE.get(), FireboltRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ICICLE_PROJECTILE.get(), IcicleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_BREATH_PROJECTILE.get(), NoopRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.SIMPLE_WIZARD.get(), SimpleWizardRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DEBUG_WIZARD.get(), DebugWizardRenderer::new);
         event.registerEntityRenderer(EntityRegistry.PYROMANCER.get(), PyromancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.NECROMANCER.get(), NecromancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteedRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SHIELD_ENTITY.get(), ShieldRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_ENTITY.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WISP.get(), WispRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.DEBUG.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_VEX.get(), VexRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_ZOMBIE.get(), ZombieRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_SKELETON.get(), SkeletonRenderer::new);

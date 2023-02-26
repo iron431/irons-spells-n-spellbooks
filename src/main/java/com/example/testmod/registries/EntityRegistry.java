@@ -1,9 +1,11 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.DebugEntity;
+import com.example.testmod.entity.ExtendedSmallFireball;
+import com.example.testmod.entity.ExtendedWitherSkull;
 import com.example.testmod.entity.blood_slash.BloodSlashProjectile;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdProjectile;
+import com.example.testmod.entity.creeper_head.CreeperHeadProjectile;
 import com.example.testmod.entity.electrocute.ElectrocuteProjectile;
 import com.example.testmod.entity.fire_breath.FireBreathProjectile;
 import com.example.testmod.entity.firebolt.FireboltProjectile;
@@ -11,20 +13,17 @@ import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.lightning_lance.LightningLanceProjectile;
 import com.example.testmod.entity.magic_arrow.MagicArrowProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
-import com.example.testmod.entity.ExtendedSmallFireball;
 import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.SummonedZombie;
+import com.example.testmod.entity.mobs.debug_wizard.DebugWizard;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
-import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
 import com.example.testmod.entity.wisp.WispEntity;
-import com.example.testmod.entity.creeper_head.CreeperHeadProjectile;
-import com.example.testmod.entity.ExtendedWitherSkull;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -39,12 +38,6 @@ public class EntityRegistry {
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);
     }
-
-    public static final RegistryObject<EntityType<DebugEntity>> DEBUG =
-            ENTITIES.register("debug", () -> EntityType.Builder.<DebugEntity>of(DebugEntity::new, MobCategory.MISC)
-                    .sized(1f, 1f)
-                    .clientTrackingRange(64)
-                    .build(new ResourceLocation(TestMod.MODID, "debug").toString()));
 
     public static final RegistryObject<EntityType<WispEntity>> WISP =
             ENTITIES.register("wisp", () -> EntityType.Builder.<WispEntity>of(WispEntity::new, MobCategory.MISC)
@@ -94,8 +87,8 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "fire_breath_projectile").toString()));
 
-    public static final RegistryObject<EntityType<SimpleWizard>> SIMPLE_WIZARD =
-            ENTITIES.register("simple_wizard", () -> EntityType.Builder.<SimpleWizard>of(SimpleWizard::new, MobCategory.MONSTER)
+    public static final RegistryObject<EntityType<DebugWizard>> DEBUG_WIZARD =
+            ENTITIES.register("debug_wizard", () -> EntityType.Builder.<DebugWizard>of(DebugWizard::new, MobCategory.MONSTER)
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "simple_wizard").toString()));
@@ -147,7 +140,7 @@ public class EntityRegistry {
                     .sized(.6f, 1.8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "summoned_zombie").toString()));
-    
+
     public static final RegistryObject<EntityType<SummonedSkeleton>> SUMMONED_SKELETON =
             ENTITIES.register("summoned_skeleton", () -> EntityType.Builder.<SummonedSkeleton>of(SummonedSkeleton::new, MobCategory.MONSTER)
                     .sized(.6f, 1.8f)

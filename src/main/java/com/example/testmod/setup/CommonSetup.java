@@ -5,10 +5,10 @@ import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.SummonedZombie;
+import com.example.testmod.entity.mobs.debug_wizard.DebugWizard;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
-import com.example.testmod.entity.mobs.simple_wizard.SimpleWizard;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.wisp.WispEntity;
 import com.example.testmod.registries.EntityRegistry;
@@ -38,7 +38,7 @@ public class CommonSetup {
 
     @SubscribeEvent
     public static void onAttributeCreate(EntityAttributeCreationEvent event) {
-        event.put(EntityRegistry.SIMPLE_WIZARD.get(), SimpleWizard.prepareAttributes().build());
+        event.put(EntityRegistry.DEBUG_WIZARD.get(), DebugWizard.prepareAttributes().build());
         event.put(EntityRegistry.PYROMANCER.get(), PyromancerEntity.prepareAttributes().build());
         event.put(EntityRegistry.NECROMANCER.get(), NecromancerEntity.prepareAttributes().build());
         event.put(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteed.prepareAttributes().build());

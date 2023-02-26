@@ -1,6 +1,7 @@
 package com.example.testmod.registries;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.command.CreateDebugWizardCommand;
 import com.example.testmod.command.CreateImbuedSwordCommand;
 import com.example.testmod.command.CreateScrollCommand;
 import com.example.testmod.command.CreateSpellBookCommand;
@@ -17,5 +18,6 @@ public class CommandRegistry {
         CreateScrollCommand.register(event.getDispatcher());
         CreateSpellBookCommand.register(event.getDispatcher());
         CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());
+        CreateDebugWizardCommand.register(event.getDispatcher());
     }
 }

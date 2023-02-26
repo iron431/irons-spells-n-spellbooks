@@ -1,4 +1,4 @@
-package com.example.testmod.entity.mobs.simple_wizard;
+package com.example.testmod.entity.mobs.debug_wizard;
 
 
 import com.example.testmod.TestMod;
@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-public class SimpleWizardRenderer extends HumanoidMobRenderer<SimpleWizard, SimpleWizardModel> {
+public class DebugWizardRenderer extends HumanoidMobRenderer<DebugWizard, DebugWizardModel> {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/entity/simple_wizard.png");
 
-    public SimpleWizardRenderer(EntityRendererProvider.Context context) {
-        super(context, new SimpleWizardModel(context.bakeLayer(SimpleWizardModel.SIMPLE_WIZARD_LAYER)), 1f);
+    public DebugWizardRenderer(EntityRendererProvider.Context context) {
+        super(context, new DebugWizardModel(context.bakeLayer(DebugWizardModel.SIMPLE_WIZARD_LAYER)), 1f);
         this.addLayer(new EvasionLayer<>(this));
         this.addLayer(new ChargeSpellLayer<>(this));
         this.addLayer(new GlowingEyesLayer<>(this));
@@ -25,7 +25,7 @@ public class SimpleWizardRenderer extends HumanoidMobRenderer<SimpleWizard, Simp
 
     @Nonnull
     @Override
-    public ResourceLocation getTextureLocation(SimpleWizard entity) {
+    public ResourceLocation getTextureLocation(DebugWizard entity) {
         return TEXTURE;
     }
 }

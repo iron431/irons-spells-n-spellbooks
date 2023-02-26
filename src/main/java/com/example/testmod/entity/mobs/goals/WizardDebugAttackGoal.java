@@ -4,15 +4,16 @@ import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.ai.goal.Goal;
 
-@SuppressWarnings("FieldCanBeLocal")
 public class WizardDebugAttackGoal extends Goal {
     private final AbstractSpellCastingMob mob;
-    private final SpellType spellType = SpellType.LIGHTNING_LANCE_SPELL;
-    private final int spellLevel = 1;
+    private final SpellType spellType;
+    private final int spellLevel;
     private int tickCount = 0;
 
-    public WizardDebugAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob) {
+    public WizardDebugAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, SpellType spellType, int spellLevel) {
         this.mob = abstractSpellCastingMob;
+        this.spellType = spellType;
+        this.spellLevel = spellLevel;
     }
 
     public boolean canUse() {
@@ -29,6 +30,10 @@ public class WizardDebugAttackGoal extends Goal {
 
     public void tick() {
         if (tickCount++ % 200 == 0) {
+            if (spellType == SpellType.TELEPORT_SPELL) {
+                mob.setTeleportLocationBehindTarget(15);
+            }
+
             mob.castSpell(spellType, spellLevel);
         }
     }

@@ -1,6 +1,5 @@
 package com.example.testmod.entity;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.spells.AbstractSpell;
@@ -9,7 +8,6 @@ import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.ender.TeleportSpell;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
@@ -17,7 +15,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 
@@ -25,28 +22,14 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 
 import static com.example.testmod.capabilities.magic.SyncedSpellData.SYNCED_SPELL_DATA;
-import static com.example.testmod.entity.MobSyncedCastingData.MOB_SYNCED_CASTING_DATA;
 
 public abstract class AbstractSpellCastingMob extends Monster {
-    //TODO: probably need a way to control the spell level dynamically.
-    // I'm not going to add this until we have an idea of what we want
-
-//    private static final EntityDataAccessor<Integer> DATA_CASTING_SPELL_ID = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.INT);
-//    private static final EntityDataAccessor<Integer> DATA_CASTING_SPELL_LEVEL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.INT);
-//    private static final EntityDataAccessor<Optional<BlockPos>> DATA_CASTING_TELEPORT_LOC = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
-
-    //TODO: this can get cleaned up now that synced data handles most of it.
-    private static final EntityDataAccessor<MobSyncedCastingData> DATA_CASTING = SynchedEntityData.defineId(AbstractSpellCastingMob.class, MOB_SYNCED_CASTING_DATA);
-
     private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SYNCED_SPELL_DATA);
 
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
     private final PlayerMagicData playerMagicData = new PlayerMagicData();
 
     private @Nullable AbstractSpell castingSpell;
-
-    private MobSyncedCastingData emptyMobSyncedCastingData;
-    private SyncedSpellData emptySyncedSpellData;
 
     protected AbstractSpellCastingMob(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -58,27 +41,15 @@ public abstract class AbstractSpellCastingMob extends Monster {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-    }
-
-    @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-
-        emptyMobSyncedCastingData = new MobSyncedCastingData();
-        emptySyncedSpellData = new SyncedSpellData(-1);
-
-        this.entityData.define(DATA_CASTING, emptyMobSyncedCastingData);
-        this.entityData.define(DATA_SPELL, emptySyncedSpellData);
-
-        TestMod.LOGGER.debug("ASCM.defineSynchedData DATA_CASTING:{}", DATA_CASTING);
-        TestMod.LOGGER.debug("ASCM.defineSynchedData DATA_SPELL:{}", DATA_SPELL);
+        this.entityData.define(DATA_SPELL, new SyncedSpellData(-1));
+        //TestMod.LOGGER.debug("ASCM.defineSynchedData DATA_SPELL:{}", DATA_SPELL);
     }
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-        TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level.isClientSide:{} {}", level.isClientSide, pKey);
+        //TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level.isClientSide:{} {}", level.isClientSide, pKey);
         super.onSyncedDataUpdated(pKey);
 
         if (!level.isClientSide) {
@@ -87,7 +58,7 @@ public abstract class AbstractSpellCastingMob extends Monster {
 
         if (pKey.getId() == DATA_SPELL.getId()) {
             var syncedSpellData = entityData.get(DATA_SPELL);
-            TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated(DATA_SPELL) {} {}", level.isClientSide, syncedSpellData);
+            //TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated(DATA_SPELL) {} {}", level.isClientSide, syncedSpellData);
             playerMagicData.setSyncedData(syncedSpellData);
 
             if (!syncedSpellData.isCasting()) {
@@ -101,23 +72,19 @@ public abstract class AbstractSpellCastingMob extends Monster {
     }
 
     public void doSyncSpellData() {
-        TestMod.LOGGER.debug("ASCM.doSyncSpellData {} {}", level.isClientSide, playerMagicData.getSyncedData());
+        //TestMod.LOGGER.debug("ASCM.doSyncSpellData {} {}", level.isClientSide, playerMagicData.getSyncedData());
         //Need a deep clone of the object because set does a basic object ref compare to trigger the update. Do not remove this
         entityData.set(DATA_SPELL, playerMagicData.getSyncedData().deepClone());
     }
 
     private void castComplete() {
-        TestMod.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
+        //TestMod.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
         if (!level.isClientSide) {
             castingSpell.onServerCastComplete(level, this, playerMagicData);
         }
 
         playerMagicData.resetCastingState();
         castingSpell = null;
-
-        if (!level.isClientSide) {
-            entityData.set(DATA_CASTING, emptyMobSyncedCastingData);
-        }
     }
 
     @Override
@@ -127,8 +94,6 @@ public abstract class AbstractSpellCastingMob extends Monster {
         if (!level.isClientSide || castingSpell == null) {
             return;
         }
-
-        //TestMod.LOGGER.debug("aiStep: {}, level:{}, duration:{}", castingSpell.getSpellType(), castingSpell.getLevel(), playerMagicData.getCastDurationRemaining());
 
         if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (castingSpell.getCastType() == CastType.INSTANT) {
@@ -147,7 +112,6 @@ public abstract class AbstractSpellCastingMob extends Monster {
 
     @Override
     protected void customServerAiStep() {
-
         super.customServerAiStep();
 
         if (castingSpell == null || entityData.isDirty()) {
@@ -156,46 +120,34 @@ public abstract class AbstractSpellCastingMob extends Monster {
 
         playerMagicData.handleCastDuration();
 
+        if (playerMagicData.isCasting()) {
+            castingSpell.onServerCastTick(level, this, playerMagicData);
+        }
+
         if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.CHARGE || castingSpell.getCastType() == CastType.INSTANT) {
                 forceLookAtTarget(getTarget());
-                TestMod.LOGGER.debug("ASCM.customServerAiStep: onCast.1 {}", castingSpell.getSpellType());
+                //TestMod.LOGGER.debug("ASCM.customServerAiStep: onCast.1 {}", castingSpell.getSpellType());
                 castingSpell.onCast(level, this, playerMagicData);
             }
             castComplete();
         } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
                 forceLookAtTarget(getTarget());
-                TestMod.LOGGER.debug("ASCM.customServerAiStep: onCast.2 {}", castingSpell.getSpellType());
+                //TestMod.LOGGER.debug("ASCM.customServerAiStep: onCast.2 {}", castingSpell.getSpellType());
                 castingSpell.onCast(level, this, playerMagicData);
             }
         }
     }
 
     public void castSpell(SpellType spellType, int spellLevel) {
-        TestMod.LOGGER.debug("ASCM.castSpell: {} {}", spellType, spellLevel);
+        //TestMod.LOGGER.debug("ASCM.castSpell: {} {}", spellType, spellLevel);
         if (spellType == SpellType.NONE_SPELL) {
             castingSpell = null;
             return;
         }
 
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
-
-        if (!level.isClientSide) {
-            var data = new MobSyncedCastingData();
-            data.spellId = castingSpell.getID();
-            data.spellLevel = castingSpell.getLevel();
-
-            if (playerMagicData.getAdditionalCastData() instanceof TeleportSpell.TeleportData teleportData) {
-                data.usePosition = true;
-                data.x = (int) teleportData.getTeleportTargetPosition().x;
-                data.y = (int) teleportData.getTeleportTargetPosition().y;
-                data.z = (int) teleportData.getTeleportTargetPosition().z;
-            }
-
-            entityData.set(DATA_CASTING, data);
-        }
-
         this.startUsingItem(InteractionHand.MAIN_HAND);
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.MOB);
 
@@ -207,10 +159,6 @@ public abstract class AbstractSpellCastingMob extends Monster {
 
     public boolean isCasting() {
         return playerMagicData != null && playerMagicData.isCasting();
-    }
-
-    public SpellType getCastingSpell() {
-        return SpellType.getTypeFromValue(entityData.get(DATA_CASTING).spellId);
     }
 
     public void setTeleportLocationBehindTarget(int distance) {
@@ -237,13 +185,6 @@ public abstract class AbstractSpellCastingMob extends Monster {
         }
     }
 
-    public boolean isValidTarget(@Nullable LivingEntity livingEntity) {
-        if (livingEntity != null && livingEntity.isAlive() && livingEntity instanceof Player) {
-            return true;
-        }
-        return false;
-    }
-
     private void forceLookAtTarget(LivingEntity target) {
         if (target != null)
             lookAt(target, 180, 180);
@@ -258,6 +199,5 @@ public abstract class AbstractSpellCastingMob extends Monster {
         float f2 = Mth.sin(f);
         this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() + (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() + (double) f2 * 0.6D, d0, d1, d2);
         this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() - (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() - (double) f2 * 0.6D, d0, d1, d2);
-
     }
 }

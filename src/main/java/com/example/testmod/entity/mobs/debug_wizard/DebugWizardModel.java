@@ -1,4 +1,4 @@
-package com.example.testmod.entity.mobs.simple_wizard;
+package com.example.testmod.entity.mobs.debug_wizard;
 
 import com.example.testmod.TestMod;
 import net.minecraft.client.model.HumanoidModel;
@@ -9,7 +9,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.resources.ResourceLocation;
 
-public class SimpleWizardModel extends HumanoidModel<SimpleWizard> {
+public class DebugWizardModel extends HumanoidModel<DebugWizard> {
 
     public static final String BODY = "body";
     public static final String SIMPLE_WIZARD = "simple_wizard";
@@ -20,7 +20,7 @@ public class SimpleWizardModel extends HumanoidModel<SimpleWizard> {
         return LayerDefinition.create(meshdefinition, 64, 32);
     }
 
-    public SimpleWizardModel(ModelPart part) {
+    public DebugWizardModel(ModelPart part) {
         super(part);
     }
 }
