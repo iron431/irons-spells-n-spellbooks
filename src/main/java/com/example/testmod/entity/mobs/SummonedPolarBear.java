@@ -197,5 +197,11 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
             }
 
         }
+
+        @Override
+        public void stop() {
+            SummonedPolarBear.this.setStanding(false);
+            super.stop();
+        }
     }
 }
