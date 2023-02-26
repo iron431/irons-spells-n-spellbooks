@@ -1,5 +1,6 @@
 package com.example.testmod.spells;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
@@ -12,9 +13,16 @@ import com.example.testmod.player.ClientRenderCache;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.util.Utils;
+import dev.kosmx.playerAnim.api.layered.IAnimation;
+import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
+import dev.kosmx.playerAnim.api.layered.ModifierLayer;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
@@ -97,6 +105,10 @@ public abstract class AbstractSpell {
 
     public abstract Optional<SoundEvent> getCastStartSound();
 
+    public Optional<ModifierLayer<IAnimation>> getCastStartAnimation() {
+        return Optional.empty();
+    }
+
     public abstract Optional<SoundEvent> getCastFinishSound();
 
     public float getSpellPower(Entity sourceEntity) {
@@ -177,6 +189,9 @@ public abstract class AbstractSpell {
                 onServerPreCast(player.level, player, playerMagicData);
                 Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(), effectiveCastTime, castSource, false), serverPlayer);
             }
+
+            //Messages
+
             return true;
         } else {
             Utils.serverSideCancelCast(serverPlayer);
@@ -251,7 +266,20 @@ public abstract class AbstractSpell {
      * Called once just before executing onCast. Can be used for client side sounds and particles
      */
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
-        //TestMod.LOGGER.debug("AbstractSpell.onClientPreCast: isClient:{}", level.isClientSide);
+        TestMod.LOGGER.debug("AbstractSpell.onClientPreCast: isClient:{} entity:{}", level.isClientSide, entity);
+
+        //Get the animation for that player
+        var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) entity).get(new ResourceLocation(TestMod.MODID, "animation"));
+        if (animation != null) {
+            //You can set an animation from anywhere ON THE CLIENT
+            //Do not attempt to do this on a server, that will only fail
+
+            animation.setAnimation(new KeyframeAnimationPlayer(PlayerAnimationRegistry.getAnimation(new ResourceLocation(TestMod.MODID, "instant_cast"))));
+            //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
+            //See javadoc for details
+        }
+
+
         playSound(getCastStartSound(), entity);
     }
 

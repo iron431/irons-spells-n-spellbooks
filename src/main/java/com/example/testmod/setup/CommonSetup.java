@@ -12,6 +12,11 @@ import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.wisp.WispEntity;
 import com.example.testmod.registries.EntityRegistry;
+import dev.kosmx.playerAnim.api.layered.IAnimation;
+import dev.kosmx.playerAnim.api.layered.ModifierLayer;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Monster;
@@ -21,6 +26,7 @@ import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = TestMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonSetup {
@@ -54,8 +60,23 @@ public class CommonSetup {
     }
 
     @SubscribeEvent
-    public static void spawnPlacements(SpawnPlacementRegisterEvent event){
+    public static void spawnPlacements(SpawnPlacementRegisterEvent event) {
         event.register(EntityRegistry.NECROMANCER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules, SpawnPlacementRegisterEvent.Operation.OR);
+    }
+
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        //Set the player construct callback. It can be a lambda function.
+        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
+                new ResourceLocation(TestMod.MODID, "animation"),
+                42,
+                CommonSetup::registerPlayerAnimation);
+    }
+
+    //This method will set your mods animation into the library.
+    private static IAnimation registerPlayerAnimation(AbstractClientPlayer player) {
+        //This will be invoked for every new player
+        return new ModifierLayer<>();
     }
 
 }

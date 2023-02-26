@@ -2,6 +2,7 @@ package com.example.testmod.player;
 
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
+import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.util.ParticleHelper;
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.UUID;
 
 public class ClientSpellCastHelper {
     /**
@@ -77,6 +80,10 @@ public class ClientSpellCastHelper {
                 }
             }
         }
+    }
+
+    public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
+
     }
 
     private static double getRandomScaled(double scale) {

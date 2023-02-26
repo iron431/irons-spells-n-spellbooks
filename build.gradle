@@ -153,6 +153,10 @@ repositories {
     maven { url = 'https://maven.enginehub.org/repo/' }
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven { url = "https://maven.theillusivec4.top" }
+    maven {
+        name "KosmX's maven"
+        url 'https://maven.kosmx.dev/'
+    }
 }
 
 dependencies {
@@ -171,6 +175,8 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6")
     runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
 
+    //PLAYER ANIMATOR https://github.com/KosmX/minecraftPlayerAnimator
+    implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.0-rc2")
 
     //compileOnly fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
     //implementation fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")

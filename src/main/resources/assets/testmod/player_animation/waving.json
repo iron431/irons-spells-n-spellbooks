@@ -1,0 +1,228 @@
+{
+  "version": 1,
+  "uuid": "33b912f8-0aa0-45e6-a2d4-9b5677e6f35c",
+  "name": "waving",
+  "_comment1": "Properties for Emotecraft can be stripped, except for the name",
+  "_comment2": "This is the emotecraft waving animation, just because I lack creativity",
+  "emote": {
+    "beginTick": 12,
+    "endTick": 45,
+    "stopTick": 50,
+    "isLoop": false,
+    "returnTick": 0,
+    "nsfw": false,
+    "degrees": false,
+    "moves": [
+      {
+        "tick": 0,
+        "easing": "INQUAD",
+        "rightLeg": {
+          "x": -1.9
+        }
+      },
+      {
+        "tick": 46,
+        "easing": "INOUTSINE",
+        "rightLeg": {
+          "x": -1.9
+        }
+      },
+      {
+        "tick": 0,
+        "easing": "INQUAD",
+        "rightLeg": {
+          "y": 12.0
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "OUTEXPO",
+        "rightLeg": {
+          "y": 12.25
+        }
+      },
+      {
+        "tick": 46,
+        "easing": "INOUTSINE",
+        "rightLeg": {
+          "y": 12.3
+        }
+      },
+      {
+        "tick": 0,
+        "easing": "INQUAD",
+        "rightLeg": {
+          "roll": 0.0
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "OUTEXPO",
+        "rightLeg": {
+          "roll": -0.13962634
+        }
+      },
+      {
+        "tick": 46,
+        "easing": "INOUTSINE",
+        "rightLeg": {
+          "roll": -0.19198622
+        }
+      },
+      {
+        "tick": 8,
+        "easing": "INOUTSINE",
+        "rightArm": {
+          "yaw": 1.5707964
+        }
+      },
+      {
+        "tick": 48,
+        "easing": "INOUTSINE",
+        "rightArm": {
+          "yaw": 1.5707964
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "INOUTSINE",
+        "rightArm": {
+          "roll": 3.2288592
+        }
+      },
+      {
+        "tick": 15,
+        "easing": "INOUTSINE",
+        "rightArm": {
+          "roll": 1.6580628
+        }
+      },
+      {
+        "tick": 20,
+        "easing": "INOUTSINE",
+        "rightArm": {
+          "roll": 3.2288592
+        }
+      },
+      {
+        "tick": 25,
+        "easing": "INOUTSINE",
+        "rightArm": {
+          "roll": 1.6580628
+        }
+      },
+      {
+        "tick": 30,
+        "easing": "INOUTSINE",
+        "rightArm": {
+          "roll": 3.2288592
+        }
+      },
+      {
+        "tick": 35,
+        "easing": "INOUTSINE",
+        "rightArm": {
+          "roll": 1.6580628
+        }
+      },
+      {
+        "tick": 40,
+        "easing": "INOUTSINE",
+        "rightArm": {
+          "roll": 3.2288592
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "INOUTSINE",
+        "leftArm": {
+          "roll": -0.08726646
+        }
+      },
+      {
+        "tick": 48,
+        "easing": "INOUTCIRC",
+        "leftArm": {
+          "roll": -0.29670596
+        }
+      },
+      {
+        "tick": 0,
+        "easing": "INQUAD",
+        "leftLeg": {
+          "x": 1.9
+        }
+      },
+      {
+        "tick": 46,
+        "easing": "INOUTSINE",
+        "leftLeg": {
+          "x": 1.9
+        }
+      },
+      {
+        "tick": 0,
+        "easing": "INQUAD",
+        "leftLeg": {
+          "y": 12.0
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "OUTEXPO",
+        "leftLeg": {
+          "y": 11.75
+        }
+      },
+      {
+        "tick": 46,
+        "easing": "INOUTSINE",
+        "leftLeg": {
+          "y": 11.7
+        }
+      },
+      {
+        "tick": 0,
+        "easing": "INQUAD",
+        "leftLeg": {
+          "roll": 0.0
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "OUTEXPO",
+        "leftLeg": {
+          "roll": -0.13962634
+        }
+      },
+      {
+        "tick": 46,
+        "easing": "INOUTSINE",
+        "leftLeg": {
+          "roll": -0.19198622
+        }
+      },
+      {
+        "tick": 0,
+        "easing": "INQUAD",
+        "body": {
+          "roll": 0.0
+        }
+      },
+      {
+        "tick": 10,
+        "easing": "OUTEXPO",
+        "body": {
+          "roll": 0.13962634
+        }
+      },
+      {
+        "tick": 46,
+        "easing": "INOUTSINE",
+        "body": {
+          "roll": 0.19198622
+        }
+      }
+    ]
+  }
+}
