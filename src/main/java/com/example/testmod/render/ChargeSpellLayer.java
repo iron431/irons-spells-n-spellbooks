@@ -1,6 +1,5 @@
 package com.example.testmod.render;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.entity.lightning_lance.LightningLanceRenderer;
 import com.example.testmod.entity.magic_arrow.MagicArrowRenderer;
 import com.example.testmod.player.ClientMagicData;
@@ -25,7 +24,7 @@ public class ChargeSpellLayer<T extends LivingEntity, M extends HumanoidModel<T>
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight, T entity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         var syncedSpellData = ClientMagicData.getSyncedSpellData(entity);
-        TestMod.LOGGER.debug("ChargeSpellLayer.render: {}", syncedSpellData);
+        //TestMod.LOGGER.debug("ChargeSpellLayer.render: {}", syncedSpellData);
         var spell = syncedSpellData.getCastingSpellType();
         if (spell == SpellType.LIGHTNING_LANCE_SPELL) {
             poseStack.pushPose();
