@@ -5,7 +5,6 @@ import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.registries.SoundRegistry;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellType;
-import com.example.testmod.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -23,12 +22,12 @@ public class EvasionSpell extends AbstractSpell {
         super(SpellType.EVASION_SPELL);
         this.level = level;
         this.manaCostPerLevel = 20;
-        this.baseSpellPower = 200;
-        this.spellPowerPerLevel = 50;
+        this.baseSpellPower = 1;
+        this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 5;
         this.cooldown = 6000;
-        uniqueInfo.add(Component.translatable("ui.testmod.effect_length", Utils.timeFromTicks(getSpellPower(null), 1)));
+        uniqueInfo.add(Component.translatable("ui.testmod.hits_dodged", (int) getSpellPower(null)));
     }
 
     @Override
@@ -43,7 +42,7 @@ public class EvasionSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), (int) getSpellPower(entity), 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), 60 * 20, (int) getSpellPower(entity), false, false, true));
         super.onCast(world, entity, playerMagicData);
     }
 }

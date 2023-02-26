@@ -3,6 +3,7 @@ package com.example.testmod.effect;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.damage.DamageSources;
+import com.example.testmod.registries.MobEffectRegistry;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -45,14 +46,19 @@ public class EvasionEffect extends MobEffect {
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
         PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.EVASION);
+        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
+
     }
-
-
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
         if (livingEntity.level.isClientSide || excludeDamageSources.contains(damageSource) || damageSource.isFall() || damageSource.isBypassMagic() || damageSource.isBypassInvul()) {
             return false;
         }
+
+        var data = PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData();
+        data.subtractEvasionHitsRemaining();
+        if (data.getEvasionHitsRemaining() == 0)
+            livingEntity.removeEffect(MobEffectRegistry.EVASION.get());
 
         double d0 = livingEntity.getX();
         double d1 = livingEntity.getY();

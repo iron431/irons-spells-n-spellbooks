@@ -29,6 +29,7 @@ public class SyncedSpellData {
     private int castingSpellLevel;
     private long effectFlags;
     private float heartStopAccumulatedDamage;
+    private int evasionHitsRemaining;
 
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {
@@ -39,6 +40,7 @@ public class SyncedSpellData {
         this.castingSpellLevel = 0;
         this.effectFlags = 0;
         this.heartStopAccumulatedDamage = 0f;
+        this.evasionHitsRemaining = 0;
     }
 
     //Use this on the server
@@ -55,6 +57,7 @@ public class SyncedSpellData {
             buffer.writeInt(data.castingSpellLevel);
             buffer.writeLong(data.effectFlags);
             buffer.writeFloat(data.heartStopAccumulatedDamage);
+            buffer.writeInt(data.evasionHitsRemaining);
         }
 
         public SyncedSpellData read(FriendlyByteBuf buffer) {
@@ -64,6 +67,7 @@ public class SyncedSpellData {
             data.castingSpellLevel = buffer.readInt();
             data.effectFlags = buffer.readLong();
             data.heartStopAccumulatedDamage = buffer.readFloat();
+            data.evasionHitsRemaining = buffer.readInt();
             return data;
         }
     };
@@ -75,6 +79,7 @@ public class SyncedSpellData {
         syncedSpellData.castingSpellLevel = this.castingSpellLevel;
         syncedSpellData.effectFlags = this.effectFlags;
         syncedSpellData.heartStopAccumulatedDamage = this.heartStopAccumulatedDamage;
+        syncedSpellData.evasionHitsRemaining = this.evasionHitsRemaining;
         return syncedSpellData;
     }
 
@@ -84,6 +89,7 @@ public class SyncedSpellData {
         compound.putInt("castingSpellLevel", this.castingSpellLevel);
         compound.putLong("effectFlags", this.effectFlags);
         compound.putFloat("heartStopAccumulatedDamage", this.heartStopAccumulatedDamage);
+        compound.putFloat("evasionHitsRemaining", this.evasionHitsRemaining);
     }
 
     public void loadNBTData(CompoundTag compound) {
@@ -92,6 +98,7 @@ public class SyncedSpellData {
         this.castingSpellLevel = compound.getInt("castingSpellLevel");
         this.effectFlags = compound.getLong("effectFlags");
         this.heartStopAccumulatedDamage = compound.getFloat("heartStopAccumulatedDamage");
+        this.evasionHitsRemaining = compound.getInt("evasionHitsRemaining");
     }
 
     public int getServerPlayerId() {
@@ -108,6 +115,20 @@ public class SyncedSpellData {
 
     public void setHeartstopAccumulatedDamage(float damage) {
         heartStopAccumulatedDamage = damage;
+        doSync();
+    }
+
+    public int getEvasionHitsRemaining() {
+        return evasionHitsRemaining;
+    }
+
+    public void subtractEvasionHitsRemaining() {
+        evasionHitsRemaining--;
+        doSync();
+    }
+
+    public void setEvasionHitsRemaining(int hitsRemaining) {
+        evasionHitsRemaining = hitsRemaining;
         doSync();
     }
 

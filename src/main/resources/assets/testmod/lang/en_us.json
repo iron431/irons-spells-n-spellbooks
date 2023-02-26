@@ -102,6 +102,7 @@
   "ui.testmod.projectile_count": "%d Projectiles",
   "ui.testmod.frostbite_success_chance": "Auto-Success Threshold: %d% Chance",
   "ui.testmod.charge_ready": "Charged",
+  "ui.testmod.hits_dodged": "%d Hits Dodged",
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",
   "school.testmod.lightning": "Lightning",
