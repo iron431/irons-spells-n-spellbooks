@@ -3,6 +3,8 @@ package com.example.testmod.entity.mobs;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.entity.mobs.goals.*;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -41,7 +43,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon {
     public void registerGoals() {
 
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(7, new GenericFollowOwnerGoal(this, this::getSummoner, 1.1f, 15, 5, false, 25));
+        this.goalSelector.addGoal(7, new GenericFollowOwnerGoal(this, this::getSummoner, 0.9f, 15, 5, false, 25));
         this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 0.8D));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 3.0F, 1.0F));
         this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Mob.class, 8.0F));
@@ -61,23 +63,6 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon {
     }
 
     @Override
-    protected boolean isSunBurnTick() {
-        return false;
-    }
-
-    @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
-        RandomSource randomsource = pLevel.getRandom();
-        this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        if (randomsource.nextDouble() < .3)
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
-
-        this.reassessWeaponGoal();
-
-        return pSpawnData;
-    }
-
-    @Override
     public LivingEntity getSummoner() {
         if (this.cachedSummoner != null && !this.cachedSummoner.isRemoved()) {
             return this.cachedSummoner;
@@ -88,11 +73,6 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon {
         } else {
             return null;
         }
-    }
-
-    @Override
-    protected boolean shouldDespawnInPeaceful() {
-        return false;
     }
 
     @Override
@@ -112,7 +92,6 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon {
             this.summonerUUID = compoundTag.getUUID("Summoner");
         }
 
-
     }
 
     @Override
@@ -123,6 +102,34 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon {
         if (this.summonerUUID != null) {
             compoundTag.putUUID("Summoner", this.summonerUUID);
         }
-
     }
+
+
+    @Override
+    protected boolean isSunBurnTick() {
+        return false;
+    }
+
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
+        RandomSource randomsource = pLevel.getRandom();
+        this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
+        if (randomsource.nextDouble() < .3)
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+
+        this.reassessWeaponGoal();
+
+        return pSpawnData;
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity pEntity) {
+        return Utils.doMeleeAttack(this, pEntity, SpellType.RAISE_DEAD_SPELL.getDamageSource(this, getSummoner()), null);
+    }
+
+    @Override
+    protected boolean shouldDespawnInPeaceful() {
+        return false;
+    }
+
 }

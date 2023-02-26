@@ -4,25 +4,33 @@ import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.scroll.ScrollData;
 import com.example.testmod.capabilities.scroll.ScrollDataProvider;
+import com.example.testmod.damage.DamageSources;
 import com.example.testmod.entity.ConePart;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.network.ServerboundCancelCast;
 import com.example.testmod.spells.CastType;
+import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -30,6 +38,7 @@ import net.minecraft.world.phys.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.entity.PartEntity;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -234,14 +243,56 @@ public class Utils {
         return !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart || entity instanceof ItemEntity);
     }
 
-    public static Vec2 rotationFromDirection(Vec3 vector){
+    public static Vec2 rotationFromDirection(Vec3 vector) {
         float pitch = (float) Math.asin(vector.y);
         float yaw = (float) Math.atan2(vector.x, vector.z);
         return new Vec2(pitch, yaw);
     }
 
-    public static Vec3 putVectorOnWorldSurface(Level level,Vec3 location){
+    public static Vec3 putVectorOnWorldSurface(Level level, Vec3 location) {
         int y = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) location.x, (int) location.z);
         return new Vec3(location.x, y, location.z);
+    }
+
+    public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource, @Nullable SchoolType damageSchool) {
+        /*
+        Copied from Mob#doHurtTarget
+         */
+        float f = (float) attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        float f1 = (float) attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
+        if (target instanceof LivingEntity) {
+            f += EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity) target).getMobType());
+            f1 += (float) EnchantmentHelper.getKnockbackBonus(attacker);
+        }
+
+        int i = EnchantmentHelper.getFireAspect(attacker);
+        if (i > 0) {
+            target.setSecondsOnFire(i * 4);
+        }
+
+        boolean flag = DamageSources.applyDamage(target, f, damageSource, damageSchool);
+        if (flag) {
+            if (f1 > 0.0F && target instanceof LivingEntity) {
+                ((LivingEntity) target).knockback((double) (f1 * 0.5F), (double) Mth.sin(attacker.getYRot() * ((float) Math.PI / 180F)), (double) (-Mth.cos(attacker.getYRot() * ((float) Math.PI / 180F))));
+                attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
+            }
+            //disable shield
+            if (target instanceof Player player) {
+                var pMobItemStack = attacker.getMainHandItem();
+                var pPlayerItemStack = player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY;
+                if (!pMobItemStack.isEmpty() && !pPlayerItemStack.isEmpty() && pMobItemStack.getItem() instanceof AxeItem && pPlayerItemStack.is(Items.SHIELD)) {
+                    float f2 = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(attacker) * 0.05F;
+                    if (attacker.getRandom().nextFloat() < f2) {
+                        player.getCooldowns().addCooldown(Items.SHIELD, 100);
+                        attacker.level.broadcastEntityEvent(player, (byte) 30);
+                    }
+                }
+            }
+
+            attacker.doEnchantDamageEffects(attacker, target);
+            attacker.setLastHurtMob(target);
+        }
+
+        return flag;
     }
 }

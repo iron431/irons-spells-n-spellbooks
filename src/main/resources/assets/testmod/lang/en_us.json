@@ -179,6 +179,7 @@
   "spell.testmod.ascension": "Ascension",
   "spell.testmod.invisibility": "Invisibility",
   "spell.testmod.blood_step": "Blood Step",
+  "spell.testmod.summon_polar_bear": "Summon Polar Bear",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -192,6 +193,8 @@
   "effect.testmod.heartstop": "Heartstop",
   "effect.testmod.vex_timer": "Summoned Vexes",
   "effect.testmod.raise_dead_timer": "Summoned Dead",
+  "effect.testmod.polar_bear_timer": "Summoned Polar Bear",
+  "effect.testmod.horse_timer": "Summoned Horse",
   "effect.testmod.abyssal_shroud": "Abyssal Shroud",
   "effect.testmod.true_invisibility": "True Invisibility",
   "effect.testmod.ascension": "Ascension",
@@ -204,6 +207,7 @@
   "entity.testmod.summoned_vex": "Summoned Vex",
   "entity.testmod.summoned_zombie": "Summoned Zombie",
   "entity.testmod.summoned_skeleton": "Summoned Skeleton",
+  "entity.testmod.summoned_polar_bear": "Summoned Polar Bear",
   "entity.testmod.pyromancer": "Pyromancer",
   "entity.testmod.necromancer": "Necromancer",
   "entity.testmod.spectral_steed": "Spectral Steed"

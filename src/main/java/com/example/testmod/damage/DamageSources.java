@@ -36,7 +36,7 @@ public class DamageSources {
     public static DamageSource ENDER_MAGIC = new DamageSource("ender_magic_damage");
     public static DamageSource EVOCATION_MAGIC = new DamageSource("evocation_magic_damage");
 
-    public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource, SchoolType damageSchool) {
+    public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource, @Nullable SchoolType damageSchool) {
         if (target instanceof LivingEntity livingTarget) {
             float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
 
@@ -61,6 +61,8 @@ public class DamageSources {
     }
 
     public static float getResist(LivingEntity entity, SchoolType damageSchool) {
+        if (damageSchool == null)
+            return 1;
         return switch (damageSchool) {
             case FIRE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.FIRE_MAGIC_RESIST.get());
             case ICE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ICE_MAGIC_RESIST.get());

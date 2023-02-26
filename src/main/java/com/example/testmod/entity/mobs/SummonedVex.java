@@ -3,12 +3,16 @@ package com.example.testmod.entity.mobs;
 import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.entity.mobs.goals.*;
 import com.example.testmod.registries.EntityRegistry;
+import com.example.testmod.spells.SchoolType;
+import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -54,6 +58,11 @@ public class SummonedVex extends Vex implements MagicSummon {
         this.targetSelector.addGoal(3, new GenericCopyOwnerTargetGoal(this, this::getSummoner));
         this.targetSelector.addGoal(4, (new GenericHurtByTargetGoal(this, (entity) -> entity == getSummoner())).setAlertOthers());
 
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity pEntity) {
+        return Utils.doMeleeAttack(this, pEntity, SpellType.SUMMON_VEX_SPELL.getDamageSource(this, getSummoner()), SchoolType.EVOCATION);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
