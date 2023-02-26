@@ -13,6 +13,12 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class SyncedSpellData {
+    public static final long ANGEL_WINGS = 1;
+    public static final long EVASION = 2;
+    public static final long HEARTSTOP = 4;
+    public static final long ABYSSAL_SHROUD = 8;
+    public static final long ASCENSION = 16;
+    public static final long TRUE_INVIS = 32;
 
     //TODO: may want to switch this to ServerPlayer.UUID
     private final int serverPlayerId;
@@ -20,13 +26,9 @@ public class SyncedSpellData {
 
     private boolean isCasting;
     private int castingSpellId;
-    private boolean hasAngelWings;
-    private boolean hasEvasion;
-    private boolean hasHeartstop;
-    private float heartStopDamage;
-    private boolean hasAbyssalShroud;
-    private boolean hasAscension;
-    private boolean hasTrueInvis;
+    private int castingSpellLevel;
+    private long effectFlags;
+    private float heartStopAccumulatedDamage;
 
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {
@@ -34,13 +36,9 @@ public class SyncedSpellData {
         this.serverPlayerId = serverPlayerId;
         this.isCasting = false;
         this.castingSpellId = 0;
-        this.hasAngelWings = false;
-        this.hasEvasion = false;
-        this.hasHeartstop = false;
-        this.heartStopDamage = 0;
-        this.hasAbyssalShroud = false;
-        this.hasAscension = false;
-        this.hasTrueInvis = false;
+        this.castingSpellLevel = 0;
+        this.effectFlags = 0;
+        this.heartStopAccumulatedDamage = 0f;
     }
 
     //Use this on the server
@@ -54,62 +52,83 @@ public class SyncedSpellData {
             buffer.writeInt(data.serverPlayerId);
             buffer.writeBoolean(data.isCasting);
             buffer.writeInt(data.castingSpellId);
-            buffer.writeBoolean(data.hasAngelWings);
-            buffer.writeBoolean(data.hasEvasion);
-            buffer.writeBoolean(data.hasHeartstop);
-            buffer.writeFloat(data.heartStopDamage);
-            buffer.writeBoolean(data.hasAbyssalShroud);
-            buffer.writeBoolean(data.hasAscension);
-            buffer.writeBoolean(data.hasTrueInvis);
-
+            buffer.writeInt(data.castingSpellLevel);
+            buffer.writeLong(data.effectFlags);
+            buffer.writeFloat(data.heartStopAccumulatedDamage);
         }
 
         public SyncedSpellData read(FriendlyByteBuf buffer) {
             var data = new SyncedSpellData(buffer.readInt());
             data.isCasting = buffer.readBoolean();
             data.castingSpellId = buffer.readInt();
-            data.hasAngelWings = buffer.readBoolean();
-            data.hasEvasion = buffer.readBoolean();
-            data.hasHeartstop = buffer.readBoolean();
-            data.heartStopDamage = buffer.readFloat();
-            data.hasAbyssalShroud = buffer.readBoolean();
-            data.hasAscension = buffer.readBoolean();
-            data.hasTrueInvis = buffer.readBoolean();
+            data.castingSpellLevel = buffer.readInt();
+            data.effectFlags = buffer.readLong();
+            data.heartStopAccumulatedDamage = buffer.readFloat();
             return data;
         }
     };
 
+    public SyncedSpellData deepClone() {
+        var syncedSpellData = new SyncedSpellData(this.livingEntity);
+        syncedSpellData.isCasting = this.isCasting;
+        syncedSpellData.castingSpellId = this.castingSpellId;
+        syncedSpellData.castingSpellLevel = this.castingSpellLevel;
+        syncedSpellData.effectFlags = this.effectFlags;
+        syncedSpellData.heartStopAccumulatedDamage = this.heartStopAccumulatedDamage;
+        return syncedSpellData;
+    }
+
     public void saveNBTData(CompoundTag compound) {
         compound.putBoolean("isCasting", this.isCasting);
         compound.putInt("castingSpellId", this.castingSpellId);
-        compound.putBoolean("hasAngelWings", this.hasAngelWings);
-        compound.putBoolean("hasEvasion", this.hasEvasion);
-        compound.putBoolean("hasHeartstop", this.hasHeartstop);
-        compound.putFloat("heartStopDamage", this.heartStopDamage);
-        compound.putBoolean("hasAbyssalShroud", this.hasAbyssalShroud);
-        compound.putBoolean("hasAscension", this.hasAscension);
-        compound.putBoolean("hasTrueInvis", this.hasTrueInvis);
+        compound.putInt("castingSpellLevel", this.castingSpellLevel);
+        compound.putLong("effectFlags", this.effectFlags);
+        compound.putFloat("heartStopAccumulatedDamage", this.heartStopAccumulatedDamage);
     }
 
     public void loadNBTData(CompoundTag compound) {
         this.isCasting = compound.getBoolean("isCasting");
         this.castingSpellId = compound.getInt("castingSpellId");
-        this.hasAngelWings = compound.getBoolean("hasAngelWings");
-        this.hasEvasion = compound.getBoolean("hasEvasion");
-        this.hasHeartstop = compound.getBoolean("hasHeartstop");
-        this.heartStopDamage = compound.getFloat("heartStopDamage");
-        this.hasAbyssalShroud = compound.getBoolean("hasAbyssalShroud");
-        this.hasAscension = compound.getBoolean("hasAscension");
-        this.hasTrueInvis = compound.getBoolean("hasTrueInvis");
+        this.castingSpellLevel = compound.getInt("castingSpellLevel");
+        this.effectFlags = compound.getLong("effectFlags");
+        this.heartStopAccumulatedDamage = compound.getFloat("heartStopAccumulatedDamage");
     }
 
     public int getServerPlayerId() {
         return serverPlayerId;
     }
 
+    public boolean hasEffect(long effectFlags) {
+        return (this.effectFlags & effectFlags) == effectFlags;
+    }
+
+    public float getHeartstopAccumulatedDamage() {
+        return heartStopAccumulatedDamage;
+    }
+
+    public void setHeartstopAccumulatedDamage(float damage) {
+        heartStopAccumulatedDamage = damage;
+        doSync();
+    }
+
+    public void addHeartstopDamage(float damage) {
+        heartStopAccumulatedDamage += damage;
+        doSync();
+    }
+
+    public void addEffects(long effectFlags) {
+        this.effectFlags |= effectFlags;
+        doSync();
+    }
+
+    public void removeEffects(long effectFlags) {
+        this.effectFlags &= ~effectFlags;
+        doSync();
+    }
+
     public void doSync() {
         //this.player will only be null on the client side
-        TestMod.LOGGER.debug("SyncedSpellData.doSync livingEntity:{}", livingEntity);
+        TestMod.LOGGER.debug("SyncedSpellData.doSync livingEntity:{} {}", livingEntity, this);
 
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);
@@ -117,53 +136,16 @@ public class SyncedSpellData {
         } else if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
             abstractSpellCastingMob.doSyncSpellData();
         }
-
-        TestMod.LOGGER.debug("doSync {}", this);
     }
 
     public void syncToPlayer(ServerPlayer serverPlayer) {
         Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);
     }
 
-    public boolean hasAngelWings() {
-        return hasAngelWings;
-    }
-
-    public void setHasAngelWings(boolean hasAngelWings) {
-        this.hasAngelWings = hasAngelWings;
-        doSync();
-    }
-
-    public boolean hasAbyssalShroud() {
-        return hasAbyssalShroud;
-    }
-
-    public void setHasAbyssalShroud(boolean hasAbyssalShroud) {
-        this.hasAbyssalShroud = hasAbyssalShroud;
-        doSync();
-    }
-
-    public boolean hasAscension() {
-        return hasAscension;
-    }
-
-    public void setHasAscension(boolean hasAscension) {
-        this.hasAscension = hasAscension;
-        doSync();
-    }
-
-    public boolean hasTrueInvis() {
-        return hasTrueInvis;
-    }
-
-    public void setHasTrueInvis(boolean hasTrueInvis) {
-        this.hasTrueInvis = hasTrueInvis;
-        doSync();
-    }
-
-    public void setIsCasting(boolean isCasting, int castingSpellId) {
+    public void setIsCasting(boolean isCasting, int castingSpellId, int castingSpellLevel) {
         this.isCasting = isCasting;
         this.castingSpellId = castingSpellId;
+        this.castingSpellLevel = castingSpellLevel;
         doSync();
     }
 
@@ -175,41 +157,14 @@ public class SyncedSpellData {
         return castingSpellId;
     }
 
+    public int getCastingSpellLevel() {
+        return castingSpellLevel;
+    }
+
     public SpellType getCastingSpellType() {
         return SpellType.values()[castingSpellId];
     }
 
-    public boolean hasEvasion() {
-        return hasEvasion;
-    }
-
-    public void setHasEvasion(boolean hasEvasion) {
-        this.hasEvasion = hasEvasion;
-        doSync();
-    }
-
-    public boolean hasHeartstop() {
-        return hasHeartstop;
-    }
-
-    public void setHasHeartstop(boolean hasHeartstop) {
-        this.hasHeartstop = hasHeartstop;
-        doSync();
-    }
-
-    public float getHeartstopAccumulatedDamage() {
-        return heartStopDamage;
-    }
-
-    public void setHeartstopAccumulatedDamage(float damage) {
-        this.heartStopDamage = damage;
-        doSync();
-    }
-
-    public void addHeartstopDamage(float amount) {
-        this.heartStopDamage += amount;
-        doSync();
-    }
 
     @Override
     protected SyncedSpellData clone() {
@@ -218,12 +173,10 @@ public class SyncedSpellData {
 
     @Override
     public String toString() {
-        return String.format("isCasting:%s, spellID:%d, hasAngelWings:%s, hasEvasion:%s, hasHeartstop:%s, heartStopDamage:%s",
+        return String.format("isCasting:%s, spellID:%d, spellLevel:%d, effectFlags:%d",
                 isCasting,
                 castingSpellId,
-                hasAngelWings,
-                hasEvasion,
-                hasHeartstop,
-                heartStopDamage);
+                castingSpellLevel,
+                effectFlags);
     }
 }

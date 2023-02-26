@@ -83,7 +83,7 @@ public class PlayerMagicData extends AbstractMagicData {
         this.castDurationRemaining = 0;
         this.castSource = CastSource.NONE;
         this.castType = CastType.NONE;
-        this.getSyncedData().setIsCasting(false, SpellType.NONE_SPELL.getValue());
+        this.getSyncedData().setIsCasting(false, SpellType.NONE_SPELL.getValue(), 0);
         resetAdditionalCastData();
     }
 
@@ -93,7 +93,7 @@ public class PlayerMagicData extends AbstractMagicData {
         this.castDurationRemaining = castDuration;
         this.castSource = castSource;
         this.castType = AbstractSpell.getSpell(spellId, spellLevel).getCastType();
-        this.syncedSpellData.setIsCasting(true, spellId);
+        this.syncedSpellData.setIsCasting(true, spellId, spellLevel);
     }
 
     public CastData getAdditionalCastData() {

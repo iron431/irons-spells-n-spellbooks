@@ -2,6 +2,7 @@ package com.example.testmod.effect;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.player.ClientMagicData;
 import net.minecraft.sounds.SoundEvents;
@@ -24,14 +25,14 @@ public class HeartstopEffect extends MobEffect {
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setHasHeartstop(true);
+        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.HEARTSTOP);
     }
 
     @Override
     public void removeAttributeModifiers(@NotNull LivingEntity pLivingEntity, @NotNull AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
         var playerMagicData = PlayerMagicData.getPlayerMagicData(pLivingEntity);
-        playerMagicData.getSyncedData().setHasHeartstop(false);
+        playerMagicData.getSyncedData().removeEffects(SyncedSpellData.HEARTSTOP);
 
         //Whether or not player has spawn immunity (we want to damage them regardless)
         if (pLivingEntity.tickCount > 60) {

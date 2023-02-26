@@ -1,6 +1,7 @@
 package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.effect.AbyssalShroudEffect;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import net.minecraft.client.Minecraft;
@@ -36,7 +37,7 @@ public class ClientPlayerEvents {
                 spellcasters.forEach((entity) -> {
                     LivingEntity livingEntity = (LivingEntity) entity;
                     var spellData = ClientMagicData.getSyncedSpellData(livingEntity);
-                    if (spellData.hasAbyssalShroud()) {
+                    if (spellData.hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
                         AbyssalShroudEffect.ambientParticles(level, livingEntity);
                     }
                 });
@@ -55,7 +56,7 @@ public class ClientPlayerEvents {
         if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
 
             var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
-            if (syncedData.hasTrueInvis() && livingEntity.isInvisibleTo(player)) {
+            if (syncedData.hasEffect(SyncedSpellData.TRUE_INVIS) && livingEntity.isInvisibleTo(player)) {
                 TestMod.LOGGER.debug("{} has true invisibility", event.getEntity().getDisplayName().getString());
                 event.setCanceled(true);
             }

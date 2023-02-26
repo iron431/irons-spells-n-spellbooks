@@ -1,6 +1,7 @@
 package com.example.testmod.render;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.player.ClientMagicData;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -34,6 +35,6 @@ public class EvasionLayer<T extends LivingEntity, M extends HumanoidModel<T>> ex
 
     @Override
     protected boolean shouldRender(T entity) {
-        return ClientMagicData.getSyncedSpellData(entity).hasEvasion();
+        return ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.EVASION);
     }
 }

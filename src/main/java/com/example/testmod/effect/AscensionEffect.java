@@ -1,6 +1,7 @@
 package com.example.testmod.effect;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.ender.TeleportSpell;
@@ -62,7 +63,7 @@ public class AscensionEffect extends MobEffect {
                 playerMagicData.resetAdditionalCastData();
             }
         }
-        PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().setHasAscension(false);
+        PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.ASCENSION);
     }
 
     private int duration;
@@ -96,6 +97,6 @@ public class AscensionEffect extends MobEffect {
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setHasAscension(true);
+        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ASCENSION);
     }
 }

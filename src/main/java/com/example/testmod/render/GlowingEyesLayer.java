@@ -1,6 +1,7 @@
 package com.example.testmod.render;
 
 import com.example.testmod.TestMod;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.registries.ItemRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -38,7 +39,7 @@ public class GlowingEyesLayer<T extends LivingEntity, M extends EntityModel<T>> 
     }
 
     public EyeType getEyeType(LivingEntity entity) {
-        if (ClientMagicData.getSyncedSpellData(entity).hasAbyssalShroud())
+        if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ABYSSAL_SHROUD))
             return EyeType.Abyssal;
         else if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ELECTROMANCER_HAT.get()))
             return EyeType.Ender_Armor;

@@ -2,6 +2,7 @@ package com.example.testmod.player;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.effect.AbyssalShroudEffect;
 import com.example.testmod.effect.EvasionEffect;
 import com.example.testmod.entity.AbstractSpellCastingMob;
@@ -120,15 +121,15 @@ public class ServerPlayerEvents {
         //TestMod.LOGGER.debug("onLivingAttack.2: {}", livingEntity);
 
         var playerMagicData = PlayerMagicData.getPlayerMagicData(livingEntity);
-        if (playerMagicData.getSyncedData().hasEvasion()) {
+        if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
             if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
                 event.setCanceled(true);
             }
-        }else if (playerMagicData.getSyncedData().hasAbyssalShroud()) {
+        }else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
             if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                 event.setCanceled(true);
             }
-        } else if (playerMagicData.getSyncedData().hasAscension() && event.getSource() == DamageSource.LIGHTNING_BOLT) {
+        } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ASCENSION) && event.getSource() == DamageSource.LIGHTNING_BOLT) {
             event.getEntity().getActiveEffects().forEach((effect) -> {
                 TestMod.LOGGER.debug(effect.getDescriptionId());
                 if (effect.getEffect() == MobEffectRegistry.ASCENSION.get() && effect.getDuration() <= 5)
@@ -164,7 +165,7 @@ public class ServerPlayerEvents {
     public static void onLivingTakeDamage(LivingDamageEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.getSyncedData().hasHeartstop()) {
+            if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
                 playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount());
                 TestMod.LOGGER.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
                 event.setCanceled(true);

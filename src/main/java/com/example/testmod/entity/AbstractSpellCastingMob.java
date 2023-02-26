@@ -20,7 +20,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -44,7 +43,7 @@ public abstract class AbstractSpellCastingMob extends Monster {
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
     private final PlayerMagicData playerMagicData = new PlayerMagicData();
 
-    private AbstractSpell castingSpell;
+    private @Nullable AbstractSpell castingSpell;
 
     private MobSyncedCastingData emptyMobSyncedCastingData;
     private SyncedSpellData emptySyncedSpellData;
@@ -72,45 +71,43 @@ public abstract class AbstractSpellCastingMob extends Monster {
 
         this.entityData.define(DATA_CASTING, emptyMobSyncedCastingData);
         this.entityData.define(DATA_SPELL, emptySyncedSpellData);
+
+        TestMod.LOGGER.debug("ASCM.defineSynchedData DATA_CASTING:{}", DATA_CASTING);
+        TestMod.LOGGER.debug("ASCM.defineSynchedData DATA_SPELL:{}", DATA_SPELL);
     }
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
+        TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level.isClientSide:{} {}", level.isClientSide, pKey);
         super.onSyncedDataUpdated(pKey);
 
         if (!level.isClientSide) {
             return;
         }
 
-        if (pKey == DATA_CASTING) {
-            var castingData = entityData.get(DATA_CASTING);
+        if (pKey.getId() == DATA_SPELL.getId()) {
+            var syncedSpellData = entityData.get(DATA_SPELL);
+            TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated(DATA_SPELL) {} {}", level.isClientSide, syncedSpellData);
+            playerMagicData.setSyncedData(syncedSpellData);
 
-            //noinspection ConstantValue
-            if (castingData == null || castingData.spellId == 0) {
+            if (!syncedSpellData.isCasting()) {
                 castComplete();
                 return;
+            } else {
+                var spellType = SpellType.getTypeFromValue(syncedSpellData.getCastingSpellId());
+                castSpell(spellType, syncedSpellData.getCastingSpellLevel());
             }
-
-            var spellType = SpellType.getTypeFromValue(castingData.spellId);
-
-            if (castingData.usePosition) {
-                playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(new Vec3(castingData.x, castingData.y, castingData.z)));
-            }
-
-            castSpell(spellType, castingData.spellLevel);
-        } else if (pKey == DATA_SPELL) {
-            var syncedSpellData = entityData.get(DATA_SPELL);
-            if (syncedSpellData != null)
-                playerMagicData.setSyncedData(syncedSpellData);
         }
     }
 
     public void doSyncSpellData() {
-        entityData.set(DATA_SPELL, playerMagicData.getSyncedData());
+        TestMod.LOGGER.debug("ASCM.doSyncSpellData {} {}", level.isClientSide, playerMagicData.getSyncedData());
+        //Need a deep clone of the object because set does a basic object ref compare to trigger the update. Do not remove this
+        entityData.set(DATA_SPELL, playerMagicData.getSyncedData().deepClone());
     }
 
     private void castComplete() {
-        //TestMod.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
+        TestMod.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
         if (!level.isClientSide) {
             castingSpell.onServerCastComplete(level, this, playerMagicData);
         }
@@ -162,38 +159,29 @@ public abstract class AbstractSpellCastingMob extends Monster {
         if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.CHARGE || castingSpell.getCastType() == CastType.INSTANT) {
                 forceLookAtTarget(getTarget());
+                TestMod.LOGGER.debug("ASCM.customServerAiStep: onCast.1 {}", castingSpell.getSpellType());
                 castingSpell.onCast(level, this, playerMagicData);
-                TestMod.LOGGER.debug("AbstractSpellCastingMob: Casting {}", castingSpell.getSpellType());
             }
             castComplete();
         } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
                 forceLookAtTarget(getTarget());
+                TestMod.LOGGER.debug("ASCM.customServerAiStep: onCast.2 {}", castingSpell.getSpellType());
                 castingSpell.onCast(level, this, playerMagicData);
             }
         }
     }
 
     public void castSpell(SpellType spellType, int spellLevel) {
-        //TestMod.LOGGER.debug("ASCM.castSpell spellType:{} spellLevel:{} isClient:{}", spellType, spellLevel, level.isClientSide);
-        setCastingSpell(spellType, spellLevel);
-        startCasting();
-    }
-
-    private void setCastingSpell(SpellType spellType, int spellLevel) {
-        //TestMod.LOGGER.debug("ASCM.setCastingSpell:spellType:{} spellLevel:{} isClient:{}}", spellType, spellLevel, level.isClientSide);
+        TestMod.LOGGER.debug("ASCM.castSpell: {} {}", spellType, spellLevel);
         if (spellType == SpellType.NONE_SPELL) {
             castingSpell = null;
-        } else {
-            castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
-        }
-    }
-
-    private void startCasting() {
-        if (castingSpell == null)
             return;
-        if (!level.isClientSide) {
+        }
 
+        castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
+
+        if (!level.isClientSide) {
             var data = new MobSyncedCastingData();
             data.spellId = castingSpell.getID();
             data.spellLevel = castingSpell.getLevel();
@@ -207,6 +195,7 @@ public abstract class AbstractSpellCastingMob extends Monster {
 
             entityData.set(DATA_CASTING, data);
         }
+
         this.startUsingItem(InteractionHand.MAIN_HAND);
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.MOB);
 
@@ -217,11 +206,7 @@ public abstract class AbstractSpellCastingMob extends Monster {
     }
 
     public boolean isCasting() {
-        if (level.isClientSide) {
-            return entityData.get(DATA_CASTING).spellId != 0;
-        } else {
-            return playerMagicData != null && playerMagicData.isCasting();
-        }
+        return playerMagicData != null && playerMagicData.isCasting();
     }
 
     public SpellType getCastingSpell() {

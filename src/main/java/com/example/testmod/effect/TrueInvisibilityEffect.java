@@ -2,6 +2,7 @@ package com.example.testmod.effect;
 
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.entity.AbstractSpellCastingMob;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -19,8 +20,9 @@ public class TrueInvisibilityEffect extends MobEffect {
     @Override
     public void addAttributeModifiers(LivingEntity livingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(livingEntity, pAttributeMap, pAmplifier);
-        if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob)
-            PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().setHasTrueInvis(true);
+        if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
+            PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().addEffects(SyncedSpellData.TRUE_INVIS);
+        }
         this.lastHurtTimestamp = livingEntity.getLastHurtMobTimestamp();
 
     }
@@ -40,9 +42,8 @@ public class TrueInvisibilityEffect extends MobEffect {
     @Override
     public void removeAttributeModifiers(LivingEntity livingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(livingEntity, pAttributeMap, pAmplifier);
-        if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob)
-            PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().setHasTrueInvis(false);
-
-
+        if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
+            PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.TRUE_INVIS);
+        }
     }
 }
