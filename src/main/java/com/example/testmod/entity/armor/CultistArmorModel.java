@@ -1,4 +1,4 @@
-package com.example.testmod.entity.armor.culist.archevoker;
+package com.example.testmod.entity.armor;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.item.armor.CultistArmorItem;

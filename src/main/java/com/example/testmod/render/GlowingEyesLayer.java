@@ -41,7 +41,7 @@ public class GlowingEyesLayer<T extends LivingEntity, M extends EntityModel<T>> 
     public EyeType getEyeType(LivingEntity entity) {
         if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ABYSSAL_SHROUD))
             return EyeType.Abyssal;
-        else if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ELECTROMANCER_HAT.get()))
+        else if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ELECTROMANCER_HELMET.get()))
             return EyeType.Ender_Armor;
         else return EyeType.None;
     }

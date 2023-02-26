@@ -1,5 +1,6 @@
-package com.example.testmod.entity.armor;
+package com.example.testmod.entity.armor.pumpkin;
 
+import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
 import com.example.testmod.item.armor.PumpkinArmorItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import software.bernie.geckolib3.core.processor.IBone;

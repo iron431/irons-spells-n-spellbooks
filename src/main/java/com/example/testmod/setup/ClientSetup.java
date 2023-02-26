@@ -3,16 +3,10 @@ package com.example.testmod.setup;
 import com.example.testmod.TestMod;
 import com.example.testmod.block.pedestal.PedestalRenderer;
 import com.example.testmod.block.scroll_forge.ScrollForgeRenderer;
-import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
-import com.example.testmod.entity.armor.PumpkinArmorRenderer;
-import com.example.testmod.entity.armor.TarnishedCrownModel;
-import com.example.testmod.entity.armor.archevoker.ArchevokerArmorModel;
-import com.example.testmod.entity.armor.culist.archevoker.CultistArmorModel;
-import com.example.testmod.entity.armor.electromancer.ElectromancerArmorModel;
+import com.example.testmod.entity.armor.*;
+import com.example.testmod.entity.armor.pumpkin.PumpkinArmorRenderer;
 import com.example.testmod.entity.armor.pumpkin.PumpkinArmorModel;
-import com.example.testmod.entity.armor.pyromancer.PyromancerArmorModel;
 import com.example.testmod.entity.armor.simple_wizard.WizardArmorRenderer;
-import com.example.testmod.entity.armor.wandering_magician.WanderingMagicianModel;
 import com.example.testmod.entity.blood_slash.BloodSlashRenderer;
 import com.example.testmod.entity.cone_of_cold.ConeOfColdRenderer;
 import com.example.testmod.entity.electrocute.ElectrocuteRenderer;
@@ -89,6 +83,7 @@ public class ClientSetup {
         GeoArmorRenderer.registerArmorRenderer(ElectromancerArmorItem.class, () -> new GenericCustomArmorRenderer(new ElectromancerArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(ArchevokerArmorItem.class, () -> new GenericCustomArmorRenderer(new ArchevokerArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(CultistArmorItem.class, () -> new GenericCustomArmorRenderer(new CultistArmorModel()));
+        GeoArmorRenderer.registerArmorRenderer(CryomancerArmorItem.class, () -> new GenericCustomArmorRenderer(new CryomancerArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(TarnishedCrownArmorItem.class, () -> new GenericCustomArmorRenderer(new TarnishedCrownModel()));
         GeoArmorRenderer.registerArmorRenderer(PumpkinArmorItem.class, () -> new PumpkinArmorRenderer(new PumpkinArmorModel()));
 

@@ -45,7 +45,10 @@
   "item.testmod.archevoker_chestplate": "Archevoker Coat",
   "item.testmod.archevoker_leggings": "Archevoker Pants",
   "item.testmod.archevoker_boots": "Archevoker Boots",
-
+  "item.testmod.cryomancer_helmet": "Cryomancer Hood",
+  "item.testmod.cryomancer_chestplate": "Cryomancer Coat",
+  "item.testmod.cryomancer_leggings": "Cryomancer Pants",
+  "item.testmod.cryomancer_boots": "Cryomancer Boots",
   "item.testmod.tarnished_crown": "Tarnished Crown",
   "item.testmod.blank_rune": "Blank Runestone",
   "item.testmod.fire_rune": "Fire Rune",
