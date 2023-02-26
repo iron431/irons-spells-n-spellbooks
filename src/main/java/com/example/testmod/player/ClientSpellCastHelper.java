@@ -5,7 +5,12 @@ import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.util.ParticleHelper;
+import dev.kosmx.playerAnim.api.layered.IAnimation;
+import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
+import dev.kosmx.playerAnim.api.layered.ModifierLayer;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
@@ -14,6 +19,8 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
+
+import static com.example.testmod.spells.AbstractSpell.ANIMATION_RESOURCE;
 
 public class ClientSpellCastHelper {
     /**
@@ -83,7 +90,19 @@ public class ClientSpellCastHelper {
     }
 
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
-
+        var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
+        if (player != null) {
+            var keyframeAnimation = AbstractSpell.getSpell(spellType, 1).getCastStartAnimation(player);
+            keyframeAnimation.ifPresent((keyFrame) -> {
+                if (keyFrame != null) {
+                    var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(ANIMATION_RESOURCE);
+                    if (animation != null) {
+                        animation.setAnimation(new KeyframeAnimationPlayer(keyFrame));
+                        //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
+                    }
+                }
+            });
+        }
     }
 
     private static double getRandomScaled(double scale) {

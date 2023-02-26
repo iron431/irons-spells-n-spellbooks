@@ -6,10 +6,7 @@ import com.example.testmod.gui.inscription_table.network.ServerboundInscriptionT
 import com.example.testmod.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import com.example.testmod.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import com.example.testmod.network.*;
-import com.example.testmod.network.spell.ClientboundBloodSiphonParticles;
-import com.example.testmod.network.spell.ClientboundHealParticles;
-import com.example.testmod.network.spell.ClientboundRegenCloudParticles;
-import com.example.testmod.network.spell.ClientboundTeleportParticles;
+import com.example.testmod.network.spell.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -138,6 +135,12 @@ public class Messages {
                 .decoder(ClientboundRegenCloudParticles::new)
                 .encoder(ClientboundRegenCloudParticles::toBytes)
                 .consumer(ClientboundRegenCloudParticles::handle)
+                .add();
+
+        net.messageBuilder(ClientboundOnCastStarted.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundOnCastStarted::new)
+                .encoder(ClientboundOnCastStarted::toBytes)
+                .consumer(ClientboundOnCastStarted::handle)
                 .add();
 
     }

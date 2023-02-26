@@ -8,18 +8,15 @@ import com.example.testmod.item.SpellBook;
 import com.example.testmod.network.ClientboundOnClientCast;
 import com.example.testmod.network.ClientboundSyncMana;
 import com.example.testmod.network.ClientboundUpdateCastingState;
+import com.example.testmod.network.spell.ClientboundOnCastStarted;
 import com.example.testmod.player.ClientInputEvents;
 import com.example.testmod.player.ClientRenderCache;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.util.Utils;
-import dev.kosmx.playerAnim.api.layered.IAnimation;
-import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
-import dev.kosmx.playerAnim.api.layered.ModifierLayer;
-import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
+import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +38,9 @@ import java.util.Optional;
 import static com.example.testmod.registries.AttributeRegistry.COOLDOWN_REDUCTION;
 
 public abstract class AbstractSpell {
+    public static ResourceLocation ANIMATION_RESOURCE = new ResourceLocation(TestMod.MODID, "animation");
+    public static ResourceLocation ANIMATION_INSTANT_CAST = new ResourceLocation(TestMod.MODID, "instant_cast");
+
     private final SpellType spellType;
     private final CastType castType;
     protected int level;
@@ -105,7 +105,11 @@ public abstract class AbstractSpell {
 
     public abstract Optional<SoundEvent> getCastStartSound();
 
-    public Optional<ModifierLayer<IAnimation>> getCastStartAnimation() {
+    public Optional<KeyframeAnimation> getCastStartAnimation(Player player) {
+        if (castType == CastType.INSTANT) {
+            return Optional.of(PlayerAnimationRegistry.getAnimation(ANIMATION_INSTANT_CAST));
+        }
+
         return Optional.empty();
     }
 
@@ -190,7 +194,7 @@ public abstract class AbstractSpell {
                 Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(), effectiveCastTime, castSource, false), serverPlayer);
             }
 
-            //Messages
+            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), spellType), serverPlayer, true);
 
             return true;
         } else {
@@ -266,20 +270,7 @@ public abstract class AbstractSpell {
      * Called once just before executing onCast. Can be used for client side sounds and particles
      */
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
-        TestMod.LOGGER.debug("AbstractSpell.onClientPreCast: isClient:{} entity:{}", level.isClientSide, entity);
-
-        //Get the animation for that player
-        var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) entity).get(new ResourceLocation(TestMod.MODID, "animation"));
-        if (animation != null) {
-            //You can set an animation from anywhere ON THE CLIENT
-            //Do not attempt to do this on a server, that will only fail
-
-            animation.setAnimation(new KeyframeAnimationPlayer(PlayerAnimationRegistry.getAnimation(new ResourceLocation(TestMod.MODID, "instant_cast"))));
-            //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
-            //See javadoc for details
-        }
-
-
+        //TestMod.LOGGER.debug("AbstractSpell.onClientPreCast: isClient:{} entity:{}", level.isClientSide, entity);
         playSound(getCastStartSound(), entity);
     }
 
