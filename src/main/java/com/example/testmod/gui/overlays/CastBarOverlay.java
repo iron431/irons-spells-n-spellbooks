@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
@@ -46,7 +47,7 @@ public class CastBarOverlay extends GuiComponent {
         var font = gui.getFont();
 
         if(castCompletionPercent == 1){
-            castTimeString = "Ready";
+            castTimeString = Component.translatable("ui.testmod.charge_ready").getString();
         }
 
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;

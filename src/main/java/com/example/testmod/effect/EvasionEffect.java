@@ -87,6 +87,7 @@ public class EvasionEffect extends MobEffect {
                 maxRadius--;
             }
         }
+
         return true;
     }
 }
