@@ -70,6 +70,7 @@
 ### Geckolib
 - https://www.youtube.com/watch?v=62GMA9Yg938
 - https://www.youtube.com/watch?v=3srLEdFTgVI
+- Attack Animation: https://youtu.be/_Ob2XCsfboI?t=120
 
 ###
 - Hit Detection

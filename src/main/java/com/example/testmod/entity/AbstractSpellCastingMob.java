@@ -1,5 +1,6 @@
 package com.example.testmod.entity;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.spells.AbstractSpell;
@@ -49,7 +50,7 @@ public abstract class AbstractSpellCastingMob extends Monster {
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-        //TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level.isClientSide:{} {}", level.isClientSide, pKey);
+        TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level.isClientSide:{} {}", level.isClientSide, pKey);
         super.onSyncedDataUpdated(pKey);
 
         if (!level.isClientSide) {
@@ -57,11 +58,12 @@ public abstract class AbstractSpellCastingMob extends Monster {
         }
 
         if (pKey.getId() == DATA_SPELL.getId()) {
+            var isCasting = playerMagicData.isCasting();
             var syncedSpellData = entityData.get(DATA_SPELL);
             //TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated(DATA_SPELL) {} {}", level.isClientSide, syncedSpellData);
             playerMagicData.setSyncedData(syncedSpellData);
 
-            if (!syncedSpellData.isCasting()) {
+            if (!syncedSpellData.isCasting() && isCasting) {
                 castComplete();
                 return;
             } else {

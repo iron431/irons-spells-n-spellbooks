@@ -111,13 +111,6 @@ public class PlayerMagicData extends AbstractMagicData {
         }
     }
 
-    public void resetSyncedData() {
-        if (syncedSpellData != null) {
-            syncedSpellData = syncedSpellData.clone();
-            syncedSpellData.doSync();
-        }
-    }
-
     public boolean isCasting() {
         return getSyncedData().isCasting();
     }
