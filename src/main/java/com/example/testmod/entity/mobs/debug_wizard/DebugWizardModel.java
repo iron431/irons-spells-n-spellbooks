@@ -1,26 +1,26 @@
 package com.example.testmod.entity.mobs.debug_wizard;
 
 import com.example.testmod.TestMod;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 
-public class DebugWizardModel extends HumanoidModel<DebugWizard> {
+public class DebugWizardModel extends AnimatedGeoModel<DebugWizard> {
+    public static final ResourceLocation modelResource = new ResourceLocation(TestMod.MODID, "geo/abstract_casting_mob.geo.json");
+    public static final ResourceLocation textureResource = new ResourceLocation(TestMod.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
+    public static final ResourceLocation animationResource = new ResourceLocation(TestMod.MODID, "animations/instant_cast.json");
 
-    public static final String BODY = "body";
-    public static final String SIMPLE_WIZARD = "simple_wizard";
-    public static ModelLayerLocation SIMPLE_WIZARD_LAYER = new ModelLayerLocation(new ResourceLocation(TestMod.MODID, SIMPLE_WIZARD), BODY);
-
-    public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshdefinition = createMesh(CubeDeformation.NONE, 0.6f);
-        return LayerDefinition.create(meshdefinition, 64, 32);
+    @Override
+    public ResourceLocation getModelResource(DebugWizard object) {
+        return modelResource;
     }
 
-    public DebugWizardModel(ModelPart part) {
-        super(part);
+    @Override
+    public ResourceLocation getTextureResource(DebugWizard object) {
+        return textureResource;
+    }
+
+    @Override
+    public ResourceLocation getAnimationResource(DebugWizard animatable) {
+        return animationResource;
     }
 }

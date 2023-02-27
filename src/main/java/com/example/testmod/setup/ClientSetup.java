@@ -16,7 +16,6 @@ import com.example.testmod.entity.icicle.IcicleRenderer;
 import com.example.testmod.entity.lightning_lance.LightningLanceRenderer;
 import com.example.testmod.entity.magic_arrow.MagicArrowRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
-import com.example.testmod.entity.mobs.debug_wizard.DebugWizardModel;
 import com.example.testmod.entity.mobs.debug_wizard.DebugWizardRenderer;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import com.example.testmod.entity.mobs.horse.SpectralSteedRenderer;
@@ -56,7 +55,6 @@ public class ClientSetup {
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         //LayerDefinition basicHumanLayer = LayerDefinition.create(HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F), 64, 64);
 
-        event.registerLayerDefinition(DebugWizardModel.SIMPLE_WIZARD_LAYER, DebugWizardModel::createBodyLayer);
         //See LayerDefinitions.createRoots
         LayerDefinition energyOverlayLayer = LayerDefinition.create(HumanoidModel.createMesh(new CubeDeformation(1.25F), 0.0F), 64, 32);
         LayerDefinition outerLayer = LayerDefinition.create(HumanoidModel.createMesh(LayerDefinitions.OUTER_ARMOR_DEFORMATION, 0.0F), 64, 32);

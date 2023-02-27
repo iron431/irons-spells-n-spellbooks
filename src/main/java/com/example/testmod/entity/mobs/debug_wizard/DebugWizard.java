@@ -11,8 +11,15 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.Level;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
+public class DebugWizard extends AbstractSpellCastingMob implements Enemy, IAnimatable {
 
     private SpellType spellType;
     private int spellLevel;
@@ -68,5 +75,31 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
                 .add(Attributes.MAX_HEALTH, 30.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)
                 .add(Attributes.MOVEMENT_SPEED, .4);
+    }
+
+
+    /**
+     * EXPERIMENTAL
+     **/
+
+    @SuppressWarnings("removal")
+    private final AnimationFactory factory = new AnimationFactory(this);
+
+    @SuppressWarnings("removal")
+    private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("instant_cast", true);
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+    }
+
+    @Override
+    public AnimationFactory getFactory() {
+        return factory;
+    }
+
+    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+        event.getController().setAnimation(animationBuilder);
+        return PlayState.CONTINUE;
     }
 }
