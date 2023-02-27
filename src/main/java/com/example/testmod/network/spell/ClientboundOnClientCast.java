@@ -1,4 +1,4 @@
-package com.example.testmod.network;
+package com.example.testmod.network.spell;
 
 import com.example.testmod.player.ClientSpellCastHelper;
 import com.example.testmod.spells.CastSource;
