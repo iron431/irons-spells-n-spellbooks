@@ -59,7 +59,7 @@
 						}
 					},
 					"position": {
-						"vector": [0, 0, -1]
+						"vector": [0, 0, 0]
 					}
 				},
 				"right_arm": {

@@ -9,6 +9,7 @@ import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.ender.TeleportSpell;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
@@ -71,6 +72,20 @@ public abstract class AbstractSpellCastingMob extends Monster {
                 castSpell(spellType, syncedSpellData.getCastingSpellLevel());
             }
         }
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        playerMagicData.getSyncedData().saveNBTData(pCompound);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        var syncedSpellData = new SyncedSpellData(this);
+        syncedSpellData.loadNBTData(pCompound);
+        playerMagicData.setSyncedData(syncedSpellData);
     }
 
     public void doSyncSpellData() {
