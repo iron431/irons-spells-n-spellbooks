@@ -1,6 +1,7 @@
 package com.example.testmod.entity.mobs.debug_wizard;
 
 
+import com.example.testmod.render.GeoEvasionLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,6 +16,7 @@ public class DebugWizardRenderer extends GeoEntityRenderer<DebugWizard> {
     public DebugWizardRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new DebugWizardModel());
         this.shadowRadius = 0.3f;
+        this.addLayer(new GeoEvasionLayer(this));
     }
 
     @Override
