@@ -33,6 +33,12 @@ public class EvasionLayer<T extends LivingEntity, M extends HumanoidModel<T>> ex
         return this.model;
     }
 
+//    @Override
+//    public void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+//        pMatrixStack.scale(1.25f,1.25f,1.25f);
+//        super.render(pMatrixStack, pBuffer, pPackedLight, pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTicks, pAgeInTicks, pNetHeadYaw, pHeadPitch);
+//    }
+
     @Override
     protected boolean shouldRender(T entity) {
         return ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.EVASION);
