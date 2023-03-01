@@ -71,7 +71,7 @@ public class MagicManager {
                 if (playerMagicData.isCasting()) {
                     playerMagicData.handleCastDuration();
                     var spell = AbstractSpell.getSpell(playerMagicData.getCastingSpellId(), playerMagicData.getCastingSpellLevel());
-                    TestMod.LOGGER.debug("MagicManager.tick: playerMagicData:{}", playerMagicData);
+                    //TestMod.LOGGER.debug("MagicManager.tick: playerMagicData:{}", playerMagicData);
                     if (spell.getCastType() == CastType.LONG || (spell.getCastType() == CastType.CHARGE && !serverPlayer.isUsingItem())) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
                             Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);

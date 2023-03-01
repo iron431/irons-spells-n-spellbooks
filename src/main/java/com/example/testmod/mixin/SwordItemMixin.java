@@ -50,7 +50,9 @@ public abstract class SwordItemMixin extends Item {
                 } else {
                     //TestMod.LOGGER.debug("SwordItemMixin.use.6");
                     spell.onClientPreCast(level, player, hand, null);
-
+                    if (spell.getCastType().holdToCast()) {
+                        player.startUsingItem(hand);
+                    }
                     return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
                 }
             }

@@ -71,6 +71,9 @@ public class Scroll extends Item {
                 return InteractionResultHolder.fail(stack);
             } else {
                 spell.onClientPreCast(level, player, hand, null);
+                if (spell.getCastType().holdToCast()) {
+                    player.startUsingItem(hand);
+                }
                 return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
             }
         }
@@ -100,7 +103,7 @@ public class Scroll extends Item {
 
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
-        entity.stopUsingItem();
+        //entity.stopUsingItem();
         if (getUseDuration(itemStack) - ticksUsed >= 10) {
             Utils.releaseUsingHelper(entity);
         }

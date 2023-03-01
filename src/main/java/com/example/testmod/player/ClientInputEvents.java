@@ -31,6 +31,7 @@ public final class ClientInputEvents {
 
     private static KeyMapping useKeyMapping;
     public static boolean isUseKeyDown;
+    public static boolean hasReleasedSinceCasting;
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
@@ -50,7 +51,10 @@ public final class ClientInputEvents {
 
         }
 
-        Update();
+        //TestMod.LOGGER.debug("IsUseKeyDown: {} |\tSuppressRightClicks: {}", isUseKeyDown, ClientSpellCastHelper.shouldSuppressRightClicks());
+        //TestMod.LOGGER.debug("HasReleasedSinceCasting: {}", hasReleasedSinceCasting);
+
+        update();
     }
 
     @SubscribeEvent
@@ -100,7 +104,6 @@ public final class ClientInputEvents {
                     Messages.sendToServer(new ServerboundSetSpellBookActiveIndex(selectedIndex));
                     event.setCanceled(true);
                 }
-
             }
         }
     }
@@ -110,7 +113,7 @@ public final class ClientInputEvents {
         //TestMod.LOGGER.debug("onUseInput: keymapping: {} ({})", useKeyMapping.getKey(), useKeyMapping.getKey().getValue());
         if (event.isUseItem()) {
             useKeyMapping = event.getKeyMapping();
-            if (ClientRenderCache.suppressRightClicks()) {
+            if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
                 event.setSwingHand(false);
                 event.setCanceled(true);
             }
@@ -130,16 +133,17 @@ public final class ClientInputEvents {
     private static void handleRightClickSuppression(int button, int action) {
         if (useKeyMapping != null && button == useKeyMapping.getKey().getValue())
             if (action == InputConstants.RELEASE) {
-                ClientRenderCache.setSuppressRightClicks(false);
+                ClientSpellCastHelper.setSuppressRightClicks(false);
                 isUseKeyDown = false;
+                hasReleasedSinceCasting = true;
             } else if (action == InputConstants.PRESS) {
                 isUseKeyDown = true;
             }
     }
 
-    private static void Update() {
+    private static void update() {
         for (KeyState k : KEY_STATES) {
-            k.Update();
+            k.update();
         }
     }
 

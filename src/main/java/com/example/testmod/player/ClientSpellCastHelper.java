@@ -40,7 +40,22 @@ public class ClientSpellCastHelper {
             TeleportSpell.particleCloud(level, player, pos2);
         }
     }
+    /**
+     * Right Click Suppression
+     */
+    private static boolean suppressRightClicks;
 
+    public static boolean shouldSuppressRightClicks() {
+        return suppressRightClicks;
+    }
+
+    public static void setSuppressRightClicks(boolean suppressRightClicks) {
+        ClientSpellCastHelper.suppressRightClicks = suppressRightClicks;
+    }
+
+    /**
+     * Particles
+     */
     public static void handleClientboundBloodSiphonParticles(Vec3 pos1, Vec3 pos2) {
         if (Minecraft.getInstance().player == null)
             return;

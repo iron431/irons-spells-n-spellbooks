@@ -5,19 +5,18 @@ import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
+import com.example.testmod.network.ClientboundCastError;
 import com.example.testmod.network.ClientboundSyncMana;
 import com.example.testmod.network.ClientboundUpdateCastingState;
 import com.example.testmod.network.spell.ClientboundOnCastStarted;
 import com.example.testmod.network.spell.ClientboundOnClientCast;
 import com.example.testmod.player.ClientInputEvents;
-import com.example.testmod.player.ClientRenderCache;
+import com.example.testmod.player.ClientSpellCastHelper;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.util.Utils;
 import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -168,13 +167,13 @@ public abstract class AbstractSpell {
             boolean hasEnoughMana = playerMana - getManaCost() >= 0;
             boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
 
-            if (castSource.consumesMana() && !hasEnoughMana) {
-                player.sendSystemMessage(Component.literal("Not enough mana to cast spell").withStyle(ChatFormatting.RED));
+            if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
+                Messages.sendToPlayer(new ClientboundCastError(ClientboundCastError.CastErrorMessages.COOLDOWN.id, this.spellType.getValue()), serverPlayer);
                 return false;
             }
 
-            if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
-                player.sendSystemMessage(spellType.getDisplayName().append(" is on cooldown").withStyle(ChatFormatting.RED));
+            if (castSource.consumesMana() && !hasEnoughMana) {
+                Messages.sendToPlayer(new ClientboundCastError(ClientboundCastError.CastErrorMessages.MANA.id, this.spellType.getValue()), serverPlayer);
                 return false;
             }
 
@@ -245,7 +244,10 @@ public abstract class AbstractSpell {
         //TestMod.LOGGER.debug("AbstractSpell.: onClientCast:{}", level.isClientSide);
         playSound(getCastFinishSound(), entity);
         if (ClientInputEvents.isUseKeyDown) {
-            ClientRenderCache.setSuppressRightClicks(true);
+            if (this.spellType.getCastType().holdToCast()) {
+                ClientSpellCastHelper.setSuppressRightClicks(true);
+            }
+            ClientInputEvents.hasReleasedSinceCasting = false;
         }
     }
 

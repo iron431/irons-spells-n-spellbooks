@@ -114,6 +114,8 @@
   "ui.testmod.frostbite_success_chance": "Auto-Success Threshold: %d% Chance",
   "ui.testmod.charge_ready": "Charged",
   "ui.testmod.hits_dodged": "%d Hits Dodged",
+  "ui.testmod.cast_error_mana": "Not enough mana to cast %s!",
+  "ui.testmod.cast_error_cooldown": "%s is on cooldown.",
   "school.testmod.fire": "Fire",
   "school.testmod.ice": "Ice",
   "school.testmod.lightning": "Lightning",

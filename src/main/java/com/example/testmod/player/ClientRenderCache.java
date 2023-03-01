@@ -8,23 +8,13 @@ import java.util.List;
 
 public class ClientRenderCache {
 
-
-    private static boolean suppressRightClicks;
     public static SpinAttackType lastSpinAttack = SpinAttackType.RIPTIDE;
+
 
     public enum SpinAttackType {
         RIPTIDE,
-        FIRE
+        FIRE;
     }
-
-    public static boolean suppressRightClicks() {
-        return suppressRightClicks;
-    }
-
-    public static void setSuppressRightClicks(boolean suppressRightClicks) {
-        ClientRenderCache.suppressRightClicks = suppressRightClicks;
-    }
-
 
     /**
      * SPELL BAR RENDER CACHING

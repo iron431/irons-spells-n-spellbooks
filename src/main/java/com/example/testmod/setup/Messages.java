@@ -113,12 +113,6 @@ public class Messages {
                 .consumer(ServerboundCancelCast::handle)
                 .add();
 
-        net.messageBuilder(ClientboundSuppressRightClicks.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(ClientboundSuppressRightClicks::new)
-                .encoder(ClientboundSuppressRightClicks::toBytes)
-                .consumer(ClientboundSuppressRightClicks::handle)
-                .add();
-
         net.messageBuilder(ClientboundHealParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundHealParticles::new)
                 .encoder(ClientboundHealParticles::toBytes)
@@ -141,6 +135,12 @@ public class Messages {
                 .decoder(ClientboundOnCastStarted::new)
                 .encoder(ClientboundOnCastStarted::toBytes)
                 .consumer(ClientboundOnCastStarted::handle)
+                .add();
+
+        net.messageBuilder(ClientboundCastError.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundCastError::new)
+                .encoder(ClientboundCastError::toBytes)
+                .consumer(ClientboundCastError::handle)
                 .add();
 
     }
