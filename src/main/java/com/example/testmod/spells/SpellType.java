@@ -430,7 +430,7 @@ public enum SpellType {
     }
 
     public DamageSource getDamageSource(Entity projectile, Entity attacker) {
-        return DamageSources.proxyDamageSource(getDamageSource(), projectile, attacker);
+        return DamageSources.indirectDamageSource(getDamageSource(), projectile, attacker);
     }
 
     public String getId() {

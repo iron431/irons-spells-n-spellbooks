@@ -35,7 +35,7 @@ public class PyromancerEntity extends AbstractSpellCastingMob implements Enemy {
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.25f, 25, 50).setSpells(
-                List.of(SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIRE_BREATH_SPELL, SpellType.FIREBALL_SPELL),
+                List.of(SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIRE_BREATH_SPELL, SpellType.BLAZE_STORM_SPELL, SpellType.FIREBALL_SPELL),
                 List.of(),
                 List.of(),
                 List.of(SpellType.HEAL_SPELL)
@@ -73,7 +73,7 @@ public class PyromancerEntity extends AbstractSpellCastingMob implements Enemy {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
                 .add(Attributes.MAX_HEALTH, 50.0)
-                .add(Attributes.FOLLOW_RANGE, 40.0)
+                .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 }

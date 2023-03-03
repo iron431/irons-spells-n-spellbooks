@@ -12,11 +12,11 @@
     "salt": 169476080,
 
       // The average distance apart in chunks for spawn attempts
-    "spacing": 24,
+    "spacing": 25,
 
       // Minimum distance apart in chunks for spawn attempts
       // MUST ALWAYS BE SMALLER THAN spacing ABOVE
-    "separation": 12,
+    "separation": 18,
 
       // The kind of placement to use. The other kind is ring based like strongholds use.
     "type": "minecraft:random_spread"
