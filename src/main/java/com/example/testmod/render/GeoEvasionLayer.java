@@ -26,6 +26,9 @@ public class GeoEvasionLayer extends GeoLayerRenderer<DebugWizard> {
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, DebugWizard entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         //if (ClientMagicData.getSyncedSpellData(entityLivingBaseIn).hasEffect(SyncedSpellData.EVASION)) {
         float f = (float) entityLivingBaseIn.tickCount + partialTicks;
+
+        TestMod.LOGGER.debug("render: {}",f);
+
         VertexConsumer vertexconsumer = bufferIn.getBuffer(RenderType.energySwirl(EVASION_TEXTURE, this.xOffset(f) % 1.0F, f * 0.01F % 1.0F));
 
         matrixStackIn.pushPose();
@@ -34,7 +37,9 @@ public class GeoEvasionLayer extends GeoLayerRenderer<DebugWizard> {
         //matrixStackIn.translate(0.0d, 0.0d, 0.0d);
         RenderType renderType = RenderType.armorCutoutNoCull(EVASION_TEXTURE);
 
-        this.getRenderer().render(this.getEntityModel().getModel(DebugWizardModel.modelResource), entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
+
+
+        this.getRenderer().render(this.getEntityModel().getModel(DebugWizardModel.modelResource), entityLivingBaseIn, partialTicks, renderType, matrixStackIn, null,
                 vertexconsumer, packedLightIn, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
         matrixStackIn.popPose();
 
