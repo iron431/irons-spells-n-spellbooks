@@ -3,7 +3,7 @@ package com.example.testmod.player;
 import com.example.testmod.capabilities.magic.PlayerCooldowns;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
-import com.example.testmod.entity.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;

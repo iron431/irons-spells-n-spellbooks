@@ -1,6 +1,6 @@
 package com.example.testmod.entity.mobs.wizards.pyromancer;
 
-import com.example.testmod.entity.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.PatrolNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WizardAttackGoal;
 import com.example.testmod.registries.ItemRegistry;

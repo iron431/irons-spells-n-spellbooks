@@ -3,7 +3,7 @@ package com.example.testmod.setup;
 import com.example.testmod.capabilities.magic.MagicEvents;
 import com.example.testmod.capabilities.scroll.ScrollDataEvents;
 import com.example.testmod.capabilities.spellbook.SpellBookDataEvents;
-import com.example.testmod.entity.MobSyncedCastingData;
+import com.example.testmod.entity.mobs.MobSyncedCastingData;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;

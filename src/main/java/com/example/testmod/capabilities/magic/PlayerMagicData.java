@@ -1,7 +1,7 @@
 package com.example.testmod.capabilities.magic;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;

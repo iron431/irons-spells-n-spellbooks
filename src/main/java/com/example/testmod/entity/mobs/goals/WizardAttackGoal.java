@@ -1,7 +1,7 @@
 package com.example.testmod.entity.mobs.goals;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.entity.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;

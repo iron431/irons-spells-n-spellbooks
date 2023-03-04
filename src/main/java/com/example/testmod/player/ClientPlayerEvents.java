@@ -2,7 +2,7 @@ package com.example.testmod.player;
 
 import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.effect.AbyssalShroudEffect;
-import com.example.testmod.entity.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.world.entity.Entity;

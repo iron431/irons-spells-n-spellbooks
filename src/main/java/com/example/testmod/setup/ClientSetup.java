@@ -16,7 +16,8 @@ import com.example.testmod.entity.icicle.IcicleRenderer;
 import com.example.testmod.entity.lightning_lance.LightningLanceRenderer;
 import com.example.testmod.entity.magic_arrow.MagicArrowRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
-import com.example.testmod.entity.mobs.debug_wizard.DebugWizardRenderer;
+import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.AbstractSpellCastingMobRenderer;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import com.example.testmod.entity.mobs.horse.SpectralSteedRenderer;
 import com.example.testmod.entity.mobs.necromancer.NecromancerModel;
@@ -114,7 +115,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FIREBOLT_PROJECTILE.get(), FireboltRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ICICLE_PROJECTILE.get(), IcicleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_BREATH_PROJECTILE.get(), NoopRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.DEBUG_WIZARD.get(), DebugWizardRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DEBUG_WIZARD.get(), (renderManager) -> new AbstractSpellCastingMobRenderer(renderManager, AbstractSpellCastingMob.textureResource));
         event.registerEntityRenderer(EntityRegistry.PYROMANCER.get(), PyromancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.NECROMANCER.get(), NecromancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteedRenderer::new);

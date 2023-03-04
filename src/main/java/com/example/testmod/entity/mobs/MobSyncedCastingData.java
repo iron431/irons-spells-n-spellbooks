@@ -1,4 +1,4 @@
-package com.example.testmod.entity;
+package com.example.testmod.entity.mobs;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
