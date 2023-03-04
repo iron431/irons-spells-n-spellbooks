@@ -211,7 +211,7 @@ public class WizardAttackGoal extends Goal {
 //        if (spellType == SpellType.WALL_OF_FIRE_SPELL) {
 //            mob.setTeleportLocationBehindTarget(15);
 //        }
-        mob.castSpell(spellType, spellLevel);
+        mob.initiateCastSpell(spellType, spellLevel);
     }
 
     private SpellType getNextSpellType() {

@@ -34,7 +34,7 @@ public class WizardDebugAttackGoal extends Goal {
                 mob.setTeleportLocationBehindTarget(15);
             }
 
-            mob.castSpell(spellType, spellLevel);
+            mob.initiateCastSpell(spellType, spellLevel);
         }
     }
 }

@@ -149,7 +149,7 @@ public class SyncedSpellData {
 
     public void doSync() {
         //this.player will only be null on the client side
-        TestMod.LOGGER.debug("SyncedSpellData.doSync livingEntity:{} {}", livingEntity, this);
+        TestMod.LOGGER.debug("SyncedSpellData.doSync livingEntity:{} {}", livingEntity == null ? "null" : livingEntity.getDisplayName().getString(), this);
 
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);

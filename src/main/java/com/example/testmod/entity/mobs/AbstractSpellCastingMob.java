@@ -20,6 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
+import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -47,6 +48,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private @Nullable AbstractSpell castingSpell;
 
+    //Client-side only
+    private boolean animationFlag;
+    private int animTimestamp = -1;
+
     protected AbstractSpellCastingMob(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         playerMagicData.setSyncedData(new SyncedSpellData(this));
@@ -65,7 +70,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-        TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level.isClientSide:{} {}", level.isClientSide, pKey);
+        //TestMod.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level.isClientSide:{} {}", level.isClientSide, pKey);
         super.onSyncedDataUpdated(pKey);
 
         if (!level.isClientSide) {
@@ -81,9 +86,9 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             if (!syncedSpellData.isCasting() && isCasting) {
                 castComplete();
                 return;
-            } else {
+            } else/* if (syncedSpellData.getCastingSpellType().getCastType() == CastType.CONTINUOUS)*/ {
                 var spellType = SpellType.getTypeFromValue(syncedSpellData.getCastingSpellId());
-                castSpell(spellType, syncedSpellData.getCastingSpellLevel());
+                initiateCastSpell(spellType, syncedSpellData.getCastingSpellLevel());
             }
         }
     }
@@ -121,6 +126,9 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     @Override
     public void aiStep() {
         super.aiStep();
+        //TestMod.LOGGER.debug("AbstractSpellCastingMob.aiStep");
+
+        //Should basically be only used for client stuff
 
         if (!level.isClientSide || castingSpell == null) {
             return;
@@ -131,19 +139,18 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
                 castingSpell.onClientPreCast(level, this, InteractionHand.MAIN_HAND, playerMagicData);
                 castComplete();
             }
-        } else { //Actively casting a long cast or continuous cast
-            if (castingSpell.getSpellType() == SpellType.FIREBALL_SPELL) {
-                //TODO: this needs to be handled by abstract spell in some way with an onClientCastTick event
-                addClientSideParticles();
-            }
+        } else {
+            //Actively casting a long cast or continuous cast
+
         }
 
-        //TODO:  playerMagicData.handleCastDuration(); <-- This may need to be called here?
     }
 
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+        //TestMod.LOGGER.debug("AbstractSpellCastingMob.customServerAiStep");
+
 
         if (castingSpell == null || entityData.isDirty()) {
             return;
@@ -171,25 +178,30 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
     }
 
-    public void castSpell(SpellType spellType, int spellLevel) {
-        //TestMod.LOGGER.debug("ASCM.castSpell: {} {}", spellType, spellLevel);
+    public void initiateCastSpell(SpellType spellType, int spellLevel) {
         if (spellType == SpellType.NONE_SPELL) {
             castingSpell = null;
             return;
         }
+        TestMod.LOGGER.debug("ASCM.initiateCastSpell: {} {}", spellType, spellLevel);
 
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
-        this.startUsingItem(InteractionHand.MAIN_HAND);
+        //this.startUsingItem(InteractionHand.MAIN_HAND);
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.MOB);
+        if (level.isClientSide) {
+            this.animationFlag = true;
+        }
 
-        //TODO: this may be in the wrong spot.. i don't think this works for all cast types here
         if (!level.isClientSide) {
             castingSpell.onServerPreCast(level, this, playerMagicData);
         }
+
+        TestMod.LOGGER.debug("ASCM.initiateCastSpell animationFlag: {}", animationFlag);
+
     }
 
     public boolean isCasting() {
-        return playerMagicData != null && playerMagicData.isCasting();
+        return entityData.get(DATA_SPELL).isCasting();
     }
 
     public void setTeleportLocationBehindTarget(int distance) {
@@ -217,8 +229,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     private void forceLookAtTarget(LivingEntity target) {
-        if (target != null)
-            lookAt(target, 180, 180);
+        if (target != null) {
+            lookAt(target, 360, 360);
+            setOldPosAndRot();
+        }
     }
 
     private void addClientSideParticles() {
@@ -238,12 +252,13 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
-    private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_cast", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_cast", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
 
     @Override
     public void registerControllers(AnimationData data) {
         data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController(this, "castAnimController", 0, this::castingPredicate));
     }
 
     @Override
@@ -253,17 +268,35 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 
-        if (syncedIsCasting()){
-            event.getController().setAnimation(instantCast);
-            return PlayState.CONTINUE;
-        }
+//        if (isSyncedCasting()){
+//            event.getController().setAnimation(instantCast);
+//            return PlayState.CONTINUE;
+//        }
 
         event.getController().setAnimation(idle);
         return PlayState.CONTINUE;
     }
 
-    public boolean syncedIsCasting(){
-        var syncedSpellData = entityData.get(DATA_SPELL);
-        return syncedSpellData.isCasting();
+    private <E extends IAnimatable> PlayState castingPredicate(AnimationEvent<E> event) {
+        if (animationFlag && event.getController().getAnimationState() == AnimationState.Stopped) {
+            event.getController().markNeedsReload();
+            event.getController().setAnimation(instantCast);
+            var anim = event.getController().getCurrentAnimation();
+            if (anim != null) {
+                TestMod.LOGGER.debug("Anim Duration: {}", anim.animationLength);
+                animTimestamp = tickCount + (int) anim.animationLength;
+            } else {
+                TestMod.LOGGER.debug("Anim is null");
+            }
+//            TestMod.LOGGER.debug("{}", test);
+            animationFlag = false;
+        }
+
+        return PlayState.CONTINUE;
     }
+
+    public boolean isAnimating() {
+        return this.tickCount <= animTimestamp;
+    }
+
 }
