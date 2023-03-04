@@ -2,6 +2,7 @@ package com.example.testmod.entity.mobs.debug_wizard;
 
 import com.example.testmod.TestMod;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 public class DebugWizardModel extends AnimatedGeoModel<DebugWizard> {
@@ -22,5 +23,12 @@ public class DebugWizardModel extends AnimatedGeoModel<DebugWizard> {
     @Override
     public ResourceLocation getAnimationResource(DebugWizard animatable) {
         return animationResource;
+    }
+
+    @Override
+    public void setCustomAnimations(DebugWizard entity, int instanceId, AnimationEvent animationEvent) {
+        super.setCustomAnimations(entity, instanceId, animationEvent);
+//        IBone head = this.getAnimationProcessor().getBone("bipedHead");
+//        head.setRotationY(entity.tickCount * Mth.DEG_TO_RAD);
     }
 }

@@ -9,7 +9,10 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -39,7 +42,9 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy, IAnim
     }
 
     private void initGoals() {
-        this.goalSelector.addGoal(1, new WizardDebugAttackGoal(this, this.spellType, this.spellLevel));
+        this.goalSelector.addGoal(10, new WizardDebugAttackGoal(this, this.spellType, this.spellLevel));
+        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.35D));
 
         if (this.targetsPlayer) {
             this.targetSelector.addGoal(1, new DebugTargetClosestEntityGoal(this));
@@ -87,6 +92,8 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy, IAnim
 
     @SuppressWarnings("removal")
     private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("instant_cast", true);
+
+
 
     @Override
     public void registerControllers(AnimationData data) {

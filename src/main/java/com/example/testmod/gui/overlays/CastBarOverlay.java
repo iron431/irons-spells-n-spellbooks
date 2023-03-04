@@ -27,6 +27,7 @@ public class CastBarOverlay extends GuiComponent {
         String castTimeString = Utils.timeFromTicks((1 - castCompletionPercent) * ClientMagicData.getCastDuration(), 1);
         if (ClientMagicData.getCastType() == CastType.CHARGE && ClientMagicData.getCastDurationRemaining() < 0) {
             castCompletionPercent = 1;
+                castTimeString = Component.translatable("ui.testmod.charge_ready").getString();
         } else if (ClientMagicData.getCastType() == CastType.CONTINUOUS) {
             castCompletionPercent = 1 - castCompletionPercent;
         }
@@ -46,9 +47,7 @@ public class CastBarOverlay extends GuiComponent {
         var textColor = ChatFormatting.WHITE;
         var font = gui.getFont();
 
-        if(castCompletionPercent == 1){
-            castTimeString = Component.translatable("ui.testmod.charge_ready").getString();
-        }
+
 
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;
         textY = barY + IMAGE_HEIGHT / 2 - font.lineHeight / 2 + 1;

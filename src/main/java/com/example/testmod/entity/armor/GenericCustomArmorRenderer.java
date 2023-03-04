@@ -10,7 +10,7 @@ import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 import software.bernie.geckolib3.util.GeoUtils;
 
 public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> extends GeoArmorRenderer<T> {
-    public String leggingTorsoLayerBone = "armorLeggingTorsoLayer";
+    public static final String leggingTorsoLayerBone = "armorLeggingTorsoLayer";
 
     public GenericCustomArmorRenderer(AnimatedGeoModel model) {
         super(model);
@@ -25,21 +25,19 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
         this.leftBootBone = "armorLeftBoot";
 
         var m = getGeoModelProvider();
-        m.registerBone(customBone(this.leggingTorsoLayerBone));
+        m.registerBone(customBone(leggingTorsoLayerBone));
 
     }
 
     @Override
     protected void fitToBiped() {
         super.fitToBiped();
-        if (this.leggingTorsoLayerBone != null) {
-            IBone torsoLayerBone = this.getGeoModelProvider().getBone(this.leggingTorsoLayerBone);
 
-            GeoUtils.copyRotations(this.body, torsoLayerBone);
-            torsoLayerBone.setPositionX(this.body.x);
-            torsoLayerBone.setPositionY(-this.body.y);
-            torsoLayerBone.setPositionZ(this.body.z);
-        }
+        IBone torsoLayerBone = this.getGeoModelProvider().getBone(leggingTorsoLayerBone);
+        GeoUtils.copyRotations(this.body, torsoLayerBone);
+        torsoLayerBone.setPositionX(this.body.x);
+        torsoLayerBone.setPositionY(-this.body.y);
+        torsoLayerBone.setPositionZ(this.body.z);
 
     }
 
@@ -59,7 +57,7 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
         setBoneVisibility(this.rightBootBone, false);
         setBoneVisibility(this.rightBootBone, false);
         setBoneVisibility(this.leftBootBone, false);
-        setBoneVisibility(this.leggingTorsoLayerBone, false);
+        setBoneVisibility(leggingTorsoLayerBone, false);
 
         switch (slot) {
             case HEAD -> setBoneVisibility(this.headBone, true);
@@ -71,7 +69,7 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
             case LEGS -> {
                 setBoneVisibility(this.rightLegBone, true);
                 setBoneVisibility(this.leftLegBone, true);
-                setBoneVisibility(this.leggingTorsoLayerBone, true);
+                setBoneVisibility(leggingTorsoLayerBone, true);
 
             }
             case FEET -> {

@@ -11,27 +11,25 @@ import software.bernie.geckolib3.util.GeoUtils;
 import java.util.Objects;
 
 public class PumpkinArmorRenderer extends GenericCustomArmorRenderer<PumpkinArmorItem> {
-    public String bodyHeadLayerBone = "armorBodyHeadLayer";
+    public static final String bodyHeadLayerBone = "armorBodyHeadLayer";
 
     public PumpkinArmorRenderer(AnimatedGeoModel model) {
         super(model);
 
         var m = getGeoModelProvider();
-        m.registerBone(customBone(this.bodyHeadLayerBone));
+        m.registerBone(customBone(bodyHeadLayerBone));
 
     }
 
     @Override
     protected void fitToBiped() {
         super.fitToBiped();
-        if (this.bodyHeadLayerBone != null) {
-            IBone torsoLayerBone = this.getGeoModelProvider().getBone(this.bodyHeadLayerBone);
 
-            GeoUtils.copyRotations(this.head, torsoLayerBone);
-            torsoLayerBone.setPositionX(this.head.x);
-            torsoLayerBone.setPositionY(-this.head.y);
-            torsoLayerBone.setPositionZ(this.head.z);
-        }
+        IBone torsoLayerBone = this.getGeoModelProvider().getBone(bodyHeadLayerBone);
+        GeoUtils.copyRotations(this.head, torsoLayerBone);
+        torsoLayerBone.setPositionX(this.head.x);
+        torsoLayerBone.setPositionY(-this.head.y);
+        torsoLayerBone.setPositionZ(this.head.z);
     }
 
 
@@ -39,10 +37,10 @@ public class PumpkinArmorRenderer extends GenericCustomArmorRenderer<PumpkinArmo
     public GeoArmorRenderer applySlot(EquipmentSlot slot) {
         super.applySlot(slot);
 
-        setBoneVisibility(this.bodyHeadLayerBone, false);
+        setBoneVisibility(bodyHeadLayerBone, false);
 
         if (Objects.requireNonNull(slot) == EquipmentSlot.CHEST) {
-            setBoneVisibility(this.bodyHeadLayerBone, true);
+            setBoneVisibility(bodyHeadLayerBone, true);
         }
 
         return this;

@@ -25,7 +25,7 @@
 						}
 					}
 				},
-				"left_arm": {
+				"bipedArmLeft": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -46,7 +46,7 @@
 						}
 					}
 				},
-				"torso": {
+				"bipedBody": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -62,7 +62,7 @@
 						"vector": [0, 0, 0]
 					}
 				},
-				"right_arm": {
+				"bipedArmRight": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -75,7 +75,7 @@
 						}
 					}
 				},
-				"left_leg": {
+				"bipedLegLeft": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -88,7 +88,7 @@
 						}
 					}
 				},
-				"right_leg": {
+				"bipedLegRight": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]

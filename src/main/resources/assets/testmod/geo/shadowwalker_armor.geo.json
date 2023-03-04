@@ -7,8 +7,8 @@
 				"texture_width": 96,
 				"texture_height": 96,
 				"visible_bounds_width": 4,
-				"visible_bounds_height": 5.5,
-				"visible_bounds_offset": [0, 2.25, 0]
+				"visible_bounds_height": 6,
+				"visible_bounds_offset": [0, 2, 0]
 			},
 			"bones": [
 				{
@@ -265,12 +265,12 @@
 				},
 				{
 					"name": "bipedLeftLeg",
-					"pivot": [-2, 12, 0]
+					"pivot": [2, 12, 0]
 				},
 				{
 					"name": "armorLeftLeg",
 					"parent": "bipedLeftLeg",
-					"pivot": [-2, 12, 0],
+					"pivot": [2, 12, 0],
 					"cubes": [
 						{
 							"origin": [0, 0, -2],
@@ -319,12 +319,12 @@
 				},
 				{
 					"name": "bipedRightLeg",
-					"pivot": [2, 12, 0]
+					"pivot": [-3, 12, 0]
 				},
 				{
 					"name": "armorRightLeg",
 					"parent": "bipedRightLeg",
-					"pivot": [2, 12, 0],
+					"pivot": [-2, 12, 0],
 					"cubes": [
 						{
 							"origin": [-4, 0, -2],
