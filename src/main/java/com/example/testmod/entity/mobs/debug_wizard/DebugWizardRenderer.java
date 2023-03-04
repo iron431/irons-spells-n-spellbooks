@@ -2,10 +2,8 @@ package com.example.testmod.entity.mobs.debug_wizard;
 
 
 import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
-import com.example.testmod.entity.armor.pumpkin.PumpkinArmorRenderer;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMobModel;
-import com.example.testmod.render.GeoEvasionLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
@@ -25,15 +23,16 @@ import software.bernie.example.client.DefaultBipedBoneIdents;
 import software.bernie.example.client.EntityResources;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.ExtendedGeoEntityRenderer;
+
+import java.util.List;
 
 
 public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpellCastingMob> {
     public DebugWizardRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new AbstractSpellCastingMobModel());
         this.shadowRadius = 0.3f;
-        this.addLayer(new GeoEvasionLayer(this));
+        //this.addLayer(new GeoEvasionLayer(this));
     }
 
     @Nullable
@@ -63,12 +62,19 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
                     DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT -> armorModel.rightLeg;
             case DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT -> armorModel.rightArm;
             case DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT -> armorModel.leftArm;
-            case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT,
-                    GenericCustomArmorRenderer.leggingTorsoLayerBone -> armorModel.body;
-            case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT,
-                    PumpkinArmorRenderer.bodyHeadLayerBone -> armorModel.head;
+            case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT -> armorModel.body;
+            case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT -> armorModel.head;
             default -> null;
         };
+    }
+
+    @Override
+    protected void prepareArmorPositionAndScale(GeoBone bone, List<ModelPart.Cube> cubeList, ModelPart sourceLimb, PoseStack poseStack, boolean geoArmor, boolean modMatrixRot) {
+        if(bone.getName().equals(GenericCustomArmorRenderer.leggingTorsoLayerBone)){
+            super.prepareArmorPositionAndScale((GeoBone) this.modelProvider.getBone(DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT), cubeList, sourceLimb, poseStack, false, modMatrixRot);
+        }else{
+            super.prepareArmorPositionAndScale(bone, cubeList, sourceLimb, poseStack, false, modMatrixRot);
+        }
     }
 
     @Override
@@ -84,10 +90,8 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
                     DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT -> EquipmentSlot.LEGS;
             case DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT -> !currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
             case DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT -> currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-            case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT,
-                    GenericCustomArmorRenderer.leggingTorsoLayerBone -> EquipmentSlot.CHEST;
-            case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT,
-                    PumpkinArmorRenderer.bodyHeadLayerBone  -> EquipmentSlot.HEAD;
+            case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT -> EquipmentSlot.CHEST;
+            case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT  -> EquipmentSlot.HEAD;
             default -> null;
         };
     }
@@ -175,8 +179,8 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
         return super.getRenderType(animatable, partialTick, poseStack, bufferSource, buffer, packedLight, texture);
     }
 
-    @Override
-    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
+//    @Override
+//    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+//        super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+//    }
 }

@@ -3,6 +3,7 @@ package com.example.testmod.entity.armor.pumpkin;
 import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
 import com.example.testmod.item.armor.PumpkinArmorItem;
 import net.minecraft.world.entity.EquipmentSlot;
+import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
@@ -42,6 +43,9 @@ public class PumpkinArmorRenderer extends GenericCustomArmorRenderer<PumpkinArmo
         if (Objects.requireNonNull(slot) == EquipmentSlot.CHEST) {
             setBoneVisibility(bodyHeadLayerBone, true);
         }
+
+        if (this.entityLiving instanceof IAnimatable)
+            setBoneVisibility(leggingTorsoLayerBone, false);
 
         return this;
     }

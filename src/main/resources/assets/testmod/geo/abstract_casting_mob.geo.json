@@ -70,7 +70,7 @@
 				{
 					"name": "armorBipedLeftArm",
 					"parent": "bipedArmLeft",
-					"pivot": [4, 22, 0],
+					"pivot": [5, 22, 0],
 					"cubes": [
 						{
 							"origin": [4, 12, -2],

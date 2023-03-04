@@ -79,6 +79,8 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
             default -> {
             }
         }
+        if (this.entityLiving instanceof IAnimatable)
+            setBoneVisibility(leggingTorsoLayerBone, false);
 
         return this;
     }
