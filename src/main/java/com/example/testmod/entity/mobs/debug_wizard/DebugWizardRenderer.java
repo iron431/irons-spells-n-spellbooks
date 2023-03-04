@@ -23,6 +23,7 @@ import software.bernie.example.client.DefaultBipedBoneIdents;
 import software.bernie.example.client.EntityResources;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.ExtendedGeoEntityRenderer;
 
 import java.util.List;
