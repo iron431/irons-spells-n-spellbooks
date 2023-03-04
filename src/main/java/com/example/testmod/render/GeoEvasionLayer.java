@@ -27,11 +27,11 @@ public class GeoEvasionLayer extends GeoLayerRenderer<AbstractSpellCastingMob> {
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (ClientMagicData.getSyncedSpellData(entityLivingBaseIn).hasEffect(SyncedSpellData.EVASION)) {
             float f = (float) entityLivingBaseIn.tickCount + partialTicks;
-            VertexConsumer vertexconsumer = bufferIn.getBuffer(RenderType.energySwirl(EVASION_TEXTURE, f * 0.02F % 1.0F, f * 0.01F % 1.0F));
+            var renderType = RenderType.energySwirl(EVASION_TEXTURE, f * 0.02F % 1.0F, f * 0.01F % 1.0F);
+            VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
             matrixStackIn.pushPose();
-            RenderType renderType = RenderType.armorCutoutNoCull(EVASION_TEXTURE);
-            this.getRenderer().setCurrentRTB(bufferIn);
-            this.getRenderer().render(this.getEntityModel().getModel(AbstractSpellCastingMob.modelResource), entityLivingBaseIn, partialTicks, renderType, matrixStackIn, null,
+//            this.getRenderer().setCurrentRTB(bufferIn);
+            this.getRenderer().render(this.getEntityModel().getModel(AbstractSpellCastingMob.modelResource), entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
                     vertexconsumer, packedLightIn, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
             matrixStackIn.popPose();
         }

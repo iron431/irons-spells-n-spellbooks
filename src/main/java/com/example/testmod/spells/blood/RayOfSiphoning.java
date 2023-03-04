@@ -76,7 +76,7 @@ public class RayOfSiphoning extends AbstractSpell {
     public static void doRayParticles(LivingEntity livingEntity, int level) {
         int range = (int) (getRange(level) + .85f);
         Vec3 origin = livingEntity.getEyePosition().subtract(0, .25, 0);
-        float scalar = .75f;
+        float scalar = 1.25f;
         Vec3 forward = livingEntity.getForward().normalize().scale(1 / scalar);
         for (int i = 1; i < range * scalar; i++) {
             Vec3 pos = origin.add(forward.scale(i).scale(livingEntity.getRandom().nextInt(5, 10) * .1f)).subtract(forward.scale(.25f));

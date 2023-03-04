@@ -33,13 +33,4 @@ public class AbstractSpellCastingMobRenderer extends GeoEntityRenderer<AbstractS
         return textureResource;
     }
 
-    @Override
-    public RenderType getRenderType(AbstractSpellCastingMob animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-        return super.getRenderType(animatable, partialTick, poseStack, bufferSource, buffer, packedLight, texture);
-    }
-
-    @Override
-    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.render(model, animatable, partialTick, type, poseStack, getCurrentRTB(), buffer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
 }
