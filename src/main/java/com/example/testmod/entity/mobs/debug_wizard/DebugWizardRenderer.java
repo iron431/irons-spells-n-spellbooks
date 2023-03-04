@@ -3,6 +3,8 @@ package com.example.testmod.entity.mobs.debug_wizard;
 
 import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
 import com.example.testmod.entity.armor.pumpkin.PumpkinArmorRenderer;
+import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.AbstractSpellCastingMobModel;
 import com.example.testmod.render.GeoEvasionLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -26,22 +28,17 @@ import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.ExtendedGeoEntityRenderer;
 
-//
-//
-//      #DefaultBipedBoneIndents
-//
-//
-//
-public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<DebugWizard> {
+
+public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpellCastingMob> {
     public DebugWizardRenderer(EntityRendererProvider.Context renderManager) {
-        super(renderManager, new DebugWizardModel());
+        super(renderManager, new AbstractSpellCastingMobModel());
         this.shadowRadius = 0.3f;
         this.addLayer(new GeoEvasionLayer(this));
     }
 
     @Nullable
     @Override
-    protected ResourceLocation getTextureForBone(String boneName, DebugWizard animatable) {
+    protected ResourceLocation getTextureForBone(String boneName, AbstractSpellCastingMob animatable) {
         if ("bipedCape".equals(boneName))
             return EntityResources.EXTENDED_CAPE_TEXTURE;
 
@@ -75,7 +72,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<DebugWizard> 
     }
 
     @Override
-    protected EquipmentSlot getEquipmentSlotForArmorBone(String boneName, DebugWizard currentEntity) {
+    protected EquipmentSlot getEquipmentSlotForArmorBone(String boneName, AbstractSpellCastingMob currentEntity) {
         return switch (boneName) {
             case DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_IDENT,
@@ -96,7 +93,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<DebugWizard> 
     }
 
     @Override
-    protected ItemStack getArmorForBone(String boneName, DebugWizard currentEntity) {
+    protected ItemStack getArmorForBone(String boneName, AbstractSpellCastingMob currentEntity) {
         return switch (boneName) {
             case DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_IDENT,
@@ -116,7 +113,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<DebugWizard> 
 
     @Nullable
     @Override
-    protected ItemStack getHeldItemForBone(String boneName, DebugWizard entity) {
+    protected ItemStack getHeldItemForBone(String boneName, AbstractSpellCastingMob entity) {
         return switch (boneName) {
             case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT -> entity.isLeftHanded() ? entity.getMainHandItem() : entity.getOffhandItem();
             case DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT -> entity.isLeftHanded() ? entity.getOffhandItem() : entity.getMainHandItem();
@@ -134,12 +131,12 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<DebugWizard> 
 
     @Nullable
     @Override
-    protected BlockState getHeldBlockForBone(String boneName, DebugWizard animatable) {
+    protected BlockState getHeldBlockForBone(String boneName, AbstractSpellCastingMob animatable) {
         return null;
     }
 
     @Override
-    protected void preRenderItem(PoseStack poseStack, ItemStack itemStack, String boneName, DebugWizard animatable, IBone bone)  {
+    protected void preRenderItem(PoseStack poseStack, ItemStack itemStack, String boneName, AbstractSpellCastingMob animatable, IBone bone)  {
         var mainHandItem = animatable.getMainHandItem();
         var offHandItem = animatable.getOffhandItem();
         if (itemStack == mainHandItem) {
@@ -159,27 +156,27 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<DebugWizard> 
     }
 
     @Override
-    protected void preRenderBlock(PoseStack poseStack, BlockState state, String boneName, DebugWizard animatable) {
+    protected void preRenderBlock(PoseStack poseStack, BlockState state, String boneName, AbstractSpellCastingMob animatable) {
 
     }
 
     @Override
-    protected void postRenderItem(PoseStack poseStack, ItemStack stack, String boneName, DebugWizard animatable, IBone bone) {
+    protected void postRenderItem(PoseStack poseStack, ItemStack stack, String boneName, AbstractSpellCastingMob animatable, IBone bone) {
 
     }
 
     @Override
-    protected void postRenderBlock(PoseStack poseStack, BlockState state, String boneName, DebugWizard animatable) {
+    protected void postRenderBlock(PoseStack poseStack, BlockState state, String boneName, AbstractSpellCastingMob animatable) {
 
     }
 
     @Override
-    public RenderType getRenderType(DebugWizard animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
+    public RenderType getRenderType(AbstractSpellCastingMob animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
         return super.getRenderType(animatable, partialTick, poseStack, bufferSource, buffer, packedLight, texture);
     }
 
     @Override
-    public void render(GeoModel model, DebugWizard animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }
