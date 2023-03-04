@@ -238,7 +238,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private final AnimationFactory factory = new AnimationFactory(this);
 
     @SuppressWarnings("removal")
-    private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("instant_cast", true);
+    private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("idle", true);
 
     @Override
     public void registerControllers(AnimationData data) {

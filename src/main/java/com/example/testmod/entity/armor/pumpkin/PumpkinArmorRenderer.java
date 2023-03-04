@@ -45,7 +45,7 @@ public class PumpkinArmorRenderer extends GenericCustomArmorRenderer<PumpkinArmo
         }
 
         if (this.entityLiving instanceof IAnimatable)
-            setBoneVisibility(leggingTorsoLayerBone, false);
+            setBoneVisibility(bodyHeadLayerBone, false);
 
         return this;
     }

@@ -2,7 +2,6 @@ package com.example.testmod.entity.mobs.debug_wizard;
 
 import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.DebugTargetClosestEntityGoal;
-import com.example.testmod.entity.mobs.goals.WizardDebugAttackGoal;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
@@ -35,7 +34,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     }
 
     private void initGoals() {
-        this.goalSelector.addGoal(10, new WizardDebugAttackGoal(this, this.spellType, this.spellLevel));
+        //this.goalSelector.addGoal(10, new WizardDebugAttackGoal(this, this.spellType, this.spellLevel));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.35D));
 

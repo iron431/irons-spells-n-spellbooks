@@ -4,6 +4,7 @@ package com.example.testmod.entity.mobs.debug_wizard;
 import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMobModel;
+import com.example.testmod.render.GeoEvasionLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
@@ -33,7 +34,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
     public DebugWizardRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new AbstractSpellCastingMobModel());
         this.shadowRadius = 0.3f;
-        //this.addLayer(new GeoEvasionLayer(this));
+        this.addLayer(new GeoEvasionLayer(this));
     }
 
     @Nullable
@@ -42,7 +43,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
         if ("bipedCape".equals(boneName))
             return EntityResources.EXTENDED_CAPE_TEXTURE;
 
-        return DebugWizardModel.textureResource;
+        return modelProvider.getTextureResource(animatable);
     }
 
     @Override
