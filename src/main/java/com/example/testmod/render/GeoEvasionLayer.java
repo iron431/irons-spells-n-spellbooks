@@ -30,6 +30,7 @@ public class GeoEvasionLayer extends GeoLayerRenderer<AbstractSpellCastingMob> {
             VertexConsumer vertexconsumer = bufferIn.getBuffer(RenderType.energySwirl(EVASION_TEXTURE, f * 0.02F % 1.0F, f * 0.01F % 1.0F));
             matrixStackIn.pushPose();
             RenderType renderType = RenderType.armorCutoutNoCull(EVASION_TEXTURE);
+            this.getRenderer().setCurrentRTB(bufferIn);
             this.getRenderer().render(this.getEntityModel().getModel(AbstractSpellCastingMob.modelResource), entityLivingBaseIn, partialTicks, renderType, matrixStackIn, null,
                     vertexconsumer, packedLightIn, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
             matrixStackIn.popPose();
