@@ -122,7 +122,7 @@ public class SyncedSpellData {
         return evasionHitsRemaining;
     }
 
-    public void subtractEvasionHitsRemaining() {
+    public void subtractEvasionHit() {
         evasionHitsRemaining--;
         doSync();
     }

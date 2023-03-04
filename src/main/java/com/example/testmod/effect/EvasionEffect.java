@@ -1,10 +1,12 @@
 package com.example.testmod.effect;
 
+import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.damage.DamageSources;
 import com.example.testmod.registries.MobEffectRegistry;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -56,7 +58,7 @@ public class EvasionEffect extends MobEffect {
         }
 
         var data = PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData();
-        data.subtractEvasionHitsRemaining();
+        data.subtractEvasionHit();
         if (data.getEvasionHitsRemaining() == 0)
             livingEntity.removeEffect(MobEffectRegistry.EVASION.get());
 
@@ -85,8 +87,8 @@ public class EvasionEffect extends MobEffect {
                 if (damageSource.getEntity() != null) {
                     livingEntity.lookAt(EntityAnchorArgument.Anchor.EYES, damageSource.getEntity().getEyePosition());
                 }
-                level.playSound((Player) null, d0, d1, d2, SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 1.0F, 1.0F);
-                livingEntity.playSound(SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.0F);
+                level.playSound((Player) null, d0, d1, d2, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                livingEntity.playSound(SoundEvents.ENDERMAN_TELEPORT, 2.0F, 1.0F);
                 break;
             }
 
@@ -94,7 +96,14 @@ public class EvasionEffect extends MobEffect {
                 maxRadius--;
             }
         }
-
+        //Vanilla teleport only spawns particles from the original location, not at the destination
+        particleCloud(livingEntity);
         return true;
     }
+
+    private static void particleCloud(LivingEntity entity) {
+        Vec3 pos = entity.position().add(0, entity.getBbHeight() / 2, 0);
+        MagicManager.spawnParticles(entity.level, ParticleTypes.PORTAL, pos.x, pos.y, pos.z, 70, entity.getBbWidth() / 4, entity.getBbHeight() / 5, entity.getBbWidth() / 4, .035, false);
+    }
+
 }
