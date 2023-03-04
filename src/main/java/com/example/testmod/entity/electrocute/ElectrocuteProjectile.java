@@ -33,9 +33,9 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
         Random random = new Random();
         beamVectors = new ArrayList<>();
         Vec3 coreStart = new Vec3(0, 0, 0);
-        int coreLength = random.nextInt(3) + 6;
+        int coreLength = random.nextInt(3) + 7;
         for (int core = 0; core < coreLength; core++) {
-            Vec3 coreEnd = coreStart.add(0, 0, 1).add(randomVector(.3f));
+            Vec3 coreEnd = coreStart.add(0, 0, 1).add(randomVector(.3f).multiply(2.5, 1, 2.5));
             beamVectors.add(coreStart);
             beamVectors.add(coreEnd);
             coreStart = coreEnd;

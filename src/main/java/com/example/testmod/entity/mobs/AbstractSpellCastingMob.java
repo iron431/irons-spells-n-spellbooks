@@ -23,10 +23,12 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -234,11 +236,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
      * GeckoLib
      **/
 
-    @SuppressWarnings("removal")
-    private final AnimationFactory factory = new AnimationFactory(this);
+    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
-    @SuppressWarnings("removal")
-    private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("idle", true);
+    private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_cast", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
 
     @Override
     public void registerControllers(AnimationData data) {
@@ -251,7 +252,18 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        event.getController().setAnimation(animationBuilder);
+
+        if (syncedIsCasting()){
+            event.getController().setAnimation(instantCast);
+            return PlayState.CONTINUE;
+        }
+
+        event.getController().setAnimation(idle);
         return PlayState.CONTINUE;
+    }
+
+    public boolean syncedIsCasting(){
+        var syncedSpellData = entityData.get(DATA_SPELL);
+        return syncedSpellData.isCasting();
     }
 }

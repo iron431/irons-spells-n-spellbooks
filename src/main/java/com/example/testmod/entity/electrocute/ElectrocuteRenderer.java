@@ -46,6 +46,7 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
 //        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,GlStateManager.DestFactor.ONE);
 
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.lightning());
+        poseStack.translate(0, entity.getEyeHeight() * .5f, 0);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getOwner().getYRot()));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getOwner().getXRot()));
 
