@@ -179,8 +179,12 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
         return super.getRenderType(animatable, partialTick, poseStack, bufferSource, buffer, packedLight, texture);
     }
 
-//    @Override
-//    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-//        super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-//    }
+    @Override
+    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        var b = getCurrentRTB();
+        if(b == null){
+            b= bufferSource;
+        }
+        super.render(model, animatable, partialTick, type, poseStack, b, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+    }
 }

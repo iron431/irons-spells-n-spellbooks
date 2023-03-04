@@ -40,6 +40,6 @@ public class AbstractSpellCastingMobRenderer extends GeoEntityRenderer<AbstractS
 
     @Override
     public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        super.render(model, animatable, partialTick, type, poseStack, getCurrentRTB(), buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }
