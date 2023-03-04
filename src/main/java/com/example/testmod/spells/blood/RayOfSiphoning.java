@@ -7,6 +7,7 @@ import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;
+import com.example.testmod.util.ParticleHelper;
 import com.example.testmod.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
@@ -33,7 +35,7 @@ public class RayOfSiphoning extends AbstractSpell {
         this.baseManaCost = 20;
         this.cooldown = 300;
         uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getTickDamage(null), 1)));
-        uniqueInfo.add(Component.translatable("ui.testmod.distance", Utils.stringTruncation(getRange(), 1)));
+        uniqueInfo.add(Component.translatable("ui.testmod.distance", Utils.stringTruncation(getRange(level), 1)));
 
     }
 
@@ -50,7 +52,7 @@ public class RayOfSiphoning extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         super.onCast(level, entity, playerMagicData);
-        var hitResult = Utils.raycastForEntity(level, entity, getRange(), true);
+        var hitResult = Utils.raycastForEntity(level, entity, getRange(this.level), true);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
@@ -62,11 +64,23 @@ public class RayOfSiphoning extends AbstractSpell {
         }
     }
 
-    private float getRange() {
-        return 6 + this.getLevel() * 1.5f;
+    private static float getRange(int level) {
+        return 6 + level * 1.5f;
     }
+
 
     private float getTickDamage(Entity caster) {
         return getSpellPower(caster);
+    }
+
+    public static void doRayParticles(LivingEntity livingEntity, int level) {
+        int range = (int) (getRange(level) + .85f);
+        Vec3 origin = livingEntity.getEyePosition().subtract(0, .25, 0);
+        float scalar = .75f;
+        Vec3 forward = livingEntity.getForward().normalize().scale(1 / scalar);
+        for (int i = 1; i < range * scalar; i++) {
+            Vec3 pos = origin.add(forward.scale(i).scale(livingEntity.getRandom().nextInt(5, 10) * .1f)).subtract(forward.scale(.25f));
+            livingEntity.getLevel().addParticle(ParticleHelper.SIPHON, pos.x, pos.y, pos.z, 0, 0, 0);
+        }
     }
 }

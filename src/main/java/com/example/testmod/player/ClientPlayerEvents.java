@@ -2,7 +2,10 @@ package com.example.testmod.player;
 
 import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.effect.AbyssalShroudEffect;
+import com.example.testmod.effect.AscensionEffect;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.spells.SpellType;
+import com.example.testmod.spells.blood.RayOfSiphoning;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.world.entity.Entity;
@@ -36,8 +39,21 @@ public class ClientPlayerEvents {
                 spellcasters.forEach((entity) -> {
                     LivingEntity livingEntity = (LivingEntity) entity;
                     var spellData = ClientMagicData.getSyncedSpellData(livingEntity);
+                    /*
+                    Status Effect Visuals
+                     */
                     if (spellData.hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
                         AbyssalShroudEffect.ambientParticles(level, livingEntity);
+                    }
+                    if (spellData.hasEffect(SyncedSpellData.ASCENSION)) {
+                        AscensionEffect.ambientParticles(level, livingEntity);
+                    }
+                    /*
+                    Current Casting Spell Visuals
+                     */
+                    SpellType currentSpell = SpellType.getTypeFromValue(spellData.getCastingSpellId());
+                    if (currentSpell == SpellType.RAY_OF_SIPHONING_SPELL) {
+                        RayOfSiphoning.doRayParticles(livingEntity, spellData.getCastingSpellLevel());
                     }
                 });
             }

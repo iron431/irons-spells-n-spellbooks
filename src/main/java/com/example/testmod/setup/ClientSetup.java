@@ -147,6 +147,7 @@ public class ClientSetup {
         event.register(ParticleRegistry.DRAGON_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
         event.register(ParticleRegistry.FIRE_PARTICLE.get(), FireParticle.Provider::new);
         event.register(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
+        event.register(ParticleRegistry.SIPHON_PARTICLE.get(), SiphonParticle.Provider::new);
     }
 }
 
