@@ -38,7 +38,8 @@ import static com.example.testmod.registries.AttributeRegistry.COOLDOWN_REDUCTIO
 
 public abstract class AbstractSpell {
     public static ResourceLocation ANIMATION_RESOURCE = new ResourceLocation(TestMod.MODID, "animation");
-    public static ResourceLocation ANIMATION_INSTANT_CAST = new ResourceLocation(TestMod.MODID, "instant_cast");
+    public static ResourceLocation ANIMATION_INSTANT_CAST = new ResourceLocation(TestMod.MODID, "instant_projectile");
+    public static ResourceLocation ANIMATION_CONTINUOUS_CAST = new ResourceLocation(TestMod.MODID, "continuous_thrust");
 
     private final SpellType spellType;
     private final CastType castType;
@@ -104,12 +105,19 @@ public abstract class AbstractSpell {
 
     public abstract Optional<SoundEvent> getCastStartSound();
 
-    public Optional<KeyframeAnimation> getCastStartAnimation(Player player) {
-        if (castType == CastType.INSTANT) {
-            return Optional.of(PlayerAnimationRegistry.getAnimation(ANIMATION_INSTANT_CAST));
-        }
+    /**
+     * Default Animations Based on Cast Type. Override for specific spell-based animations
+    */
+    public ResourceLocation getCastAnimation(Player player) {
+        return switch (this.castType){
+            case INSTANT -> ANIMATION_INSTANT_CAST;
+            case CONTINUOUS -> ANIMATION_CONTINUOUS_CAST;
+            default -> null;
+        };
+    }
 
-        return Optional.empty();
+    public Optional<KeyframeAnimation> keyFrameAnimationOf(ResourceLocation animation){
+        return Optional.of(PlayerAnimationRegistry.getAnimation(animation));
     }
 
     public abstract Optional<SoundEvent> getCastFinishSound();

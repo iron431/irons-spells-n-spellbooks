@@ -107,7 +107,8 @@ public class ClientSpellCastHelper {
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
         if (player != null) {
-            var keyframeAnimation = AbstractSpell.getSpell(spellType, 1).getCastStartAnimation(player);
+            var spell = AbstractSpell.getSpell(spellType, 1);
+            var keyframeAnimation = spell.keyFrameAnimationOf(spell.getCastAnimation(player)) ;
             keyframeAnimation.ifPresent((keyFrame) -> {
                 if (keyFrame != null) {
                     var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(ANIMATION_RESOURCE);

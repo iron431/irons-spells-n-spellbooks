@@ -39,7 +39,7 @@ import static com.example.testmod.capabilities.magic.SyncedSpellData.SYNCED_SPEL
 public abstract class AbstractSpellCastingMob extends Monster implements IAnimatable {
     public static final ResourceLocation modelResource = new ResourceLocation(TestMod.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = new ResourceLocation(TestMod.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
-    public static final ResourceLocation animationInstantCast = new ResourceLocation(TestMod.MODID, "animations/instant_cast.json");
+    public static final ResourceLocation animationInstantCast = new ResourceLocation(TestMod.MODID, "animations/casting_animations.json");
 
     private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SYNCED_SPELL_DATA);
 
@@ -252,13 +252,17 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
-    private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_cast", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+
+        //TODO: how many predicates/controllers do we need?
+        // They're supposed to be used for layering animations, but the idle always overrides the casting animation...
         data.addAnimationController(new AnimationController(this, "castAnimController", 0, this::castingPredicate));
+        //data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
     }
 
     @Override
@@ -266,37 +270,47 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         return factory;
     }
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 
-//        if (isSyncedCasting()){
-//            event.getController().setAnimation(instantCast);
-//            return PlayState.CONTINUE;
-//        }
-
-        event.getController().setAnimation(idle);
-        return PlayState.CONTINUE;
-    }
+//    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+//
+////        if (isSyncedCasting()){
+////            event.getController().setAnimation(instantCast);
+////            return PlayState.CONTINUE;
+////        }
+//
+//            event.getController().setAnimation(idle);
+//
+//        return PlayState.CONTINUE;
+//    }
 
     private <E extends IAnimatable> PlayState castingPredicate(AnimationEvent<E> event) {
-        if (animationFlag && event.getController().getAnimationState() == AnimationState.Stopped) {
-            event.getController().markNeedsReload();
-            event.getController().setAnimation(instantCast);
-            var anim = event.getController().getCurrentAnimation();
-            if (anim != null) {
-                TestMod.LOGGER.debug("Anim Duration: {}", anim.animationLength);
-                animTimestamp = tickCount + (int) anim.animationLength;
-            } else {
-                TestMod.LOGGER.debug("Anim is null");
-            }
-//            TestMod.LOGGER.debug("{}", test);
+        var controller = event.getController();
+
+        if (animationFlag) {
+            //controller.markNeedsReload();
+
+            var spell = AbstractSpell.getSpell(entityData.get(DATA_SPELL).getCastingSpellType(), 1);
+            controller.setAnimation(new AnimationBuilder().addAnimation(spell.getCastAnimation(null).getPath()));
+
+            //event.getController().setAnimation(continuous);
+            var anim = controller.getCurrentAnimation();
+//            if (anim != null) {
+//                TestMod.LOGGER.debug("Anim Duration: {}", anim.animationLength);
+//                animTimestamp = tickCount + (int) anim.animationLength;
+//            } else {
+//                TestMod.LOGGER.debug("Anim is null");
+//            }
             animationFlag = false;
         }
-
+        if(controller.getAnimationState() == AnimationState.Stopped){
+            event.getController().setAnimation(idle);
+        }
+        TestMod.LOGGER.debug("{}",controller.getAnimationState());
         return PlayState.CONTINUE;
     }
 
     public boolean isAnimating() {
         return this.tickCount <= animTimestamp;
+        //return true;
     }
-
 }
