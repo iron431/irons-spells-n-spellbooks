@@ -259,9 +259,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
 
+    private final AnimationController animationController = new AnimationController(this, "casting", 0, this::castingPredicate);
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "casting", 0, this::castingPredicate));
+        data.addAnimationController(animationController);
         data.addAnimationController(new AnimationController(this, "default", 0, this::predicate));
     }
 
@@ -286,6 +287,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             }
         }
         return PlayState.CONTINUE;
+
+
 //        var controller = event.getController();
 //
 //        if (isCasting()) {
@@ -312,7 +315,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     public boolean isAnimating() {
-        return this.tickCount <= animTimestamp;
+
+        return isCasting() || !(animationController.getAnimationState() == AnimationState.Stopped);
         //return true;
     }
 }

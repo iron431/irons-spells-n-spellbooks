@@ -59,7 +59,7 @@ public class AbstractSpellCastingMobModel extends AnimatedGeoModel<AbstractSpell
             leftLeg.setRotationZ(0.07853982F);
         }
 
-        if (entity.isAnimating() || true)
+        if (entity.isAnimating())
             return;
         /*
         Copied from LivingEntityRenderer:116 (Swing the limbs)

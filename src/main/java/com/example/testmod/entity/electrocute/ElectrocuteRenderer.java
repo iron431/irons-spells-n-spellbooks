@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -50,7 +51,7 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getOwner().getYRot()));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getOwner().getXRot()));
 
-        if (entity.getAge() % 2 == 0)
+        if (entity.getAge() % 2 == 0 && !Minecraft.getInstance().isPaused())
             entity.generateLightningBeams();
         List<Vec3> segments = entity.getBeamCache();
         //TestMod.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
