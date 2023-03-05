@@ -1,6 +1,5 @@
 package com.example.testmod.capabilities.magic;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
@@ -77,7 +76,7 @@ public class PlayerMagicData extends AbstractMagicData {
 
 
     public void resetCastingState() {
-        TestMod.LOGGER.debug("resetCastingState: {}", serverPlayer);
+        //TestMod.LOGGER.debug("resetCastingState: {}", serverPlayer);
         this.castingSpellLevel = 0;
         this.castDuration = 0;
         this.castDurationRemaining = 0;

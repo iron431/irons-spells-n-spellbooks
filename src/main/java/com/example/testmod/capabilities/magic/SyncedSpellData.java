@@ -1,6 +1,5 @@
 package com.example.testmod.capabilities.magic;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.network.ClientboundSyncPlayerData;
 import com.example.testmod.setup.Messages;
@@ -149,7 +148,7 @@ public class SyncedSpellData {
 
     public void doSync() {
         //this.player will only be null on the client side
-        TestMod.LOGGER.debug("SyncedSpellData.doSync livingEntity:{} {}", livingEntity == null ? "null" : livingEntity.getDisplayName().getString(), this);
+        //TestMod.LOGGER.debug("SyncedSpellData.doSync livingEntity:{} {}", livingEntity == null ? "null" : livingEntity.getDisplayName().getString(), this);
 
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);

@@ -40,7 +40,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     public static final ResourceLocation modelResource = new ResourceLocation(TestMod.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = new ResourceLocation(TestMod.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
     public static final ResourceLocation animationInstantCast = new ResourceLocation(TestMod.MODID, "animations/casting_animations.json");
-
     private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SYNCED_SPELL_DATA);
 
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
@@ -184,7 +183,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             return;
         }
 
-        TestMod.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level.isClientSide);
+        //TestMod.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level.isClientSide);
 
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.MOB);
@@ -257,9 +256,11 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);//.addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder charged_throw = new AnimationBuilder().addAnimation("charged_throw", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
 
     private final AnimationController animationController = new AnimationController(this, "casting", 0, this::castingPredicate);
+
     @Override
     public void registerControllers(AnimationData data) {
         data.addAnimationController(animationController);
@@ -284,7 +285,11 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
                 controller.markNeedsReload();
                 controller.setAnimation(continuous);
+            } else if (castingSpell.getCastType() == CastType.CHARGE) {
+                controller.markNeedsReload();
+                controller.setAnimation(charged_throw);
             }
+
         }
         return PlayState.CONTINUE;
 

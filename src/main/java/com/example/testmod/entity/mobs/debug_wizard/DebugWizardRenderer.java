@@ -5,6 +5,7 @@ import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMobModel;
 import com.example.testmod.render.DebugWizardSpellName;
+import com.example.testmod.render.GeoChargeSpellLayer;
 import com.example.testmod.render.GeoEvasionLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -33,6 +34,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
         this.shadowRadius = 0.3f;
         this.addLayer(new GeoEvasionLayer(this));
         this.addLayer(new DebugWizardSpellName(this));
+        this.addLayer(new GeoChargeSpellLayer(this));
     }
 
     @Nullable

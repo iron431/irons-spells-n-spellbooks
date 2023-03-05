@@ -230,6 +230,25 @@
 					]
 				},
 				{
+					"name": "bipedHandRight",
+					"parent": "right_arm",
+					"pivot": [-6, 12, -1],
+					"cubes": [
+						{
+							"origin": [-6, 12, -1],
+							"size": [0, 0, 0],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [0, 0]},
+								"east": {"uv": [0, 0], "uv_size": [0, 0]},
+								"south": {"uv": [0, 0], "uv_size": [0, 0]},
+								"west": {"uv": [0, 0], "uv_size": [0, 0]},
+								"up": {"uv": [0, 0], "uv_size": [0, 0]},
+								"down": {"uv": [0, 0], "uv_size": [0, 0]}
+							}
+						}
+					]
+				},
+				{
 					"name": "left_arm",
 					"parent": "body",
 					"pivot": [5, 22, 0],
@@ -260,6 +279,25 @@
 							"size": [4, 12, 4],
 							"inflate": 1,
 							"uv": {}
+						}
+					]
+				},
+				{
+					"name": "bipedHandLeft",
+					"parent": "left_arm",
+					"pivot": [6, 12, -1],
+					"cubes": [
+						{
+							"origin": [6, 12, -1],
+							"size": [0, 0, 0],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [0, 0]},
+								"east": {"uv": [0, 0], "uv_size": [0, 0]},
+								"south": {"uv": [0, 0], "uv_size": [0, 0]},
+								"west": {"uv": [0, 0], "uv_size": [0, 0]},
+								"up": {"uv": [0, 0], "uv_size": [0, 0]},
+								"down": {"uv": [0, 0], "uv_size": [0, 0]}
+							}
 						}
 					]
 				}

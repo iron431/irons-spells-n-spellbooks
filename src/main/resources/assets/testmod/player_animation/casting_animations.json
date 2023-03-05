@@ -284,6 +284,32 @@
 					}
 				}
 			}
+		},
+		"charged_throw": {
+			"animation_length": 0.5,
+			"bones": {
+				"torso": {
+					"rotation": {
+						"vector": [0, 10, 0]
+					}
+				},
+				"right_arm": {
+					"rotation": {
+						"vector": [-210.90686, -10.58927, -17.06488]
+					},
+					"position": {
+						"vector": [1, 0, 1]
+					}
+				},
+				"left_arm": {
+					"rotation": {
+						"vector": [-102.5, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, -1]
+					}
+				}
+			}
 		}
 	}
 }
