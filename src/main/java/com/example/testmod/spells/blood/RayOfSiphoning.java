@@ -65,7 +65,7 @@ public class RayOfSiphoning extends AbstractSpell {
     }
 
     private static float getRange(int level) {
-        return 6 + level * 1.5f;
+        return 6 + level * .8f;
     }
 
 

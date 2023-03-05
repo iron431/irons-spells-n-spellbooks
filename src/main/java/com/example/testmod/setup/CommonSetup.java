@@ -9,6 +9,7 @@ import com.example.testmod.entity.mobs.debug_wizard.DebugWizard;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
+import com.example.testmod.entity.mobs.undead_king_boss.UndeadKingBoss;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.wisp.WispEntity;
 import com.example.testmod.registries.EntityRegistry;
@@ -55,6 +56,7 @@ public class CommonSetup {
         event.put(EntityRegistry.SUMMONED_SKELETON.get(), SummonedSkeleton.createAttributes().build());
         event.put(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoid.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_POLAR_BEAR.get(), PolarBear.createAttributes().build());
+        event.put(EntityRegistry.UNDEAD_KING.get(), UndeadKingBoss.prepareAttributes().build());
 
 
     }

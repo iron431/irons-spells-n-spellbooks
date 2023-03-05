@@ -131,6 +131,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoidRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SMALL_FIREBALL_PROJECTILE.get(), (p_174082_) -> new ThrownItemRenderer<>(p_174082_, 0.75F, true));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_POLAR_BEAR.get(), PolarBearRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.UNDEAD_KING.get(), DebugWizardRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

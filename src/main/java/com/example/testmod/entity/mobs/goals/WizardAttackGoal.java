@@ -13,32 +13,35 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 public class WizardAttackGoal extends Goal {
-    private final AbstractSpellCastingMob mob;
-    private LivingEntity target;
-    private final double speedModifier;
-    private final int attackIntervalMin;
-    private final int attackIntervalMax;
-    private final float attackRadius;
-    private final float attackRadiusSqr;
-    private boolean shortCircuitTemp = false;
+    protected final AbstractSpellCastingMob mob;
+    protected LivingEntity target;
+    protected final double speedModifier;
+    protected final int attackIntervalMin;
+    protected final int attackIntervalMax;
+    protected final float attackRadius;
+    protected final float attackRadiusSqr;
+    protected boolean shortCircuitTemp = false;
 
-    private boolean hasLineOfSight;
-    private int seeTime = 0;
-    private int strafeTime;
-    private boolean strafingClockwise;
-    private int attackTime = -1;
-    private int projectileCount;
+    protected boolean hasLineOfSight;
+    protected int seeTime = 0;
+    protected int strafeTime;
+    protected boolean strafingClockwise;
+    protected int attackTime = -1;
+    protected int projectileCount;
 
-    private SpellType singleUseSpell = SpellType.NONE_SPELL;
-    private int singleUseDelay;
-    private int singleUseLevel;
-    private int singleUseCooldown;
+    protected SpellType singleUseSpell = SpellType.NONE_SPELL;
+    protected int singleUseDelay;
+    protected int singleUseLevel;
+    protected int singleUseCooldown;
 
-    private final ArrayList<SpellType> attackSpells = new ArrayList<>();
-    private final ArrayList<SpellType> defenseSpells = new ArrayList<>();
-    private final ArrayList<SpellType> movementSpells = new ArrayList<>();
-    private final ArrayList<SpellType> supportSpells = new ArrayList<>();
-    private ArrayList<SpellType> lastSpellCategory = attackSpells;
+    protected final ArrayList<SpellType> attackSpells = new ArrayList<>();
+    protected final ArrayList<SpellType> defenseSpells = new ArrayList<>();
+    protected final ArrayList<SpellType> movementSpells = new ArrayList<>();
+    protected final ArrayList<SpellType> supportSpells = new ArrayList<>();
+    protected ArrayList<SpellType> lastSpellCategory = attackSpells;
+
+    protected int minSpellLevel = 1;
+    protected int maxSpellLevel = 3;
 
     public WizardAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
         this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
@@ -82,6 +85,12 @@ public class WizardAttackGoal extends Goal {
         this.movementSpells.addAll(movementSpells);
         this.supportSpells.addAll(supportSpells);
 
+        return this;
+    }
+
+    public WizardAttackGoal setSpellLevels(int minLevel, int maxLevel) {
+        this.minSpellLevel = minLevel;
+        this.maxSpellLevel = maxLevel;
         return this;
     }
 
@@ -150,6 +159,48 @@ public class WizardAttackGoal extends Goal {
 //            projectileCount = mob.level.getEntitiesOfClass(Projectile.class, mob.getBoundingBox().inflate(24), (projectile) -> projectile.getOwner() != mob && !projectile.isOnGround()).size();
 //        }
 
+        //default mage movement
+        doMovement(distanceSquared);
+
+        //do attacks
+        this.mob.getLookControl().setLookAt(this.target, 45, 45);
+        //TestMod.LOGGER.debug("{},{}", mob.getLastHurtByMobTimestamp(), mob.tickCount);
+        if (mob.getLastHurtByMobTimestamp() == mob.tickCount - 1) {
+            int t = (int) (Mth.lerp(.6f, attackTime, 0) + 1);
+            TestMod.LOGGER.debug("Ouch! {}->{}", attackTime, t);
+            attackTime = t;
+            //attackTime = (int) (Mth.lerp(.25f, attackTime, 0) + 1);
+        }
+
+        //default attack timer
+        handleAttackLogic(distanceSquared);
+
+        //handle single use spell
+        if (this.singleUseCooldown > 0)
+            singleUseCooldown--;
+    }
+
+    protected void handleAttackLogic(double distanceSquared) {
+        if (--this.attackTime == 0) {
+
+            if (!mob.isCasting()) {
+                doSpellAction();
+            }
+
+            resetAttackTimer(distanceSquared);
+            //TestMod.LOGGER.debug("WizardAttackGoal.tick.2: attackTime.1: {}", attackTime);
+        } else if (this.attackTime < 0) {
+            this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(distanceSquared) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
+            //TestMod.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
+        }
+    }
+
+    protected void resetAttackTimer(double distanceSquared) {
+        float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
+        this.attackTime = Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
+    }
+
+    protected void doMovement(double distanceSquared) {
         //move closer to target or strafe around
         if (distanceSquared < attackRadiusSqr && seeTime >= 5) {
             //TestMod.LOGGER.debug("WizardAttackGoal.tick.1: distanceSquared: {},attackRadiusSqr: {}, seeTime: {}, attackTime: {}", distanceSquared, attackRadiusSqr, seeTime, attackTime);
@@ -170,42 +221,14 @@ public class WizardAttackGoal extends Goal {
         } else {
             this.mob.getNavigation().moveTo(this.target, this.speedModifier);
         }
-
-        //do attacks
-        this.mob.getLookControl().setLookAt(this.target, 45, 45);
-        //TestMod.LOGGER.debug("{},{}", mob.getLastHurtByMobTimestamp(), mob.tickCount);
-        if (mob.getLastHurtByMobTimestamp() == mob.tickCount - 1) {
-            int t = (int) (Mth.lerp(.6f, attackTime, 0) + 1);
-            TestMod.LOGGER.debug("Ouch! {}->{}", attackTime, t);
-            attackTime = t;
-            //attackTime = (int) (Mth.lerp(.25f, attackTime, 0) + 1);
-        }
-        if (--this.attackTime == 0) {
-
-            float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-            float f1 = Mth.clamp(f, 0.1F, 1.0F);
-
-            if (!mob.isCasting())
-                doAction();
-
-            this.attackTime = Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
-            //TestMod.LOGGER.debug("WizardAttackGoal.tick.2: attackTime.1: {}", attackTime);
-        } else if (this.attackTime < 0) {
-            this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(distanceSquared) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
-            //TestMod.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
-        }
-
-        //handle single use spell
-        if (this.singleUseCooldown > 0)
-            singleUseCooldown--;
     }
 
-    private void doAction() {
-        int spellLevel = singleUseCooldown <= 0 ? singleUseLevel : mob.getRandom().nextInt(3) + 1;
+    protected void doSpellAction() {
+        int spellLevel = singleUseCooldown <= 0 ? singleUseLevel : mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel);
 
         var spellType = getNextSpellType();
 
-        if (spellType == SpellType.TELEPORT_SPELL) {
+        if (spellType == SpellType.TELEPORT_SPELL || spellType == SpellType.BLOOD_STEP_SPELL) {
             mob.setTeleportLocationBehindTarget(15);
         }
 //        if (spellType == SpellType.WALL_OF_FIRE_SPELL) {
@@ -214,7 +237,7 @@ public class WizardAttackGoal extends Goal {
         mob.initiateCastSpell(spellType, spellLevel);
     }
 
-    private SpellType getNextSpellType() {
+    protected SpellType getNextSpellType() {
 
         if (this.singleUseCooldown <= 0) {
             singleUseCooldown = 6000 + singleUseDelay;
@@ -263,7 +286,7 @@ public class WizardAttackGoal extends Goal {
 
     }
 
-    private int getAttackWeight() {
+    protected int getAttackWeight() {
         //We want attack to be a common action in any circumstance, but the more "confident" we are the more likely we are to attack (we have health or our target is weak)
         int baseWeight = 80;
 
@@ -283,7 +306,7 @@ public class WizardAttackGoal extends Goal {
             return 0;
     }
 
-    private int getDefenseWeight() {
+    protected int getDefenseWeight() {
         //We want defensive spells to be used when we feel "threatened", meaning we aren't confident, or we're actively being attacked
         int baseWeight = -20;
 
@@ -307,7 +330,7 @@ public class WizardAttackGoal extends Goal {
         return baseWeight + healthWeight + targetHealthWeight + threatWeight;
     }
 
-    private int getMovementWeight() {
+    protected int getMovementWeight() {
         if (target == null) {
             return 0;
         }
@@ -328,7 +351,7 @@ public class WizardAttackGoal extends Goal {
 
     }
 
-    private int getSupportWeight() {
+    protected int getSupportWeight() {
         //We want to support/buff ourselves if we are weak
         int baseWeight = -15;
 

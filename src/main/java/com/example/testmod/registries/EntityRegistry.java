@@ -21,6 +21,7 @@ import com.example.testmod.entity.mobs.debug_wizard.DebugWizard;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
 import com.example.testmod.entity.mobs.necromancer.NecromancerEntity;
+import com.example.testmod.entity.mobs.undead_king_boss.UndeadKingBoss;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import com.example.testmod.entity.shield.ShieldEntity;
 import com.example.testmod.entity.wall_of_fire.WallOfFireEntity;
@@ -185,4 +186,10 @@ public class EntityRegistry {
                     .sized(1.4F, 1.4F)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "summoned_polar_bear").toString()));
+
+    public static final RegistryObject<EntityType<UndeadKingBoss>> UNDEAD_KING =
+            ENTITIES.register("undead_king", () -> EntityType.Builder.<UndeadKingBoss>of(UndeadKingBoss::new, MobCategory.MONSTER)
+                    .sized(.6f, 1.8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "undead_king").toString()));
 }
