@@ -93,6 +93,9 @@ public class FrostStepSpell extends AbstractSpell {
             dest = findTeleportLocation(level, entity);
         }
 
+        if (entity.isPassenger()) {
+            entity.stopRiding();
+        }
         entity.teleportTo(dest.x, dest.y, dest.z);
         entity.resetFallDistance();
         level.playSound(null, dest.x, dest.y, dest.z, getCastFinishSound().get(), SoundSource.NEUTRAL, 1f, 1f);

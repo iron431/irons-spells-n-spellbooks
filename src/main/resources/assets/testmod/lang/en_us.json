@@ -198,6 +198,10 @@
   "death.attack.blood_cauldron.player": "%1$s was sacrificed by %2$s.",
   "death.attack.heartstop": "%1$s's heart ruptured.",
   "death.attack.heartstop.player": "%1$s's heart was ruptured by %2$s.",
+  "death.attack.raise_dead_spell": "%1$s was mauled by %2$s's undead.",
+  "death.attack.summon_vex_spell": "%1$s was eviscerated by %2$s's vexes.",
+  "death.attack.summon_polar_bear_spell": "%1$s was mauled by %2$s's polar bear.",
+
 
   "effect.testmod.blood_slashed": "Blood Slashed",
   "effect.testmod.heartstop": "Heartstop",

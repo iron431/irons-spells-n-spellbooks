@@ -91,6 +91,9 @@ public class TeleportSpell extends AbstractSpell {
         }
 
         Messages.sendToPlayersTrackingEntity(new ClientboundTeleportParticles(entity.position(), dest), entity);
+        if (entity.isPassenger()) {
+            entity.stopRiding();
+        }
         entity.teleportTo(dest.x, dest.y, dest.z);
         entity.resetFallDistance();
 

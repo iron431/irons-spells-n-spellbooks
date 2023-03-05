@@ -67,7 +67,9 @@ public class BloodStepSpell extends AbstractSpell {
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         HitResult hitResult = Utils.raycastForEntity(level, entity, getDistance(entity), true);
         Vec3 dest = null;
-
+        if (entity.isPassenger()) {
+            entity.stopRiding();
+        }
         if (hitResult.getType() == HitResult.Type.ENTITY && ((EntityHitResult) hitResult).getEntity() instanceof LivingEntity target) {
             //dest = target.position().subtract(new Vec3(0, 0, 1.5).yRot(target.getYRot()));
             for (int i = 0; i < 8; i++) {
@@ -84,6 +86,8 @@ public class BloodStepSpell extends AbstractSpell {
 
         }
         entity.resetFallDistance();
+
+
         //Invis take 1 tick to set in
         entity.setInvisible(true);
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), 100, 0, false, false, true));
