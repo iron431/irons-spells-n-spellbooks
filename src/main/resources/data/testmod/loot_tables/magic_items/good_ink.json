@@ -10,12 +10,12 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 15,
+          "weight": 20,
           "name": "testmod:uncommon_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 20,
+          "weight": 15,
           "name": "testmod:rare_ink"
         },
         {
@@ -30,7 +30,7 @@
         },
         {
           "type": "minecraft:empty",
-          "weight": 8
+          "weight": 20
         }
       ]
     }

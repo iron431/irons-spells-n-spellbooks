@@ -3,7 +3,7 @@
   "fallback": "testmod:dungeon1_fallback_pool",
   "elements": [
     {
-      "weight": 10,
+      "weight": 8,
       "element": {
         "location": "testmod:dungeon1/hallway_straight",
         "processors": "minecraft:empty",
@@ -66,7 +66,7 @@
       }
     },
     {
-      "weight": 15,
+      "weight": 12,
       "element": {
         "location": "testmod:dungeon1/room_origin_2",
         "processors": "minecraft:empty",

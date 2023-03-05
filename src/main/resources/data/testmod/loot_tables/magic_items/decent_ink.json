@@ -5,12 +5,12 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 12,
+          "weight": 18,
           "name": "testmod:common_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 22,
+          "weight": 17,
           "name": "testmod:uncommon_ink"
         },
         {
@@ -30,7 +30,7 @@
         },
         {
           "type": "minecraft:empty",
-          "weight": 8
+          "weight": 20
         }
       ]
     }
