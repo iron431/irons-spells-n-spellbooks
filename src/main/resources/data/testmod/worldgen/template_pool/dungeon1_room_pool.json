@@ -32,6 +32,15 @@
     {
       "weight": 1,
       "element": {
+        "location": "testmod:dungeon1/room_dormitories",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
         "location": "testmod:dungeon1/room_armory",
         "processors": "minecraft:empty",
         "projection": "rigid",
