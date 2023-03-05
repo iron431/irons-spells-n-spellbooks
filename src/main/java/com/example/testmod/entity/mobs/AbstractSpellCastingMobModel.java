@@ -1,9 +1,9 @@
 package com.example.testmod.entity.mobs;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import software.bernie.example.client.DefaultBipedBoneIdents;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -28,19 +28,19 @@ public class AbstractSpellCastingMobModel extends AnimatedGeoModel<AbstractSpell
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(entity, instanceId, animationEvent);
-        if(Minecraft.getInstance().isPaused())
+        if (Minecraft.getInstance().isPaused())
             return;
 
         float partialTick = animationEvent.getPartialTick();
         /*
                 This overrides all other animation
          */
-        IBone head = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.HEAD_BONE_IDENT);
-        IBone body = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.BODY_BONE_IDENT);
-        IBone rightArm = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_ARM_BONE_IDENT);
-        IBone leftArm = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_ARM_BONE_IDENT);
-        IBone rightLeg = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_LEG_BONE_IDENT);
-        IBone leftLeg = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_LEG_BONE_IDENT);
+        IBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
+        IBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+        IBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+        IBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+        IBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+        IBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
         //Make the head look forward, whatever forward is (influenced externally, such as a lootAt target)
         head.setRotationY(Mth.lerp(partialTick,
@@ -95,7 +95,7 @@ public class AbstractSpellCastingMobModel extends AnimatedGeoModel<AbstractSpell
         leftArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
         //rightArm.zRot = 0.0F;
         //leftArm.zRot = 0.0F;
-        if(!entity.isPassenger()){
+        if (!entity.isPassenger()) {
             rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
             leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
         }

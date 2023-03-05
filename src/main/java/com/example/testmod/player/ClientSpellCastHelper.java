@@ -1,5 +1,6 @@
 package com.example.testmod.player;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.SpellType;
@@ -40,6 +41,7 @@ public class ClientSpellCastHelper {
             TeleportSpell.particleCloud(level, player, pos2);
         }
     }
+
     /**
      * Right Click Suppression
      */
@@ -107,8 +109,9 @@ public class ClientSpellCastHelper {
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
         if (player != null) {
+            TestMod.LOGGER.debug("handleClientBoundOnCastStarted {} {}", player, spellType);
             var spell = AbstractSpell.getSpell(spellType, 1);
-            var keyframeAnimation = spell.keyFrameAnimationOf(spell.getCastAnimation(player)) ;
+            var keyframeAnimation = spell.keyFrameAnimationOf(spell.getCastAnimation(player));
             keyframeAnimation.ifPresent((keyFrame) -> {
                 if (keyFrame != null) {
                     var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(ANIMATION_RESOURCE);

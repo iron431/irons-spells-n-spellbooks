@@ -248,15 +248,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
-    private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
-
-    @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "casting", 0, this::castingPredicate));
-        data.addAnimationController(new AnimationController(this, "default", 0, this::predicate));
-    }
 
     @Override
     public AnimationFactory getFactory() {
@@ -264,26 +255,26 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
 
-    //    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-//
-////        if (isSyncedCasting()){
-////            event.getController().setAnimation(instantCast);
-////            return PlayState.CONTINUE;
-////        }
-//
-//            event.getController().setAnimation(idle);
-//
-//        return PlayState.CONTINUE;
-//    }
+    private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);//.addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
+
+    @Override
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(new AnimationController(this, "casting", 0, this::castingPredicate));
+        data.addAnimationController(new AnimationController(this, "default", 0, this::predicate));
+    }
+
     private PlayState predicate(AnimationEvent event) {
+        //if (event.getController().getAnimationState().equals(AnimationState.Stopped))
         event.getController().setAnimation(idle);
-        return PlayState.CONTINUE;
+        return PlayState.STOP;
     }
 
 
     private PlayState castingPredicate(AnimationEvent event) {
         var controller = event.getController();
-        if (isCasting() && castingSpell != null && controller.getAnimationState().equals(AnimationState.Stopped)) {
+        if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationState.Stopped) {
             TestMod.LOGGER.debug("ASCM.castingPredicate castingSpell:{}", castingSpell);
 
             if (castingSpell.getCastType() == CastType.INSTANT) {
