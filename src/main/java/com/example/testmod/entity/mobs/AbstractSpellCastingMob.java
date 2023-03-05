@@ -183,20 +183,16 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             castingSpell = null;
             return;
         }
-        TestMod.LOGGER.debug("ASCM.initiateCastSpell: {} {}", spellType, spellLevel);
+
+        TestMod.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level.isClientSide);
 
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
-        //this.startUsingItem(InteractionHand.MAIN_HAND);
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.MOB);
-        if (level.isClientSide) {
-            this.animationFlag = true;
-        }
 
         if (!level.isClientSide) {
             castingSpell.onServerPreCast(level, this, playerMagicData);
         }
 
-        TestMod.LOGGER.debug("ASCM.initiateCastSpell animationFlag: {}", animationFlag);
 
     }
 
@@ -254,15 +250,12 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP);
 
     @Override
     public void registerControllers(AnimationData data) {
-
-        //TODO: how many predicates/controllers do we need?
-        // They're supposed to be used for layering animations, but the idle always overrides the casting animation...
-        data.addAnimationController(new AnimationController(this, "castAnimController", 0, this::castingPredicate));
-        //data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController(this, "casting", 0, this::castingPredicate));
+        data.addAnimationController(new AnimationController(this, "default", 0, this::predicate));
     }
 
     @Override
@@ -271,7 +264,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
 
-//    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+    //    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
 //
 ////        if (isSyncedCasting()){
 ////            event.getController().setAnimation(instantCast);
@@ -282,31 +275,49 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 //
 //        return PlayState.CONTINUE;
 //    }
-
-    private <E extends IAnimatable> PlayState castingPredicate(AnimationEvent<E> event) {
-        var controller = event.getController();
-
-        if (animationFlag) {
-            //controller.markNeedsReload();
-
-            var spell = AbstractSpell.getSpell(entityData.get(DATA_SPELL).getCastingSpellType(), 1);
-            controller.setAnimation(new AnimationBuilder().addAnimation(spell.getCastAnimation(null).getPath()));
-
-            //event.getController().setAnimation(continuous);
-            var anim = controller.getCurrentAnimation();
-//            if (anim != null) {
-//                TestMod.LOGGER.debug("Anim Duration: {}", anim.animationLength);
-//                animTimestamp = tickCount + (int) anim.animationLength;
-//            } else {
-//                TestMod.LOGGER.debug("Anim is null");
-//            }
-            animationFlag = false;
-        }
-        if(controller.getAnimationState() == AnimationState.Stopped){
-            event.getController().setAnimation(idle);
-        }
-        TestMod.LOGGER.debug("{}",controller.getAnimationState());
+    private PlayState predicate(AnimationEvent event) {
+        event.getController().setAnimation(idle);
         return PlayState.CONTINUE;
+    }
+
+
+    private PlayState castingPredicate(AnimationEvent event) {
+        var controller = event.getController();
+        if (isCasting() && castingSpell != null && controller.getAnimationState().equals(AnimationState.Stopped)) {
+            TestMod.LOGGER.debug("ASCM.castingPredicate castingSpell:{}", castingSpell);
+
+            if (castingSpell.getCastType() == CastType.INSTANT) {
+                controller.markNeedsReload();
+                controller.setAnimation(instantCast);
+            } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
+                controller.markNeedsReload();
+                controller.setAnimation(continuous);
+            }
+        }
+        return PlayState.CONTINUE;
+//        var controller = event.getController();
+//
+//        if (isCasting()) {
+//
+//            //controller.markNeedsReload();
+//
+//            var spell = AbstractSpell.getSpell(entityData.get(DATA_SPELL).getCastingSpellType(), 1);
+//            controller.setAnimation(new AnimationBuilder().addAnimation(spell.getCastAnimation(null).getPath()));
+//
+//            //event.getController().setAnimation(continuous);
+//            var anim = controller.getCurrentAnimation();
+////            if (anim != null) {
+////                TestMod.LOGGER.debug("Anim Duration: {}", anim.animationLength);
+////                animTimestamp = tickCount + (int) anim.animationLength;
+////            } else {
+////                TestMod.LOGGER.debug("Anim is null");
+////            }
+//            animationFlag = false;
+//        }
+//        if (controller.getAnimationState() == AnimationState.Stopped) {
+//            event.getController().setAnimation(idle);
+//        }
+
     }
 
     public boolean isAnimating() {

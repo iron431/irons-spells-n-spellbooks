@@ -4,6 +4,7 @@ package com.example.testmod.entity.mobs.debug_wizard;
 import com.example.testmod.entity.armor.GenericCustomArmorRenderer;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.AbstractSpellCastingMobModel;
+import com.example.testmod.render.DebugWizardSpellName;
 import com.example.testmod.render.GeoEvasionLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -31,6 +32,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
         super(renderManager, new AbstractSpellCastingMobModel());
         this.shadowRadius = 0.3f;
         this.addLayer(new GeoEvasionLayer(this));
+        this.addLayer(new DebugWizardSpellName(this));
     }
 
     @Nullable
@@ -68,9 +70,9 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
 
     @Override
     protected void prepareArmorPositionAndScale(GeoBone bone, List<ModelPart.Cube> cubeList, ModelPart sourceLimb, PoseStack poseStack, boolean geoArmor, boolean modMatrixRot) {
-        if(bone.getName().equals(GenericCustomArmorRenderer.leggingTorsoLayerBone)){
+        if (bone.getName().equals(GenericCustomArmorRenderer.leggingTorsoLayerBone)) {
             super.prepareArmorPositionAndScale((GeoBone) this.modelProvider.getBone(DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT), cubeList, sourceLimb, poseStack, false, modMatrixRot);
-        }else{
+        } else {
             super.prepareArmorPositionAndScale(bone, cubeList, sourceLimb, poseStack, false, modMatrixRot);
         }
     }
@@ -89,7 +91,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
             case DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT -> !currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
             case DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT -> currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
             case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT -> EquipmentSlot.CHEST;
-            case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT  -> EquipmentSlot.HEAD;
+            case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT -> EquipmentSlot.HEAD;
             default -> null;
         };
     }
@@ -108,7 +110,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
             case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.CHEST);
-            case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT-> currentEntity.getItemBySlot(EquipmentSlot.HEAD);
+            case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.HEAD);
             default -> null;
         };
     }
@@ -126,7 +128,8 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
     @Override
     protected ItemTransforms.TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
         return switch (boneName) {
-            case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT, DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT -> ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND; // Do Defaults
+            case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT, DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT ->
+                    ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND; // Do Defaults
             default -> ItemTransforms.TransformType.NONE;
         };
     }
@@ -138,7 +141,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
     }
 
     @Override
-    protected void preRenderItem(PoseStack poseStack, ItemStack itemStack, String boneName, AbstractSpellCastingMob animatable, IBone bone)  {
+    protected void preRenderItem(PoseStack poseStack, ItemStack itemStack, String boneName, AbstractSpellCastingMob animatable, IBone bone) {
         var mainHandItem = animatable.getMainHandItem();
         var offHandItem = animatable.getOffhandItem();
         if (itemStack == mainHandItem) {
@@ -146,8 +149,7 @@ public class DebugWizardRenderer extends ExtendedGeoEntityRenderer<AbstractSpell
 
             if (itemStack.getItem() instanceof ShieldItem)
                 poseStack.translate(0, 0.125, -0.25);
-        }
-        else if (itemStack == offHandItem) {
+        } else if (itemStack == offHandItem) {
             poseStack.mulPose(Vector3f.XP.rotationDegrees(-90f));
 
             if (itemStack.getItem() instanceof ShieldItem) {

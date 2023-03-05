@@ -5,6 +5,9 @@ import com.example.testmod.entity.mobs.goals.DebugTargetClosestEntityGoal;
 import com.example.testmod.entity.mobs.goals.WizardDebugAttackGoal;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -14,12 +17,19 @@ import net.minecraft.world.level.Level;
 
 public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
 
+    public class SpellInfo {
+
+    }
+
     private SpellType spellType;
     private int spellLevel;
     private boolean targetsPlayer;
+    private String spellInfo;
+    private static final EntityDataAccessor<String> DEBUG_SPELL_INFO = SynchedEntityData.defineId(DebugWizard.class, EntityDataSerializers.STRING);
 
     public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        spellInfo = "No Spell Found";
     }
 
     public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel, SpellType spellType, int spellLevel, boolean targetsPlayer) {
@@ -31,6 +41,29 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         initGoals();
     }
 
+    public String getSpellInfo() {
+        return spellInfo;
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DEBUG_SPELL_INFO, spellInfo);
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
+        super.onSyncedDataUpdated(pKey);
+
+        if (!level.isClientSide) {
+            return;
+        }
+
+        if (pKey.getId() == DEBUG_SPELL_INFO.getId()) {
+            spellInfo = entityData.get(DEBUG_SPELL_INFO);
+        }
+    }
+
     private void initGoals() {
         this.goalSelector.addGoal(1, new WizardDebugAttackGoal(this, this.spellType, this.spellLevel));
 //        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -39,6 +72,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         if (this.targetsPlayer) {
             this.targetSelector.addGoal(1, new DebugTargetClosestEntityGoal(this));
         }
+        entityData.set(DEBUG_SPELL_INFO, String.format("%s (L%s)", spellType.name(), spellLevel));
     }
 
     @Override
@@ -55,6 +89,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         spellType = SpellType.getTypeFromValue(pCompound.getInt("spellType"));
         spellLevel = pCompound.getInt("spellLevel");
         targetsPlayer = pCompound.getBoolean("targetsPlayer");
+
 
         initGoals();
     }
