@@ -92,6 +92,18 @@
           "chance": 0.7
         }
       ]
+    },
+    {
+      "rolls": {
+        "min": 0,
+        "max": 6
+      },
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "testmod:magic_items/poor_ink"
+        }
+      ]
     }
   ]
 }

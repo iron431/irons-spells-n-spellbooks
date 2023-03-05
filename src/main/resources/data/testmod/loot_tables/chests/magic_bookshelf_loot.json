@@ -96,7 +96,10 @@
       ]
     },
     {
-      "rolls": 1,
+      "rolls": {
+        "min": 1,
+        "max": 12
+      },
       "entries": [
         {
           "type": "minecraft:loot_table",

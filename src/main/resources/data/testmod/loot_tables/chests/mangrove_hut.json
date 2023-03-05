@@ -7,7 +7,7 @@
         {
           "type": "minecraft:item",
           "weight": 5,
-          "name": "minecraft:candle",
+          "name": "testmod:magic_dust",
           "functions": [
             {
               "function": "minecraft:set_count",
@@ -17,6 +17,11 @@
               }
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 5,
+          "name": "minecraft:candle"
         },
         {
           "type": "minecraft:item",
@@ -41,7 +46,10 @@
       ]
     },
     {
-      "rolls": 1,
+      "rolls": {
+        "min": 1,
+        "max": 18
+      },
       "entries": [
         {
           "type": "minecraft:loot_table",

@@ -1,45 +1,36 @@
 {
-  "type": "minecraft:chest",
   "pools": [
     {
-      "rolls": 2,
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 8,
-          "name": "testmod:common_ink",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 3,
-                "max": 6
-              }
-            }
-          ]
+          "weight": 30,
+          "name": "testmod:common_ink"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 10,
+          "name": "testmod:uncommon_ink"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 6,
+          "name": "testmod:rare_ink"
         },
         {
           "type": "minecraft:item",
           "weight": 3,
-          "name": "testmod:uncommon_ink",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 2,
-                "max": 4
-              }
-            }
-          ]
+          "name": "testmod:epic_ink"
         },
         {
           "type": "minecraft:item",
           "weight": 1,
-          "name": "testmod:rare_ink"
+          "name": "testmod:legendary_ink"
         },
         {
           "type": "minecraft:empty",
-          "weight": 4
+          "weight": 8
         }
       ]
     }

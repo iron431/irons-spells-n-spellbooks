@@ -25,7 +25,7 @@
               "function": "minecraft:looting_enchant"
             }
           ],
-          "name": "minecraft:arrow"
+          "name": "testmod:magic_dust"
         }
       ],
       "rolls": 1.0

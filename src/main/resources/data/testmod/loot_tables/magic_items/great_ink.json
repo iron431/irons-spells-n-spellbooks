@@ -5,27 +5,27 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 12,
+          "weight": 5,
           "name": "testmod:common_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 22,
+          "weight": 5,
           "name": "testmod:uncommon_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 10,
+          "weight": 15,
           "name": "testmod:rare_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 4,
+          "weight": 15,
           "name": "testmod:epic_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
+          "weight": 10,
           "name": "testmod:legendary_ink"
         },
         {

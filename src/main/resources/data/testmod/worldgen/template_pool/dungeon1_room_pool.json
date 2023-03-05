@@ -104,16 +104,7 @@
     {
       "weight": 1,
       "element": {
-        "location": "testmod:dungeon1/room_zig_zag_1",
-        "processors": "minecraft:empty",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
-        "location": "testmod:dungeon1/room_zig_zag_2",
+        "location": "testmod:dungeon1/room_small_storage",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

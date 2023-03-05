@@ -10,32 +10,17 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 5,
-                "max": 16
+                "min": 0,
+                "max": 8
               }
             }
           ]
         }
-      ]
-    },
-    {
-      "rolls": {
-        "min": 1,
-        "max": 2
-      },
-      "entries": [
+      ],
+      "conditions": [
         {
-          "type": "minecraft:item",
-          "name": "testmod:scroll",
-          "functions": [
-            {
-              "function": "testmod:randomize_scroll",
-              "quality": {
-                "min": 0.0,
-                "max": 0.6
-              }
-            }
-          ]
+          "condition": "minecraft:random_chance",
+          "chance": 0.85
         }
       ]
     },
@@ -44,21 +29,31 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "testmod:blank_rune",
-          "conditions": [
+          "name": "testmod:scroll",
+          "functions": [
             {
-              "condition": "minecraft:random_chance",
-              "chance": 0.3
+              "function": "testmod:randomize_scroll",
+              "quality": {
+                "min": 0.3,
+                "max": 1
+              }
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "testmod:blank_rune"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.05
         }
       ]
     },
     {
-      "rolls": {
-        "min": 1,
-        "max": 3
-      },
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:loot_table",
@@ -73,74 +68,73 @@
             }
           ]
         }
-      ]
-    },
-    {
-      "rolls": {
-        "min": 1,
-        "max": 8
-      },
-      "entries": [
+      ],
+      "conditions": [
         {
-          "type": "minecraft:loot_table",
-          "name": "testmod:magic_items/decent_ink"
+          "condition": "minecraft:random_chance",
+          "chance": 0.25
         }
       ]
     },
     {
-      "rolls": 8,
+      "rolls": {
+        "min": 0,
+        "max": 3
+      },
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "testmod:magic_items/poor_ink"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.45
+        }
+      ]
+    },
+    {
+      "rolls": 4,
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 3,
+          "weight": 1,
           "name": "minecraft:diamond"
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
-          "name": "minecraft:raw_gold"
+          "weight": 1,
+          "name": "minecraft:emerald"
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
-          "name": "minecraft:gold_ingot",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 3
-              }
-            }
-          ]
+          "weight": 2,
+          "name": "minecraft:book"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "minecraft:apple"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 4,
+          "name": "minecraft:rotten_flesh"
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 8,
+          "name": "minecraft:cobweb"
         },
         {
           "type": "minecraft:item",
           "weight": 3,
-          "name": "minecraft:emerald",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 3
-              }
-            }
-          ]
+          "name": "minecraft:charcoal"
         },
         {
-          "type": "minecraft:item",
-          "weight": 12,
-          "name": "minecraft:iron_ingot",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 4
-              }
-            }
-          ]
+          "type": "minecraft:empty",
+          "weight": 6
         }
       ]
     }
