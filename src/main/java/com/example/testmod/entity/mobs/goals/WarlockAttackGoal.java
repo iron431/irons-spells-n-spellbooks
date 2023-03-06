@@ -10,9 +10,9 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected int meleeTime;
     protected int meleeTimeDelay;
 
-    public WarlockAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
+    public WarlockAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
-        meleeRange = 2.5f;
+        this.meleeRange = meleeRange;
         meleeTimeDelay = abstractSpellCastingMob.getRandom().nextIntBetweenInclusive(80, 200);
     }
 
@@ -60,9 +60,14 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             super.handleAttackLogic(distanceSquared);
         } else if (--this.attackTime == 0) {
             this.mob.swing(InteractionHand.MAIN_HAND);
-            this.mob.doHurtTarget(target);
-            resetAttackTimer(distanceSquared);
+            doMeleeAction();
         }
 
+    }
+
+    protected void doMeleeAction() {
+        double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
+        this.mob.doHurtTarget(target);
+        resetAttackTimer(distanceSquared);
     }
 }

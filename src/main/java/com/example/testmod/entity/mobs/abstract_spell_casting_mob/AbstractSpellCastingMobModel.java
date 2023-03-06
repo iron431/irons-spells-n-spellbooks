@@ -92,13 +92,17 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
         if (f < 1.0F) {
             f = 1.0F;
         }
-        rightArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
-        leftArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
-        //rightArm.zRot = 0.0F;
-        //leftArm.zRot = 0.0F;
+//        rightArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
+//        leftArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
+        addRotationX(rightArm, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
+        addRotationX(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
+
         if (!entity.isPassenger()) {
-            rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
-            leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
+            //rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
+            //leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
+            addRotationX(rightLeg, Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
+            addRotationX(leftLeg, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
+
         }
 
 
@@ -115,8 +119,33 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
         //Copied from AnimationUtils#bobLimb
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
-        bone.setRotationX(bone.getRotationX() + x);
-        bone.setRotationZ(bone.getRotationZ() + z);
+        addRotationZ(bone, z);
+        addRotationX(bone, x);
+        //bone.setRotationX(bone.getRotationX() + x);
+        //bone.setRotationZ(bone.getRotationZ() + z);
 
+    }
+
+    private void addRotationX(IBone bone, float rotation) {
+        bone.setRotationX(wrapRadians(bone.getRotationX() + rotation));
+    }
+
+    private void addRotationZ(IBone bone, float rotation) {
+        bone.setRotationZ(wrapRadians(bone.getRotationZ() + rotation));
+    }
+
+    public static float wrapRadians(float pValue) {
+        float twoPi = 6.2831f;
+        float pi = 3.14155f;
+        float f = pValue % twoPi;
+        if (f >= pi) {
+            f -= twoPi;
+        }
+
+        if (f < -pi) {
+            f += twoPi;
+        }
+
+        return f;
     }
 }

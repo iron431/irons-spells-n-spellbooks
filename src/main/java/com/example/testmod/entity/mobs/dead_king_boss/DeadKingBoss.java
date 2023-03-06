@@ -2,7 +2,6 @@ package com.example.testmod.entity.mobs.dead_king_boss;
 
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.PatrolNearLocationGoal;
-import com.example.testmod.entity.mobs.goals.WarlockAttackGoal;
 import com.example.testmod.registries.AttributeRegistry;
 import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ItemRegistry;
@@ -73,7 +72,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new WarlockAttackGoal(this, 1f, 40, 80).setSpellLevels(4, 4).setSpells(
+        this.goalSelector.addGoal(1, new DeadKingAnimatedWarlockAttackGoal(this, 1f, 40, 80, 3.5f).setSpellLevels(4, 4).setSpells(
                 List.of(
                         SpellType.RAY_OF_SIPHONING_SPELL,
                         SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL,
@@ -127,8 +126,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.TARNISHED_CROWN.get()));
-        this.setDropChance(EquipmentSlot.HEAD, 0.05f);
+        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ItemRegistry.BLOOD_STAFF.get()));
+        this.setDropChance(EquipmentSlot.OFFHAND, 0f);
 //        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
 //        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
     }
@@ -143,8 +142,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         super.tick();
         if (level.isClientSide)
             return;
-        float halfHealth = this.getMaxHealth() / 2;
         //TestMod.LOGGER.debug("DeadKingBoss.tick | Phase: {} | isTransitioning: {} | TransitionTime: {}", getPhase(), isPhaseTransitioning(), transitionAnimationTime);
+        float halfHealth = this.getMaxHealth() / 2;
         if (isPhase(Phases.FirstPhase)) {
             this.bossEvent.setProgress((this.getHealth() - halfHealth) / (this.getMaxHealth() - halfHealth));
             if (this.getHealth() <= halfHealth) {
@@ -152,10 +151,14 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 var player = level.getNearestPlayer(this, 16);
                 if (player != null)
                     lookAt(player, 360, 360);
+                setHealth(halfHealth);
+                //Overriding isInvulnerable just doesn't seem to work
+                setInvulnerable(true);
             }
         } else if (isPhase(Phases.Transitioning)) {
             if (--transitionAnimationTime <= 0) {
                 setPhase(Phases.FinalPhase);
+                setInvulnerable(false);
             }
         } else if (isPhase(Phases.FinalPhase)) {
             this.bossEvent.setProgress(this.getHealth() / (this.getMaxHealth() - halfHealth));
@@ -174,10 +177,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         return phase.value == getPhase();
     }
 
-    @Override
-    public boolean isInvulnerable() {
-        return isPhaseTransitioning() || super.isInvulnerable();
-    }
+//    @Override
+//    public boolean isInvulnerable() {
+//        return isPhaseTransitioning() || super.isInvulnerable();
+//    }
 
     @Override
     protected boolean isImmobile() {
@@ -258,8 +261,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     private final AnimationBuilder phase_transition_animation = new AnimationBuilder().addAnimation("dead_king_die", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("dead_king_idle", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder melee = new AnimationBuilder().addAnimation("dead_king_melee", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 
     private final AnimationController animationController = new AnimationController(this, "dead_king_animations", 0, this::predicate);
+    private final AnimationController idlePose = new AnimationController(this, "dead_king_idle", 0, this::idlePredicate);
 
     private PlayState predicate(AnimationEvent animationEvent) {
         var controller = animationEvent.getController();
@@ -268,15 +274,26 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
             controller.setAnimation(phase_transition_animation);
             return PlayState.CONTINUE;
         }
-//        if (this.swinging && controller.getAnimationState() == AnimationState.Stopped) {
-//            TestMod.LOGGER.debug("DeadKingBoss.animationPredicate: Put melee animation here!");
-//        }
+        if (this.swinging && controller.getAnimationState() == AnimationState.Stopped) {
+            controller.markNeedsReload();
+            controller.setAnimation(melee);
+            return PlayState.CONTINUE;
+        }
+        return PlayState.CONTINUE;
+    }
+
+    private PlayState idlePredicate(AnimationEvent animationEvent) {
+        if (isAnimating())
+            return PlayState.STOP;
+        if (animationEvent.getController().getAnimationState() == AnimationState.Stopped)
+            animationEvent.getController().setAnimation(idle);
         return PlayState.CONTINUE;
     }
 
     @Override
     public void registerControllers(AnimationData data) {
         data.addAnimationController(animationController);
+        data.addAnimationController(idlePose);
         super.registerControllers(data);
     }
 
@@ -284,4 +301,5 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     public boolean shouldAlwaysAnimateHead() {
         return !isPhaseTransitioning();
     }
+
 }

@@ -42,6 +42,16 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     }
 
     @Override
+    protected boolean shouldDespawnInPeaceful() {
+        return false;
+    }
+
+    @Override
+    public boolean isPersistenceRequired() {
+        return true;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (triggered()) {
@@ -66,7 +76,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (pSource == DamageSource.OUT_OF_WORLD) {
+        if (pSource.isBypassInvul()) {
             kill();
             return true;
         } else {
