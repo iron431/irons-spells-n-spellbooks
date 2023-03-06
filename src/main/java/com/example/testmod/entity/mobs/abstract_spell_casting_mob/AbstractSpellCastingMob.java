@@ -273,11 +273,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         return PlayState.STOP;
     }
 
-
     private PlayState castingPredicate(AnimationEvent event) {
         var controller = event.getController();
         if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationState.Stopped) {
-            TestMod.LOGGER.debug("ASCM.castingPredicate castingSpell:{}", castingSpell);
+            //TestMod.LOGGER.debug("ASCM.castingPredicate castingSpell:{}", castingSpell);
 
             if (castingSpell.getCastType() == CastType.INSTANT) {
                 controller.markNeedsReload();
@@ -289,42 +288,16 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
                 controller.markNeedsReload();
                 controller.setAnimation(charged_throw);
             }
-
+            return PlayState.CONTINUE;
         }
 
-        if(isCasting()){
-            return PlayState.CONTINUE;
+        var currentAnimation = controller.getCurrentAnimation();
 
-        }else{
+        if (isCasting() || (controller.getAnimationState() != AnimationState.Stopped && currentAnimation != null && currentAnimation.animationName.equals("instant_projectile"))) {
+            return PlayState.CONTINUE;
+        } else {
             return PlayState.STOP;
         }
-
-
-
-
-//        var controller = event.getController();
-//
-//        if (isCasting()) {
-//
-//            //controller.markNeedsReload();
-//
-//            var spell = AbstractSpell.getSpell(entityData.get(DATA_SPELL).getCastingSpellType(), 1);
-//            controller.setAnimation(new AnimationBuilder().addAnimation(spell.getCastAnimation(null).getPath()));
-//
-//            //event.getController().setAnimation(continuous);
-//            var anim = controller.getCurrentAnimation();
-////            if (anim != null) {
-////                TestMod.LOGGER.debug("Anim Duration: {}", anim.animationLength);
-////                animTimestamp = tickCount + (int) anim.animationLength;
-////            } else {
-////                TestMod.LOGGER.debug("Anim is null");
-////            }
-//            animationFlag = false;
-//        }
-//        if (controller.getAnimationState() == AnimationState.Stopped) {
-//            event.getController().setAnimation(idle);
-//        }
-
     }
 
     public boolean isAnimating() {

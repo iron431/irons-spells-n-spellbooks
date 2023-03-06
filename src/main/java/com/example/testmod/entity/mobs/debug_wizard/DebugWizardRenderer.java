@@ -4,6 +4,7 @@ package com.example.testmod.entity.mobs.debug_wizard;
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
+import com.example.testmod.render.DebugWizardSpellName;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
@@ -20,5 +21,6 @@ public class DebugWizardRenderer extends AbstractSpellCastingMobRenderer {
                 return AbstractSpellCastingMob.textureResource;
             }
         });
+        this.addLayer(new DebugWizardSpellName(this));
     }
 }
