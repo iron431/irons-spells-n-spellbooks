@@ -259,29 +259,34 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private final AnimationBuilder charged_throw = new AnimationBuilder().addAnimation("charged_throw", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
 
-    private final AnimationController animationController = new AnimationController(this, "casting", 0, this::castingPredicate);
+    private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
+    private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(animationController);
-        data.addAnimationController(new AnimationController(this, "default", 0, this::predicate));
+        data.addAnimationController(animationControllerOtherCast);
+        data.addAnimationController(animationControllerInstantCast);
+        data.addAnimationController(new AnimationController(this, "idle", 0, this::idlePredicate));
     }
 
-    private PlayState predicate(AnimationEvent event) {
-        //if (event.getController().getAnimationState().equals(AnimationState.Stopped))
+    private PlayState idlePredicate(AnimationEvent event) {
         event.getController().setAnimation(idle);
         return PlayState.STOP;
     }
 
-    private PlayState castingPredicate(AnimationEvent event) {
+    private PlayState instantCastingPredicate(AnimationEvent event) {
+        var controller = event.getController();
+        if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.INSTANT && controller.getAnimationState() == AnimationState.Stopped) {
+            controller.markNeedsReload();
+            controller.setAnimation(instantCast);
+        }
+        return PlayState.CONTINUE;
+    }
+
+    private PlayState otherCastingPredicate(AnimationEvent event) {
         var controller = event.getController();
         if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationState.Stopped) {
-            //TestMod.LOGGER.debug("ASCM.castingPredicate castingSpell:{}", castingSpell);
-
-            if (castingSpell.getCastType() == CastType.INSTANT) {
-                controller.markNeedsReload();
-                controller.setAnimation(instantCast);
-            } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
+            if (castingSpell.getCastType() == CastType.CONTINUOUS) {
                 controller.markNeedsReload();
                 controller.setAnimation(continuous);
             } else if (castingSpell.getCastType() == CastType.CHARGE) {
@@ -291,9 +296,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             return PlayState.CONTINUE;
         }
 
-        var currentAnimation = controller.getCurrentAnimation();
-
-        if (isCasting() || (controller.getAnimationState() != AnimationState.Stopped && currentAnimation != null && currentAnimation.animationName.equals("instant_projectile"))) {
+        if (isCasting()) {
             return PlayState.CONTINUE;
         } else {
             return PlayState.STOP;
@@ -301,8 +304,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     public boolean isAnimating() {
-
-        return isCasting() || !(animationController.getAnimationState() == AnimationState.Stopped);
-        //return true;
+        return isCasting()
+                || (animationControllerOtherCast.getAnimationState() != AnimationState.Stopped)
+                || (animationControllerInstantCast.getAnimationState() != AnimationState.Stopped);
     }
 }
