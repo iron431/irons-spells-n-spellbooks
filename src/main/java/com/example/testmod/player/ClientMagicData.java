@@ -1,5 +1,6 @@
 package com.example.testmod.player;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerCooldowns;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
@@ -7,6 +8,7 @@ import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellC
 import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.CastType;
 import com.example.testmod.spells.SpellType;
+import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -25,6 +27,12 @@ public class ClientMagicData {
      */
     private static final HashMap<Integer, SyncedSpellData> playerSyncedDataLookup = new HashMap<>();
     private static final SyncedSpellData emptySyncedData = new SyncedSpellData(-999);
+
+    /**
+     * Animation Data
+     */
+
+    public static KeyframeAnimationPlayer castingAnimationPlayer;
 
 
     public static PlayerCooldowns getCooldowns() {
@@ -76,7 +84,12 @@ public class ClientMagicData {
     }
 
     public static void resetClientCastState() {
+        TestMod.LOGGER.debug("ClientMagicData.resetClientCastState");
         playerMagicData.resetCastingState();
+
+        if (castingAnimationPlayer != null) {
+            castingAnimationPlayer.stop();
+        }
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem()) {
             Minecraft.getInstance().player.stopUsingItem();

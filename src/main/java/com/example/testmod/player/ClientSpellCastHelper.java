@@ -6,6 +6,8 @@ import com.example.testmod.spells.CastSource;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.ender.TeleportSpell;
 import com.example.testmod.util.ParticleHelper;
+import dev.kosmx.playerAnim.api.firstPerson.FirstPersonConfiguration;
+import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
@@ -116,7 +118,11 @@ public class ClientSpellCastHelper {
                 if (keyFrame != null) {
                     var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(ANIMATION_RESOURCE);
                     if (animation != null) {
-                        animation.setAnimation(new KeyframeAnimationPlayer(keyFrame));
+                        ClientMagicData.castingAnimationPlayer = new KeyframeAnimationPlayer(keyFrame);
+                        ClientMagicData.castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
+                        ClientMagicData.castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration().setShowLeftArm(true).setShowRightArm(true));
+                        animation.setAnimation(ClientMagicData.castingAnimationPlayer);
+
                         //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
                     }
                 }
