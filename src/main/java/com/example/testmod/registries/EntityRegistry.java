@@ -17,6 +17,7 @@ import com.example.testmod.entity.mobs.SummonedPolarBear;
 import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedVex;
 import com.example.testmod.entity.mobs.SummonedZombie;
+import com.example.testmod.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
 import com.example.testmod.entity.mobs.debug_wizard.DebugWizard;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import com.example.testmod.entity.mobs.horse.SpectralSteed;
@@ -192,4 +193,10 @@ public class EntityRegistry {
                     .sized(.9f, 3f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "dead_king").toString()));
+
+    public static final RegistryObject<EntityType<DeadKingCorpseEntity>> DEAD_KING_CORPSE =
+            ENTITIES.register("dead_king_corpse", () -> EntityType.Builder.<DeadKingCorpseEntity>of(DeadKingCorpseEntity::new, MobCategory.MISC)
+                    .sized(2f, .65f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "dead_king_corpse").toString()));
 }

@@ -308,4 +308,12 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
                 || (animationControllerOtherCast.getAnimationState() != AnimationState.Stopped)
                 || (animationControllerInstantCast.getAnimationState() != AnimationState.Stopped);
     }
+
+    public boolean shouldBeExtraAnimated() {
+        return true;
+    }
+
+    public boolean shouldAlwaysAnimateHead(){
+        return true;
+    }
 }

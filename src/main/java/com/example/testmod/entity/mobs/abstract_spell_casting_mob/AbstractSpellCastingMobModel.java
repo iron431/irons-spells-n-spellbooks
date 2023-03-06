@@ -26,7 +26,7 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(entity, instanceId, animationEvent);
-        if (Minecraft.getInstance().isPaused())
+        if (Minecraft.getInstance().isPaused() || !entity.shouldBeExtraAnimated())
             return;
 
         float partialTick = animationEvent.getPartialTick();
@@ -41,10 +41,13 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
         IBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
         //Make the head look forward, whatever forward is (influenced externally, such as a lootAt target)
-        head.setRotationY(Mth.lerp(partialTick,
-                Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
-                Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD));
-        head.setRotationX(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD);
+        if(!entity.isAnimating()  || entity.shouldAlwaysAnimateHead()){
+            head.setRotationY(Mth.lerp(partialTick,
+                    Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
+                    Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD));
+            head.setRotationX(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD);
+        }
+
         //body.setRotationY(0);
 
         //If we are riding something, pose ourselves sitting

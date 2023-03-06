@@ -1,10 +1,10 @@
 package com.example.testmod.entity.mobs.dead_king_boss;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.PatrolNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WarlockAttackGoal;
 import com.example.testmod.registries.AttributeRegistry;
+import com.example.testmod.registries.EntityRegistry;
 import com.example.testmod.registries.ItemRegistry;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
@@ -46,6 +46,17 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
+    public enum Phases {
+        FirstPhase(0),
+        Transitioning(1),
+        FinalPhase(2);
+        final int value;
+
+        Phases(int value) {
+            this.value = value;
+        }
+    }
+
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
     private int transitionAnimationTime = 140; // Animation Length in ticks
@@ -54,6 +65,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 60;
+    }
+
+    public DeadKingBoss(Level pLevel) {
+        this(EntityRegistry.DEAD_KING.get(), pLevel);
     }
 
     @Override
@@ -73,7 +88,6 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         ));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 50, 0.9f));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.goalSelector.addGoal(2,new Mele);
 
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
         this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
@@ -98,7 +112,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     protected SoundEvent getStepSound() {
-        if (getPhase() == 0)
+        if (isPhase(Phases.FirstPhase))
             return SoundEvents.SKELETON_STEP;
         else
             return SoundEvents.SOUL_ESCAPE;
@@ -130,19 +144,20 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         if (level.isClientSide)
             return;
         float halfHealth = this.getMaxHealth() / 2;
-        TestMod.LOGGER.debug("DeadKingBoss.tick | Phase: {} | isTransitioning: {} | TransitionTime: {}", getPhase(), isPhaseTransitioning(), transitionAnimationTime);
-        if (getPhase() == 0) {
+        //TestMod.LOGGER.debug("DeadKingBoss.tick | Phase: {} | isTransitioning: {} | TransitionTime: {}", getPhase(), isPhaseTransitioning(), transitionAnimationTime);
+        if (isPhase(Phases.FirstPhase)) {
             this.bossEvent.setProgress((this.getHealth() - halfHealth) / (this.getMaxHealth() - halfHealth));
             if (this.getHealth() <= halfHealth) {
-                setPhase(1);
+                setPhase(Phases.Transitioning);
                 var player = level.getNearestPlayer(this, 16);
                 if (player != null)
                     lookAt(player, 360, 360);
             }
-        } else if (getPhase() == 1) {
-            if (--transitionAnimationTime <= 0)
-                setPhase(2);
-        } else if (getPhase() == 2) {
+        } else if (isPhase(Phases.Transitioning)) {
+            if (--transitionAnimationTime <= 0) {
+                setPhase(Phases.FinalPhase);
+            }
+        } else if (isPhase(Phases.FinalPhase)) {
             this.bossEvent.setProgress(this.getHealth() / (this.getMaxHealth() - halfHealth));
         }
     }
@@ -155,19 +170,24 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 //            return super.hurt(pSource, pAmount);
 //    }
 
+    public boolean isPhase(Phases phase) {
+        return phase.value == getPhase();
+    }
+
     @Override
     public boolean isInvulnerable() {
         return isPhaseTransitioning() || super.isInvulnerable();
     }
 
-//    @Override
-//    protected boolean isImmobile() {
-//        return isPhaseTransitioning() || super.isImmobile();
-//    }
+    @Override
+    protected boolean isImmobile() {
+        return isPhase(Phases.Transitioning) || super.isImmobile();
+    }
 
     public boolean isPhaseTransitioning() {
-        return getPhase() == 1;
+        return isPhase(Phases.Transitioning);
     }
+
 //
 //    @Override
 //    public boolean isAnimating() {
@@ -190,7 +210,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 .add(AttributeRegistry.SPELL_POWER.get(), 1.5)
                 .add(Attributes.ARMOR, 8)
                 .add(AttributeRegistry.SPELL_RESIST.get(), 1.2)
-                .add(Attributes.MAX_HEALTH, 350.0)
+                .add(Attributes.MAX_HEALTH, 100.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
@@ -207,7 +227,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         this.entityData.set(PHASE, phase);
     }
 
-    public int getPhase() {
+    private void setPhase(Phases phase) {
+        this.setPhase(phase.value);
+    }
+
+    private int getPhase() {
         return this.entityData.get(PHASE);
     }
 
@@ -239,7 +263,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     private PlayState predicate(AnimationEvent animationEvent) {
         var controller = animationEvent.getController();
-        if (getPhase() == 1 && controller.getAnimationState() == AnimationState.Stopped) {
+        if (isPhaseTransitioning() && controller.getAnimationState() == AnimationState.Stopped) {
             controller.markNeedsReload();
             controller.setAnimation(phase_transition_animation);
             return PlayState.CONTINUE;
@@ -254,5 +278,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     public void registerControllers(AnimationData data) {
         data.addAnimationController(animationController);
         super.registerControllers(data);
+    }
+
+    @Override
+    public boolean shouldAlwaysAnimateHead() {
+        return !isPhaseTransitioning();
     }
 }

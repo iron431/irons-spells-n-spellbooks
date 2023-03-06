@@ -57,6 +57,7 @@ public class CommonSetup {
         event.put(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoid.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_POLAR_BEAR.get(), PolarBear.createAttributes().build());
         event.put(EntityRegistry.DEAD_KING.get(), DeadKingBoss.prepareAttributes().build());
+        event.put(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingBoss.prepareAttributes().build());
 
 
     }
