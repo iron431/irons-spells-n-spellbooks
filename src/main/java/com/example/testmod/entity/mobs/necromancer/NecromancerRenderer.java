@@ -1,6 +1,5 @@
 package com.example.testmod.entity.mobs.necromancer;
 
-import com.example.testmod.TestMod;
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;

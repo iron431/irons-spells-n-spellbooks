@@ -24,8 +24,9 @@ public class GeoChargeSpellLayer extends GeoLayerRenderer<AbstractSpellCastingMo
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int packedLightIn, AbstractSpellCastingMob entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, AbstractSpellCastingMob entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         var syncedSpellData = ClientMagicData.getSyncedSpellData(entity);
+
         //TestMod.LOGGER.debug("GeoChargeSpellLayer.render: {}", syncedSpellData);
         var spell = syncedSpellData.getCastingSpellType();
         if (spell == SpellType.LIGHTNING_LANCE_SPELL) {
@@ -33,6 +34,7 @@ public class GeoChargeSpellLayer extends GeoLayerRenderer<AbstractSpellCastingMo
             //var model = entityRenderer.getGeoModelProvider().getModel(AbstractSpellCastingMob.modelResource);
             //var model = this.getRenderer().getGeoModelProvider().getModel(AbstractSpellCastingMob.modelResource);
             var model = this.getRenderer().getGeoModelProvider().getModel(this.getEntityModel().getModelResource(entity));
+
 
             Optional<GeoBone> bone;
             if (entity.isLeftHanded()) {
@@ -51,6 +53,7 @@ public class GeoChargeSpellLayer extends GeoLayerRenderer<AbstractSpellCastingMo
                 //Lance position
                 RenderUtils.prepMatrixForBone(poseStack, bone.get());
                 RenderUtils.translateAndRotateMatrixForBone(poseStack, bone.get());
+                //this.getRenderer().renderCube(bone.get().childCubes.get(0), poseStack, bufferSource.getBuffer(RenderType.eyes(LightningLanceRenderer.TEXTURES[0])),1, 1,1,1,1,1 );
                 //RenderUtils.translateToPivotPoint(poseStack, bone.get().childCubes.get(0));
                 LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
 
