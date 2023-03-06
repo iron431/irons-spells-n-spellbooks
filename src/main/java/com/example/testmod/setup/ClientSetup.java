@@ -16,6 +16,7 @@ import com.example.testmod.entity.icicle.IcicleRenderer;
 import com.example.testmod.entity.lightning_lance.LightningLanceRenderer;
 import com.example.testmod.entity.magic_arrow.MagicArrowRenderer;
 import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
+import com.example.testmod.entity.mobs.dead_king_boss.DeadKingRenderer;
 import com.example.testmod.entity.mobs.debug_wizard.DebugWizardRenderer;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import com.example.testmod.entity.mobs.horse.SpectralSteedRenderer;
@@ -127,7 +128,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoidRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SMALL_FIREBALL_PROJECTILE.get(), (p_174082_) -> new ThrownItemRenderer<>(p_174082_, 0.75F, true));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_POLAR_BEAR.get(), PolarBearRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.UNDEAD_KING.get(), DebugWizardRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DEAD_KING.get(), (c) -> new DeadKingRenderer(c, false));
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
