@@ -19,9 +19,7 @@ import com.example.testmod.entity.magic_missile.MagicMissileRenderer;
 import com.example.testmod.entity.mobs.debug_wizard.DebugWizardRenderer;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import com.example.testmod.entity.mobs.horse.SpectralSteedRenderer;
-import com.example.testmod.entity.mobs.necromancer.NecromancerModel;
 import com.example.testmod.entity.mobs.necromancer.NecromancerRenderer;
-import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerModel;
 import com.example.testmod.entity.mobs.wizards.pyromancer.PyromancerRenderer;
 import com.example.testmod.entity.shield.ShieldModel;
 import com.example.testmod.entity.shield.ShieldRenderer;
@@ -46,8 +44,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
-//TODO: find if there is a better place for this code to live (tutorial said to put it here)
-
 @Mod.EventBusSubscriber(modid = TestMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
 
@@ -60,13 +56,13 @@ public class ClientSetup {
         LayerDefinition outerLayer = LayerDefinition.create(HumanoidModel.createMesh(LayerDefinitions.OUTER_ARMOR_DEFORMATION, 0.0F), 64, 32);
         LayerDefinition innerLayer = LayerDefinition.create(HumanoidModel.createMesh(LayerDefinitions.INNER_ARMOR_DEFORMATION, 0.0F), 64, 32);
 
-        event.registerLayerDefinition(PyromancerRenderer.PYROMANCER_MODEL_LAYER, PyromancerModel::createBodyLayer);
-        event.registerLayerDefinition(PyromancerRenderer.PYROMANCER_INNER_ARMOR, () -> innerLayer);
-        event.registerLayerDefinition(PyromancerRenderer.PYROMANCER_OUTER_ARMOR, () -> outerLayer);
+        //event.registerLayerDefinition(PyromancerRenderer.PYROMANCER_MODEL_LAYER, PyromancerModel::createBodyLayer);
+        //event.registerLayerDefinition(PyromancerRenderer.PYROMANCER_INNER_ARMOR, () -> innerLayer);
+        //event.registerLayerDefinition(PyromancerRenderer.PYROMANCER_OUTER_ARMOR, () -> outerLayer);
 
-        event.registerLayerDefinition(NecromancerRenderer.NECROMANCER_MODEL_LAYER, NecromancerModel::createBodyLayer);
-        event.registerLayerDefinition(NecromancerRenderer.NECROMANCER_INNER_ARMOR, () -> innerLayer);
-        event.registerLayerDefinition(NecromancerRenderer.NECROMANCER_OUTER_ARMOR, () -> outerLayer);
+//        event.registerLayerDefinition(NecromancerRenderer.NECROMANCER_MODEL_LAYER, NecromancerModel::createBodyLayer);
+//        event.registerLayerDefinition(NecromancerRenderer.NECROMANCER_INNER_ARMOR, () -> innerLayer);
+//        event.registerLayerDefinition(NecromancerRenderer.NECROMANCER_OUTER_ARMOR, () -> outerLayer);
 
         event.registerLayerDefinition(ShieldModel.LAYER_LOCATION, ShieldModel::createBodyLayer);
         event.registerLayerDefinition(ShieldTrimModel.LAYER_LOCATION, ShieldTrimModel::createBodyLayer);

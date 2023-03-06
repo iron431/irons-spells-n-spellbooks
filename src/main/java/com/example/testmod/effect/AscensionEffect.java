@@ -3,7 +3,7 @@ package com.example.testmod.effect;
 import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.damage.DamageSources;
-import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.registries.MobEffectRegistry;
 import com.example.testmod.spells.SchoolType;
 import com.example.testmod.spells.SpellType;

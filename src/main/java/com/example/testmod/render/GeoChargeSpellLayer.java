@@ -1,7 +1,7 @@
 package com.example.testmod.render;
 
 import com.example.testmod.entity.lightning_lance.LightningLanceRenderer;
-import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.player.ClientMagicData;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.util.Utils;

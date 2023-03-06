@@ -2,7 +2,7 @@ package com.example.testmod.render;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
-import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.player.ClientMagicData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

@@ -1,4 +1,4 @@
-package com.example.testmod.entity.mobs;
+package com.example.testmod.entity.mobs.abstract_spell_casting_mob;
 
 import com.example.testmod.TestMod;
 import com.example.testmod.capabilities.magic.PlayerMagicData;

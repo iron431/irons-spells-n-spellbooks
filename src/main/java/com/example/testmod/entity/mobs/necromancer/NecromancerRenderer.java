@@ -1,39 +1,25 @@
 package com.example.testmod.entity.mobs.necromancer;
 
 import com.example.testmod.TestMod;
-import com.example.testmod.render.ChargeSpellLayer;
-import com.example.testmod.render.EvasionLayer;
-import com.example.testmod.render.GlowingEyesLayer;
-import com.example.testmod.render.NecromancerClothingLayer;
-import net.minecraft.client.model.geom.ModelLayerLocation;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
-import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
-import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
 
-public class NecromancerRenderer extends HumanoidMobRenderer<NecromancerEntity, NecromancerModel> {
-    public static ModelLayerLocation NECROMANCER_MODEL_LAYER = new ModelLayerLocation(new ResourceLocation(TestMod.MODID, "necromancer"), "body");
-    public static ModelLayerLocation NECROMANCER_INNER_ARMOR = new ModelLayerLocation(new ResourceLocation(TestMod.MODID, "necromancer"), "inner_armor");
-    public static ModelLayerLocation NECROMANCER_OUTER_ARMOR = new ModelLayerLocation(new ResourceLocation(TestMod.MODID, "necromancer"), "outer_armor");
+public class NecromancerRenderer extends AbstractSpellCastingMobRenderer {
 
-    public NecromancerRenderer(EntityRendererProvider.Context context) {
-        super(context, new NecromancerModel(context.bakeLayer(NECROMANCER_MODEL_LAYER)), 0.5f);
-        this.addLayer(new NecromancerClothingLayer(this, context.getModelSet()));
-        var inner = new NecromancerModel(context.bakeLayer(NECROMANCER_INNER_ARMOR));
-        var outer = new NecromancerModel(context.bakeLayer(NECROMANCER_OUTER_ARMOR));
-        this.addLayer(new HumanoidArmorLayer<>(this, inner, outer));
-        this.addLayer(new EvasionLayer<>(this));
-        this.addLayer(new ChargeSpellLayer<>(this));
-        this.addLayer(new GlowingEyesLayer<>(this));
+    public NecromancerRenderer(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new NecromancerModel());
     }
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(TestMod.MODID, "textures/entity/necromancer/necromancer.png");
-
-    /**
-     * Returns the location of an entity's texture.
-     */
     @Override
-    public ResourceLocation getTextureLocation(NecromancerEntity pEntity) {
-        return TEXTURE;
+    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        RenderSystem.disableCull();
+        super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }

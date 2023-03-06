@@ -1,6 +1,6 @@
 package com.example.testmod.entity.mobs.undead_king_boss;
 
-import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.PatrolNearLocationGoal;
 import com.example.testmod.entity.mobs.goals.WarlockAttackGoal;
 import com.example.testmod.registries.AttributeRegistry;
@@ -140,7 +140,7 @@ public class UndeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 .add(Attributes.ARMOR, 8)
                 .add(AttributeRegistry.SPELL_RESIST.get(), 1.2)
                 .add(Attributes.MAX_HEALTH, 350.0)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 10.0)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 5.0)
                 .add(Attributes.ATTACK_KNOCKBACK)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
                 .add(Attributes.MOVEMENT_SPEED, .20);

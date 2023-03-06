@@ -1,6 +1,6 @@
 package com.example.testmod.capabilities.magic;
 
-import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.network.ClientboundSyncPlayerData;
 import com.example.testmod.setup.Messages;
 import com.example.testmod.spells.SpellType;

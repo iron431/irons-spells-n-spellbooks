@@ -1,6 +1,6 @@
 package com.example.testmod.entity.mobs.debug_wizard;
 
-import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.DebugTargetClosestEntityGoal;
 import com.example.testmod.entity.mobs.goals.WizardDebugAttackGoal;
 import com.example.testmod.spells.SpellType;

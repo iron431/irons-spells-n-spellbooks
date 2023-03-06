@@ -1,6 +1,6 @@
 package com.example.testmod.entity.mobs.goals;
 
-import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.world.InteractionHand;
 
 public class WarlockAttackGoal extends WizardAttackGoal {

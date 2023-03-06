@@ -5,7 +5,7 @@ import com.example.testmod.capabilities.magic.PlayerMagicData;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.effect.AbyssalShroudEffect;
 import com.example.testmod.effect.EvasionEffect;
-import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.item.Scroll;
 import com.example.testmod.item.SpellBook;
 import com.example.testmod.spells.CastType;

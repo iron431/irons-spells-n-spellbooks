@@ -1,4 +1,4 @@
-package com.example.testmod.entity.mobs;
+package com.example.testmod.entity.mobs.abstract_spell_casting_mob;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
@@ -8,7 +8,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
-public class AbstractSpellCastingMobModel extends AnimatedGeoModel<AbstractSpellCastingMob> {
+public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<AbstractSpellCastingMob> {
 
     @Override
     public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
@@ -16,9 +16,7 @@ public class AbstractSpellCastingMobModel extends AnimatedGeoModel<AbstractSpell
     }
 
     @Override
-    public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
-        return AbstractSpellCastingMob.textureResource;
-    }
+    public abstract ResourceLocation getTextureResource(AbstractSpellCastingMob mob);
 
     @Override
     public ResourceLocation getAnimationResource(AbstractSpellCastingMob animatable) {

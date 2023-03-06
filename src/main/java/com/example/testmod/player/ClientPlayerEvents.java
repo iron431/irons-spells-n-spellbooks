@@ -3,7 +3,7 @@ package com.example.testmod.player;
 import com.example.testmod.capabilities.magic.SyncedSpellData;
 import com.example.testmod.effect.AbyssalShroudEffect;
 import com.example.testmod.effect.AscensionEffect;
-import com.example.testmod.entity.mobs.AbstractSpellCastingMob;
+import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.spells.SpellType;
 import com.example.testmod.spells.blood.RayOfSiphoning;
 import net.minecraft.client.Minecraft;
