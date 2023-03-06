@@ -255,7 +255,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
 
     private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);//.addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
     private final AnimationBuilder charged_throw = new AnimationBuilder().addAnimation("charged_throw", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
 
@@ -291,7 +291,15 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             }
 
         }
-        return PlayState.CONTINUE;
+
+        if(isCasting()){
+            return PlayState.CONTINUE;
+
+        }else{
+            return PlayState.STOP;
+        }
+
+
 
 
 //        var controller = event.getController();

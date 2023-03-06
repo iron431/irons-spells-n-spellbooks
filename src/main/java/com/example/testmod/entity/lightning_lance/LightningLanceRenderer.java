@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class LightningLanceRenderer extends EntityRenderer<LightningLanceProjectile> {
     //private static final ResourceLocation TEXTURE = TestMod.id("textures/entity/icicle_projectile.png");
-    private static final ResourceLocation[] TEXTURES = {
+    public static final ResourceLocation[] TEXTURES = {
             TestMod.id("textures/entity/lightning_lance/lightning_lance_1.png"),
             TestMod.id("textures/entity/lightning_lance/lightning_lance_2.png"),
             TestMod.id("textures/entity/lightning_lance/lightning_lance_3.png"),
