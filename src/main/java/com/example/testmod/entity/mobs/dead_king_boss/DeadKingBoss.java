@@ -58,8 +58,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
+    private final static EntityDataAccessor<Boolean> SLAM_ATTACKING = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.BOOLEAN);
     private int transitionAnimationTime = 140; // Animation Length in ticks
-
 
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -217,7 +217,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
-                .add(Attributes.MOVEMENT_SPEED, .15);
+                .add(Attributes.MOVEMENT_SPEED, .125);
     }
 
     @Override
@@ -236,6 +236,14 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     private int getPhase() {
         return this.entityData.get(PHASE);
+    }
+
+    public void setSlamming(boolean slam) {
+        this.entityData.set(SLAM_ATTACKING, slam);
+    }
+
+    private boolean isSlamming() {
+        return this.entityData.get(SLAM_ATTACKING);
     }
 
     @Override
@@ -258,11 +266,13 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(PHASE, 0);
+        this.entityData.define(SLAM_ATTACKING, false);
     }
 
     private final AnimationBuilder phase_transition_animation = new AnimationBuilder().addAnimation("dead_king_die", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("dead_king_idle", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder melee = new AnimationBuilder().addAnimation("dead_king_melee", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder slam = new AnimationBuilder().addAnimation("dead_king_slam", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 
     private final AnimationController animationController = new AnimationController(this, "dead_king_animations", 0, this::predicate);
     private final AnimationController idlePose = new AnimationController(this, "dead_king_idle", 0, this::idlePredicate);
@@ -276,7 +286,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         }
         if (this.swinging && controller.getAnimationState() == AnimationState.Stopped) {
             controller.markNeedsReload();
-            controller.setAnimation(melee);
+            if (isSlamming())
+                controller.setAnimation(slam);
+            else
+                controller.setAnimation(melee);
             return PlayState.CONTINUE;
         }
         return PlayState.CONTINUE;

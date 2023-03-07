@@ -1008,6 +1008,136 @@
 					}
 				}
 			}
+		},
+		"dead_king_slam": {
+			"animation_length": 1.92,
+			"bones": {
+				"body": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.76": {
+							"vector": [-25, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"1.04": {
+							"vector": [-25, 0, 0]
+						},
+						"1.32": {
+							"vector": [52.5, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"1.92": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"head": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.76": {
+							"vector": [42.5, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"1.04": {
+							"vector": [42.5, 0, 0]
+						},
+						"1.92": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"right_leg": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.76": {
+							"vector": [27.5, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"1.04": {
+							"vector": [27.5, 0, 0]
+						},
+						"1.32": {
+							"vector": [-55, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"1.92": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"left_leg": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.76": {
+							"vector": [27.5, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"1.04": {
+							"vector": [27.5, 0, 0]
+						},
+						"1.32": {
+							"vector": [-55, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"1.92": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"right_arm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.92": {
+							"vector": [-184.76968, 1.50179, 17.43745],
+							"easing": "easeInOutSine"
+						},
+						"1.04": {
+							"vector": [-184.77, 1.5, 17.44]
+						},
+						"1.32": {
+							"vector": [-62.51126, -9.7032, -13.88408]
+						},
+						"1.92": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"left_arm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-32.5, 0, 0]
+						},
+						"0.92": {
+							"vector": [-187.15656, -2.24944, -17.35932],
+							"easing": "easeInOutSine"
+						},
+						"1.04": {
+							"vector": [-187.16, -2.25, -17.36]
+						},
+						"1.32": {
+							"vector": [-57.66659, 16.22734, 18.72565]
+						},
+						"1.92": {
+							"vector": [-32.5, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
 		}
 	}
 }

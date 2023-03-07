@@ -22,7 +22,9 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         if (++meleeTime > meleeTimeDelay) {
             meleeTime = 0;
             wantsToMelee = !wantsToMelee;
-            meleeTimeDelay = mob.getRandom().nextIntBetweenInclusive(80, 240);
+            meleeTimeDelay = mob.getRandom().nextIntBetweenInclusive(60, 120);
+            if(wantsToMelee)
+                meleeTimeDelay += 120;
         }
     }
 
@@ -36,7 +38,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         float strafeBackwards = 0;
 
         if (distanceSquared > meleeRange * meleeRange) {
-            this.mob.getNavigation().moveTo(this.target, this.speedModifier);
+            this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
         } else {
             strafeBackwards = (float) (-speedModifier * .25f);
         }
@@ -48,7 +50,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             }
         }
 
-        float strafeDir = strafingClockwise ? .75f : -.75f;
+        float strafeDir = strafingClockwise ? 1f : -1f;
         mob.getMoveControl().strafe(strafeBackwards, (float) speedModifier * strafeDir);
         mob.lookAt(target, 30, 30);
 
