@@ -24,12 +24,12 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     @Override
     protected void handleAttackLogic(double distanceSquared) {
         if (meleeAnimTimer > 0) {
-
+            mob.lookAt(target, 50, 50);
             meleeAnimTimer--;
             if (slam) {
                 if (meleeAnimTimer == slamTimestamp) {
                     Vec3 slamPos = mob.position().add(mob.getForward().multiply(1, 0, 1).normalize());
-                    Vec3 bbHalf = new Vec3(1, 1, 1);
+                    Vec3 bbHalf = new Vec3(meleeRange, meleeRange, meleeRange).scale(.4);
                     mob.level.getEntitiesOfClass(target.getClass(), new AABB(slamPos.subtract(bbHalf), slamPos.add(bbHalf))).forEach((entity) -> {
                         float damage = (float) mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5f;
                         entity.hurt(DamageSource.mobAttack(mob), damage);
@@ -49,6 +49,9 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeTimeDelay++;
         } else if (meleeAnimTimer == 0) {
             resetAttackTimer(distanceSquared);
+            if (mob instanceof DeadKingBoss boss) {
+                boss.setNextSlam(mob.getRandom().nextFloat() < .25f);
+            }
             meleeAnimTimer = -1;
         }
         super.handleAttackLogic(distanceSquared);
@@ -58,9 +61,9 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     protected void doMeleeAction() {
         //anim duration
         meleeAnimTimer = animationDuration;
-        //slam = mob.getRandom().nextFloat() < .25f;
-        slam = true;
-        if (mob instanceof DeadKingBoss boss)
-            boss.setSlamming(slam);
+        if (mob instanceof DeadKingBoss boss) {
+            slam = boss.isNextSlam();
+        }
+
     }
 }

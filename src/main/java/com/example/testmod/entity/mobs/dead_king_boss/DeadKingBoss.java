@@ -58,7 +58,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     private final ServerBossEvent bossEvent = (ServerBossEvent) (new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true).setCreateWorldFog(true);
     private final static EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.INT);
-    private final static EntityDataAccessor<Boolean> SLAM_ATTACKING = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.BOOLEAN);
+    private final static EntityDataAccessor<Boolean> NEXT_SLAM = SynchedEntityData.defineId(DeadKingBoss.class, EntityDataSerializers.BOOLEAN);
     private int transitionAnimationTime = 140; // Animation Length in ticks
 
     public DeadKingBoss(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
@@ -215,7 +215,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 .add(AttributeRegistry.SPELL_RESIST.get(), 1.2)
                 .add(Attributes.MAX_HEALTH, 100.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
-                .add(Attributes.ATTACK_KNOCKBACK)
+                .add(Attributes.ATTACK_KNOCKBACK, .3)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
                 .add(Attributes.MOVEMENT_SPEED, .125);
     }
@@ -238,12 +238,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         return this.entityData.get(PHASE);
     }
 
-    public void setSlamming(boolean slam) {
-        this.entityData.set(SLAM_ATTACKING, slam);
+    public void setNextSlam(boolean slam) {
+        this.entityData.set(NEXT_SLAM, slam);
     }
 
-    private boolean isSlamming() {
-        return this.entityData.get(SLAM_ATTACKING);
+    public boolean isNextSlam() {
+        return this.entityData.get(NEXT_SLAM);
     }
 
     @Override
@@ -266,7 +266,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(PHASE, 0);
-        this.entityData.define(SLAM_ATTACKING, false);
+        this.entityData.define(NEXT_SLAM, false);
     }
 
     private final AnimationBuilder phase_transition_animation = new AnimationBuilder().addAnimation("dead_king_die", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
@@ -284,12 +284,13 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
             controller.setAnimation(phase_transition_animation);
             return PlayState.CONTINUE;
         }
-        if (this.swinging && controller.getAnimationState() == AnimationState.Stopped) {
+        if (this.swinging) {
             controller.markNeedsReload();
-            if (isSlamming())
+            if (isNextSlam())
                 controller.setAnimation(slam);
             else
                 controller.setAnimation(melee);
+            swinging = false;
             return PlayState.CONTINUE;
         }
         return PlayState.CONTINUE;
