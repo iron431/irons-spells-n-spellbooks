@@ -25,6 +25,7 @@ archivesBaseName = 'testmod'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+
 minecraft {
     // The mappings can be changed at any time and must be in the following format.
     // Channel:   Version:
@@ -49,6 +50,7 @@ minecraft {
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
+
     runs {
         client {
             workingDirectory project.file('run')
@@ -244,6 +246,16 @@ publishing {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
+
+tasks.register('copyAnimations', Copy) {
+    from 'src/main/resources/assets/testmod/player_animation'
+    include 'casting_animations.json'
+    into 'src/main/resources/assets/testmod/animations'
+}
+
+tasks.classes.dependsOn(tasks.copyAnimations)
+
+
 mixin {
     add sourceSets.main, 'testmod.refmap.json'
     config 'mixins.testmod.json'
