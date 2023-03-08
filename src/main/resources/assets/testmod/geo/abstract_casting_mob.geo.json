@@ -250,12 +250,15 @@
 				},
 				{
 					"name": "rightItem",
-					"parent": "bipedHandRight",
-					"pivot": [-6, 12, -1],
+					"parent": "right_arm",
+					"pivot": [-6, 12, 0],
+					"rotation": [-90, 0, 0],
 					"cubes": [
 						{
-							"origin": [-6, 12, -1],
+							"origin": [-6, 12, 0],
 							"size": [0, 0, 0],
+							"pivot": [-6, 12, 0],
+							"rotation": [-90, 0, 0],
 							"uv": {
 								"north": {"uv": [0, 0], "uv_size": [0, 0]},
 								"east": {"uv": [0, 0], "uv_size": [0, 0]},
@@ -323,10 +326,10 @@
 				{
 					"name": "leftItem",
 					"parent": "bipedHandLeft",
-					"pivot": [6, 12, -1],
+					"pivot": [6, 12, 0],
 					"cubes": [
 						{
-							"origin": [6, 12, -1],
+							"origin": [6, 12, 0],
 							"size": [0, 0, 0],
 							"uv": {
 								"north": {"uv": [0, 0], "uv_size": [0, 0]},

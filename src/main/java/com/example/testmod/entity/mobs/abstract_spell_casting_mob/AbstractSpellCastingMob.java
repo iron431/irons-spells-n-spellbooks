@@ -257,15 +257,19 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);//.addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
     private final AnimationBuilder charged_throw = new AnimationBuilder().addAnimation("charged_throw", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder long_cast = new AnimationBuilder().addAnimation("long_cast", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder long_cast_finish = new AnimationBuilder().addAnimation("long_cast_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
 
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
     private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
+    private final AnimationController animationControllerLongCast = new AnimationController(this, "long_casting", 0, this::longCastingPredicate);
 
     @Override
     public void registerControllers(AnimationData data) {
         data.addAnimationController(animationControllerOtherCast);
         data.addAnimationController(animationControllerInstantCast);
+        data.addAnimationController(animationControllerLongCast);
         data.addAnimationController(new AnimationController(this, "idle", 0, this::idlePredicate));
     }
 
@@ -282,6 +286,28 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
         return PlayState.CONTINUE;
     }
+
+    private CastType lastCastAnimation = CastType.NONE;
+
+    private PlayState longCastingPredicate(AnimationEvent event) {
+        var controller = event.getController();
+        if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.LONG && controller.getAnimationState() == AnimationState.Stopped) {
+            //TestMod.LOGGER.debug("longCastingPredicate.1");
+            lastCastAnimation = CastType.LONG;
+            controller.markNeedsReload();
+            controller.setAnimation(long_cast);
+        }
+
+        if (!isCasting() && lastCastAnimation == CastType.LONG) {
+            //TestMod.LOGGER.debug("longCastingPredicate.2");
+            controller.markNeedsReload();
+            controller.setAnimation(long_cast_finish);
+            lastCastAnimation = CastType.NONE;
+        }
+
+        return PlayState.CONTINUE;
+    }
+
 
     private PlayState otherCastingPredicate(AnimationEvent event) {
         var controller = event.getController();
@@ -313,7 +339,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         return true;
     }
 
-    public boolean shouldAlwaysAnimateHead(){
+    public boolean shouldAlwaysAnimateHead() {
         return true;
     }
 }

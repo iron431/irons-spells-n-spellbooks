@@ -1,0 +1,1 @@
+copy .\src\main\resources\assets\testmod\player_animation\casting_animations.json .\src\main\resources\assets\testmod\animations\casting_animations.json 
