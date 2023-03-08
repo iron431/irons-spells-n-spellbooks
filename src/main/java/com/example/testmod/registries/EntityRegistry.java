@@ -196,7 +196,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<DeadKingCorpseEntity>> DEAD_KING_CORPSE =
             ENTITIES.register("dead_king_corpse", () -> EntityType.Builder.<DeadKingCorpseEntity>of(DeadKingCorpseEntity::new, MobCategory.MISC)
-                    .sized(2f, .65f)
+                    .sized(1.5f, .95f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "dead_king_corpse").toString()));
 }
