@@ -32,6 +32,15 @@
     {
       "weight": 3,
       "element": {
+        "location": "testmod:dungeon1/hallway_spiral_stairs",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
         "location": "testmod:dungeon1/hallway_turn_2",
         "processors": "minecraft:empty",
         "projection": "rigid",

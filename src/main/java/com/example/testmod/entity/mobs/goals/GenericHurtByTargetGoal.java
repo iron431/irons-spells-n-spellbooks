@@ -36,7 +36,7 @@ public class GenericHurtByTargetGoal  extends TargetGoal {
     public boolean canUse() {
         int i = this.mob.getLastHurtByMobTimestamp();
         LivingEntity livingentity = this.mob.getLastHurtByMob();
-        if(livingentity.isAlliedTo(mob))
+        if(livingentity == null || livingentity.isAlliedTo(mob))
             return false;
         if (i != this.timestamp && livingentity != null) {
             if (livingentity.getType() == EntityType.PLAYER && this.mob.level.getGameRules().getBoolean(GameRules.RULE_UNIVERSAL_ANGER)) {

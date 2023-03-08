@@ -5,7 +5,7 @@
     {
       "weight": 1,
       "element": {
-        "location": "testmod:dungeon1/dungeon_origin",
+        "location": "testmod:dungeon1/origin_throne_room",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

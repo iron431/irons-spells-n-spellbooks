@@ -20,7 +20,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.85
+          "chance": 0.35
         }
       ]
     },
@@ -53,30 +53,6 @@
       ]
     },
     {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:loot_table",
-          "name": "testmod:magic_items/all_focuses",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 4
-              }
-            }
-          ]
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.25
-        }
-      ]
-    },
-    {
       "rolls": {
         "min": 0,
         "max": 3
@@ -90,18 +66,13 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.45
+          "chance": 0.25
         }
       ]
     },
     {
       "rolls": 4,
       "entries": [
-        {
-          "type": "minecraft:item",
-          "weight": 1,
-          "name": "minecraft:diamond"
-        },
         {
           "type": "minecraft:item",
           "weight": 1,
