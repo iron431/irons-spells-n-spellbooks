@@ -72,6 +72,11 @@ public class SummonedVex extends Vex implements MagicSummon {
         }
     }
 
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+    }
+
     public LivingEntity getSummoner() {
         if (this.cachedSummoner != null && !this.cachedSummoner.isRemoved()) {
             return this.cachedSummoner;

@@ -1,6 +1,5 @@
 package com.example.testmod.entity.mobs.dead_king_boss;
 
-import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.WarlockAttackGoal;
 import com.example.testmod.registries.SoundRegistry;
 import net.minecraft.world.damagesource.DamageSource;
@@ -10,8 +9,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
-    public DeadKingAnimatedWarlockAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
+    final DeadKingBoss boss;
+
+    public DeadKingAnimatedWarlockAttackGoal(DeadKingBoss abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
+        boss = abstractSpellCastingMob;
     }
 
     int meleeAnimTimer = -1;
@@ -60,9 +62,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeTimeDelay++;
         } else if (meleeAnimTimer == 0) {
             resetAttackTimer(distanceSquared);
-            if (mob instanceof DeadKingBoss boss) {
-                boss.setNextSlam(mob.getRandom().nextFloat() < .25f);
-            }
+            boss.setNextSlam(mob.getRandom().nextFloat() < .25f);
             meleeAnimTimer = -1;
         }
         super.handleAttackLogic(distanceSquared);
@@ -72,9 +72,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     protected void doMeleeAction() {
         //anim duration
         meleeAnimTimer = animationDuration;
-        if (mob instanceof DeadKingBoss boss) {
-            slam = boss.isNextSlam();
-        }
+        slam = boss.isNextSlam();
 
     }
 }

@@ -64,6 +64,11 @@ public class SummonedZombie extends Zombie implements MagicSummon {
     }
 
     @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+    }
+
+    @Override
     protected boolean isSunSensitive() {
         return false;
     }

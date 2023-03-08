@@ -225,5 +225,7 @@
   "entity.testmod.summoned_polar_bear": "Summoned Polar Bear",
   "entity.testmod.pyromancer": "Pyromancer",
   "entity.testmod.necromancer": "Necromancer",
-  "entity.testmod.spectral_steed": "Spectral Steed"
+  "entity.testmod.spectral_steed": "Spectral Steed",
+  "entity.testmod.dead_king": "The Dead King",
+  "entity.testmod.dead_king_corpse": "Skeleton"
 }

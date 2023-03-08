@@ -1,6 +1,7 @@
 package com.example.testmod.entity.mobs;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public interface MagicSummon extends AntiMagicSusceptible {
@@ -12,4 +13,5 @@ public interface MagicSummon extends AntiMagicSusceptible {
     default void onAntiMagic(PlayerMagicData playerMagicData) {
         onUnSummon();
     }
+
 }

@@ -32,6 +32,8 @@ public class GenericOwnerHurtByTargetGoal extends TargetGoal {
             return false;
         } else {
             this.ownerLastHurtBy = owner.getLastHurtByMob();
+            if (ownerLastHurtBy.isAlliedTo(mob))
+                return false;
             int i = owner.getLastHurtByMobTimestamp();
             return i != this.timestamp && this.canAttack(this.ownerLastHurtBy, TargetingConditions.DEFAULT) && !(this.ownerLastHurtBy instanceof MagicSummon summon && summon.getSummoner() == owner);
         }

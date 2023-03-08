@@ -63,6 +63,11 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon {
     }
 
     @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+    }
+
+    @Override
     public LivingEntity getSummoner() {
         if (this.cachedSummoner != null && !this.cachedSummoner.isRemoved()) {
             return this.cachedSummoner;
