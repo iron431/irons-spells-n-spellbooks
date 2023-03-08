@@ -20,16 +20,16 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
-public class RayOfSiphoning extends AbstractSpell {
-    public RayOfSiphoning() {
+public class RayOfSiphoningSpell extends AbstractSpell {
+    public RayOfSiphoningSpell() {
         this(1);
     }
 
-    public RayOfSiphoning(int level) {
+    public RayOfSiphoningSpell(int level) {
         super(SpellType.RAY_OF_SIPHONING_SPELL);
         this.level = level;
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 1;
+        this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 20;
@@ -56,10 +56,10 @@ public class RayOfSiphoning extends AbstractSpell {
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
-                DamageSources.applyDamage(target, getTickDamage(entity), getSpellType().getDamageSource(entity), SchoolType.BLOOD);
-                entity.heal(getTickDamage(entity) * .35f);
-                Messages.sendToPlayersTrackingEntity(new ClientboundBloodSiphonParticles(target.position().add(0, target.getBbHeight() / 2, 0), entity.position().add(0, entity.getBbHeight() / 2, 0)), entity, true);
-
+                if (DamageSources.applyDamage(target, getTickDamage(entity), getSpellType().getDamageSource(entity), SchoolType.BLOOD)) {
+                    entity.heal(getTickDamage(entity) * .35f);
+                    Messages.sendToPlayersTrackingEntity(new ClientboundBloodSiphonParticles(target.position().add(0, target.getBbHeight() / 2, 0), entity.position().add(0, entity.getBbHeight() / 2, 0)), entity, true);
+                }
             }
         }
     }
@@ -70,7 +70,7 @@ public class RayOfSiphoning extends AbstractSpell {
 
 
     private float getTickDamage(Entity caster) {
-        return getSpellPower(caster);
+        return getSpellPower(caster) * .25f;
     }
 
     public static void doRayParticles(LivingEntity livingEntity, int level) {

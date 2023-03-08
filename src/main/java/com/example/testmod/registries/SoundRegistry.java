@@ -31,6 +31,16 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> FROST_STEP = registerSoundEvent("frost_step");
     public static RegistryObject<SoundEvent> ABYSSAL_TELEPORT = registerSoundEvent("abyssal_teleport");
 
+    public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
+    public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
+    public static RegistryObject<SoundEvent> DEAD_KING_HIT = registerSoundEvent("entity.dead_king.attack_hit");
+    public static RegistryObject<SoundEvent> DEAD_KING_RESURRECT = registerSoundEvent("entity.dead_king.resurrect");
+    public static RegistryObject<SoundEvent> DEAD_KING_SPAWN = registerSoundEvent("entity.dead_king.spawn");
+    public static RegistryObject<SoundEvent> DEAD_KING_FAKE_DEATH = registerSoundEvent("entity.dead_king.fake_death");
+    public static RegistryObject<SoundEvent> DEAD_KING_DEATH = registerSoundEvent("entity.dead_king.death");
+    public static RegistryObject<SoundEvent> DEAD_KING_HURT = registerSoundEvent("entity.dead_king.hurt");
+    public static RegistryObject<SoundEvent> DEAD_KING_EXPLODE = registerSoundEvent("entity.dead_king.explode");
+
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {
         return SOUND_EVENTS.register(name, () -> new SoundEvent(new ResourceLocation(TestMod.MODID, name)));
     }

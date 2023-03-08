@@ -1,16 +1,25 @@
 package com.example.testmod.entity.mobs.dead_king_boss;
 
+import com.example.testmod.capabilities.magic.MagicManager;
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import com.example.testmod.registries.SoundRegistry;
+import com.example.testmod.util.Utils;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;
@@ -20,7 +29,8 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     private final static EntityDataAccessor<Boolean> TRIGGERED = SynchedEntityData.defineId(DeadKingCorpseEntity.class, EntityDataSerializers.BOOLEAN);
-    private int animTime;
+    private int currentAnimTime;
+    private final int animLength = 20 * 15;
 
     public DeadKingCorpseEntity(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -55,13 +65,15 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     public void tick() {
         super.tick();
         if (triggered()) {
-
+            ++currentAnimTime;
             if (!level.isClientSide) {
-                if (++animTime > 15 * 20) {
+                if (currentAnimTime > animLength) {
                     DeadKingBoss boss = new DeadKingBoss(level);
                     boss.moveTo(this.position().add(0, 1, 0));
+                    boss.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null, null);
                     level.addFreshEntity(boss);
-
+                    MagicManager.spawnParticles(level, ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
+                    level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.get(), SoundSource.AMBIENT, 20, 1);
                     discard();
                 }
             } else {
@@ -71,7 +83,23 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     }
 
     private void resurrectParticles() {
+        float f = (currentAnimTime / (float) animLength);
+        float rot = currentAnimTime * 12 + (1 + f * 15);
+        float height = f * 4 + (.4f * Mth.sin(currentAnimTime * 30 * Mth.DEG_TO_RAD) * f * f);
+        float distance = Mth.clamp(Utils.smoothstep(0, 1.15f, f * 3), 0, 1.15f);
+        Vec3 pos = new Vec3(0, 0, distance).yRot(rot * Mth.DEG_TO_RAD).add(0, height, 0).add(position());
 
+        level.addParticle(ParticleTypes.SCULK_SOUL, pos.x, pos.y, pos.z, 0, 0, 0);
+        float radius = 6;
+        if (random.nextFloat() < f * 1.5f) {
+            Vec3 random = position().add(new Vec3(
+                    (this.random.nextFloat() * 2 - 1) * radius,
+                    2 + (this.random.nextFloat() * 2 - 1) * radius,
+                    (this.random.nextFloat() * 2 - 1) * radius
+            ));
+            Vec3 motion = position().subtract(random).scale(.03f);
+            level.addParticle(ParticleTypes.SCULK_SOUL, random.x, random.y, random.z, motion.x, motion.y, motion.z);
+        }
     }
 
     @Override
@@ -98,7 +126,10 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     }
 
     private void trigger() {
-        this.entityData.set(TRIGGERED, true);
+        if (!triggered()) {
+            level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.get(), SoundSource.AMBIENT, 2, 1);
+            this.entityData.set(TRIGGERED, true);
+        }
     }
 
     private boolean triggered() {

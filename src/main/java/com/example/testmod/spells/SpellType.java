@@ -232,7 +232,7 @@ public enum SpellType {
                 return new CloudOfRegenerationSpell(level);
             }
             case RAY_OF_SIPHONING_SPELL -> {
-                return new RayOfSiphoning(level);
+                return new RayOfSiphoningSpell(level);
             }
             case MAGIC_ARROW_SPELL -> {
                 return new MagicArrowSpell(level);

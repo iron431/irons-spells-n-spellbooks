@@ -5,7 +5,7 @@ import com.example.testmod.effect.AbyssalShroudEffect;
 import com.example.testmod.effect.AscensionEffect;
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.spells.SpellType;
-import com.example.testmod.spells.blood.RayOfSiphoning;
+import com.example.testmod.spells.blood.RayOfSiphoningSpell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.world.entity.Entity;
@@ -53,7 +53,7 @@ public class ClientPlayerEvents {
                      */
                     SpellType currentSpell = SpellType.getTypeFromValue(spellData.getCastingSpellId());
                     if (currentSpell == SpellType.RAY_OF_SIPHONING_SPELL) {
-                        RayOfSiphoning.doRayParticles(livingEntity, spellData.getCastingSpellLevel());
+                        RayOfSiphoningSpell.doRayParticles(livingEntity, spellData.getCastingSpellLevel());
                     }
                 });
             }

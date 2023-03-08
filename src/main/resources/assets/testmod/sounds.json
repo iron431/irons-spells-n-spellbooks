@@ -63,5 +63,54 @@
     "sounds": [
       "testmod:abyssal_teleport"
     ]
+  },
+  "entity.dead_king.attack_swing": {
+    "sounds": [
+      "testmod:dead_king/attack_double_swipe1",
+      "testmod:dead_king/attack_double_swipe2"
+    ]
+  },
+  "entity.dead_king.attack_slam": {
+    "sounds": [
+      "testmod:dead_king/attack_slam"
+    ]
+  },
+  "entity.dead_king.attack_hit": {
+    "sounds": [
+      "testmod:dead_king/attack_hit"
+    ]
+  },
+  "entity.dead_king.resurrect": {
+    "sounds": [
+      "testmod:dead_king/resurrection"
+    ]
+  },
+  "entity.dead_king.spawn": {
+    "sounds": [
+      "testmod:dead_king/spawn"
+    ]
+  },
+  "entity.dead_king.fake_death": {
+    "sounds": [
+      "testmod:dead_king/fake_death"
+    ]
+  },
+  "entity.dead_king.death": {
+    "sounds": [
+      "testmod:dead_king/death"
+    ]
+  },
+  "entity.dead_king.hurt": {
+    "sounds": [
+      "testmod:dead_king/hurt1",
+      "testmod:dead_king/hurt2",
+      "testmod:dead_king/hurt3",
+      "testmod:dead_king/hurt4"
+    ]
+  },
+  "entity.dead_king.explode": {
+    "sounds": [
+      "testmod:dead_king/explode"
+    ]
   }
 }

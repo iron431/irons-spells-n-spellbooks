@@ -8,9 +8,14 @@ import com.example.testmod.item.UniqueSpellBook;
 import com.example.testmod.item.armor.*;
 import com.example.testmod.spells.AbstractSpell;
 import com.example.testmod.spells.SpellRarity;
+import com.example.testmod.spells.blood.BloodSlashSpell;
+import com.example.testmod.spells.blood.BloodStepSpell;
+import com.example.testmod.spells.blood.RayOfSiphoningSpell;
+import com.example.testmod.spells.blood.WitherSkullSpell;
 import com.example.testmod.spells.evocation.FangStrikeSpell;
 import com.example.testmod.spells.evocation.FangWardSpell;
 import com.example.testmod.spells.evocation.SummonVexSpell;
+import com.example.testmod.spells.fire.BlazeStormSpell;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -39,8 +44,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> GOLD_SPELL_BOOK = ITEMS.register("gold_spell_book", () -> new SpellBook(5, SpellRarity.RARE));
     public static final RegistryObject<Item> IRON_SPELL_BOOK = ITEMS.register("iron_spell_book", () -> new SpellBook(4, SpellRarity.UNCOMMON));
     public static final RegistryObject<Item> COPPER_SPELL_BOOK = ITEMS.register("copper_spell_book", () -> new SpellBook(3, SpellRarity.COMMON));
-    public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(SpellRarity.COMMON, new AbstractSpell[]{new FangStrikeSpell(4), new FangWardSpell(3), new SummonVexSpell(3)}));
-    public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new UniqueSpellBook(SpellRarity.COMMON, new AbstractSpell[]{new FangStrikeSpell(4), new FangWardSpell(3), new SummonVexSpell(3)}));
+    public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(SpellRarity.COMMON, new AbstractSpell[]{new FangStrikeSpell(6), new FangWardSpell(4), new SummonVexSpell(4)}));
+    public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new UniqueSpellBook(SpellRarity.COMMON, new AbstractSpell[]{new WitherSkullSpell(6), new RayOfSiphoningSpell(6), new BloodStepSpell(6), new BloodSlashSpell(6), new BlazeStormSpell(6)}));
     public static final RegistryObject<Item> SCROLL = ITEMS.register("scroll", Scroll::new);
 
     /**

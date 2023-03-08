@@ -2,9 +2,10 @@ package com.example.testmod.entity.mobs.dead_king_boss;
 
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.entity.mobs.goals.WarlockAttackGoal;
-import com.example.testmod.util.Utils;
+import com.example.testmod.registries.SoundRegistry;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -18,7 +19,9 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     int animationDuration = 40;
     int firstSwingTimestamp = animationDuration - 14;
     int secondSwingTimestamp = animationDuration - 20;
+    int swingSoundTimestamp = animationDuration - 13;
     int slamTimestamp = animationDuration - 25;
+    int slamSoundTimestamp = animationDuration - 22;
     boolean slam;
 
     @Override
@@ -27,16 +30,24 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             mob.lookAt(target, 50, 50);
             meleeAnimTimer--;
             if (slam) {
+                if (meleeAnimTimer == slamSoundTimestamp)
+                    mob.playSound(SoundRegistry.DEAD_KING_SLAM.get());
                 if (meleeAnimTimer == slamTimestamp) {
                     Vec3 slamPos = mob.position().add(mob.getForward().multiply(1, 0, 1).normalize());
                     Vec3 bbHalf = new Vec3(meleeRange, meleeRange, meleeRange).scale(.4);
                     mob.level.getEntitiesOfClass(target.getClass(), new AABB(slamPos.subtract(bbHalf), slamPos.add(bbHalf))).forEach((entity) -> {
                         float damage = (float) mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5f;
                         entity.hurt(DamageSource.mobAttack(mob), damage);
-                        Utils.throwTarget(mob, entity, 3f);
+                        //Utils.throwTarget(mob, entity, 7f, true);
+                        //mob.doHurtTarget(entity);
+                        entity.push(0, 1, 0);
+                        if (entity instanceof Player player && player.isBlocking())
+                            player.disableShield(true);
                     });
                 }
             } else {
+                if (meleeAnimTimer == swingSoundTimestamp)
+                    mob.playSound(SoundRegistry.DEAD_KING_SWING.get());
                 if (meleeAnimTimer == firstSwingTimestamp || meleeAnimTimer == secondSwingTimestamp) {
                     if (distanceSquared <= meleeRange * meleeRange) {
                         this.mob.doHurtTarget(target);

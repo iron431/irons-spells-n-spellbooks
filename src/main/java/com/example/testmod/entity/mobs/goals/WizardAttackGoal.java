@@ -34,6 +34,8 @@ public class WizardAttackGoal extends Goal {
     protected int singleUseLevel;
     protected int singleUseCooldown;
 
+    protected boolean isFlying;
+
     protected final ArrayList<SpellType> attackSpells = new ArrayList<>();
     protected final ArrayList<SpellType> defenseSpells = new ArrayList<>();
     protected final ArrayList<SpellType> movementSpells = new ArrayList<>();
@@ -96,10 +98,15 @@ public class WizardAttackGoal extends Goal {
 
     public WizardAttackGoal setSingleUseSpell(SpellType spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         this.singleUseSpell = spellType;
-        this.singleUseDelay = mob.level.random.nextInt(minDelay, maxDelay);
+        this.singleUseDelay = mob.level.random.nextIntBetweenInclusive(minDelay, maxDelay);
         this.singleUseCooldown = singleUseDelay;
-        this.singleUseLevel = mob.level.random.nextInt(minLevel, maxLevel);
+        this.singleUseLevel = mob.level.random.nextIntBetweenInclusive(minLevel, maxLevel);
 
+        return this;
+    }
+
+    public WizardAttackGoal setIsFlying() {
+        isFlying = true;
         return this;
     }
 
@@ -145,6 +152,7 @@ public class WizardAttackGoal extends Goal {
         if (target == null) {
             return;
         }
+
 
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         hasLineOfSight = this.mob.getSensing().hasLineOfSight(this.target);
@@ -201,6 +209,9 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doMovement(double distanceSquared) {
+        float movementDebuff = mob.isCasting() ? .2f : 1f;
+        double effectiveSpeed = movementDebuff * speedModifier;
+
         //move closer to target or strafe around
         if (distanceSquared < attackRadiusSqr && seeTime >= 5) {
             //TestMod.LOGGER.debug("WizardAttackGoal.tick.1: distanceSquared: {},attackRadiusSqr: {}, seeTime: {}, attackTime: {}", distanceSquared, attackRadiusSqr, seeTime, attackTime);
@@ -214,12 +225,15 @@ public class WizardAttackGoal extends Goal {
 
             int strafeDir = strafingClockwise ? 1 : -1;
             if (distanceSquared < attackRadiusSqr * .25f)
-                mob.getMoveControl().strafe(-(float) speedModifier, (float) speedModifier * strafeDir);
+                mob.getMoveControl().strafe(-(float) effectiveSpeed, (float) effectiveSpeed * strafeDir);
             else
-                mob.getMoveControl().strafe(0, (float) speedModifier * strafeDir);
+                mob.getMoveControl().strafe(0, (float) effectiveSpeed * strafeDir);
             mob.lookAt(target, 30, 30);
         } else {
-            this.mob.getNavigation().moveTo(this.target, this.speedModifier);
+            if (isFlying)
+                this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
+            else
+                this.mob.getNavigation().moveTo(this.target, effectiveSpeed);
         }
     }
 

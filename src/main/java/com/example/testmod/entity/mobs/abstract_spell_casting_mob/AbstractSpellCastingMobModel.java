@@ -41,7 +41,7 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
         IBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
         //Make the head look forward, whatever forward is (influenced externally, such as a lootAt target)
-        if(!entity.isAnimating()  || entity.shouldAlwaysAnimateHead()){
+        if(!entity.isAnimating() || entity.shouldAlwaysAnimateHead()){
             head.setRotationY(Mth.lerp(partialTick,
                     Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
                     Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD));

@@ -1,7 +1,10 @@
 package com.example.testmod.entity.mobs.goals;
 
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import com.example.testmod.spells.SpellType;
 import net.minecraft.world.InteractionHand;
+
+import java.util.List;
 
 public class WarlockAttackGoal extends WizardAttackGoal {
 
@@ -9,22 +12,22 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected boolean wantsToMelee;
     protected int meleeTime;
     protected int meleeTimeDelay;
+    protected float meleeBias;
 
     public WarlockAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.meleeRange = meleeRange;
         meleeTimeDelay = abstractSpellCastingMob.getRandom().nextIntBetweenInclusive(80, 200);
+        meleeBias = .5f;
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (++meleeTime > meleeTimeDelay) {
+        if (++meleeTime > meleeTimeDelay && !mob.isCasting()) {
             meleeTime = 0;
-            wantsToMelee = !wantsToMelee;
+            wantsToMelee = mob.getRandom().nextFloat() <= meleeBias;
             meleeTimeDelay = mob.getRandom().nextIntBetweenInclusive(60, 120);
-            if(wantsToMelee)
-                meleeTimeDelay += 120;
         }
     }
 
@@ -38,7 +41,10 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         float strafeBackwards = 0;
 
         if (distanceSquared > meleeRange * meleeRange) {
-            this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
+            if (isFlying)
+                this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), this.speedModifier * 1.3f);
+            else
+                this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
         } else {
             strafeBackwards = (float) (-speedModifier * .25f);
         }
@@ -71,5 +77,30 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         this.mob.doHurtTarget(target);
         resetAttackTimer(distanceSquared);
+    }
+
+    public WarlockAttackGoal setMeleeBias(float meleeBias) {
+        this.meleeBias = meleeBias;
+        return this;
+    }
+
+    @Override
+    public WarlockAttackGoal setSpells(List<SpellType> attackSpells, List<SpellType> defenseSpells, List<SpellType> movementSpells, List<SpellType> supportSpells) {
+        return (WarlockAttackGoal)super.setSpells(attackSpells, defenseSpells, movementSpells, supportSpells);
+    }
+
+    @Override
+    public WarlockAttackGoal setSpellLevels(int minLevel, int maxLevel) {
+        return (WarlockAttackGoal)super.setSpellLevels(minLevel, maxLevel);
+    }
+
+    @Override
+    public WarlockAttackGoal setSingleUseSpell(SpellType spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+        return (WarlockAttackGoal)super.setSingleUseSpell(spellType, minDelay, maxDelay, minLevel, maxLevel);
+    }
+
+    @Override
+    public WarlockAttackGoal setIsFlying() {
+        return (WarlockAttackGoal)super.setIsFlying();
     }
 }

@@ -13,8 +13,8 @@ import software.bernie.geckolib3.geo.render.built.GeoModel;
 
 public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
 
-    public DeadKingRenderer(EntityRendererProvider.Context renderManager, boolean dormant) {
-        super(renderManager, new DeadKingModel(dormant));
+    public DeadKingRenderer(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new DeadKingModel());
     }
 
     @Override
