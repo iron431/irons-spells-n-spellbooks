@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CRC",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    },
+    "R": {
+      "item": "irons_spellbooks:ice_rune"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:cryomancer_chestplate",
+    "count": 1
+  }
+}

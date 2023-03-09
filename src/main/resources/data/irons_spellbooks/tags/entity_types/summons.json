@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "irons_spellbooks:summoned_vex",
+    "irons_spellbooks:summoned_zombie",
+    "irons_spellbooks:summoned_skeleton",
+    "irons_spellbooks:spectral_steed"
+  ]
+}

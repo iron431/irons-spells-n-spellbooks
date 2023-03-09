@@ -4,7 +4,7 @@
 - 
 
 ##### Jigsaw Blocks
-- target pool: testmod:basic_dungeon
+- target pool: irons_spellbooks:basic_dungeon
     - basically the name of the data pack?
 - name: name of this connector jigsaw. this is used by other jigsaw pieces looking for a match
 - target name: this block will look for other blocks that match this in the target pool
@@ -33,35 +33,35 @@
 
 ##### Structures
 - Core
-    - testmod:dungeon_origin
+    - irons_spellbooks:dungeon_origin
 - Rooms
-    - testmod:room_origin_1 (4 connection points)
-    - testmod:room_origin_2 (3 connection points)
-    - testmod:room_1 (necromancer with wooden platform, 0 connection points)
-    - testmod:room_2 (zig zag with dead end, 0 connection points)
-    - testmod:room_3 (zig zag, 1 hallway connection point)
-    - testmod:room_4 (giant jail, 0 hallway connection points)
+    - irons_spellbooks:room_origin_1 (4 connection points)
+    - irons_spellbooks:room_origin_2 (3 connection points)
+    - irons_spellbooks:room_1 (necromancer with wooden platform, 0 connection points)
+    - irons_spellbooks:room_2 (zig zag with dead end, 0 connection points)
+    - irons_spellbooks:room_3 (zig zag, 1 hallway connection point)
+    - irons_spellbooks:room_4 (giant jail, 0 hallway connection points)
 - Secret Rooms
-    - testmod:secret_room_1 (dead end, two utility spawnpoints)
+    - irons_spellbooks:secret_room_1 (dead end, two utility spawnpoints)
 - Halls
-    - testmod:hallway_straight
-    - testmod:hallway_tee (two connection points, one secret room point)
-    - testmod:hallway_turn_1
-    - testmod:hallway_turn_2
+    - irons_spellbooks:hallway_straight
+    - irons_spellbooks:hallway_tee (two connection points, one secret room point)
+    - irons_spellbooks:hallway_turn_1
+    - irons_spellbooks:hallway_turn_2
 - Utility (Treasure/Mobs)
-  - testmod:chest_1 (single chest)
-    - testmod:chest_horiz (single chest)
+  - irons_spellbooks:chest_1 (single chest)
+    - irons_spellbooks:chest_horiz (single chest)
 - Other
-    - testmod:end_room_wall (can be used to end a chain where nothing else will fit)
-    - testmod:end_hall_wall (can be used to end a chain where nothing else will fit)
+    - irons_spellbooks:end_room_wall (can be used to end a chain where nothing else will fit)
+    - irons_spellbooks:end_hall_wall (can be used to end a chain where nothing else will fit)
 
 #####
-testmod:dungeon1_start_pool
-testmod:dungeon1_room_or_hallway_pool
-testmod:dungeon1_hallway_pool
-testmod:dungeon1_room_pool
-testmod:dungeon1_treasure_pool
-testmod:dungeon1_secret_room_pool
+irons_spellbooks:dungeon1_start_pool
+irons_spellbooks:dungeon1_room_or_hallway_pool
+irons_spellbooks:dungeon1_hallway_pool
+irons_spellbooks:dungeon1_room_pool
+irons_spellbooks:dungeon1_treasure_pool
+irons_spellbooks:dungeon1_secret_room_pool
 
 room_or_hallway
 treasure_or_mob

@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "#irons_spellbooks:fire_focus",
+    "#irons_spellbooks:ice_focus",
+    "#irons_spellbooks:lightning_focus",
+    "#irons_spellbooks:holy_focus",
+    "#irons_spellbooks:ender_focus",
+    "#irons_spellbooks:blood_focus",
+    "#irons_spellbooks:evocation_focus",
+    "#irons_spellbooks:void_focus"
+  ]
+}

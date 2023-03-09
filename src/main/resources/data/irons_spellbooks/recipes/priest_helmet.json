@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CRC"
+  ],
+  "key": {
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    },
+    "R": {
+      "item": "irons_spellbooks:holy_rune"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:priest_helmet",
+    "count": 1
+  }
+}

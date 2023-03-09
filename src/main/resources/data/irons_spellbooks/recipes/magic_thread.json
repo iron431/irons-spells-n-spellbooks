@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "LL",
+    "SS",
+    "LL"
+  ],
+  "key":
+  {
+    "S":
+    {
+      "item": "minecraft:string"
+    },
+    "L":
+    {
+      "tag": "forge:gems/lapis"
+    }
+
+  },
+  "result":
+  {
+    "item": "irons_spellbooks:magic_thread",
+    "count": 4
+  }
+}

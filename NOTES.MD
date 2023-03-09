@@ -2,7 +2,7 @@
 - Miro Board: https://miro.com/app/board/uXjVPvycxJQ=/
 - Spell Sheet: https://docs.google.com/spreadsheets/d/1o0MyG9ok5Csf8_-77f-qH3VqOu6NtiuYcBb_SzDmA3M/edit#gid=1973083805
 - Trello: https://trello.com/b/yzpLtJpQ/spell-book-mod
-- Github: https://github.com/iron431/testmod
+- Github: https://github.com/iron431/irons_spellbooks
 
 ### Good 1.18 tutorials
 - https://www.mcjty.eu/docs/1.18/
@@ -78,7 +78,7 @@
     - https://github.com/ZsoltMolnarrr/BetterCombat/blob/74ccd5f7092b932b26462f27e0ea383acc1a92ae/common/src/main/java/net/bettercombat/client/collision/TargetFinder.java
 
 ### Helpful commands
-- ```setblock ~ ~ ~ testmod:inscription_table```
+- ```setblock ~ ~ ~ irons_spellbooks:inscription_table```
 - ```data get entity @s SelectedItem```
 - ```data get entity @s ForgeCaps```
 - ```data get entity @s Pos```
@@ -89,9 +89,9 @@
 
 ### Give Generator
 - https://mapmaking.fr/give1.16/
-- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:blood_slash_resist",Slot:"chest",Amount:.5,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
-- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:cooldown_reduction",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
-- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"testmod:max_mana",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
+- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"irons_spellbooks:blood_slash_resist",Slot:"chest",Amount:.5,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
+- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"irons_spellbooks:cooldown_reduction",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
+- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"irons_spellbooks:max_mana",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
 
 ### Offline Server/Client
 - Running the dedicated server in intellj

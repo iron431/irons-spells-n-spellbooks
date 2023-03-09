@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "M",
+    "A",
+    "M"
+  ],
+  "key":
+  {
+
+    "M":
+    {
+      "item": "irons_spellbooks:magic_thread"
+    },
+    "A":
+    {
+      "tag": "forge:gems/amethyst"
+    }
+  },
+  "result":
+  {
+    "item": "irons_spellbooks:enchanted_thread",
+    "count": 1
+  }
+}

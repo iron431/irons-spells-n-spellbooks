@@ -1,0 +1,116 @@
+{
+  "force_impact": {
+    "sounds": [
+      "irons_spellbooks:force_impact"
+    ]
+  },
+  "arial_summoning_5_custom_1": {
+    "sounds": [
+      "irons_spellbooks:arial_summoning_5_custom_1"
+    ]
+  },
+  "magic_spell_reverse_3": {
+    "sounds": [
+      "irons_spellbooks:magic_spell_reverse_3"
+    ]
+  },
+  "dark_magic_buff_03_custom_1": {
+    "sounds": [
+      "irons_spellbooks:dark_magic_buff_03_custom_1"
+    ]
+  },
+  "dark_spell_02": {
+    "sounds": [
+      "irons_spellbooks:dark_spell_02"
+    ]
+  },
+  "heartstop_cast": {
+    "sounds": [
+      "irons_spellbooks:heartstop_cast"
+    ]
+  },
+  "lightning_lance_cast": {
+    "sounds": [
+      "irons_spellbooks:lightning_lance_cast"
+    ]
+  },
+  "lightning_woosh_01": {
+    "sounds": [
+      "irons_spellbooks:lightning_woosh_01"
+    ]
+  },
+  "magic_arrow_release": {
+    "sounds": [
+      "irons_spellbooks:magic_arrow_release"
+    ]
+  },
+  "magic_arrow_charge": {
+    "sounds": [
+      "irons_spellbooks:magic_arrow_charge"
+    ]
+  },
+  "frost_step": {
+    "sounds": [
+      "irons_spellbooks:frost_step"
+    ]
+  },
+  "ice_impact": {
+    "sounds": [
+      "irons_spellbooks:ice_impact"
+    ]
+  },
+  "abyssal_teleport": {
+    "sounds": [
+      "irons_spellbooks:abyssal_teleport"
+    ]
+  },
+  "entity.dead_king.attack_swing": {
+    "sounds": [
+      "irons_spellbooks:dead_king/attack_double_swipe1",
+      "irons_spellbooks:dead_king/attack_double_swipe2"
+    ]
+  },
+  "entity.dead_king.attack_slam": {
+    "sounds": [
+      "irons_spellbooks:dead_king/attack_slam"
+    ]
+  },
+  "entity.dead_king.attack_hit": {
+    "sounds": [
+      "irons_spellbooks:dead_king/attack_hit"
+    ]
+  },
+  "entity.dead_king.resurrect": {
+    "sounds": [
+      "irons_spellbooks:dead_king/resurrection"
+    ]
+  },
+  "entity.dead_king.spawn": {
+    "sounds": [
+      "irons_spellbooks:dead_king/spawn"
+    ]
+  },
+  "entity.dead_king.fake_death": {
+    "sounds": [
+      "irons_spellbooks:dead_king/fake_death"
+    ]
+  },
+  "entity.dead_king.death": {
+    "sounds": [
+      "irons_spellbooks:dead_king/death"
+    ]
+  },
+  "entity.dead_king.hurt": {
+    "sounds": [
+      "irons_spellbooks:dead_king/hurt1",
+      "irons_spellbooks:dead_king/hurt2",
+      "irons_spellbooks:dead_king/hurt3",
+      "irons_spellbooks:dead_king/hurt4"
+    ]
+  },
+  "entity.dead_king.explode": {
+    "sounds": [
+      "irons_spellbooks:dead_king/explode"
+    ]
+  }
+}

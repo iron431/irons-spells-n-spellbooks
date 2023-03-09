@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C C",
+    "CRC"
+  ],
+  "key": {
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    },
+    "R": {
+      "item": "irons_spellbooks:evocation_rune"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:archevoker_boots",
+    "count": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CRC",
+    "C C"
+  ],
+  "key": {
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    },
+    "R": {
+      "item": "irons_spellbooks:fire_rune"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:pyromancer_leggings",
+    "count": 1
+  }
+}

@@ -1,8 +1,8 @@
 {
   "replace": false,
   "entries": [
-    "testmod:stray_modifier",
-    "testmod:hoglin_modifier",
-    "testmod:evoker_modifier"
+    "irons_spellbooks:stray_modifier",
+    "irons_spellbooks:hoglin_modifier",
+    "irons_spellbooks:evoker_modifier"
   ]
 }

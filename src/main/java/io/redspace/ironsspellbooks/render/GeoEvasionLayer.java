@@ -1,0 +1,39 @@
+package io.redspace.ironsspellbooks.render;
+
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
+import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+
+@OnlyIn(Dist.CLIENT)
+public class GeoEvasionLayer extends GeoLayerRenderer<AbstractSpellCastingMob> {
+    private static final ResourceLocation EVASION_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/evasion.png");
+
+    public GeoEvasionLayer(IGeoRenderer entityRendererIn) {
+        super(entityRendererIn);
+    }
+
+    @Override
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (ClientMagicData.getSyncedSpellData(entityLivingBaseIn).hasEffect(SyncedSpellData.EVASION)) {
+            float f = (float) entityLivingBaseIn.tickCount + partialTicks;
+            var renderType = RenderType.energySwirl(EVASION_TEXTURE, f * 0.02F % 1.0F, f * 0.01F % 1.0F);
+            VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
+            matrixStackIn.pushPose();
+//            this.getRenderer().setCurrentRTB(bufferIn);
+            this.getRenderer().render(this.getEntityModel().getModel(AbstractSpellCastingMob.modelResource), entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
+                    vertexconsumer, packedLightIn, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
+            matrixStackIn.popPose();
+        }
+    }
+}

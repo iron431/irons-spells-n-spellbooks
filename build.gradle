@@ -18,8 +18,8 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'maven-publish'
 
 version = '1.0'
-group = 'com.example.testmod'
-archivesBaseName = 'testmod'
+group = 'com.example.irons_spellbooks'
+archivesBaseName = 'irons_spellbooks'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -68,10 +68,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'testmod'
+            property 'forge.enabledGameTestNamespaces', 'irons_spellbooks'
 
             mods {
-                testmod {
+                irons_spellbooks {
                     source sourceSets.main
                 }
             }
@@ -85,10 +85,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'testmod'
+            property 'forge.enabledGameTestNamespaces', 'irons_spellbooks'
 
             mods {
-                testmod {
+                irons_spellbooks {
                     source sourceSets.main
                 }
             }
@@ -113,10 +113,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'testmod'
+            property 'forge.enabledGameTestNamespaces', 'irons_spellbooks'
 
             mods {
-                testmod {
+                irons_spellbooks {
                     source sourceSets.main
                 }
             }
@@ -130,10 +130,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'testmod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'irons_spellbooks', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                testmod {
+                irons_spellbooks {
                     source sourceSets.main
                 }
             }
@@ -212,14 +212,14 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "testmod",
-                "Specification-Vendor"    : "examplemodsareus",
+                "Specification-Title"     : "Iron's Spells N Spellbooks",
+                "Specification-Vendor"    : "Iron431",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "examplemodsareus",
+                "Implementation-Vendor"   : "Iron431",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs"            : "mixins.testmod.json"
+                "MixinConfigs"            : "mixins.irons_spellbooks.json"
         ])
     }
 }
@@ -248,15 +248,15 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.register('copyAnimations', Copy) {
-    from 'src/main/resources/assets/testmod/player_animation'
+    from 'src/main/resources/assets/irons_spellbooks/player_animation'
     include 'casting_animations.json'
-    into 'src/main/resources/assets/testmod/animations'
+    into 'src/main/resources/assets/irons_spellbooks/animations'
 }
 
 tasks.classes.dependsOn(tasks.copyAnimations)
 
 
 mixin {
-    add sourceSets.main, 'testmod.refmap.json'
-    config 'mixins.testmod.json'
+    add sourceSets.main, 'irons_spellbooks.refmap.json'
+    config 'mixins.irons_spellbooks.json'
 }
