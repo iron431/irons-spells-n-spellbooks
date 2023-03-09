@@ -410,7 +410,10 @@ public enum SpellType {
             return BLOOD_SPELLS;
         else if (school.equals(SchoolType.EVOCATION))
             return EVOCATION_SPELLS;
-        else return VOID_SPELLS;
+        else if (school.equals(SchoolType.VOID))
+            return VOID_SPELLS;
+        else
+            return new SpellType[]{SpellType.NONE_SPELL};
     }
 
     public MutableComponent getDisplayName() {

@@ -6,16 +6,16 @@
       "weight": 6,
       "element": {
         "location": "testmod:dungeon1/hallway_straight",
-        "processors": "minecraft:empty",
+        "processors": "testmod:weather_stone_blocks",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     },
     {
-      "weight": 3,
+      "weight": 4,
       "element": {
         "location": "testmod:dungeon1/hallway_tee",
-        "processors": "minecraft:empty",
+        "processors": "testmod:weather_stone_blocks",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -24,16 +24,16 @@
       "weight": 3,
       "element": {
         "location": "testmod:dungeon1/hallway_turn_1",
-        "processors": "minecraft:empty",
+        "processors": "testmod:weather_stone_blocks",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     },
     {
-      "weight": 3,
+      "weight": 4,
       "element": {
         "location": "testmod:dungeon1/hallway_spiral_stairs",
-        "processors": "minecraft:empty",
+        "processors": "testmod:weather_stone_blocks",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -42,16 +42,16 @@
       "weight": 3,
       "element": {
         "location": "testmod:dungeon1/hallway_turn_2",
-        "processors": "minecraft:empty",
+        "processors": "testmod:weather_stone_blocks",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     },
     {
-      "weight": 2,
+      "weight": 1,
       "element": {
         "location": "testmod:dungeon1/hallway_rope_bridge",
-        "processors": "minecraft:empty",
+        "processors": "testmod:weather_stone_blocks",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -60,7 +60,7 @@
       "weight": 2,
       "element": {
         "location": "testmod:dungeon1/hallway_stairway",
-        "processors": "minecraft:empty",
+        "processors": "testmod:weather_stone_blocks",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }

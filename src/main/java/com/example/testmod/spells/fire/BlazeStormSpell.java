@@ -29,7 +29,7 @@ public class BlazeStormSpell extends AbstractSpell {
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
-        this.castTime = 80 + 10 * level;
+        this.castTime = 80 + 5 * level;
         this.baseManaCost = 5;
         this.cooldown = 100;
         uniqueInfo.add(Component.translatable("ui.testmod.damage", Utils.stringTruncation(getDamage(null), 1)));
@@ -58,13 +58,13 @@ public class BlazeStormSpell extends AbstractSpell {
     }
 
     private float getDamage(LivingEntity caster) {
-        return getSpellPower(caster) * .5f;
+        return getSpellPower(caster) * .4f;
     }
 
     public void shootBlazeFireball(Level world, LivingEntity entity) {
         float speed = 0.45f;
-        Vec3 origin = entity.getEyePosition();
-        SmallFireball fireball = new ExtendedSmallFireball(entity, world, speed, getDamage(entity),.05f);
+        Vec3 origin = entity.getEyePosition().add(entity.getForward().normalize().scale(.2f));
+        SmallFireball fireball = new ExtendedSmallFireball(entity, world, speed, getDamage(entity), .05f);
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
         world.playSound(null, origin.x, origin.y, origin.z, SoundEvents.BLAZE_SHOOT, SoundSource.AMBIENT, 1.0f, 1.0f);
         world.addFreshEntity(fireball);

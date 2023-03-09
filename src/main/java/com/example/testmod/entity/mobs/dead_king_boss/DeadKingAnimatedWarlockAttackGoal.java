@@ -2,6 +2,7 @@ package com.example.testmod.entity.mobs.dead_king_boss;
 
 import com.example.testmod.entity.mobs.goals.WarlockAttackGoal;
 import com.example.testmod.registries.SoundRegistry;
+import com.example.testmod.util.Utils;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -40,9 +41,9 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     mob.level.getEntitiesOfClass(target.getClass(), new AABB(slamPos.subtract(bbHalf), slamPos.add(bbHalf))).forEach((entity) -> {
                         float damage = (float) mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5f;
                         entity.hurt(DamageSource.mobAttack(mob), damage);
-                        //Utils.throwTarget(mob, entity, 7f, true);
+                        Utils.throwTarget(mob, entity, 7f, true);
                         //mob.doHurtTarget(entity);
-                        entity.push(0, 1, 0);
+                        //entity.push(0, 1, 0);
                         if (entity instanceof Player player && player.isBlocking())
                             player.disableShield(true);
                     });
@@ -62,7 +63,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeTimeDelay++;
         } else if (meleeAnimTimer == 0) {
             resetAttackTimer(distanceSquared);
-            boss.setNextSlam(mob.getRandom().nextFloat() < .25f);
+            boss.setNextSlam(mob.getRandom().nextFloat() < .33f);
             meleeAnimTimer = -1;
         }
         super.handleAttackLogic(distanceSquared);

@@ -99,12 +99,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 10, 40, 3.5f).setSpellLevels(3, 5).setSpells(
+        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 25, 50, 3.5f).setSpellLevels(3, 5).setSpells(
                 List.of(
                         SpellType.RAY_OF_SIPHONING_SPELL, SpellType.RAY_OF_SIPHONING_SPELL,
                         SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL,
                         //SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL,
-                        SpellType.RAISE_DEAD_SPELL,
+                        //SpellType.RAISE_DEAD_SPELL,
                         SpellType.FANG_STRIKE_SPELL, SpellType.FANG_STRIKE_SPELL,
                         SpellType.MAGIC_ARROW_SPELL, SpellType.MAGIC_ARROW_SPELL
                 ),
@@ -118,14 +118,16 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         this.goalSelector.removeAllGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellType.WITHER_SKULL_SPELL, 3, 4, 80, 160, 3));
-        this.goalSelector.addGoal(2, getCombatGoal().setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 10, 50, 10, 10));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.RAISE_DEAD_SPELL, 3, 5, 400, 600, 1));
+        this.goalSelector.addGoal(3, getCombatGoal().setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 10, 50, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
     }
 
     protected void setFinalPhaseGoals() {
         this.goalSelector.removeAllGoals();
         this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellType.WITHER_SKULL_SPELL, 5, 5, 60, 140, 4));
-        this.goalSelector.addGoal(2, getCombatGoal().setIsFlying().setSingleUseSpell(SpellType.BLAZE_STORM_SPELL, 10, 30, 10, 10));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.SUMMON_VEX_SPELL, 4, 6, 400, 600, 1));
+        this.goalSelector.addGoal(3, getCombatGoal().setIsFlying().setSingleUseSpell(SpellType.BLAZE_STORM_SPELL, 10, 30, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
 
         //this.goalSelector.addGoal(2, new VexRandomMoveGoal());
@@ -141,6 +143,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     protected SoundEvent getDeathSound() {
         return SoundRegistry.DEAD_KING_DEATH.get();
+    }
+
+    @Override
+    public boolean isPushable() {
+        return !isPhaseTransitioning();
     }
 
     protected SoundEvent getStepSound() {
@@ -170,11 +177,16 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 //        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
     }
 
+    //Instead of being undead (smite is ridiculous)
     @Override
-    public MobType getMobType() {
-        return MobType.UNDEAD;
+    public boolean isInvertedHealAndHarm() {
+        return true;
     }
 
+    @Override
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
 
     @Override
     public void tick() {

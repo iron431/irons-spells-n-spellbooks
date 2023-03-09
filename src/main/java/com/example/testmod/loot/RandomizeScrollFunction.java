@@ -17,10 +17,7 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public class RandomizeScrollFunction extends LootItemConditionalFunction {
     final NumberProvider qualityRange;
@@ -44,6 +41,8 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
             var spellId = spellType.getValue();
             int maxLevel = spellType.getMaxLevel();
             float quality = qualityRange.getFloat(lootContext);
+            //https://www.desmos.com/calculator/ablc1wg06w
+            quality = quality * (float) Math.sin(1.57 * quality * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
             var scrollData = scroll.getScrollData(itemStack);
             scrollData.setData(spellId, spellLevel);
@@ -67,11 +66,11 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
 
     private int getWeightFromRarity(SpellRarity rarity) {
         return switch (rarity) {
-            case COMMON -> 20;
-            case UNCOMMON -> 18;
+            case COMMON -> 40;
+            case UNCOMMON -> 30;
             case RARE -> 15;
-            case EPIC -> 11;
-            case LEGENDARY -> 6;
+            case EPIC -> 8;
+            case LEGENDARY -> 4;
         };
     }
 
@@ -114,6 +113,7 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
                     case "evocation" -> SpellType.getSpellsFromSchool(SchoolType.EVOCATION);
                     case "holy" -> SpellType.getSpellsFromSchool(SchoolType.HOLY);
                     case "blood" -> SpellType.getSpellsFromSchool(SchoolType.BLOOD);
+                    case "void" -> SpellType.getSpellsFromSchool(SchoolType.VOID);
                     default -> new SpellType[]{SpellType.NONE_SPELL};
                 };
             } else if (GsonHelper.isArrayNode(json, "spells")) {
@@ -128,7 +128,15 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
                 }
                 return applicableSpellList.toArray(new SpellType[]{});
             } else {
-                return SpellType.values();
+                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID).toList().toArray(new SpellType[0]);
+//                var nonVoidSpells = new SpellType[SpellType.values().length - SpellType.getSpellsFromSchool(SchoolType.VOID).length];
+//                int j = 0;
+//                for (int i = 0; i < nonVoidSpells.length; i++) {
+//                    if (SpellType.values()[i].getSchoolType() != SchoolType.VOID) {
+//                        nonVoidSpells[j++] = SpellType.values()[i];
+//                    }
+//                }
+//                return nonVoidSpells;
             }
         }
     }

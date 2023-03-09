@@ -1,5 +1,6 @@
 package com.example.testmod.entity.mobs.goals;
 
+import com.example.testmod.TestMod;
 import com.example.testmod.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import com.example.testmod.spells.SpellType;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,6 +31,7 @@ public class SpellBarrageGoal extends Goal {
         this.maxSpellLevel = maxLevel;
         this.projectileCount = projectileCount;
         this.spell = spell;
+        resetAttackTimer();
     }
 
     /**
@@ -41,12 +43,11 @@ public class SpellBarrageGoal extends Goal {
         if (target == null || mob.isCasting())
             return false;
 
-        if (attackTime < -interval * projectileCount) {
+        if (attackTime <= -interval * (projectileCount - 1)) {
             resetAttackTimer();
         }
-        boolean canUse = --attackTime <= 0 && attackTime % interval == 0;
-        //TestMod.LOGGER.debug("SpellBarrageGoal.canUse attackTime: {}, canUse: {}", attackTime, canUse);
-        return canUse;
+        TestMod.LOGGER.debug("SpellBarrageGoal ({}) canUse: attackTime: {}, reset threshold: {}", spell, attackTime, -interval * (projectileCount - 1));
+        return --attackTime <= 0 && attackTime % interval == 0;
 
     }
 
@@ -74,6 +75,7 @@ public class SpellBarrageGoal extends Goal {
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
+
         if (target == null) {
             return;
         }
@@ -84,11 +86,11 @@ public class SpellBarrageGoal extends Goal {
             mob.initiateCastSpell(spell, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
         }
 
+
+
     }
 
     protected void resetAttackTimer() {
         this.attackTime = mob.getRandom().nextIntBetweenInclusive(attackIntervalMin, attackIntervalMax);
     }
-
-
 }

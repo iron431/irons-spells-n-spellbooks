@@ -13,10 +13,7 @@ import com.example.testmod.entity.icicle.IcicleProjectile;
 import com.example.testmod.entity.lightning_lance.LightningLanceProjectile;
 import com.example.testmod.entity.magic_arrow.MagicArrowProjectile;
 import com.example.testmod.entity.magic_missile.MagicMissileProjectile;
-import com.example.testmod.entity.mobs.SummonedPolarBear;
-import com.example.testmod.entity.mobs.SummonedSkeleton;
-import com.example.testmod.entity.mobs.SummonedVex;
-import com.example.testmod.entity.mobs.SummonedZombie;
+import com.example.testmod.entity.mobs.*;
 import com.example.testmod.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
 import com.example.testmod.entity.mobs.debug_wizard.DebugWizard;
 import com.example.testmod.entity.mobs.frozen_humanoid.FrozenHumanoid;
@@ -199,4 +196,10 @@ public class EntityRegistry {
                     .sized(1.5f, .95f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(TestMod.MODID, "dead_king_corpse").toString()));
+
+    public static final RegistryObject<EntityType<CatacombsZombie>> CATACOMBS_ZOMBIE =
+            ENTITIES.register("catacombs_zombie", () -> EntityType.Builder.<CatacombsZombie>of(CatacombsZombie::new, MobCategory.MONSTER)
+                    .sized(1.5f, .95f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(TestMod.MODID, "catacombs_zombie").toString()));
 }

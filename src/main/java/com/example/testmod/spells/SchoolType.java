@@ -57,7 +57,7 @@ public enum SchoolType {
     public static final Component DISPLAY_ENDER = Component.translatable("school.testmod.ender").withStyle(ChatFormatting.LIGHT_PURPLE);
     public static final Component DISPLAY_BLOOD = Component.translatable("school.testmod.blood").withStyle(ChatFormatting.DARK_RED);
     public static final Component DISPLAY_EVOCATION = Component.translatable("school.testmod.evocation").withStyle(ChatFormatting.WHITE);
-    public static final Component DISPLAY_VOID = Component.translatable("school.testmod.void").withStyle(ChatFormatting.DARK_PURPLE);
+    public static final Component DISPLAY_VOID = Component.translatable("school.testmod.void").withStyle(ChatFormatting.BLACK);
     public static final Component[] DISPLAYS = {DISPLAY_FIRE, DISPLAY_ICE, DISPLAY_LIGHTNING, DISPLAY_HOLY, DISPLAY_ENDER, DISPLAY_BLOOD, DISPLAY_EVOCATION, DISPLAY_VOID};
 
 

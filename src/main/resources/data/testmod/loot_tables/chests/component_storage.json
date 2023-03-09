@@ -103,12 +103,6 @@
           "type": "minecraft:loot_table",
           "name": "testmod:magic_items/poor_ink"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.7
-        }
       ]
     }
   ]

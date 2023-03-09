@@ -1,7 +1,6 @@
 package com.example.testmod.spells.blood;
 
 import com.example.testmod.capabilities.magic.PlayerMagicData;
-import com.example.testmod.config.ServerConfigs;
 import com.example.testmod.entity.mobs.SummonedSkeleton;
 import com.example.testmod.entity.mobs.SummonedZombie;
 import com.example.testmod.registries.MobEffectRegistry;
@@ -103,7 +102,7 @@ public class RaiseDeadSpell extends AbstractSpell {
         Item[] iron = {Items.IRON_BOOTS, Items.IRON_LEGGINGS, Items.IRON_CHESTPLATE, Items.IRON_HELMET};
 
         int minQuality = 12;
-        int maxQuality = ServerConfigs.getSpellConfig(SpellType.RAISE_DEAD_SPELL).MAX_LEVEL * spellPowerPerLevel + 15;
+        int maxQuality = SpellType.RAISE_DEAD_SPELL.getMaxLevel() * spellPowerPerLevel + 15;
 
         ItemStack[] result = new ItemStack[4];
         for (int i = 0; i < 4; i++) {
