@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.lightning_lance.LightningLanceProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -29,6 +30,7 @@ public class LightningLanceSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
+        IronsSpellbooks.LOGGER.debug("LightningLanceSpell.getCastStartSound");
         return Optional.of(SoundRegistry.LIGHTNING_LANCE_CAST.get());
     }
 

@@ -15,9 +15,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import software.bernie.geckolib3.util.RenderUtils;
 
 public class GlowingEyesLayer<T extends LivingEntity, M extends HumanoidModel<T>> extends EyesLayer<T, M> {
-    private static final RenderType EYES = RenderType.eyes(new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/purple_eyes.png"));
+    public static final RenderType EYES = RenderType.eyes(new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/purple_eyes.png"));
 
     public GlowingEyesLayer(RenderLayerParent pRenderer) {
         super(pRenderer);
@@ -30,14 +31,14 @@ public class GlowingEyesLayer<T extends LivingEntity, M extends HumanoidModel<T>
 
 
     @Override
-    public void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-        var eye = getEyeType(pLivingEntity);
+    public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int pPackedLight, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        var eye = getEyeType(livingEntity);
         if (eye != EyeType.None) {
-            VertexConsumer vertexconsumer = pBuffer.getBuffer(this.renderType());
+            VertexConsumer vertexconsumer = multiBufferSource.getBuffer(this.renderType());
 
             //pMatrixStack.translate(0, -eye.yOffset, -eye.forwardOffset);
-            pMatrixStack.scale(eye.scale, eye.scale, eye.scale);
-            this.getParentModel().renderToBuffer(pMatrixStack, vertexconsumer, 15728640, OverlayTexture.NO_OVERLAY, eye.r, eye.g, eye.b, 1.0F);
+            poseStack.scale(eye.scale, eye.scale, eye.scale);
+            this.getParentModel().renderToBuffer(poseStack, vertexconsumer, 15728640, OverlayTexture.NO_OVERLAY, eye.r, eye.g, eye.b, 1.0F);
 
 //            //hat is 1.125
 //            float scale = 1.1275f;
@@ -49,7 +50,7 @@ public class GlowingEyesLayer<T extends LivingEntity, M extends HumanoidModel<T>
         }
     }
 
-    public EyeType getEyeType(LivingEntity entity) {
+    public static EyeType getEyeType(LivingEntity entity) {
         if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ABYSSAL_SHROUD))
             return EyeType.Abyssal;
         else if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.SHADOWWALKER_HELMET.get()))
@@ -57,7 +58,7 @@ public class GlowingEyesLayer<T extends LivingEntity, M extends HumanoidModel<T>
         else return EyeType.None;
     }
 
-    private enum EyeType {
+    public enum EyeType {
         None(0, 0, 0, 0),
         Abyssal(1f, 1f, 1f, 1f),
         Ender_Armor(.816f, 0f, 1f, 1.15f);

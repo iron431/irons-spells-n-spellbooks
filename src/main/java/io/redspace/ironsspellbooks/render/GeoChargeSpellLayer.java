@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.render;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,35 +32,33 @@ public class GeoChargeSpellLayer extends GeoLayerRenderer<AbstractSpellCastingMo
         //irons_spellbooks.LOGGER.debug("GeoChargeSpellLayer.render: {}", syncedSpellData);
         var spell = syncedSpellData.getCastingSpellType();
         if (spell == SpellType.LIGHTNING_LANCE_SPELL) {
-            //var model = this.getEntityModel().getModel(AbstractSpellCastingMob.modelResource);
-            //var model = entityRenderer.getGeoModelProvider().getModel(AbstractSpellCastingMob.modelResource);
-            //var model = this.getRenderer().getGeoModelProvider().getModel(AbstractSpellCastingMob.modelResource);
-            var model = this.getRenderer().getGeoModelProvider().getModel(this.getEntityModel().getModelResource(entity));
+            var modelResource = entityRenderer.getGeoModelProvider().getModelResource(entity);
+            var model = entityRenderer.getGeoModelProvider().getModel(modelResource);
+            var bone = model.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT).get();
 
+            IronsSpellbooks.LOGGER.debug("GeoChargeSpellLayer pos:{}, {}, {} local:{}, {}, {} world:{}, {}, {} model:{}, {}, {} pivot:{}, {}, {}",
+                    bone.getPosition().x, bone.getPosition().y, bone.getPosition().y,
+                    bone.getLocalPosition().x, bone.getLocalPosition().y, bone.getLocalPosition().z,
+                    bone.getWorldPosition().x, bone.getWorldPosition().y, bone.getWorldPosition().z,
+                    bone.getModelPosition().x, bone.getModelPosition().y, bone.getModelPosition().z,
+                    bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
 
-            Optional<GeoBone> bone;
-            if (entity.isLeftHanded()) {
-                bone = model.getBone(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT);
-            } else {
-                bone = model.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
-            }
+            poseStack.pushPose();
 
-            if (bone.isPresent()) {
-                poseStack.pushPose();
+            //Cast completion
+            //float castCompletion = Utils.smoothstep(.35f, 1, ClientMagicData.getCastCompletionPercent());
+            //poseStack.scale(castCompletion, castCompletion, castCompletion);
 
-                //Cast completion
-                float castCompletion = Utils.smoothstep(.35f, 1, ClientMagicData.getCastCompletionPercent());
-                poseStack.scale(castCompletion, castCompletion, castCompletion);
+            //Lance position
+            //RenderUtils.translateMatrixToBone(poseStack, bone.get());
+            RenderUtils.prepMatrixForBone(poseStack, bone);
+            RenderUtils.translateAndRotateMatrixForBone(poseStack, bone);
+            //this.getRenderer().renderCube(bone.get().childCubes.get(0), poseStack, bufferSource.getBuffer(RenderType.eyes(LightningLanceRenderer.TEXTURES[0])),1, 1,1,1,1,1 );
+            // RenderUtils.translateToPivotPint(poseStack, bone.childCubes.get(0));
+            LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
 
-                //Lance position
-                RenderUtils.prepMatrixForBone(poseStack, bone.get());
-                RenderUtils.translateAndRotateMatrixForBone(poseStack, bone.get());
-                //this.getRenderer().renderCube(bone.get().childCubes.get(0), poseStack, bufferSource.getBuffer(RenderType.eyes(LightningLanceRenderer.TEXTURES[0])),1, 1,1,1,1,1 );
-                //RenderUtils.translateToPivotPoint(poseStack, bone.get().childCubes.get(0));
-                LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
+            poseStack.popPose();
 
-                poseStack.popPose();
-            }
 
         } else if (spell == SpellType.MAGIC_ARROW_SPELL) {
 //            //TODO: arm based on handedness

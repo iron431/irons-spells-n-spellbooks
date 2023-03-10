@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.render.GeoChargeSpellLayer;
 import io.redspace.ironsspellbooks.render.GeoEvasionLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.render.GeoGlowingEyesLayer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -32,6 +33,7 @@ public abstract class AbstractSpellCastingMobRenderer extends ExtendedGeoEntityR
         this.shadowRadius = 0.5f;
         this.addLayer(new GeoEvasionLayer(this));
         this.addLayer(new GeoChargeSpellLayer(this));
+        this.addLayer(new GeoGlowingEyesLayer(this));
     }
 
     @Nullable
@@ -87,10 +89,8 @@ public abstract class AbstractSpellCastingMobRenderer extends ExtendedGeoEntityR
                     DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_2_IDENT,
                     DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT -> EquipmentSlot.LEGS;
-            case DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT ->
-                    !currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-            case DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT ->
-                    currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+            case DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT -> !currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+            case DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT -> currentEntity.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
             case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT -> EquipmentSlot.CHEST;
             case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT -> EquipmentSlot.HEAD;
             default -> null;
@@ -103,17 +103,14 @@ public abstract class AbstractSpellCastingMobRenderer extends ExtendedGeoEntityR
             case DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_2_IDENT,
-                    DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT ->
-                    currentEntity.getItemBySlot(EquipmentSlot.FEET);
+                    DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.FEET);
             case DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_2_IDENT,
-                    DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT ->
-                    currentEntity.getItemBySlot(EquipmentSlot.LEGS);
+                    DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.LEGS);
             case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT,
-                    DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT ->
-                    currentEntity.getItemBySlot(EquipmentSlot.CHEST);
+                    DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.CHEST);
             case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.HEAD);
             default -> null;
         };
@@ -123,10 +120,8 @@ public abstract class AbstractSpellCastingMobRenderer extends ExtendedGeoEntityR
     @Override
     protected ItemStack getHeldItemForBone(String boneName, AbstractSpellCastingMob entity) {
         return switch (boneName) {
-            case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT ->
-                    entity.isLeftHanded() ? entity.getMainHandItem() : entity.getOffhandItem();
-            case DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT ->
-                    entity.isLeftHanded() ? entity.getOffhandItem() : entity.getMainHandItem();
+            case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT -> entity.isLeftHanded() ? entity.getMainHandItem() : entity.getOffhandItem();
+            case DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT -> entity.isLeftHanded() ? entity.getOffhandItem() : entity.getMainHandItem();
             default -> null;
         };
     }
