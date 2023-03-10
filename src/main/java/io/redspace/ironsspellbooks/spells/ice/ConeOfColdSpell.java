@@ -28,7 +28,6 @@ public class ConeOfColdSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 5;
-        this.cooldown = 100;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(null), 1)));
 
     }

@@ -88,6 +88,11 @@ public class SpellBook extends Item implements ISpellBook {
     }
 
     @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged;
+    }
+
+    @Override
     public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
         entity.stopUsingItem();
         Utils.releaseUsingHelper(entity);

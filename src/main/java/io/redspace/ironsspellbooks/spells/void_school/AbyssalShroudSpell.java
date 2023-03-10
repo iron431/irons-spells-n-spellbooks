@@ -23,12 +23,11 @@ public class AbyssalShroudSpell extends AbstractSpell {
         super(SpellType.ABYSSAL_SHROUD_SPELL);
         this.level = level;
         this.manaCostPerLevel = 20;
-        this.baseSpellPower = 200;
-        this.spellPowerPerLevel = 50;
+        this.baseSpellPower = 15;
+        this.spellPowerPerLevel = 5;
         this.castTime = 0;
-        this.baseManaCost = 5;
-        this.cooldown = 100;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(null), 1)));
+        this.baseManaCost = 350;
+        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(null) * 20, 1)));
     }
 
     @Override
@@ -43,7 +42,7 @@ public class AbyssalShroudSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ABYSSAL_SHROUD.get(), (int) getSpellPower(entity), 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ABYSSAL_SHROUD.get(), (int) getSpellPower(entity) * 20, 0, false, false, true));
         super.onCast(world, entity, playerMagicData);
     }
 }

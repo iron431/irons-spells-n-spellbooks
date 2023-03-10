@@ -31,7 +31,6 @@ public class BlazeStormSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 80 + 5 * level;
         this.baseManaCost = 5;
-        this.cooldown = 100;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(null), 1)));
 
     }

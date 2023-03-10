@@ -34,7 +34,6 @@ public class FrostStepSpell extends AbstractSpell {
         this.spellPowerPerLevel = 3;
         this.baseManaCost = 15;
         this.manaCostPerLevel = 3;
-        this.cooldown = 200;
         this.castTime = 0;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(null), 1)));
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.shatter_damage", Utils.stringTruncation(getDamage(null), 1)));

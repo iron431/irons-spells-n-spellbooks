@@ -25,12 +25,11 @@ public class FangStrikeSpell extends AbstractSpell {
     public FangStrikeSpell(int level) {
         super(SpellType.FANG_STRIKE_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 3;
         this.baseSpellPower = 8;
-        this.spellPowerPerLevel = 3;
+        this.spellPowerPerLevel = 1;
         this.castTime = 20;
-        this.baseManaCost = 5;
-        this.cooldown = 0;
+        this.baseManaCost = 30;
 
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.fang_count", getCount()));
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(null), 1)));
@@ -49,7 +48,7 @@ public class FangStrikeSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         Vec3 forward = entity.getForward().multiply(1, 0, 1).normalize();
-        Vec3 start = entity.getEyePosition().add(forward.scale(3));
+        Vec3 start = entity.getEyePosition().add(forward.scale(1.5));
 
         for (int i = 0; i < getCount(); i++) {
             Vec3 spawn = start.add(forward.scale(i));

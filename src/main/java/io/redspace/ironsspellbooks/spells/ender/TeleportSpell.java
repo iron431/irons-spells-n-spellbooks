@@ -34,9 +34,8 @@ public class TeleportSpell extends AbstractSpell {
         this.level = level;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 6;
-        this.baseManaCost = 15;
-        this.manaCostPerLevel = 3;
-        this.cooldown = 200;
+        this.baseManaCost = 30;
+        this.manaCostPerLevel = 10;
         this.castTime = 0;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(null), 1)));
 

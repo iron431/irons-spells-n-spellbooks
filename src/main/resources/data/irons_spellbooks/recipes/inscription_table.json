@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  I",
+    "TTT",
+    "L L"
+  ],
+  "key": {
+    "I": {
+      "item": "irons_spellbooks:common_ink"
+    },
+    "T": {
+      "tag": "minecraft:wooden_slabs"
+    },
+    "L": {
+      "tag": "minecraft:wooden_fences"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:inscription_table",
+    "count": 1
+  }
+}

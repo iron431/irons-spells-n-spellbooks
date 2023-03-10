@@ -25,8 +25,7 @@ public class AscensionSpell extends AbstractSpell {
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 10;
-        this.cooldown = 100;
+        this.baseManaCost = 50;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", getDamage(null)));
 
     }

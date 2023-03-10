@@ -3,7 +3,6 @@
 
   "_comment": " This biome tag can specify the biome directly. Or specify another biome tag by starting with # ",
   "values": [
-    "#minecraft:is_overworld",
-    "!#minecraft:is_ocean"
+    "#minecraft:is_overworld"
   ]
 }

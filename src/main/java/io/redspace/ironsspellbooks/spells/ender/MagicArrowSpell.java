@@ -19,10 +19,9 @@ public class MagicArrowSpell extends AbstractSpell {
         this.level = level;
         this.manaCostPerLevel = 20;
         this.baseSpellPower = 5;
-        this.spellPowerPerLevel = 4;
-        this.castTime = 35;
+        this.spellPowerPerLevel = 2;
+        this.castTime = 30;
         this.baseManaCost = 50;
-        this.cooldown = 600;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(null), 1))) ;
 
     }

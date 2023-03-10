@@ -22,12 +22,11 @@ public class InvisibilitySpell extends AbstractSpell {
     public InvisibilitySpell(int level) {
         super(SpellType.INVISIBILITY_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 4;
-        this.baseSpellPower = 15;
-        this.spellPowerPerLevel = 3;
+        this.manaCostPerLevel = 8;
+        this.baseSpellPower = 10;
+        this.spellPowerPerLevel = 5;
         this.castTime = 40;
-        this.baseManaCost = 30;
-        this.cooldown = 30 * 20;
+        this.baseManaCost = 35;
 
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(null), 1)));
     }

@@ -30,8 +30,7 @@ public class ChainCreeperSpell extends AbstractSpell {
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 30;
-        this.baseManaCost = 25;
-        this.cooldown = 100;
+        this.baseManaCost = 40;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(null), 1)));
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.projectile_count", getCount()));
     }

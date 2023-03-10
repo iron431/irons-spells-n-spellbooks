@@ -26,7 +26,6 @@ public class EvasionSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 5;
-        this.cooldown = 6000;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(null)));
     }
 

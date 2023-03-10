@@ -28,11 +28,10 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         super(SpellType.CLOUD_OF_REGENERATION_SPELL);
         this.level = level;
         this.manaCostPerLevel = 3;
-        this.baseSpellPower = 1;
+        this.baseSpellPower = 2;
         this.spellPowerPerLevel = 2;
         this.castTime = 200;
         this.baseManaCost = 10;
-        this.cooldown = 400;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getHealing(null), 1)));
 
     }

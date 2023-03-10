@@ -25,15 +25,9 @@ public class ShieldSpell extends AbstractSpell {
         this.level = level;
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 0;
-        this.spellPowerPerLevel = 2;
+        this.spellPowerPerLevel = 5;
         this.baseManaCost = 35;
-        this.cooldown = 200;
         this.castTime = 20;
-
-        //TODO: remove these after tsting
-        this.baseManaCost = 1;
-        this.cooldown = 0;
-        this.castTime = 0;
 
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.hp", Utils.stringTruncation(getShieldHP(null), 1)));
 

@@ -20,12 +20,11 @@ public class GreaterHealSpell extends AbstractSpell {
     public GreaterHealSpell(int level) {
         super(SpellType.GREATER_HEAL_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 10;
-        this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 1;
+        this.manaCostPerLevel = 0;
+        this.baseSpellPower = 0;
+        this.spellPowerPerLevel = 0;
         this.castTime = 200;
-        this.baseManaCost = 30;
-        this.cooldown = 400;
+        this.baseManaCost = 100;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.greater_healing"));
     }
 

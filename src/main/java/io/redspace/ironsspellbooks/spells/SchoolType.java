@@ -57,7 +57,7 @@ public enum SchoolType {
     public static final Component DISPLAY_ENDER = Component.translatable("school.irons_spellbooks.ender").withStyle(ChatFormatting.LIGHT_PURPLE);
     public static final Component DISPLAY_BLOOD = Component.translatable("school.irons_spellbooks.blood").withStyle(ChatFormatting.DARK_RED);
     public static final Component DISPLAY_EVOCATION = Component.translatable("school.irons_spellbooks.evocation").withStyle(ChatFormatting.WHITE);
-    public static final Component DISPLAY_VOID = Component.translatable("school.irons_spellbooks.void").withStyle(ChatFormatting.BLACK);
+    public static final Component DISPLAY_VOID = Component.translatable("school.irons_spellbooks.void").withStyle(Style.EMPTY.withColor(0x490059));
     public static final Component[] DISPLAYS = {DISPLAY_FIRE, DISPLAY_ICE, DISPLAY_LIGHTNING, DISPLAY_HOLY, DISPLAY_ENDER, DISPLAY_BLOOD, DISPLAY_EVOCATION, DISPLAY_VOID};
 
 

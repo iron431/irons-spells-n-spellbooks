@@ -30,7 +30,6 @@ public class SummonVexSpell extends AbstractSpell {
         this.spellPowerPerLevel = 0;
         this.castTime = 20;
         this.baseManaCost = 50;
-        this.cooldown = 300;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.summon_count", this.level));
 
     }

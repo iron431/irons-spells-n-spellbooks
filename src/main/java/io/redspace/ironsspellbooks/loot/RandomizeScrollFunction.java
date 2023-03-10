@@ -42,7 +42,7 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
             int maxLevel = spellType.getMaxLevel();
             float quality = qualityRange.getFloat(lootContext);
             //https://www.desmos.com/calculator/ablc1wg06w
-            quality = quality * (float) Math.sin(1.57 * quality * quality);
+            quality = /*quality * */(float) Math.sin(1.57 * quality * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
             var scrollData = scroll.getScrollData(itemStack);
             scrollData.setData(spellId, spellLevel);

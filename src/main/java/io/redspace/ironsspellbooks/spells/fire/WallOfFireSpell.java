@@ -36,12 +36,11 @@ public class WallOfFireSpell extends AbstractSpell {
     public WallOfFireSpell(int level) {
         super(SpellType.WALL_OF_FIRE_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 1;
+        this.manaCostPerLevel = 5;
         this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 0;
+        this.spellPowerPerLevel = 1;
         this.castTime = 100;
-        this.baseManaCost = 5;
-        this.cooldown = 100;
+        this.baseManaCost = 10;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getWallLength(), 1)));
 
     }
@@ -109,7 +108,7 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     private float getWallLength() {
-        return 7 + level * 2;
+        return 10 + level * 2;
     }
 
     private float getDamage(Entity sourceEntity) {

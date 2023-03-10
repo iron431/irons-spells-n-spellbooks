@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -28,6 +28,7 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
             model.getBone(PartNames.LEFT_LEG).ifPresent((bone) -> bone.setHidden(false));
             model.getBone(PartNames.RIGHT_LEG).ifPresent((bone) -> bone.setHidden(false));
         }
+        type = RenderType.entityTranslucentCull(modelProvider.getTextureResource(animatable));
         super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 

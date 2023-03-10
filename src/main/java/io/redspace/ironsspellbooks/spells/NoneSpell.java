@@ -19,7 +19,6 @@ public class NoneSpell extends AbstractSpell {
         this.manaCostPerLevel = 0;
         this.baseSpellPower = 0;
         this.spellPowerPerLevel = 0;
-        this.cooldown = 0;
     }
 
     @Override

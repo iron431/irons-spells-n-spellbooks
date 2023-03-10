@@ -5,22 +5,20 @@ import io.redspace.ironsspellbooks.spells.SpellRarity;
 public class SpellConfigParameters {
     public final int MAX_LEVEL;
     public final SpellRarity MIN_RARITY;
+    public final double MANA_MULTIPLIER;
+    public final double POWER_MULTIPLIER;
+    public final double COOLDOWN_IN_SECONDS;
 
-     //Not implemented:
+    //Not implemented:
     public final boolean ENABLED;
-    public final int BASE_MANA_COST;
-    public final int MANA_COST_PER_LEVEL;
-    public final int BASE_POWER;
-    public final int POWER_PER_LEVEL;
 
-    public SpellConfigParameters(int MAX_LEVEL, SpellRarity MIN_RARITY) {
+    public SpellConfigParameters(boolean ENABLED, int MAX_LEVEL, SpellRarity MIN_RARITY, double POWER_MULTIPLIER, double MANA_MULTIPLIER, double COOLDOWN_IN_SECONDS) {
         this.MAX_LEVEL = MAX_LEVEL;
         this.MIN_RARITY = MIN_RARITY;
 
-        this.ENABLED = true;
-        this.BASE_MANA_COST = 0;
-        this.MANA_COST_PER_LEVEL = 0;
-        this.BASE_POWER = 0;
-        this.POWER_PER_LEVEL = 0;
+        this.ENABLED = ENABLED;
+        this.MANA_MULTIPLIER = MANA_MULTIPLIER;
+        this.POWER_MULTIPLIER = POWER_MULTIPLIER;
+        this.COOLDOWN_IN_SECONDS = COOLDOWN_IN_SECONDS;
     }
 }

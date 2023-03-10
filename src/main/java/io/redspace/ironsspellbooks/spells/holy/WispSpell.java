@@ -29,14 +29,12 @@ public class WispSpell extends AbstractSpell {
 
     public WispSpell(int level) {
         super(SpellType.WISP_SPELL);
-
         this.level = level;
-        this.manaCostPerLevel = 10;
-        this.baseSpellPower = 5;
-        this.spellPowerPerLevel = 3;
-        this.castTime = 40;
-        this.baseManaCost = 30;
-        this.cooldown = 40;
+        this.manaCostPerLevel = 2;
+        this.baseSpellPower = 4;
+        this.spellPowerPerLevel = 1;
+        this.castTime = 0;
+        this.baseManaCost = 15;
     }
 
     @Override

@@ -27,8 +27,7 @@ public class ElectrocuteSpell extends AbstractSpell {
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
-        this.baseManaCost = 10;
-        this.cooldown = 100;
+        this.baseManaCost = 3;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(null), 1)));
 
     }

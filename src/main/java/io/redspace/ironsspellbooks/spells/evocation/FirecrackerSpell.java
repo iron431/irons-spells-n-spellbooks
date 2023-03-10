@@ -26,12 +26,11 @@ public class FirecrackerSpell extends AbstractSpell {
     public FirecrackerSpell(int level) {
         super(SpellType.FIRECRACKER_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 2;
         this.baseSpellPower = 2;
-        this.spellPowerPerLevel = 2;
+        this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 5;
-        this.cooldown = 0;
+        this.baseManaCost = 20;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(null), 1)));
     }
 

@@ -28,12 +28,11 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     public RayOfSiphoningSpell(int level) {
         super(SpellType.RAY_OF_SIPHONING_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 10;
+        this.manaCostPerLevel = 2;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
-        this.baseManaCost = 20;
-        this.cooldown = 300;
+        this.baseManaCost = 8;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getTickDamage(null), 1)));
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(level), 1)));
 

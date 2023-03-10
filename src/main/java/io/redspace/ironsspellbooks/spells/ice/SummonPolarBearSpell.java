@@ -28,7 +28,6 @@ public class SummonPolarBearSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 50;
-        this.cooldown = 300;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.summon_count", 1));
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.hp", getBearHealth(null)));
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", getBearDamage(null)));

@@ -38,7 +38,6 @@ public class RaiseDeadSpell extends AbstractSpell {
         this.spellPowerPerLevel = 3;
         this.castTime = 20;
         this.baseManaCost = 50;
-        this.cooldown = 300;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.summon_count", this.level));
     }
 

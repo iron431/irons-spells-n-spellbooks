@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ANA",
+    " O ",
+    "OOO"
+  ],
+  "key": {
+    "N": {
+      "tag": "forge:ingots/netherite"
+    },
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "O": {
+      "item": "minecraft:crying_obsidian"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:scroll_forge",
+    "count": 1
+  }
+}

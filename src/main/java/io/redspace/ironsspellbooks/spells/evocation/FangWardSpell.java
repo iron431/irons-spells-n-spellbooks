@@ -26,11 +26,10 @@ public class FangWardSpell extends AbstractSpell {
         super(SpellType.FANG_WARD_SPELL);
         this.level = level;
         this.manaCostPerLevel = 5;
-        this.baseSpellPower = 6;
-        this.spellPowerPerLevel = 3;
+        this.baseSpellPower = 5;
+        this.spellPowerPerLevel = 2;
         this.castTime = 20;
-        this.baseManaCost = 5;
-        this.cooldown = 0;
+        this.baseManaCost = 45;
 
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.ring_count", getRings()));
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(null), 1)));

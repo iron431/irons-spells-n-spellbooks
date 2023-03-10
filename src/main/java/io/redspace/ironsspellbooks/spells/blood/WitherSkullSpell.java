@@ -22,12 +22,11 @@ public class WitherSkullSpell extends AbstractSpell {
     public WitherSkullSpell(int level) {
         super(SpellType.WITHER_SKULL_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 10;
+        this.manaCostPerLevel = 2;
         this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 1;
+        this.spellPowerPerLevel = 2;
         this.castTime = 0;
         this.baseManaCost = 25;
-        this.cooldown = 100;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(null), 1)));
     }
 

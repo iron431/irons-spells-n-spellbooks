@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.network.ClientboundCastError;
@@ -28,6 +29,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -48,13 +50,24 @@ public abstract class AbstractSpell {
     protected int spellPowerPerLevel;
     //All time values in ticks
     protected int castTime;
-    protected int cooldown;
+    //protected int cooldown;
+
+    private final LazyOptional<Double> manaMultiplier;
+    private final LazyOptional<Double> powerMultiplier;
+    private final LazyOptional<Integer> cooldown;
+
 
     protected final List<MutableComponent> uniqueInfo = new ArrayList<>();
 
     public AbstractSpell(SpellType spellType) {
         this.spellType = spellType;
         this.castType = spellType.getCastType();
+
+        manaMultiplier = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(spellType).MANA_MULTIPLIER));
+        powerMultiplier = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(spellType).POWER_MULTIPLIER));
+        cooldown = LazyOptional.of(() -> ((int) (ServerConfigs.getSpellConfig(spellType).COOLDOWN_IN_SECONDS * 20)));
+
+
     }
 
     public int getID() {
@@ -90,11 +103,11 @@ public abstract class AbstractSpell {
     }
 
     public int getManaCost() {
-        return baseManaCost + manaCostPerLevel * (level - 1);
+        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * manaMultiplier.orElse(1d));
     }
 
     public int getSpellCooldown() {
-        return this.cooldown;
+        return this.cooldown.orElse(200);
     }
 
     public int getCastTime() {
@@ -123,6 +136,7 @@ public abstract class AbstractSpell {
     public float getSpellPower(Entity sourceEntity) {
         float entitySpellPowerModifier = 1;
         float entitySchoolPowerModifier = 1;
+        float configPowerModifier = (powerMultiplier.orElse(1d)).floatValue();
         if (sourceEntity instanceof LivingEntity sourceLivingEntity) {
             entitySpellPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
             switch (this.getSchoolType()) {
@@ -136,7 +150,7 @@ public abstract class AbstractSpell {
             }
         }
 
-        return (baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier;
+        return (baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier;
     }
 
     public int getEffectiveCastTime(Entity sourceEntity) {
@@ -238,10 +252,10 @@ public abstract class AbstractSpell {
 
     }
 
-    private int getCooldownLength(ServerPlayer serverPlayer) {
-        double playerCooldownModifier = serverPlayer.getAttributeValue(AttributeRegistry.COOLDOWN_REDUCTION.get());
-        return MagicManager.getEffectiveSpellCooldown(cooldown, playerCooldownModifier);
-    }
+//    private int getCooldownLength(ServerPlayer serverPlayer) {
+//        double playerCooldownModifier = serverPlayer.getAttributeValue(AttributeRegistry.COOLDOWN_REDUCTION.get());
+//        return MagicManager.getEffectiveSpellCooldown(cooldown, playerCooldownModifier);
+//    }
 
     /**
      * The primary spell effect sound and particle handling goes here. Called Client Side only

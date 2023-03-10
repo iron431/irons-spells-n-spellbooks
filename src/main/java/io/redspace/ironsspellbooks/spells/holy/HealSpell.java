@@ -28,7 +28,6 @@ public class HealSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 30;
-        this.cooldown = 400;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(null), 1)));
     }
 

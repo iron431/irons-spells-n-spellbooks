@@ -20,12 +20,11 @@ public class FireboltSpell extends AbstractSpell {
     public FireboltSpell(int level) {
         super(SpellType.FIREBOLT_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 5;
-        this.baseSpellPower = 2;
-        this.spellPowerPerLevel = 2;
+        this.manaCostPerLevel = 2;
+        this.baseSpellPower = 4;
+        this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 5;
-        this.cooldown = 0;
+        this.baseManaCost = 15;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(null), 1)));
     }
 

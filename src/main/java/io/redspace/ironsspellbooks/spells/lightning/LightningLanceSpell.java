@@ -20,10 +20,9 @@ public class LightningLanceSpell extends AbstractSpell {
         this.level = level;
         this.manaCostPerLevel = 20;
         this.baseSpellPower = 10;
-        this.spellPowerPerLevel = 5;
+        this.spellPowerPerLevel = 2;
         this.castTime = 40;
         this.baseManaCost = 50;
-        this.cooldown = 600;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(null), 1))) ;
 
     }

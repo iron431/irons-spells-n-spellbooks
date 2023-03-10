@@ -25,12 +25,12 @@ public class SummonHorseSpell extends AbstractSpell {
     public SummonHorseSpell(int level) {
         super(SpellType.SUMMON_HORSE_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 10;
+        this.manaCostPerLevel = 2;
         this.baseSpellPower = 2;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 50;
-        this.cooldown = 300;
+
     }
 
     @Override

@@ -22,12 +22,11 @@ public class HeartstopSpell extends AbstractSpell {
     public HeartstopSpell(int level) {
         super(SpellType.HEARTSTOP_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 300;
-        this.spellPowerPerLevel = 20;
+        this.spellPowerPerLevel = 30;
         this.castTime = 0;
-        this.baseManaCost = 20;
-        this.cooldown = 100;
+        this.baseManaCost = 50;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(null), 1)));
 
     }

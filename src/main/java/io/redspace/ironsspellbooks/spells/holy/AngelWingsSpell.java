@@ -21,12 +21,11 @@ public class AngelWingsSpell extends AbstractSpell {
     public AngelWingsSpell(int level) {
         super(SpellType.ANGEL_WING_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 10;
+        this.manaCostPerLevel = 20;
         this.baseSpellPower = 30;
         this.spellPowerPerLevel = 30;
         this.castTime = 0;
-        this.baseManaCost = 30;
-        this.cooldown = 400;
+        this.baseManaCost = 60;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getEffectDuration(null), 1)));
 
     }

@@ -24,12 +24,11 @@ public class LightningBoltSpell extends AbstractSpell {
     public LightningBoltSpell(int level) {
         super(SpellType.LIGHTNING_BOLT_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 2;
-        this.baseSpellPower = 6;
-        this.spellPowerPerLevel = 4;
+        this.manaCostPerLevel = 15;
+        this.baseSpellPower = 10;
+        this.spellPowerPerLevel = 3;
         this.castTime = 0;
-        this.baseManaCost = 10;
-        this.cooldown = 100;
+        this.baseManaCost = 75;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(null), 1))) ;
 
     }

@@ -32,7 +32,6 @@ public class BurningDashSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 20;
-        this.cooldown = 20;
     }
 
     @Override

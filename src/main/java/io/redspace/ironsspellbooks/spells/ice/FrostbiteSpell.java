@@ -27,7 +27,6 @@ public class FrostbiteSpell extends AbstractSpell {
         this.spellPowerPerLevel = 3;
         this.castTime = 0;
         this.baseManaCost = 100;
-        this.cooldown = 0;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.frostbite_success_chance", Utils.stringTruncation(getSpellPower(null), 1)));
     }
 

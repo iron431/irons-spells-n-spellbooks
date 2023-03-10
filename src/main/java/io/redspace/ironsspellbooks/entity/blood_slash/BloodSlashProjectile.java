@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.ShieldPart;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -14,7 +13,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -190,9 +188,9 @@ public class BloodSlashProjectile extends Projectile {
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            DamageSources.applyDamage(entity, damage, SpellType.BLOOD_SLASH_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
-            if (entity instanceof LivingEntity livingEntity) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
+            var hit = DamageSources.applyDamage(entity, damage, SpellType.BLOOD_SLASH_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
+            if (hit && entity instanceof LivingEntity livingEntity) {
+                //livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
                 if (getOwner() instanceof LivingEntity livingOwner) {
                     livingOwner.heal(damage * .1f * DamageSources.getResist(livingEntity, SchoolType.BLOOD));
                 }
