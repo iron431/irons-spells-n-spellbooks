@@ -202,6 +202,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                     (Mth.cos((tickCount * 3 + 986741) * Mth.DEG_TO_RAD) + (isCloseToGround ? .05 : -.185)) * .5f,
                     Mth.sin((tickCount * 1 + 465) * Mth.DEG_TO_RAD)
             );
+            if (this.getTarget() == null)
+                woosh = woosh.scale(.25f);
             this.setDeltaMovement(getDeltaMovement().add(woosh.scale(.0085f)));
         }
         super.tick();

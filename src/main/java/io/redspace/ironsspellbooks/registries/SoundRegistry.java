@@ -30,6 +30,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> MAGIC_ARROW_CHARGE = registerSoundEvent("magic_arrow_charge");
     public static RegistryObject<SoundEvent> FROST_STEP = registerSoundEvent("frost_step");
     public static RegistryObject<SoundEvent> ABYSSAL_TELEPORT = registerSoundEvent("abyssal_teleport");
+    public static RegistryObject<SoundEvent> BLOOD_STEP = registerSoundEvent("cast.blood_step");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
@@ -40,6 +41,14 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> DEAD_KING_DEATH = registerSoundEvent("entity.dead_king.death");
     public static RegistryObject<SoundEvent> DEAD_KING_HURT = registerSoundEvent("entity.dead_king.hurt");
     public static RegistryObject<SoundEvent> DEAD_KING_EXPLODE = registerSoundEvent("entity.dead_king.explode");
+
+    public static RegistryObject<SoundEvent> FIRE_CAST = registerSoundEvent("cast.generic.fire");
+    public static RegistryObject<SoundEvent> ICE_CAST = registerSoundEvent("cast.generic.ice");
+    public static RegistryObject<SoundEvent> LIGHTNING_CAST = registerSoundEvent("cast.generic.lightning");
+    public static RegistryObject<SoundEvent> HOLY_CAST = registerSoundEvent("cast.generic.holy");
+    public static RegistryObject<SoundEvent> ENDER_CAST = registerSoundEvent("cast.generic.ender");
+    public static RegistryObject<SoundEvent> BLOOD_CAST = registerSoundEvent("cast.generic.blood");
+    public static RegistryObject<SoundEvent> EVOCATION_CAST = registerSoundEvent("cast.generic.evocation");
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {
         return SOUND_EVENTS.register(name, () -> new SoundEvent(new ResourceLocation(IronsSpellbooks.MODID, name)));

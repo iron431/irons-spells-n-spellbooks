@@ -114,11 +114,12 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         SpellRarity inkRarity = getRarityFromInk(inkStack.getItem());
 
         availableSpells.sort((a, b) -> ServerConfigs.getSpellConfig(a.spell).MIN_RARITY.compareRarity(ServerConfigs.getSpellConfig(b.spell).MIN_RARITY));
+
         for (int i = 0; i < availableSpells.size(); i++) {
             SpellCardInfo spellCard = availableSpells.get(i);
 
             if (i - scrollOffset >= 0 && i - scrollOffset < 3) {
-                spellCard.button.active = inkRarity != null && spellCard.spell.getMinRarity()<= inkRarity.getValue();
+                spellCard.button.active = inkRarity != null && spellCard.spell.getMinRarity() <= inkRarity.getValue();
                 int x = leftPos + SPELL_LIST_X;
                 int y = topPos + SPELL_LIST_Y + (i - scrollOffset) * 19;
                 spellCard.button.x = x;
@@ -154,11 +155,13 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             for (int i = 0; i < spells.length; i++) {
                 //int id = spells[i].getValue();
                 int tempIndex = i;
-                availableSpells.add(new SpellCardInfo(spells[i], i + 1, i, this.addWidget(
-                        new Button(0, 0, 108, 19,
-                                spells[i].getDisplayName(),
-                                (b) -> this.setSelectedSpell(spells[tempIndex]))
-                )));
+                //IronsSpellbooks.LOGGER.debug("ScrollForgeScreen.generateSpellList: {} isEnabled: {}", spells[i], spells[i].isEnabled());
+                if (spells[i].isEnabled())
+                    availableSpells.add(new SpellCardInfo(spells[i], i + 1, i, this.addWidget(
+                            new Button(0, 0, 108, 19,
+                                    spells[i].getDisplayName(),
+                                    (b) -> this.setSelectedSpell(spells[tempIndex]))
+                    )));
             }
         }
     }

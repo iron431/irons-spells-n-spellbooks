@@ -1,14 +1,15 @@
 package io.redspace.ironsspellbooks.player;
 
+import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +28,19 @@ public class ClientMagicData {
      */
     private static final HashMap<Integer, SyncedSpellData> playerSyncedDataLookup = new HashMap<>();
     private static final SyncedSpellData emptySyncedData = new SyncedSpellData(-999);
+
+    /**
+     * Local Targeting data
+     */
+    private static SpellTargetingData spellTargetingData;
+
+    public static void setTargetingData(SpellTargetingData spellTargetingData) {
+        spellTargetingData = spellTargetingData;
+    }
+
+    public static void resetTargetingData() {
+        spellTargetingData = null;
+    }
 
     /**
      * Animation Data
@@ -94,6 +108,7 @@ public class ClientMagicData {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem()) {
             Minecraft.getInstance().player.stopUsingItem();
         }
+        resetTargetingData();
     }
 
     public static SyncedSpellData getSyncedSpellData(LivingEntity livingEntity) {

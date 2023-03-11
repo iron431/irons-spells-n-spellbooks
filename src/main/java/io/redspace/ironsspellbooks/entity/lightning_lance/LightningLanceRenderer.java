@@ -50,7 +50,7 @@ public class LightningLanceRenderer extends EntityRenderer<LightningLanceProject
     }
 
     public static void renderModel(PoseStack poseStack, MultiBufferSource bufferSource, int animOffset) {
-        poseStack.scale(0.0625f, 0.0625f, 0.0625f);
+        //poseStack.scale(0.0625f, 0.0625f, 0.0625f);
 
         //poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
         //poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
@@ -61,8 +61,8 @@ public class LightningLanceRenderer extends EntityRenderer<LightningLanceProject
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.eyes(getTextureLocation(animOffset)));
 
-        float halfWidth = 32;
-        float halfHeight = 16;
+        float halfWidth = 2;
+        float halfHeight = 1;
         float angleCorrection = 55;
         //Vertical plane
         poseStack.mulPose(Vector3f.XP.rotationDegrees(angleCorrection));

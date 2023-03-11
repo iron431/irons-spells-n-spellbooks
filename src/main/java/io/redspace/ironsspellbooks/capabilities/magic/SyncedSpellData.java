@@ -19,6 +19,9 @@ public class SyncedSpellData {
     public static final long ASCENSION = 16;
     public static final long TRUE_INVIS = 32;
 
+    public static final long HEAL_TARGET = 1;
+
+
     //TODO: may want to switch this to ServerPlayer.UUID
     private final int serverPlayerId;
     private @Nullable LivingEntity livingEntity;
@@ -26,7 +29,8 @@ public class SyncedSpellData {
     private boolean isCasting;
     private int castingSpellId;
     private int castingSpellLevel;
-    private long effectFlags;
+    private long syncedEffectFlags;
+    private long localEffectFlags;
     private float heartStopAccumulatedDamage;
     private int evasionHitsRemaining;
 
@@ -37,7 +41,8 @@ public class SyncedSpellData {
         this.isCasting = false;
         this.castingSpellId = 0;
         this.castingSpellLevel = 0;
-        this.effectFlags = 0;
+        this.syncedEffectFlags = 0;
+        this.localEffectFlags = 0;
         this.heartStopAccumulatedDamage = 0f;
         this.evasionHitsRemaining = 0;
     }
@@ -54,7 +59,7 @@ public class SyncedSpellData {
             buffer.writeBoolean(data.isCasting);
             buffer.writeInt(data.castingSpellId);
             buffer.writeInt(data.castingSpellLevel);
-            buffer.writeLong(data.effectFlags);
+            buffer.writeLong(data.syncedEffectFlags);
             buffer.writeFloat(data.heartStopAccumulatedDamage);
             buffer.writeInt(data.evasionHitsRemaining);
         }
@@ -64,7 +69,7 @@ public class SyncedSpellData {
             data.isCasting = buffer.readBoolean();
             data.castingSpellId = buffer.readInt();
             data.castingSpellLevel = buffer.readInt();
-            data.effectFlags = buffer.readLong();
+            data.syncedEffectFlags = buffer.readLong();
             data.heartStopAccumulatedDamage = buffer.readFloat();
             data.evasionHitsRemaining = buffer.readInt();
             return data;
@@ -76,7 +81,7 @@ public class SyncedSpellData {
         syncedSpellData.isCasting = this.isCasting;
         syncedSpellData.castingSpellId = this.castingSpellId;
         syncedSpellData.castingSpellLevel = this.castingSpellLevel;
-        syncedSpellData.effectFlags = this.effectFlags;
+        syncedSpellData.syncedEffectFlags = this.syncedEffectFlags;
         syncedSpellData.heartStopAccumulatedDamage = this.heartStopAccumulatedDamage;
         syncedSpellData.evasionHitsRemaining = this.evasionHitsRemaining;
         return syncedSpellData;
@@ -86,7 +91,7 @@ public class SyncedSpellData {
         compound.putBoolean("isCasting", this.isCasting);
         compound.putInt("castingSpellId", this.castingSpellId);
         compound.putInt("castingSpellLevel", this.castingSpellLevel);
-        compound.putLong("effectFlags", this.effectFlags);
+        compound.putLong("effectFlags", this.syncedEffectFlags);
         compound.putFloat("heartStopAccumulatedDamage", this.heartStopAccumulatedDamage);
         compound.putFloat("evasionHitsRemaining", this.evasionHitsRemaining);
     }
@@ -95,7 +100,7 @@ public class SyncedSpellData {
         this.isCasting = compound.getBoolean("isCasting");
         this.castingSpellId = compound.getInt("castingSpellId");
         this.castingSpellLevel = compound.getInt("castingSpellLevel");
-        this.effectFlags = compound.getLong("effectFlags");
+        this.syncedEffectFlags = compound.getLong("effectFlags");
         this.heartStopAccumulatedDamage = compound.getFloat("heartStopAccumulatedDamage");
         this.evasionHitsRemaining = compound.getInt("evasionHitsRemaining");
     }
@@ -105,7 +110,19 @@ public class SyncedSpellData {
     }
 
     public boolean hasEffect(long effectFlags) {
-        return (this.effectFlags & effectFlags) == effectFlags;
+        return (this.syncedEffectFlags & effectFlags) == effectFlags;
+    }
+
+    public boolean hasLocalEffect(long effectFlags) {
+        return (this.localEffectFlags & effectFlags) == effectFlags;
+    }
+
+    public void addLocalEffect(long effectFlags) {
+        this.localEffectFlags |= effectFlags;
+    }
+
+    public void removeLocalEffect(long effectFlags) {
+        this.localEffectFlags &= ~effectFlags;
     }
 
     public float getHeartstopAccumulatedDamage() {
@@ -137,12 +154,12 @@ public class SyncedSpellData {
     }
 
     public void addEffects(long effectFlags) {
-        this.effectFlags |= effectFlags;
+        this.syncedEffectFlags |= effectFlags;
         doSync();
     }
 
     public void removeEffects(long effectFlags) {
-        this.effectFlags &= ~effectFlags;
+        this.syncedEffectFlags &= ~effectFlags;
         doSync();
     }
 
@@ -197,6 +214,6 @@ public class SyncedSpellData {
                 isCasting,
                 castingSpellId,
                 castingSpellLevel,
-                effectFlags);
+                syncedEffectFlags);
     }
 }

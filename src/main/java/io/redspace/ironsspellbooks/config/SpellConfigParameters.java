@@ -8,14 +8,13 @@ public class SpellConfigParameters {
     public final double MANA_MULTIPLIER;
     public final double POWER_MULTIPLIER;
     public final double COOLDOWN_IN_SECONDS;
+    public final boolean ENABLED;
 
     //Not implemented:
-    public final boolean ENABLED;
 
     public SpellConfigParameters(boolean ENABLED, int MAX_LEVEL, SpellRarity MIN_RARITY, double POWER_MULTIPLIER, double MANA_MULTIPLIER, double COOLDOWN_IN_SECONDS) {
         this.MAX_LEVEL = MAX_LEVEL;
         this.MIN_RARITY = MIN_RARITY;
-
         this.ENABLED = ENABLED;
         this.MANA_MULTIPLIER = MANA_MULTIPLIER;
         this.POWER_MULTIPLIER = POWER_MULTIPLIER;

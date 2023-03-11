@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
@@ -11,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -34,7 +36,7 @@ public class BloodStepSpell extends AbstractSpell {
         this.level = level;
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 4;
-        this.baseManaCost = 50;
+        this.baseManaCost = 30;
         this.manaCostPerLevel = 10;
         this.castTime = 0;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(null), 1)));
@@ -49,7 +51,7 @@ public class BloodStepSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.BLOOD_STEP.get());
     }
 
     @Override
@@ -85,7 +87,7 @@ public class BloodStepSpell extends AbstractSpell {
 
         }
         entity.resetFallDistance();
-
+        level.playSound(null, dest.x, dest.y, dest.z, getCastFinishSound().get(), SoundSource.NEUTRAL, 1f, 1f);
 
         //Invis take 1 tick to set in
         entity.setInvisible(true);

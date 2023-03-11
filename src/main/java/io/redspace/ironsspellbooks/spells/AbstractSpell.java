@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.Utils;
 import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
@@ -262,7 +263,7 @@ public abstract class AbstractSpell {
      */
     public void onClientCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         //irons_spellbooks.LOGGER.debug("AbstractSpell.: onClientCast:{}", level.isClientSide);
-        playSound(getCastFinishSound(), entity);
+        playSound(getCastFinishSound(), entity, true);
         if (ClientInputEvents.isUseKeyDown) {
             if (this.spellType.getCastType().holdToCast()) {
                 ClientSpellCastHelper.setSuppressRightClicks(true);
@@ -275,11 +276,35 @@ public abstract class AbstractSpell {
      * The primary spell effect handling goes here. Called Server Side
      */
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        playSound(getCastFinishSound(), entity);
+        playSound(getCastFinishSound(), entity, true);
+    }
+
+    private void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
+        // sound.ifPresent((soundEvent) -> entity.playSound(soundEvent, 1.0f, 1.0f));
+        if (sound.isPresent())
+            entity.playSound(sound.get(), 1.0f, 1.0f);
+        else if (playDefaultSound)
+            entity.playSound(defaultCastSound(), 1.0f, 1.0f);
+
+        //entity.playSound(sound.orElse(this:def), 1.0f, 1.0f));
     }
 
     private void playSound(Optional<SoundEvent> sound, Entity entity) {
-        sound.ifPresent((soundEvent) -> entity.playSound(soundEvent, 1.0f, 1.0f));
+        playSound(sound, entity, false);
+    }
+
+    private SoundEvent defaultCastSound() {
+        return switch (this.getSchoolType()) {
+
+            case FIRE -> SoundRegistry.FIRE_CAST.get();
+            case ICE -> SoundRegistry.ICE_CAST.get();
+            case LIGHTNING -> SoundRegistry.LIGHTNING_CAST.get();
+            case HOLY -> SoundRegistry.HOLY_CAST.get();
+            case ENDER -> SoundRegistry.ENDER_CAST.get();
+            case BLOOD -> SoundRegistry.BLOOD_CAST.get();
+            case EVOCATION -> SoundRegistry.EVOCATION_CAST.get();
+            default -> SoundRegistry.EVOCATION_CAST.get();
+        };
     }
 
     /**

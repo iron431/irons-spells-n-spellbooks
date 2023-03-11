@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.util;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.scroll.ScrollData;
 import io.redspace.ironsspellbooks.capabilities.scroll.ScrollDataProvider;
@@ -238,7 +237,7 @@ public class Utils {
     }
 
     private static boolean canHitWithRaycast(Entity entity) {
-        IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
+        //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
         return !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart || entity instanceof ItemEntity);
     }
 

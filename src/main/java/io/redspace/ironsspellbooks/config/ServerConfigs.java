@@ -32,10 +32,10 @@ public class ServerConfigs {
         createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 5, SpellRarity.UNCOMMON, 240);
         createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.WITHER_SKULL_SPELL, true, 10, SpellRarity.UNCOMMON, 2);
-        createSpellConfig(SpellType.EVASION_SPELL, true, 5, SpellRarity.EPIC, 180);
-        createSpellConfig(SpellType.MAGIC_ARROW_SPELL, true, 10, SpellRarity.RARE, 12);
-        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.TELEPORT_SPELL, true, 4, SpellRarity.UNCOMMON, 3);
+        createSpellConfig(SpellType.EVASION_SPELL, false, 5, SpellRarity.EPIC, 180);
+        createSpellConfig(SpellType.MAGIC_ARROW_SPELL, false, 10, SpellRarity.RARE, 12);
+        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, false, 10, SpellRarity.COMMON, 1);
+        createSpellConfig(SpellType.TELEPORT_SPELL, false, 4, SpellRarity.UNCOMMON, 3);
         createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, true, 6, SpellRarity.UNCOMMON, 10);
         createSpellConfig(SpellType.FANG_STRIKE_SPELL, true, 15, SpellRarity.COMMON, 5);
         createSpellConfig(SpellType.FANG_WARD_SPELL, true, 15, SpellRarity.COMMON, 15);

@@ -128,7 +128,7 @@ public class RandomizeScrollFunction extends LootItemConditionalFunction {
                 }
                 return applicableSpellList.toArray(new SpellType[]{});
             } else {
-                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID).toList().toArray(new SpellType[0]);
+                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID && spellType.isEnabled()).toList().toArray(new SpellType[0]);
 //                var nonVoidSpells = new SpellType[SpellType.values().length - SpellType.getSpellsFromSchool(SchoolType.VOID).length];
 //                int j = 0;
 //                for (int i = 0; i < nonVoidSpells.length; i++) {

@@ -112,5 +112,45 @@
     "sounds": [
       "irons_spellbooks:dead_king/explode"
     ]
+  },
+  "cast.generic.fire": {
+    "sounds": [
+      "irons_spellbooks:generic/fire_cast"
+    ]
+  },
+  "cast.generic.ice": {
+    "sounds": [
+      "irons_spellbooks:generic/ice_cast"
+    ]
+  },
+  "cast.generic.lightning": {
+    "sounds": [
+      "irons_spellbooks:generic/lightning_cast"
+    ]
+  },
+  "cast.generic.ender": {
+    "sounds": [
+      "irons_spellbooks:generic/ender_cast"
+    ]
+  },
+  "cast.generic.blood": {
+    "sounds": [
+      "irons_spellbooks:generic/blood_cast"
+    ]
+  },
+  "cast.generic.evocation": {
+    "sounds": [
+      "irons_spellbooks:generic/evocation_cast"
+    ]
+  },
+  "cast.generic.holy": {
+    "sounds": [
+      "irons_spellbooks:generic/holy_cast"
+    ]
+  },
+  "cast.blood_step": {
+    "sounds": [
+      "irons_spellbooks:blood_step_teleport"
+    ]
   }
 }

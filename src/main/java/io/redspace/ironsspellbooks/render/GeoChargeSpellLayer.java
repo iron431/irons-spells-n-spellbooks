@@ -1,23 +1,18 @@
 package io.redspace.ironsspellbooks.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.Utils;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.example.client.DefaultBipedBoneIdents;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import software.bernie.geckolib3.util.RenderUtils;
-
-import java.util.Optional;
 
 @OnlyIn(Dist.CLIENT)
 public class GeoChargeSpellLayer extends GeoLayerRenderer<AbstractSpellCastingMob> {
@@ -51,8 +46,10 @@ public class GeoChargeSpellLayer extends GeoLayerRenderer<AbstractSpellCastingMo
 
             //Lance position
             //RenderUtils.translateMatrixToBone(poseStack, bone.get());
-            RenderUtils.prepMatrixForBone(poseStack, bone);
-            RenderUtils.translateAndRotateMatrixForBone(poseStack, bone);
+            RenderUtils.translateMatrixToBone(poseStack, bone);
+
+//            RenderUtils.prepMatrixForBone(poseStack, bone);
+            //RenderUtils.translateAndRotateMatrixForBone(poseStack, bone);
             //this.getRenderer().renderCube(bone.get().childCubes.get(0), poseStack, bufferSource.getBuffer(RenderType.eyes(LightningLanceRenderer.TEXTURES[0])),1, 1,1,1,1,1 );
             // RenderUtils.translateToPivotPint(poseStack, bone.childCubes.get(0));
             LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
