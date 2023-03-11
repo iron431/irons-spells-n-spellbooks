@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells;
 
+import com.mojang.datafixers.util.Either;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
@@ -17,8 +18,6 @@ import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.Utils;
-import dev.kosmx.playerAnim.core.data.KeyframeAnimation;
-import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +30,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -39,8 +40,18 @@ import java.util.Optional;
 
 public abstract class AbstractSpell {
     public static ResourceLocation ANIMATION_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "animation");
-    public static ResourceLocation ANIMATION_INSTANT_CAST = new ResourceLocation(IronsSpellbooks.MODID, "instant_projectile");
-    public static ResourceLocation ANIMATION_CONTINUOUS_CAST = new ResourceLocation(IronsSpellbooks.MODID, "continuous_thrust");
+
+    public static ResourceLocation ANIMATION_INSTANT_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "instant_projectile");
+    public static ResourceLocation ANIMATION_CONTINUOUS_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "continuous_thrust");
+    public static ResourceLocation ANIMATION_CHARGED_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "charged_throw");
+    public static ResourceLocation ANIMATION_LONG_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "long_cast");
+    public static ResourceLocation ANIMATION_LONG_CAST_FINISH_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "long_cast_finish");
+
+    private final AnimationBuilder ANIMATION_INSTANT_CAST = new AnimationBuilder().addAnimation(ANIMATION_INSTANT_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder ANIMATION_CONTINUOUS_CAST = new AnimationBuilder().addAnimation(ANIMATION_CONTINUOUS_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
+    private final AnimationBuilder ANIMATION_CHARGED_CAST = new AnimationBuilder().addAnimation(ANIMATION_CHARGED_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder ANIMATION_LONG_CAST = new AnimationBuilder().addAnimation(ANIMATION_LONG_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final AnimationBuilder ANIMATION_LONG_CAST_FINISH = new AnimationBuilder().addAnimation(ANIMATION_LONG_CAST_FINISH_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 
     private final SpellType spellType;
     private final CastType castType;
@@ -57,7 +68,6 @@ public abstract class AbstractSpell {
     private final LazyOptional<Double> powerMultiplier;
     private final LazyOptional<Integer> cooldown;
 
-
     protected final List<MutableComponent> uniqueInfo = new ArrayList<>();
 
     public AbstractSpell(SpellType spellType) {
@@ -67,8 +77,6 @@ public abstract class AbstractSpell {
         manaMultiplier = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(spellType).MANA_MULTIPLIER));
         powerMultiplier = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(spellType).POWER_MULTIPLIER));
         cooldown = LazyOptional.of(() -> ((int) (ServerConfigs.getSpellConfig(spellType).COOLDOWN_IN_SECONDS * 20)));
-
-
     }
 
     public int getID() {
@@ -117,22 +125,30 @@ public abstract class AbstractSpell {
 
     public abstract Optional<SoundEvent> getCastStartSound();
 
+    public abstract Optional<SoundEvent> getCastFinishSound();
+
     /**
      * Default Animations Based on Cast Type. Override for specific spell-based animations
-    */
-    public ResourceLocation getCastAnimation(Player player) {
-        return switch (this.castType){
-            case INSTANT -> ANIMATION_INSTANT_CAST;
-            case CONTINUOUS -> ANIMATION_CONTINUOUS_CAST;
-            default -> null;
+     */
+    public Either<AnimationBuilder, ResourceLocation> getCastStartAnimation(Player player) {
+        return switch (this.castType) {
+            case INSTANT -> player == null ? Either.left(ANIMATION_INSTANT_CAST) : Either.right(ANIMATION_INSTANT_CAST_RESOURCE);
+            case CONTINUOUS -> player == null ? Either.left(ANIMATION_CONTINUOUS_CAST) : Either.right(ANIMATION_CONTINUOUS_CAST_RESOURCE);
+            case LONG -> player == null ? Either.left(ANIMATION_LONG_CAST) : Either.right(ANIMATION_LONG_CAST_RESOURCE);
+            case CHARGE -> player == null ? Either.left(ANIMATION_CHARGED_CAST) : Either.right(ANIMATION_CHARGED_CAST_RESOURCE);
+            default -> Either.left(null);
         };
     }
 
-    public Optional<KeyframeAnimation> keyFrameAnimationOf(ResourceLocation animation){
-        return Optional.of(PlayerAnimationRegistry.getAnimation(animation));
+    /**
+     * Default Animations Based on Cast Type. Override for specific spell-based animations
+     */
+    public Either<AnimationBuilder, ResourceLocation> getCastFinishAnimation(Player player) {
+        return switch (this.castType) {
+            case LONG -> player == null ? Either.left(ANIMATION_LONG_CAST_FINISH) : Either.right(ANIMATION_LONG_CAST_FINISH_RESOURCE);
+            default -> Either.left(null);
+        };
     }
-
-    public abstract Optional<SoundEvent> getCastFinishSound();
 
     public float getSpellPower(Entity sourceEntity) {
         float entitySpellPowerModifier = 1;

@@ -262,14 +262,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private CastType lastCastAnimation = CastType.NONE;
     private boolean cancelCastAnimation = false;
-
-    private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);//.addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
-    private final AnimationBuilder charged_throw = new AnimationBuilder().addAnimation("charged_throw", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder long_cast = new AnimationBuilder().addAnimation("long_cast", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder long_cast_finish = new AnimationBuilder().addAnimation("long_cast_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
-
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
     private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
     private final AnimationController animationControllerLongCast = new AnimationController(this, "long_casting", 0, this::longCastingPredicate);
@@ -299,9 +292,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
         var controller = event.getController();
         if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.INSTANT && controller.getAnimationState() == AnimationState.Stopped) {
-            controller.markNeedsReload();
-            controller.setAnimation(instantCast);
-            cancelCastAnimation = false;
+            setStartAnimationFromSpell(controller, castingSpell);
         }
         return PlayState.CONTINUE;
     }
@@ -313,19 +304,11 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
         var controller = event.getController();
         if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.LONG && controller.getAnimationState() == AnimationState.Stopped) {
-            //irons_spellbooks.LOGGER.debug("longCastingPredicate.1");
-            lastCastAnimation = CastType.LONG;
-            controller.markNeedsReload();
-            controller.setAnimation(long_cast);
-            cancelCastAnimation = false;
+            setStartAnimationFromSpell(controller, castingSpell);
         }
 
-        if (!isCasting() && lastCastAnimation == CastType.LONG) {
-            //irons_spellbooks.LOGGER.debug("longCastingPredicate.2");
-            controller.markNeedsReload();
-            controller.setAnimation(long_cast_finish);
-            lastCastAnimation = CastType.NONE;
-            cancelCastAnimation = false;
+        if (!isCasting() && castingSpell != null && lastCastAnimation == CastType.LONG) {
+            setFinishAnimationFromSpell(controller, castingSpell);
         }
 
         return PlayState.CONTINUE;
@@ -338,14 +321,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
         var controller = event.getController();
         if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationState.Stopped) {
-            if (castingSpell.getCastType() == CastType.CONTINUOUS) {
-                controller.markNeedsReload();
-                controller.setAnimation(continuous);
-                cancelCastAnimation = false;
-            } else if (castingSpell.getCastType() == CastType.CHARGE) {
-                controller.markNeedsReload();
-                controller.setAnimation(charged_throw);
-                cancelCastAnimation = false;
+            if (castingSpell.getCastType() == CastType.CONTINUOUS || castingSpell.getCastType() == CastType.CHARGE) {
+                setStartAnimationFromSpell(controller, castingSpell);
             }
             return PlayState.CONTINUE;
         }
@@ -355,6 +332,24 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         } else {
             return PlayState.STOP;
         }
+    }
+
+    private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
+        spell.getCastStartAnimation(null).left().ifPresent(animationBuilder -> {
+            controller.markNeedsReload();
+            controller.setAnimation(animationBuilder);
+            lastCastAnimation = spell.getCastType();
+            cancelCastAnimation = false;
+        });
+    }
+
+    private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
+        spell.getCastFinishAnimation(null).left().ifPresent(animationBuilder -> {
+            controller.markNeedsReload();
+            controller.setAnimation(animationBuilder);
+            lastCastAnimation = CastType.NONE;
+            cancelCastAnimation = false;
+        });
     }
 
     public boolean isAnimating() {
