@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -39,6 +40,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     public static final ResourceLocation textureResource = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
     public static final ResourceLocation animationInstantCast = new ResourceLocation(IronsSpellbooks.MODID, "animations/casting_animations.json");
     private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SyncedSpellData.SYNCED_SPELL_DATA);
+    private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
 
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
     private final PlayerMagicData playerMagicData = new PlayerMagicData();
@@ -58,6 +60,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_SPELL, new SyncedSpellData(-1));
+        this.entityData.define(DATA_CANCEL_CAST, false);
         //irons_spellbooks.LOGGER.debug("ASCM.defineSynchedData DATA_SPELL:{}", DATA_SPELL);
     }
 
@@ -69,8 +72,13 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         if (!level.isClientSide) {
             return;
         }
+        if (pKey.getId() == DATA_CANCEL_CAST.getId()) {
+            IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_CANCEL_CAST");
+            cancelCast();
+        }
 
         if (pKey.getId() == DATA_SPELL.getId()) {
+            IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_SPELL");
             var isCasting = playerMagicData.isCasting();
             var syncedSpellData = entityData.get(DATA_SPELL);
             //irons_spellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated(DATA_SPELL) {} {}", level.isClientSide, syncedSpellData);
@@ -105,7 +113,14 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         entityData.set(DATA_SPELL, playerMagicData.getSyncedData().deepClone());
     }
 
-    public void cancelCast(){
+    public void cancelCast() {
+        if (level.isClientSide) {
+            cancelCastAnimation = true;
+        } else {
+            //Need to ensure we pass a different value if we want the data to sync
+            entityData.set(DATA_CANCEL_CAST, !entityData.get(DATA_CANCEL_CAST));
+        }
+
         castComplete();
     }
 
@@ -180,6 +195,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             return;
         }
 
+        if (level.isClientSide) {
+            cancelCastAnimation = false;
+        }
+
         //irons_spellbooks.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level.isClientSide);
 
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
@@ -237,16 +256,12 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     /**
-     * GeckoLib
+     * GeckoLib Animations
      **/
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
-    }
-
+    private CastType lastCastAnimation = CastType.NONE;
+    private boolean cancelCastAnimation = false;
 
     private final AnimationBuilder instantCast = new AnimationBuilder().addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);//.addAnimation("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder continuous = new AnimationBuilder().addAnimation("continuous_thrust", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
@@ -258,6 +273,11 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
     private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
     private final AnimationController animationControllerLongCast = new AnimationController(this, "long_casting", 0, this::longCastingPredicate);
+
+    @Override
+    public AnimationFactory getFactory() {
+        return factory;
+    }
 
     @Override
     public void registerControllers(AnimationData data) {
@@ -273,23 +293,31 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     private PlayState instantCastingPredicate(AnimationEvent event) {
+        if (cancelCastAnimation) {
+            return PlayState.STOP;
+        }
+
         var controller = event.getController();
         if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.INSTANT && controller.getAnimationState() == AnimationState.Stopped) {
             controller.markNeedsReload();
             controller.setAnimation(instantCast);
+            cancelCastAnimation = false;
         }
         return PlayState.CONTINUE;
     }
 
-    private CastType lastCastAnimation = CastType.NONE;
-
     private PlayState longCastingPredicate(AnimationEvent event) {
+        if (cancelCastAnimation) {
+            return PlayState.STOP;
+        }
+
         var controller = event.getController();
         if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.LONG && controller.getAnimationState() == AnimationState.Stopped) {
             //irons_spellbooks.LOGGER.debug("longCastingPredicate.1");
             lastCastAnimation = CastType.LONG;
             controller.markNeedsReload();
             controller.setAnimation(long_cast);
+            cancelCastAnimation = false;
         }
 
         if (!isCasting() && lastCastAnimation == CastType.LONG) {
@@ -297,21 +325,27 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             controller.markNeedsReload();
             controller.setAnimation(long_cast_finish);
             lastCastAnimation = CastType.NONE;
+            cancelCastAnimation = false;
         }
 
         return PlayState.CONTINUE;
     }
 
-
     private PlayState otherCastingPredicate(AnimationEvent event) {
+        if (cancelCastAnimation) {
+            return PlayState.STOP;
+        }
+
         var controller = event.getController();
         if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationState.Stopped) {
             if (castingSpell.getCastType() == CastType.CONTINUOUS) {
                 controller.markNeedsReload();
                 controller.setAnimation(continuous);
+                cancelCastAnimation = false;
             } else if (castingSpell.getCastType() == CastType.CHARGE) {
                 controller.markNeedsReload();
                 controller.setAnimation(charged_throw);
+                cancelCastAnimation = false;
             }
             return PlayState.CONTINUE;
         }

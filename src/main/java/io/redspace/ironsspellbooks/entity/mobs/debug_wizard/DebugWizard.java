@@ -25,6 +25,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     private int spellLevel;
     private boolean targetsPlayer;
     private String spellInfo;
+    private int cancelCastAfterTicks;
     private static final EntityDataAccessor<String> DEBUG_SPELL_INFO = SynchedEntityData.defineId(DebugWizard.class, EntityDataSerializers.STRING);
 
     public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
@@ -38,7 +39,8 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         this.targetsPlayer = targetsPlayer;
         this.spellLevel = spellLevel;
         this.spellType = spellType;
-        initGoals(cancelCastAfterTicks);
+        this.cancelCastAfterTicks = cancelCastAfterTicks;
+        initGoals();
     }
 
     public String getSpellInfo() {
@@ -64,8 +66,8 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         }
     }
 
-    private void initGoals(int cancelCastAfterTicks) {
-        this.goalSelector.addGoal(1, new DebugWizardAttackGoal(this, this.spellType, this.spellLevel, cancelCastAfterTicks));
+    private void initGoals() {
+        this.goalSelector.addGoal(1, new DebugWizardAttackGoal(this, spellType, spellLevel, cancelCastAfterTicks));
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.35D));
 
@@ -81,6 +83,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         pCompound.putInt("spellType", spellType.getValue());
         pCompound.putInt("spellLevel", spellLevel);
         pCompound.putBoolean("targetsPlayer", targetsPlayer);
+        pCompound.putInt("cancelCastAfterTicks", cancelCastAfterTicks);
     }
 
     @Override
@@ -89,9 +92,8 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         spellType = SpellType.getTypeFromValue(pCompound.getInt("spellType"));
         spellLevel = pCompound.getInt("spellLevel");
         targetsPlayer = pCompound.getBoolean("targetsPlayer");
-
-
-        initGoals(-1);
+        cancelCastAfterTicks = pCompound.getInt("cancelCastAfterTicks");
+        initGoals();
     }
 
     @Override

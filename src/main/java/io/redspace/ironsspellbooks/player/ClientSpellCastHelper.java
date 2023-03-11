@@ -28,6 +28,7 @@ public class ClientSpellCastHelper {
      */
     public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource) {
         var spell = AbstractSpell.getSpell(spellId, level);
+        IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
         spell.onClientCastComplete(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
     }
 
@@ -67,7 +68,6 @@ public class ClientSpellCastHelper {
             Vec3 random = new Vec3(getRandomScaled(.08f), getRandomScaled(.08f), getRandomScaled(.08f));
             level.addParticle(ParticleHelper.BLOOD, pos1.x, pos1.y, pos1.z, scaledDirection.x + random.x, scaledDirection.y + random.y, scaledDirection.z + random.z);
         }
-
     }
 
     public static void handleClientboundHealParticles(Vec3 pos) {

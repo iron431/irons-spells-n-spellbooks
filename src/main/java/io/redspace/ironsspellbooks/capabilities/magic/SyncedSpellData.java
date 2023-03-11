@@ -12,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class SyncedSpellData {
+    //syncedEffectFlags
     public static final long ANGEL_WINGS = 1;
     public static final long EVASION = 2;
     public static final long HEARTSTOP = 4;
@@ -19,6 +20,7 @@ public class SyncedSpellData {
     public static final long ASCENSION = 16;
     public static final long TRUE_INVIS = 32;
 
+    //localEffectFlags
     public static final long HEAL_TARGET = 1;
 
 
