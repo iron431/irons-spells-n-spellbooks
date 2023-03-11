@@ -260,7 +260,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
      **/
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
-    private CastType lastCastAnimation = CastType.NONE;
+    private SpellType lastCastSpellType = SpellType.NONE_SPELL;
     private boolean cancelCastAnimation = false;
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
@@ -307,8 +307,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             setStartAnimationFromSpell(controller, castingSpell);
         }
 
-        if (!isCasting() && castingSpell != null && lastCastAnimation == CastType.LONG) {
-            setFinishAnimationFromSpell(controller, castingSpell);
+        if (!isCasting() && lastCastSpellType.getCastType() == CastType.LONG) {
+            setFinishAnimationFromSpell(controller, lastCastSpellType);
         }
 
         return PlayState.CONTINUE;
@@ -338,16 +338,17 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         spell.getCastStartAnimation(null).left().ifPresent(animationBuilder -> {
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
-            lastCastAnimation = spell.getCastType();
+            lastCastSpellType = spell.getSpellType();
             cancelCastAnimation = false;
         });
     }
 
-    private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
+    private void setFinishAnimationFromSpell(AnimationController controller, SpellType spellType) {
+        var spell = AbstractSpell.getSpell(spellType, 1);
         spell.getCastFinishAnimation(null).left().ifPresent(animationBuilder -> {
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
-            lastCastAnimation = CastType.NONE;
+            lastCastSpellType = SpellType.NONE_SPELL;
             cancelCastAnimation = false;
         });
     }
