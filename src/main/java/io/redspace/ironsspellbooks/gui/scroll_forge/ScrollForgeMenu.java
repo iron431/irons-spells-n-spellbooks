@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -51,9 +52,27 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
         IItemHandler itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get();
 
-        inkSlot = new SlotItemHandler(itemHandler, 0, 12, 17);
-        blankScrollSlot = new SlotItemHandler(itemHandler, 1, 35, 17);
-        focusSlot = new SlotItemHandler(itemHandler, 2, 58, 17);
+        inkSlot = new SlotItemHandler(itemHandler, 0, 12, 17) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return stack.getItem() instanceof InkItem;
+            }
+
+        };
+        blankScrollSlot = new SlotItemHandler(itemHandler, 1, 35, 17) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return stack.is(Items.PAPER);
+            }
+
+        };
+        focusSlot = new SlotItemHandler(itemHandler, 2, 58, 17) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return stack.is(ModTags.SCHOOL_FOCUS);
+            }
+
+        };
         resultSlot = new SlotItemHandler(itemHandler, 3, 35, 47) {
             @Override
             public boolean mayPlace(ItemStack stack) {

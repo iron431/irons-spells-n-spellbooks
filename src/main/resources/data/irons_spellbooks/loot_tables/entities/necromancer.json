@@ -11,15 +11,15 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 16.0,
-                "min": 2.0
+                "max": 1.0,
+                "min": 0.0
               },
               "function": "minecraft:set_count"
             },
             {
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
+                "max": 1.0,
                 "min": 0.0
               },
               "function": "minecraft:looting_enchant"
@@ -40,21 +40,11 @@
             {
               "function": "irons_spellbooks:randomize_scroll",
               "quality": {
-                "min": 0.35,
-                "max": 1
+                "min": 0.0,
+                "max": 0.3
               }
             }
-          ]
-        }
-      ],
-      "rolls": 2
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:blood_staff",
+          ],
           "conditions": [
             {
               "condition": "minecraft:random_chance_with_looting",

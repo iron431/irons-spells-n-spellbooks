@@ -1,13 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "AAA",
-    " D ",
-    "DDD"
+    "ADA",
+    " A ",
+    "VNV"
   ],
   "key": {
     "D": {
-      "item": "minecraft:deepslate_bricks"
+      "tag": "forge:gems/diamond"
+    },
+    "V": {
+      "item": "minecraft:anvil"
+    },
+    "N": {
+      "tag": "forge:ingots/netherite"
     },
     "A": {
       "tag": "forge:storage_blocks/amethyst"

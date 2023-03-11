@@ -19,6 +19,7 @@ public class NecromancerRenderer extends AbstractSpellCastingMobRenderer {
     @Override
     public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         RenderSystem.disableCull();
+        type = RenderType.entityTranslucentCull(modelProvider.getTextureResource(animatable));
         super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }

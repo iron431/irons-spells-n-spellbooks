@@ -45,8 +45,19 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
         IItemHandler itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get();
 
-        spellBookSlot = new SlotItemHandler(itemHandler, 0, 17, 21);
-        scrollSlot = new SlotItemHandler(itemHandler, 1, 17, 53);
+        spellBookSlot = new SlotItemHandler(itemHandler, 0, 17, 21) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return stack.getItem() instanceof SpellBook;
+            }
+        };
+        scrollSlot = new SlotItemHandler(itemHandler, 1, 17, 53) {
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return stack.is(ItemRegistry.SCROLL.get());
+            }
+
+        };
         resultSlot = new SlotItemHandler(itemHandler, 2, 208, 136) {
             @Override
             public boolean mayPlace(ItemStack stack) {

@@ -13,4 +13,8 @@ public interface MagicSummon extends AntiMagicSusceptible {
         onUnSummon();
     }
 
+    default boolean isSummonAlliedTo(LivingEntity entity) {
+        return entity == getSummoner() || getSummoner().isAlliedTo(entity);
+    }
+
 }

@@ -31,8 +31,8 @@
             {
               "function": "irons_spellbooks:randomize_scroll",
               "quality": {
-                "min": 0.0,
-                "max": 0.6
+                "min": 0.2,
+                "max": 0.75
               }
             }
           ]
@@ -78,12 +78,12 @@
     {
       "rolls": {
         "min": 1,
-        "max": 8
+        "max": 3
       },
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/decent_ink"
+          "name": "irons_spellbooks:magic_items/good_ink"
         }
       ]
     },

@@ -10,22 +10,22 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 17,
+          "weight": 27,
           "name": "irons_spellbooks:uncommon_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 10,
+          "weight": 2,
           "name": "irons_spellbooks:rare_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 3,
+          "weight": 1,
           "name": "irons_spellbooks:epic_ink"
         },
         {
           "type": "minecraft:item",
-          "weight": 1,
+          "weight": 0,
           "name": "irons_spellbooks:legendary_ink"
         },
         {
