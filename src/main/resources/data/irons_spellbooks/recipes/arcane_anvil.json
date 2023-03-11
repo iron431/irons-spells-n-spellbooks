@@ -7,7 +7,7 @@
   ],
   "key": {
     "D": {
-      "item": "minecraft:polished_deepslate_bricks"
+      "item": "minecraft:deepslate_bricks"
     },
     "A": {
       "tag": "forge:storage_blocks/amethyst"

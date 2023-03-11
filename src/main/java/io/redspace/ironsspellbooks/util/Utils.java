@@ -119,7 +119,7 @@ public class Utils {
     }
 
     public static String stringTruncation(double f, int places) {
-        return String.format("%." + places + "f", f);
+        return String.format("%." + (f % 1 == 0 ? 0 : places) + "f", f);
     }
 
     public static float getAngle(Vec2 a, Vec2 b) {
