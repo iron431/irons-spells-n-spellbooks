@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.debug_wizard;
 
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.DebugTargetClosestEntityGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.WizardDebugAttackGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.DebugWizardAttackGoal;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -32,13 +32,13 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         spellInfo = "No Spell Found";
     }
 
-    public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel, SpellType spellType, int spellLevel, boolean targetsPlayer) {
+    public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel, SpellType spellType, int spellLevel, boolean targetsPlayer, int cancelCastAfterTicks) {
         super(pEntityType, pLevel);
 
         this.targetsPlayer = targetsPlayer;
         this.spellLevel = spellLevel;
         this.spellType = spellType;
-        initGoals();
+        initGoals(cancelCastAfterTicks);
     }
 
     public String getSpellInfo() {
@@ -64,8 +64,8 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         }
     }
 
-    private void initGoals() {
-        this.goalSelector.addGoal(1, new WizardDebugAttackGoal(this, this.spellType, this.spellLevel));
+    private void initGoals(int cancelCastAfterTicks) {
+        this.goalSelector.addGoal(1, new DebugWizardAttackGoal(this, this.spellType, this.spellLevel, cancelCastAfterTicks));
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.35D));
 
@@ -91,7 +91,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         targetsPlayer = pCompound.getBoolean("targetsPlayer");
 
 
-        initGoals();
+        initGoals(-1);
     }
 
     @Override

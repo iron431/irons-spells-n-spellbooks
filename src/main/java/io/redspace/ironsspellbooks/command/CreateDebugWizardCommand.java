@@ -22,15 +22,22 @@ public class CreateDebugWizardCommand {
             return commandSourceStack.hasPermission(2);
         }).then(Commands.argument("spellType", EnumArgument.enumArgument(SpellType.class))
                 .then(Commands.argument("spellLevel", IntegerArgumentType.integer(0, 10))
-                        .then(Commands.argument("targetsPlayer", BoolArgumentType.bool()).executes((ctx) -> {
-                            return createDebugWizard(ctx.getSource(), ctx.getArgument("spellType", SpellType.class), IntegerArgumentType.getInteger(ctx, "spellLevel"), BoolArgumentType.getBool(ctx, "targetsPlayer"));
-                        })))));
+                        .then(Commands.argument("targetsPlayer", BoolArgumentType.bool())
+                                .then(Commands.argument("cancelAfterTicks", IntegerArgumentType.integer(0))
+                                        .executes((ctx) -> {
+                                            return createDebugWizard(
+                                                    ctx.getSource(),
+                                                    ctx.getArgument("spellType", SpellType.class),
+                                                    IntegerArgumentType.getInteger(ctx, "spellLevel"),
+                                                    BoolArgumentType.getBool(ctx, "targetsPlayer"),
+                                                    IntegerArgumentType.getInteger(ctx, "cancelAfterTicks"));
+                                        }))))));
     }
 
-    private static int createDebugWizard(CommandSourceStack source, SpellType spellType, int spellLevel, boolean targetsPlayer) throws CommandSyntaxException {
+    private static int createDebugWizard(CommandSourceStack source, SpellType spellType, int spellLevel, boolean targetsPlayer, int cancelAfterTicks) throws CommandSyntaxException {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
-            var debugWizard = new DebugWizard(EntityRegistry.DEBUG_WIZARD.get(), serverPlayer.level, spellType, spellLevel, targetsPlayer);
+            var debugWizard = new DebugWizard(EntityRegistry.DEBUG_WIZARD.get(), serverPlayer.level, spellType, spellLevel, targetsPlayer, cancelAfterTicks);
             debugWizard.setPos(serverPlayer.position());
             if (serverPlayer.level.addFreshEntity(debugWizard)) {
                 return 1;

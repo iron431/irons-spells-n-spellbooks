@@ -45,10 +45,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private @Nullable AbstractSpell castingSpell;
 
-    //Client-side only
-    private boolean animationFlag;
-    private int animTimestamp = -1;
-
     protected AbstractSpellCastingMob(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         playerMagicData.setSyncedData(new SyncedSpellData(this));
@@ -105,9 +101,12 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     public void doSyncSpellData() {
-        //irons_spellbooks.LOGGER.debug("ASCM.doSyncSpellData {} {}", level.isClientSide, playerMagicData.getSyncedData());
         //Need a deep clone of the object because set does a basic object ref compare to trigger the update. Do not remove this
         entityData.set(DATA_SPELL, playerMagicData.getSyncedData().deepClone());
+    }
+
+    public void cancelCast(){
+        castComplete();
     }
 
     private void castComplete() {
@@ -189,8 +188,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         if (!level.isClientSide) {
             castingSpell.onServerPreCast(level, this, playerMagicData);
         }
-
-
     }
 
     public boolean isCasting() {
@@ -244,7 +241,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
      **/
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
 
     @Override
     public AnimationFactory getFactory() {
