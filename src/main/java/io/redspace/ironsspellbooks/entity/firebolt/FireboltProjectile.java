@@ -101,13 +101,15 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         var target = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(target, damage, SpellType.FIREBOLT_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE))
+        if (DamageSources.applyDamage(target, damage, SpellType.FIREBOLT_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE)){
             target.setSecondsOnFire(3);
-
-        if (!(target instanceof LivingEntity)) {
-            serverSideImpactParticles();
+            discard();
+            if (!(target instanceof LivingEntity)) {
+                serverSideImpactParticles();
+            }
         }
-        discard();
+
+
 
     }
 
@@ -150,7 +152,7 @@ public class FireboltProjectile extends Projectile implements ItemSupplier {
 
     @Override
     protected boolean canHitEntity(Entity entity) {
-        if (entity == getOwner())
+        if (entity == getOwner() && !getOwner().isAlliedTo(entity))
             return false;
         return super.canHitEntity(entity);
     }

@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -104,6 +105,13 @@ public class LightningLanceProjectile extends Projectile {
         super.onHit(pResult);
 
         this.discard();
+    }
+
+    @Override
+    protected boolean canHitEntity(Entity entity) {
+        if (entity == getOwner() && !getOwner().isAlliedTo(entity))
+            return false;
+        return super.canHitEntity(entity);
     }
 
     public void setDamage(float damage) {

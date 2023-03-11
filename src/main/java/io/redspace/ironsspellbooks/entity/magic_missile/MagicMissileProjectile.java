@@ -102,8 +102,9 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         //irons_spellbooks.LOGGER.debug("MagicMissileProjectile.onHitEntity");
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.MAGIC_MISSILE_SPELL.getDamageSource(this, getOwner()), SchoolType.ENDER);
-        kill();
+
+        if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.MAGIC_MISSILE_SPELL.getDamageSource(this, getOwner()), SchoolType.ENDER))
+            kill();
 
     }
 
@@ -133,7 +134,7 @@ public class MagicMissileProjectile extends Projectile implements ItemSupplier {
 
     @Override
     protected boolean canHitEntity(Entity entity) {
-        if (entity == getOwner())
+        if (entity == getOwner() && !getOwner().isAlliedTo(entity))
             return false;
         return super.canHitEntity(entity);
     }

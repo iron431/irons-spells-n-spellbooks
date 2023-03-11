@@ -40,7 +40,7 @@ public class DamageSources {
         if (target instanceof LivingEntity livingTarget) {
             float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
 
-            if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
+            if (damageSource.getDirectEntity() instanceof LivingEntity livingAttacker) {
                 if (livingAttacker.isAlliedTo(livingTarget))
                     return false;
                 livingAttacker.setLastHurtMob(target);
