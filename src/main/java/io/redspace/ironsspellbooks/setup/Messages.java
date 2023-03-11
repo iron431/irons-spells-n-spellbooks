@@ -139,6 +139,12 @@ public class Messages {
                 .consumer(ClientboundOnCastStarted::handle)
                 .add();
 
+        net.messageBuilder(ClientboundOnCastFinished.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundOnCastFinished::new)
+                .encoder(ClientboundOnCastFinished::toBytes)
+                .consumer(ClientboundOnCastFinished::handle)
+                .add();
+
         net.messageBuilder(ClientboundCastError.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundCastError::new)
                 .encoder(ClientboundCastError::toBytes)

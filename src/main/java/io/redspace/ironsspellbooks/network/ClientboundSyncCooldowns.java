@@ -50,7 +50,7 @@ public class ClientboundSyncCooldowns {
                 //irons_spellbooks.LOGGER.debug("ClientboundSyncCooldowns {} {} {}", k, v.getSpellCooldown(), v.getCooldownRemaining());
                 ClientMagicData.getCooldowns().addCooldown(k, v.getSpellCooldown(), v.getCooldownRemaining());
             });
-            ClientMagicData.resetClientCastState();
+            ClientMagicData.resetClientCastState(null);
 
         });
         return true;

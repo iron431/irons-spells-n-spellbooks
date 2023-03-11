@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class ClientMagicData {
 
@@ -45,8 +46,7 @@ public class ClientMagicData {
     /**
      * Animation Data
      */
-
-    public static KeyframeAnimationPlayer castingAnimationPlayer;
+    public static HashMap<UUID, KeyframeAnimationPlayer> castingAnimationPlayerLookup = new HashMap<>();
 
 
     public static PlayerCooldowns getCooldowns() {
@@ -97,15 +97,18 @@ public class ClientMagicData {
         playerMagicData.initiateCast(spellId, spellLevel, castDuration, castSource);
     }
 
-    public static void resetClientCastState() {
+    public static void resetClientCastState(UUID playerUUID) {
         IronsSpellbooks.LOGGER.debug("ClientMagicData.resetClientCastState");
         playerMagicData.resetCastingState();
 
-        if (castingAnimationPlayer != null) {
-            castingAnimationPlayer.stop();
+        if (playerUUID != null) {
+            var animationPlayer = castingAnimationPlayerLookup.getOrDefault(playerUUID, null);
+            if (animationPlayer != null) {
+                animationPlayer.stop();
+            }
         }
 
-        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem()) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUUID() == playerUUID) {
             Minecraft.getInstance().player.stopUsingItem();
         }
         resetTargetingData();

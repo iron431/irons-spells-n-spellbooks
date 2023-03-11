@@ -43,7 +43,7 @@ public class ClientboundUpdateCastingState {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             if (this.castFinished) {
-                ClientMagicData.resetClientCastState();
+                ClientMagicData.resetClientCastState(null);
             } else {
                 ClientMagicData.setClientCastState(spellId, spellLevel, castTime, castSource);
             }

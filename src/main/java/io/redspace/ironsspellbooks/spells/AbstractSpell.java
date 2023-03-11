@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.network.ClientboundCastError;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
+import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastStarted;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
@@ -328,6 +329,10 @@ public abstract class AbstractSpell {
      * Called on the server when a spell finishes casting or is cancelled, used for any cleanup or extra functionality
      */
     public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        if (entity instanceof ServerPlayer serverPlayer) {
+            //TODO: maybe can consolidate a code path with sendToSource=true
+            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType), serverPlayer, false);
+        }
     }
 
     /**

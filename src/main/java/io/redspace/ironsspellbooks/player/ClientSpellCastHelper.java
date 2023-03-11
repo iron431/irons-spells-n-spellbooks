@@ -109,25 +109,25 @@ public class ClientSpellCastHelper {
         }
     }
 
-    private static void animatePlayer(Player player, ResourceLocation resourceLocation) {
+    private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         var keyframeAnimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
         if (keyframeAnimation != null) {
             //noinspection unchecked
             var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(AbstractSpell.ANIMATION_RESOURCE);
             if (animation != null) {
-                ClientMagicData.castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
-                ClientMagicData.castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
+                var castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
+                ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), castingAnimationPlayer);
+                castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
 
                 //TODO: This should be configuration driven
                 if (false) {
-                    ClientMagicData.castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration().setShowLeftArm(true).setShowRightArm(true));
+                    castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration().setShowLeftArm(true).setShowRightArm(true));
                 }
 
                 //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
-                animation.setAnimation(ClientMagicData.castingAnimationPlayer);
+                animation.setAnimation(castingAnimationPlayer);
             }
         }
-
     }
 
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
@@ -137,7 +137,21 @@ public class ClientSpellCastHelper {
             AbstractSpell.getSpell(spellType, 1)
                     .getCastStartAnimation(player)
                     .right()
-                    .ifPresent((resourceLocation -> animatePlayer(player, resourceLocation)));
+                    .ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
+        }
+    }
+
+    public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType) {
+        var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
+        if (player != null) {
+            IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastFinished {} {}", player, spellType);
+            AbstractSpell.getSpell(spellType, 1)
+                    .getCastFinishAnimation(player)
+                    .right()
+                    .ifPresentOrElse(
+                            (resourceLocation -> animatePlayerStart(player, resourceLocation)), //ifPresent
+                            () -> ClientMagicData.resetClientCastState(castingEntityId) //orElse
+                    );
         }
     }
 
