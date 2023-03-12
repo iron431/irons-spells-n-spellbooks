@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.config;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 
 public class SpellConfigParameters {
@@ -13,6 +14,7 @@ public class SpellConfigParameters {
     //Not implemented:
 
     public SpellConfigParameters(boolean ENABLED, int MAX_LEVEL, SpellRarity MIN_RARITY, double POWER_MULTIPLIER, double MANA_MULTIPLIER, double COOLDOWN_IN_SECONDS) {
+        //IronsSpellbooks.LOGGER.debug("CFG: SpellConfigParameters");
         this.MAX_LEVEL = MAX_LEVEL;
         this.MIN_RARITY = MIN_RARITY;
         this.ENABLED = ENABLED;
