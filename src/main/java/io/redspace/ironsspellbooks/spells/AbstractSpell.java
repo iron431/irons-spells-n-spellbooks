@@ -331,7 +331,7 @@ public abstract class AbstractSpell {
     public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (entity instanceof ServerPlayer serverPlayer) {
             //TODO: maybe can consolidate a code path with sendToSource=true
-            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType), serverPlayer, false);
+            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType), serverPlayer, true);
         }
     }
 

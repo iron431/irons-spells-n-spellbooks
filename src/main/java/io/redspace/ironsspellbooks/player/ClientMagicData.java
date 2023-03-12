@@ -98,14 +98,18 @@ public class ClientMagicData {
     }
 
     public static void resetClientCastState(UUID playerUUID) {
-        IronsSpellbooks.LOGGER.debug("ClientMagicData.resetClientCastState");
+
+        //TODO: START LOGGING ONLY - REMOVE ME
+        var player = Minecraft.getInstance().player;
+        IronsSpellbooks.LOGGER.debug("ClientMagicData.resetClientCastState {} {} {}", player, player.getUUID(), playerUUID);
+        //TODO: END LOGGING ONLY - REMOVE ME
+
         playerMagicData.resetCastingState();
 
-        if (playerUUID != null) {
-            var animationPlayer = castingAnimationPlayerLookup.getOrDefault(playerUUID, null);
-            if (animationPlayer != null) {
-                animationPlayer.stop();
-            }
+        var useUUID = playerUUID == null ? Minecraft.getInstance().player.getUUID() : playerUUID;
+        var animationPlayer = castingAnimationPlayerLookup.getOrDefault(playerUUID, null);
+        if (animationPlayer != null) {
+            animationPlayer.stop();
         }
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUUID() == playerUUID) {

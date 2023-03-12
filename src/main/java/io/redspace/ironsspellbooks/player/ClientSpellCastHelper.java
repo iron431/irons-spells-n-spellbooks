@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -28,25 +29,6 @@ import java.util.UUID;
 
 public class ClientSpellCastHelper {
     /**
-     * Network Handling Wrapper
-     */
-    public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource) {
-        var spell = AbstractSpell.getSpell(spellId, level);
-        IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
-        spell.onClientCastComplete(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
-    }
-
-    public static void handleClientboundTeleport(Vec3 pos1, Vec3 pos2) {
-        var player = Minecraft.getInstance().player;
-
-        if (player != null) {
-            var level = Minecraft.getInstance().player.level;
-            TeleportSpell.particleCloud(level, player, pos1);
-            TeleportSpell.particleCloud(level, player, pos2);
-        }
-    }
-
-    /**
      * Right Click Suppression
      */
     private static boolean suppressRightClicks;
@@ -60,7 +42,7 @@ public class ClientSpellCastHelper {
     }
 
     /**
-     * Particles
+     * Handle Network Triggered Particles
      */
     public static void handleClientboundBloodSiphonParticles(Vec3 pos1, Vec3 pos2) {
         if (Minecraft.getInstance().player == null)
@@ -68,8 +50,8 @@ public class ClientSpellCastHelper {
         var level = Minecraft.getInstance().player.level;
         Vec3 direction = pos2.subtract(pos1).scale(.1f);
         for (int i = 0; i < 40; i++) {
-            Vec3 scaledDirection = direction.scale(1 + getRandomScaled(.35));
-            Vec3 random = new Vec3(getRandomScaled(.08f), getRandomScaled(.08f), getRandomScaled(.08f));
+            Vec3 scaledDirection = direction.scale(1 + Utils.getRandomScaled(.35));
+            Vec3 random = new Vec3(Utils.getRandomScaled(.08f), Utils.getRandomScaled(.08f), Utils.getRandomScaled(.08f));
             level.addParticle(ParticleHelper.BLOOD, pos1.x, pos1.y, pos1.z, scaledDirection.x + random.x, scaledDirection.y + random.y, scaledDirection.z + random.z);
         }
     }
@@ -86,7 +68,7 @@ public class ClientSpellCastHelper {
             double d2 = (double) (i >> 0 & 255) / 255.0D;
 
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.x + getRandomScaled(0.25D), pos.y + getRandomScaled(1), pos.z + getRandomScaled(0.25D), d0, d1, d2);
+                level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.25D), d0, d1, d2);
             }
         }
     }
@@ -109,7 +91,11 @@ public class ClientSpellCastHelper {
         }
     }
 
+    /**
+     * Animation Helper
+     */
     private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
+        IronsSpellbooks.LOGGER.debug("animatePlayerStart {} {}", player, resourceLocation);
         var keyframeAnimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
         if (keyframeAnimation != null) {
             //noinspection unchecked
@@ -130,8 +116,30 @@ public class ClientSpellCastHelper {
         }
     }
 
+    /**
+     * Network Handling Wrapper
+     */
+    public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource) {
+        var spell = AbstractSpell.getSpell(spellId, level);
+        IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
+        spell.onClientCastComplete(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
+    }
+
+    public static void handleClientboundTeleport(Vec3 pos1, Vec3 pos2) {
+        var player = Minecraft.getInstance().player;
+
+        if (player != null) {
+            var level = Minecraft.getInstance().player.level;
+            TeleportSpell.particleCloud(level, player, pos1);
+            TeleportSpell.particleCloud(level, player, pos2);
+        }
+    }
+
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
+
+        IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
+
         if (player != null) {
             IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {}", player, spellType);
             AbstractSpell.getSpell(spellType, 1)
@@ -143,6 +151,9 @@ public class ClientSpellCastHelper {
 
     public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
+
+        IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastFinished {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
+
         if (player != null) {
             IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastFinished {} {}", player, spellType);
             AbstractSpell.getSpell(spellType, 1)
@@ -153,9 +164,5 @@ public class ClientSpellCastHelper {
                             () -> ClientMagicData.resetClientCastState(castingEntityId) //orElse
                     );
         }
-    }
-
-    private static double getRandomScaled(double scale) {
-        return (2.0D * Math.random() - 1.0D) * scale;
     }
 }

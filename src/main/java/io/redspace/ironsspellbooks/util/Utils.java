@@ -309,4 +309,8 @@ public class Utils {
             target.hurtMarked = true;
         }
     }
+
+    public static double getRandomScaled(double scale) {
+        return (2.0D * Math.random() - 1.0D) * scale;
+    }
 }
