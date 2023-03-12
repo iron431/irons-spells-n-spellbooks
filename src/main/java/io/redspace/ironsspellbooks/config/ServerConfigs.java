@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.config;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -23,6 +24,7 @@ public class ServerConfigs {
     private static final Queue<DelayedConfigConstructor> CONFIG_LIST = new LinkedList<>();
 
     static {
+        //IronsSpellbooks.LOGGER.debug("CFG: static");
         BUILDER.comment("Individual Spell Configuration");
 
 
@@ -82,14 +84,17 @@ public class ServerConfigs {
     }
 
     public static SpellConfigParameters getSpellConfig(SpellType spellType) {
+        //IronsSpellbooks.LOGGER.debug("CFG: getSpellConfig {} {}", spellType, SPELL_CONFIGS.containsKey(spellType));
         return SPELL_CONFIGS.getOrDefault(spellType, DEFAULT_CONFIG);
     }
 
     public static SpellConfigParameters getSpellConfig(int spellId) {
+        //IronsSpellbooks.LOGGER.debug("CFG: getSpellConfig {}", spellId);
         return getSpellConfig(SpellType.getTypeFromValue(spellId));
     }
 
     private static void createSpellConfig(SpellType spell, boolean enabledByDefault, int defaultMaxLevel, SpellRarity defaultMinRarity, double cooldownInSeconds) {
+        //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
         BUILDER.push(createSpellConfigTitle(spell.getId()));
 
         CONFIG_LIST.add(new DelayedConfigConstructor(
@@ -114,6 +119,7 @@ public class ServerConfigs {
     }
 
     public static void cacheConfigs() {
+        //IronsSpellbooks.LOGGER.debug("CFG: cacheConfigs {}", CONFIG_LIST.size());
         while (!CONFIG_LIST.isEmpty())
             CONFIG_LIST.remove().construct();
     }
@@ -146,6 +152,7 @@ public class ServerConfigs {
         }
 
         void construct() {
+            //IronsSpellbooks.LOGGER.debug("CFG: DelayedConfigConstructor {}, {}, {}, {}, {}, {}, {}", spellType, ENABLED, MAX_LEVEL, MIN_RARITY, M_MULT, P_MULT, CS);
             SPELL_CONFIGS.put(spellType, new SpellConfigParameters(ENABLED.get(), MAX_LEVEL.get(), MIN_RARITY.get(), P_MULT.get(), M_MULT.get(), CS.get()));
         }
     }

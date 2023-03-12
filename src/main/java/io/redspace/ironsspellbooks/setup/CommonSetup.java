@@ -37,16 +37,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonSetup {
 
-    @SubscribeEvent()
+    @SubscribeEvent
     public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
         IronsSpellbooks.LOGGER.debug("onModConfigLoadingEvent");
         ServerConfigs.cacheConfigs();
         //SpellRarity.rarityTest();
     }
 
-    @SubscribeEvent()
+    @SubscribeEvent
     public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
         IronsSpellbooks.LOGGER.debug("onModConfigReloadingEvent");
+        ServerConfigs.cacheConfigs();
     }
 
     @SubscribeEvent
