@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -72,6 +73,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         if (!level.isClientSide) {
             return;
         }
+
         if (pKey.getId() == DATA_CANCEL_CAST.getId()) {
             IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_CANCEL_CAST");
             cancelCast();
@@ -86,8 +88,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
             if (!syncedSpellData.isCasting() && isCasting) {
                 castComplete();
-                return;
-            } else/* if (syncedSpellData.getCastingSpellType().getCastType() == CastType.CONTINUOUS)*/ {
+            } else if (syncedSpellData.isCasting() && !isCasting)/* if (syncedSpellData.getCastingSpellType().getCastType() == CastType.CONTINUOUS)*/ {
                 var spellType = SpellType.getTypeFromValue(syncedSpellData.getCastingSpellId());
                 initiateCastSpell(spellType, syncedSpellData.getCastingSpellLevel());
             }
@@ -109,7 +110,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     public void doSyncSpellData() {
-        //Need a deep clone of the object because set does a basic object ref compare to trigger the update. Do not remove this
+        //Need a deep clone of the object because set does a basic object ref compare to trigger the update. Do not remove the deepClone
         entityData.set(DATA_SPELL, playerMagicData.getSyncedData().deepClone());
     }
 
