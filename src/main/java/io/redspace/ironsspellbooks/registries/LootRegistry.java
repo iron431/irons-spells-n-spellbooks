@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.loot.AppendLootModifier;
-import io.redspace.ironsspellbooks.loot.RandomizeScrollFunction;
+import io.redspace.ironsspellbooks.loot.RandomizeSpellFunction;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
@@ -21,7 +21,7 @@ public class LootRegistry {
         LOOT_MODIFIER_SERIALIZERS.register(eventBus);
     }
 
-    public static final RegistryObject<LootItemFunctionType> RANDOMIZE_SCROLL_FUNCTION = LOOT_FUNCTIONS.register("randomize_scroll", () -> new LootItemFunctionType(new RandomizeScrollFunction.Serializer()));
+    public static final RegistryObject<LootItemFunctionType> RANDOMIZE_SPELL_FUNCTION = LOOT_FUNCTIONS.register("randomize_spell", () -> new LootItemFunctionType(new RandomizeSpellFunction.Serializer()));
 
     public static final RegistryObject<Codec<? extends IGlobalLootModifier>> APPEND_LOOT_MODIFIER = LOOT_MODIFIER_SERIALIZERS.register("append_loot", AppendLootModifier.CODEC);
 }

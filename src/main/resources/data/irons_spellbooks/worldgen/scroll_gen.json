@@ -8,7 +8,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_scroll",
+              "function": "irons_spellbooks:randomize_spell",
               "levels": {
                 "min": 1,
                 "max": 10

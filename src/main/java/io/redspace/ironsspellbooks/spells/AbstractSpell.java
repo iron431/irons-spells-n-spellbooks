@@ -330,7 +330,6 @@ public abstract class AbstractSpell {
      */
     public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData, boolean isCancelled) {
         if (entity instanceof ServerPlayer serverPlayer) {
-            //TODO: maybe can consolidate a code path with sendToSource=true
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType, isCancelled), serverPlayer, true);
         }
     }

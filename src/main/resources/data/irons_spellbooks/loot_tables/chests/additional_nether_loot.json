@@ -18,6 +18,12 @@
             }
           ]
         }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.5
+        }
       ]
     },
     {
@@ -31,8 +37,8 @@
             {
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
-                "min": 0.1,
-                "max": 1
+                "min": 0.2,
+                "max": 0.8
               }
             }
           ]
@@ -69,29 +75,13 @@
         {
           "type": "minecraft:item",
           "weight": 1,
-          "name": "irons_spellbooks:ruined_book"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.1
-        }
-      ]
-    },
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "weight": 1,
           "name": "irons_spellbooks:blank_rune"
         }
       ],
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.15
+          "chance": 0.35
         }
       ]
     }

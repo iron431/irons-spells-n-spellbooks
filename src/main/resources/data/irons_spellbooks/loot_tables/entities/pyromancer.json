@@ -38,7 +38,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_scroll",
+              "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.15,
                 "max": 0.75
