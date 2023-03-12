@@ -15,12 +15,8 @@ import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteed;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.wisp.WispEntity;
-import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.PolarBear;
@@ -81,9 +77,6 @@ public class CommonSetup {
                 new ResourceLocation(IronsSpellbooks.MODID, "animation"),
                 42,
                 CommonSetup::registerPlayerAnimation);
-
-        //Item Properties
-        event.enqueueWork(() -> ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag()))));
     }
 
     //This method will set your mods animation into the library.
