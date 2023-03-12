@@ -127,7 +127,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private void castComplete() {
         //irons_spellbooks.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
         if (!level.isClientSide) {
-            castingSpell.onServerCastComplete(level, this, playerMagicData);
+            castingSpell.onServerCastComplete(level, this, playerMagicData, false);
         }
 
         playerMagicData.resetCastingState();

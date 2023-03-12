@@ -137,32 +137,30 @@ public class ClientSpellCastHelper {
 
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
+        //IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
+        AbstractSpell.getSpell(spellType, 1)
+                .getCastStartAnimation(player)
+                .right()
+                .ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
 
-        IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
-
-        if (player != null) {
-            IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {}", player, spellType);
-            AbstractSpell.getSpell(spellType, 1)
-                    .getCastStartAnimation(player)
-                    .right()
-                    .ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
-        }
     }
 
-    public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType) {
+    public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType, boolean isCancelled) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
+        //IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastFinished {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
+        AbstractSpell.getSpell(spellType, 1)
+                .getCastFinishAnimation(player)
+                .right()
+                .ifPresentOrElse(
+                        (resourceLocation -> {
+                            if (isCancelled) {
+                                ClientMagicData.resetClientCastState(castingEntityId);
+                            } else {
+                                animatePlayerStart(player, resourceLocation);
+                            }
+                        }), //ifPresent
+                        () -> ClientMagicData.resetClientCastState(castingEntityId) //orElse
+                );
 
-        IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastFinished {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
-
-        if (player != null) {
-            IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastFinished {} {}", player, spellType);
-            AbstractSpell.getSpell(spellType, 1)
-                    .getCastFinishAnimation(player)
-                    .right()
-                    .ifPresentOrElse(
-                            (resourceLocation -> animatePlayerStart(player, resourceLocation)), //ifPresent
-                            () -> ClientMagicData.resetClientCastState(castingEntityId) //orElse
-                    );
-        }
     }
 }
