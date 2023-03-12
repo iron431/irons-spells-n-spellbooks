@@ -15,6 +15,10 @@
         {
           "condition": "forge:loot_table_id",
           "loot_table_id": "minecraft:chests/bastion_bridge"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "minecraft:chests/bastion_other"
         }
       ]
     }

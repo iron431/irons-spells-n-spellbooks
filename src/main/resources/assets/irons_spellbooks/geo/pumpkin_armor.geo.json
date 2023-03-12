@@ -34,9 +34,9 @@
 							}
 						},
 						{
-							"origin": [-5.5, 22.9, -5.5],
+							"origin": [-5.5, 22.8, -5.5],
 							"size": [11, 10, 11],
-							"inflate": -0.45,
+							"inflate": -0.6,
 							"uv": {
 								"north": {"uv": [11, 86], "uv_size": [11, 10]},
 								"east": {"uv": [0, 86], "uv_size": [11, 10]},
@@ -51,10 +51,10 @@
 				{
 					"name": "witch_hat",
 					"parent": "armorHead",
-					"pivot": [0, 24, 0],
+					"pivot": [0, 22, 0],
 					"cubes": [
 						{
-							"origin": [-8, 31.6, -8],
+							"origin": [-8, 29.6, -8],
 							"size": [16, 1, 16],
 							"uv": {
 								"north": {"uv": [80, 15], "uv_size": [16, 1]},
@@ -70,11 +70,11 @@
 				{
 					"name": "rot1",
 					"parent": "witch_hat",
-					"pivot": [0, 32, 0],
+					"pivot": [0, 30, 0],
 					"rotation": [-2.5, 0, 0],
 					"cubes": [
 						{
-							"origin": [-5, 32, -5],
+							"origin": [-5, 30, -5],
 							"size": [10, 3, 10],
 							"uv": {
 								"north": {"uv": [42, 12], "uv_size": [10, 3]},
@@ -86,7 +86,7 @@
 							}
 						},
 						{
-							"origin": [-5, 33.2, -5],
+							"origin": [-5, 31.2, -5],
 							"size": [10, 3, 10],
 							"inflate": 0.25,
 							"uv": {
@@ -101,11 +101,11 @@
 				{
 					"name": "rot2",
 					"parent": "rot1",
-					"pivot": [0, 31, -0.7],
+					"pivot": [0, 29, -0.7],
 					"rotation": [-5, 0, 0],
 					"cubes": [
 						{
-							"origin": [-3, 34.7, -3.2],
+							"origin": [-3, 32.7, -3.2],
 							"size": [6, 4, 6],
 							"uv": {
 								"north": {"uv": [42, 12], "uv_size": [6, 4]},
@@ -121,11 +121,11 @@
 				{
 					"name": "rot3",
 					"parent": "rot2",
-					"pivot": [0, 35, -2.4],
+					"pivot": [0, 33, -2.4],
 					"rotation": [-12.5, 0, 0],
 					"cubes": [
 						{
-							"origin": [-2, 37.6, -2.65],
+							"origin": [-2, 35.6, -2.65],
 							"size": [4, 4, 4],
 							"uv": {
 								"north": {"uv": [43, 12], "uv_size": [4, 4]},
@@ -141,11 +141,11 @@
 				{
 					"name": "rot4",
 					"parent": "rot3",
-					"pivot": [0, 35, -2.1],
+					"pivot": [0, 33, -2.1],
 					"rotation": [-12.5, 0, 0],
 					"cubes": [
 						{
-							"origin": [-1, 41.2, -2.85],
+							"origin": [-1, 39.2, -2.85],
 							"size": [2, 4, 2],
 							"uv": {
 								"north": {"uv": [46, 10], "uv_size": [2, 4]},
@@ -161,10 +161,10 @@
 				{
 					"name": "pilgrim_hat",
 					"parent": "armorHead",
-					"pivot": [0, 26.6, 0],
+					"pivot": [0, 24.6, 0],
 					"cubes": [
 						{
-							"origin": [-8, 31.6, -8],
+							"origin": [-8, 29.6, -8],
 							"size": [16, 1, 16],
 							"uv": {
 								"north": {"uv": [80, 15], "uv_size": [16, 1]},
@@ -180,11 +180,11 @@
 				{
 					"name": "hat1",
 					"parent": "pilgrim_hat",
-					"pivot": [0, 32.6, -2.5],
+					"pivot": [0, 30.6, -2.5],
 					"rotation": [-10, 0, 0],
 					"cubes": [
 						{
-							"origin": [-4, 32.6, -2.5],
+							"origin": [-4, 30.6, -2.5],
 							"size": [8, 12, 5],
 							"uv": {
 								"north": {"uv": [83, 73], "uv_size": [8, 12]},
@@ -200,11 +200,11 @@
 				{
 					"name": "hat2",
 					"parent": "hat1",
-					"pivot": [0, 44.6, 2.5],
+					"pivot": [0, 42.6, 2.5],
 					"rotation": [-120, 0, 0],
 					"cubes": [
 						{
-							"origin": [-3.995, 44.6, 2.5],
+							"origin": [-3.995, 42.6, 2.5],
 							"size": [7.99, 5, 4],
 							"uv": {
 								"north": {"uv": [83, 68], "uv_size": [8, 5]},
