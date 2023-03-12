@@ -1,10 +1,13 @@
 package io.redspace.ironsspellbooks.block.inscription_table;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -20,6 +23,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.extensions.IForgeBlock;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +32,7 @@ public class InscriptionTableBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public InscriptionTableBlock() {
-        super(BlockBehaviour.Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).requiresCorrectToolForDrops().noOcclusion());
+        super(BlockBehaviour.Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion());
     }
 
     //    private static final VoxelShape LEG_NE = Block.box(12, 0, 12, 3, 10, 3);
@@ -44,6 +48,16 @@ public class InscriptionTableBlock extends BaseEntityBlock {
     public static final VoxelShape SHAPE_LEG_4 = Block.box(12, 0, 12, 15, 10, 15);
 
     public static final VoxelShape SHAPE = Shapes.or(SHAPE_LEG_1, SHAPE_LEG_2, SHAPE_LEG_3, SHAPE_LEG_4, SHAPE_TABLETOP);
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public float getDestroyProgress(BlockState pState, Player player, BlockGetter pLevel, BlockPos pPos) {
+        if (player.getItemInHand(player.getUsedItemHand()).getItem() instanceof AxeItem) {
+            return 1;
+        }
+
+        return super.getDestroyProgress(pState, player, pLevel, pPos);
+    }
 
     @Override
     @SuppressWarnings("deprecation")

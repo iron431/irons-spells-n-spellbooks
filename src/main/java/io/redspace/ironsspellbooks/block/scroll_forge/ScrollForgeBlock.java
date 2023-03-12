@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -42,6 +43,16 @@ public class ScrollForgeBlock extends BaseEntityBlock {
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         //return Shapes.or(LEG_NE,LEG_NW,LEG_SE,LEG_SW,TABLE_TOP);
         return SHAPE;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public float getDestroyProgress(BlockState pState, Player player, BlockGetter pLevel, BlockPos pPos) {
+        if (player.getItemInHand(player.getUsedItemHand()).getItem() instanceof PickaxeItem) {
+            return 1;
+        }
+
+        return super.getDestroyProgress(pState, player, pLevel, pPos);
     }
 
     /* FACING */
