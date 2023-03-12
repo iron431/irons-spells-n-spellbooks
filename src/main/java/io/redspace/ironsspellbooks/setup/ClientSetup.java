@@ -152,5 +152,7 @@ public class ClientSetup {
         event.register(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
         event.register(ParticleRegistry.SIPHON_PARTICLE.get(), SiphonParticle.Provider::new);
     }
+
+
 }
 

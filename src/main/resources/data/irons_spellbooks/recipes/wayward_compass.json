@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DID",
+    "ILI",
+    "DID"
+  ],
+  "key": {
+    "D": {
+      "item": "irons_spellbooks:magic_dust"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "L": {
+      "item": "minecraft:soul_lantern"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:wayward_compass",
+    "count": 1
+  }
+}
