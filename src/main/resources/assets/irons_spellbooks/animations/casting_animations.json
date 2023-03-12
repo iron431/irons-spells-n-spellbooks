@@ -566,7 +566,7 @@
 				},
 				"rightItem": {
 					"rotation": {
-						"vector": [-81, 0, 0]
+						"vector": [-81, 0, 90]
 					},
 					"position": {
 						"vector": [0, 3, 0]
