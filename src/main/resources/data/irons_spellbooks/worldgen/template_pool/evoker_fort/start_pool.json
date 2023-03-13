@@ -1,0 +1,15 @@
+{
+  "name": "irons_spellbooks:evoker_fort_start_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:evoker_fort/tower",
+        "processors": "irons_spellbooks:weather_stone_blocks",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

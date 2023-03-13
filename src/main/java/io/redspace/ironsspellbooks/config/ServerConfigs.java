@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.config;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -34,10 +33,10 @@ public class ServerConfigs {
         createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 5, SpellRarity.UNCOMMON, 240);
         createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.WITHER_SKULL_SPELL, true, 10, SpellRarity.UNCOMMON, 2);
-        createSpellConfig(SpellType.EVASION_SPELL, false, 5, SpellRarity.EPIC, 180);
-        createSpellConfig(SpellType.MAGIC_ARROW_SPELL, false, 10, SpellRarity.RARE, 12);
-        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, false, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.TELEPORT_SPELL, false, 4, SpellRarity.UNCOMMON, 3);
+        createSpellConfig(SpellType.EVASION_SPELL, true, 5, SpellRarity.EPIC, 180);
+        createSpellConfig(SpellType.MAGIC_ARROW_SPELL, true, 10, SpellRarity.RARE, 12);
+        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, true, 10, SpellRarity.COMMON, 1);
+        createSpellConfig(SpellType.TELEPORT_SPELL, true, 4, SpellRarity.UNCOMMON, 3);
         createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, true, 6, SpellRarity.UNCOMMON, 10);
         createSpellConfig(SpellType.FANG_STRIKE_SPELL, true, 15, SpellRarity.COMMON, 5);
         createSpellConfig(SpellType.FANG_WARD_SPELL, true, 15, SpellRarity.COMMON, 15);
@@ -51,20 +50,20 @@ public class ServerConfigs {
         createSpellConfig(SpellType.BURNING_DASH_SPELL, true, 10, SpellRarity.COMMON, 10);
         createSpellConfig(SpellType.FIREBALL_SPELL, true, 3, SpellRarity.EPIC, 25);
         createSpellConfig(SpellType.FIREBOLT_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.FIRE_BREATH_SPELL, true, 5, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.FIRE_BREATH_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.WALL_OF_FIRE_SPELL, true, 5, SpellRarity.COMMON, 30);
         createSpellConfig(SpellType.ANGEL_WING_SPELL, true, 5, SpellRarity.EPIC, 120);
         createSpellConfig(SpellType.CLOUD_OF_REGENERATION_SPELL, true, 10, SpellRarity.COMMON, 40);
         createSpellConfig(SpellType.GREATER_HEAL_SPELL, true, 1, SpellRarity.LEGENDARY, 60);
         createSpellConfig(SpellType.HEAL_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.WISP_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.CONE_OF_COLD_SPELL, true, 5, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.CONE_OF_COLD_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.FROSTBITE_SPELL, false, 0, SpellRarity.COMMON, 0);
         createSpellConfig(SpellType.FROST_STEP, true, 8, SpellRarity.RARE, 10);
         createSpellConfig(SpellType.ICICLE_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, true, 10, SpellRarity.RARE, 240);
         createSpellConfig(SpellType.ASCENSION_SPELL, true, 10, SpellRarity.RARE, 30);
-        createSpellConfig(SpellType.ELECTROCUTE_SPELL, true, 5, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.ELECTROCUTE_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.LIGHTNING_BOLT_SPELL, true, 10, SpellRarity.EPIC, 25);
         createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, true, 10, SpellRarity.RARE, 12);
         createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, true, 1, SpellRarity.LEGENDARY, 300);
