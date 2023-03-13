@@ -6,7 +6,7 @@
       "weight": 5,
       "element": {
         "location": "irons_spellbooks:evoker_fort/halves/medium_decorations",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
@@ -15,7 +15,7 @@
       "weight": 3,
       "element": {
         "location": "irons_spellbooks:evoker_fort/halves/small_decorations",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
@@ -24,7 +24,7 @@
       "weight": 2,
       "element": {
         "location": "irons_spellbooks:evoker_fort/halves/tree",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }

@@ -6,6 +6,7 @@
     "#minecraft:is_mountain",
     "minecraft:snowy_plains",
     "minecraft:taiga",
-    "minecraft:grove"
+    "minecraft:grove",
+    "minecraft:ice_spikes"
   ]
 }

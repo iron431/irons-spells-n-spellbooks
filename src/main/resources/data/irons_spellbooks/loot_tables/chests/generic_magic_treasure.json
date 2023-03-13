@@ -172,6 +172,7 @@
         {
           "type": "minecraft:item",
           "name": "minecraft:iron_sword",
+          "weight": 2,
           "functions": [
             {
               "function": "irons_spellbooks:randomize_spell",
@@ -212,8 +213,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
+                "max": 20.0,
+                "min": 10.0
               },
               "treasure": true
             }
@@ -227,8 +228,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
+                "max": 20.0,
+                "min": 10.0
               },
               "treasure": true
             }
@@ -242,8 +243,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
+                "max": 20.0,
+                "min": 10.0
               },
               "treasure": true
             }
@@ -257,8 +258,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
+                "max": 20.0,
+                "min": 10.0
               },
               "treasure": true
             }
@@ -272,8 +273,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
+                "max": 20.0,
+                "min": 10.0
               },
               "treasure": true
             }
@@ -287,8 +288,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
+                "max": 20.0,
+                "min": 10.0
               },
               "treasure": true
             }
@@ -302,8 +303,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
+                "max": 20.0,
+                "min": 10.0
               },
               "treasure": true
             }
@@ -317,8 +318,8 @@
               "function": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
-                "max": 39.0,
-                "min": 20.0
+                "max": 20.0,
+                "min": 10.0
               },
               "treasure": true
             }
@@ -326,7 +327,7 @@
         },
         {
           "type": "minecraft:empty",
-          "weight": 4
+          "weight": 7
         }
       ]
     }

@@ -21,27 +21,74 @@
         {
           "type": "minecraft:item",
           "weight": 5,
-          "name": "minecraft:candle"
+          "name": "minecraft:raw_iron",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 4
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
           "weight": 5,
-          "name": "minecraft:paper"
+          "name": "minecraft:experience_bottle"
         },
         {
           "type": "minecraft:item",
           "weight": 2,
-          "name": "minecraft:pumpkin"
+          "name": "minecraft:diamond"
         },
         {
           "type": "minecraft:item",
-          "weight": 3,
-          "name": "minecraft:obsidian"
+          "weight": 6,
+          "name": "minecraft:arrow"
         },
         {
           "type": "minecraft:item",
           "weight": 8,
-          "name": "minecraft:blaze_rod"
+          "name": "minecraft:emerald"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:goat_horn",
+          "functions": [
+            {
+              "function": "minecraft:set_instrument",
+              "options": "#minecraft:goat_horns"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": {
+        "min": 1,
+        "max": 2
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "weight": 1,
+          "name": "irons_spellbooks:scroll",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_spell",
+              "quality": {
+                "min": 0.1,
+                "max": 0.75
+              },
+              "school": "evocation"
+            }
+          ]
         }
       ]
     },
@@ -54,28 +101,6 @@
         {
           "type": "minecraft:loot_table",
           "name": "irons_spellbooks:magic_items/poor_ink"
-        }
-      ]
-    },
-    {
-      "rolls": {
-        "min": 0,
-        "max": 2
-      },
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:scroll",
-          "functions": [
-            {
-              "function": "irons_spellbooks:randomize_spell",
-              "school": "fire",
-              "quality": {
-                "min": 0.1,
-                "max": 0.65
-              }
-            }
-          ]
         }
       ]
     }

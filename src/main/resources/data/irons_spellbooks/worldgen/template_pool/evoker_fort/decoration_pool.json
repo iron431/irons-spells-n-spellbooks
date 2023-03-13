@@ -6,7 +6,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/barrels",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -15,7 +15,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/hay",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -24,7 +24,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/iron_golem_cage",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -33,7 +33,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/logs",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -42,7 +42,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/potato",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -51,7 +51,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/pumpkin",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -60,7 +60,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/rock_1",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -69,7 +69,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/rock_2",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -78,7 +78,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/shack",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -87,7 +87,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/targets",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -96,7 +96,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/tent",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -105,7 +105,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/tower",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -114,7 +114,16 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:evoker_fort/decorations/tree",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:evoker_fort/decorations/mobs",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }

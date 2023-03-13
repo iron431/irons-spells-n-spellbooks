@@ -70,18 +70,23 @@
       ]
     },
     {
-      "rolls": 1,
+      "rolls": {
+        "min": 1,
+        "max": 2
+      },
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:blank_rune",
+          "weight": 1,
+          "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 0,
-                "max": 2
-              }
+              "function": "irons_spellbooks:randomize_spell",
+              "quality": {
+                "min": 0.1,
+                "max": 0.75
+              },
+              "school": "ice"
             }
           ]
         }
