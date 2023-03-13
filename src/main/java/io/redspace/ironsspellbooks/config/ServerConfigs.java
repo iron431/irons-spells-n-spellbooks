@@ -13,7 +13,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec SPEC;
     public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(true, 10, SpellRarity.COMMON, 1, 1, 10);
     public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
-    //public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
 
     public static final ForgeConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
 
@@ -77,7 +77,7 @@ public class ServerConfigs {
                 .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
 
         SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
-        //CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", true);
+        CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", false);
 
         SPEC = BUILDER.build();
     }

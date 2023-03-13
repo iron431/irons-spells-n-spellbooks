@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -11,6 +12,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -103,6 +106,13 @@ public class SummonedZombie extends Zombie implements MagicSummon {
     }
 
     @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        if (pSource instanceof EntityDamageSource && !ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get() && pSource.getEntity().equals(this.getSummoner()) && !pSource.isBypassInvul())
+            return false;
+        return super.hurt(pSource, pAmount);
+    }
+
+    @Override
     protected boolean shouldDespawnInPeaceful() {
         return false;
     }
@@ -113,6 +123,11 @@ public class SummonedZombie extends Zombie implements MagicSummon {
             MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             discard();
         }
+    }
+
+    @Override
+    public boolean shouldBeSaved() {
+        return false;
     }
 
     @Override

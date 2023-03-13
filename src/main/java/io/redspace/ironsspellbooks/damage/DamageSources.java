@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.damage;
 
+import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import net.minecraft.world.damagesource.DamageSource;
@@ -38,6 +39,7 @@ public class DamageSources {
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource, @Nullable SchoolType damageSchool) {
         if (target instanceof LivingEntity livingTarget) {
+            //Todo: should this be handled in damage event? (would by where enchantments and stuff also get put)
             float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
 
             if (damageSource.getDirectEntity() instanceof LivingEntity livingAttacker) {
@@ -45,7 +47,10 @@ public class DamageSources {
                     return false;
                 livingAttacker.setLastHurtMob(target);
             }
-            return livingTarget.hurt(damageSource, adjustedDamage);
+            var flag = livingTarget.hurt(damageSource, adjustedDamage);
+            if (flag && damageSource.getDirectEntity() instanceof MagicSummon)
+                livingTarget.setLastHurtByMob((LivingEntity) damageSource.getDirectEntity());
+            return flag;
         } else {
             return target.hurt(damageSource, baseAmount);
         }
