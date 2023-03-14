@@ -15,8 +15,10 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelPart;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -58,7 +60,7 @@ public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> e
 
     public boolean shouldRender(T entity) {
         //irons_spellbooks.LOGGER.debug("AngelWingsLayer.shouldRender {} {}", entity.getName().getString(), entity.getActiveEffects().stream().map(x -> x.getEffect().getDisplayName().getString()).collect(Collectors.toSet()));
-        return ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ANGEL_WINGS);
+        return !entity.getItemBySlot(EquipmentSlot.CHEST).is(Items.ELYTRA) && ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ANGEL_WINGS);
     }
 
     public ResourceLocation getAngelWingsTexture(T entity) {

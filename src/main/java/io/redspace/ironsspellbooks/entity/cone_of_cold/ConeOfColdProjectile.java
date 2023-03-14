@@ -36,8 +36,8 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
         double y = pos.y + owner.getEyeHeight() * .9f;
         double z = pos.z;
 
-        double speed = random.nextDouble() * .35 + .25;
-        for (int i = 0; i < 15; i++) {
+        double speed = random.nextDouble() * .4 + .45;
+        for (int i = 0; i < 25; i++) {
             double offset = .25;
             double ox = Math.random() * 2 * offset - offset;
             double oy = Math.random() * 2 * offset - offset;

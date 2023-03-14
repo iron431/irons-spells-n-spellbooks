@@ -38,8 +38,8 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
         double y = pos.y + owner.getEyeHeight() * .9f;
         double z = pos.z;
 
-        double speed = random.nextDouble() * .35 + .35;
-        for (int i = 0; i < 10; i++) {
+        double speed = random.nextDouble() * .35 + .25;
+        for (int i = 0; i < 12; i++) {
             double offset = .15;
             double ox = Math.random() * 2 * offset - offset;
             double oy = Math.random() * 2 * offset - offset;
