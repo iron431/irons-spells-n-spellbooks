@@ -5,15 +5,6 @@
     {
       "weight": 1,
       "element": {
-        "location": "irons_spellbooks:catacombs/hallway_straight",
-        "processors": "irons_spellbooks:weather_stone_blocks",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
         "location": "irons_spellbooks:catacombs/hallway_tee",
         "processors": "irons_spellbooks:weather_stone_blocks",
         "projection": "rigid",

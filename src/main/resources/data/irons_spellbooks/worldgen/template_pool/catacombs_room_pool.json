@@ -109,6 +109,15 @@
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/room_small_crypt",
+        "processors": "irons_spellbooks:weather_stone_blocks",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
     }
   ]
 }

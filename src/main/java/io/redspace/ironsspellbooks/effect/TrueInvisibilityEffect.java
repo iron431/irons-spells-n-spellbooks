@@ -29,7 +29,7 @@ public class TrueInvisibilityEffect extends MobEffect {
 
     @Override
     public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
-        return pDuration % 3 == 0;
+        return true;
     }
 
     @Override

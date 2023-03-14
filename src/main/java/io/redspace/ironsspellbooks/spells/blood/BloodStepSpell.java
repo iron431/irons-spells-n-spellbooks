@@ -107,6 +107,6 @@ public class BloodStepSpell extends AbstractSpell {
     
     @Override
     public Either<AnimationBuilder, ResourceLocation> getCastStartAnimation(Player player) {
-        return Either.left(null);
+        return Either.right(null);
     }
 }

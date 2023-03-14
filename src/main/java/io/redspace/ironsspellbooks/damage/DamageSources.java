@@ -42,7 +42,7 @@ public class DamageSources {
             //Todo: should this be handled in damage event? (would by where enchantments and stuff also get put)
             float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
 
-            if (damageSource.getDirectEntity() instanceof LivingEntity livingAttacker) {
+            if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
                 if (livingAttacker.isAlliedTo(livingTarget))
                     return false;
                 livingAttacker.setLastHurtMob(target);
