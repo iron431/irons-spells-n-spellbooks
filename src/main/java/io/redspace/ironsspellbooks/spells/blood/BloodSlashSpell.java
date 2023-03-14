@@ -27,10 +27,10 @@ public class BloodSlashSpell extends AbstractSpell {
         super(SpellType.BLOOD_SLASH_SPELL);
         this.level = level;
         this.manaCostPerLevel = 5;
-        this.baseSpellPower = 8;
+        this.baseSpellPower = 10;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 30;
+        this.baseManaCost = 25;
         uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(null), 1)));
 
     }

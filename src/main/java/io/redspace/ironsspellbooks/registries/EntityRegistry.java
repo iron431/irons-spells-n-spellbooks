@@ -21,6 +21,7 @@ import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteed;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.wall_of_fire.WallOfFireEntity;
@@ -210,4 +211,10 @@ public class EntityRegistry {
                     .sized(1.5f, .95f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "catacombs_zombie").toString()));
+
+    public static final RegistryObject<EntityType<ArchevokerEntity>> ARCHEVOKER =
+            ENTITIES.register("archevoker", () -> EntityType.Builder.of(ArchevokerEntity::new, MobCategory.MONSTER)
+                    .sized(.6f, 2f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "archevoker").toString()));
 }
