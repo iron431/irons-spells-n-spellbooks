@@ -117,6 +117,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FIREBOLT_PROJECTILE.get(), FireboltRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ICICLE_PROJECTILE.get(), IcicleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_BREATH_PROJECTILE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.DRAGON_BREATH_PROJECTILE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEBUG_WIZARD.get(), (renderManager) -> new DebugWizardRenderer(renderManager));
         event.registerEntityRenderer(EntityRegistry.PYROMANCER.get(), PyromancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.NECROMANCER.get(), NecromancerRenderer::new);

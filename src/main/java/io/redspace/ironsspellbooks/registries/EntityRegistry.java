@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.entity.ExtendedWitherSkull;
 import io.redspace.ironsspellbooks.entity.blood_slash.BloodSlashProjectile;
 import io.redspace.ironsspellbooks.entity.cone_of_cold.ConeOfColdProjectile;
 import io.redspace.ironsspellbooks.entity.creeper_head.CreeperHeadProjectile;
+import io.redspace.ironsspellbooks.entity.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.electrocute.ElectrocuteProjectile;
 import io.redspace.ironsspellbooks.entity.fire_breath.FireBreathProjectile;
 import io.redspace.ironsspellbooks.entity.firebolt.FireboltProjectile;
@@ -88,6 +89,12 @@ public class EntityRegistry {
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_breath_projectile").toString()));
+
+    public static final RegistryObject<EntityType<DragonBreathProjectile>> DRAGON_BREATH_PROJECTILE =
+            ENTITIES.register("dragon_breath_projectile", () -> EntityType.Builder.<DragonBreathProjectile>of(DragonBreathProjectile::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath_projectile").toString()));
 
     public static final RegistryObject<EntityType<DebugWizard>> DEBUG_WIZARD =
             ENTITIES.register("debug_wizard", () -> EntityType.Builder.<DebugWizard>of(DebugWizard::new, MobCategory.MONSTER)

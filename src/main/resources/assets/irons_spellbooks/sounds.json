@@ -152,5 +152,20 @@
     "sounds": [
       "irons_spellbooks:blood_step_teleport"
     ]
+  },
+  "loop.fire_breath": {
+    "sounds": [
+      "irons_spellbooks:fire_breath_loop"
+    ]
+  },
+  "loop.electrocute": {
+    "sounds": [
+      "irons_spellbooks:electrocute_loop"
+    ]
+  },
+  "loop.cone_of_cold": {
+    "sounds": [
+      "irons_spellbooks:cone_of_cold_loop"
+    ]
   }
 }

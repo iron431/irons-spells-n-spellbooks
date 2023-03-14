@@ -4,6 +4,8 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.fire_breath.FireBreathProjectile;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.EntityCastData;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -39,7 +41,7 @@ public class FireBreathSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.FIRE_BREATH_LOOP.get());
     }
 
     @Override
@@ -58,5 +60,10 @@ public class FireBreathSpell extends AbstractSpell {
             playerMagicData.setAdditionalCastData(new EntityCastData(fireBreathProjectile));
         }
         super.onCast(world, entity, playerMagicData);
+    }
+
+    @Override
+    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
+        return mob.distanceToSqr(target) > (10 * 10) * 1.2;
     }
 }

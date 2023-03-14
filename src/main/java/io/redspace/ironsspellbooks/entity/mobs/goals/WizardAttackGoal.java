@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -201,6 +203,12 @@ public class WizardAttackGoal extends Goal {
             this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(distanceSquared) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
         }
+        if (mob.isCasting()) {
+            var pmg = PlayerMagicData.getPlayerMagicData(mob);
+            if (AbstractSpell.getSpell(pmg.getCastingSpellId(), pmg.getCastingSpellLevel()).shouldAIStopCasting(mob, target))
+                mob.cancelCast();
+
+        }
     }
 
     protected void resetAttackTimer(double distanceSquared) {
@@ -248,7 +256,9 @@ public class WizardAttackGoal extends Goal {
 //        if (spellType == SpellType.WALL_OF_FIRE_SPELL) {
 //            mob.setTeleportLocationBehindTarget(15);
 //        }
-        mob.initiateCastSpell(spellType, spellLevel);
+        //Make sure cast is valid
+        if (!AbstractSpell.getSpell(spellType, spellLevel).shouldAIStopCasting(mob, target))
+            mob.initiateCastSpell(spellType, spellLevel);
     }
 
     protected SpellType getNextSpellType() {

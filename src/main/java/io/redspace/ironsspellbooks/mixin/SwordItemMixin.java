@@ -74,7 +74,7 @@ public abstract class SwordItemMixin extends Item {
     public int getUseDuration(@NotNull ItemStack itemStack) {
         var spell = Utils.getScrollData(itemStack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL)
-            return 7200;
+            return spell.getCastTime();
         else
             return super.getUseDuration(itemStack);
     }

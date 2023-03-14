@@ -23,7 +23,7 @@ public class FireballSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
-        this.castTime = 60;
+        this.castTime = 40;
         this.baseManaCost = 50;
     }
 
@@ -43,7 +43,7 @@ public class FireballSpell extends AbstractSpell {
         Vec3 direction = entity.getLookAngle().scale(speed);
         Vec3 origin = entity.getEyePosition();
         Fireball fireball = new LargeFireball(world, entity, direction.x(), direction.y(), direction.z(), (int) getSpellPower(entity));
-        fireball.setPos(origin.add(direction));
+        fireball.setPos(origin.add(direction.scale(.25)));
         world.addFreshEntity(fireball);
         super.onCast(world, entity, playerMagicData);
     }

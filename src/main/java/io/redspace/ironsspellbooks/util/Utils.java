@@ -198,6 +198,7 @@ public class Utils {
             if (pmd.isCasting() && (pmd.getCastType() != CastType.CHARGE ||
                     (pmd.getCastType() == CastType.CHARGE && pmd.getCastDurationRemaining() > 0))) {
                 Utils.serverSideCancelCast(serverPlayer);
+                serverPlayer.stopUsingItem();
             }
         }
     }

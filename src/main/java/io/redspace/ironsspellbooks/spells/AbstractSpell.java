@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.network.ClientboundCastError;
@@ -296,7 +297,7 @@ public abstract class AbstractSpell {
         playSound(getCastFinishSound(), entity, true);
     }
 
-    private void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
+    protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
         IronsSpellbooks.LOGGER.debug("playSound spell:{} isClientSide:{}", this.getSpellType(), entity.level.isClientSide);
         // sound.ifPresent((soundEvent) -> entity.playSound(soundEvent, 1.0f, 1.0f));
         if (sound.isPresent())
@@ -307,7 +308,7 @@ public abstract class AbstractSpell {
         //entity.playSound(sound.orElse(this:def), 1.0f, 1.0f));
     }
 
-    private void playSound(Optional<SoundEvent> sound, Entity entity) {
+    protected void playSound(Optional<SoundEvent> sound, Entity entity) {
         playSound(sound, entity, false);
     }
 
@@ -355,6 +356,13 @@ public abstract class AbstractSpell {
      */
     public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
 
+    }
+
+    /**
+     * Used by AbstractSpellCastingMob to determine if the cast is no longer valid (ie player out of range of a particular spell). Override to create spell-specific criteria
+     */
+    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
+        return false;
     }
 
     public List<MutableComponent> getUniqueInfo() {

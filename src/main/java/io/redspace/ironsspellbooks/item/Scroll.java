@@ -93,7 +93,7 @@ public class Scroll extends Item {
 
     @Override
     public int getUseDuration(@NotNull ItemStack itemStack) {
-        return 7200;
+        return getScrollData(itemStack).getSpell().getCastTime();
     }
 
     @Override

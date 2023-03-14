@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
-import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -201,7 +200,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
 
         //irons_spellbooks.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level.isClientSide);
-
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.MOB);
 

@@ -79,7 +79,7 @@ public class SpellBook extends Item implements ISpellBook {
 
     @Override
     public int getUseDuration(ItemStack itemStack) {
-        return 7200;
+        return getSpellBookData(itemStack).getActiveSpell().getCastTime();
     }
 
     @Override

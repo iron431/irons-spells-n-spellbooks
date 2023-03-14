@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.level.Level;
@@ -67,5 +68,10 @@ public class BlazeStormSpell extends AbstractSpell {
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
         world.playSound(null, origin.x, origin.y, origin.z, SoundEvents.BLAZE_SHOOT, SoundSource.AMBIENT, 1.0f, 1.0f);
         world.addFreshEntity(fireball);
+    }
+
+    @Override
+    protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
+        super.playSound(sound, entity, false);
     }
 }

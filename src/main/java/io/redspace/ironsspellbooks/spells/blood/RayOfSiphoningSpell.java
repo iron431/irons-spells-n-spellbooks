@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.network.spell.ClientboundBloodSiphonParticles;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
@@ -81,5 +82,10 @@ public class RayOfSiphoningSpell extends AbstractSpell {
             Vec3 pos = origin.add(forward.scale(i).scale(livingEntity.getRandom().nextInt(5, 10) * .1f)).subtract(forward.scale(.25f));
             livingEntity.getLevel().addParticle(ParticleHelper.SIPHON, pos.x, pos.y, pos.z, 0, 0, 0);
         }
+    }
+
+    @Override
+    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
+        return mob.distanceToSqr(target) > (getRange(level) * getRange(level)) * 1.2;
     }
 }
