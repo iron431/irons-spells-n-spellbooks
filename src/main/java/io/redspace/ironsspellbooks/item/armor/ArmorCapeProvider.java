@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.item;
+package io.redspace.ironsspellbooks.item.armor;
 
 import net.minecraft.resources.ResourceLocation;
 

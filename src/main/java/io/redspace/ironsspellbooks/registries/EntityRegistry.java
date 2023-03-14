@@ -217,4 +217,10 @@ public class EntityRegistry {
                     .sized(.6f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "archevoker").toString()));
+
+    public static final RegistryObject<EntityType<MagehunterVindicator>> MAGEHUNTER_VINDICATOR =
+            ENTITIES.register("magehunter_vindicator", () -> EntityType.Builder.<MagehunterVindicator>of(MagehunterVindicator::new, MobCategory.MONSTER)
+                    .sized(1.5f, .95f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "magehunter_vindicator").toString()));
 }

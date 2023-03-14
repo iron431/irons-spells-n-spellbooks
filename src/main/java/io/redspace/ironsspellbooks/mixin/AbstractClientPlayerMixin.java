@@ -7,7 +7,7 @@ import dev.kosmx.playerAnim.api.layered.modifier.AdjustmentModifier;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.impl.IAnimatedPlayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
-import io.redspace.ironsspellbooks.item.ArmorCapeProvider;
+import io.redspace.ironsspellbooks.item.armor.ArmorCapeProvider;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
