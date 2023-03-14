@@ -45,7 +45,16 @@
         {
           "type": "minecraft:item",
           "weight": 6,
-          "name": "minecraft:arrow"
+          "name": "minecraft:arrow",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 4
+              }
+            }
+          ]
         },
         {
           "type": "minecraft:item",
@@ -66,6 +75,12 @@
               "options": "#minecraft:goat_horns"
             }
           ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.45
         }
       ]
     },

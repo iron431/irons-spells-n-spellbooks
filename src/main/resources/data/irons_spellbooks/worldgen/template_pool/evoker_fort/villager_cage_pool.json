@@ -1,0 +1,15 @@
+{
+  "name": "irons_spellbooks:evoker_fort_decoration_pool",
+  "fallback": "irons_spellbooks:catacombs_fallback_pool",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:evoker_fort/decorations/villager_cage_half_cage",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

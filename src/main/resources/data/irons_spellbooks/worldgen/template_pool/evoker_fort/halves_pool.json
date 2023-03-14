@@ -28,6 +28,15 @@
         "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
+    },
+    {
+      "weight": 20,
+      "element": {
+        "location": "irons_spellbooks:evoker_fort/halves/villager_cage",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
+        "projection": "terrain_matching",
+        "element_type": "minecraft:single_pool_element"
+      }
     }
   ]
 }

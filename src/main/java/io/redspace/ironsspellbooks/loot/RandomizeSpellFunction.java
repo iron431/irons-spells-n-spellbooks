@@ -38,13 +38,18 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
 
             var spellList = getWeightedSpellList(applicableSpells);
             int total = spellList.floorKey(Integer.MAX_VALUE);
-            SpellType spellType = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
+            SpellType spellType = SpellType.NONE_SPELL;
+            for (int i = 0; i < 16; i++) {
+                spellType = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
+                if (spellType.isEnabled())
+                    break;
+            }
 
             var spellId = spellType.getValue();
             int maxLevel = spellType.getMaxLevel();
             float quality = qualityRange.getFloat(lootContext);
             //https://www.desmos.com/calculator/ablc1wg06w
-            quality = /*quality * */(float) Math.sin(1.57 * quality * quality);
+            quality = quality * (float) Math.sin(1.57 * quality * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
             var scrollData = Utils.getScrollData(itemStack);
             scrollData.setData(spellId, spellLevel);
@@ -130,7 +135,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
                 }
                 return applicableSpellList.toArray(new SpellType[]{});
             } else {
-                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID && spellType.isEnabled()).toList().toArray(new SpellType[0]);
+                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID).toList().toArray(new SpellType[0]);
 //                var nonVoidSpells = new SpellType[SpellType.values().length - SpellType.getSpellsFromSchool(SchoolType.VOID).length];
 //                int j = 0;
 //                for (int i = 0; i < nonVoidSpells.length; i++) {
