@@ -167,5 +167,10 @@
     "sounds": [
       "irons_spellbooks:cone_of_cold_loop"
     ]
+  },
+  "loop.cloud_of_regen": {
+    "sounds": [
+      "irons_spellbooks:cloud_of_regen_loop"
+    ]
   }
 }

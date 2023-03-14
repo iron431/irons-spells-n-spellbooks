@@ -114,6 +114,7 @@
   "ui.irons_spellbooks.greater_healing": "Max Healing",
   "ui.irons_spellbooks.damage": "%d Damage",
   "ui.irons_spellbooks.distance": "%d Block Range",
+  "ui.irons_spellbooks.radius": "%d Block Radius",
   "ui.irons_spellbooks.summon_count": "%d Summons",
   "ui.irons_spellbooks.shatter_damage": "%d Shatter Damage",
   "ui.irons_spellbooks.fang_count": "%d Fangs",

@@ -314,4 +314,22 @@ public class Utils {
     public static double getRandomScaled(double scale) {
         return (2.0D * Math.random() - 1.0D) * scale;
     }
+
+    public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
+        if (target.getType().is(ModTags.ALWAYS_HEAL)) {
+            //This tag is for things like iron golems, villagers, farm animals, etc
+            return true;
+        } else if (healer.getTeam() != null) {
+            //If we are on a team, only heal teammates
+            return target.isAlliedTo(healer.getTeam());
+        } else if (healer.isAlliedTo(target)) {
+            //Generic ally-check. Comes before player check because our summons are allied to us
+            return true;
+        } else if (healer instanceof Player) {
+            //If we are a player and not on a team, we only want to heal other players
+            return target instanceof Player;
+        } else {
+            return healer.getMobType() == target.getMobType();
+        }
+    }
 }

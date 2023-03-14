@@ -295,7 +295,7 @@ public abstract class AbstractSpell {
      */
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         playSound(getCastFinishSound(), entity, true);
-        IronsSpellbooks.LOGGER.debug("Yrot:{},BodyYRot:{},HeadYRot:{}", entity.getYRot(), entity.yBodyRot, entity.yHeadRot);
+        //IronsSpellbooks.LOGGER.debug("Yrot:{},BodyYRot:{},HeadYRot:{}", entity.getYRot(), entity.yBodyRot, entity.yHeadRot);
     }
 
     protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {

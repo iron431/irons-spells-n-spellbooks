@@ -239,7 +239,10 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
 
         private FormattedText trimText(Font font, Component component, int maxWidth) {
-            return font.getSplitter().splitLines(component, maxWidth, component.getStyle()).get(0);
+            var text = font.getSplitter().splitLines(component, maxWidth, component.getStyle()).get(0);
+            if (text.getString().length() < component.getString().length())
+                text = FormattedText.composite(text, FormattedText.of("..."));
+            return text;
         }
 
         MutableComponent getDisplayName() {
