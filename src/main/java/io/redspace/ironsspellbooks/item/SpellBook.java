@@ -79,13 +79,13 @@ public class SpellBook extends Item implements ISpellBook {
 
     @Override
     public int getUseDuration(ItemStack itemStack) {
-        return getSpellBookData(itemStack).getActiveSpell().getCastTime();
+        return 7200;//return getSpellBookData(itemStack).getActiveSpell().getCastTime();
     }
 
-    @Override
-    public UseAnim getUseAnimation(ItemStack itemStack) {
-        return getSpellBookData(itemStack).getActiveSpell().getSpellType().getUseAnim();
-    }
+//    @Override
+//    public UseAnim getUseAnimation(ItemStack itemStack) {
+//        return getSpellBookData(itemStack).getActiveSpell().getSpellType().getUseAnim();
+//    }
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {

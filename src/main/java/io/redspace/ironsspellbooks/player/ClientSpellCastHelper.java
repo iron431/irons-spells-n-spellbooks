@@ -112,6 +112,29 @@ public class ClientSpellCastHelper {
 
                 //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
                 animation.setAnimation(castingAnimationPlayer);
+//                animation.addModifierLast(new AdjustmentModifier((partName) -> {
+//                    float rotationX = 0;
+//                    float rotationY = 0;
+//                    float rotationZ = 0;
+//                    float offsetX = 0;
+//                    float offsetY = 0;
+//                    float offsetZ = 0;
+//                    var pitch = player.getXRot() / 2F;
+//                    pitch = (float) Math.toRadians(pitch);
+//                    switch (partName) {
+////                        case "body" -> {
+////                            rotationX = (-1F) * pitch;
+////                        }
+//                        case "rightArm", "leftArm" -> {
+//                            rotationX = pitch;
+//                        }
+//                        default -> {
+//                            return Optional.empty();
+//                        }
+//                    }
+//                    return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(rotationX, rotationY, rotationZ), new Vec3f(offsetX, offsetY, offsetZ)));
+//                }));
+
             }
         }
     }

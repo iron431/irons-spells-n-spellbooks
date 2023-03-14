@@ -43,11 +43,11 @@ import java.util.Optional;
 public abstract class AbstractSpell {
     public static ResourceLocation ANIMATION_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "animation");
 
-    public static ResourceLocation ANIMATION_INSTANT_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "instant_projectile");
-    public static ResourceLocation ANIMATION_CONTINUOUS_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "continuous_thrust");
-    public static ResourceLocation ANIMATION_CHARGED_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "charged_throw");
-    public static ResourceLocation ANIMATION_LONG_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "long_cast");
-    public static ResourceLocation ANIMATION_LONG_CAST_FINISH_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "long_cast_finish");
+    private static ResourceLocation ANIMATION_INSTANT_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "instant_projectile");
+    private static ResourceLocation ANIMATION_CONTINUOUS_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "continuous_thrust");
+    private static ResourceLocation ANIMATION_CHARGED_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "charged_throw");
+    private static ResourceLocation ANIMATION_LONG_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "long_cast");
+    private static ResourceLocation ANIMATION_LONG_CAST_FINISH_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "long_cast_finish");
 
     private final AnimationBuilder ANIMATION_INSTANT_CAST = new AnimationBuilder().addAnimation(ANIMATION_INSTANT_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder ANIMATION_CONTINUOUS_CAST = new AnimationBuilder().addAnimation(ANIMATION_CONTINUOUS_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
@@ -295,6 +295,7 @@ public abstract class AbstractSpell {
      */
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         playSound(getCastFinishSound(), entity, true);
+        IronsSpellbooks.LOGGER.debug("Yrot:{},BodyYRot:{},HeadYRot:{}", entity.getYRot(), entity.yBodyRot, entity.yHeadRot);
     }
 
     protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {

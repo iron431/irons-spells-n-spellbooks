@@ -74,19 +74,19 @@ public abstract class SwordItemMixin extends Item {
     public int getUseDuration(@NotNull ItemStack itemStack) {
         var spell = Utils.getScrollData(itemStack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL)
-            return spell.getCastTime();
+            return 7200;//return spell.getCastTime();
         else
             return super.getUseDuration(itemStack);
     }
 
-    @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
-        var spell = Utils.getScrollData(itemStack).getSpell();
-        if (spell.getSpellType() != SpellType.NONE_SPELL)
-            return spell.getSpellType().getUseAnim();
-        else
-            return getUseAnimation(itemStack);
-    }
+//    @Override
+//    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
+//        var spell = Utils.getScrollData(itemStack).getSpell();
+//        if (spell.getSpellType() != SpellType.NONE_SPELL)
+//            return spell.getSpellType().getUseAnim();
+//        else
+//            return getUseAnimation(itemStack);
+//    }
 
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {

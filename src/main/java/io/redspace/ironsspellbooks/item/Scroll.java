@@ -93,13 +93,13 @@ public class Scroll extends Item {
 
     @Override
     public int getUseDuration(@NotNull ItemStack itemStack) {
-        return getScrollData(itemStack).getSpell().getCastTime();
+        return 7200;//return getScrollData(itemStack).getSpell().getCastTime();
     }
 
-    @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
-        return getScrollData(itemStack).getSpell().getSpellType().getUseAnim();
-    }
+//    @Override
+//    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
+//        return getScrollData(itemStack).getSpell().getSpellType().getUseAnim();
+//    }
 
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
