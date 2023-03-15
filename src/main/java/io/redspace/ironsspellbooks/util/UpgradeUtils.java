@@ -1,22 +1,22 @@
 package io.redspace.ironsspellbooks.util;
 
+import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class UpgradeUtils {
 
-    public static final Map<EquipmentSlot, UUID> upgradeUUIDsBySlot = Map.of(
+    public static final Map<EquipmentSlot, UUID> UPGRADE_UUIDS_BY_SLOT = Map.of(
             EquipmentSlot.HEAD, UUID.fromString("f6c19678-1c70-4d41-ad19-cd84d8610242"),
             EquipmentSlot.CHEST, UUID.fromString("8d02c916-b0eb-4d17-8414-329b4bd38ae7"),
             EquipmentSlot.LEGS, UUID.fromString("3739c748-98d4-4a2d-9c25-3b4dec74823d"),
@@ -41,11 +41,11 @@ public class UpgradeUtils {
     }
 
     public static UUID UUIDForSlot(EquipmentSlot slot) {
-        return upgradeUUIDsBySlot.get(slot);
+        return UPGRADE_UUIDS_BY_SLOT.get(slot);
     }
 
-    public static final String Key = "irons_spellbooks";
-    public static final String Upgrades = "Upgrades";
+    //public static final String Key = "irons_spellbooks";
+    public static final String Upgrades = "ISBUpgrades";
     public static final String Attribute_Key = "id";
     public static final String Slot_Key = "slot";
     public static final String Upgrade_Count = "upgrades";
@@ -57,7 +57,12 @@ public class UpgradeUtils {
 
     public static void appendUpgrade(ItemStack stack, Attribute attribute, EquipmentSlot slot) {
         //We are going to use NBT because attaching capabilities to every potentially upgradable item is dumb plus forge bug = destroy upgrades
+        //Good reference: ItemStack 934, 1013, 1038
         // 10 is the magic number
+        //we want to store slot, attribute, and levels applied.
+        //storing the slot seems good for performance as we don't want to constantly have to search for it
+        //store the attribute... no shit
+        //amount per level is fixed, so we can calculate our modifier using only the levels applied
         ListTag upgrades = stack.getOrCreateTag().getList(Upgrades, 10);
         //Check if we already have this attribute upgraded
         String attributeName = Registry.ATTRIBUTE.getKey(attribute).toString();
@@ -70,24 +75,13 @@ public class UpgradeUtils {
                 return;
             }
         }
-
+        //Insert New Upgrade
         CompoundTag upgrade = new CompoundTag();
         upgrade.putString(Attribute_Key, attributeName);
         upgrade.putString(Slot_Key, slot.getName());
         upgrade.putInt(Upgrade_Count, 1);
         upgrades.add(upgrade);
         stack.addTagElement(Upgrades, upgrades);
-//ItemStack 1013 :                Optional<Attribute> optional = Registry.ATTRIBUTE.getOptional(ResourceLocation.tryParse(compoundtag.getString("AttributeName")));
-        //Item Stack#934
-        //Item Stack 1038:
-
-
-//        CompoundTag upgrades = stack.getOrCreateTagElement(Key);
-//        CompoundTag upgrade = new CompoundTag();
-//        upgrade.putString(Attribute_Key, attribute.getDescriptionId());
-//        upgrade.putString(Slot_Key, slot.getName());
-//        upgrades.put(Upgrades, upgrade);
-//        upgrades.put(Upgrades, upgrade);
     }
 
     public static int getUpgradeCount(ItemStack stack) {
@@ -103,7 +97,14 @@ public class UpgradeUtils {
 
     }
 
+    public static EquipmentSlot getUpgradedSlot(ItemStack stack) {
+        //this assumes the item is already been checked to have been upgraded... idk what will ensue if it is not
+        ListTag upgrades = stack.getOrCreateTag().getList(Upgrades, 10);
+        return EquipmentSlot.byName(((CompoundTag) upgrades.get(0)).getString(Slot_Key));
+    }
+
     public static double collectAndRemovePreexistingAttribute(ItemAttributeModifierEvent event, Attribute key, AttributeModifier.Operation operationToMatch) {
+        //Tactical incision to remove the preexisting attribute but preserver its value (cuz otherwise the tooltip is ugly as hell) (yes this was a lot of work to clean up the tooltip)
         if (event.getOriginalModifiers().containsKey(key)) {
             for (AttributeModifier modifier : event.getOriginalModifiers().get(key))
                 if (modifier.getOperation().equals(operationToMatch)) {
@@ -112,5 +113,25 @@ public class UpgradeUtils {
                 }
         }
         return 0;
+    }
+
+    public static float getModifierAmount(Attribute attribute, int upgradesApplied) {
+        //2% cooldown reduction :skull:
+        float amountPerUpgrade = attribute == AttributeRegistry.COOLDOWN_REDUCTION.get() ? .1f : .025f;
+        return upgradesApplied * amountPerUpgrade;
+    }
+
+    public static Map<Attribute, Integer> getUpgrades(ItemStack stack) {
+        ListTag upgrades = stack.getOrCreateTag().getList(Upgrades, 10);
+        //String attributeName = Registry.ATTRIBUTE.getKey(attribute).toString();
+        Map<Attribute, Integer> attributes = new HashMap<>();
+        for (Tag tag : upgrades) {
+            CompoundTag compoundTag = (CompoundTag) tag;
+            String attributeName = compoundTag.getString(Attribute_Key);
+            Optional<Attribute> optional = Registry.ATTRIBUTE.getOptional(ResourceLocation.tryParse(attributeName));
+            optional.ifPresent((atr) -> attributes.put(atr, compoundTag.getInt(Upgrade_Count)));
+
+        }
+        return attributes;
     }
 }

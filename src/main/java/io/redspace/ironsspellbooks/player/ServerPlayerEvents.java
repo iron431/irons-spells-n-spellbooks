@@ -8,15 +8,13 @@ import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
@@ -28,6 +26,8 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Map;
 
 @Mod.EventBusSubscriber()
 public class ServerPlayerEvents {
@@ -65,32 +65,24 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void upgradeModifiers(ItemAttributeModifierEvent event) {
+    public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
         var itemStack = event.getItemStack();
+        if (!UpgradeUtils.isUpgraded(itemStack))
+            return;
+
+        var slot = event.getSlotType();
+        if (UpgradeUtils.getUpgradedSlot(itemStack) != slot)
+            return;
 
         //Placeholders for logic
-        var tempattribute = AttributeRegistry.FIRE_SPELL_POWER.get();
-        var tempslot = EquipmentSlot.HEAD;
-        var tempamount = .1d;
 
-        //we want to store slot, attribute, and levels applied.
-        //storing the slot seems good for performance as we dont want to constantly have to search for it
-        //store the attribute... no shit
-        //amount per level is fixed, so we can calculate our modifier using only the levels applied
-
-//        if (itemStack.is(ItemRegistry.PYROMANCER_HELMET.get()) && event.getSlotType() == tempslot) {
-//            var originalModifiers = event.removeAttribute(tempattribute);
-//            double amount = .1 + UpgradeUtils.getValueByOperation(originalModifiers, AttributeModifier.Operation.MULTIPLY_BASE);
-//            event.addModifier(tempattribute, new AttributeModifier(UpgradeUtils.UUIDForSlot(tempslot), "upgrade", amount, AttributeModifier.Operation.MULTIPLY_BASE));
-//            originalModifiers.forEach((modifier) -> {
-//                if (modifier.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE)
-//                    event.addModifier(tempattribute, modifier);
-//            });
-//        }
-        if (itemStack.is(ItemRegistry.PYROMANCER_HELMET.get()) && event.getSlotType() == tempslot) {
-            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, tempattribute, AttributeModifier.Operation.MULTIPLY_BASE);
-            event.addModifier(tempattribute, new AttributeModifier(UpgradeUtils.UUIDForSlot(tempslot), "upgrade", baseAmount + tempamount, AttributeModifier.Operation.MULTIPLY_BASE));
+        var upgrades = UpgradeUtils.getUpgrades(itemStack);
+        for (Map.Entry<Attribute, Integer> entry : upgrades.entrySet()) {
+            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, entry.getKey(), AttributeModifier.Operation.MULTIPLY_BASE);
+            event.addModifier(entry.getKey(), new AttributeModifier(UpgradeUtils.UUIDForSlot(slot), "upgrade", baseAmount + UpgradeUtils.getModifierAmount(entry.getKey(),entry.getValue()), AttributeModifier.Operation.MULTIPLY_BASE));
         }
+
+
     }
 
     @SubscribeEvent

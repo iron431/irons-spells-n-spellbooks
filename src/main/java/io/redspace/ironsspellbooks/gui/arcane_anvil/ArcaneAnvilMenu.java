@@ -12,12 +12,15 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ItemCombinerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -73,9 +76,16 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 var resultData = Utils.getScrollData(result);
                 var scrollData = Utils.getScrollData(modifierItemStack);
                 resultData.setData(scrollData.getSpell());
-                UpgradeUtils.appendUpgrade(result, (Math.random() < .5 ? AttributeRegistry.FIRE_SPELL_POWER.get() : AttributeRegistry.LIGHTNING_SPELL_POWER.get()), EquipmentSlot.HEAD);
-                IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
                 //result.addAttributeModifier(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("test", 1, AttributeModifier.Operation.MULTIPLY_BASE), EquipmentSlot.MAINHAND);
+            }
+            else
+            //Upgrade System
+            if(baseItemStack.getItem() instanceof ArmorItem armorItem && modifierItemStack.is(Items.SNOWBALL)){
+                result = baseItemStack.copy();
+                Attribute attribute = /*Temp for logic, replace with specific upgrade orbs*/ AttributeRegistry.COOLDOWN_REDUCTION.get();
+                EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
+                UpgradeUtils.appendUpgrade(result, attribute, slot);
+                IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
             }
         }
 
