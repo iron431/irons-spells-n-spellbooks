@@ -302,9 +302,9 @@ public abstract class AbstractSpell {
         IronsSpellbooks.LOGGER.debug("playSound spell:{} isClientSide:{}", this.getSpellType(), entity.level.isClientSide);
         // sound.ifPresent((soundEvent) -> entity.playSound(soundEvent, 1.0f, 1.0f));
         if (sound.isPresent())
-            entity.playSound(sound.get(), 1.0f, 1.0f);
+            entity.playSound(sound.get(), 2.0f, 1.0f);
         else if (playDefaultSound)
-            entity.playSound(defaultCastSound(), 1.0f, 1.0f);
+            entity.playSound(defaultCastSound(), 2.0f, 1.0f);
 
         //entity.playSound(sound.orElse(this:def), 1.0f, 1.0f));
     }

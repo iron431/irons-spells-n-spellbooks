@@ -1,13 +1,17 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.UniqueItem;
+import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
+import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -69,7 +73,9 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 var resultData = Utils.getScrollData(result);
                 var scrollData = Utils.getScrollData(modifierItemStack);
                 resultData.setData(scrollData.getSpell());
-
+                UpgradeUtils.appendUpgrade(result, (Math.random() < .5 ? AttributeRegistry.FIRE_SPELL_POWER.get() : AttributeRegistry.LIGHTNING_SPELL_POWER.get()), EquipmentSlot.HEAD);
+                IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
+                //result.addAttributeModifier(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("test", 1, AttributeModifier.Operation.MULTIPLY_BASE), EquipmentSlot.MAINHAND);
             }
         }
 

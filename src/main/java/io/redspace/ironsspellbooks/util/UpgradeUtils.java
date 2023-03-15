@@ -1,0 +1,116 @@
+package io.redspace.ironsspellbooks.util;
+
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.ItemAttributeModifierEvent;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+
+public class UpgradeUtils {
+
+    public static final Map<EquipmentSlot, UUID> upgradeUUIDsBySlot = Map.of(
+            EquipmentSlot.HEAD, UUID.fromString("f6c19678-1c70-4d41-ad19-cd84d8610242"),
+            EquipmentSlot.CHEST, UUID.fromString("8d02c916-b0eb-4d17-8414-329b4bd38ae7"),
+            EquipmentSlot.LEGS, UUID.fromString("3739c748-98d4-4a2d-9c25-3b4dec74823d"),
+            EquipmentSlot.FEET, UUID.fromString("41cede88-7881-42dd-aac3-d6ab4b56b1f2"),
+            EquipmentSlot.MAINHAND, UUID.fromString("c3865ad7-1f35-46d4-8b4b-a6b934a1a896"),
+            EquipmentSlot.OFFHAND, UUID.fromString("c508430e-7497-42a9-9a9c-1a324dccca54")
+    );
+
+    public static EquipmentSlot getAssignedEquipmentSlot(ItemStack itemStack) {
+        for (EquipmentSlot slot : EquipmentSlot.values())
+            if (!itemStack.getAttributeModifiers(slot).isEmpty())
+                return slot;
+        return EquipmentSlot.MAINHAND;
+    }
+
+    public static double getValueByOperation(Collection<AttributeModifier> modifiers, AttributeModifier.Operation operation) {
+        double total = 0;
+        for (AttributeModifier a : modifiers)
+            if (a.getOperation() == operation)
+                total += a.getAmount();
+        return total;
+    }
+
+    public static UUID UUIDForSlot(EquipmentSlot slot) {
+        return upgradeUUIDsBySlot.get(slot);
+    }
+
+    public static final String Key = "irons_spellbooks";
+    public static final String Upgrades = "Upgrades";
+    public static final String Attribute_Key = "id";
+    public static final String Slot_Key = "slot";
+    public static final String Upgrade_Count = "upgrades";
+
+    public static boolean isUpgraded(ItemStack stack) {
+        //9 is the magic number here ig
+        return stack.hasTag() && stack.getTag().contains(Upgrades, 9);
+    }
+
+    public static void appendUpgrade(ItemStack stack, Attribute attribute, EquipmentSlot slot) {
+        //We are going to use NBT because attaching capabilities to every potentially upgradable item is dumb plus forge bug = destroy upgrades
+        // 10 is the magic number
+        ListTag upgrades = stack.getOrCreateTag().getList(Upgrades, 10);
+        //Check if we already have this attribute upgraded
+        String attributeName = Registry.ATTRIBUTE.getKey(attribute).toString();
+        for (Tag tag : upgrades) {
+            CompoundTag compoundTag = (CompoundTag) tag;
+            String upgradeName = compoundTag.getString(Attribute_Key);
+            if (upgradeName.equalsIgnoreCase(attributeName)) {
+                compoundTag.putInt(Upgrade_Count, compoundTag.getInt(Upgrade_Count) + 1);
+                stack.addTagElement(Upgrades, upgrades);
+                return;
+            }
+        }
+
+        CompoundTag upgrade = new CompoundTag();
+        upgrade.putString(Attribute_Key, attributeName);
+        upgrade.putString(Slot_Key, slot.getName());
+        upgrade.putInt(Upgrade_Count, 1);
+        upgrades.add(upgrade);
+        stack.addTagElement(Upgrades, upgrades);
+//ItemStack 1013 :                Optional<Attribute> optional = Registry.ATTRIBUTE.getOptional(ResourceLocation.tryParse(compoundtag.getString("AttributeName")));
+        //Item Stack#934
+        //Item Stack 1038:
+
+
+//        CompoundTag upgrades = stack.getOrCreateTagElement(Key);
+//        CompoundTag upgrade = new CompoundTag();
+//        upgrade.putString(Attribute_Key, attribute.getDescriptionId());
+//        upgrade.putString(Slot_Key, slot.getName());
+//        upgrades.put(Upgrades, upgrade);
+//        upgrades.put(Upgrades, upgrade);
+    }
+
+    public static int getUpgradeCount(ItemStack stack) {
+        if (!isUpgraded(stack))
+            return 0;
+        ListTag upgrades = stack.getOrCreateTag().getList(Upgrades, 10);
+        int count = 0;
+        for (Tag tag : upgrades) {
+            CompoundTag compoundTag = (CompoundTag) tag;
+            count += compoundTag.getInt(Upgrade_Count);
+        }
+        return count;
+
+    }
+
+    public static double collectAndRemovePreexistingAttribute(ItemAttributeModifierEvent event, Attribute key, AttributeModifier.Operation operationToMatch) {
+        if (event.getOriginalModifiers().containsKey(key)) {
+            for (AttributeModifier modifier : event.getOriginalModifiers().get(key))
+                if (modifier.getOperation().equals(operationToMatch)) {
+                    event.removeModifier(key, modifier);
+                    return modifier.getAmount();
+                }
+        }
+        return 0;
+    }
+}

@@ -52,7 +52,8 @@ public abstract class ExtendedArmorItem extends GeoArmorItem implements IAnimata
             atr = new AttributeModifier(uuid, atr.getName(), atr.getAmount(), atr.getOperation());
             builder.put(modifierEntry.getKey(), atr);
         }
-
+        //testing for upgrade system
+        //builder.put(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Armor knockback resistance", .1, AttributeModifier.Operation.ADDITION));
         ARMOR_ATTRIBUTES = builder.build();
 
     }

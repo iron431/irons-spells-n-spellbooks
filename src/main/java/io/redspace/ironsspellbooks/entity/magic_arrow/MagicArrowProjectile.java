@@ -96,7 +96,7 @@ public class MagicArrowProjectile extends Projectile {
 
     @Override
     protected void onHit(HitResult result) {
-        IronsSpellbooks.LOGGER.debug("onHit ({})", result.getType());
+        //IronsSpellbooks.LOGGER.debug("onHit ({})", result.getType());
 
         penetration++;
         if (!level.isClientSide) {
