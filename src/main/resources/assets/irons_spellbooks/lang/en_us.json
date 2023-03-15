@@ -115,6 +115,7 @@
   "ui.irons_spellbooks.damage": "%d Damage",
   "ui.irons_spellbooks.distance": "%d Block Range",
   "ui.irons_spellbooks.radius": "%d Block Radius",
+  "ui.irons_spellbooks.absorption": "%d Temporary HP",
   "ui.irons_spellbooks.summon_count": "%d Summons",
   "ui.irons_spellbooks.shatter_damage": "%d Shatter Damage",
   "ui.irons_spellbooks.fang_count": "%d Fangs",
@@ -203,6 +204,7 @@
   "spell.irons_spellbooks.summon_polar_bear": "Summon Polar Bear",
   "spell.irons_spellbooks.blessing_of_life": "Blessing of Life",
   "spell.irons_spellbooks.dragon_breath": "Dragon's Breath",
+  "spell.irons_spellbooks.fortify": "Fortify",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -225,6 +227,7 @@
   "effect.irons_spellbooks.abyssal_shroud": "Abyssal Shroud",
   "effect.irons_spellbooks.true_invisibility": "True Invisibility",
   "effect.irons_spellbooks.ascension": "Ascension",
+  "effect.irons_spellbooks.fortify": "Fortified",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",

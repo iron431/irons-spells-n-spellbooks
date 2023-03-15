@@ -26,17 +26,22 @@ public class ServerConfigs {
         //IronsSpellbooks.LOGGER.debug("CFG: static");
         BUILDER.comment("Individual Spell Configuration");
 
-
+        //Blood
+        BUILDER.comment("Blood Spells");
         createSpellConfig(SpellType.BLOOD_SLASH_SPELL, true, 5, SpellRarity.RARE, 10);
         createSpellConfig(SpellType.BLOOD_STEP_SPELL, true, 5, SpellRarity.UNCOMMON, 5);
         createSpellConfig(SpellType.HEARTSTOP_SPELL, true, 10, SpellRarity.COMMON, 120);
         createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 5, SpellRarity.UNCOMMON, 240);
         createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.WITHER_SKULL_SPELL, true, 10, SpellRarity.UNCOMMON, 2);
+        //Ender
+        BUILDER.comment("Ender Spells");
         createSpellConfig(SpellType.EVASION_SPELL, true, 5, SpellRarity.EPIC, 180);
         createSpellConfig(SpellType.MAGIC_ARROW_SPELL, true, 10, SpellRarity.RARE, 12);
         createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.TELEPORT_SPELL, true, 4, SpellRarity.UNCOMMON, 3);
+        //Evocation
+        BUILDER.comment("Evocation Spells");
         createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, true, 6, SpellRarity.UNCOMMON, 10);
         createSpellConfig(SpellType.FANG_STRIKE_SPELL, true, 15, SpellRarity.COMMON, 5);
         createSpellConfig(SpellType.FANG_WARD_SPELL, true, 15, SpellRarity.COMMON, 15);
@@ -46,26 +51,37 @@ public class ServerConfigs {
         createSpellConfig(SpellType.SHIELD_SPELL, true, 8, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.SUMMON_HORSE_SPELL, true, 5, SpellRarity.COMMON, 20);
         createSpellConfig(SpellType.SUMMON_VEX_SPELL, true, 5, SpellRarity.RARE, 240);
+        //Fire
+        BUILDER.comment("Fire Spells");
         createSpellConfig(SpellType.BLAZE_STORM_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.BURNING_DASH_SPELL, true, 10, SpellRarity.COMMON, 10);
         createSpellConfig(SpellType.FIREBALL_SPELL, true, 3, SpellRarity.EPIC, 25);
         createSpellConfig(SpellType.FIREBOLT_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.FIRE_BREATH_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.WALL_OF_FIRE_SPELL, true, 5, SpellRarity.COMMON, 30);
+        //Holy
+        BUILDER.comment("Holy Spells");
         createSpellConfig(SpellType.ANGEL_WING_SPELL, true, 5, SpellRarity.EPIC, 120);
         createSpellConfig(SpellType.CLOUD_OF_REGENERATION_SPELL, true, 10, SpellRarity.COMMON, 40);
         createSpellConfig(SpellType.GREATER_HEAL_SPELL, true, 1, SpellRarity.LEGENDARY, 60);
         createSpellConfig(SpellType.HEAL_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.WISP_SPELL, true, 10, SpellRarity.COMMON, 1);
+        createSpellConfig(SpellType.FORTIFY_SPELL, true, 10, SpellRarity.COMMON, 120);
+        //Ice
+        BUILDER.comment("Ice Spells");
         createSpellConfig(SpellType.CONE_OF_COLD_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.FROSTBITE_SPELL, false, 0, SpellRarity.COMMON, 0);
         createSpellConfig(SpellType.FROST_STEP, true, 8, SpellRarity.RARE, 10);
         createSpellConfig(SpellType.ICICLE_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, true, 10, SpellRarity.RARE, 240);
         createSpellConfig(SpellType.ASCENSION_SPELL, true, 10, SpellRarity.RARE, 30);
+        //Lightning
+        BUILDER.comment("Lightning Spells");
         createSpellConfig(SpellType.ELECTROCUTE_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.LIGHTNING_BOLT_SPELL, true, 10, SpellRarity.EPIC, 25);
         createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, true, 10, SpellRarity.RARE, 12);
+        //Void
+        BUILDER.comment("Void Spells");
         createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, true, 1, SpellRarity.LEGENDARY, 300);
 
 

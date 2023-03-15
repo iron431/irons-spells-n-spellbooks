@@ -151,6 +151,18 @@ public class Messages {
                 .consumer(ClientboundCastError::handle)
                 .add();
 
+        net.messageBuilder(ClientboundAborptionParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundAborptionParticles::new)
+                .encoder(ClientboundAborptionParticles::toBytes)
+                .consumer(ClientboundAborptionParticles::handle)
+                .add();
+
+        net.messageBuilder(ClientboundFortifyAreaParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundFortifyAreaParticles::new)
+                .encoder(ClientboundFortifyAreaParticles::toBytes)
+                .consumer(ClientboundFortifyAreaParticles::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {

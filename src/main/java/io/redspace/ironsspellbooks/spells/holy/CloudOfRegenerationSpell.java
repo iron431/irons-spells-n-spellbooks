@@ -23,7 +23,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         this(1);
     }
 
-    public final float radius = 5;
+    public static final float radius = 5;
 
     public CloudOfRegenerationSpell(int level) {
         super(SpellType.CLOUD_OF_REGENERATION_SPELL);
