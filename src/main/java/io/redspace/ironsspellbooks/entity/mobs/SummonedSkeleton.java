@@ -74,7 +74,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon {
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (!ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get() && pSource instanceof EntityDamageSource && !pSource.isBypassInvul())
-            if (pSource.getEntity().equals(this.getSummoner()) || this.getSummoner().isAlliedTo(pSource.getEntity()))
+            if (this.getSummoner() != null && (pSource.getEntity().equals(this.getSummoner()) || this.getSummoner().isAlliedTo(pSource.getEntity())))
                 return false;
         return super.hurt(pSource, pAmount);
     }
