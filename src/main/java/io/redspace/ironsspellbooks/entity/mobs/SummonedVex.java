@@ -70,8 +70,9 @@ public class SummonedVex extends Vex implements MagicSummon {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (pSource instanceof EntityDamageSource && !ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get() && pSource.getEntity().equals(this.getSummoner()) && !pSource.isBypassInvul())
-            return false;
+        if (!ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get() && pSource instanceof EntityDamageSource && !pSource.isBypassInvul())
+            if (pSource.getEntity().equals(this.getSummoner()) || this.getSummoner().isAlliedTo(pSource.getEntity()))
+                return false;
         return super.hurt(pSource, pAmount);
     }
 
