@@ -76,11 +76,6 @@ public class SummonedVex extends Vex implements MagicSummon {
         return super.hurt(pSource, pAmount);
     }
 
-    @Override
-    public boolean shouldBeSaved() {
-        return false;
-    }
-
     public void setSummoner(@Nullable LivingEntity owner) {
         if (owner != null) {
             this.summonerUUID = owner.getUUID();

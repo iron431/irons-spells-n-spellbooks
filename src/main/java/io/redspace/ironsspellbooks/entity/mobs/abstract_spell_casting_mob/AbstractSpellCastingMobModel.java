@@ -40,30 +40,18 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
         IBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
         IBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
+        /*
+            Head Controls
+         */
         //Make the head look forward, whatever forward is (influenced externally, such as a lootAt target)
-        if(!entity.isAnimating() || entity.shouldAlwaysAnimateHead()){
+        if (!entity.isAnimating() || entity.shouldAlwaysAnimateHead()) {
             head.setRotationY(Mth.lerp(partialTick,
                     Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
                     Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD));
             head.setRotationX(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD);
         }
-
-        //body.setRotationY(0);
-
-        //If we are riding something, pose ourselves sitting
-        if (entity.isPassenger()) {
-            rightLeg.setRotationX(1.4137167F);
-            rightLeg.setRotationY(-(float) Math.PI / 10F);
-            rightLeg.setRotationZ(-0.07853982F);
-            leftLeg.setRotationX(1.4137167F);
-            leftLeg.setRotationY((float) Math.PI / 10F);
-            leftLeg.setRotationZ(0.07853982F);
-        }
-
-        if (entity.isAnimating())
-            return;
         /*
-        Copied from LivingEntityRenderer:116 (Swing the limbs)
+            Crazy Vanilla Magic Calculations (LivingEntityRenderer:116 & HumanoidModel#setupAnim
          */
         float pLimbSwingAmount = 0.0F;
         float pLimbSwing = 0.0F;
@@ -78,10 +66,6 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
                 pLimbSwingAmount = 1.0F;
             }
         }
-        /*
-        Copied from HumanoidModel#setupAnim
-         */
-
         float f = 1.0F;
         if (entity.getFallFlyingTicks() > 4) {
             f = (float) entity.getDeltaMovement().lengthSqr();
@@ -92,22 +76,40 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
         if (f < 1.0F) {
             f = 1.0F;
         }
-//        rightArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
-//        leftArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
-        addRotationX(rightArm, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
-        addRotationX(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
-
-        if (!entity.isPassenger()) {
+        /*
+            Leg Controls
+         */
+        if (entity.isPassenger()) {
+            //If we are riding something, pose ourselves sitting
+            rightLeg.setRotationX(1.4137167F);
+            rightLeg.setRotationY(-(float) Math.PI / 10F);
+            rightLeg.setRotationZ(-0.07853982F);
+            leftLeg.setRotationX(1.4137167F);
+            leftLeg.setRotationY((float) Math.PI / 10F);
+            leftLeg.setRotationZ(0.07853982F);
+        } else if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
             //rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
             //leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
             addRotationX(rightLeg, Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
             addRotationX(leftLeg, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
 
         }
+        /*
+            Arm Controls
+         */
+        if (!entity.isAnimating()) {
+            addRotationX(rightArm, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
+            addRotationX(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
+            bobBone(rightArm, entity.tickCount, 1);
+            bobBone(leftArm, entity.tickCount, -1);
+        } else if (entity.shouldPointArmsWhileCasting()) {
+            addRotationX(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD);
+            addRotationX(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD);
+        }
 
+//        rightArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
+//        leftArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
 
-        bobBone(rightArm, entity.tickCount, 1);
-        bobBone(leftArm, entity.tickCount, -1);
         //rightLeg.yRot = 0.0F;
         //leftLeg.yRot = 0.0F;
         //rightLeg.zRot = 0.0F;

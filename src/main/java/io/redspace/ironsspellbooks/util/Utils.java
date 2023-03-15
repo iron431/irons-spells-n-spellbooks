@@ -271,9 +271,10 @@ public class Utils {
 
         boolean flag = DamageSources.applyDamage(target, f, damageSource, damageSchool);
         if (flag) {
-            if (f1 > 0.0F && target instanceof LivingEntity) {
+            if (f1 > 0.0F && target instanceof LivingEntity livingTarget) {
                 ((LivingEntity) target).knockback((double) (f1 * 0.5F), (double) Mth.sin(attacker.getYRot() * ((float) Math.PI / 180F)), (double) (-Mth.cos(attacker.getYRot() * ((float) Math.PI / 180F))));
                 attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
+                livingTarget.setLastHurtByMob(attacker);
             }
             //disable shield
             if (target instanceof Player player) {

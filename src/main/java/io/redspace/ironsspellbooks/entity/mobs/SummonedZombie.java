@@ -127,11 +127,6 @@ public class SummonedZombie extends Zombie implements MagicSummon {
     }
 
     @Override
-    public boolean shouldBeSaved() {
-        return false;
-    }
-
-    @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         //irons_spellbooks.LOGGER.debug("Reading Summoned Vex save data");

@@ -365,4 +365,12 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     public boolean shouldAlwaysAnimateHead() {
         return true;
     }
+
+    public boolean shouldAlwaysAnimateLegs() {
+        return true;
+    }
+
+    public boolean shouldPointArmsWhileCasting() {
+        return true;
+    }
 }

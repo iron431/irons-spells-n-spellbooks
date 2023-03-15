@@ -218,7 +218,7 @@ public class WizardAttackGoal extends Goal {
 
     protected void doMovement(double distanceSquared) {
         float movementDebuff = mob.isCasting() ? .2f : 1f;
-        double effectiveSpeed = movementDebuff * speedModifier;
+        double effectiveSpeed = /*movementDebuff * */speedModifier;
 
         //move closer to target or strafe around
         if (distanceSquared < attackRadiusSqr && seeTime >= 5) {
@@ -232,7 +232,7 @@ public class WizardAttackGoal extends Goal {
             }
 
             int strafeDir = strafingClockwise ? 1 : -1;
-            if (distanceSquared < attackRadiusSqr * .25f)
+            if (distanceSquared < attackRadiusSqr * .5f)
                 mob.getMoveControl().strafe(-(float) effectiveSpeed, (float) effectiveSpeed * strafeDir);
             else
                 mob.getMoveControl().strafe(0, (float) effectiveSpeed * strafeDir);

@@ -80,11 +80,6 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon {
     }
 
     @Override
-    public boolean shouldBeSaved() {
-        return false;
-    }
-
-    @Override
     public LivingEntity getSummoner() {
         if (this.cachedSummoner != null && !this.cachedSummoner.isRemoved()) {
             return this.cachedSummoner;
