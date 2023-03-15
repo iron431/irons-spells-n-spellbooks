@@ -3,13 +3,11 @@ package io.redspace.ironsspellbooks.spells.holy;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.wisp.WispEntity;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -55,7 +53,7 @@ public class WispSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         var wispEntity = new WispEntity(world, entity, getTargetLocation(world, entity), getSpellPower(entity));
         wispEntity.setPos(Utils.getPositionFromEntityLookDirection(entity, 2).subtract(0, .2, 0));
-        wispEntity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_TIMER.get(), (int) getDuration(entity), 0, false, false, false));
+        //wispEntity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_TIMER.get(), (int) getDuration(entity), 0, false, false, false));
         var target = getTarget(world, entity);
 
         IronsSpellbooks.LOGGER.debug("WispSpell.onCast entityDuration:{}, target:{}", getDuration(entity), target);
