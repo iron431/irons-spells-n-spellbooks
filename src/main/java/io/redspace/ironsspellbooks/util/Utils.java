@@ -319,13 +319,13 @@ public class Utils {
         if (target.getType().is(ModTags.ALWAYS_HEAL)) {
             //This tag is for things like iron golems, villagers, farm animals, etc
             return true;
+        }else if (healer.isAlliedTo(target)) {
+            //Generic ally-check. Precursory team check plus some mobs override it, such as summons
+            return true;
         } else if (healer.getTeam() != null) {
             //If we are on a team, only heal teammates
             return target.isAlliedTo(healer.getTeam());
-        } else if (healer.isAlliedTo(target)) {
-            //Generic ally-check. Comes before player check because our summons are allied to us
-            return true;
-        } else if (healer instanceof Player) {
+        }  else if (healer instanceof Player) {
             //If we are a player and not on a team, we only want to heal other players
             return target instanceof Player;
         } else {
