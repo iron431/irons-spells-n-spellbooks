@@ -7,10 +7,12 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.ConePart;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.tetra.TetraProxy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,10 +27,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -45,6 +44,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class Utils {
+
     public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
         StringBuffer sb = new StringBuffer();
@@ -65,11 +65,19 @@ public class Utils {
 
     public static void spawnInWorld(Level level, BlockPos pos, ItemStack remaining) {
         if (!remaining.isEmpty()) {
-            ItemEntity entityitem = new ItemEntity(level, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, remaining);
-            entityitem.setPickUpDelay(40);
-            entityitem.setDeltaMovement(entityitem.getDeltaMovement().multiply(0, 1, 0));
-            level.addFreshEntity(entityitem);
+            ItemEntity itemEntity = new ItemEntity(level, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, remaining);
+            itemEntity.setPickUpDelay(40);
+            itemEntity.setDeltaMovement(itemEntity.getDeltaMovement().multiply(0, 1, 0));
+            level.addFreshEntity(itemEntity);
         }
+    }
+
+    public static boolean canImbue(ItemStack itemStack) {
+        if ((itemStack.getItem() instanceof SwordItem swordItem && !(swordItem instanceof UniqueItem))) {
+            return true;
+        }
+
+        return TetraProxy.PROXY.canImbue(itemStack);
     }
 
     public static String timeFromTicks(float ticks, int decimalPlaces) {
@@ -147,7 +155,7 @@ public class Utils {
         return level.clip(new ClipContext(pos, dest, ClipContext.Block.COLLIDER, clipContext, entity));
     }
 
-    public static BlockHitResult raycastForBlock(Level level,Vec3 start, Vec3 end, ClipContext.Fluid clipContext){
+    public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
         return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, null));
     }
 
@@ -320,13 +328,13 @@ public class Utils {
         if (target.getType().is(ModTags.ALWAYS_HEAL)) {
             //This tag is for things like iron golems, villagers, farm animals, etc
             return true;
-        }else if (healer.isAlliedTo(target)) {
+        } else if (healer.isAlliedTo(target)) {
             //Generic ally-check. Precursory team check plus some mobs override it, such as summons
             return true;
         } else if (healer.getTeam() != null) {
             //If we are on a team, only heal teammates
             return target.isAlliedTo(healer.getTeam());
-        }  else if (healer instanceof Player) {
+        } else if (healer instanceof Player) {
             //If we are a player and not on a team, we only want to heal other players
             return target instanceof Player;
         } else {

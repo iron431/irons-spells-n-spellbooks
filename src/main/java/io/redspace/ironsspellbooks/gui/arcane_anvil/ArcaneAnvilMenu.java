@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.gui.arcane_anvil;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -21,7 +20,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class ArcaneAnvilMenu extends ItemCombinerMenu {
@@ -71,7 +69,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             }
             else
             //Weapon Imbuement
-            if (baseItemStack.getItem() instanceof SwordItem swordItem && !(swordItem instanceof UniqueItem) && modifierItemStack.getItem() instanceof Scroll) {
+            if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
                 result = baseItemStack.copy();
                 var resultData = Utils.getScrollData(result);
                 var scrollData = Utils.getScrollData(modifierItemStack);

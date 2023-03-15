@@ -155,6 +155,7 @@ repositories {
     maven { url = 'https://maven.enginehub.org/repo/' }
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven { url = "https://maven.theillusivec4.top" }
+    maven { url = "https://cursemaven.com" }
     maven {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'
@@ -179,6 +180,9 @@ dependencies {
 
     //PLAYER ANIMATOR https://github.com/KosmX/minecraftPlayerAnimator
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.2")
+
+    //TETRA - https://www.cursemaven.com/test/curse.maven:tetra-289712/4414851
+    compileOnly fg.deobf("curse.maven:tetra-289712:4414851")
 
     //compileOnly fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
     //implementation fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")

@@ -5,11 +5,14 @@ import io.redspace.ironsspellbooks.capabilities.scroll.ScrollDataEvents;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookDataEvents;
 import io.redspace.ironsspellbooks.entity.mobs.MobSyncedCastingData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.tetra.TetraActualImpl;
+import io.redspace.ironsspellbooks.tetra.TetraProxy;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModSetup {
@@ -44,8 +47,14 @@ public class ModSetup {
 
     public static void init(FMLCommonSetupEvent event) {
         Messages.register();
+
+        if (ModList.get().isLoaded("tetra")) {
+            TetraProxy.PROXY = new TetraActualImpl();
+        }
+
         EntityDataSerializers.registerSerializer(MobSyncedCastingData.MOB_SYNCED_CASTING_DATA);
         EntityDataSerializers.registerSerializer(SyncedSpellData.SYNCED_SPELL_DATA);
     }
+
 
 }
