@@ -98,7 +98,7 @@ public class UpgradeUtils {
     }
 
     public static EquipmentSlot getUpgradedSlot(ItemStack stack) {
-        //this assumes the item is already been checked to have been upgraded... idk what will ensue if it is not
+        //this assumes the item is already been checked to have been upgraded... idk what will ensue if it is not (prob an index out of bounds error)
         ListTag upgrades = stack.getOrCreateTag().getList(Upgrades, 10);
         return EquipmentSlot.byName(((CompoundTag) upgrades.get(0)).getString(Slot_Key));
     }

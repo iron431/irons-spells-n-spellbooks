@@ -1,11 +1,11 @@
 {
-  "name": "irons_spellbooks:evoker_fort_south_camp_pool",
-  "fallback": "irons_spellbooks:catacombs_fallback_pool",
+  "name": "irons_spellbooks:citadel_main_branch_pool",
+  "fallback": "minecraft:empty",
   "elements": [
     {
       "weight": 1,
       "element": {
-        "location": "irons_spellbooks:evoker_fort/camp_south",
+        "location": "irons_spellbooks:citadel_test/main_branch",
         "processors": "irons_spellbooks:evoker_fort_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

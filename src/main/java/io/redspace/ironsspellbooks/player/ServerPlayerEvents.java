@@ -74,8 +74,6 @@ public class ServerPlayerEvents {
         if (UpgradeUtils.getUpgradedSlot(itemStack) != slot)
             return;
 
-        //Placeholders for logic
-
         var upgrades = UpgradeUtils.getUpgrades(itemStack);
         for (Map.Entry<Attribute, Integer> entry : upgrades.entrySet()) {
             double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, entry.getKey(), AttributeModifier.Operation.MULTIPLY_BASE);
