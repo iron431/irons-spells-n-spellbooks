@@ -64,6 +64,13 @@
 ### Cool Building Mod
 - https://www.reddit.com/r/feedthebeast/comments/102jpqk/i_ported_the_mighty_architect_to_fabric_1192/
 
+### Gradle Licnese Header Example
+- https://github.com/TerraFirmaCraft/TerraFirmaCraft
+
+### Multi/Double Block 
+- https://mcmodhelp.fandom.com/wiki/Multi-Texturing_Blocks
+- General Custom Block: https://www.youtube.com/watch?v=NqgR9vt7P5k
+
 ### Rendering
 - OpenGL Blending used by Minecraft: https://registry.khronos.org/OpenGL-Refpages/gl4/html/glBlendFuncSeparate.xhtml
 
