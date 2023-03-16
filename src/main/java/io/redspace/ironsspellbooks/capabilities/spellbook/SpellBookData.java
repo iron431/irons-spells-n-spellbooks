@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.spellbook;
 
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -246,6 +247,11 @@ public class SpellBookData {
         } else {
             if (stack.getItem() instanceof SpellBook spellBook) {
                 var spellBookData = new SpellBookData(spellBook.getSpellSlots());
+
+                if (spellBook instanceof UniqueSpellBook uniqueSpellBook) {
+                    Arrays.stream(uniqueSpellBook.getSpells()).forEach(spell -> spellBookData.addSpell(spell, null));
+                }
+
                 setSpellBookData(stack, spellBookData);
                 return spellBookData;
             }

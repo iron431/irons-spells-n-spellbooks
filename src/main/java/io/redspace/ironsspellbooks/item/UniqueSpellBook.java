@@ -12,6 +12,10 @@ public class UniqueSpellBook extends SpellBook implements UniqueItem {
         this.spells = spells;
     }
 
+    public AbstractSpell[] getSpells() {
+        return this.spells;
+    }
+
     @Override
     public boolean isUnique() {
         return true;

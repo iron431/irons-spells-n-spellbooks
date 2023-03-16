@@ -118,38 +118,5 @@ public class SpellBook extends Item {
         super.appendHoverText(itemStack, level, lines, flag);
     }
 
-//    @Nullable
-//    @Override
-//    public CompoundTag getShareTag(ItemStack stack) {
-//        CompoundTag shareTag = new CompoundTag();
-//        CompoundTag tag = stack.getTag();
-//        //irons_spellbooks.LOGGER.debug("SpellBook.getShareTag.1: {}, {}", spellSlots, tag);
-//        if (tag != null) {
-//            shareTag.put(TAG, tag);
-//        }
-//
-//        getSpellBookDataProvider(stack).ifPresent(
-//                (spellBookData) -> {
-//                    var newNbt = spellBookData.saveNBTData();
-//                    //irons_spellbooks.LOGGER.debug("SpellBook.getShareTag.2: {}, {}", spellSlots, newNbt);
-//                    shareTag.put(CAP, newNbt);
-//                }
-//        );
-//
-//        return shareTag;
-//    }
-//
-//    @Override
-//    public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
-//        if (nbt != null) {
-//            //irons_spellbooks.LOGGER.debug("SpellBook.readShareTag.1: {}, {}", spellSlots, nbt);
-//            stack.setTag(nbt.contains(TAG) ? nbt.getCompound(TAG) : null);
-//            if (nbt.contains(CAP)) {
-//                getSpellBookData(stack).loadNBTData(nbt.getCompound(CAP));
-//            }
-//        } else {
-//            //irons_spellbooks.LOGGER.debug("SpellBook.readShareTag.2: {}", spellSlots);
-//            stack.setTag(null);
-//        }
-//    }
+
 }
