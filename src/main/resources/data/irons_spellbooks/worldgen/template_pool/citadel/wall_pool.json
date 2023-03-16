@@ -23,6 +23,24 @@
     {
       "weight": 1,
       "element": {
+        "location": "irons_spellbooks:citadel/walls/wall_straight_damaged_02",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/walls/wall_straight_tower_topple",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
         "location": "irons_spellbooks:citadel/walls/wall_straight_ruined",
         "processors": "irons_spellbooks:citadel_degradation",
         "projection": "rigid",
@@ -30,7 +48,7 @@
       }
     },
     {
-      "weight": 2,
+      "weight": 3,
       "element": {
         "location": "irons_spellbooks:citadel/walls/wall_tee",
         "processors": "irons_spellbooks:citadel_degradation",
@@ -39,7 +57,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:citadel/walls/wall_tower_turn",
         "processors": "irons_spellbooks:citadel_degradation",
@@ -48,7 +66,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:citadel/walls/wall_tower_4_way",
         "processors": "irons_spellbooks:citadel_degradation",
