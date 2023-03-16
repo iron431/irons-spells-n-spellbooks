@@ -12,9 +12,10 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
@@ -60,16 +61,6 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
 //            }
 //        }
 //    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public float getDestroyProgress(BlockState pState, Player player, BlockGetter pLevel, BlockPos pPos) {
-        if (player.getItemInHand(player.getUsedItemHand()).getItem() instanceof PickaxeItem) {
-            return 1;
-        }
-
-        return super.getDestroyProgress(pState, player, pLevel, pPos);
-    }
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {

@@ -45,16 +45,6 @@ public class InscriptionTableBlock extends Block implements EntityBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public float getDestroyProgress(BlockState pState, Player player, BlockGetter pLevel, BlockPos pPos) {
-        IronsSpellbooks.LOGGER.debug("getDestroyProgress: {} {}", pPos, pState);
-        if (player.getItemInHand(player.getUsedItemHand()).getItem() instanceof AxeItem) {
-            return 1;
-        }
-        return super.getDestroyProgress(pState, player, pLevel, pPos);
-    }
-
-    @Override
     public void playerWillDestroy(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
         IronsSpellbooks.LOGGER.debug("InscriptionTablePlaceholderBlock.playerWillDestroy: {} {}", pPos, pState);
 

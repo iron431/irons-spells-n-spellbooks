@@ -14,7 +14,6 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -58,16 +57,6 @@ public class ArcaneAnvilBlock extends FallingBlock {
             pLevel.playSound(null,pPos, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, .3F, pLevel.random.nextFloat() * 0.1F + 0.9F);
         }
 
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public float getDestroyProgress(BlockState pState, Player player, BlockGetter pLevel, BlockPos pPos) {
-        if (player.getItemInHand(player.getUsedItemHand()).getItem() instanceof PickaxeItem) {
-            return 1;
-        }
-
-        return super.getDestroyProgress(pState, player, pLevel, pPos);
     }
 
     @Override

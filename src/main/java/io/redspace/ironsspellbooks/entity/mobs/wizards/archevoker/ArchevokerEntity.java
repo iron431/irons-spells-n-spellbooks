@@ -8,8 +8,11 @@ import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -76,5 +79,17 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(AttributeRegistry.CAST_TIME_REDUCTION.get(), 1.5)
                 .add(Attributes.MOVEMENT_SPEED, .3);
+    }
+
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.EVOKER_AMBIENT;
+    }
+
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.EVOKER_DEATH;
+    }
+
+    protected SoundEvent getHurtSound(DamageSource pDamageSource) {
+        return SoundEvents.EVOKER_HURT;
     }
 }
