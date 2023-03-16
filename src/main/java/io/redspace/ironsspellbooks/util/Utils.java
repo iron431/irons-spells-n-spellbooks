@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.util;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.capabilities.scroll.ScrollData;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.ConePart;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -32,7 +32,6 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.*;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.entity.PartEntity;
 
 import javax.annotation.Nullable;
@@ -90,7 +89,7 @@ public class Utils {
     public static ItemStack getImbuedSwordInHand(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof SwordItem) {
-            var spell = Scroll.getScrollData(stack).getSpell();
+            var spell = SpellData.getSpellData(stack).getSpell();
             if (spell.getSpellType() != SpellType.NONE_SPELL)
                 return stack;
 

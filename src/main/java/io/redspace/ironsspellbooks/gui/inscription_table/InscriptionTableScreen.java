@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscribeSpell;
 import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -280,10 +282,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         var spellBookSlot = menu.slots.get(SPELLBOOK_SLOT);
         var spellBookItemStack = spellBookSlot.getItem();
-        var spellData = ((SpellBook) spellBookItemStack.getItem()).getSpellBookData(spellBookItemStack);
-        var storedSpells = spellData.getInscribedSpells();
+        var spellBookData = SpellBookData.getSpellBookData(spellBookItemStack);
+        var storedSpells = spellBookData.getInscribedSpells();
 
-        int spellCount = spellData.getSpellSlots();
+        int spellCount = spellBookData.getSpellSlots();
         if (spellCount > 15) {
             spellCount = 15;
         }
@@ -333,17 +335,16 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private void onSpellBookSlotChanged() {
-
         isDirty = true;
-        if (menu.slots.get(SPELLBOOK_SLOT).getItem().getItem() instanceof SpellBook spellBook) {
-            var spellData = (spellBook).getSpellBookData(menu.slots.get(SPELLBOOK_SLOT).getItem());
-            if (spellData.getSpellSlots() <= selectedSpellIndex)
+        var spellBookStack = menu.slots.get(SPELLBOOK_SLOT).getItem();
+        if (spellBookStack.getItem() instanceof SpellBook) {
+            var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
+            if (spellBookData.getSpellSlots() <= selectedSpellIndex) {
                 resetSelectedSpell();
-
+            }
         } else {
             resetSelectedSpell();
         }
-
     }
 
     private void onInscription() {
@@ -358,7 +359,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 return;
 
             //  Is the spellbook a high enough rarity?
-            var scrollData = Scroll.getScrollData(menu.getScrollSlot().getItem());
+            var scrollData = SpellData.getSpellData(menu.getScrollSlot().getItem());
             if (spellBook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
                 return;
 

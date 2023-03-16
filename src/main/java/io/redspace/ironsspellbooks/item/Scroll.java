@@ -1,15 +1,11 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.capabilities.magic.AbstractMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.capabilities.scroll.ScrollData;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,8 +14,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,40 +21,8 @@ import java.util.List;
 
 public class Scroll extends Item {
 
-    public static final String PARENT = "Parent";
-    public static final String TAG = "tag";
-    public static final String CAP = "cap";
-    public static final String ISB_SPELL = "ISB.spell";
-    public static final String SPELL_TYPE = "type";
-    public static final String SPELL_LEVEL = "level";
-
     public Scroll() {
         super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
-    }
-
-    public static ScrollData getScrollData(ItemStack stack) {
-        CompoundTag tag = stack.getTagElement(ISB_SPELL);
-
-        if (tag != null) {
-            return new ScrollData(SpellType.getTypeFromValue(tag.getInt(SPELL_TYPE)), tag.getInt(SPELL_LEVEL));
-        } else {
-            return new ScrollData(SpellType.NONE_SPELL, 0);
-        }
-    }
-
-    public static void setScrollData(ItemStack stack, int spellTypeId, int spellLevel) {
-        var spellTag = new CompoundTag();
-        spellTag.putInt(SPELL_TYPE, spellTypeId);
-        spellTag.putInt(SPELL_LEVEL, spellLevel);
-        stack.addTagElement(ISB_SPELL, spellTag);
-    }
-
-    public static void setScrollData(ItemStack stack, SpellType spellType, int spellLevel) {
-        setScrollData(stack, spellType.getValue(), spellLevel);
-    }
-
-    public static void setScrollData(ItemStack stack, AbstractSpell spell) {
-        setScrollData(stack, spell.getSpellType().getValue(), spell.getLevel());
     }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
@@ -82,7 +44,7 @@ public class Scroll extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        var spell = getScrollData(stack).getSpell();
+        var spell = SpellData.getSpellData(stack).getSpell();
 
         if (level.isClientSide) {
             if (ClientMagicData.isCasting()) {
@@ -114,11 +76,6 @@ public class Scroll extends Item {
         return 7200;//return getScrollData(itemStack).getSpell().getCastTime();
     }
 
-//    @Override
-//    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemStack) {
-//        return getScrollData(itemStack).getSpell().getSpellType().getUseAnim();
-//    }
-
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         //entity.stopUsingItem();
@@ -130,64 +87,14 @@ public class Scroll extends Item {
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
-        var scrollData = getScrollData(itemStack);
+        var scrollData = SpellData.getSpellData(itemStack);
         return scrollData.getDisplayName();
 
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, List<Component> lines, @NotNull TooltipFlag flag) {
-        lines.addAll(getScrollData(itemStack).getHoverText());
+        lines.addAll(SpellData.getSpellData(itemStack).getHoverText());
         super.appendHoverText(itemStack, level, lines, flag);
     }
-
-//    @Nullable
-//    @Override
-//    public CompoundTag getShareTag(ItemStack stack) {
-//        CompoundTag shareTag = new CompoundTag();
-//        CompoundTag tag = stack.getTag();
-//        //irons_spellbooks.LOGGER.debug("Scroll.getShareTag.1: {}, {}, {}", spellType, level, tag);
-//        if (tag != null) {
-//            shareTag.put(Scroll.TAG, tag);
-//        }
-//
-//        getScrollDataProvider(stack).ifPresent(
-//                (scrollDataProvider) -> {
-//                    var newNbt = scrollDataProvider.saveNBTData();
-//                    //irons_spellbooks.LOGGER.debug("Scroll.getShareTag.2: {}, {}, {}", spellType, level, newNbt);
-//                    shareTag.put(Scroll.CAP, newNbt);
-//                }
-//        );
-//
-//        return shareTag;
-//    }
-//
-//    @Override
-//    public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
-//        if (nbt != null) {
-//            //irons_spellbooks.LOGGER.debug("Scroll.readShareTag.1: {}, {}, {}", spellType, level, nbt);
-//            stack.setTag(nbt.contains(Scroll.TAG) ? nbt.getCompound(Scroll.TAG) : null);
-//            if (nbt.contains(Scroll.CAP)) {
-//                getScrollData(stack).loadNBTData(nbt.getCompound(Scroll.CAP));
-//            }
-//        } else {
-//            //irons_spellbooks.LOGGER.debug("Scroll.readShareTag.2: {}, {}", spellType, level);
-//            stack.setTag(null);
-//        }
-//    }
-//
-//    @Nullable
-//    @Override
-//    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-//        var scrollDataProvider = new ScrollDataProvider();
-//
-//        if (nbt != null) {
-//            //irons_spellbooks.LOGGER.debug("Scroll.initCapabilities.1: {}, {}, {}", spellType, level, nbt);
-//            scrollDataProvider.deserializeNBT(nbt.getCompound(PARENT));
-//        } else {
-//            //irons_spellbooks.LOGGER.debug("Scroll.initCapabilities.2: {}, {}", spellType, level);
-//            scrollDataProvider.getOrCreateScrollData();
-//        }
-//        return scrollDataProvider;
-//    }
 }

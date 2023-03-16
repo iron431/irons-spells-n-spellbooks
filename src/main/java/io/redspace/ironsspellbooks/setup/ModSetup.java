@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicEvents;
-import io.redspace.ironsspellbooks.capabilities.scroll.ScrollDataEvents;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookDataEvents;
 import io.redspace.ironsspellbooks.entity.mobs.MobSyncedCastingData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.tetra.TetraActualImpl;
@@ -37,11 +35,11 @@ public class ModSetup {
 
         //SPELLBOOKS
         //bus.addGenericListener(ItemStack.class, SpellBookDataEvents::onAttachCapabilities);
-        bus.addListener(SpellBookDataEvents::onRegisterCapabilities);
+        //bus.addListener(SpellBookDataEvents::onRegisterCapabilities);
 
         //SCROLLS
-        bus.addListener(ScrollDataEvents::onRegisterCapabilities);
-        bus.addGenericListener(ItemStack.class, ScrollDataEvents::onAttachCapabilitiesItemStack);
+        //bus.addListener(ScrollDataEvents::onRegisterCapabilities);
+        //bus.addGenericListener(ItemStack.class, ScrollDataEvents::onAttachCapabilitiesItemStack);
 
     }
 

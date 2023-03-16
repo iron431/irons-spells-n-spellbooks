@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
@@ -38,24 +39,23 @@ public class SpellBarOverlay extends GuiComponent {
         centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);
         centerY = screenHeight - Math.max(55, screenHeight / 8);
 
-
         //
         //  Render Spells
         //
-        ItemStack spellbook = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
-        var spellBookData = ((SpellBook) spellbook.getItem()).getSpellBookData(spellbook);
-        if (spellbook != lastSpellBook) {
-            lastSpellBook = spellbook;
+        ItemStack spellBookStack = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
+        var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
+        if (spellBookStack != lastSpellBook) {
+            lastSpellBook = spellBookStack;
             ClientRenderCache.generateRelativeLocations(spellBookData, 20, 22);
         }
 
         var spells = spellBookData.getInscribedSpells();
         var locations = ClientRenderCache.relativeSpellBarSlotLocations;
-        int approximateWidth = locations.size()/3;
+        int approximateWidth = locations.size() / 3;
         //Move spellbar away from hotbar as it gets bigger
         centerX -= approximateWidth * 5;
 
-                //Slot Border
+        //Slot Border
         setTranslucentTexture(TEXTURE);
         for (Vec2 location : locations) {
             gui.blit(poseStack, centerX + (int) location.x, centerY + (int) location.y, 66, 84, 22, 22);
@@ -64,7 +64,7 @@ public class SpellBarOverlay extends GuiComponent {
         for (int i = 0; i < locations.size(); i++) {
             if (spells[i] != null) {
                 setOpaqueTexture(spells[i].getSpellType().getResourceLocation());
-                gui.blit(poseStack, centerX + (int) locations.get(i).x + 3 , centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
+                gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
             }
         }
         //Border + Cooldowns
