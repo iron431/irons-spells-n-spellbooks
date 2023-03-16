@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.block.inscription_table;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -72,10 +73,9 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
         ItemStack scrollItemStack = menu.getScrollSlot().getItem();
 
         if (spellBookItemStack.getItem() instanceof SpellBook spellBook && scrollItemStack.getItem() instanceof Scroll scroll) {
-
-            var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
+            var spellBookData = SpellBookData.getSpellBookData(spellBookItemStack);
             var scrollData = SpellData.getSpellData(scrollItemStack);
-            if (spellBookData.addSpell(scrollData.getSpell(), selectedIndex))
+            if (spellBookData.addSpell(scrollData.getSpell(), selectedIndex, spellBookItemStack))
                 menu.getScrollSlot().remove(1);
         }
     }

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.spell;
 
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -75,7 +76,7 @@ public class SpellData {
 
     public Component getDisplayName() {
         if (displayName == null) {
-            displayName = getSpell().getSpellType().getDisplayName().append(" ").append(Component.translatable("item.irons_spellbooks.spell"));//.append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity",getSpell().getRarity().getDisplayName().getString()));
+            displayName = getSpell().getSpellType().getDisplayName().append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));//.append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity",getSpell().getRarity().getDisplayName().getString()));
         }
         return displayName;
     }

@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui.inscription_table;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableTile;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
@@ -67,9 +68,10 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             @Override
             public void onTake(Player player, ItemStack stack) {
                 IronsSpellbooks.LOGGER.debug("InscriptionTableMenu.take spell!");
-                var spellBookData = ((SpellBook) spellBookSlot.getItem().getItem()).getSpellBookData(spellBookSlot.getItem());
-                spellBookData.removeSpell(selectedSpellIndex);
-                super.onTake(player, stack);
+                var spellBookStack = spellBookSlot.getItem();
+                var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
+                spellBookData.removeSpell(selectedSpellIndex, spellBookStack);
+                super.onTake(player, spellBookStack);
             }
         };
 
@@ -111,9 +113,11 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         IronsSpellbooks.LOGGER.debug("InscriptionTableMenu.selected spell index: {}", selectedSpellIndex);
 
         ItemStack resultStack = ItemStack.EMPTY;
-        if (spellBookSlot.getItem().getItem() instanceof SpellBook spellBook) {
+        ItemStack spellBookStack = spellBookSlot.getItem();
+
+        if (spellBookStack.getItem() instanceof SpellBook spellBook) {
             if (!spellBook.isUnique()) {
-                var spellBookData = spellBook.getSpellBookData(spellBookSlot.getItem());
+                var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
                 if (selectedSpellIndex >= 0 && spellBookData.getSpell(selectedSpellIndex) != null) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
@@ -125,7 +129,6 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         if (!ItemStack.matches(resultStack, this.resultSlot.getItem())) {
             this.resultSlot.set(resultStack);
         }
-
     }
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons

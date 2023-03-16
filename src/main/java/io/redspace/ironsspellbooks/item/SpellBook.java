@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SpellBook extends Item {
-    public static final String ISB_SPELLBOOK = "ISB.spellbook";
     protected final SpellRarity rarity;
     protected final int spellSlots;
 
@@ -41,9 +40,8 @@ public class SpellBook extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-
         ItemStack itemStack = player.getItemInHand(hand);
-        var spellBookData = getSpellBookData(itemStack);
+        var spellBookData = SpellBookData.getSpellBookData(itemStack);
         AbstractSpell spell = spellBookData.getActiveSpell();
 
         if (level.isClientSide()) {
@@ -76,11 +74,6 @@ public class SpellBook extends Item {
         return 7200;//return getSpellBookData(itemStack).getActiveSpell().getCastTime();
     }
 
-//    @Override
-//    public UseAnim getUseAnimation(ItemStack itemStack) {
-//        return getSpellBookData(itemStack).getActiveSpell().getSpellType().getUseAnim();
-//    }
-
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
@@ -105,8 +98,7 @@ public class SpellBook extends Item {
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324))).withStyle(ChatFormatting.GRAY));
         }
 
-
-        var selectedSpellText = getSpellBookData(itemStack).getHoverText();
+        var selectedSpellText = SpellBookData.getSpellBookData(itemStack).getHoverText();
         if (selectedSpellText.size() > 0) {
             lines.add(Component.empty());
             lines.addAll(selectedSpellText);
@@ -149,14 +141,4 @@ public class SpellBook extends Item {
 //            stack.setTag(null);
 //        }
 //    }
-
-    public SpellBookData getSpellBookData(ItemStack stack) {
-        CompoundTag tag = stack.getTagElement(ISB_SPELLBOOK);
-
-        if (tag != null) {
-            return null;
-        } else {
-            return new SpellBookData(0);
-        }
-    }
 }

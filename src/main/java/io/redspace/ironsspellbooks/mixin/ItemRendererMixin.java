@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
@@ -28,18 +29,15 @@ public class ItemRendererMixin {
     @Inject(method = "renderGuiItemDecorations", at = @At(value = "TAIL"))
     public void renderSpellbookCooldown(Font font, ItemStack stack, int one, int two, CallbackInfo ci) {
         Item item = stack.getItem();
-        if (item instanceof SpellBook spellBook) {
-
-            AbstractSpell spell = spellBook.getSpellBookData(stack).getActiveSpell();
+        if (item instanceof SpellBook) {
+            AbstractSpell spell = SpellBookData.getSpellBookData(stack).getActiveSpell();
             renderSpellCooldown(one, two, spell);
-            //irons_spellbooks.LOGGER.debug("hooked: " + (f * 100) + "% cooldown");
-            //irons_spellbooks.LOGGER.debug(s.getActiveSpell().getLevel()+"");
-        } else if (item instanceof SwordItem swordItem) {
+        } else if (item instanceof SwordItem) {
             AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
             renderSpellCooldown(one, two, spell);
         }
-
     }
+
     private void renderSpellCooldown(int one, int two, AbstractSpell spell) {
         if (spell != null) {
             float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
