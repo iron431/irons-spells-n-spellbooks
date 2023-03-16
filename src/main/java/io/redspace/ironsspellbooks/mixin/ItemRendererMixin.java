@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -35,7 +35,7 @@ public class ItemRendererMixin {
             //irons_spellbooks.LOGGER.debug("hooked: " + (f * 100) + "% cooldown");
             //irons_spellbooks.LOGGER.debug(s.getActiveSpell().getLevel()+"");
         } else if (item instanceof SwordItem swordItem) {
-            AbstractSpell spell = Utils.getScrollData(stack).getSpell();
+            AbstractSpell spell = Scroll.getScrollData(stack).getSpell();
             renderSpellCooldown(one, two, spell);
         }
 

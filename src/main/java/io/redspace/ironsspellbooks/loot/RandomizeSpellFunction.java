@@ -9,7 +9,6 @@ import io.redspace.ironsspellbooks.registries.LootRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -51,8 +50,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             //https://www.desmos.com/calculator/ablc1wg06w
             quality = quality * (float) Math.sin(1.57 * quality * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
-            var scrollData = Utils.getScrollData(itemStack);
-            scrollData.setData(spellId, spellLevel);
+            Scroll.setScrollData(itemStack, spellId, spellLevel);
         }
         return itemStack;
     }
@@ -62,7 +60,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         NavigableMap<Integer, SpellType> weightedSpells = new TreeMap<>();
 
         for (SpellType entry : entries) {
-            if(entry !=SpellType.NONE_SPELL){
+            if (entry != SpellType.NONE_SPELL) {
                 total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
                 weightedSpells.put(total, entry);
             }

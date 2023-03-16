@@ -108,19 +108,16 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
         if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && selectedSpellType != SpellType.NONE_SPELL) {
-            if(scrollStack.getItem() .equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem){
+            if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);
-                Scroll scroll = (Scroll) resultStack.getItem();
-                var scrollData = scroll.getScrollData(resultStack);
-                scrollData.setData(selectedSpellType.getSpellForRarity(inkItem.getRarity()));
+                Scroll.setScrollData(resultStack, selectedSpellType.getSpellForRarity(inkItem.getRarity()));
             }
         }
 
         if (!ItemStack.matches(resultStack, this.resultSlot.getItem())) {
             this.resultSlot.set(resultStack);
         }
-
     }
 
     public void setRecipeSpell(SpellType typeFromValue) {

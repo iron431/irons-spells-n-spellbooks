@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -35,7 +36,7 @@ public class ImbuedSpellOverlay extends GuiComponent {
         //
         //  Render Spells
         //
-        var spellData =Utils.getScrollData(imbuedSword);
+        var spellData = Scroll.getScrollData(imbuedSword);
         AbstractSpell spell = spellData.getSpell();
 
         //Slot Border

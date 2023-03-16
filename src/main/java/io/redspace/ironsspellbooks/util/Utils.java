@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.util;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.scroll.ScrollData;
-import io.redspace.ironsspellbooks.capabilities.scroll.ScrollDataProvider;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.ConePart;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -55,14 +54,6 @@ public class Utils {
         return sb.toString();
     }
 
-    public static LazyOptional<ScrollData> getScrollDataProvider(ItemStack stack) {
-        return stack.getCapability(ScrollDataProvider.SCROLL_DATA);
-    }
-
-    public static ScrollData getScrollData(ItemStack stack) {
-        return stack.getCapability(ScrollDataProvider.SCROLL_DATA).resolve().get();
-    }
-
     public static void spawnInWorld(Level level, BlockPos pos, ItemStack remaining) {
         if (!remaining.isEmpty()) {
             ItemEntity itemEntity = new ItemEntity(level, pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5, remaining);
@@ -99,7 +90,7 @@ public class Utils {
     public static ItemStack getImbuedSwordInHand(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof SwordItem) {
-            var spell = Utils.getScrollData(stack).getSpell();
+            var spell = Scroll.getScrollData(stack).getSpell();
             if (spell.getSpellType() != SpellType.NONE_SPELL)
                 return stack;
 

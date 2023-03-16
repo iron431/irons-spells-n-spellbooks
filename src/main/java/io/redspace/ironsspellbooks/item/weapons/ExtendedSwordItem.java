@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import io.redspace.ironsspellbooks.capabilities.scroll.ScrollDataProvider;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
@@ -42,18 +41,18 @@ public class ExtendedSwordItem extends SwordItem {
         return pEquipmentSlot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(pEquipmentSlot);
     }
 
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        var scrollDataProvider = new ScrollDataProvider();
-
-        if (nbt != null) {
-            //irons_spellbooks.LOGGER.debug("SwordItemMixin.initCapabilities.1: {}", nbt);
-            scrollDataProvider.deserializeNBT(nbt.getCompound(Scroll.PARENT));
-        } else {
-            //irons_spellbooks.LOGGER.debug("SwordItemMixin.initCapabilities.2");
-            scrollDataProvider.getOrCreateScrollData(this.imbuedSpell, this.imbuedLevel);
-        }
-        return scrollDataProvider;
-    }
+//    @Nullable
+//    @Override
+//    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+//        var scrollDataProvider = new ScrollDataProvider();
+//
+//        if (nbt != null) {
+//            //irons_spellbooks.LOGGER.debug("SwordItemMixin.initCapabilities.1: {}", nbt);
+//            scrollDataProvider.deserializeNBT(nbt.getCompound(Scroll.PARENT));
+//        } else {
+//            //irons_spellbooks.LOGGER.debug("SwordItemMixin.initCapabilities.2");
+//            scrollDataProvider.getOrCreateScrollData(this.imbuedSpell, this.imbuedLevel);
+//        }
+//        return scrollDataProvider;
+//    }
 }

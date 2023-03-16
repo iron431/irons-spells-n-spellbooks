@@ -16,13 +16,13 @@ public class ScrollDataEvents {
     }
 
     public static void onAttachCapabilitiesItemStack(AttachCapabilitiesEvent<ItemStack> event) {
-        var stack = event.getObject();
-        if (stack.isEmpty())
-            return;
-
-        if (event.getObject().getItem() instanceof SwordItem && !event.getCapabilities().containsKey(IMBUED_SPELL)) {
-            event.addCapability(IMBUED_SPELL, new ScrollDataProvider());
-        }
+//        var stack = event.getObject();
+//        if (stack.isEmpty())
+//            return;
+//
+//        if (event.getObject().getItem() instanceof SwordItem && !event.getCapabilities().containsKey(IMBUED_SPELL)) {
+//            event.addCapability(IMBUED_SPELL, new ScrollDataProvider());
+//        }
     }
 
 }

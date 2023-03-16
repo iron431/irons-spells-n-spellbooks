@@ -35,12 +35,9 @@ public class CreateScrollCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-            if (itemstack.getItem() instanceof Scroll scroll) {
-                var scrollData = scroll.getScrollData(itemstack);
-                scrollData.setData(spellType.getValue(), spellLevel);
-                if (serverPlayer.getInventory().add(itemstack)) {
-                    return 1;
-                }
+            Scroll.setScrollData(itemstack, spellType, spellLevel);
+            if (serverPlayer.getInventory().add(itemstack)) {
+                return 1;
             }
         }
 

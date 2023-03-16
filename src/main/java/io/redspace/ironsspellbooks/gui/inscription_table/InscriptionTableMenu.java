@@ -112,14 +112,12 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
         ItemStack resultStack = ItemStack.EMPTY;
         if (spellBookSlot.getItem().getItem() instanceof SpellBook spellBook) {
-            if(!spellBook.isUnique()){
+            if (!spellBook.isUnique()) {
                 var spellBookData = spellBook.getSpellBookData(spellBookSlot.getItem());
                 if (selectedSpellIndex >= 0 && spellBookData.getSpell(selectedSpellIndex) != null) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
-                    Scroll scroll = (Scroll) resultStack.getItem();
-                    var scrollData = scroll.getScrollData(resultStack);
-                    scrollData.setData(spellBookData.getSpell(selectedSpellIndex));
+                    Scroll.setScrollData(resultStack, spellBookData.getSpell(selectedSpellIndex));
                 }
             }
         }

@@ -44,15 +44,15 @@ public class ScrollData {
         return spellLevel;
     }
 
-    public void setData(int spellId, int spellLevel) {
-        this.spellId = spellId;
-        this.spellLevel = spellLevel;
-    }
-
-    public void setData(AbstractSpell spell) {
-        this.spellId = spell.getID();
-        this.spellLevel = spell.getLevel();
-    }
+//    public void setData(int spellId, int spellLevel) {
+//        this.spellId = spellId;
+//        this.spellLevel = spellLevel;
+//    }
+//
+//    public void setData(AbstractSpell spell) {
+//        this.spellId = spell.getID();
+//        this.spellLevel = spell.getLevel();
+//    }
 
     public Component getDisplayName() {
         if (displayName == null) {

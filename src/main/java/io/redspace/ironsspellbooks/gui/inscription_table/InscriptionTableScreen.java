@@ -358,7 +358,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 return;
 
             //  Is the spellbook a high enough rarity?
-            var scrollData = scroll.getScrollData(menu.getScrollSlot().getItem());
+            var scrollData = Scroll.getScrollData(menu.getScrollSlot().getItem());
             if (spellBook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
                 return;
 

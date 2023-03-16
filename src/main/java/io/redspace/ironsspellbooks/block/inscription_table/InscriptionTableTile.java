@@ -73,7 +73,7 @@ public class InscriptionTableTile extends BlockEntity implements MenuProvider {
         if (spellBookItemStack.getItem() instanceof SpellBook spellBook && scrollItemStack.getItem() instanceof Scroll scroll) {
 
             var spellBookData = spellBook.getSpellBookData(spellBookItemStack);
-            var scrollData = scroll.getScrollData(scrollItemStack);
+            var scrollData = Scroll.getScrollData(scrollItemStack);
             if (spellBookData.addSpell(scrollData.getSpell(), selectedIndex))
                 menu.getScrollSlot().remove(1);
         }

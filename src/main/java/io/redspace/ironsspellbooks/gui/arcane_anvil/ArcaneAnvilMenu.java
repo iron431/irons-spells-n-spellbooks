@@ -57,34 +57,30 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             //Scroll Merging
             if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof Scroll) {
-                var scrollData1 = Utils.getScrollData(baseItemStack);
-                var scrollData2 = Utils.getScrollData(modifierItemStack);
+                var scrollData1 = Scroll.getScrollData(baseItemStack);
+                var scrollData2 = Scroll.getScrollData(modifierItemStack);
                 if (scrollData1.getSpellId() == scrollData2.getSpellId() && scrollData1.getLevel() == scrollData2.getLevel()) {
                     if (scrollData1.getLevel() < ServerConfigs.getSpellConfig(scrollData1.getSpellId()).MAX_LEVEL) {
                         result = new ItemStack(ItemRegistry.SCROLL.get());
-                        var resultData = Utils.getScrollData(result);
-                        resultData.setData(scrollData1.getSpellId(), scrollData1.getLevel() + 1);
+
+                        Scroll.setScrollData(result, scrollData1.getSpellId(), scrollData1.getLevel() + 1);
                     }
                 }
-            }
-            else
-            //Weapon Imbuement
-            if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
-                result = baseItemStack.copy();
-                var resultData = Utils.getScrollData(result);
-                var scrollData = Utils.getScrollData(modifierItemStack);
-                resultData.setData(scrollData.getSpell());
-                //result.addAttributeModifier(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("test", 1, AttributeModifier.Operation.MULTIPLY_BASE), EquipmentSlot.MAINHAND);
-            }
-            else
-            //Upgrade System
-            if(baseItemStack.getItem() instanceof ArmorItem armorItem && modifierItemStack.is(Items.SNOWBALL)){
-                result = baseItemStack.copy();
-                Attribute attribute = /*Temp for logic, replace with specific upgrade orbs*/ AttributeRegistry.COOLDOWN_REDUCTION.get();
-                EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
-                UpgradeUtils.appendUpgrade(result, attribute, slot);
-                IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
-            }
+            } else
+                //Weapon Imbuement
+                if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
+                    result = baseItemStack.copy();
+                    var scrollData = Scroll.getScrollData(modifierItemStack);
+                    Scroll.setScrollData(result, scrollData.getSpell());
+                } else
+                    //Upgrade System
+                    if (baseItemStack.getItem() instanceof ArmorItem armorItem && modifierItemStack.is(Items.SNOWBALL)) {
+                        result = baseItemStack.copy();
+                        Attribute attribute = /*Temp for logic, replace with specific upgrade orbs*/ AttributeRegistry.COOLDOWN_REDUCTION.get();
+                        EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
+                        UpgradeUtils.appendUpgrade(result, attribute, slot);
+                        IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
+                    }
         }
 
         resultSlots.setItem(0, result);

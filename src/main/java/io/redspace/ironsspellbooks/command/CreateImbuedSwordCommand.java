@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.command;
 
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.Utils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -46,8 +46,7 @@ public class CreateImbuedSwordCommand {
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(itemInput.getItem());
             if (itemstack.getItem() instanceof SwordItem) {
-                var scrollData = Utils.getScrollData(itemstack);
-                scrollData.setData(spellType.getValue(), spellLevel);
+                Scroll.setScrollData(itemstack, spellType, spellLevel);
                 if (serverPlayer.getInventory().add(itemstack)) {
                     return 1;
                 }
