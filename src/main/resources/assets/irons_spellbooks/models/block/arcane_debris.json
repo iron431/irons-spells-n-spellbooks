@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "irons_spellbooks:block/arcane_debris_top",
+    "side": "irons_spellbooks:block/arcane_debris_side"
+  }
+}

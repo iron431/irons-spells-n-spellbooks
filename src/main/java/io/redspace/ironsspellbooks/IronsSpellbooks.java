@@ -1,19 +1,15 @@
 package io.redspace.ironsspellbooks;
 
+import com.mojang.logging.LogUtils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
-
-import io.redspace.ironsspellbooks.item.WaywardCompass;
-import io.redspace.ironsspellbooks.setup.ModSetup;
-import com.mojang.logging.LogUtils;
 import io.redspace.ironsspellbooks.registries.*;
+import io.redspace.ironsspellbooks.setup.ModSetup;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -57,6 +53,7 @@ public class IronsSpellbooks {
         MobEffectRegistry.register(modEventBus);
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
+        FeatureRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
 

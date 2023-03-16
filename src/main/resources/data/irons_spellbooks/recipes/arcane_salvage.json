@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 200,
+  "experience": 40.0,
+  "ingredient": {
+    "item": "irons_spellbooks:arcane_debris"
+  },
+  "result": "irons_spellbooks:arcane_salvage"
+}
