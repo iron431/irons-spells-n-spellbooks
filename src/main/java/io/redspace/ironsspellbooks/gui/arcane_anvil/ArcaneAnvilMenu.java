@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
@@ -54,39 +55,33 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
 
         ItemStack baseItemStack = inputSlots.getItem(0);
         ItemStack modifierItemStack = inputSlots.getItem(1);
-        /*
-        Actions that can be taken in arcane anvil:
-        - Upgrade scroll (scroll + scroll)
-        - Imbue Weapon (weapon + scroll)
-        - Upgrade item (item + upgrade orb)
-         */
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             //Scroll Merging
             if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof Scroll) {
-                var scrollData1 = Scroll.getScrollData(baseItemStack);
-                var scrollData2 = Scroll.getScrollData(modifierItemStack);
+                var scrollData1 = SpellData.getSpellData(baseItemStack);
+                var scrollData2 = SpellData.getSpellData(modifierItemStack);
                 if (scrollData1.getSpellId() == scrollData2.getSpellId() && scrollData1.getLevel() == scrollData2.getLevel()) {
                     if (scrollData1.getLevel() < ServerConfigs.getSpellConfig(scrollData1.getSpellId()).MAX_LEVEL) {
                         result = new ItemStack(ItemRegistry.SCROLL.get());
 
-                        Scroll.setScrollData(result, scrollData1.getSpellId(), scrollData1.getLevel() + 1);
+                        SpellData.setSpellData(result, scrollData1.getSpellId(), scrollData1.getLevel() + 1);
                     }
                 }
             } else
-            //Weapon Imbuement
-            if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
-                result = baseItemStack.copy();
-                var scrollData = Scroll.getScrollData(modifierItemStack);
-                Scroll.setScrollData(result, scrollData.getSpell());
-            } else
-            //Upgrade System
-            if (baseItemStack.getItem() instanceof ArmorItem armorItem && modifierItemStack.is(Items.SNOWBALL)) {
-                result = baseItemStack.copy();
-                Attribute attribute = /*Temp for logic, replace with specific upgrade orbs*/ AttributeRegistry.COOLDOWN_REDUCTION.get();
-                EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
-                UpgradeUtils.appendUpgrade(result, attribute, slot);
-                IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
-            }
+                //Weapon Imbuement
+                if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
+                    result = baseItemStack.copy();
+                    var scrollData = SpellData.getSpellData(modifierItemStack);
+                    SpellData.setSpellData(result, scrollData.getSpell());
+                } else
+                    //Upgrade System
+                    if (baseItemStack.getItem() instanceof ArmorItem armorItem && modifierItemStack.is(Items.SNOWBALL)) {
+                        result = baseItemStack.copy();
+                        Attribute attribute = /*Temp for logic, replace with specific upgrade orbs*/ AttributeRegistry.COOLDOWN_REDUCTION.get();
+                        EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
+                        UpgradeUtils.appendUpgrade(result, attribute, slot);
+                        IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
+                    }
         }
 
         resultSlots.setItem(0, result);

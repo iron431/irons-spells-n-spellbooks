@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.command;
 
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import com.mojang.brigadier.CommandDispatcher;
@@ -27,12 +28,10 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            if (itemstack.getItem() instanceof SpellBook spellBook) {
-                var spellBookData = spellBook.getSpellBookData(itemstack);
-                spellBookData.setSlots(slots);
-                if (serverPlayer.getInventory().add(itemstack)) {
-                    return 1;
-                }
+            var spellBookData = new SpellBookData(slots);
+            SpellBookData.setSpellBookData(itemstack, spellBookData);
+            if (serverPlayer.getInventory().add(itemstack)) {
+                return 1;
             }
         }
 

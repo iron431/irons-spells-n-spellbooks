@@ -84,7 +84,7 @@ public class SpellWheelOverlay extends GuiComponent {
         int centerY = screenHeight / 2;
 
         ItemStack spellBookStack = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
-        spellBookData = ((SpellBook) spellBookStack.getItem()).getSpellBookData(spellBookStack);
+        spellBookData = SpellBookData.getSpellBookData(spellBookStack);
         List<AbstractSpell> spells = spellBookData.getActiveInscribedSpells();
         int spellCount = spells.size();
 

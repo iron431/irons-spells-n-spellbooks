@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookDataProvider;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
@@ -17,17 +16,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SpellBook extends Item implements ISpellBook {
-
-    protected static final String PARENT = "Parent";
-    public static final String TAG = "tag";
-    public static final String CAP = "cap";
+public class SpellBook extends Item {
     protected final SpellRarity rarity;
     protected final int spellSlots;
 
@@ -47,9 +40,8 @@ public class SpellBook extends Item implements ISpellBook {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-
         ItemStack itemStack = player.getItemInHand(hand);
-        var spellBookData = getSpellBookData(itemStack);
+        var spellBookData = SpellBookData.getSpellBookData(itemStack);
         AbstractSpell spell = spellBookData.getActiveSpell();
 
         if (level.isClientSide()) {
@@ -82,11 +74,6 @@ public class SpellBook extends Item implements ISpellBook {
         return 7200;//return getSpellBookData(itemStack).getActiveSpell().getCastTime();
     }
 
-//    @Override
-//    public UseAnim getUseAnimation(ItemStack itemStack) {
-//        return getSpellBookData(itemStack).getActiveSpell().getSpellType().getUseAnim();
-//    }
-
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
@@ -111,8 +98,7 @@ public class SpellBook extends Item implements ISpellBook {
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324))).withStyle(ChatFormatting.GRAY));
         }
 
-
-        var selectedSpellText = getSpellBookData(itemStack).getHoverText();
+        var selectedSpellText = SpellBookData.getSpellBookData(itemStack).getHoverText();
         if (selectedSpellText.size() > 0) {
             lines.add(Component.empty());
             lines.addAll(selectedSpellText);
@@ -121,65 +107,38 @@ public class SpellBook extends Item implements ISpellBook {
         super.appendHoverText(itemStack, level, lines, flag);
     }
 
-    @Nullable
-    @Override
-    public CompoundTag getShareTag(ItemStack stack) {
-        CompoundTag shareTag = new CompoundTag();
-        CompoundTag tag = stack.getTag();
-        //irons_spellbooks.LOGGER.debug("SpellBook.getShareTag.1: {}, {}", spellSlots, tag);
-        if (tag != null) {
-            shareTag.put(TAG, tag);
-        }
-
-        getSpellBookDataProvider(stack).ifPresent(
-                (spellBookData) -> {
-                    var newNbt = spellBookData.saveNBTData();
-                    //irons_spellbooks.LOGGER.debug("SpellBook.getShareTag.2: {}, {}", spellSlots, newNbt);
-                    shareTag.put(CAP, newNbt);
-                }
-        );
-
-        return shareTag;
-    }
-
-    @Override
-    public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
-        if (nbt != null) {
-            //irons_spellbooks.LOGGER.debug("SpellBook.readShareTag.1: {}, {}", spellSlots, nbt);
-            stack.setTag(nbt.contains(TAG) ? nbt.getCompound(TAG) : null);
-            if (nbt.contains(CAP)) {
-                getSpellBookData(stack).loadNBTData(nbt.getCompound(CAP));
-            }
-        } else {
-            //irons_spellbooks.LOGGER.debug("SpellBook.readShareTag.2: {}", spellSlots);
-            stack.setTag(null);
-        }
-    }
-
-    public SpellBookData getSpellBookData(ItemStack stack) {
-        //irons_spellbooks.LOGGER.debug("SpellBook.getSpellBookData.1 {}", stack.hashCode());
-        return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA).resolve().get();
-    }
-
-    public LazyOptional<SpellBookData> getSpellBookDataProvider(ItemStack stack) {
-        //irons_spellbooks.LOGGER.debug("SpellBook.getSpellBookData.2 {}", stack.hashCode());
-        return stack.getCapability(SpellBookDataProvider.SPELL_BOOK_DATA);
-    }
-
-
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        var spellBookDataProvider = new SpellBookDataProvider();
-
-        if (nbt != null) {
-            //irons_spellbooks.LOGGER.debug("SpellBook.initCapabilities.1: {}, {}", spellSlots, nbt);
-            spellBookDataProvider.deserializeNBT(nbt.getCompound(PARENT));
-        } else {
-            //irons_spellbooks.LOGGER.debug("SpellBook.initCapabilities.2: {}", spellSlots);
-            spellBookDataProvider.getOrCreateSpellBookData(spellSlots);
-        }
-        return spellBookDataProvider;
-    }
-
+//    @Nullable
+//    @Override
+//    public CompoundTag getShareTag(ItemStack stack) {
+//        CompoundTag shareTag = new CompoundTag();
+//        CompoundTag tag = stack.getTag();
+//        //irons_spellbooks.LOGGER.debug("SpellBook.getShareTag.1: {}, {}", spellSlots, tag);
+//        if (tag != null) {
+//            shareTag.put(TAG, tag);
+//        }
+//
+//        getSpellBookDataProvider(stack).ifPresent(
+//                (spellBookData) -> {
+//                    var newNbt = spellBookData.saveNBTData();
+//                    //irons_spellbooks.LOGGER.debug("SpellBook.getShareTag.2: {}, {}", spellSlots, newNbt);
+//                    shareTag.put(CAP, newNbt);
+//                }
+//        );
+//
+//        return shareTag;
+//    }
+//
+//    @Override
+//    public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
+//        if (nbt != null) {
+//            //irons_spellbooks.LOGGER.debug("SpellBook.readShareTag.1: {}, {}", spellSlots, nbt);
+//            stack.setTag(nbt.contains(TAG) ? nbt.getCompound(TAG) : null);
+//            if (nbt.contains(CAP)) {
+//                getSpellBookData(stack).loadNBTData(nbt.getCompound(CAP));
+//            }
+//        } else {
+//            //irons_spellbooks.LOGGER.debug("SpellBook.readShareTag.2: {}", spellSlots);
+//            stack.setTag(null);
+//        }
+//    }
 }

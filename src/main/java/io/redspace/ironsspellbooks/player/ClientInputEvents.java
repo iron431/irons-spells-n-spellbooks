@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -65,8 +66,8 @@ public final class ClientInputEvents {
             return;
         if (Utils.isPlayerHoldingSpellBook(player) && minecraft.screen == null) {
             if (SPELLBAR_MODIFIER_STATE.isHeld()) {
-                ItemStack spellBook = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
-                var spellBookData = ((SpellBook) spellBook.getItem()).getSpellBookData(spellBook);
+                ItemStack spellBookStack = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
+                var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
                 if (spellBookData.getSpellCount() > 0) {
                     int direction = (int) event.getScrollDelta();
 //                    irons_spellbooks.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());

@@ -4,6 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
@@ -50,7 +51,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             //https://www.desmos.com/calculator/ablc1wg06w
             quality = quality * (float) Math.sin(1.57 * quality * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
-            Scroll.setScrollData(itemStack, spellId, spellLevel);
+            SpellData.setSpellData(itemStack, spellId, spellLevel);
         }
         return itemStack;
     }
@@ -88,7 +89,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
     public static class Serializer extends LootItemConditionalFunction.Serializer<RandomizeSpellFunction> {
         public void serialize(JsonObject json, RandomizeSpellFunction scrollFunction, JsonSerializationContext jsonDeserializationContext) {
             super.serialize(json, scrollFunction, jsonDeserializationContext);
-            //write scroll data here?
+            //write spell data here?
             //i dont think so
 
         }

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.gui.overlays.network;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,17 +38,14 @@ public class ServerboundSetSpellBookActiveIndex {
                 var mainHandStack = serverPlayer.getMainHandItem();
                 var offHandStack = serverPlayer.getOffhandItem();
 
-                if (mainHandStack.getItem() instanceof SpellBook spellBook) {
-                    spellBook.getSpellBookData(mainHandStack).setActiveSpellIndex(selectedIndex);
+                if (mainHandStack.getItem() instanceof SpellBook) {
+                    SpellBookData.getSpellBookData(mainHandStack).setActiveSpellIndex(selectedIndex, mainHandStack);
                     IronsSpellbooks.LOGGER.info("Setting Spell Mainhand");
-
-                } else if (offHandStack.getItem() instanceof SpellBook spellBook) {
-                    spellBook.getSpellBookData(offHandStack).setActiveSpellIndex(selectedIndex);
+                } else if (offHandStack.getItem() instanceof SpellBook) {
+                    SpellBookData.getSpellBookData(offHandStack).setActiveSpellIndex(selectedIndex, offHandStack);
                     IronsSpellbooks.LOGGER.info("Setting Spell Offhand");
-
                 }
             }
-
         });
         return true;
     }
