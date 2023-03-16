@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    "CSC",
+    "ICI"
+  ],
+  "key": {
+    "I": {
+      "item": "irons_spellbooks:arcane_ingot"
+    },
+    "C": {
+      "item": "irons_spellbooks:cinder_essence"
+    },
+    "S": {
+      "item": "irons_spellbooks:arcane_salvage"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:upgrade_orb",
+    "count": 1
+  }
+}

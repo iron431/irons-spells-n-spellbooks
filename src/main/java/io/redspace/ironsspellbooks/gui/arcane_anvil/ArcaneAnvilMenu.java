@@ -54,6 +54,12 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
 
         ItemStack baseItemStack = inputSlots.getItem(0);
         ItemStack modifierItemStack = inputSlots.getItem(1);
+        /*
+        Actions that can be taken in arcane anvil:
+        - Upgrade scroll (scroll + scroll)
+        - Imbue Weapon (weapon + scroll)
+        - Upgrade item (item + upgrade orb)
+         */
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             //Scroll Merging
             if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof Scroll) {
@@ -67,20 +73,20 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                     }
                 }
             } else
-                //Weapon Imbuement
-                if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
-                    result = baseItemStack.copy();
-                    var scrollData = Scroll.getScrollData(modifierItemStack);
-                    Scroll.setScrollData(result, scrollData.getSpell());
-                } else
-                    //Upgrade System
-                    if (baseItemStack.getItem() instanceof ArmorItem armorItem && modifierItemStack.is(Items.SNOWBALL)) {
-                        result = baseItemStack.copy();
-                        Attribute attribute = /*Temp for logic, replace with specific upgrade orbs*/ AttributeRegistry.COOLDOWN_REDUCTION.get();
-                        EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
-                        UpgradeUtils.appendUpgrade(result, attribute, slot);
-                        IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
-                    }
+            //Weapon Imbuement
+            if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
+                result = baseItemStack.copy();
+                var scrollData = Scroll.getScrollData(modifierItemStack);
+                Scroll.setScrollData(result, scrollData.getSpell());
+            } else
+            //Upgrade System
+            if (baseItemStack.getItem() instanceof ArmorItem armorItem && modifierItemStack.is(Items.SNOWBALL)) {
+                result = baseItemStack.copy();
+                Attribute attribute = /*Temp for logic, replace with specific upgrade orbs*/ AttributeRegistry.COOLDOWN_REDUCTION.get();
+                EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
+                UpgradeUtils.appendUpgrade(result, attribute, slot);
+                IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
+            }
         }
 
         resultSlots.setItem(0, result);
