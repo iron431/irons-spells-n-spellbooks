@@ -45,6 +45,10 @@ public class SpellBook extends Item {
         return rarity;
     }
 
+    public int getSpellSlots() {
+        return spellSlots;
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);

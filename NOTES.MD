@@ -92,7 +92,7 @@
 - ```effect give @s resistance 10000 4 true```
 - ```summon minecraft:creeper ~1 ~ ~1 {NoAI:1b}```
 - Fill floor directly below you
-  - ```fill ~-5 ~-1 ~-5 ~5 ~-1 ~5 quartz_block```
+  - ```fill ~-15 ~-1 ~-15 ~15 ~-1 ~15 quartz_block```
 
 ### Give Generator
 - https://mapmaking.fr/give1.16/

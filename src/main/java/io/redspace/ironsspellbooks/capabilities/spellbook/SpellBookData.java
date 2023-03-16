@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.spellbook;
 
+import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -19,7 +20,7 @@ import java.util.Objects;
 
 public class SpellBookData {
 
-    public static final String ISB_SPELLBOOK = "ISB.spellbook";
+    public static final String ISB_SPELLBOOK = "ISB_spellbook";
     public static final String SPELL_SLOTS = "spellSlots";
     public static final String ACTIVE_SPELL_INDEX = "activeSpellIndex";
     public static final String SPELLS = "spells";
@@ -243,8 +244,14 @@ public class SpellBookData {
         if (tag != null) {
             return new SpellBookData(tag);
         } else {
-            return new SpellBookData(0);
+            if (stack.getItem() instanceof SpellBook spellBook) {
+                var spellBookData = new SpellBookData(spellBook.getSpellSlots());
+                setSpellBookData(stack, spellBookData);
+                return spellBookData;
+            }
         }
+
+        return new SpellBookData(0);
     }
 
     public static void setSpellBookData(ItemStack stack, SpellBookData spellBookData) {

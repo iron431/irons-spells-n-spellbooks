@@ -18,7 +18,7 @@ public class SpellData {
 
     public static final String SPELL_ID = "spellId";
     public static final String LEVEL = "level";
-    public static final String ISB_SPELL = "ISB.spell";
+    public static final String ISB_SPELL = "ISB_spell";
     public static final String SPELL_TYPE = "type";
     public static final String SPELL_LEVEL = "level";
     private MutableComponent displayName;
