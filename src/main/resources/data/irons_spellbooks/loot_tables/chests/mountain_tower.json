@@ -7,7 +7,7 @@
         {
           "type": "minecraft:item",
           "weight": 5,
-          "name": "irons_spellbooks:magic_dust",
+          "name": "irons_spellbooks:arcane_essence",
           "functions": [
             {
               "function": "minecraft:set_count",

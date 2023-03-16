@@ -6,7 +6,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_tee",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -15,7 +15,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_turn_1",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -24,7 +24,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_spiral_stairs",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -33,7 +33,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_rope_bridge",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -42,7 +42,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_stairway",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -51,7 +51,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_turn_2",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -60,7 +60,7 @@
       "weight": 40,
       "element": {
         "location": "irons_spellbooks:catacombs/room_origin_1",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -69,7 +69,7 @@
       "weight": 10,
       "element": {
         "location": "irons_spellbooks:catacombs/room_origin_2",
-        "processors": "irons_spellbooks:weather_stone_blocks",
+        "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }

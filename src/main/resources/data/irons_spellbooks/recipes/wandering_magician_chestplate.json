@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smithing",
   "addition": {
-    "item": "irons_spellbooks:magic_dust"
+    "item": "irons_spellbooks:arcane_essence"
   },
   "base": {
     "item": "minecraft:leather_chestplate"

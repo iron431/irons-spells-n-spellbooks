@@ -7,7 +7,7 @@
         {
           "type": "minecraft:item",
           "weight": 1,
-          "name": "irons_spellbooks:magic_dust",
+          "name": "irons_spellbooks:arcane_essence",
           "functions": [
             {
               "function": "minecraft:set_count",
@@ -67,24 +67,6 @@
       ]
     },
     {
-      "rolls": {
-        "min": 0,
-        "max": 3
-      },
-      "entries": [
-        {
-          "type": "minecraft:loot_table",
-          "name": "irons_spellbooks:magic_items/good_ink"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.5
-        }
-      ]
-    },
-    {
       "rolls": 1,
       "entries": [
         {
@@ -96,7 +78,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.15
+          "chance": 0.08
         }
       ]
     }
