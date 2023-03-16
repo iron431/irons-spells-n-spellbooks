@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "irons_spellbooks:ore_arcane_debris_feature",
+  "step": "underground_ores"
+}

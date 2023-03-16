@@ -49,6 +49,5 @@ public class WaywardCompass extends Item {
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.translatable("item.irons_spellbooks.wayward_compass_desc").withStyle(ChatFormatting.DARK_AQUA));
-        pTooltipComponents.add(Component.translatable("item.irons_spellbooks.wayward_compass_desc2").withStyle(ChatFormatting.DARK_AQUA));
     }
 }
