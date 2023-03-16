@@ -4,7 +4,7 @@
   "size": 7,
 
   "biomes": "#irons_spellbooks:has_structure/evoker_fort",
-  "terrain_adaptation": "beard_box",
+  "terrain_adaptation": "beard_thin",
   "use_expansion_hack": false,
 
   //"project_start_to_heightmap": "WORLD_SURFACE_WG",

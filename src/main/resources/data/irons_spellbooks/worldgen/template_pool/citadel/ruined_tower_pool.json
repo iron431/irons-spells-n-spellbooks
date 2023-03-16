@@ -1,0 +1,33 @@
+{
+  "name": "irons_spellbooks:citadel_ruined_tower_pool",
+  "fallback": "irons_spellbooks:citadel/ruined_tower_fallback_pool",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/walls/tower_ruined_01",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/walls/tower_ruined_02",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:citadel/walls/tower_ruined_03",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

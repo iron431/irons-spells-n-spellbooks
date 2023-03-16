@@ -30,7 +30,7 @@
       }
     },
     {
-      "weight": 20,
+      "weight": 3,
       "element": {
         "location": "irons_spellbooks:evoker_fort/halves/villager_cage",
         "processors": "irons_spellbooks:evoker_fort_randomizer",

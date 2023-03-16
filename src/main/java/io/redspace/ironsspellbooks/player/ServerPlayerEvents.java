@@ -74,7 +74,7 @@ public class ServerPlayerEvents {
         if (UpgradeUtils.getUpgradedSlot(itemStack) != slot)
             return;
 
-        var upgrades = UpgradeUtils.getUpgrades(itemStack);
+        var upgrades = UpgradeUtils.deserializeUpgrade(itemStack);
         for (Map.Entry<Attribute, Integer> entry : upgrades.entrySet()) {
             double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, entry.getKey(), AttributeModifier.Operation.MULTIPLY_BASE);
             event.addModifier(entry.getKey(), new AttributeModifier(UpgradeUtils.UUIDForSlot(slot), "upgrade", baseAmount + UpgradeUtils.getModifierAmount(entry.getKey(),entry.getValue()), AttributeModifier.Operation.MULTIPLY_BASE));

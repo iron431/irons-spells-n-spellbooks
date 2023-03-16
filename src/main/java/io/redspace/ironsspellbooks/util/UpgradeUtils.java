@@ -16,6 +16,7 @@ import java.util.*;
 
 public class UpgradeUtils {
 
+    //We need consistent UUIDs. Different Attributes on a player piece can have the same uuid, but duplicate UUID and attributes will break (UUID per attribute you can say)
     public static final Map<EquipmentSlot, UUID> UPGRADE_UUIDS_BY_SLOT = Map.of(
             EquipmentSlot.HEAD, UUID.fromString("f6c19678-1c70-4d41-ad19-cd84d8610242"),
             EquipmentSlot.CHEST, UUID.fromString("8d02c916-b0eb-4d17-8414-329b4bd38ae7"),
@@ -121,7 +122,7 @@ public class UpgradeUtils {
         return upgradesApplied * amountPerUpgrade;
     }
 
-    public static Map<Attribute, Integer> getUpgrades(ItemStack stack) {
+    public static Map<Attribute, Integer> deserializeUpgrade(ItemStack stack) {
         ListTag upgrades = stack.getOrCreateTag().getList(Upgrades, 10);
         //String attributeName = Registry.ATTRIBUTE.getKey(attribute).toString();
         Map<Attribute, Integer> attributes = new HashMap<>();

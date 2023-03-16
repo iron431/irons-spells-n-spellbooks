@@ -7,7 +7,7 @@
       "element": {
         "location": "irons_spellbooks:evoker_fort/camp_south",
         "processors": "irons_spellbooks:evoker_fort_randomizer",
-        "projection": "rigid",
+        "projection": "terrain_matching",
         "element_type": "minecraft:single_pool_element"
       }
     }
