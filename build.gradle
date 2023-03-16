@@ -149,20 +149,23 @@ repositories {
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-//    flatDir {
-//         dir 'libs'
-//     }
-    maven { url = 'https://maven.enginehub.org/repo/' }
-    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    //    flatDir {
+    //         dir 'libs'
+    //     }
+
+    maven { url = "https://maven.enginehub.org/repo/" }
+    maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
     maven { url = "https://maven.theillusivec4.top" }
     maven { url = "https://cursemaven.com" }
-    maven {
-        name "KosmX's maven"
-        url 'https://maven.kosmx.dev/'
-    }
+    maven { url = "https://maven.blamejared.com" }
+    maven { url = "https://maven.kosmx.dev/" }
 }
 
 dependencies {
+    //compileOnly will not load mod when running from IntelliJ
+    //runtimeOnly will load the mod but can't link to it in code
+    //implementation both
+
     //FORGE
     minecraft 'net.minecraftforge:forge:1.19.2-43.2.3'
 
@@ -174,42 +177,20 @@ dependencies {
 
     //CAELUS
     implementation fg.deobf('top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api')
-    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
+    //compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
     runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6")
-    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
+    //runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
 
     //PLAYER ANIMATOR https://github.com/KosmX/minecraftPlayerAnimator
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.2")
 
     //TETRA - https://www.cursemaven.com/test/curse.maven:tetra-289712/4414851
-    compileOnly fg.deobf("curse.maven:tetra-289712:4414851")
+    //If you want to run without tetra in dev
+    //compileOnly fg.deobf("curse.maven:tetra-289712:4414851")
 
-    //compileOnly fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
-    //implementation fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
-    //implementation fg.deobf("com.sk89q.worldedit:worldedit-forge-mc1.18.2:7.2.10")
-
-    //compileOnly "com.sk89q.worldedit:worldedit-core:7.2.10"
-    //implementation "com.sk89q.worldedit:worldedit-core:7.2.10"
-    //implementation "com.sk89q.worldedit:worldedit-core:7.2.10"
-
-//
-//    compileOnly fg.deobf("com.sk89q.worldedit:worldedit-core:7.2.10")
-//    runtimeOnly fg.deobf("com.sk89q.worldedit:worldedit-core:7.2.10")
-
-    // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    // Real mod deobf dependency examples - these get remapped to your current mappings
-    // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
-    // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
-    // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
-
-    // Examples using mod jars from ./libs
-    // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-
-    // For more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    //If you want to use tetra on a dev instance
+    implementation fg.deobf("se.mickelus.mutil:mutil:1.19.2-5.1.0")
+    implementation fg.deobf("curse.maven:tetra-289712:4414851")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
