@@ -52,7 +52,12 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
     @Override
     public void createResult() {
         ItemStack result = ItemStack.EMPTY;
-
+        /*
+        Actions that can be taken in arcane anvil:
+        - Upgrade scroll (scroll + scroll)
+        - Imbue Weapon (weapon + scroll)
+        - Upgrade item (item + upgrade orb)
+         */
         ItemStack baseItemStack = inputSlots.getItem(0);
         ItemStack modifierItemStack = inputSlots.getItem(1);
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
