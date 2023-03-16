@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableTile;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
@@ -117,7 +117,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
                 if (selectedSpellIndex >= 0 && spellBookData.getSpell(selectedSpellIndex) != null) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
-                    Scroll.setScrollData(resultStack, spellBookData.getSpell(selectedSpellIndex));
+                    SpellData.setSpellData(resultStack, spellBookData.getSpell(selectedSpellIndex));
                 }
             }
         }

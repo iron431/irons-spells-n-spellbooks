@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
@@ -35,7 +35,7 @@ public class ItemRendererMixin {
             //irons_spellbooks.LOGGER.debug("hooked: " + (f * 100) + "% cooldown");
             //irons_spellbooks.LOGGER.debug(s.getActiveSpell().getLevel()+"");
         } else if (item instanceof SwordItem swordItem) {
-            AbstractSpell spell = Scroll.getScrollData(stack).getSpell();
+            AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
             renderSpellCooldown(one, two, spell);
         }
 

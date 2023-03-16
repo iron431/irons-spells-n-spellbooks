@@ -1,14 +1,13 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +16,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +32,7 @@ public abstract class SwordItemMixin extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        var spell = Scroll.getScrollData(stack).getSpell();
+        var spell = SpellData.getSpellData(stack).getSpell();
         //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.1");
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.2");
@@ -71,7 +69,7 @@ public abstract class SwordItemMixin extends Item {
 
     @Override
     public int getUseDuration(@NotNull ItemStack itemStack) {
-        var spell = Scroll.getScrollData(itemStack).getSpell();
+        var spell = SpellData.getSpellData(itemStack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL)
             return 7200;//return spell.getCastTime();
         else
@@ -89,7 +87,7 @@ public abstract class SwordItemMixin extends Item {
 
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
-        var spell = Scroll.getScrollData(itemStack).getSpell();
+        var spell = SpellData.getSpellData(itemStack).getSpell();
 
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             entity.stopUsingItem();
@@ -103,7 +101,7 @@ public abstract class SwordItemMixin extends Item {
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, List<Component> lines, @NotNull TooltipFlag flag) {
         super.appendHoverText(itemStack, level, lines, flag);
 
-        var spell = Scroll.getScrollData(itemStack).getSpell();
+        var spell = SpellData.getSpellData(itemStack).getSpell();
         if (spell.getSpellType() != SpellType.NONE_SPELL) {
             lines.add(Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
             lines.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.spell_title", spell.getSpellType().getDisplayName(), spell.getLevel()).withStyle(spell.getSpellType().getSchoolType().getDisplayName().getStyle())));

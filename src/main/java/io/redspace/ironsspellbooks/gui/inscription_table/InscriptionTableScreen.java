@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscribeSpell;
 import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -358,7 +359,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 return;
 
             //  Is the spellbook a high enough rarity?
-            var scrollData = Scroll.getScrollData(menu.getScrollSlot().getItem());
+            var scrollData = SpellData.getSpellData(menu.getScrollSlot().getItem());
             if (spellBook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
                 return;
 
