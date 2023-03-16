@@ -196,7 +196,6 @@ public class SpellBookData {
     }
 
     public CompoundTag saveNBTData() {
-        //irons_spellbooks.LOGGER.debug("SpellBookData.saveNBTData");
         if (!dirty) {
             return this.tag;
         }
@@ -225,7 +224,6 @@ public class SpellBookData {
     }
 
     public void loadNBTData(CompoundTag compound) {
-        //irons_spellbooks.LOGGER.debug("SpellBookData.loadNBTData {}", compound);
         this.spellSlots = compound.getInt(SPELL_SLOTS);
         this.transcribedSpells = new AbstractSpell[spellSlots];
         this.activeSpellIndex = compound.getInt(ACTIVE_SPELL_INDEX);
