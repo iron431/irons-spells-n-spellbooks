@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
+import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +23,7 @@ import java.util.List;
 public class Scroll extends Item {
 
     public Scroll() {
-        super(new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.UNCOMMON));
+        super(new Item.Properties().stacksTo(1).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).rarity(Rarity.UNCOMMON));
     }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {

@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -14,7 +14,7 @@ import java.util.List;
 public class ArcaneSalvageItem extends Item {
 
     public ArcaneSalvageItem() {
-        super(new Properties().tab(CreativeModeTab.TAB_MATERIALS));
+        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB));
     }
 
     @Override

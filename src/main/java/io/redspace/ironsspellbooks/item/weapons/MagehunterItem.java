@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
@@ -17,7 +17,7 @@ public class MagehunterItem extends ExtendedSwordItem {
         super(Tiers.DIAMOND, 6, -2.4f, imbuedSpell, imbuedLevel, Map.of(
                         AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .65, AttributeModifier.Operation.MULTIPLY_BASE)
                 ),
-                (new Item.Properties()).tab(CreativeModeTab.TAB_COMBAT).rarity(Rarity.EPIC));
+                (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).rarity(Rarity.EPIC));
 
     }
 
