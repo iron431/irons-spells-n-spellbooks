@@ -2,16 +2,13 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.*;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
 
 import java.util.Map;
 
@@ -21,6 +18,14 @@ public class ExtendedSwordItem extends SwordItem {
 
     private final SpellType imbuedSpell;
     private final int imbuedLevel;
+
+    public SpellType getImbuedSpell() {
+        return imbuedSpell;
+    }
+
+    public int getImbuedLevel() {
+        return imbuedLevel;
+    }
 
     public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, SpellType imbuedSpell, int imbuedLevel, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
         super(tier, 3, -2.4f, properties);
@@ -40,19 +45,4 @@ public class ExtendedSwordItem extends SwordItem {
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
         return pEquipmentSlot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(pEquipmentSlot);
     }
-
-//    @Nullable
-//    @Override
-//    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-//        var scrollDataProvider = new ScrollDataProvider();
-//
-//        if (nbt != null) {
-//            //irons_spellbooks.LOGGER.debug("SwordItemMixin.initCapabilities.1: {}", nbt);
-//            scrollDataProvider.deserializeNBT(nbt.getCompound(Scroll.PARENT));
-//        } else {
-//            //irons_spellbooks.LOGGER.debug("SwordItemMixin.initCapabilities.2");
-//            scrollDataProvider.getOrCreateScrollData(this.imbuedSpell, this.imbuedLevel);
-//        }
-//        return scrollDataProvider;
-//    }
 }
