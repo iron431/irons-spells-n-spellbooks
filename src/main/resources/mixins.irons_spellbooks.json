@@ -10,8 +10,8 @@
     "ItemRendererMixin",
     "LivingEntityMixin",
     "LocalPlayerMixin",
+    "ItemMixin",
     "SpinAttackEffectLayerMixin",
-    "SwordItemMixin",
     "TridentItemMixin"
   ],
   "client": [

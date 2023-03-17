@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.setup;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicEvents;
 import io.redspace.ironsspellbooks.entity.mobs.MobSyncedCastingData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.player.CommonPlayerEvents;
 import io.redspace.ironsspellbooks.tetra.TetraActualImpl;
 import io.redspace.ironsspellbooks.tetra.TetraProxy;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -32,6 +33,8 @@ public class ModSetup {
         //bus.addListener(ManaEvents::onPlayerCloned);
         bus.addListener(MagicEvents::onRegisterCapabilities);
         bus.addListener(MagicEvents::onWorldTick);
+        bus.addListener(CommonPlayerEvents::onPlayerRightClickItem);
+        bus.addListener(CommonPlayerEvents::onUseItemStop);
 
         //SPELLBOOKS
         //bus.addGenericListener(ItemStack.class, SpellBookDataEvents::onAttachCapabilities);

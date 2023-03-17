@@ -1,22 +1,24 @@
 package io.redspace.ironsspellbooks.util;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.ConePart;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
-import io.redspace.ironsspellbooks.spells.CastType;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.tetra.TetraProxy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
@@ -33,6 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -70,6 +73,42 @@ public class Utils {
         return TetraProxy.PROXY.canImbue(itemStack);
     }
 
+    public static InteractionResultHolder<ItemStack> onUseCastingHelper(@NotNull Level level, Player player, @NotNull InteractionHand hand, ItemStack stack, AbstractSpell spell) {
+        //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.1");
+        if (spell.getSpellType() != SpellType.NONE_SPELL) {
+            //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.2");
+            if (level.isClientSide) {
+                //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.3");
+                if (ClientMagicData.isCasting()) {
+                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.4");
+                    return InteractionResultHolder.fail(stack);
+                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType()) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost())) {
+                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.5");
+                    return InteractionResultHolder.pass(stack);
+                } else {
+                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.6");
+                    spell.onClientPreCast(level, player, hand, null);
+                    if (spell.getCastType().holdToCast()) {
+                        IronsSpellbooks.LOGGER.debug("onUseCastingHelper.1");
+                        player.startUsingItem(hand);
+                    }
+                    return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                }
+            }
+
+            if (spell.attemptInitiateCast(stack, level, player, CastSource.SWORD, true)) {
+                if (spell.getCastType().holdToCast()) {
+                    IronsSpellbooks.LOGGER.debug("onUseCastingHelper.2");
+                    player.startUsingItem(hand);
+                }
+                return InteractionResultHolder.success(stack);
+            } else {
+                return InteractionResultHolder.fail(stack);
+            }
+        }
+        return null;
+    }
+
     public static String timeFromTicks(float ticks, int decimalPlaces) {
         float ticks_to_seconds = 20;
         float seconds_to_minutes = 60;
@@ -84,32 +123,6 @@ public class Utils {
 
     public static boolean isPlayerHoldingSpellBook(Player player) {
         return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
-    }
-
-    public static ItemStack getImbuedSwordInHand(Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (stack.getItem() instanceof SwordItem) {
-            var spell = SpellData.getSpellData(stack).getSpell();
-            if (spell.getSpellType() != SpellType.NONE_SPELL)
-                return stack;
-
-        }
-        return null;
-    }
-
-    public static ItemStack getHeldImbuedSword(Player player) {
-        ItemStack mainhand = getImbuedSwordInHand(player, InteractionHand.MAIN_HAND);
-        if (mainhand != null) {
-            return mainhand;
-
-        } else {
-            ItemStack offhand = getImbuedSwordInHand(player, InteractionHand.OFF_HAND);
-            return offhand;
-        }
-    }
-
-    public static boolean isPlayerHoldingScroll(Player player) {
-        return player.getMainHandItem().getItem() instanceof Scroll || player.getOffhandItem().getItem() instanceof Scroll;
     }
 
     public static ServerPlayer getServerPlayer(Level level, UUID uuid) {

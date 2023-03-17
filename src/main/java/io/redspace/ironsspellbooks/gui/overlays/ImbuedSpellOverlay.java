@@ -23,28 +23,38 @@ public class ImbuedSpellOverlay extends GuiComponent {
         Player player = Minecraft.getInstance().player;
 
         //This might be expensive
-        ItemStack imbuedSword = Utils.getHeldImbuedSword(player);
-        if(imbuedSword==null)
+        ItemStack stack = player.getMainHandItem();
+        SpellData spellData = null;
+
+        if (Utils.canImbue(stack)) {
+            spellData = SpellData.getSpellData(stack);
+        }
+
+        stack = player.getOffhandItem();
+        if (spellData == null && Utils.canImbue(stack)) {
+            spellData = SpellData.getSpellData(stack);
+        }
+
+        if (spellData == null || spellData.getSpellId() == 0) {
             return;
+        }
 
         int centerX, centerY;
         //GUI:522 (offhand slot location)
-        centerX = screenWidth / 2  + 91 + 9;// + 29;
+        centerX = screenWidth / 2 + 91 + 9;// + 29;
         centerY = screenHeight - 23;
-
 
         //
         //  Render Spells
         //
-        var spellData = SpellData.getSpellData(imbuedSword);
         AbstractSpell spell = spellData.getSpell();
 
         //Slot Border
         setTranslucentTexture(WIDGETS_LOCATION);
-        gui.blit(poseStack, centerX,centerY, 24, 22, 29, 24);
+        gui.blit(poseStack, centerX, centerY, 24, 22, 29, 24);
         //Spell Icon
         setOpaqueTexture(spell.getSpellType().getResourceLocation());
-        gui.blit(poseStack, centerX + 3 , centerY + 4, 0, 0, 16, 16, 16, 16);
+        gui.blit(poseStack, centerX + 3, centerY + 4, 0, 0, 16, 16, 16, 16);
         //Border + Cooldowns
         setTranslucentTexture(TEXTURE);
         float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
