@@ -2,20 +2,19 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.UniqueItem;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.*;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
 
 import java.util.Map;
 
-public class ExtendedSwordItem extends SwordItem {
+public class ExtendedSwordItem extends SwordItem implements UniqueItem {
     float attackDamage;
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
@@ -39,6 +38,11 @@ public class ExtendedSwordItem extends SwordItem {
     @Override
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
         return pEquipmentSlot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(pEquipmentSlot);
+    }
+
+    @Override
+    public AbstractSpell[] getSpells() {
+        return new AbstractSpell[]{AbstractSpell.getSpell(imbuedSpell, imbuedLevel)};
     }
 
 //    @Nullable

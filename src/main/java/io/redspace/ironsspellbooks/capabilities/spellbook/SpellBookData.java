@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.capabilities.spellbook;
 
+import com.google.common.collect.Lists;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.item.UniqueSpellBook;
+import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
-import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -248,7 +248,7 @@ public class SpellBookData {
             if (stack.getItem() instanceof SpellBook spellBook) {
                 var spellBookData = new SpellBookData(spellBook.getSpellSlots());
 
-                if (spellBook instanceof UniqueSpellBook uniqueSpellBook) {
+                if (spellBook instanceof UniqueItem uniqueSpellBook) {
                     Arrays.stream(uniqueSpellBook.getSpells()).forEach(spell -> spellBookData.addSpell(spell, null));
                 }
 
