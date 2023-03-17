@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.capabilities.spellbook;
 
 import com.google.common.collect.Lists;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.item.UniqueItem;
+import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -244,20 +244,18 @@ public class SpellBookData {
 
         if (tag != null) {
             return new SpellBookData(tag);
-        } else {
-            if (stack.getItem() instanceof SpellBook spellBook) {
-                var spellBookData = new SpellBookData(spellBook.getSpellSlots());
+        } else if (stack.getItem() instanceof SpellBook spellBook) {
+            var spellBookData = new SpellBookData(spellBook.getSpellSlots());
 
-                if (spellBook instanceof UniqueItem uniqueSpellBook) {
-                    Arrays.stream(uniqueSpellBook.getSpells()).forEach(spell -> spellBookData.addSpell(spell, null));
-                }
-
-                setSpellBookData(stack, spellBookData);
-                return spellBookData;
+            if (spellBook instanceof UniqueSpellBook uniqueSpellBook) {
+                Arrays.stream(uniqueSpellBook.getSpells()).forEach(spell -> spellBookData.addSpell(spell, null));
             }
-        }
 
-        return new SpellBookData(0);
+            setSpellBookData(stack, spellBookData);
+            return spellBookData;
+        } else {
+            return new SpellBookData(0);
+        }
     }
 
     public static void setSpellBookData(ItemStack stack, SpellBookData spellBookData) {
