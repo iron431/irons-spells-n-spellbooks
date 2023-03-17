@@ -6,16 +6,23 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
 import java.util.Optional;
 
 public class EvasionSpell extends AbstractSpell {
     public EvasionSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(null)));
     }
 
     public EvasionSpell(int level) {
@@ -26,7 +33,6 @@ public class EvasionSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 5;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(null)));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldown;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
@@ -13,6 +12,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -116,23 +116,24 @@ public class MagicManager {
     public void addCooldown(ServerPlayer serverPlayer, SpellType spellType, CastSource castSource) {
         if (castSource == CastSource.SCROLL)
             return;
-        double playerCooldownModifier = serverPlayer.getAttributeValue(COOLDOWN_REDUCTION.get());
+        int effectiveCooldown = getEffectiveSpellCooldown(spellType, serverPlayer, castSource);
+
+        //IronsSpellbooks.LOGGER.debug("addCooldown: serverPlayer: {} playerCooldownModifier:{} effectiveCooldown:{}", serverPlayer.getName().getString(), playerCooldownModifier, effectiveCooldown);
+
+        PlayerMagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
+        Messages.sendToPlayer(new ClientboundSyncCooldown(spellType.getValue(), effectiveCooldown), serverPlayer);
+    }
+
+
+    public static int getEffectiveSpellCooldown(SpellType spellType, Player player, CastSource castSource) {
+        double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION.get());
 
         int itemCoolDownModifer = 1;
         if (castSource == CastSource.SWORD) {
             itemCoolDownModifer = 2;
         }
 
-        int effectiveCooldown = getEffectiveSpellCooldown(AbstractSpell.getSpell(spellType, 1).getSpellCooldown(), playerCooldownModifier) * itemCoolDownModifer;
-
-        IronsSpellbooks.LOGGER.debug("addCooldown: serverPlayer: {} playerCooldownModifier:{} effectiveCooldown:{}", serverPlayer.getName().getString(), playerCooldownModifier, effectiveCooldown);
-
-        PlayerMagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
-        Messages.sendToPlayer(new ClientboundSyncCooldown(spellType.getValue(), effectiveCooldown), serverPlayer);
-    }
-
-    public static int getEffectiveSpellCooldown(int cooldown, double playerCooldownModifier) {
-        return (int) (cooldown * (2 - playerCooldownModifier));
+        return (int) (AbstractSpell.getSpell(spellType, 1).getSpellCooldown() * (2 - playerCooldownModifier) * itemCoolDownModifer);
     }
 
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {

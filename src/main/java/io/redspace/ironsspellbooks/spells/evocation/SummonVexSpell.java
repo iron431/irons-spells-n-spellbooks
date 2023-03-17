@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -15,13 +16,19 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
 import java.util.Optional;
 
 public class SummonVexSpell extends AbstractSpell {
     public SummonVexSpell() {
         this(1);
     }
-
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.summon_count", this.level)
+        );
+    }
     public SummonVexSpell(int level) {
         super(SpellType.SUMMON_VEX_SPELL);
         this.level = level;
@@ -30,8 +37,6 @@ public class SummonVexSpell extends AbstractSpell {
         this.spellPowerPerLevel = 0;
         this.castTime = 20;
         this.baseManaCost = 50;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.summon_count", this.level));
-
     }
 
     @Override

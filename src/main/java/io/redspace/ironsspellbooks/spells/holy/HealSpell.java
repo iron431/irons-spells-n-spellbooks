@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,11 +18,19 @@ import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;
 
+import java.util.List;
 import java.util.Optional;
 
 public class HealSpell extends AbstractSpell {
     public HealSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(caster), 1))
+        );
     }
 
     final float twoPi = 6.283f;
@@ -31,10 +40,9 @@ public class HealSpell extends AbstractSpell {
         this.level = level;
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 1;
+        this.spellPowerPerLevel = 2;
         this.castTime = 0;
         this.baseManaCost = 30;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(null), 1)));
     }
 
     @Override

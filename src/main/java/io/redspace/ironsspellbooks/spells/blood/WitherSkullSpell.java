@@ -6,17 +6,24 @@ import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
 import java.util.Optional;
 
 public class WitherSkullSpell extends AbstractSpell {
     public WitherSkullSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
     }
 
     public WitherSkullSpell(int level) {
@@ -27,7 +34,6 @@ public class WitherSkullSpell extends AbstractSpell {
         this.spellPowerPerLevel = 2;
         this.castTime = 0;
         this.baseManaCost = 25;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(null), 1)));
     }
 
     @Override

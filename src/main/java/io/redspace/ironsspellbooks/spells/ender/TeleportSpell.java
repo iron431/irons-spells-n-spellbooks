@@ -10,10 +10,10 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,6 +25,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 
+import java.util.List;
 import java.util.Optional;
 
 public class TeleportSpell extends AbstractSpell {
@@ -41,7 +42,6 @@ public class TeleportSpell extends AbstractSpell {
         this.baseManaCost = 20;
         this.manaCostPerLevel = 5;
         this.castTime = 0;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(null), 1)));
 
     }
 
@@ -102,7 +102,8 @@ public class TeleportSpell extends AbstractSpell {
 
         playerMagicData.resetAdditionalCastData();
 
-        level.playSound(null, dest.x, dest.y, dest.z, getCastFinishSound().get(), SoundSource.NEUTRAL, 1f, 1f);
+//        level.playSound(null, dest.x, dest.y, dest.z, getCastFinishSound().get(), SoundSource.NEUTRAL, 1f, 1f);
+        entity.playSound(getCastFinishSound().get(), 2.0f, 1.0f);
 
         super.onCast(level, entity, playerMagicData);
     }
@@ -164,6 +165,11 @@ public class TeleportSpell extends AbstractSpell {
         public void reset() {
             //Nothing needed here for teleport
         }
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(caster), 1)));
     }
 
     @Override

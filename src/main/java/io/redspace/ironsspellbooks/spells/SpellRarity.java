@@ -90,7 +90,7 @@ public enum SpellRarity {
     private final MutableComponent[] DISPLAYS = {
             Component.translatable("rarity.irons_spellbooks.common").withStyle(ChatFormatting.GRAY),
             Component.translatable("rarity.irons_spellbooks.uncommon").withStyle(ChatFormatting.GREEN),
-            Component.translatable("rarity.irons_spellbooks.rare").withStyle(ChatFormatting.BLUE),
+            Component.translatable("rarity.irons_spellbooks.rare").withStyle(ChatFormatting.AQUA),
             Component.translatable("rarity.irons_spellbooks.epic").withStyle(ChatFormatting.LIGHT_PURPLE),
             Component.translatable("rarity.irons_spellbooks.legendary").withStyle(ChatFormatting.GOLD),
             Component.translatable("rarity.irons_spellbooks.mythic").withStyle(ChatFormatting.GOLD),

@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -16,11 +17,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class CloudOfRegenerationSpell extends AbstractSpell {
     public CloudOfRegenerationSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getHealing(caster), 1)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(radius, 1))
+        );
     }
 
     public static final float radius = 5;
@@ -33,8 +43,6 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         this.spellPowerPerLevel = 2;
         this.castTime = 200;
         this.baseManaCost = 10;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getHealing(null), 1)));
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(radius, 1)));
 
     }
 

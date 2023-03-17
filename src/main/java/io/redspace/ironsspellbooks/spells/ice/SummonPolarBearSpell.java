@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,11 +14,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
 import java.util.Optional;
 
 public class SummonPolarBearSpell extends AbstractSpell {
     public SummonPolarBearSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.summon_count", 1),
+                Component.translatable("ui.irons_spellbooks.hp", getBearHealth(null)),
+                Component.translatable("ui.irons_spellbooks.damage", getBearDamage(null))
+        );
     }
 
     public SummonPolarBearSpell(int level) {
@@ -28,10 +39,6 @@ public class SummonPolarBearSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 50;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.summon_count", 1));
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.hp", getBearHealth(null)));
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", getBearDamage(null)));
-
     }
 
     @Override

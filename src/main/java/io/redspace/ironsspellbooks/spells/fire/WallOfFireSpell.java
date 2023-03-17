@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -32,7 +33,12 @@ public class WallOfFireSpell extends AbstractSpell {
     public WallOfFireSpell() {
         this(1);
     }
-
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getWallLength(), 1))
+        );
+    }
     public WallOfFireSpell(int level) {
         super(SpellType.WALL_OF_FIRE_SPELL);
         this.level = level;
@@ -41,7 +47,6 @@ public class WallOfFireSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 10;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getWallLength(), 1)));
 
     }
 

@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,11 +16,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
 import java.util.Optional;
 
 public class FangWardSpell extends AbstractSpell {
     public FangWardSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.ring_count", getRings()),
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
     public FangWardSpell(int level) {
@@ -31,8 +39,6 @@ public class FangWardSpell extends AbstractSpell {
         this.castTime = 20;
         this.baseManaCost = 45;
 
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.ring_count", getRings()));
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(null), 1)));
     }
 
 

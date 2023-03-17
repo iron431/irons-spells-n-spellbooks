@@ -36,7 +36,6 @@ import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.builder.ILoopType;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,8 +68,6 @@ public abstract class AbstractSpell {
     private final LazyOptional<Double> manaMultiplier;
     private final LazyOptional<Double> powerMultiplier;
     private final LazyOptional<Integer> cooldown;
-
-    protected final List<MutableComponent> uniqueInfo = new ArrayList<>();
 
     public AbstractSpell(SpellType spellType) {
         this.spellType = spellType;
@@ -366,8 +363,9 @@ public abstract class AbstractSpell {
         return false;
     }
 
-    public List<MutableComponent> getUniqueInfo() {
-        return uniqueInfo;
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+
+        return List.of();
     }
 
     @Override

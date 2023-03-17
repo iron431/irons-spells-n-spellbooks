@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -23,12 +24,21 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 
+import java.util.List;
 import java.util.Optional;
 
 public class FrostStepSpell extends AbstractSpell {
 
     public FrostStepSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(null), 1)),
+                Component.translatable("ui.irons_spellbooks.shatter_damage", Utils.stringTruncation(getDamage(null), 1))
+        );
     }
 
     public FrostStepSpell(int level) {
@@ -39,8 +49,7 @@ public class FrostStepSpell extends AbstractSpell {
         this.baseManaCost = 15;
         this.manaCostPerLevel = 3;
         this.castTime = 0;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(null), 1)));
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.shatter_damage", Utils.stringTruncation(getDamage(null), 1)));
+
 
     }
 

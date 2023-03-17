@@ -9,17 +9,27 @@ import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
+import java.util.List;
 import java.util.Optional;
 
 public class FortifySpell extends AbstractSpell {
     public FortifySpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.absorption", Utils.stringTruncation(getSpellPower(null), 0)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(radius, 1))
+        );
     }
 
     public static final float radius = 7;
@@ -32,8 +42,6 @@ public class FortifySpell extends AbstractSpell {
         this.spellPowerPerLevel = 2;
         this.castTime = 40;
         this.baseManaCost = 40;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.absorption", Utils.stringTruncation(getSpellPower(null), 0)));
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(radius, 1)));
     }
 
     @Override

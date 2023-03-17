@@ -3,15 +3,10 @@ package io.redspace.ironsspellbooks.capabilities.spellbook;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.Utils;
-import com.google.common.collect.Lists;
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -177,25 +172,6 @@ public class SpellBookData {
         }
 
         return false;
-    }
-
-    public List<Component> getHoverText() {
-        if (hoverText == null || dirty) {
-            hoverText = Lists.newArrayList();
-            if (activeSpellIndex > -1) {
-                AbstractSpell spell = getActiveSpell();
-                hoverText.add(Component.translatable("tooltip.irons_spellbooks.selected_spell", spell.getSpellType().getDisplayName(), spell.getLevel()).withStyle(spell.getSpellType().getSchoolType().getDisplayName().getStyle()));
-                for (MutableComponent component : spell.getUniqueInfo())
-                    hoverText.add(Component.literal(" ").append(component.withStyle(ChatFormatting.DARK_GREEN)));
-                if (spell.getCastType() != CastType.INSTANT) {
-                    String castKey = spell.getCastType() == CastType.CONTINUOUS ? "tooltip.irons_spellbooks.cast_continuous" : "tooltip.irons_spellbooks.cast_long";
-                    hoverText.add(Component.literal(" ").append(Component.translatable(castKey, Utils.timeFromTicks(spell.getCastTime(), 1)).withStyle(ChatFormatting.BLUE)));
-                }
-                hoverText.add(Component.translatable("tooltip.irons_spellbooks.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE));
-                hoverText.add(Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(spell.getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
-            }
-        }
-        return hoverText;
     }
 
     public CompoundTag getNBT() {

@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,11 +20,18 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.List;
 import java.util.Optional;
 
 public class RayOfSiphoningSpell extends AbstractSpell {
     public RayOfSiphoningSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getTickDamage(caster), 1)),
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(level), 1)));
     }
 
     public RayOfSiphoningSpell(int level) {
@@ -34,9 +42,6 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 8;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getTickDamage(null), 1)));
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(level), 1)));
-
     }
 
     @Override

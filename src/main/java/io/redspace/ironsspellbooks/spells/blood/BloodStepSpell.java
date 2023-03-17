@@ -12,6 +12,7 @@ import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -28,11 +29,17 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 
+import java.util.List;
 import java.util.Optional;
 
 public class BloodStepSpell extends AbstractSpell {
     public BloodStepSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(caster), 1)));
     }
 
     public BloodStepSpell(int level) {
@@ -43,9 +50,6 @@ public class BloodStepSpell extends AbstractSpell {
         this.baseManaCost = 30;
         this.manaCostPerLevel = 10;
         this.castTime = 0;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(null), 1)));
-
-
     }
 
     @Override

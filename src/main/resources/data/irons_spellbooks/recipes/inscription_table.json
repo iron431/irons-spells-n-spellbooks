@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "  I",
+    " B ",
     "TTT",
     "L L"
   ],
   "key": {
-    "I": {
-      "item": "irons_spellbooks:common_ink"
+    "B": {
+      "item": "minecraft:book"
     },
     "T": {
       "tag": "minecraft:wooden_slabs"

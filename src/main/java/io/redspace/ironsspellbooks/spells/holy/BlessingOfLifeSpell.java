@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -25,7 +27,12 @@ public class BlessingOfLifeSpell extends AbstractSpell {
     public BlessingOfLifeSpell() {
         this(1);
     }
-
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(caster), 1))
+        );
+    }
     public BlessingOfLifeSpell(int level) {
         super(SpellType.BLESSING_OF_LIFE_SPELL);
         this.level = level;
@@ -34,7 +41,6 @@ public class BlessingOfLifeSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 30;
         this.baseManaCost = 10;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(null), 1)));
 
     }
 

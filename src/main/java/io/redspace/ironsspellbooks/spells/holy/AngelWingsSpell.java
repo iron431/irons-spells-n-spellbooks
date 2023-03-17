@@ -6,16 +6,23 @@ import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
 import java.util.Optional;
 
 public class AngelWingsSpell extends AbstractSpell {
     public AngelWingsSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster), 1)));
     }
 
     public AngelWingsSpell(int level) {
@@ -26,7 +33,6 @@ public class AngelWingsSpell extends AbstractSpell {
         this.spellPowerPerLevel = 30;
         this.castTime = 0;
         this.baseManaCost = 60;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getEffectDuration(null), 1)));
 
     }
 

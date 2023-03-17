@@ -6,15 +6,24 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
 import java.util.Optional;
 
 public class GreaterHealSpell extends AbstractSpell {
     public GreaterHealSpell() {
         this(1);
+    }
+
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.greater_healing")
+        );
     }
 
     public GreaterHealSpell(int level) {
@@ -25,7 +34,6 @@ public class GreaterHealSpell extends AbstractSpell {
         this.spellPowerPerLevel = 0;
         this.castTime = 200;
         this.baseManaCost = 100;
-        uniqueInfo.add(Component.translatable("ui.irons_spellbooks.greater_healing"));
     }
 
     @Override

@@ -2,11 +2,7 @@ package io.redspace.ironsspellbooks.capabilities.spell;
 
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.Utils;
-import com.google.common.collect.Lists;
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -41,6 +37,11 @@ public class SpellData {
         } else {
             return new SpellData(SpellType.NONE_SPELL, 0);
         }
+    }
+
+    public static boolean hasSpellData(ItemStack itemStack){
+        CompoundTag tag = itemStack.getTagElement(ISB_SPELL);
+        return tag != null;
     }
 
     public static void setSpellData(ItemStack stack, int spellTypeId, int spellLevel) {
@@ -79,30 +80,5 @@ public class SpellData {
             displayName = getSpell().getSpellType().getDisplayName().append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));//.append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity",getSpell().getRarity().getDisplayName().getString()));
         }
         return displayName;
-    }
-
-    public List<MutableComponent> getHoverText() {
-        if (hoverText == null) {
-            hoverText = Lists.newArrayList();
-            var spell = getSpell();
-            if (spell.getSpellType() != SpellType.NONE_SPELL) {
-                //hoverText.add(s.getRarity().getDisplayName().copy());
-                //hoverText.add(Component.translatable("tooltip.irons_spellbooks.level", s.getLevel()).withStyle(ChatFormatting.GRAY));
-                hoverText.add(Component.translatable("tooltip.irons_spellbooks.level", spell.getLevel()).append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity", getSpell().getRarity().getDisplayName().getString())).withStyle(getSpell().getRarity().getDisplayName().getStyle()));
-                for (MutableComponent component : spell.getUniqueInfo())
-                    hoverText.add(component.withStyle(ChatFormatting.GRAY));
-                if (spell.getCastType() != CastType.INSTANT) {
-                    String castKey = spell.getCastType() == CastType.CONTINUOUS ? "tooltip.irons_spellbooks.cast_continuous" : "tooltip.irons_spellbooks.cast_long";
-                    hoverText.add(Component.translatable(castKey, Utils.timeFromTicks(spell.getCastTime(), 1)).withStyle(ChatFormatting.GRAY));
-                }
-                hoverText.add(Component.empty());
-                hoverText.add(Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY));
-                hoverText.add(Component.translatable("tooltip.irons_spellbooks.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE));
-                hoverText.add(Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(spell.getSpellCooldown(), 1)).withStyle(ChatFormatting.BLUE));
-                hoverText.add(spell.getSchoolType().getDisplayName().copy());
-            }
-
-        }
-        return hoverText;
     }
 }

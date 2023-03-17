@@ -39,7 +39,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.EVASION_SPELL, true, 5, SpellRarity.EPIC, 180);
         createSpellConfig(SpellType.MAGIC_ARROW_SPELL, true, 10, SpellRarity.RARE, 12);
         createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.TELEPORT_SPELL, true, 4, SpellRarity.UNCOMMON, 3);
+        createSpellConfig(SpellType.TELEPORT_SPELL, true, 5, SpellRarity.UNCOMMON, 3);
         //Evocation
         BUILDER.comment("Evocation Spells");
         createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, true, 6, SpellRarity.UNCOMMON, 10);
