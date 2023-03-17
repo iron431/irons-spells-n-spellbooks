@@ -37,6 +37,10 @@ public class CommonPlayerEvents {
     }
 
     public static void onUseItemFinish(LivingEntityUseItemEvent.Finish event) {
+        if (Utils.canImbue(event.getItem())) {
+            IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemFinish set cancelled");
+            event.setCanceled(true);
+        }
         IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemFinish {} {}", event.getEntity().getLevel().isClientSide, event.getItem().getItem());
     }
 }

@@ -6,18 +6,20 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+import se.mickelus.tetra.items.modular.ItemModularHandheld;
+import se.mickelus.tetra.items.modular.impl.ModularBladedItem;
 
-@Mixin(TieredItem.class)
-public abstract class ItemMixin extends Item {
+@Mixin(ModularBladedItem.class)
+public abstract class TetraBladedItemMixin extends ItemModularHandheld {
 
-    public ItemMixin(Properties pProperties) {
-        super(pProperties);
+    public TetraBladedItemMixin(Properties properties) {
+        super(properties);
     }
 
     public int getUseDuration(@NotNull ItemStack itemStack) {
-        IronsSpellbooks.LOGGER.debug("ItemMixin.getUseDuration");
+        IronsSpellbooks.LOGGER.debug("TetraBladedItemMixin.getUseDuration");
         if (SpellData.getSpellData(itemStack).getSpellId() > 0)
-            return 7200;//return spell.getCastTime();
+            return 7200;
         else
             return super.getUseDuration(itemStack);
     }
