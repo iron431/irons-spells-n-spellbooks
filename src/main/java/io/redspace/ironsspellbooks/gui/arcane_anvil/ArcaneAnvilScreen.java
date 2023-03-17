@@ -1,9 +1,8 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.item.UniqueItem;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -30,7 +29,8 @@ public class ArcaneAnvilScreen extends ItemCombinerScreen<ArcaneAnvilMenu> {
 
         this.blit(pPoseStack, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight);
 
-        if (((this.menu.getSlot(0).hasItem() && this.menu.getSlot(1).hasItem()) && !this.menu.getSlot(2).hasItem())||this.menu.getSlot(0).getItem().getItem() instanceof UniqueItem) {
+        // X over arrow
+        if (((this.menu.getSlot(0).hasItem() && this.menu.getSlot(1).hasItem()) && !this.menu.getSlot(2).hasItem())) {
             this.blit(pPoseStack, leftPos + 99, topPos + 45, this.imageWidth, 0, 28, 21);
         }
 

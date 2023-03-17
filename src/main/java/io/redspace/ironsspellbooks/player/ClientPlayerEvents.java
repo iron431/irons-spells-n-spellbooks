@@ -167,7 +167,7 @@ public class ClientPlayerEvents {
 //                Component.literal("" + spell.getLevel())).withStyle(spellType.getRarity(spell.getLevel()).getDisplayName().getStyle());
         var title = Component.translatable("tooltip.irons_spellbooks.selected_spell",
                 spellType.getDisplayName(),
-                Component.literal("" + spell.getLevel()).withStyle(spellType.getRarity(spell.getLevel()).getDisplayName().getStyle())).withStyle(spellType.getSchoolType().getDisplayName().getStyle());
+                Component.literal("" + spell.getLevel())).withStyle(spellType.getSchoolType().getDisplayName().getStyle());
         var uniqueInfo = spell.getUniqueInfo(player);
         var manaCost = Component.translatable("tooltip.irons_spellbooks.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE);
         var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spellType, player, castSource), 1)).withStyle(ChatFormatting.BLUE);

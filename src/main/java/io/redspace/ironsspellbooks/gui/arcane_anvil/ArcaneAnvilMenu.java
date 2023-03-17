@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
@@ -18,9 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ItemCombinerMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class ArcaneAnvilMenu extends ItemCombinerMenu {
@@ -72,21 +70,22 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         SpellData.setSpellData(result, scrollData1.getSpellId(), scrollData1.getLevel() + 1);
                     }
                 }
-            } else
-                //Weapon Imbuement
-                if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
-                    result = baseItemStack.copy();
-                    var scrollData = SpellData.getSpellData(modifierItemStack);
-                    SpellData.setSpellData(result, scrollData.getSpell());
-                } else
-                    //Upgrade System
-                    if (baseItemStack.getItem() instanceof ArmorItem armorItem && modifierItemStack.is(Items.SNOWBALL)) {
-                        result = baseItemStack.copy();
-                        Attribute attribute = /*Temp for logic, replace with specific upgrade orbs*/ AttributeRegistry.COOLDOWN_REDUCTION.get();
-                        EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
-                        UpgradeUtils.appendUpgrade(result, attribute, slot);
-                        IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
-                    }
+
+            }
+            //Weapon Imbuement
+            else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
+                result = baseItemStack.copy();
+                var scrollData = SpellData.getSpellData(modifierItemStack);
+                SpellData.setSpellData(result, scrollData.getSpell());
+            }
+            //Upgrade System
+            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeUtils.getUpgradeCount(baseItemStack) < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
+                result = baseItemStack.copy();
+                Attribute attribute = upgradeOrb.getUpgradeAttribute();
+                EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
+                UpgradeUtils.appendUpgrade(result, attribute, slot);
+                IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
+            }
         }
 
         resultSlots.setItem(0, result);
