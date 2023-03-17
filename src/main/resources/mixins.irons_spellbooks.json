@@ -11,9 +11,9 @@
     "ItemRendererMixin",
     "LivingEntityMixin",
     "LocalPlayerMixin",
-    "ItemMixin",
-    "TetraBladedItemMixin",
     "SpinAttackEffectLayerMixin",
+    "SwordItemMixin",
+    "TetraBladedItemMixin",
     "TridentItemMixin"
   ],
   "client": [

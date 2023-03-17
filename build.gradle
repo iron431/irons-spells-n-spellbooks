@@ -166,31 +166,42 @@ dependencies {
     //runtimeOnly will load the mod but can't link to it in code
     //implementation both
 
-    //FORGE
+    // FORGE ******************************************************************************************************
     minecraft 'net.minecraftforge:forge:1.19.2-43.2.3'
 
-    //MIXINS
+    // MIXINS *****************************************************************************************************
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    //GECKOLIB
+    // GECKOLIB ***************************************************************************************************
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.39')
 
-    //CAELUS
-    implementation fg.deobf('top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api')
-    //compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
+    // CAELUS *****************************************************************************************************
+    //implementation fg.deobf('top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api')
+    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
     runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6")
-    //runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
+    // runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
 
-    //PLAYER ANIMATOR https://github.com/KosmX/minecraftPlayerAnimator
+    // PLAYER ANIMATOR ********************************************************************************************
+    // https://github.com/KosmX/minecraftPlayerAnimator
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.2")
 
-    //TETRA - https://www.cursemaven.com/test/curse.maven:tetra-289712/4414851
-    //If you want to run without tetra in dev
-    //compileOnly fg.deobf("curse.maven:tetra-289712:4414851")
+    // TETRA ******************************************************************************************************
+    // https://www.cursemaven.com/test/curse.maven:tetra-289712/4414851
+    // If you want to run without tetra in dev
+    // compileOnly fg.deobf("curse.maven:tetra-289712:4414851")
 
-    //If you want to use tetra on a dev instance
+    // If you want to use tetra on a dev instance
     implementation fg.deobf("se.mickelus.mutil:mutil:1.19.2-5.1.0")
     implementation fg.deobf("curse.maven:tetra-289712:4414851")
+
+    // JEI ********************************************************************************************************
+    // https://maven.blamejared.com/mezz/jei/jei-1.19.2-forge/
+    // compile against the JEI API but do not include it at runtime
+    compileOnly(fg.deobf("mezz.jei:jei-${forge_version}-common-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${forge_version}-forge-api:${jei_version}"))
+
+    //at runtime, use the full JEI jar for Forge. Good for dev
+    runtimeOnly(fg.deobf("mezz.jei:jei-${forge_version}-forge:${jei_version}"))
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
