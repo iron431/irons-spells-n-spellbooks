@@ -15,6 +15,12 @@
 - Testing Example on a Forge pull request: https://github.com/]MinecraftForge/MinecraftForge/pull/8918/files#diff-fae470ebbd5b00cd8bcd73d47b8cf766f3e19a42b3dc409440f9c884bbb41758
 - Curios Github tests: https://github.com/TheIllusiveC4/Curios/tree/1.18.x/src/test/java/top/theillusivec4/curiostest
 
+### Inventory tabs
+- Enchanted book example - EnchantedBookItem.fillItemCategory
+
+### JEI
+- Their plugin for vanilla - https://github.com/mezz/JustEnoughItems/tree/1.12/src/main/java/mezz/jei/plugins/vanilla
+
 ### Capabilities
 - https://github.com/mickelus/tetra/search?q=capability/
 - https://github.com/Shadows-of-Fire/Apotheosis/search?q=capability
