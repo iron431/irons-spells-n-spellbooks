@@ -3,11 +3,14 @@ package io.redspace.ironsspellbooks.item;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.player.ClientPlayerEvents;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.core.NonNullList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,12 +23,30 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Scroll extends Item {
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).rarity(Rarity.UNCOMMON));
+    }
+
+    @Override
+    public void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {
+        if (/*category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ||*/ category == CreativeModeTab.TAB_SEARCH) {
+            Arrays.stream(SpellType.values())
+                    .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
+                    .forEach(spellType -> {
+                        int min = category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ? spellType.getMaxLevel() : spellType.getMinLevel();
+
+                        for (int i = min; i <= spellType.getMaxLevel(); i++) {
+                            var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
+                            SpellData.setSpellData(itemstack, spellType, i);
+                            items.add(itemstack);
+                        }
+                    });
+        }
     }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
