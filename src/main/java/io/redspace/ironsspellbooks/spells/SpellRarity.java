@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.spells;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -85,6 +85,16 @@ public enum SpellRarity {
         });
 
         IronsSpellbooks.LOGGER.debug(sb.toString());
+    }
+
+    public ChatFormatting getChatFormatting() {
+        return switch (this) {
+            case COMMON -> ChatFormatting.GRAY;
+            case UNCOMMON -> ChatFormatting.GREEN;
+            case RARE -> ChatFormatting.AQUA;
+            case EPIC -> ChatFormatting.LIGHT_PURPLE;
+            case LEGENDARY -> ChatFormatting.GOLD;
+        };
     }
 
     private final MutableComponent[] DISPLAYS = {

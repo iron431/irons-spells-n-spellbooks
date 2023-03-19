@@ -1,19 +1,27 @@
 package io.redspace.ironsspellbooks.jei;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRecipe> {
     public static final RecipeType<ArcaneAnvilRecipe> ARCANE_ANVIL_RECIPE_RECIPE_TYPE = RecipeType.create(IronsSpellbooks.MODID, "arcane_anvil", ArcaneAnvilRecipe.class);
@@ -21,9 +29,13 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
     private final IDrawable icon;
     private final String leftSlotName = "leftSlot";
     private final String rightSlotName = "rightSlot";
+    private final String outputSlotName = "outputSlot";
+    private final int paddingBottom = 15;
 
     public ArcaneAnvilRecipeCategory(IGuiHelper guiHelper) {
-        background = guiHelper.createDrawable(IronsSpellbooksJeiPlugin.RECIPE_GUI_VANILLA, 0, 168, 125, 18);
+        background = guiHelper.drawableBuilder(JeiPlugin.RECIPE_GUI_VANILLA, 0, 168, 125, 18)
+                .addPadding(0, paddingBottom, 0, 0)
+                .build();
         icon = guiHelper.createDrawableItemStack(new ItemStack(BlockRegistry.ARCANE_ANVIL_BLOCK.get()));
     }
 
@@ -62,7 +74,8 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
                 .setSlotName(rightSlotName);
 
         IRecipeSlotBuilder outputSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 108, 1)
-                .addItemStacks(outputs);
+                .addItemStacks(outputs)
+                .setSlotName(outputSlotName);
 
         if (leftInputs.size() == rightInputs.size()) {
             if (leftInputs.size() == outputs.size()) {
@@ -73,5 +86,52 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
         } else if (rightInputs.size() == outputs.size() && leftInputs.size() == 1) {
             builder.createFocusLink(rightInputSlot, outputSlot);
         }
+    }
+
+    @Override
+    public void draw(@NotNull ArcaneAnvilRecipe recipe, IRecipeSlotsView recipeSlotsView, @NotNull PoseStack poseStack, double mouseX, double mouseY) {
+        Optional<ItemStack> leftStack = recipeSlotsView.findSlotByName(leftSlotName)
+                .flatMap(IRecipeSlotView::getDisplayedItemStack);
+
+        Optional<ItemStack> rightStack = recipeSlotsView.findSlotByName(rightSlotName)
+                .flatMap(IRecipeSlotView::getDisplayedItemStack);
+
+        Optional<ItemStack> outputStack = recipeSlotsView.findSlotByName(outputSlotName)
+                .flatMap(IRecipeSlotView::getDisplayedItemStack);
+
+        if (leftStack.isEmpty() || rightStack.isEmpty() || outputStack.isEmpty()) {
+            return;
+        }
+
+        if (leftStack.get().getItem() instanceof Scroll
+                && rightStack.get().getItem() instanceof Scroll
+                && outputStack.get().getItem() instanceof Scroll) {
+            var minecraft = Minecraft.getInstance();
+            drawScrollInfo(minecraft, poseStack, leftStack.get(), outputStack.get());
+        }
+    }
+
+    private void drawScrollInfo(Minecraft minecraft, PoseStack poseStack, ItemStack leftStack, ItemStack outputStack) {
+        var inputSpellData = SpellData.getSpellData(leftStack);
+        var inputText = String.format("L%d", inputSpellData.getLevel());
+        var inputColor = inputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();
+
+        var outputSpellData = SpellData.getSpellData(outputStack);
+        var outputText = String.format("L%d", outputSpellData.getLevel());
+        var outputColor = outputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();
+
+        int y = (getHeight() / 2) + (paddingBottom / 2) + (minecraft.font.lineHeight / 2) - 4;
+
+        //Left Item
+        int x = 3;
+        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
+
+        //Right Item
+        x += 50;
+        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
+
+        //Output Item
+        int outputWidth = minecraft.font.width(outputText);
+        minecraft.font.drawShadow(poseStack, outputText, getWidth() - (outputWidth + 3), y, outputColor);
     }
 }

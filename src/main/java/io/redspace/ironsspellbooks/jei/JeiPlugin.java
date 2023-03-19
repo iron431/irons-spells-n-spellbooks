@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 @mezz.jei.api.JeiPlugin
-public class IronsSpellbooksJeiPlugin implements IModPlugin {
+public class JeiPlugin implements IModPlugin {
     public static final String TEXTURE_GUI_PATH = "textures/gui/";
     public static final String TEXTURE_GUI_VANILLA = TEXTURE_GUI_PATH + "gui_vanilla.png";
     public static final ResourceLocation RECIPE_GUI_VANILLA = new ResourceLocation(ModIds.JEI_ID, TEXTURE_GUI_VANILLA);
