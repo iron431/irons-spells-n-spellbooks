@@ -3,8 +3,10 @@ package io.redspace.ironsspellbooks.jei;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SwordItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +43,26 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     private static Stream<ArcaneAnvilRecipe> getImbueRecipes() {
-        return Stream.empty();
+        var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
+        var leftInputs = new ArrayList<ItemStack>();
+        var rightInputs = new ArrayList<ItemStack>();
+        var outputs = new ArrayList<ItemStack>();
+
+        Arrays.stream(SpellType.values())
+                .sorted(Comparator.comparing(Enum::name))
+                .forEach((spellType) -> {
+                    Registry.ITEM.stream().filter((k) -> k instanceof SwordItem).forEach((swordItem) -> {
+                        var inputSwordStack = new ItemStack(swordItem);
+                        IntStream.range(spellType.getMinLevel(), spellType.getMaxLevel())
+                                .forEach((spellLevel) -> {
+                                    leftInputs.add(inputSwordStack);
+                                    rightInputs.add(getScrollStack(scrollStack, spellType, spellLevel));
+                                    outputs.add(getScrollStack(inputSwordStack, spellType, spellLevel));
+                                });
+                    });
+                });
+
+        return Stream.of(new ArcaneAnvilRecipe(leftInputs, rightInputs, outputs));
     }
 
     private static Stream<ArcaneAnvilRecipe> getUpgradeRecipes() {
