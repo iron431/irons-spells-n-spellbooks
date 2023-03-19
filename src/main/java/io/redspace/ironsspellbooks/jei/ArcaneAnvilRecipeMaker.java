@@ -51,6 +51,7 @@ public final class ArcaneAnvilRecipeMaker {
         var outputs = new ArrayList<ItemStack>();
 
         Arrays.stream(SpellType.values())
+                .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
                 .sorted(Comparator.comparing(Enum::name))
                 .forEach((spellType) -> {
                     Registry.ITEM.stream().filter((k) -> k instanceof SwordItem).forEach((swordItem) -> {
