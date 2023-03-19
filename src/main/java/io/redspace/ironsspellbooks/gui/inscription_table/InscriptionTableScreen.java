@@ -13,15 +13,18 @@ import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -54,6 +57,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private ItemStack lastSpellBookItem = ItemStack.EMPTY;
     protected ArrayList<SpellSlotInfo> spellSlots;
     private int selectedSpellIndex = -1;
+    private int inscriptionErrorCode = 0;
 
     public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -92,7 +96,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         this.blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 
-        inscribeButton.active = isValidInscription();
+        inscribeButton.active = isValidInscription() && inscriptionErrorCode == 0;
         //extractButton.active = isValidExtraction();
         renderButtons(poseStack, mouseX, mouseY);
 
@@ -104,6 +108,38 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         renderSpells(poseStack, mouseX, mouseY);
         renderLorePage(poseStack, partialTick, mouseX, mouseY);
+
+        //Error Message
+        if (menu.slots.get(SPELLBOOK_SLOT).hasItem())
+            inscriptionErrorCode = getErrorCode();
+        else
+            inscriptionErrorCode = 0;
+
+        if (inscriptionErrorCode > 0) {
+            //X over arrow
+            setTexture(TEXTURE);
+            this.blit(poseStack, leftPos + 35, topPos + 51, 0, 213, 28, 22);
+            if (isHovering(leftPos + 35, topPos + 51, 28, 22, mouseX, mouseY)) {
+                renderTooltip(poseStack, getErrorMessage(inscriptionErrorCode), mouseX, mouseY);
+            }
+        }
+    }
+
+    private int getErrorCode() {
+        if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellbook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
+            var scrollData = SpellData.getSpellData(menu.getScrollSlot().getItem());
+            if (spellbook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
+                return 1;
+        }
+
+        return 0;
+    }
+
+    private Component getErrorMessage(int code) {
+        if (code == 1)
+            return Component.translatable("ui.irons_spellbooks.inscription_table_rarity_error");
+        else
+            return Component.empty();
     }
 
     private void renderSpells(PoseStack poseStack, int mouseX, int mouseY) {
@@ -394,7 +430,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
             isDirty = true;
 //            Messages.sendToServer(new ServerboundInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
-
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1.0F));
             this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, -1);
         }
 

@@ -13,10 +13,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -29,8 +26,16 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     private int selectedSpellIndex = -1;
 
     protected final ResultContainer resultSlots = new ResultContainer();
-    //TODO: set changed functionality (see arcane anvil)
-    protected final Container inputSlots = new SimpleContainer(2);
+    protected final Container inputSlots = new SimpleContainer(2) {
+        /**
+         * For block entities, ensures the chunk containing the block entity is saved to disk later - the game won't think
+         * it hasn't changed and skip it.
+         */
+        public void setChanged() {
+            super.setChanged();
+            InscriptionTableMenu.this.slotsChanged(this);
+        }
+    };
 
     public InscriptionTableMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
         this(containerId, inv, ContainerLevelAccess.NULL/* inv.player.level.getBlockEntity(extraData.readBlockPos())*/);
@@ -103,7 +108,9 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         return resultSlot;
     }
 
-    public void onSlotsChanged() {
+    @Override
+    public void slotsChanged(Container pContainer) {
+        super.slotsChanged(pContainer);
         IronsSpellbooks.LOGGER.debug("InscriptionTableMenu.slotsChanged");
         setupResultSlot();
     }

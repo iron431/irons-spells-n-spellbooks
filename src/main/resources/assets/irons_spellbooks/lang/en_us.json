@@ -112,6 +112,7 @@
   "tooltip.irons_spellbooks.ink_tooltip": "Can Craft %s Scrolls",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",
+  "ui.irons_spellbooks.inscription_table_rarity_error": "This scroll is too rare for this spell book.",
   "ui.irons_spellbooks.scroll_forge_title": "Scroll Forge",
   "ui.irons_spellbooks.no_spell_book": "No SpellBook",
   "ui.irons_spellbooks.no_selection": "Select a Spell",
