@@ -33,8 +33,16 @@ public class InscriptionTablePlaceholderBlock extends Block {
         return RenderShape.INVISIBLE;
     }
 
+    @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return InscriptionTableBlock.SHAPE;
+        Direction direction = pState.getValue(FACING);
+        return switch (direction) {
+            case NORTH -> InscriptionTableBlock.SHAPE_LEGS_NORTH;
+            case SOUTH -> InscriptionTableBlock.SHAPE_LEGS_SOUTH;
+            case WEST -> InscriptionTableBlock.SHAPE_LEGS_EAST;
+            default -> InscriptionTableBlock.SHAPE_LEGS_WEST;
+        };
     }
 
     @Override
@@ -57,7 +65,11 @@ public class InscriptionTablePlaceholderBlock extends Block {
         if (pLevel.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
-            player.openMenu(state.getMenuProvider(pLevel, pos));
+            var neighborPos = pos.relative(state.getValue(FACING));
+            var blockstate = pLevel.getBlockState(neighborPos);
+            if (blockstate.is(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get())) {
+                player.openMenu(blockstate.getMenuProvider(pLevel, neighborPos));
+            }
             return InteractionResult.CONSUME;
         }
     }

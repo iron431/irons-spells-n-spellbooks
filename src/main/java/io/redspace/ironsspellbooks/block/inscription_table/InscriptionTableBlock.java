@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +36,23 @@ public class InscriptionTableBlock extends Block /*implements EntityBlock*/ {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 18, 16);
+    //    private static final VoxelShape LEG_NE = Block.box(12, 0, 12, 3, 10, 3);
+//    private static final VoxelShape LEG_NW = Block.box(1, 0, 12, 3, 10, 3);
+//    private static final VoxelShape LEG_SE = Block.box(12, 0, 1, 3, 10, 3);
+//    private static final VoxelShape LEG_SW = Block.box(1, 0, 1, 3, 10, 3);
+//    private static final VoxelShape TABLE_TOP = Block.box(0, 10, 0, 16, 4, 16);
+    //public static final VoxelShape SHAPE_COMMON = Shapes.or(SHAPE_WEST, SHAPE_POST);
+    public static final VoxelShape SHAPE_TABLETOP = Block.box(0, 10, 0, 16, 14, 16);
+    public static final VoxelShape SHAPE_LEG_1 = Block.box(1, 0, 1, 4, 10, 4);
+    public static final VoxelShape SHAPE_LEG_2 = Block.box(12, 0, 1, 15, 10, 4);
+    public static final VoxelShape SHAPE_LEG_3 = Block.box(1, 0, 12, 4, 10, 15);
+    public static final VoxelShape SHAPE_LEG_4 = Block.box(12, 0, 12, 15, 10, 15);
+    public static final VoxelShape SHAPE_LEGS_EAST = Shapes.or(SHAPE_LEG_2, SHAPE_LEG_4, SHAPE_TABLETOP);
+    public static final VoxelShape SHAPE_LEGS_WEST = Shapes.or(SHAPE_LEG_1, SHAPE_LEG_3, SHAPE_TABLETOP);
+    public static final VoxelShape SHAPE_LEGS_NORTH = Shapes.or(SHAPE_LEG_3, SHAPE_LEG_4, SHAPE_TABLETOP);
+    public static final VoxelShape SHAPE_LEGS_SOUTH = Shapes.or(SHAPE_LEG_1, SHAPE_LEG_2, SHAPE_TABLETOP);
+
+
 
     public InscriptionTableBlock() {
         super(BlockBehaviour.Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion());
@@ -61,7 +79,13 @@ public class InscriptionTableBlock extends Block /*implements EntityBlock*/ {
     @Override
     @SuppressWarnings("deprecation")
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return SHAPE;
+        Direction direction = pState.getValue(FACING);
+        return switch (direction) {
+            case NORTH -> SHAPE_LEGS_WEST;
+            case SOUTH -> SHAPE_LEGS_EAST;
+            case WEST -> SHAPE_LEGS_NORTH;
+            default -> SHAPE_LEGS_SOUTH;
+        };
     }
 
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
