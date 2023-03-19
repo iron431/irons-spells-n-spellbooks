@@ -1,14 +1,19 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.constants.ModIds;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.*;
@@ -31,6 +36,7 @@ public class JeiPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
+        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, ItemRegistry.SCROLL.get(), SCROLL_INTERPRETER);
     }
 
     @Override
@@ -62,4 +68,15 @@ public class JeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(BlockRegistry.ARCANE_ANVIL_BLOCK.get()), ArcaneAnvilRecipeCategory.ARCANE_ANVIL_RECIPE_RECIPE_TYPE);
     }
+
+    private static final IIngredientSubtypeInterpreter<ItemStack> SCROLL_INTERPRETER = (stack, context) -> {
+        IronsSpellbooks.LOGGER.debug("SCROLL_INTERPRETER {} {}", stack, context);
+
+        if (context == UidContext.Ingredient && stack.hasTag()) {
+            var spellData = SpellData.getSpellData(stack);
+            return String.format("scroll:%d:%d", spellData.getSpellId(), spellData.getLevel());
+        }
+
+        return IIngredientSubtypeInterpreter.NONE;
+    };
 }
