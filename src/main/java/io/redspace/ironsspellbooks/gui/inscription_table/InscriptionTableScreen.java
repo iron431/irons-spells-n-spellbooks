@@ -250,7 +250,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         for (MutableComponent component : spell.getUniqueInfo(null)) {
             descLine += drawText(font, poseStack, component, x + margin, descLine, textColor.getColor().getValue(), 1);
-            descLine += font.lineHeight;
         }
 
 
