@@ -38,8 +38,10 @@ public final class ArcaneAnvilRecipeMaker {
 
     private static Stream<ArcaneAnvilRecipe> getScrollRecipes() {
         return Arrays.stream(SpellType.values())
+                .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
                 .sorted(Comparator.comparing(Enum::name))
-                .map(ArcaneAnvilRecipeMaker::enumerateScrollCombinations);
+                .map(ArcaneAnvilRecipeMaker::enumerateScrollCombinations)
+                .filter(ArcaneAnvilRecipe::isValid); //Filter out any blank recipes created where min and max spell level are equal
     }
 
     private static Stream<ArcaneAnvilRecipe> getImbueRecipes() {

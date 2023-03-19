@@ -10,4 +10,12 @@ public record ArcaneAnvilRecipe(List<ItemStack> leftInputs, List<ItemStack> righ
         this.rightInputs = List.copyOf(rightInputs);
         this.outputs = List.copyOf(outputs);
     }
+
+    public boolean isValid() {
+        if (leftInputs.isEmpty() || rightInputs.isEmpty() || outputs.isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
 }
