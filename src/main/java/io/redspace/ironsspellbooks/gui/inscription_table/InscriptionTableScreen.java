@@ -5,13 +5,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
-import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscribeSpell;
-import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
-import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -396,7 +393,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             //
 
             isDirty = true;
-            Messages.sendToServer(new ServerboundInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
+//            Messages.sendToServer(new ServerboundInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
+
+            this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, -1);
         }
 
 
@@ -404,7 +403,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private void setSelectedIndex(int index) {
         selectedSpellIndex = index;
-        Messages.sendToServer(new ServerboundInscriptionTableSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpellIndex));
+        this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, index);
+
+//        Messages.sendToServer(new ServerboundInscriptionTableSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpellIndex));
     }
 
     private void resetSelectedSpell() {

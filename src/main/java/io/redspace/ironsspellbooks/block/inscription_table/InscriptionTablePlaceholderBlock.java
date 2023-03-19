@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -15,18 +14,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BedPart;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 
 import static io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableBlock.FACING;
 
@@ -46,20 +40,26 @@ public class InscriptionTablePlaceholderBlock extends Block {
     @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!pLevel.isClientSide()) {
-            var neighborPos = pos.relative(state.getValue(FACING));
-            var blockstate = pLevel.getBlockState(neighborPos);
-            if (blockstate.is(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get())) {
-                BlockEntity entity = pLevel.getBlockEntity(neighborPos);
-                if (entity instanceof InscriptionTableTile) {
-                    NetworkHooks.openScreen(((ServerPlayer) player), (InscriptionTableTile) entity, neighborPos);
-                } else {
-                    throw new IllegalStateException("Our Container provider is missing!");
-                }
-            }
+//        if (!pLevel.isClientSide()) {
+//            var neighborPos = pos.relative(state.getValue(FACING));
+//            var blockstate = pLevel.getBlockState(neighborPos);
+//            if (blockstate.is(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get())) {
+//                BlockEntity entity = pLevel.getBlockEntity(neighborPos);
+//                if (entity instanceof InscriptionTableTile) {
+//                    NetworkHooks.openScreen(((ServerPlayer) player), (InscriptionTableTile) entity, neighborPos);
+//                } else {
+//                    throw new IllegalStateException("Our Container provider is missing!");
+//                }
+//            }
+//        }
+//
+//        return InteractionResult.sidedSuccess(pLevel.isClientSide());
+        if (pLevel.isClientSide) {
+            return InteractionResult.SUCCESS;
+        } else {
+            player.openMenu(state.getMenuProvider(pLevel, pos));
+            return InteractionResult.CONSUME;
         }
-
-        return InteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
     @Override

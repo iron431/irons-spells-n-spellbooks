@@ -1,65 +1,70 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableTile;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
-
-import static io.redspace.ironsspellbooks.registries.BlockRegistry.INSCRIPTION_TABLE_BLOCK;
 
 public class InscriptionTableMenu extends AbstractContainerMenu {
-    public final InscriptionTableTile blockEntity;
+    //    public final InscriptionTableTile blockEntity;
     private final Level level;
     private final Slot spellBookSlot;
     private final Slot scrollSlot;
     private final Slot resultSlot;
     private int selectedSpellIndex = -1;
 
+    protected final ResultContainer resultSlots = new ResultContainer();
+    //TODO: set changed functionality (see arcane anvil)
+    protected final Container inputSlots = new SimpleContainer(2);
+
     public InscriptionTableMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inv, ContainerLevelAccess.NULL/* inv.player.level.getBlockEntity(extraData.readBlockPos())*/);
     }
 
+    protected final ContainerLevelAccess access;
 
-    public InscriptionTableMenu(int containerId, Inventory inv, BlockEntity entity) {
-        //exists on server and render
+
+    public InscriptionTableMenu(int containerId, Inventory inv, ContainerLevelAccess access/* BlockEntity entity*/) {
         super(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), containerId);
+        this.access = access;
+        //exists on server and render
         checkContainerSize(inv, 3);
-        blockEntity = (InscriptionTableTile) entity;
+//        blockEntity = (InscriptionTableTile) entity;
         this.level = inv.player.level;
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-        IItemHandler itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get();
+//        IItemHandler itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get();
 
-        spellBookSlot = new SlotItemHandler(itemHandler, 0, 17, 21) {
+        spellBookSlot = new Slot(inputSlots, 0, 17, 21) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() instanceof SpellBook;
             }
         };
-        scrollSlot = new SlotItemHandler(itemHandler, 1, 17, 53) {
+        scrollSlot = new Slot(inputSlots, 1, 17, 53) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(ItemRegistry.SCROLL.get());
             }
 
         };
-        resultSlot = new SlotItemHandler(itemHandler, 2, 208, 136) {
+        resultSlot = new Slot(resultSlots, 2, 208, 136) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return false;
@@ -106,6 +111,31 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     public void setSelectedSpell(int index) {
         selectedSpellIndex = index;
         setupResultSlot();
+    }
+
+    public void doInscription(int selectedIndex) {
+        // This method is called by the inscription packet
+        ItemStack spellBookItemStack = getSpellBookSlot().getItem();
+        ItemStack scrollItemStack = getScrollSlot().getItem();
+
+        if (spellBookItemStack.getItem() instanceof SpellBook spellBook && scrollItemStack.getItem() instanceof Scroll scroll) {
+            var spellBookData = SpellBookData.getSpellBookData(spellBookItemStack);
+            var scrollData = SpellData.getSpellData(scrollItemStack);
+            if (spellBookData.addSpell(scrollData.getSpell(), selectedIndex, spellBookItemStack))
+                getScrollSlot().remove(1);
+        }
+    }
+
+    @Override
+    public boolean clickMenuButton(Player pPlayer, int pId) {
+        //Called whenever the client clicks on a button. The ID passed in is the spell slot index or -1. If it is positive, it is to select that slot. If it is negative, it is to inscribe
+        if (pId < 0) {
+            if (selectedSpellIndex >= 0 && getScrollSlot().getItem().is(ItemRegistry.SCROLL.get()))
+                doInscription(selectedSpellIndex);
+        } else {
+            setSelectedSpell(pId);
+        }
+        return true;
     }
 
     private void setupResultSlot() {
@@ -183,8 +213,11 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-                pPlayer, INSCRIPTION_TABLE_BLOCK.get());
+//        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
+//                pPlayer, INSCRIPTION_TABLE_BLOCK.get());
+        return this.access.evaluate((level, blockPos) -> {
+            return !level.getBlockState(blockPos).is(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get()) ? false : pPlayer.distanceToSqr((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.5D, (double) blockPos.getZ() + 0.5D) <= 64.0D;
+        }, true);
     }
 
     private void addPlayerInventory(Inventory playerInventory) {
@@ -199,5 +232,13 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
+    }
+
+    @Override
+    public void removed(Player pPlayer) {
+        super.removed(pPlayer);
+        this.access.execute((p_39796_, p_39797_) -> {
+            this.clearContainer(pPlayer, this.inputSlots);
+        });
     }
 }

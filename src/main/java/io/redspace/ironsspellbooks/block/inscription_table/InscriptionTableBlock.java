@@ -1,41 +1,37 @@
 package io.redspace.ironsspellbooks.block.inscription_table;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.extensions.IForgeBlock;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 //https://youtu.be/CUHEKcaIpOk?t=451
-public class InscriptionTableBlock extends Block implements EntityBlock {
+public class InscriptionTableBlock extends Block /*implements EntityBlock*/ {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 18, 16);
@@ -136,36 +132,47 @@ public class InscriptionTableBlock extends Block implements EntityBlock {
         return RenderShape.MODEL;
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        if (pState.getBlock() != pNewState.getBlock()) {
-            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof InscriptionTableTile) {
-                ((InscriptionTableTile) blockEntity).drops();
-            }
-        }
-        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
-    }
+//    @Override
+//    @SuppressWarnings("deprecation")
+//    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+//        if (pState.getBlock() != pNewState.getBlock()) {
+//            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+//            if (blockEntity instanceof InscriptionTableTile) {
+//                ((InscriptionTableTile) blockEntity).drops();
+//            }
+//        }
+//        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+//    }
 
     @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!pLevel.isClientSide()) {
-            BlockEntity entity = pLevel.getBlockEntity(pos);
-            if (entity instanceof InscriptionTableTile) {
-                NetworkHooks.openScreen(((ServerPlayer) player), (InscriptionTableTile) entity, pos);
-            } else {
-                throw new IllegalStateException("Our Container provider is missing!");
-            }
+//        if (!pLevel.isClientSide()) {
+//            BlockEntity entity = pLevel.getBlockEntity(pos);
+//            if (entity instanceof InscriptionTableTile) {
+//                NetworkHooks.openScreen(((ServerPlayer) player), (InscriptionTableTile) entity, pos);
+//            } else {
+//                throw new IllegalStateException("Our Container provider is missing!");
+//            }
+//        }
+//
+//        return InteractionResult.sidedSuccess(pLevel.isClientSide());
+        if (pLevel.isClientSide) {
+            return InteractionResult.SUCCESS;
+        } else {
+            player.openMenu(state.getMenuProvider(pLevel, pos));
+            return InteractionResult.CONSUME;
         }
-
-        return InteractionResult.sidedSuccess(pLevel.isClientSide());
     }
-
-    @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new InscriptionTableTile(pos, state);
+    @javax.annotation.Nullable
+    public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
+        return new SimpleMenuProvider((i, inventory, player) ->
+                new InscriptionTableMenu(i, inventory, ContainerLevelAccess.create(pLevel, pPos)), Component.literal("test"));
     }
+//    @Nullable
+//    @Override
+//    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+//        return new InscriptionTableTile(pos, state);
+//    }
 }

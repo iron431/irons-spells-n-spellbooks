@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.inscription_table.network;
 
-import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableTile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -38,10 +37,10 @@ public class ServerboundInscriptionTableSelectSpell {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             // Here we are server side
-            InscriptionTableTile inscriptionTableTile = (InscriptionTableTile) ctx.getSender().level.getBlockEntity(pos);
-            if (inscriptionTableTile != null) {
-                inscriptionTableTile.setSelectedSpell(selectedIndex);
-            }
+//            InscriptionTableTile inscriptionTableTile = (InscriptionTableTile) ctx.getSender().level.getBlockEntity(pos);
+//            if (inscriptionTableTile != null) {
+//                inscriptionTableTile.setSelectedSpell(selectedIndex);
+//            }
 
         });
         return true;

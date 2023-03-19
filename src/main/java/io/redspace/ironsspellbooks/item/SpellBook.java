@@ -2,14 +2,12 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.player.ClientPlayerEvents;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
@@ -112,7 +110,7 @@ public class SpellBook extends Item {
         }
 
         if (SpellBookData.getSpellBookData(itemStack).getActiveSpell().getID() > 0) {
-            lines.addAll(ClientPlayerEvents.formatActiveSpellTooltip(itemStack, Minecraft.getInstance().player, CastSource.SPELLBOOK));
+            lines.addAll(Utils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK));
         }
 
         super.appendHoverText(itemStack, level, lines, flag);
