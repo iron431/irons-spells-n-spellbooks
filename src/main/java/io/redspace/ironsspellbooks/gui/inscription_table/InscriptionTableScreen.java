@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
@@ -13,8 +15,6 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.util.Utils;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
@@ -25,6 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
@@ -169,16 +170,25 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private void renderLorePage(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
         int x = leftPos + LORE_PAGE_X;
         int y = topPos;
-        int margin = 7;
+        int margin = 5;
         var textColor = Style.EMPTY.withColor(0x322c2a);
         //
         // Title
         //
         var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).containedSpell.getSpellType().getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
-        int titleWidth = font.width(title.getString());
-        int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
+        //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
+
+        var titleLines = font.split(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
         int titleY = topPos + 10;
-        font.draw(poseStack, title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, 0xFFFFFF);
+
+        for (FormattedCharSequence line : titleLines) {
+            int titleWidth = font.width(line);
+            int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
+            font.draw(poseStack, line, titleX, titleY, 0xFFFFFF);
+            titleY += font.lineHeight;
+        }
+        var titleHeight = font.wordWrapHeight(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
+        int descLine = /*y + titleHeight + font.lineHeight*/titleY + 4;
 
         if (selectedSpellIndex < 0 || !spellSlots.get(selectedSpellIndex).hasSpell()) {
             return;
@@ -202,10 +212,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Description
         //
-        if (isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY))
-            renderTooltip(poseStack, Component.literal("test"), mouseX, mouseY);
+//        if (isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY))
+//            renderTooltip(poseStack, Component.literal("test"), mouseX, mouseY);
 
-        int descLine = y + font.lineHeight * 2 + 4;
 
         //
         //  School
@@ -223,27 +232,24 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Mana
         //
-        drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost() + ""), colorMana, textScale);
-        descLine += font.lineHeight;
+        descLine += drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost() + ""), colorMana, textScale);
 
         //
         // Cast Time
         //
-        drawStatText(font, poseStack, x + margin, descLine, castKey, textColor, Component.translatable(castContents), colorCast, textScale);
-        descLine += font.lineHeight;
+        descLine += drawStatText(font, poseStack, x + margin, descLine, castKey, textColor, Component.translatable(castContents), colorCast, textScale);
 
         //
         // Cooldown
         //
-        drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.cooldown", textColor, Component.translatable(Utils.timeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
-        descLine += font.lineHeight;
+        descLine += drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.cooldown", textColor, Component.translatable(Utils.timeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
 
 
         //
         //  Unique Info
         //
         for (MutableComponent component : spell.getUniqueInfo(null)) {
-            drawText(font, poseStack, component, x + margin, descLine, textColor.getColor().getValue(), 1);
+            descLine += drawText(font, poseStack, component, x + margin, descLine, textColor.getColor().getValue(), 1);
             descLine += font.lineHeight;
         }
 
@@ -258,16 +264,21 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         font.drawShadow(poseStack, text, x, y, color);
     }
 
-    private void drawText(Font font, PoseStack poseStack, Component text, int x, int y, int color, float scale) {
+    private int drawText(Font font, PoseStack poseStack, Component text, int x, int y, int color, float scale) {
         x /= scale;
         y /= scale;
-        font.draw(poseStack, text, x, y, color);
+        //font.draw(poseStack, text, x, y, color);
+        font.drawWordWrap(text, x, y, LORE_PAGE_WIDTH, color);
+        return font.wordWrapHeight(text, LORE_PAGE_WIDTH);
+
     }
 
-    private void drawStatText(Font font, PoseStack poseStack, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
-        x /= scale;
-        y /= scale;
-        font.draw(poseStack, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF);
+    private int drawStatText(Font font, PoseStack poseStack, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
+//        x /= scale;
+//        y /= scale;
+//        font.drawWordWrap(Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, LORE_PAGE_WIDTH, 0xFFFFFF);
+        return drawText(font, poseStack, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF, scale);
+        //font.draw(poseStack, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF);
     }
 
     private void generateSpellSlots() {

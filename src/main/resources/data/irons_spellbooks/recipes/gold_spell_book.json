@@ -3,7 +3,7 @@
   "pattern":
   [
     "GMM",
-    "LHH",
+    "GHH",
     "GMM"
   ],
   "key":
@@ -12,13 +12,9 @@
     {
       "tag": "forge:ingots/gold"
     },
-    "L":
-    {
-      "tag": "forge:gems/lapis"
-    },
     "M":
     {
-      "item": "irons_spellbooks:magic_cloth"
+      "item": "irons_spellbooks:arcane_essence"
     },
     "H":
     {

@@ -29,7 +29,7 @@ import java.util.List;
 public class Scroll extends Item {
 
     public Scroll() {
-        super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
+        super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override

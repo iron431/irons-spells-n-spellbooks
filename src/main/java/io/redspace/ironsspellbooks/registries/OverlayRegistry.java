@@ -23,5 +23,6 @@ public class OverlayRegistry {
         event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "imbued_spell", ImbuedSpellOverlay::render);
 
         event.registerAbove(VanillaGuiOverlay.PLAYER_LIST.id(), "spell_wheel", SpellWheelOverlay.instance::render);
+        event.registerAbove(VanillaGuiOverlay.PLAYER_LIST.id(), "screen_effects", ScreenEffectsOverlay::render);
     }
 }

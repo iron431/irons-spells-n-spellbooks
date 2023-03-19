@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "pattern":
   [
-    "HDD",
-    "HET",
-    "HDD"
+    "DHH",
+    "TET",
+    "DHH"
   ],
   "key":
   {

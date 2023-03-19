@@ -118,6 +118,7 @@ public class UpgradeUtils {
 
     public static float getModifierAmount(Attribute attribute, int upgradesApplied) {
         //2% cooldown reduction :skull:
+        //TODO: switch to enum for way more flexibility
         float amountPerUpgrade = attribute == AttributeRegistry.COOLDOWN_REDUCTION.get() ? .1f : .025f;
         return upgradesApplied * amountPerUpgrade;
     }
