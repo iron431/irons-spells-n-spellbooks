@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
+import io.redspace.ironsspellbooks.util.ServerSafeUtils;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -73,7 +74,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
 
             }
             //Weapon Imbuement
-            else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
+            else if (ServerSafeUtils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
                 result = baseItemStack.copy();
                 var scrollData = SpellData.getSpellData(modifierItemStack);
                 SpellData.setSpellData(result, scrollData.getSpell());

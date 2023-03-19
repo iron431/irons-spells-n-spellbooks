@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.util.Utils;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import io.redspace.ironsspellbooks.util.ServerSafeUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
@@ -26,12 +26,12 @@ public class ImbuedSpellOverlay extends GuiComponent {
         ItemStack stack = player.getMainHandItem();
         SpellData spellData = null;
 
-        if (Utils.canImbue(stack)) {
+        if (ServerSafeUtils.canImbue(stack)) {
             spellData = SpellData.getSpellData(stack);
         }
 
         stack = player.getOffhandItem();
-        if (spellData == null && Utils.canImbue(stack)) {
+        if (spellData == null && ServerSafeUtils.canImbue(stack)) {
             spellData = SpellData.getSpellData(stack);
         }
 
