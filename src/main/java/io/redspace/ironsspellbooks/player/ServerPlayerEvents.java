@@ -85,7 +85,7 @@ public class ServerPlayerEvents {
         var upgrades = UpgradeUtils.deserializeUpgrade(itemStack);
         for (Map.Entry<Attribute, Integer> entry : upgrades.entrySet()) {
             double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, entry.getKey(), AttributeModifier.Operation.MULTIPLY_BASE);
-            event.addModifier(entry.getKey(), new AttributeModifier(UpgradeUtils.UUIDForSlot(slot), "upgrade", baseAmount + UpgradeUtils.getModifierAmount(entry.getKey(),entry.getValue()), AttributeModifier.Operation.MULTIPLY_BASE));
+            event.addModifier(entry.getKey(), new AttributeModifier(UpgradeUtils.UUIDForSlot(slot), "upgrade", baseAmount + UpgradeUtils.getModifierAmount(entry.getKey(), entry.getValue()), AttributeModifier.Operation.MULTIPLY_BASE));
         }
 
 
@@ -157,7 +157,7 @@ public class ServerPlayerEvents {
             if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
                 event.setCanceled(true);
             }
-        }else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+        } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
             if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
                 event.setCanceled(true);
             }
