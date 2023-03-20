@@ -36,6 +36,19 @@
         },
         {
           "input_predicate": {
+            "block": "minecraft:cracked_deepslate_bricks",
+            "predicate_type": "minecraft:random_block_match",
+            "probability": 0.3
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:deepslate"
+          }
+        },
+        {
+          "input_predicate": {
             "block": "minecraft:deepslate_tiles",
             "predicate_type": "minecraft:random_block_match",
             "probability": 0.3
@@ -97,6 +110,19 @@
           },
           "output_state": {
             "Name": "minecraft:air"
+          }
+        },
+        {
+          "input_predicate": {
+            "block": "minecraft:nether_bricks",
+            "predicate_type": "minecraft:random_block_match",
+            "probability": 0.25
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:cracked_nether_bricks"
           }
         }
       ]

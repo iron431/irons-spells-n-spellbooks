@@ -101,7 +101,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
+          "weight": 1,
           "name": "minecraft:potion",
           "functions": [
             {
@@ -118,7 +118,7 @@
         {
           "type": "minecraft:item",
           "name": "irons_spellbooks:blank_rune",
-          "weight": 1
+          "weight": 3
         },
         {
           "type": "minecraft:item",
