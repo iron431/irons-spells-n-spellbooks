@@ -235,9 +235,9 @@ public class ServerPlayerEvents {
                 Structure structureKey = structureManager.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY).get(ModTags.MAGIC_AURA_TEMP);
                 var structure = structureManager.getStructureAt(serverPlayer.blockPosition(), structureKey);
                 boolean inStructure = structure != StructureStart.INVALID_START /*&& structure.getBoundingBox().isInside(serverPlayer.blockPosition())*/;
-                IronsSpellbooks.LOGGER.debug("ServerPlayerEvents: In citadel: {}", inStructure);
+                //IronsSpellbooks.LOGGER.debug("ServerPlayerEvents: In citadel: {}", inStructure);
                 if (inStructure)
-                    serverPlayer.addEffect(new MobEffectInstance(MobEffectRegistry.MAGIC_AURA.get(), 60, 0, false, false, false));
+                    serverPlayer.addEffect(new MobEffectInstance(MobEffectRegistry.ENCHANTED_WARD.get(), 40, 0, false, false, false));
 
             }
         }
