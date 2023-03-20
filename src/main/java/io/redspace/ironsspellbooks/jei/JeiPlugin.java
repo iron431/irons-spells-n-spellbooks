@@ -9,11 +9,9 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.constants.ModIds;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
-import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.*;
@@ -36,7 +34,7 @@ public class JeiPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, ItemRegistry.SCROLL.get(), SCROLL_INTERPRETER);
+        registration.registerSubtypeInterpreter(ItemRegistry.SCROLL.get(), SCROLL_INTERPRETER);
     }
 
     @Override
@@ -51,7 +49,7 @@ public class JeiPlugin implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
         IIngredientManager ingredientManager = registration.getIngredientManager();
         IVanillaRecipeFactory vanillaRecipeFactory = registration.getVanillaRecipeFactory();
-        registration.addRecipes(ArcaneAnvilRecipeCategory.ARCANE_ANVIL_RECIPE_RECIPE_TYPE, ArcaneAnvilRecipeMaker.getRecipes());
+        registration.addRecipes(ArcaneAnvilRecipeCategory.ARCANE_ANVIL_RECIPE_RECIPE_TYPE, ArcaneAnvilRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
     }
 
     @Override
@@ -70,9 +68,9 @@ public class JeiPlugin implements IModPlugin {
     }
 
     private static final IIngredientSubtypeInterpreter<ItemStack> SCROLL_INTERPRETER = (stack, context) -> {
-        IronsSpellbooks.LOGGER.debug("SCROLL_INTERPRETER {} {}", stack, context);
+        //IronsSpellbooks.LOGGER.debug("SCROLL_INTERPRETER: stack.tag:{} context:{}", stack.getTag(), context);
 
-        if (context == UidContext.Ingredient && stack.hasTag()) {
+        if (stack.hasTag()) {
             var spellData = SpellData.getSpellData(stack);
             return String.format("scroll:%d:%d", spellData.getSpellId(), spellData.getLevel());
         }
