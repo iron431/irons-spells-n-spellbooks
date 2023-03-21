@@ -25,6 +25,7 @@ import java.util.Optional;
 
 public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRecipe> {
     public static final RecipeType<ArcaneAnvilRecipe> ARCANE_ANVIL_RECIPE_RECIPE_TYPE = RecipeType.create(IronsSpellbooks.MODID, "arcane_anvil", ArcaneAnvilRecipe.class);
+
     private final IDrawable background;
     private final IDrawable icon;
     private final String leftSlotName = "leftSlot";

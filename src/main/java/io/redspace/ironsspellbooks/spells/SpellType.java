@@ -1,23 +1,20 @@
 package io.redspace.ironsspellbooks.spells;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-
+import io.redspace.ironsspellbooks.spells.blood.*;
 import io.redspace.ironsspellbooks.spells.ender.*;
-
-
+import io.redspace.ironsspellbooks.spells.evocation.*;
+import io.redspace.ironsspellbooks.spells.fire.*;
+import io.redspace.ironsspellbooks.spells.holy.*;
+import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.AscensionSpell;
 import io.redspace.ironsspellbooks.spells.lightning.ElectrocuteSpell;
 import io.redspace.ironsspellbooks.spells.lightning.LightningBoltSpell;
 import io.redspace.ironsspellbooks.spells.lightning.LightningLanceSpell;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
-import com.google.common.util.concurrent.AtomicDouble;
-import io.redspace.ironsspellbooks.spells.blood.*;
-import io.redspace.ironsspellbooks.spells.evocation.*;
-import io.redspace.ironsspellbooks.spells.fire.*;
-import io.redspace.ironsspellbooks.spells.holy.*;
-import io.redspace.ironsspellbooks.spells.ice.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -82,8 +79,7 @@ public enum SpellType {
     SUMMON_POLAR_BEAR_SPELL(40),
     BLESSING_OF_LIFE_SPELL(41),
     DRAGON_BREATH_SPELL(42),
-    FORTIFY_SPELL(43)
-    ;
+    FORTIFY_SPELL(43);
 
     private final int value;
     private final LazyOptional<Boolean> isEnabled;
@@ -127,15 +123,17 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SUMMON_POLAR_BEAR_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL -> CastType.LONG;
-            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL -> CastType.CONTINUOUS;
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SUMMON_POLAR_BEAR_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL ->
+                    CastType.LONG;
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL ->
+                    CastType.CONTINUOUS;
             case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL -> CastType.CHARGE;
             default -> CastType.INSTANT;
         };
     }
 
-    public UseAnim getUseAnim(){
-        return switch (this){
+    public UseAnim getUseAnim() {
+        return switch (this) {
             case LIGHTNING_LANCE_SPELL -> UseAnim.SPEAR;
             default -> UseAnim.BOW;
         };
@@ -146,7 +144,7 @@ public enum SpellType {
     private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL, ASCENSION_SPELL};
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL, DRAGON_BREATH_SPELL};
-    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL,RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL};
+    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL, RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL};
     private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL};
     private static final SpellType[] VOID_SPELLS = {ABYSSAL_SHROUD_SPELL};
 
@@ -381,6 +379,10 @@ public enum SpellType {
 
     public AbstractSpell getSpellForRarity(SpellRarity rarity) {
         int level = getMinLevelForRarity(rarity);
+
+        if (level == 0) {
+            return AbstractSpell.getSpell(SpellType.NONE_SPELL, 0);
+        }
 
         return getSpellForType(level);
     }

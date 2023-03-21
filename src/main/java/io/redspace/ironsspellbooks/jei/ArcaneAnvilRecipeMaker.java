@@ -7,7 +7,6 @@ import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SwordItem;
 
 import java.util.ArrayList;
@@ -23,8 +22,6 @@ import java.util.stream.Stream;
  * - Upgrade item:   item + upgrade orb =
  **/
 public final class ArcaneAnvilRecipeMaker {
-    private static final ItemStack ENCHANTED_BOOK = new ItemStack(Items.ENCHANTED_BOOK);
-
     private ArcaneAnvilRecipeMaker() {
         //private constructor prevents anyone from instantiating this class
     }
