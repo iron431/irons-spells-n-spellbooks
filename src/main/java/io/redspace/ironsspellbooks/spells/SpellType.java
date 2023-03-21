@@ -432,8 +432,12 @@ public enum SpellType {
             return new SpellType[]{SpellType.NONE_SPELL};
     }
 
+    public String getComponentId() {
+        return String.format("spell.%s.%s", IronsSpellbooks.MODID, getId());
+    }
+
     public MutableComponent getDisplayName() {
-        return Component.translatable("spell." + IronsSpellbooks.MODID + "." + this.getId());
+        return Component.translatable(getComponentId());
     }
 
     public ResourceLocation getResourceLocation() {

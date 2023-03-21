@@ -263,5 +263,8 @@
   "entity.irons_spellbooks.dead_king_corpse": "Skeleton",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
-  "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment"
+  "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
+
+  "spell.irons_spellbooks.heartstop.guide": "This is a crazy spell.\nIt is just waiting to be exploited"
+
 }
