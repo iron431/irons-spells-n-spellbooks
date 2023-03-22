@@ -1,12 +1,9 @@
 package io.redspace.ironsspellbooks.capabilities.spell;
 
-import com.google.common.collect.Lists;
 import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -39,13 +36,14 @@ public class SpellData {
         if (tag != null) {
             return new SpellData(SpellType.getTypeFromValue(tag.getInt(SPELL_TYPE)), tag.getInt(SPELL_LEVEL));
         } else if (stack.getItem() instanceof ExtendedSwordItem extendedSwordItem) {
+            setSpellData(stack, extendedSwordItem.getImbuedSpell(), extendedSwordItem.getImbuedLevel());
             return new SpellData(extendedSwordItem.getImbuedSpell(), extendedSwordItem.getImbuedLevel());
         } else {
             return new SpellData(SpellType.NONE_SPELL, 0);
         }
     }
 
-    public static boolean hasSpellData(ItemStack itemStack){
+    public static boolean hasSpellData(ItemStack itemStack) {
         CompoundTag tag = itemStack.getTagElement(ISB_SPELL);
         return tag != null;
     }
