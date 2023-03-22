@@ -13,8 +13,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
 public class ScreenEffectsOverlay extends GuiComponent {
-    public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
-    public final static ResourceLocation HEARSTOP_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
+    public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/vignette.png");
+    public final static ResourceLocation HEARTSTOP_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
     static final int IMAGE_WIDTH = 256;
     static final int IMAGE_HEIGHT = 256;
 
@@ -26,7 +26,7 @@ public class ScreenEffectsOverlay extends GuiComponent {
 
             // setupRenderer(1, 0, 0, .25f, HEARSTOP_TEXTURE);
             //gui.blit(poseStack, 0, 0, 0, 0, screenWidth, screenHeight);
-            renderOverlay(HEARSTOP_TEXTURE, .5f, 1, 1, 0.5f, screenWidth, screenHeight);
+            renderOverlay(HEARTSTOP_TEXTURE, .5f, 1, 1, 0.5f, screenWidth, screenHeight);
 
         }
 
