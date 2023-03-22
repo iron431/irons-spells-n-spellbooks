@@ -2,9 +2,8 @@ package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.capabilities.magic.CastData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.capabilities.magic.SpellTargetingData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -58,22 +57,20 @@ public class BlessingOfLifeSpell extends AbstractSpell {
     @Override
     public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
         var target = getTarget(entity);
-        if (target != null) {
-            playerMagicData.setAdditionalCastData(new HealTargetingData(target));
-        } else if (entity instanceof ServerPlayer sp) {
-            //Utils.serverSideCancelCast(sp);
-        }
+        playerMagicData.setAdditionalCastData(new HealTargetingData(target));
+        if (entity instanceof ServerPlayer serverPlayer && target != null)
+            Messages.sendToPlayer(new ClientboundSyncTargetingData(target), serverPlayer);
         super.onServerPreCast(level, entity, playerMagicData);
     }
 
     @Override
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
-        var target = getTarget(entity);
-        if (target != null) {
-            var targetData = new SpellTargetingData();
-            targetData.target = target;
-            ClientMagicData.setTargetingData(targetData);
-        }
+//        var target = getTarget(entity);
+//        if (target != null) {
+//            var targetData = new SpellTargetingData();
+//            targetData.target = target;
+//            ClientMagicData.setTargetingData(targetData);
+//        }
 
         super.onClientPreCast(level, entity, hand, playerMagicData);
     }
@@ -95,6 +92,15 @@ public class BlessingOfLifeSpell extends AbstractSpell {
             return livingTarget;
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+        super.onServerCastTick(level, entity, playerMagicData);
+        if (entity instanceof ServerPlayer serverPlayer && playerMagicData.getAdditionalCastData() instanceof HealTargetingData healTargetingData) {
+            if (healTargetingData.targetEntity == null)
+                Utils.serverSideCancelCast(serverPlayer);
         }
     }
 

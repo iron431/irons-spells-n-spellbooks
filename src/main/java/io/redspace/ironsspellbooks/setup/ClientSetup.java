@@ -118,7 +118,7 @@ public class ClientSetup {
                 //noinspection unchecked,rawtypes
                 var renderer = event.getRenderer((EntityType) entityType);
                 if (renderer != null) {
-                    renderer.addLayer(new TargetTestLayer(renderer));
+                    renderer.addLayer(new HealTargetLayer(renderer));
                     //IronsSpellbooks.LOGGER.debug("registerRenderers: Found LivingEntityRenderer for {}", entityType);
                 } else {
                     //IronsSpellbooks.LOGGER.debug("registerRenderers: Missing LivingEntityRenderer for {}", entityType);

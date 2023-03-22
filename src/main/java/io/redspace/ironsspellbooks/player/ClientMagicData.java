@@ -36,7 +36,13 @@ public class ClientMagicData {
     private static SpellTargetingData spellTargetingData;
 
     public static void setTargetingData(SpellTargetingData spellTargetingData) {
-        spellTargetingData = spellTargetingData;
+        ClientMagicData.spellTargetingData = spellTargetingData;
+    }
+
+    public static SpellTargetingData getTargetingData() {
+        if(spellTargetingData == null)
+            setTargetingData(new SpellTargetingData());
+        return spellTargetingData;
     }
 
     public static void resetTargetingData() {

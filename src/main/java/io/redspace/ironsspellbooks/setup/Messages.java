@@ -163,6 +163,12 @@ public class Messages {
                 .consumer(ClientboundFortifyAreaParticles::handle)
                 .add();
 
+        net.messageBuilder(ClientboundSyncTargetingData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncTargetingData::new)
+                .encoder(ClientboundSyncTargetingData::toBytes)
+                .consumer(ClientboundSyncTargetingData::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {
