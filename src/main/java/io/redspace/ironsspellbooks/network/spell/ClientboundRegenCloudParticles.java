@@ -39,7 +39,7 @@ public class ClientboundRegenCloudParticles {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientboundRegenCloudParticles(pos);
+            ClientSpellCastHelper.handleClientsideRegenCloudParticles(pos);
         });
         return true;
     }

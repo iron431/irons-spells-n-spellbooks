@@ -58,7 +58,7 @@ public class ClientSpellCastHelper {
         }
     }
 
-    public static void handleClientboundHealParticles(Vec3 pos) {
+    public static void handleClientsideHealParticles(Vec3 pos) {
         //Copied from arrow because these particles use their motion for color??
         var player = Minecraft.getInstance().player;
 
@@ -75,7 +75,7 @@ public class ClientSpellCastHelper {
         }
     }
 
-    public static void handleClientboundAbsorptionParticles(Vec3 pos) {
+    public static void handleClientsideAbsorptionParticles(Vec3 pos) {
         //Copied from arrow because these particles use their motion for color??
         var player = Minecraft.getInstance().player;
 
@@ -92,7 +92,7 @@ public class ClientSpellCastHelper {
         }
     }
 
-    public static void handleClientboundRegenCloudParticles(Vec3 pos) {
+    public static void handleClientsideRegenCloudParticles(Vec3 pos) {
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
@@ -110,7 +110,7 @@ public class ClientSpellCastHelper {
         }
     }
 
-    public static void handleClientboundFortifyAreaParticles(Vec3 pos) {
+    public static void handleClientsideFortifyAreaParticles(Vec3 pos) {
         var player = Minecraft.getInstance().player;
 
         if (player != null) {

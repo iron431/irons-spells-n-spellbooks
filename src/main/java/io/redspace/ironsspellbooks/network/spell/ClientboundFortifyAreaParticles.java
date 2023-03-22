@@ -39,7 +39,7 @@ public class ClientboundFortifyAreaParticles {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientboundFortifyAreaParticles(pos);
+            ClientSpellCastHelper.handleClientsideFortifyAreaParticles(pos);
         });
         return true;
     }

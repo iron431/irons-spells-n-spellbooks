@@ -39,7 +39,7 @@ public class ClientboundHealParticles {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientboundHealParticles(pos);
+            ClientSpellCastHelper.handleClientsideHealParticles(pos);
         });
         return true;
     }

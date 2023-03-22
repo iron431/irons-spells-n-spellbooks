@@ -39,7 +39,7 @@ public class ClientboundAborptionParticles {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            ClientSpellCastHelper.handleClientboundAbsorptionParticles(pos);
+            ClientSpellCastHelper.handleClientsideAbsorptionParticles(pos);
         });
         return true;
     }
