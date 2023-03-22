@@ -202,6 +202,10 @@ dependencies {
 
     //at runtime, use the full JEI jar for Forge. Good for dev
     runtimeOnly(fg.deobf("mezz.jei:jei-${forge_version}-forge:${jei_version}"))
+
+    // CURIOS *****************************************************************************************************
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
