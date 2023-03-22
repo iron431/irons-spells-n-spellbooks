@@ -1,22 +1,22 @@
 package io.redspace.ironsspellbooks.util;
 
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.ConePart;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.*;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
+import io.redspace.ironsspellbooks.tetra.TetraProxy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
@@ -29,12 +29,14 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -305,63 +307,47 @@ public class Utils {
         }
     }
 
-    public static List<Component> formatActiveSpellTooltip(ItemStack stack, CastSource castSource) {
-        var player = Minecraft.getInstance().player;
-        AbstractSpell spell = stack.getItem() instanceof SpellBook ? SpellBookData.getSpellBookData(stack).getActiveSpell() : SpellData.getSpellData(stack).getSpell(); //Put me in utils?
-        SpellType spellType = spell.getSpellType();
-//        var title = Component.translatable("tooltip.irons_spellbooks.selected_spell",
-//                spellType.getDisplayName().withStyle(spellType.getSchoolType().getDisplayName().getStyle()),
-//                Component.literal("" + spell.getLevel()).withStyle(spellType.getRarity(spell.getLevel()).getDisplayName().getStyle()));
-//        var title = Component.translatable("tooltip.irons_spellbooks.selected_spell",
-//                spellType.getDisplayName().withStyle(spellType.getSchoolType().getDisplayName().getStyle()),
-//                Component.literal("" + spell.getLevel())).withStyle(spellType.getRarity(spell.getLevel()).getDisplayName().getStyle());
-        var title = Component.translatable("tooltip.irons_spellbooks.selected_spell",
-                spellType.getDisplayName(),
-                Component.literal("" + spell.getLevel())).withStyle(spellType.getSchoolType().getDisplayName().getStyle());
-        var uniqueInfo = spell.getUniqueInfo(player);
-        var manaCost = Component.translatable("tooltip.irons_spellbooks.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE);
-        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spellType, player, castSource), 1)).withStyle(ChatFormatting.BLUE);
-
-        List<Component> lines = new ArrayList<>();
-        lines.add(Component.empty());
-        lines.add(title);
-        uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(ChatFormatting.DARK_GREEN))));
-        if (spell.getCastType() != CastType.INSTANT) {
-            String castKey = spell.getCastType() == CastType.CONTINUOUS ? "tooltip.irons_spellbooks.cast_continuous" : "tooltip.irons_spellbooks.cast_long";
-            lines.add(Component.literal(" ").append(Component.translatable(castKey, Utils.timeFromTicks(spell.getCastTime(), 1)).withStyle(ChatFormatting.BLUE)));
+    public static boolean canImbue(ItemStack itemStack) {
+        if ((itemStack.getItem() instanceof SwordItem swordItem && !(swordItem instanceof UniqueItem))) {
+            return true;
         }
-        if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get())
-            lines.add(manaCost);
-        lines.add(cooldownTime);
-        return lines;
+
+        return TetraProxy.PROXY.canImbue(itemStack);
     }
 
-    public static List<Component> formatScrollTooltip(ItemStack stack) {
-        var player = Minecraft.getInstance().player;
-        AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
-        SpellType spellType = spell.getSpellType();
-        if (spellType == SpellType.NONE_SPELL)
-            return List.of();
-        var title = Component.translatable("tooltip.irons_spellbooks.level", spell.getLevel()).append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity().getDisplayName().getString())).withStyle(spell.getRarity().getDisplayName().getStyle());
-        var uniqueInfo = spell.getUniqueInfo(player);
-        var whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
-        var manaCost = Component.translatable("tooltip.irons_spellbooks.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE);
-        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spellType, player, CastSource.SCROLL), 1)).withStyle(ChatFormatting.BLUE);
+    public static InteractionResultHolder<ItemStack> onUseCastingHelper(@NotNull Level level, Player player, @NotNull InteractionHand hand, ItemStack stack, AbstractSpell spell) {
+        //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.1");
+        if (spell.getSpellType() != SpellType.NONE_SPELL) {
+            //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.2");
+            if (level.isClientSide) {
+                //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.3");
+                if (ClientMagicData.isCasting()) {
+                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.4");
+                    return InteractionResultHolder.fail(stack);
+                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType()) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost())) {
+                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.5");
+                    return InteractionResultHolder.pass(stack);
+                } else {
+                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.6");
+                    spell.onClientPreCast(level, player, hand, null);
+                    if (spell.getCastType().holdToCast()) {
+                        IronsSpellbooks.LOGGER.debug("onUseCastingHelper.1");
+                        player.startUsingItem(hand);
+                    }
+                    return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                }
+            }
 
-        List<Component> lines = new ArrayList<>();
-        lines.add(Component.literal(" ").append(title));
-        uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(ChatFormatting.DARK_GREEN))));
-        if (spell.getCastType() != CastType.INSTANT) {
-            String castKey = spell.getCastType() == CastType.CONTINUOUS ? "tooltip.irons_spellbooks.cast_continuous" : "tooltip.irons_spellbooks.cast_long";
-            lines.add(Component.literal(" ").append(Component.translatable(castKey, Utils.timeFromTicks(spell.getCastTime(), 1)).withStyle(ChatFormatting.BLUE)));
-
+            if (spell.attemptInitiateCast(stack, level, player, CastSource.SWORD, true)) {
+                if (spell.getCastType().holdToCast()) {
+                    IronsSpellbooks.LOGGER.debug("onUseCastingHelper.2");
+                    player.startUsingItem(hand);
+                }
+                return InteractionResultHolder.success(stack);
+            } else {
+                return InteractionResultHolder.fail(stack);
+            }
         }
-        lines.add(Component.empty());
-        lines.add(whenInSpellBook);
-        lines.add(manaCost);
-        lines.add(cooldownTime);
-        lines.add(spell.getSchoolType().getDisplayName().copy());
-
-        return lines;
+        return null;
     }
 }

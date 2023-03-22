@@ -35,6 +35,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.render.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -43,6 +44,7 @@ import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -51,6 +53,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+
+import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
@@ -106,6 +110,30 @@ public class ClientSetup {
             livingRenderer.addLayer(new ChargeSpellLayer(livingRenderer));
             livingRenderer.addLayer(new GlowingEyesLayer(livingRenderer));
         }
+
+        for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getEntityRenderDispatcher().renderers.entrySet()) {
+            EntityRenderer<?> livingEntityRendererTest = entry.getValue();
+            if (livingEntityRendererTest instanceof LivingEntityRenderer) {
+                EntityType<?> entityType = entry.getKey();
+                //noinspection unchecked,rawtypes
+                var renderer = event.getRenderer((EntityType) entityType);
+                if (renderer != null) {
+                    renderer.addLayer(new TargetTestLayer(renderer));
+                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Found LivingEntityRenderer for {}", entityType);
+                } else {
+                    //IronsSpellbooks.LOGGER.debug("registerRenderers: Missing LivingEntityRenderer for {}", entityType);
+                }
+
+            } else {
+                //IronsSpellbooks.LOGGER.debug("registerRenderers: Not a LivingEntityRenderer {}", livingEntityRendererTest);
+            }
+        }
+    /*.valu((entityType)->{
+            if(entityType. instanceof EntityType<LivingEntity> livingType)
+            if(event.getRenderer(entityType) instanceof EntityRenderer<? extends LivingEntity> livingRenderer)
+                livingRenderer.addlayer
+        });*/
+//        EntityRenderer<? extends LivingEntity> genericRender = event.getRenderer()
         //EntityRenderer<? extends AbstractSpellCastingMob> renderer = event.getRenderer(EntityRegistry.PYROMANCER.get());
     }
 

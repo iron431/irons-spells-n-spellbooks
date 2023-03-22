@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -110,7 +111,7 @@ public class SpellBook extends Item {
         }
 
         if (SpellBookData.getSpellBookData(itemStack).getActiveSpell().getID() > 0) {
-            lines.addAll(Utils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK));
+            lines.addAll(TooltipsUtils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK));
         }
 
         super.appendHoverText(itemStack, level, lines, flag);

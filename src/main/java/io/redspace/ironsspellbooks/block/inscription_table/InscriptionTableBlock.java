@@ -192,7 +192,7 @@ public class InscriptionTableBlock extends Block /*implements EntityBlock*/ {
     @javax.annotation.Nullable
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
         return new SimpleMenuProvider((i, inventory, player) ->
-                new InscriptionTableMenu(i, inventory, ContainerLevelAccess.create(pLevel, pPos)), Component.literal("test"));
+                new InscriptionTableMenu(i, inventory, ContainerLevelAccess.create(pLevel, pPos)), Component.translatable("block.irons_spellbooks.inscription_table"));
     }
 //    @Nullable
 //    @Override

@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -106,7 +106,7 @@ public class ClientPlayerEvents {
         if (SpellData.hasSpellData(stack)) {
             //Scrolls take care of themselves
             if (!(stack.getItem() instanceof Scroll)) {
-                var additionalLines = Utils.formatActiveSpellTooltip(stack, CastSource.SWORD) ;
+                var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, CastSource.SWORD) ;
                 //Add header to sword tooltip
                 additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
                 //Indent the title because we have an additional header
@@ -121,6 +121,8 @@ public class ClientPlayerEvents {
 
         }
     }
+
+
 //    @SubscribeEvent
 //    public static void createSpellTooltips(RenderTooltipEvent.GatherComponents event) {
 //        //List<Either<FormattedText, TooltipComponent>> eventTooltipElements = event.getTooltipElements();
