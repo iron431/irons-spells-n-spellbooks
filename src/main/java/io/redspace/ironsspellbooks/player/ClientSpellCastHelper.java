@@ -70,7 +70,7 @@ public class ClientSpellCastHelper {
             double d2 = (double) (i >> 0 & 255) / 255.0D;
 
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.25D), d0, d1, d2);
+                level.addParticle(ParticleTypes.ENTITY_EFFECT, pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1) + 1, pos.z + Utils.getRandomScaled(0.25D), d0, d1, d2);
             }
         }
     }

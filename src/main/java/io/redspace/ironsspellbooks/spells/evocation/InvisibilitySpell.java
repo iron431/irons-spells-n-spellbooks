@@ -23,7 +23,7 @@ public class InvisibilitySpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster), 1)));
+        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster) * 20, 1)));
     }
 
     public InvisibilitySpell(int level) {
