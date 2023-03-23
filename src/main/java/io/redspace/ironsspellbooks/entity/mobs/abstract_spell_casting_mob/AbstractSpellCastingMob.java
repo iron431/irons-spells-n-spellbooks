@@ -114,14 +114,17 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     public void cancelCast() {
-        if (level.isClientSide) {
-            cancelCastAnimation = true;
-        } else {
-            //Need to ensure we pass a different value if we want the data to sync
-            entityData.set(DATA_CANCEL_CAST, !entityData.get(DATA_CANCEL_CAST));
+        if(isCasting()){
+            if (level.isClientSide) {
+                cancelCastAnimation = true;
+            } else {
+                //Need to ensure we pass a different value if we want the data to sync
+                entityData.set(DATA_CANCEL_CAST, !entityData.get(DATA_CANCEL_CAST));
+            }
+
+            castComplete();
         }
 
-        castComplete();
     }
 
     private void castComplete() {

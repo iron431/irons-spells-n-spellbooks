@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -12,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CounterspellSpell extends AbstractSpell {
+    public static final List<MobEffect> MAGICAL_EFFECTS = List.of(MobEffectRegistry.ABYSSAL_SHROUD.get(), MobEffectRegistry.ASCENSION.get(), MobEffectRegistry.ANGEL_WINGS.get(), MobEffectRegistry.CHARGED.get(), MobEffectRegistry.EVASION.get(), MobEffectRegistry.HEARTSTOP.get(), MobEffectRegistry.FORTIFY.get(), MobEffectRegistry.TRUE_INVISIBILITY.get());
     public CounterspellSpell() {
         this(1);
     }
@@ -60,9 +63,13 @@ public class CounterspellSpell extends AbstractSpell {
             if (entityHitResult.getEntity() instanceof AntiMagicSusceptible antiMagicSusceptible)
                 antiMagicSusceptible.onAntiMagic(playerMagicData);
             else if (entityHitResult.getEntity() instanceof ServerPlayer serverPlayer)
-                Utils.serverSideCancelCast(serverPlayer);
+                Utils.serverSideCancelCast(serverPlayer, true);
             else if (entityHitResult.getEntity() instanceof AbstractSpellCastingMob abstractSpellCastingMob)
                 abstractSpellCastingMob.cancelCast();
+
+            if (entityHitResult.getEntity() instanceof LivingEntity livingEntity)
+                for (MobEffect mobEffect : MAGICAL_EFFECTS)
+                    livingEntity.removeEffect(mobEffect);
         }else{
             for (float i = 1; i < 40; i += .5f) {
                 Vec3 pos = entity.getEyePosition().add(forward.scale(i));

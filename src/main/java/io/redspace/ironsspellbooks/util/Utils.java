@@ -216,6 +216,10 @@ public class Utils {
         ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[PlayerMagicData.getPlayerMagicData(serverPlayer).getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
     }
 
+    public static void serverSideCancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
+        ServerboundCancelCast.cancelCast(serverPlayer, triggerCooldown);
+    }
+
     public static float smoothstep(float a, float b, float x) {
         //6x^5 - 15x^4 + 10x^3
         x = 6 * (x * x * x * x * x) - 15 * (x * x * x * x) + 10 * (x * x * x);
@@ -364,6 +368,6 @@ public class Utils {
     }
 
     public static boolean validAntiMagicTarget(Entity entity) {
-        return entity instanceof AntiMagicSusceptible || (entity instanceof Player player && PlayerMagicData.getPlayerMagicData(player).isCasting()) || (entity instanceof AbstractSpellCastingMob castingMob && PlayerMagicData.getPlayerMagicData(castingMob).isCasting());
+        return entity instanceof AntiMagicSusceptible || (entity instanceof Player player/* && PlayerMagicData.getPlayerMagicData(player).isCasting()*/) || (entity instanceof AbstractSpellCastingMob castingMob /*&& PlayerMagicData.getPlayerMagicData(castingMob).isCasting()*/);
     }
 }

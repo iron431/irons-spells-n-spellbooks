@@ -26,9 +26,9 @@ public class ChargeSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster) * 20, 1)),
-                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentSpeed(), 1), Component.translatable("attribute.name.generic.movement_speed")),
-                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentAttackDamage(), 1), Component.translatable("attribute.name.generic.attack_damage")),
-                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentSpellPower(), 1), Component.translatable("attribute.irons_spellbooks.spell_power"))
+                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentSpeed(), 0), Component.translatable("attribute.name.generic.movement_speed")),
+                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentAttackDamage(), 0), Component.translatable("attribute.name.generic.attack_damage")),
+                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentSpellPower(), 0), Component.translatable("attribute.irons_spellbooks.spell_power"))
         );
     }
 

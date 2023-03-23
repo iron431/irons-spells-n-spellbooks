@@ -52,7 +52,7 @@ public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> e
             pMatrixStack.translate(0.0D, 0.0D, 0.125D);
             this.getParentModel().copyPropertiesTo(this.angelWingsModel);
             this.angelWingsModel.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
-            VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(pBuffer, RenderType.armorCutoutNoCull(resourcelocation), false, false);
+            VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(pBuffer, RenderType.energySwirl(resourcelocation, 0, 0), false, false);
             this.angelWingsModel.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
             pMatrixStack.popPose();
         }

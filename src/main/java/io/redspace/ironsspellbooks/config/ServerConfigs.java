@@ -82,7 +82,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.ELECTROCUTE_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.LIGHTNING_BOLT_SPELL, true, 10, SpellRarity.EPIC, 25);
         createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, true, 10, SpellRarity.RARE, 12);
-        createSpellConfig(SpellType.CHARGE_SPELL, true, 3, SpellRarity.RARE, 30);
+        createSpellConfig(SpellType.CHARGE_SPELL, true, 3, SpellRarity.RARE, 40);
         //Void
         BUILDER.comment("Void Spells");
         createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, true, 1, SpellRarity.LEGENDARY, 300);
