@@ -1,6 +1,15 @@
 {
   "pools": [
     {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "irons_spellbooks:magic_items/basic_curios"
+        }
+      ]
+    },
+    {
       "rolls": 5,
       "entries": [
         {

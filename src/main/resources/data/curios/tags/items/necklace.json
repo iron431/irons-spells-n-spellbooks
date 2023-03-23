@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-      "irons_spellbooks:enchanted_ward_amulet"
+    "irons_spellbooks:enchanted_ward_amulet",
+    "irons_spellbooks:heavy_chain_necklace"
   ]
 }

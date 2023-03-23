@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-
+    "irons_spellbooks:mana_ring",
+    "irons_spellbooks:cooldown_ring",
+    "irons_spellbooks:silver_ring"
   ]
 }

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DA ",
+    "A A",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "irons_spellbooks:arcane_ingot"
+    },
+    "D": {
+      "tag": "forge:gems/diamond"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:mana_ring",
+    "count": 1
+  }
+}

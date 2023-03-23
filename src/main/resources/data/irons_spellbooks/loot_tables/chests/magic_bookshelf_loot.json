@@ -20,6 +20,21 @@
       ]
     },
     {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "irons_spellbooks:magic_items/basic_curios"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.05
+        }
+      ]
+    },
+    {
       "rolls": {
         "min": 2,
         "max": 3

@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.item.*;
 
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.item.curios.EnchantedWardAmulet;
+import io.redspace.ironsspellbooks.item.curios.SimpleAttributeCurio;
 import io.redspace.ironsspellbooks.item.weapons.BloodStaffItem;
 import io.redspace.ironsspellbooks.item.weapons.MagehunterItem;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
@@ -21,6 +22,7 @@ import io.redspace.ironsspellbooks.spells.fire.BlazeStormSpell;
 import io.redspace.ironsspellbooks.item.armor.*;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -56,6 +58,10 @@ public class ItemRegistry {
      * Curios
      */
     public static final RegistryObject<CurioBaseItem> ENCHANTED_WARD_AMULET = ITEMS.register("enchanted_ward_amulet", EnchantedWardAmulet::new);
+    public static final RegistryObject<CurioBaseItem> MANA_RING = ITEMS.register("mana_ring", () -> new SimpleAttributeCurio(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), AttributeRegistry.MAX_MANA.get(), new AttributeModifier("mana", 100, AttributeModifier.Operation.ADDITION)));
+    public static final RegistryObject<CurioBaseItem> SILVER_RING = ITEMS.register("silver_ring", () -> new SimpleAttributeCurio(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), AttributeRegistry.MAX_MANA.get(), new AttributeModifier("mana", 25, AttributeModifier.Operation.ADDITION)));
+    public static final RegistryObject<CurioBaseItem> COOLDOWN_RING = ITEMS.register("cooldown_ring", () -> new SimpleAttributeCurio(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier("cd", 0.15, AttributeModifier.Operation.MULTIPLY_BASE)));
+    public static final RegistryObject<CurioBaseItem> HEAVY_CHAIN = ITEMS.register("heavy_chain_necklace", () -> new SimpleAttributeCurio(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier("spell resist", 0.15, AttributeModifier.Operation.MULTIPLY_BASE)));
 
 
 
