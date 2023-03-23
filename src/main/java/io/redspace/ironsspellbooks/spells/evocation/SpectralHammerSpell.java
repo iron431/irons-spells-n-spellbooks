@@ -56,11 +56,11 @@ public class SpectralHammerSpell extends AbstractSpell {
         } else {
             var pos = entity.getEyePosition();
             var distance = (float) Math.sqrt(blockPosition.getBlockPos().distToLowCornerSqr(pos.x, pos.y, pos.z));
-            position = Utils.getPositionFromEntityLookDirection(entity, distance - 2);
+            position = Utils.getPositionFromEntityLookDirection(entity, distance - 1.5f);
         }
 
         var spectralHammer = new SpectralHammer(world, entity, blockPosition, getSpellPower(entity));
-        spectralHammer.setPos(position);
+        spectralHammer.setPos(position.x, position.y - 1, position.z);
         IronsSpellbooks.LOGGER.debug("SpectralHammerSpell.onCast pos:{}", position);
         world.addFreshEntity(spectralHammer);
         super.onCast(world, entity, playerMagicData);
