@@ -59,12 +59,13 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipes(ScrollForgeRecipeCategory.SCROLL_FORGE_RECIPE_RECIPE_TYPE, ScrollForgeRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
 
         Arrays.stream(SpellType.values()).forEach(spellType -> {
-            IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
-                    .forEach((spellLevel) -> {
-                        var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-                        SpellData.setSpellData(scrollStack, spellType, spellLevel);
-                        registration.addIngredientInfo(scrollStack, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spellType.getComponentId())));
-                    });
+            if (spellType.isEnabled() && spellType!= SpellType.NONE_SPELL)
+                IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
+                        .forEach((spellLevel) -> {
+                            var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
+                            SpellData.setSpellData(scrollStack, spellType, spellLevel);
+                            registration.addIngredientInfo(scrollStack, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spellType.getComponentId())));
+                        });
         });
     }
 
