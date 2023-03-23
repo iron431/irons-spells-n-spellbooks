@@ -19,6 +19,7 @@ public class SyncedSpellData {
     public static final long ABYSSAL_SHROUD = 8;
     public static final long ASCENSION = 16;
     public static final long TRUE_INVIS = 32;
+    public static final long CHARGED = 64;
 
     //localEffectFlags
     public static final long HEAL_TARGET = 1;

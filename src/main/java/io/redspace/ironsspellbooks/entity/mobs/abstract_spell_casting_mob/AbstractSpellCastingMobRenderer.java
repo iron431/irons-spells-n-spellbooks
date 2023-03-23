@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.render.GeoEvasionLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.render.GeoGlowingEyesLayer;
+import io.redspace.ironsspellbooks.render.GeoHealTargetLayer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -34,6 +35,7 @@ public abstract class AbstractSpellCastingMobRenderer extends ExtendedGeoEntityR
         this.addLayer(new GeoEvasionLayer(this));
         this.addLayer(new GeoChargeSpellLayer(this));
         this.addLayer(new GeoGlowingEyesLayer(this));
+        this.addLayer(new GeoHealTargetLayer(this));
     }
 
     @Nullable

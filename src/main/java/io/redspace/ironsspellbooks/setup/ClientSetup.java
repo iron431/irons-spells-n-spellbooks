@@ -107,6 +107,7 @@ public class ClientSetup {
         if (render instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
             livingRenderer.addLayer(new EvasionLayer(livingRenderer));
+            livingRenderer.addLayer(new ChargedEffectLayer(livingRenderer));
             livingRenderer.addLayer(new ChargeSpellLayer(livingRenderer));
             livingRenderer.addLayer(new GlowingEyesLayer(livingRenderer));
         }
