@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity;
 
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -16,7 +18,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class ExtendedFireworkRocket extends FireworkRocketEntity {
+public class ExtendedFireworkRocket extends FireworkRocketEntity implements AntiMagicSusceptible {
     protected static final EntityDataAccessor<ItemStack> DATA_ID_FIREWORKS_ITEM = SynchedEntityData.defineId(ExtendedFireworkRocket.class, EntityDataSerializers.ITEM_STACK);
 
     public ExtendedFireworkRocket(Level pLevel, ItemStack pStack, Entity pShooter, double pX, double pY, double pZ, boolean pShotAtAngle, float damage) {
@@ -68,5 +70,10 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity {
             }
         }
 
+    }
+
+    @Override
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        this.discard();
     }
 }

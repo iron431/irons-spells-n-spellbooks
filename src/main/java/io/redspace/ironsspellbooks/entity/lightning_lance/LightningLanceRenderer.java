@@ -43,7 +43,7 @@ public class LightningLanceRenderer extends EntityRenderer<LightningLanceProject
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
-        renderModel(poseStack, bufferSource, entity.age);
+        renderModel(poseStack, bufferSource, entity.getAge());
         poseStack.popPose();
 
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
@@ -99,7 +99,7 @@ public class LightningLanceRenderer extends EntityRenderer<LightningLanceProject
 
     @Override
     public ResourceLocation getTextureLocation(LightningLanceProjectile entity) {
-        return getTextureLocation(entity.age);
+        return getTextureLocation(entity.getAge());
     }
 
     public static ResourceLocation getTextureLocation(int offset) {

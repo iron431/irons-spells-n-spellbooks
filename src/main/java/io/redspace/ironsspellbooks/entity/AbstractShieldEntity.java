@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity;
 
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -20,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractShieldEntity extends Entity {
+public abstract class AbstractShieldEntity extends Entity implements AntiMagicSusceptible {
     private static final EntityDataAccessor<Float> DATA_HEALTH_ID = SynchedEntityData.defineId(AbstractShieldEntity.class, EntityDataSerializers.FLOAT);
 
     public AbstractShieldEntity(EntityType<?> pEntityType, Level pLevel) {
@@ -134,5 +136,10 @@ public abstract class AbstractShieldEntity extends Entity {
         for (PartEntity<?> shieldPart : getParts())
             voxels.add(Shapes.create(shieldPart.getBoundingBox()));
         return voxels;
+    }
+
+    @Override
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        this.discard();
     }
 }

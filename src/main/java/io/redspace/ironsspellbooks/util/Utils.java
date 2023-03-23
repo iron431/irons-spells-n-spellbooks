@@ -5,6 +5,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.ConePart;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
@@ -158,6 +160,10 @@ public class Utils {
 
     public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks) {
         return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, Utils::canHitWithRaycast);
+    }
+
+    public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Predicate<? super Entity> filter) {
+        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, filter);
     }
 
     public static HitResult raycastForEntityOfClass(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Class<? extends Entity> c) {
@@ -349,5 +355,9 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static boolean validAntiMagicTarget(Entity entity) {
+        return entity instanceof AntiMagicSusceptible || (entity instanceof Player player && PlayerMagicData.getPlayerMagicData(player).isCasting()) || (entity instanceof AbstractSpellCastingMob castingMob && PlayerMagicData.getPlayerMagicData(castingMob).isCasting());
     }
 }

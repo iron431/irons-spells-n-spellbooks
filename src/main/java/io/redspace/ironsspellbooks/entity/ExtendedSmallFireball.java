@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity;
 
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -11,7 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class ExtendedSmallFireball extends SmallFireball {
+public class ExtendedSmallFireball extends SmallFireball implements AntiMagicSusceptible {
     private float damage;
 
     public ExtendedSmallFireball(EntityType<? extends SmallFireball> pEntityType, Level pLevel) {
@@ -42,5 +44,10 @@ public class ExtendedSmallFireball extends SmallFireball {
             if (DamageSources.applyDamage(target, damage, SpellType.BLAZE_STORM_SPELL.getDamageSource(this, owner), SchoolType.FIRE))
                 target.setSecondsOnFire(5);
         }
+    }
+
+    @Override
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        this.discard();
     }
 }

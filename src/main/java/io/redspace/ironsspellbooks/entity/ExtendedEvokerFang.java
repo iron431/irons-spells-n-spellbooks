@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity;
 
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.core.particles.ParticleTypes;
@@ -8,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.level.Level;
 
-public class ExtendedEvokerFang extends EvokerFangs {
+public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSusceptible {
 
     private final float damage;
     private boolean sentSpikeEvent;
@@ -75,5 +77,10 @@ public class ExtendedEvokerFang extends EvokerFangs {
             int i = lifeTicks - 2;
             return i <= 0 ? 1.0F : 1.0F - ((float) i - pPartialTicks) / 20.0F;
         }
+    }
+
+    @Override
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        this.discard();
     }
 }

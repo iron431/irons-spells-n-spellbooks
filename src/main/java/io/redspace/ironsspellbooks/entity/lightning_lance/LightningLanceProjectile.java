@@ -2,73 +2,56 @@ package io.redspace.ironsspellbooks.entity.lightning_lance;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class LightningLanceProjectile extends Projectile {
-    private static final int EXPIRE_TIME = 20 * 20;
-    public int age;
-    private float damage;
+import java.util.Optional;
+
+public class LightningLanceProjectile extends AbstractMagicProjectile {
+
+    @Override
+    public void trailParticles() {
+        Vec3 vec3 = this.position().subtract(getDeltaMovement());
+        level.addParticle(ParticleHelper.ELECTRICITY, vec3.x, vec3.y, vec3.z, 0, 0, 0);
+    }
+
+    @Override
+    public void impactParticles(double x, double y, double z) {
+        MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, 2, true);
+        MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, .5, false);
+    }
+
+    @Override
+    public float getSpeed() {
+        return 3f;
+    }
+
+    @Override
+    public Optional<SoundEvent> getImpactSound() {
+        return Optional.empty();
+    }
 
     public LightningLanceProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.setNoGravity(false);
     }
 
     public LightningLanceProjectile(Level levelIn, LivingEntity shooter) {
         this(EntityRegistry.LIGHTNING_LANCE_PROJECTILE.get(), levelIn);
         setOwner(shooter);
-    }
-
-    public void shoot(Vec3 rotation) {
-        setDeltaMovement(rotation.scale(2.5));
-    }
-
-    @Override
-    protected void defineSynchedData() {
-
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (age > EXPIRE_TIME) {
-            discard();
-            return;
-        }
-        if (!level.isClientSide) {
-            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-            if (hitresult.getType() != HitResult.Type.MISS) {
-                onHit(hitresult);
-            }
-        } else {
-            spawnParticles();
-        }
-        setPos(position().add(getDeltaMovement()));
-
-        age++;
-
-        if (!this.isNoGravity()) {
-            Vec3 vec34 = this.getDeltaMovement();
-            this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
-        }
-    }
-
-    private void spawnParticles() {
-        Vec3 vec3 = this.position().subtract(getDeltaMovement());
-        level.addParticle(ParticleHelper.ELECTRICITY, vec3.x, vec3.y, vec3.z, 0, 0, 0);
     }
 
     @Override
@@ -86,9 +69,6 @@ public class LightningLanceProjectile extends Projectile {
         //irons_spellbooks.LOGGER.debug("Boom");
 
         if (!level.isClientSide) {
-            Vec3 pos = pResult.getLocation();
-            MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, pos.x, pos.y, pos.z, 75, .1, .1, .1, 2, true);
-            MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, pos.x, pos.y, pos.z, 75, .1, .1, .1, .5, false);
             this.playSound(SoundEvents.TRIDENT_THUNDER, 6, .65f);
 //            irons_spellbooks.LOGGER.debug("{}",pos);
 //            //Beam
@@ -103,18 +83,15 @@ public class LightningLanceProjectile extends Projectile {
 //            }
         }
         super.onHit(pResult);
-
         this.discard();
     }
 
-    @Override
-    protected boolean canHitEntity(Entity entity) {
-        if (entity == getOwner() && !getOwner().isAlliedTo(entity))
-            return false;
-        return super.canHitEntity(entity);
+    public int getAge(){
+        return age;
     }
 
-    public void setDamage(float damage) {
-        this.damage = damage;
+    @Override
+    public boolean canHaveGravity() {
+        return true;
     }
 }

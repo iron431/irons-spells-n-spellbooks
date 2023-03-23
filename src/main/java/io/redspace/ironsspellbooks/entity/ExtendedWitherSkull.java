@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity;
 
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -16,7 +18,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 
-public class ExtendedWitherSkull extends WitherSkull {
+public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSusceptible {
     public ExtendedWitherSkull(EntityType<? extends WitherSkull> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -63,5 +65,10 @@ public class ExtendedWitherSkull extends WitherSkull {
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    @Override
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        this.discard();
     }
 }

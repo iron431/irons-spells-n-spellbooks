@@ -41,6 +41,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.MAGIC_ARROW_SPELL, true, 10, SpellRarity.RARE, 12);
         createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.TELEPORT_SPELL, true, 5, SpellRarity.UNCOMMON, 3);
+        createSpellConfig(SpellType.COUNTERSPELL_SPELL, true, 1, SpellRarity.EPIC, 15);
         //Evocation
         BUILDER.comment("Evocation Spells");
         createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, true, 6, SpellRarity.UNCOMMON, 10);
@@ -64,7 +65,7 @@ public class ServerConfigs {
         BUILDER.comment("Holy Spells");
         createSpellConfig(SpellType.ANGEL_WING_SPELL, true, 5, SpellRarity.EPIC, 120);
         createSpellConfig(SpellType.CLOUD_OF_REGENERATION_SPELL, true, 10, SpellRarity.COMMON, 40);
-        createSpellConfig(SpellType.GREATER_HEAL_SPELL, true, 1, SpellRarity.LEGENDARY, 60);
+        createSpellConfig(SpellType.GREATER_HEAL_SPELL, true, 1, SpellRarity.RARE, 60);
         createSpellConfig(SpellType.HEAL_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.WISP_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.FORTIFY_SPELL, true, 10, SpellRarity.COMMON, 120);

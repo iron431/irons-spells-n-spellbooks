@@ -4,6 +4,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 
 public interface AntiMagicSusceptible {
 
-    public void onAntiMagic(PlayerMagicData playerMagicData);
+    void onAntiMagic(PlayerMagicData playerMagicData);
 
 }
