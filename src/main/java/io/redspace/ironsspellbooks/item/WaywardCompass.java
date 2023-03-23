@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class WaywardCompass extends Item {
-
+    private static final Component description = Component.translatable("item.irons_spellbooks.wayward_compass_desc").withStyle(ChatFormatting.DARK_AQUA);
     public WaywardCompass() {
         super(new Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
     }
@@ -48,6 +48,6 @@ public class WaywardCompass extends Item {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.irons_spellbooks.wayward_compass_desc").withStyle(ChatFormatting.DARK_AQUA));
+        pTooltipComponents.add(description);
     }
 }

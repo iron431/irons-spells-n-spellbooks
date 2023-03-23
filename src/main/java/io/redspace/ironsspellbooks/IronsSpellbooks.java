@@ -24,7 +24,9 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import top.theillusivec4.curios.api.SlotTypeMessage;
 
 import java.util.stream.Collectors;
 
@@ -96,10 +98,29 @@ public class IronsSpellbooks {
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         // Some example code to dispatch IMC to another mod
-        InterModComms.sendTo("examplemod", "helloworld", () -> {
-            LOGGER.info("Hello world from the MDK");
-            return "Hello world";
-        });
+//        InterModComms.sendTo("examplemod", "helloworld", () -> {
+//            LOGGER.info("Hello world from the MDK");
+//            return "Hello world";
+//        });
+        registerCurioSlot("ring", 2, false, null);
+        registerCurioSlot("necklace", 1, false, null);
+    }
+
+    public static void registerCurioSlot(final String identifier, final int slots, final boolean isHidden, @Nullable final ResourceLocation icon) {
+        final SlotTypeMessage.Builder message = new SlotTypeMessage.Builder(identifier);
+
+        message.size(slots);
+
+        if (isHidden) {
+            message.hide();
+        }
+
+        if (icon != null) {
+            message.icon(icon);
+        }
+
+        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> message.build());
+
     }
 
     private void processIMC(final InterModProcessEvent event) {
