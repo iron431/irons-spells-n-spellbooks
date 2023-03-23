@@ -61,6 +61,12 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             public boolean mayPlace(ItemStack stack) {
                 return stack.getItem() instanceof SpellBook;
             }
+
+            @Override
+            public void onTake(Player pPlayer, ItemStack pStack) {
+                InscriptionTableMenu.this.setSelectedSpell(-1);
+                super.onTake(pPlayer, pStack);
+            }
         };
         scrollSlot = new Slot(inputSlots, 1, 17, 53) {
             @Override
