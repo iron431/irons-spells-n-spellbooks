@@ -26,6 +26,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRend
 import io.redspace.ironsspellbooks.entity.shield.ShieldModel;
 import io.redspace.ironsspellbooks.entity.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.shield.ShieldTrimModel;
+import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
@@ -155,6 +156,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SHIELD_ENTITY.get(), ShieldRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WALL_OF_FIRE_ENTITY.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WISP.get(), WispRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SPECTRAL_HAMMER.get(), SpectralHammerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_VEX.get(), VexRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_ZOMBIE.get(), ZombieRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_SKELETON.get(), SkeletonRenderer::new);

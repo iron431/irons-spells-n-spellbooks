@@ -127,6 +127,10 @@ public class PlayerMagicData extends AbstractMagicData {
     }
 
     public CastSource getCastSource() {
+        if (castSource == null) {
+            return CastSource.NONE;
+        }
+
         return castSource;
     }
 

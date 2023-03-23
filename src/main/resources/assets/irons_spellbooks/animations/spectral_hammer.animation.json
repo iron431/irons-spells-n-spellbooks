@@ -1,0 +1,37 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"hammer_swing": {
+			"animation_length": 1,
+			"bones": {
+				"body": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [-15, 0, 0]
+						},
+						"0.5": {
+							"vector": [-60, 0, 0]
+						},
+						"0.5833": {
+							"vector": [50, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [0, 4, 3]
+						},
+						"0.5833": {
+							"vector": [0, 5, 1]
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -14,19 +14,19 @@ import io.redspace.ironsspellbooks.entity.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.entity.lightning_lance.LightningLanceProjectile;
 import io.redspace.ironsspellbooks.entity.magic_arrow.MagicArrowProjectile;
 import io.redspace.ironsspellbooks.entity.magic_missile.MagicMissileProjectile;
-
+import io.redspace.ironsspellbooks.entity.mobs.*;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteed;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
-import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.shield.ShieldEntity;
+import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.entity.wisp.WispEntity;
-import io.redspace.ironsspellbooks.entity.mobs.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -48,6 +48,12 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "wisp").toString()));
+
+    public static final RegistryObject<EntityType<SpectralHammer>> SPECTRAL_HAMMER =
+            ENTITIES.register("spectral_hammer", () -> EntityType.Builder.<SpectralHammer>of(SpectralHammer::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer").toString()));
 
     public static final RegistryObject<EntityType<MagicMissileProjectile>> MAGIC_MISSILE_PROJECTILE =
             ENTITIES.register("magic_missile_projectile", () -> EntityType.Builder.<MagicMissileProjectile>of(MagicMissileProjectile::new, MobCategory.MISC)

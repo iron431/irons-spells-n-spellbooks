@@ -122,6 +122,12 @@ public class Utils {
         return level.clip(new ClipContext(pos, dest, ClipContext.Block.COLLIDER, clipContext, entity));
     }
 
+//    public static Vec3 raycastForPosition(Level level, LivingEntity entity, double reach) {
+//        var rotation = entity.getLookAngle().normalize().scale(reach);
+//        var pos = entity.getEyePosition();
+//        return rotation.add(pos);
+//    }
+
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
         return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, null));
     }
