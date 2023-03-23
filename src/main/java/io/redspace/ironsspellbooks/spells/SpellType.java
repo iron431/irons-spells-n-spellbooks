@@ -80,8 +80,8 @@ public enum SpellType {
     BLESSING_OF_LIFE_SPELL(41),
     DRAGON_BREATH_SPELL(42),
     FORTIFY_SPELL(43),
-    COUNTERSPELL_SPELL(45),
-    SPECTRAL_HAMMER_SPELL(44);
+    COUNTERSPELL_SPELL(44),
+    SPECTRAL_HAMMER_SPELL(45);
 
     private final int value;
     private final LazyOptional<Boolean> isEnabled;

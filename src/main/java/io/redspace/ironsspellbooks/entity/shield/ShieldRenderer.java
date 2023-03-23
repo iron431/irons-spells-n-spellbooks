@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.shield;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
@@ -8,6 +7,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements RenderLayerParent<ShieldEntity, ShieldModel> {
 
-    private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/shield/shield_overlay.png");
+    public static ResourceLocation SPECTRAL_OVERLAY_TEXTURE = IronsSpellbooks.id("textures/entity/shield/shield_overlay.png");
     private static ResourceLocation SIGIL_TEXTURE = IronsSpellbooks.id("textures/block/scroll_forge_sigil.png");
     //private static ResourceLocation TEXTURE = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
     private final ShieldModel model;
@@ -84,7 +84,7 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements Rend
 
     @Override
     public ResourceLocation getTextureLocation(ShieldEntity entity) {
-        return TEXTURE;
+        return SPECTRAL_OVERLAY_TEXTURE;
     }
 
 }
