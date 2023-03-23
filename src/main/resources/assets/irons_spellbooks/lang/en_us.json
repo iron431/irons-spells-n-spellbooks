@@ -225,6 +225,7 @@
   "spell.irons_spellbooks.dragon_breath": "Dragon's Breath",
   "spell.irons_spellbooks.fortify": "Fortify",
   "spell.irons_spellbooks.counterspell": "Counterspell",
+  "spell.irons_spellbooks.charge": "Charge",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -250,6 +251,7 @@
   "effect.irons_spellbooks.fortify": "Fortified",
   "effect.irons_spellbooks.enchanted_ward": "Enchanted Ward",
   "effect.irons_spellbooks.evasion": "Evasion",
+  "effect.irons_spellbooks.charged": "Charged",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",

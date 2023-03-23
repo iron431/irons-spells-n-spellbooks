@@ -10,10 +10,7 @@ import io.redspace.ironsspellbooks.spells.evocation.*;
 import io.redspace.ironsspellbooks.spells.fire.*;
 import io.redspace.ironsspellbooks.spells.holy.*;
 import io.redspace.ironsspellbooks.spells.ice.*;
-import io.redspace.ironsspellbooks.spells.lightning.AscensionSpell;
-import io.redspace.ironsspellbooks.spells.lightning.ElectrocuteSpell;
-import io.redspace.ironsspellbooks.spells.lightning.LightningBoltSpell;
-import io.redspace.ironsspellbooks.spells.lightning.LightningLanceSpell;
+import io.redspace.ironsspellbooks.spells.lightning.*;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -80,8 +77,10 @@ public enum SpellType {
     BLESSING_OF_LIFE_SPELL(41),
     DRAGON_BREATH_SPELL(42),
     FORTIFY_SPELL(43),
-    COUNTERSPELL_SPELL(45),
-    SPECTRAL_HAMMER_SPELL(44);
+    COUNTERSPELL_SPELL(44),
+    SPECTRAL_HAMMER_SPELL(45),
+    CHARGE_SPELL(46)
+    ;
 
     private final int value;
     private final LazyOptional<Boolean> isEnabled;
@@ -143,7 +142,7 @@ public enum SpellType {
 
     private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, BLAZE_STORM_SPELL};
     private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL, FROST_STEP, FROSTBITE_SPELL, SUMMON_POLAR_BEAR_SPELL};
-    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL, ASCENSION_SPELL};
+    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL, ASCENSION_SPELL, CHARGE_SPELL};
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL, DRAGON_BREATH_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL, RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL};
@@ -286,6 +285,9 @@ public enum SpellType {
             }
             case SPECTRAL_HAMMER_SPELL -> {
                 return new SpectralHammerSpell(level);
+            }
+            case CHARGE_SPELL -> {
+                return new ChargeSpell(level);
             }
             default -> {
                 return new NoneSpell(0);
