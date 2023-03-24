@@ -323,6 +323,36 @@
   "entity.irons_spellbooks.dead_king_corpse": "Skeleton",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
-  "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment"
+  "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
+
+  "advancements.irons_spellbooks.root.title": "Iron's Spells 'n  Spellbooks",
+  "advancements.irons_spellbooks.root.description": "There's more than meets the eye to this world...",
+  "advancements.irons_spellbooks.make_inscription_table.title": "Quaint Scribe",
+  "advancements.irons_spellbooks.make_inscription_table.description": "Craft an Inscription Table\n\n§7§oThe beginning of a magical journey.",
+  "advancements.irons_spellbooks.make_scroll_forge.title": "New Age Librarian",
+  "advancements.irons_spellbooks.make_scroll_forge.description": "Craft a Scroll Forge\n\n§7§oHow do you forge paper?",
+  "advancements.irons_spellbooks.make_arcane_anvil.title": "Ultimate Power",
+  "advancements.irons_spellbooks.make_arcane_anvil.description": "Craft an Arcane Anvil\n\n§7§oArcanesmith? Scrollworker?",
+  "advancements.irons_spellbooks.spell_book_root.title": "Magery",
+  "advancements.irons_spellbooks.spell_book_root.description": "Begin your journey with a spell book.",
+  "advancements.irons_spellbooks.spell_book_copper.title": "Flimsy Journal",
+  "advancements.irons_spellbooks.spell_book_copper.description": "Craft a copper spell book.",
+  "advancements.irons_spellbooks.spell_book_iron.title": "Ironbound Tome",
+  "advancements.irons_spellbooks.spell_book_iron.description": "Craft an iron spell book.",
+  "advancements.irons_spellbooks.spell_book_gold.title": "Apprentice's Spell Book",
+  "advancements.irons_spellbooks.spell_book_gold.description": "Craft a gold spell book.",
+  "advancements.irons_spellbooks.spell_book_diamond.title": "Enchanted Spell Book",
+  "advancements.irons_spellbooks.spell_book_diamond.description": "Craft a diamond spell book.",
+  "advancements.irons_spellbooks.spell_book_netherite.title": "Ancient Codex",
+  "advancements.irons_spellbooks.spell_book_netherite.description": "Craft a netherite spell book.",
+  "advancements.irons_spellbooks.spell_book_evoker.title": "Grimoire of Evokation",
+  "advancements.irons_spellbooks.spell_book_evoker.description": "Obtain the unique spell book from the illagers.",
+  "advancements.irons_spellbooks.spell_book_blood_staff.title": "Staff of Blood",
+  "advancements.irons_spellbooks.spell_book_blood_staff.description": "Acquire the Dead King's scepter.",
+  "advancements.irons_spellbooks.ink_root.title": "Tools of the Trade",
+  "advancements.irons_spellbooks.ink_root.description": "Acquire any type of ink.",
+  "advancements.irons_spellbooks.ink_legendary.title": "Premium!",
+  "advancements.irons_spellbooks.ink_legendary.description": "Acquire legendary ink."
+
 
 }

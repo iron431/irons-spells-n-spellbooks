@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "inscription_table": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:inscription_table"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "irons_spellbooks:textures/block/pedestal_side.png",
+    "description": {
+      "translate": "advancements.irons_spellbooks.root.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "irons_spellbooks:gold_spell_book"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.irons_spellbooks.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "inscription_table"
+    ]
+  ]
+}

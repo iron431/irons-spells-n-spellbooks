@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:writable_book"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.spell_book_root.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.spell_book_root.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "task"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/root",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:copper_spell_book",
+              "irons_spellbooks:iron_spell_book",
+              "irons_spellbooks:gold_spell_book",
+              "irons_spellbooks:diamond_spell_book",
+              "irons_spellbooks:netherite_spell_book",
+              "irons_spellbooks:evoker_spell_book",
+              "irons_spellbooks:blood_staff"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  }
+}
