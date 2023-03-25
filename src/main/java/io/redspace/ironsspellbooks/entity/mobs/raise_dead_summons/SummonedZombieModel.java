@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons;
 
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 

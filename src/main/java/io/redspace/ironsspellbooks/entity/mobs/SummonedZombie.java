@@ -1,8 +1,7 @@
-package io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons;
+package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -160,8 +159,6 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
             super.tick();
         }
     }
-
-
 
     @Override
     protected boolean shouldDespawnInPeaceful() {

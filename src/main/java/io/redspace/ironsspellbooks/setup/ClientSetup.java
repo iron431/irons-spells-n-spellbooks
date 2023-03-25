@@ -21,7 +21,7 @@ import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteedRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summon_entity.RaiseDeadSummonRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedSkeletonMultiRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedZombieMultiRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRenderer;
@@ -161,7 +161,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SPECTRAL_HAMMER.get(), SpectralHammerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_VEX.get(), VexRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SUMMONED_ZOMBIE.get(), SummonedZombieMultiRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.SUMMONED_SKELETON.get(), SkeletonRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SUMMONED_SKELETON.get(), SummonedSkeletonMultiRenderer::new);
         event.registerEntityRenderer(EntityRegistry.LIGHTNING_LANCE_PROJECTILE.get(), LightningLanceRenderer::new);
         event.registerEntityRenderer(EntityRegistry.WITHER_SKULL_PROJECTILE.get(), WitherSkullRenderer::new);
         event.registerEntityRenderer(EntityRegistry.MAGIC_ARROW_PROJECTILE.get(), MagicArrowRenderer::new);
@@ -172,7 +172,6 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.DEAD_KING.get(), DeadKingRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARCHEVOKER.get(), ArchevokerRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.RAISE_DEAD_SUMMONER.get(), RaiseDeadSummonRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
