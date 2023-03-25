@@ -11,8 +11,8 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 72.0,
-                "min": 48.0
+                "max": 90.0,
+                "min": 56.0
               },
               "function": "minecraft:set_count"
             },
@@ -40,7 +40,7 @@
             {
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
-                "min": 0.35,
+                "min": 0.75,
                 "max": 1
               }
             }

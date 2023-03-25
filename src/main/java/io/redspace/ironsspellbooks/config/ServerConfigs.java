@@ -32,7 +32,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.BLOOD_SLASH_SPELL, true, 5, SpellRarity.RARE, 10);
         createSpellConfig(SpellType.BLOOD_STEP_SPELL, true, 5, SpellRarity.UNCOMMON, 5);
         createSpellConfig(SpellType.HEARTSTOP_SPELL, true, 10, SpellRarity.COMMON, 120);
-        createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 5, SpellRarity.UNCOMMON, 240);
+        createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 5, SpellRarity.UNCOMMON, 150);
         createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.WITHER_SKULL_SPELL, true, 10, SpellRarity.UNCOMMON, 2);
         //Ender
@@ -52,7 +52,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.LOB_CREEPER_SPELL, true, 10, SpellRarity.UNCOMMON, 2);
         createSpellConfig(SpellType.SHIELD_SPELL, true, 8, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.SUMMON_HORSE_SPELL, true, 5, SpellRarity.COMMON, 20);
-        createSpellConfig(SpellType.SUMMON_VEX_SPELL, true, 5, SpellRarity.RARE, 240);
+        createSpellConfig(SpellType.SUMMON_VEX_SPELL, true, 5, SpellRarity.RARE, 150);
         //Fire
         BUILDER.comment("Fire Spells");
         createSpellConfig(SpellType.BLAZE_STORM_SPELL, true, 10, SpellRarity.COMMON, 25);
@@ -75,7 +75,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.FROSTBITE_SPELL, false, 0, SpellRarity.COMMON, 0);
         createSpellConfig(SpellType.FROST_STEP, true, 8, SpellRarity.RARE, 10);
         createSpellConfig(SpellType.ICICLE_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, true, 10, SpellRarity.RARE, 240);
+        createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, true, 10, SpellRarity.RARE, 180);
         createSpellConfig(SpellType.ASCENSION_SPELL, true, 10, SpellRarity.RARE, 30);
         //Lightning
         BUILDER.comment("Lightning Spells");

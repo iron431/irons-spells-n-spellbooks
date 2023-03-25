@@ -2,9 +2,11 @@ package io.redspace.ironsspellbooks.entity.blood_slash;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.ShieldPart;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -26,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BloodSlashProjectile extends Projectile {
+public class BloodSlashProjectile extends Projectile implements AntiMagicSusceptible {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
     private static final double SPEED = 1d;
     private static final int EXPIRE_TIME = 4 * 20;
@@ -111,7 +113,7 @@ public class BloodSlashProjectile extends Projectile {
             if (hitresult.getType() == HitResult.Type.BLOCK) {
                 onHitBlock((BlockHitResult) hitresult);
             }
-            for (Entity entity : level.getEntities(this, this.getBoundingBox()).stream().filter(target -> target != getOwner() && !victims.contains(target)).collect(Collectors.toSet())) {
+            for (Entity entity : level.getEntities(this, this.getBoundingBox()).stream().filter(target -> canHitEntity(target) && !victims.contains(target)).collect(Collectors.toSet())) {
                 damageEntity(entity);
                 IronsSpellbooks.LOGGER.info(entity.getName().getString());
                 MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY(), entity.getZ(), 50, 0, 0, 0, .5, true);
@@ -230,4 +232,8 @@ public class BloodSlashProjectile extends Projectile {
         return super.canHitEntity(entity);
     }
 
+    @Override
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        this.discard();
+    }
 }
