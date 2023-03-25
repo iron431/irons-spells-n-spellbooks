@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -9,7 +8,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class CommonPlayerEvents {
     public static void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onPlayerRightClickItem {}", event.getSide());
+        //IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onPlayerRightClickItem {}", event.getSide());
         var stack = event.getItemStack();
 
         if (Utils.canImbue(stack)) {
@@ -24,7 +23,7 @@ public class CommonPlayerEvents {
     }
 
     public static void onUseItemStop(LivingEntityUseItemEvent.Stop event) {
-        IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemStop {} {}", event.getEntity().getLevel().isClientSide, event.getItem().getItem());
+        //IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemStop {} {}", event.getEntity().getLevel().isClientSide, event.getItem().getItem());
         var stack = event.getItem();
         if (Utils.canImbue(stack)) {
             var spell = SpellData.getSpellData(stack).getSpell();
@@ -39,9 +38,9 @@ public class CommonPlayerEvents {
 
     public static void onUseItemFinish(LivingEntityUseItemEvent.Finish event) {
         if (Utils.canImbue(event.getItem())) {
-            IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemFinish set cancelled");
+            //IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemFinish set cancelled");
             event.setCanceled(true);
         }
-        IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemFinish {} {}", event.getEntity().getLevel().isClientSide, event.getItem().getItem());
+        //IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemFinish {} {}", event.getEntity().getLevel().isClientSide, event.getItem().getItem());
     }
 }

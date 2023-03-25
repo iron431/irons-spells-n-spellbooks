@@ -74,12 +74,12 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
 
         if (pKey.getId() == DATA_CANCEL_CAST.getId()) {
-            IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_CANCEL_CAST");
+            //IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_CANCEL_CAST");
             cancelCast();
         }
 
         if (pKey.getId() == DATA_SPELL.getId()) {
-            IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_SPELL");
+            //IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_SPELL");
             var isCasting = playerMagicData.isCasting();
             var syncedSpellData = entityData.get(DATA_SPELL);
             //irons_spellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated(DATA_SPELL) {} {}", level.isClientSide, syncedSpellData);

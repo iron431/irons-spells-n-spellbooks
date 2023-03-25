@@ -7,7 +7,6 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -133,7 +132,7 @@ public class ClientSpellCastHelper {
      * Animation Helper
      */
     private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
-        IronsSpellbooks.LOGGER.debug("animatePlayerStart {} {}", player, resourceLocation);
+        //IronsSpellbooks.LOGGER.debug("animatePlayerStart {} {}", player, resourceLocation);
         var keyframeAnimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
         if (keyframeAnimation != null) {
             //noinspection unchecked
@@ -141,7 +140,7 @@ public class ClientSpellCastHelper {
             if (animation != null) {
                 var castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
                 ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), castingAnimationPlayer);
-                castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
+                castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.DISABLED);
 
                 //TODO: This should be configuration driven
                 if (false) {
@@ -182,7 +181,7 @@ public class ClientSpellCastHelper {
      */
     public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource) {
         var spell = AbstractSpell.getSpell(spellId, level);
-        IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
+        //IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
         spell.onClientCastComplete(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
     }
 

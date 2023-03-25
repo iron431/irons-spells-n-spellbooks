@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellTargetingData;
@@ -104,11 +103,6 @@ public class ClientMagicData {
     }
 
     public static void resetClientCastState(UUID playerUUID) {
-
-        //TODO: START LOGGING ONLY - REMOVE ME
-        var player = Minecraft.getInstance().player;
-        IronsSpellbooks.LOGGER.debug("ClientMagicData.resetClientCastState {} {} {}", player, player.getUUID(), playerUUID);
-        //TODO: END LOGGING ONLY - REMOVE ME
 
         playerMagicData.resetCastingState();
 

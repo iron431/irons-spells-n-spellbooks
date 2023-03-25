@@ -1,16 +1,14 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.network.ClientboundAddMotionToPlayer;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
-import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -52,15 +50,19 @@ public class BurningDashSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+        IronsSpellbooks.LOGGER.debug("BurningDashSpell.onCast: Side <---");
+        entity.knockback((double) (5 * 0.5F), (double) Mth.sin(45 * ((float) Math.PI / 180F)), (double) (-Mth.cos(45 * ((float) Math.PI / 180F))));
+
         float amplifier = 0.5f + (level - 1) * .25f;
         Vec3 vec = entity.getLookAngle().normalize().scale(amplifier);
-        if (entity.isOnGround())
-            entity.move(MoverType.SELF, new Vec3(0.0D, 0.75d, 0.0D));
+//        if (entity.isOnGround())
+//            entity.move(MoverType.SELF, new Vec3(0.0D, 0.75d, 0.0D));
+//
+//        if (entity instanceof ServerPlayer player) {
+//            player.startAutoSpinAttack(10 + level);
+//            //Messages.sendToPlayer(new ClientboundAddMotionToPlayer(vec, true), (ServerPlayer) entity);
+//        }
 
-        if (entity instanceof ServerPlayer player) {
-            player.startAutoSpinAttack(10 + level);
-            Messages.sendToPlayer(new ClientboundAddMotionToPlayer(vec, true), (ServerPlayer) entity);
-        }
         super.onCast(world, entity, playerMagicData);
 
         /*
