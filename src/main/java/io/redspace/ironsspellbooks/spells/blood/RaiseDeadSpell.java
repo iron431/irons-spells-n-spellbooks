@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
@@ -8,6 +9,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -72,13 +74,23 @@ public class RaiseDeadSpell extends AbstractSpell {
             undead.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
             equip(undead, equipment);
 
-            Vec3 spawn = entity.getEyePosition().add(new Vec3(0, 0, 3).yRot(((6.281f / this.level) * i)));
-            spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevevl(world, spawn, 5), spawn.z);
-            undead.moveTo(spawn);
-            undead.setYRot(entity.getYRot());
-            undead.setOldPosAndRot();
+            Vec3 spawn = entity.position();
+            for (int j = 0; j < 4; j++) {
+                //Going to try to spawn 3 times
+                float distance = level / 4f + 1;
+                distance *= (3 - j) / 3f;
+                spawn = entity.getEyePosition().add(new Vec3(0, 0, distance).yRot(((6.281f / this.level) * i)));
+                spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevevl(world, spawn, 5), spawn.z);
+                if (!world.getBlockState(new BlockPos(spawn).below()).isAir())
+                    break;
+            }
 
+            IronsSpellbooks.LOGGER.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
+            IronsSpellbooks.LOGGER.debug("RaiseDeadSpell caster rotation: {}", entity.getYRot());
+            undead.moveTo(spawn.x, spawn.y, spawn.z, entity.getYRot(), 0);
             world.addFreshEntity(undead);
+            IronsSpellbooks.LOGGER.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
+
 
         }
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, true));
