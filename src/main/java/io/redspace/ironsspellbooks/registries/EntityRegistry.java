@@ -21,6 +21,8 @@ import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteed;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
+import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summon_entity.RaiseDeadSummonEntity;
+import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedZombie;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.shield.ShieldEntity;
@@ -229,4 +231,10 @@ public class EntityRegistry {
                     .sized(1.5f, .95f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "magehunter_vindicator").toString()));
+
+    public static final RegistryObject<EntityType<RaiseDeadSummonEntity>> RAISE_DEAD_SUMMONER =
+            ENTITIES.register("raise_dead_summoner", () -> EntityType.Builder.<RaiseDeadSummonEntity>of(RaiseDeadSummonEntity::new, MobCategory.MISC)
+                    .sized(.6f, 1.8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "raise_dead_summoner").toString()));
 }

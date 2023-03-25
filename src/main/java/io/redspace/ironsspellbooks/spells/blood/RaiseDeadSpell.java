@@ -2,15 +2,16 @@ package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
-import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
+import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedZombie;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,12 +52,12 @@ public class RaiseDeadSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundEvents.EVOKER_PREPARE_SUMMON);
+        return Optional.of(SoundRegistry.RAISE_DEAD_START.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.EVOKER_CAST_SPELL);
+        return Optional.of(SoundRegistry.RAISE_DEAD_FINISH.get());
     }
 
     @Override
@@ -64,27 +66,19 @@ public class RaiseDeadSpell extends AbstractSpell {
         for (int i = 0; i < this.level; i++) {
             boolean isSkeleton = world.random.nextDouble() < .3;
             var equipment = getEquipment(getSpellPower(entity), world.getRandom());
-            if (isSkeleton) {
-                SummonedSkeleton skeleton = new SummonedSkeleton(world, entity);
-                skeleton.setPos(entity.getEyePosition().add(new Vec3(1, 1, 1).yRot(i * 25)));
-                skeleton.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(skeleton.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
-                skeleton.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
-                //skeleton.setCustomName(Component.translatable("irons_spellbooks.entity.summoned_entity", entity.getName(), skeleton.getName()));
-                //skeleton.setCustomNameVisible(false);
-                equip(skeleton, equipment);
 
-                world.addFreshEntity(skeleton);
-            } else {
-                SummonedZombie zombie = new SummonedZombie(world, entity);
-                zombie.setPos(entity.getEyePosition().add(new Vec3(1, 1, 1).yRot(i * 25)));
-                zombie.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(zombie.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
-                zombie.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
-                //zombie.setCustomName(Component.translatable("entity.irons_spellbooks.summoned_entity", entity.getName(), zombie.getName()));
-                //zombie.setCustomNameVisible(false);
-                equip(zombie, equipment);
+            Monster undead = isSkeleton ? new SummonedSkeleton(world, entity, true) : new SummonedZombie(world, entity, true);
+            undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
+            undead.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
+            equip(undead, equipment);
 
-                world.addFreshEntity(zombie);
-            }
+            Vec3 spawn = entity.getEyePosition().add(new Vec3(0, 0, 3).yRot(((6.281f / this.level) * i)));
+            spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevevl(world, spawn, 5), spawn.z);
+            undead.moveTo(spawn);
+            undead.setYRot(entity.getYRot());
+            undead.setOldPosAndRot();
+
+            world.addFreshEntity(undead);
 
         }
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, true));

@@ -370,4 +370,20 @@ public class Utils {
     public static boolean validAntiMagicTarget(Entity entity) {
         return entity instanceof AntiMagicSusceptible || (entity instanceof Player player/* && PlayerMagicData.getPlayerMagicData(player).isCasting()*/) || (entity instanceof AbstractSpellCastingMob castingMob /*&& PlayerMagicData.getPlayerMagicData(castingMob).isCasting()*/);
     }
+
+    /**
+    From the given start position, this finds the first air block within +/- maxSteps
+     */
+    public static int findRelativeGroundLevevl(Level level, Vec3 start, int maxSteps) {
+        if (!level.getBlockState(new BlockPos(start)).isAir()) {
+            for (int i = 0; i < maxSteps; i++) {
+                start = start.add(0, 1, 0);
+                if (level.getBlockState(new BlockPos(start)).isAir())
+                    break;
+            }
+        }
+        //Vec3 upper = level.clip(new ClipContext(start, start.add(0, maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+        Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+        return (int) lower.y;
+    }
 }

@@ -13,7 +13,7 @@
     "show_toast": false,
     "frame": "task"
   },
-  "parent": "irons_spellbooks:irons_spellbooks/spell_book_copper",
+  "parent": "irons_spellbooks:irons_spellbooks/spell_book_root",
   "criteria": {
     "requirement": {
       "conditions": {

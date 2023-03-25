@@ -35,6 +35,8 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> ELECTROCUTE_LOOP = registerSoundEvent("loop.electrocute");
     public static RegistryObject<SoundEvent> CONE_OF_COLD_LOOP = registerSoundEvent("loop.cone_of_cold");
     public static RegistryObject<SoundEvent> CLOUD_OF_REGEN_LOOP = registerSoundEvent("loop.cloud_of_regen");
+    public static RegistryObject<SoundEvent> RAISE_DEAD_START = registerSoundEvent("cast.raise_dead.start");
+    public static RegistryObject<SoundEvent> RAISE_DEAD_FINISH = registerSoundEvent("cast.raise_dead.finish");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

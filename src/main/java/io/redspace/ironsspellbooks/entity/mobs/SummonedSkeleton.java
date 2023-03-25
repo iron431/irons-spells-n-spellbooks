@@ -35,7 +35,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon {
 
     }
 
-    public SummonedSkeleton(Level level, LivingEntity owner) {
+    public SummonedSkeleton(Level level, LivingEntity owner, boolean shouldAnimateRise) {
         this(EntityRegistry.SUMMONED_SKELETON.get(), level);
         setSummoner(owner);
     }

@@ -172,5 +172,15 @@
     "sounds": [
       "irons_spellbooks:cloud_of_regen_loop"
     ]
+  },
+  "cast.raise_dead.start": {
+    "sounds": [
+      "irons_spellbooks:raise_dead_start"
+    ]
+  },
+  "cast.raise_dead.finish": {
+    "sounds": [
+      "irons_spellbooks:raise_dead_cast"
+    ]
   }
 }
