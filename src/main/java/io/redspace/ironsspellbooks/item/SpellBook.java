@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -55,6 +56,8 @@ public class SpellBook extends Item {
         ItemStack itemStack = player.getItemInHand(hand);
         var spellBookData = SpellBookData.getSpellBookData(itemStack);
         AbstractSpell spell = spellBookData.getActiveSpell();
+        if(spell.getSpellType() == SpellType.NONE_SPELL)
+            return InteractionResultHolder.pass(itemStack);
 
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {

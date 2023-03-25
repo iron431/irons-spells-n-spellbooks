@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -28,10 +30,10 @@ public class ManaBarOverlay {
 
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         var player = Minecraft.getInstance().player;
-        if (player.getAttribute(MAX_MANA.get()) == null) {
-            IronsSpellbooks.LOGGER.debug("null");
+
+        if (!shouldShowManaBar(player))
             return;
-        }
+
         int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
         int mana = ClientMagicData.getPlayerMana();
         int barX, barY;
@@ -64,5 +66,11 @@ public class ManaBarOverlay {
             return 2;
         else
             return 1;
+    }
+
+    private static boolean shouldShowManaBar(Player player) {
+        //TODO: introduce config options
+        //We show mana if they are holding an item that can cast spells or if their mana is not full
+        return player.isHolding((itemstack -> itemstack.getItem() instanceof SpellBook || SpellData.hasSpellData(itemstack))) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get());
     }
 }

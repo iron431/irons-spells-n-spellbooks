@@ -11,7 +11,7 @@
     },
     "announce_to_chat": false,
     "show_toast": false,
-    "frame": "task"
+    "frame": "goal"
   },
   "parent": "irons_spellbooks:irons_spellbooks/spell_book_gold",
   "criteria": {
