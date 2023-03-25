@@ -19,21 +19,6 @@
           ]
         },
         {
-          "rolls": 1,
-          "entries": [
-            {
-              "type": "minecraft:loot_table",
-              "name": "irons_spellbooks:magic_items/basic_curios"
-            }
-          ],
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.4
-            }
-          ]
-        },
-        {
           "type": "minecraft:item",
           "weight": 5,
           "name": "minecraft:candle"
@@ -91,6 +76,21 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "irons_spellbooks:magic_items/basic_curios"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.4
         }
       ]
     }

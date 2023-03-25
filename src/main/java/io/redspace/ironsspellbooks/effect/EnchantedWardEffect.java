@@ -12,11 +12,11 @@ public class EnchantedWardEffect extends MobEffect {
 
     @Override
     public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
-        return pDuration % 10 == 0;
+        return pDuration % 30 == 0;
     }
 
     @Override
     public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
-        pLivingEntity.hurt(DamageSource.MAGIC.bypassEnchantments(), 2);
+        pLivingEntity.hurt(DamageSource.MAGIC.bypassEnchantments(), 5);
     }
 }

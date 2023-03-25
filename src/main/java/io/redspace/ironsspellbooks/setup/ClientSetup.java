@@ -30,6 +30,7 @@ import io.redspace.ironsspellbooks.entity.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.shield.ShieldTrimModel;
 import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.wisp.WispRenderer;
+import io.redspace.ironsspellbooks.item.AntiquatedCompass;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
 import io.redspace.ironsspellbooks.particle.*;
@@ -195,6 +196,7 @@ public class ClientSetup {
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
         e.enqueueWork(() -> ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag()))));
+        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.ANTIQUATED_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> AntiquatedCompass.getCitadelLocation(entity, itemStack.getOrCreateTag()))));
     }
 
 }

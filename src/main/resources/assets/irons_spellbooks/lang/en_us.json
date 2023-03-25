@@ -79,6 +79,8 @@
   "item.irons_spellbooks.blood_staff": "The Blood Staff",
   "item.irons_spellbooks.wayward_compass": "Wayward Compass",
   "item.irons_spellbooks.wayward_compass_desc": "The trapped soul points toward its home",
+  "item.irons_spellbooks.antiquated_compass": "Antiquated Compass",
+  "item.irons_spellbooks.antiquated_compass_desc": "A magical resonance pulls strongly towards... Something.",
   "item.irons_spellbooks.magehunter": "Magehunter",
   "item.irons_spellbooks.upgrade_orb": "Empty Upgrade Orb",
   "item.irons_spellbooks.fire_upgrade_orb": "Fire Upgrade Orb",
@@ -350,7 +352,15 @@
   "advancements.irons_spellbooks.ink_root.title": "Tools of the Trade",
   "advancements.irons_spellbooks.ink_root.description": "Acquire any type of ink.",
   "advancements.irons_spellbooks.ink_legendary.title": "Premium!",
-  "advancements.irons_spellbooks.ink_legendary.description": "Acquire legendary ink."
+  "advancements.irons_spellbooks.ink_legendary.description": "Acquire legendary ink.",
+  "advancements.irons_spellbooks.make_wayward_compass.title": "It's a Questing Compass",
+  "advancements.irons_spellbooks.make_wayward_compass.description": "Craft a wayward compass, and find out where it leads...",
+  "advancements.irons_spellbooks.make_antiquated_compass.title": "A Time Long Past",
+  "advancements.irons_spellbooks.make_antiquated_compass.description": "Craft an antiquated compass. Maybe don't find out where it leads...",
+  "advancements.irons_spellbooks.magic_aura.title": "Enchanted Ward",
+  "advancements.irons_spellbooks.magic_aura.description": "Encounter the magic aura blockading the Lost Citadel",
+  "advancements.irons_spellbooks.enter_catacombs.title": "Dungeon Delving",
+  "advancements.irons_spellbooks.enter_catacombs.description": "Enter the Catacombs"
 
 
 }

@@ -1,0 +1,1 @@
+{  "parent": "minecraft:item/generated",  "textures": {    "layer0": "irons_spellbooks:item/compass/wayward_compass_23"  }}

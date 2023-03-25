@@ -1,0 +1,37 @@
+{
+  "display": {
+    "hidden": true,
+    "icon": {
+      "item": "irons_spellbooks:antiquated_compass"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.make_antiquated_compass.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.make_antiquated_compass.description"
+    },
+    "announce_to_chat": false,
+    "show_toast": false,
+    "frame": "goal"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/root",
+  "criteria": {
+    "craft": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "irons_spellbooks:antiquated_compass"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "craft"
+    ]
+  ]
+}

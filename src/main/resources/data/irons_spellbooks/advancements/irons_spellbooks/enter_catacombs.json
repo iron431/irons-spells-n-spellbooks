@@ -1,0 +1,36 @@
+{
+  "display": {
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:skeleton_skull"
+    },
+    "title": {
+      "translate": "advancements.irons_spellbooks.enter_catacombs.title"
+    },
+    "description": {
+      "translate": "advancements.irons_spellbooks.enter_catacombs.description"
+    },
+    "announce_to_chat": true,
+    "show_toast": true,
+    "frame": "task"
+  },
+  "parent": "irons_spellbooks:irons_spellbooks/make_wayward_compass",
+  "criteria": {
+    "in_catacombs": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structure": "irons_spellbooks:catacombs"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  }
+}
