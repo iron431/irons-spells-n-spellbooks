@@ -7,10 +7,15 @@ import net.minecraft.resources.ResourceLocation;
 
 public class KeeperModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/keeper.png");
+    public static final ResourceLocation modelResource = new ResourceLocation(IronsSpellbooks.MODID, "geo/citadel_keeper.geo.json");
 
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
         return TEXTURE;
     }
 
+    @Override
+    public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
+        return modelResource;
+    }
 }

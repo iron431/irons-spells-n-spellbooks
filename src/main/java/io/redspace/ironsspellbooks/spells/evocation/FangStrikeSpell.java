@@ -42,7 +42,7 @@ public class FangStrikeSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundEvents.EVOKER_PREPARE_SUMMON);
+        return Optional.of(SoundEvents.EVOKER_PREPARE_ATTACK);
     }
 
     @Override
