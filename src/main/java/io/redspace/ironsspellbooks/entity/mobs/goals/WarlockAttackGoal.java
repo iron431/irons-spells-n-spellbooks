@@ -45,6 +45,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
                 this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), this.speedModifier * 1.3f);
             else
                 this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
+            strafeBackwards = 0f;
         } else {
             strafeBackwards = (float) (-speedModifier * .25f);
         }

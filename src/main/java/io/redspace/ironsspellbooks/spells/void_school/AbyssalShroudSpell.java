@@ -30,8 +30,8 @@ public class AbyssalShroudSpell extends AbstractSpell {
         super(SpellType.ABYSSAL_SHROUD_SPELL);
         this.level = level;
         this.manaCostPerLevel = 20;
-        this.baseSpellPower = 15;
-        this.spellPowerPerLevel = 5;
+        this.baseSpellPower = 6;
+        this.spellPowerPerLevel = 6;
         this.castTime = 0;
         this.baseManaCost = 350;
     }

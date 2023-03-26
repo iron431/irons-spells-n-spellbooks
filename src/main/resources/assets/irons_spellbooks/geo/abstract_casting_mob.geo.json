@@ -206,10 +206,10 @@
 				{
 					"name": "bipedHandRight",
 					"parent": "right_arm",
-					"pivot": [-29, 20, -1],
+					"pivot": [-6, 13, -1],
 					"cubes": [
 						{
-							"origin": [-29, 20, -1],
+							"origin": [-6, 13, -1],
 							"size": [0, 0, 0],
 							"uv": {
 								"north": {"uv": [0, 0], "uv_size": [0, 0]},

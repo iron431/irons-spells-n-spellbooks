@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.entity.AbstractShieldEntity;
+import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.phys.AABB;

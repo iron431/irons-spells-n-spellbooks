@@ -173,7 +173,7 @@ public class WizardAttackGoal extends Goal {
         doMovement(distanceSquared);
 
         //do attacks
-        this.mob.getLookControl().setLookAt(this.target, 45, 45);
+        //this.mob.getLookControl().setLookAt(this.target, 45, 45);
         //irons_spellbooks.LOGGER.debug("{},{}", mob.getLastHurtByMobTimestamp(), mob.tickCount);
         if (mob.getLastHurtByMobTimestamp() == mob.tickCount - 1) {
             int t = (int) (Mth.lerp(.6f, attackTime, 0) + 1);

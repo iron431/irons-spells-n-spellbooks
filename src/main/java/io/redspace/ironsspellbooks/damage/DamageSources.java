@@ -48,7 +48,6 @@ public class DamageSources {
                 livingAttacker.setLastHurtMob(target);
             }
             var flag = livingTarget.hurt(damageSource, adjustedDamage);
-            //TODO: this doesnt seem to work
             if (flag && damageSource.getDirectEntity() instanceof MagicSummon)
                 livingTarget.setLastHurtByMob((LivingEntity) damageSource.getDirectEntity());
             return flag;

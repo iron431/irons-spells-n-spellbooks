@@ -1,19 +1,20 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.ExtendedSmallFireball;
-import io.redspace.ironsspellbooks.entity.ExtendedWitherSkull;
-import io.redspace.ironsspellbooks.entity.blood_slash.BloodSlashProjectile;
-import io.redspace.ironsspellbooks.entity.cone_of_cold.ConeOfColdProjectile;
-import io.redspace.ironsspellbooks.entity.creeper_head.CreeperHeadProjectile;
-import io.redspace.ironsspellbooks.entity.dragon_breath.DragonBreathProjectile;
-import io.redspace.ironsspellbooks.entity.electrocute.ElectrocuteProjectile;
-import io.redspace.ironsspellbooks.entity.fire_breath.FireBreathProjectile;
-import io.redspace.ironsspellbooks.entity.firebolt.FireboltProjectile;
-import io.redspace.ironsspellbooks.entity.icicle.IcicleProjectile;
-import io.redspace.ironsspellbooks.entity.lightning_lance.LightningLanceProjectile;
-import io.redspace.ironsspellbooks.entity.magic_arrow.MagicArrowProjectile;
-import io.redspace.ironsspellbooks.entity.magic_missile.MagicMissileProjectile;
+import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
+import io.redspace.ironsspellbooks.entity.spells.ExtendedSmallFireball;
+import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
+import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
+import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdProjectile;
+import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
+import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
+import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
+import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
+import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
+import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
+import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceProjectile;
+import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
+import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileProjectile;
 import io.redspace.ironsspellbooks.entity.mobs.*;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
@@ -24,10 +25,10 @@ import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
-import io.redspace.ironsspellbooks.entity.shield.ShieldEntity;
+import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammer;
-import io.redspace.ironsspellbooks.entity.wall_of_fire.WallOfFireEntity;
-import io.redspace.ironsspellbooks.entity.wisp.WispEntity;
+import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
+import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -230,5 +231,11 @@ public class EntityRegistry {
                     .sized(1.5f, .95f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "magehunter_vindicator").toString()));
+
+    public static final RegistryObject<EntityType<KeeperEntity>> KEEPER =
+            ENTITIES.register("citadel_keeper", () -> EntityType.Builder.of(KeeperEntity::new, MobCategory.MONSTER)
+                    .sized(.85f, 2.3f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "citadel_keeper").toString()));
 
 }

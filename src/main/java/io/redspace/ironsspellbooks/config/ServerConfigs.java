@@ -85,7 +85,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.CHARGE_SPELL, true, 3, SpellRarity.RARE, 40);
         //Void
         BUILDER.comment("Void Spells");
-        createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, true, 1, SpellRarity.LEGENDARY, 300);
+        createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, true, 3, SpellRarity.LEGENDARY, 300);
 
 
         BUILDER.comment("Other Configuration");

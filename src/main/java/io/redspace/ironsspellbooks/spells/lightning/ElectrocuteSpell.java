@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.entity.AbstractConeProjectile;
-import io.redspace.ironsspellbooks.entity.electrocute.ElectrocuteProjectile;
+import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
+import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;

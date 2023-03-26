@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.render;
 
-import io.redspace.ironsspellbooks.entity.lightning_lance.LightningLanceRenderer;
-import io.redspace.ironsspellbooks.entity.magic_arrow.MagicArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
+import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;

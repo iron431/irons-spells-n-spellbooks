@@ -140,7 +140,7 @@ public class ClientSpellCastHelper {
             if (animation != null) {
                 var castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
                 ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), castingAnimationPlayer);
-                castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.DISABLED);
+                castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
 
                 //TODO: This should be configuration driven
                 if (false) {
