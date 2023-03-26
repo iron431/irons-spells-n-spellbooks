@@ -7,6 +7,7 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
+import io.redspace.ironsspellbooks.capabilities.magic.CastData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -179,10 +180,11 @@ public class ClientSpellCastHelper {
     /**
      * Network Handling Wrapper
      */
-    public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource) {
+    public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource, CastData castData) {
         var spell = AbstractSpell.getSpell(spellId, level);
         //IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
-        spell.onClientCastComplete(Minecraft.getInstance().player.level, Minecraft.getInstance().player, null);
+
+        spell.onClientCastComplete(Minecraft.getInstance().player.level, Minecraft.getInstance().player, castData);
     }
 
     public static void handleClientboundTeleport(Vec3 pos1, Vec3 pos2) {

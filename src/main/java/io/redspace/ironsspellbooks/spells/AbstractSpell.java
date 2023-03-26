@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.spells;
 
 import com.mojang.datafixers.util.Either;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.CastData;
+import io.redspace.ironsspellbooks.capabilities.magic.CastDataSerializable;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -120,6 +122,10 @@ public abstract class AbstractSpell {
 
     public int getCastTime() {
         return this.castTime;
+    }
+
+    public CastDataSerializable getEmptyCastData() {
+        return null;
     }
 
     public abstract Optional<SoundEvent> getCastStartSound();
@@ -253,9 +259,8 @@ public abstract class AbstractSpell {
             MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, spellType, castSource);
         }
 
-        Messages.sendToPlayer(new ClientboundOnClientCast(this.getID(), this.level, castSource), serverPlayer);
-
         onCast(world, serverPlayer, playerMagicData);
+        Messages.sendToPlayer(new ClientboundOnClientCast(this.getID(), this.level, castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
 
         if (this.castType != CastType.CONTINUOUS) {
             onServerCastComplete(world, serverPlayer, playerMagicData, false);
@@ -276,7 +281,7 @@ public abstract class AbstractSpell {
     /**
      * The primary spell effect sound and particle handling goes here. Called Client Side only
      */
-    public void onClientCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onClientCastComplete(Level level, LivingEntity entity, CastData castData) {
         //irons_spellbooks.LOGGER.debug("AbstractSpell.: onClientCast:{}", level.isClientSide);
         playSound(getCastFinishSound(), entity, true);
         if (ClientInputEvents.isUseKeyDown) {
