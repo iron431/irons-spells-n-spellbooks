@@ -7,7 +7,8 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 public class NecromancerRenderer extends AbstractSpellCastingMobRenderer {
 
@@ -16,13 +17,7 @@ public class NecromancerRenderer extends AbstractSpellCastingMobRenderer {
     }
 
     @Override
-    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        //RenderSystem.disableCull();
-        //type = RenderType.entityCutoutNoCull(modelProvider.getTextureResource(animatable));
-        //buffer = bufferSource.getBuffer(type);
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(modelProvider.getTextureResource(animatable)));
-
-
-        super.render(model, animatable, partialTick, type, poseStack, bufferSource, consumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public RenderType getRenderType(AbstractSpellCastingMob animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
+        return RenderType.entityCutoutNoCull(texture);
     }
 }

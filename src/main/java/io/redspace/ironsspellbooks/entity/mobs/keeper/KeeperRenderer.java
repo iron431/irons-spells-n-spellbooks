@@ -20,27 +20,13 @@ public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
     public KeeperRenderer(EntityRendererProvider.Context context) {
         super(context, new KeeperModel());
         this.shadowRadius = 0.65f;
-
     }
-    //TODO: cleanup/propagate these changes to everyone else
+
     @Override
     public void renderEarly(AbstractSpellCastingMob animatable, PoseStack poseStack, float partialTick, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float partialTicks) {
         poseStack.scale(1.3f, 1.3f, 1.3f);
         super.renderEarly(animatable, poseStack, partialTick, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, partialTicks);
     }
-
-//    @Override
-//    public void render(AbstractSpellCastingMob animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-//        super.render(animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-//    }
-//    @Override
-//    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-//        RenderSystem.disableCull();
-////        type = RenderType.eyes(modelProvider.getTextureResource(animatable));
-////        buffer = bufferSource.getBuffer(type);
-//        //poseStack.scale(1.3f, 1.3f, 1.3f);
-//        super.render(model, animatable, partialTick, RenderType.entityTranslucentCull(modelProvider.getTextureResource(animatable)), poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-//    }
 
     @Override
     public RenderType getRenderType(AbstractSpellCastingMob animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
