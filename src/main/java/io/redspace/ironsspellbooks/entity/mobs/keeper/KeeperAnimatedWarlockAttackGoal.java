@@ -46,7 +46,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             if (attackAnimations.get(currentAttack).isHitFrame(meleeAnimTimer)) {
                 if (currentAttack == KeeperEntity.AttackType.Lunge) {
                     if (!hasLunged) {
-                        Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(2.4).add(0, 0.15, 0);
+                        Vec3 lunge = target.position().subtract(mob.position()).normalize().multiply(2.4, .5, 2.4).add(0, 0.15, 0);
                         mob.push(lunge.x, lunge.y, lunge.z);
                         hasLunged = true;
                     }
@@ -89,6 +89,9 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     }
 
     private void forceFaceTarget() {
+
+        if (hasLunged)
+            return;
         double d0 = target.getX() - mob.getX();
         double d1 = target.getZ() - mob.getZ();
         float yRot = (float) (Mth.atan2(d1, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
