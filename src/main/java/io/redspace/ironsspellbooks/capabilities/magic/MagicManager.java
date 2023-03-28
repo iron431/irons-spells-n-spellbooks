@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldown;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
-import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
@@ -74,22 +74,23 @@ public class MagicManager {
                     //irons_spellbooks.LOGGER.debug("MagicManager.tick: playerMagicData:{}", playerMagicData);
                     if (spell.getCastType() == CastType.LONG || (spell.getCastType() == CastType.CHARGE && !serverPlayer.isUsingItem())) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
-                            Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
+                            //Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                             spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
-                            playerMagicData.resetCastingState();
+                            IronsSpellbooks.LOGGER.debug("MagicManager.tick.1");
+                            spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
                             Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
                             if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost() * 2 < 0)) {
                                 //irons_spellbooks.LOGGER.debug("MagicManager.tick: handle spell casting complete");
-                                Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
+                                //Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
-                                spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, false);
+                                spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
+                                IronsSpellbooks.LOGGER.debug("MagicManager.tick.2");
                                 if (playerMagicData.getCastSource() == CastSource.SCROLL) {
                                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                                 }
-                                playerMagicData.resetCastingState();
                             } else {
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), false);
                             }

@@ -196,6 +196,7 @@ public abstract class AbstractSpell {
      * returns true/false for success/failure to cast
      */
     public boolean attemptInitiateCast(ItemStack stack, Level level, Player player, CastSource castSource, boolean triggerCooldown) {
+        IronsSpellbooks.LOGGER.debug("attemptInitiateCast spell:{} **********************************************************************************", this.getSpellType());
         if (level.isClientSide) {
             return false;
         }
@@ -232,7 +233,7 @@ public abstract class AbstractSpell {
                 int effectiveCastTime = getEffectiveCastTime(player);
                 playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, castSource);
                 onServerPreCast(player.level, player, playerMagicData);
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(), effectiveCastTime, castSource, false), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(), effectiveCastTime, castSource), serverPlayer);
             }
 
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), spellType), serverPlayer, true);
@@ -262,8 +263,9 @@ public abstract class AbstractSpell {
         onCast(world, serverPlayer, playerMagicData);
         Messages.sendToPlayer(new ClientboundOnClientCast(this.getID(), this.level, castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
 
-        if (this.castType != CastType.CONTINUOUS) {
-            onServerCastComplete(world, serverPlayer, playerMagicData, false);
+        if (this.castType == CastType.INSTANT) {
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell -> onServerCastComplete (not continuous)");
+            onServerCastComplete(world, serverPlayer, playerMagicData);
         }
 
         if (serverPlayer.getMainHandItem().getItem() instanceof SpellBook || serverPlayer.getMainHandItem().getItem() instanceof Scroll)
@@ -281,12 +283,14 @@ public abstract class AbstractSpell {
     /**
      * The primary spell effect sound and particle handling goes here. Called Client Side only
      */
-    public void onClientCastComplete(Level level, LivingEntity entity, CastData castData) {
-        //irons_spellbooks.LOGGER.debug("AbstractSpell.: onClientCast:{}", level.isClientSide);
+    public void onClientCast(Level level, LivingEntity entity, CastData castData) {
+        IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCastComplete.1");
         playSound(getCastFinishSound(), entity, true);
         if (ClientInputEvents.isUseKeyDown) {
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCastComplete.2");
             if (this.spellType.getCastType().holdToCast()) {
                 ClientSpellCastHelper.setSuppressRightClicks(true);
+                IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCastComplete.3");
             }
             ClientInputEvents.hasReleasedSinceCasting = false;
         }
@@ -332,9 +336,11 @@ public abstract class AbstractSpell {
     /**
      * Called on the server when a spell finishes casting or is cancelled, used for any cleanup or extra functionality
      */
-    public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData, boolean isCancelled) {
+    public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        IronsSpellbooks.LOGGER.debug("AbstractSpell.onServerCastComplete");
+        playerMagicData.resetCastingState();
         if (entity instanceof ServerPlayer serverPlayer) {
-            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType, isCancelled), serverPlayer, true);
+            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType), serverPlayer, true);
         }
     }
 

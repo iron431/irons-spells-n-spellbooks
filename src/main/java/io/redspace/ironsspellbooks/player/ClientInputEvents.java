@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
@@ -8,7 +9,6 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.util.Utils;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +30,7 @@ public final class ClientInputEvents {
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
 
-    private static KeyMapping useKeyMapping;
+    private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
 
@@ -112,9 +112,11 @@ public final class ClientInputEvents {
     @SubscribeEvent
     public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
         //irons_spellbooks.LOGGER.debug("onUseInput: keymapping: {} ({})", useKeyMapping.getKey(), useKeyMapping.getKey().getValue());
+        IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.1");
         if (event.isUseItem()) {
-            useKeyMapping = event.getKeyMapping();
+            IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.2");
             if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
+                IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.3");
                 event.setSwingHand(false);
                 event.setCanceled(true);
             }
@@ -132,14 +134,22 @@ public final class ClientInputEvents {
     }
 
     private static void handleRightClickSuppression(int button, int action) {
-        if (useKeyMapping != null && button == useKeyMapping.getKey().getValue())
+        //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleRightClickSuppression {} {}", button, action);
+        if (useKeyId == Integer.MIN_VALUE) {
+            useKeyId = Minecraft.getInstance().options.keyUse.getKey().getValue();
+        }
+
+        if (button == useKeyId) {
             if (action == InputConstants.RELEASE) {
+                //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleRightClickSuppression.1");
                 ClientSpellCastHelper.setSuppressRightClicks(false);
                 isUseKeyDown = false;
                 hasReleasedSinceCasting = true;
             } else if (action == InputConstants.PRESS) {
+                //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleRightClickSuppression.2");
                 isUseKeyDown = true;
             }
+        }
     }
 
     private static void update() {

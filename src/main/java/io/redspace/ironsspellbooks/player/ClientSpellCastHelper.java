@@ -7,6 +7,7 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
@@ -40,6 +41,7 @@ public class ClientSpellCastHelper {
     }
 
     public static void setSuppressRightClicks(boolean suppressRightClicks) {
+        IronsSpellbooks.LOGGER.debug("ClientSpellCastHelper.setSuppressRightClicks {}", suppressRightClicks);
         ClientSpellCastHelper.suppressRightClicks = suppressRightClicks;
     }
 
@@ -184,7 +186,7 @@ public class ClientSpellCastHelper {
         var spell = AbstractSpell.getSpell(spellId, level);
         //IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
 
-        spell.onClientCastComplete(Minecraft.getInstance().player.level, Minecraft.getInstance().player, castData);
+        spell.onClientCast(Minecraft.getInstance().player.level, Minecraft.getInstance().player, castData);
     }
 
     public static void handleClientboundTeleport(Vec3 pos1, Vec3 pos2) {
@@ -207,22 +209,15 @@ public class ClientSpellCastHelper {
 
     }
 
-    public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType, boolean isCancelled) {
+    public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType) {
+        ClientMagicData.resetClientCastState(castingEntityId);
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
-        //IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastFinished {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
         AbstractSpell.getSpell(spellType, 1)
                 .getCastFinishAnimation(player)
                 .right()
-                .ifPresentOrElse(
-                        (resourceLocation -> {
-                            if (isCancelled) {
-                                ClientMagicData.resetClientCastState(castingEntityId);
-                            } else {
-                                animatePlayerStart(player, resourceLocation);
-                            }
-                        }), //ifPresent
-                        () -> ClientMagicData.resetClientCastState(castingEntityId) //orElse
-                );
-
+                .ifPresent((resourceLocation -> {
+                    IronsSpellbooks.LOGGER.debug("ClientSpellCastHelper.handleClientBoundOnCastFinished.1 -> ClientMagicData.resetClientCastState");
+                    animatePlayerStart(player, resourceLocation);
+                }));
     }
 }

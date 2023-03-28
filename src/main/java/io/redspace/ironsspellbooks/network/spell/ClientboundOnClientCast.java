@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.network.spell;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastData;
 import io.redspace.ironsspellbooks.capabilities.magic.CastDataSerializable;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
@@ -30,6 +31,7 @@ public class ClientboundOnClientCast {
         level = buf.readInt();
         castSource = buf.readEnum(CastSource.class);
         if (buf.readBoolean()) {
+            IronsSpellbooks.LOGGER.debug("ClientboundOnClientCast: spellId:{} level:{}", spellId, level);
             var tmp = AbstractSpell.getSpell(spellId, level).getEmptyCastData();
             tmp.readFromStream(buf);
             castData = tmp;
@@ -41,9 +43,11 @@ public class ClientboundOnClientCast {
         buf.writeInt(level);
         buf.writeEnum(castSource);
         if (castData instanceof CastDataSerializable castDataSerializable) {
+            IronsSpellbooks.LOGGER.debug("ClientboundOnClientCast.toBytes.1");
             buf.writeBoolean(true);
             castDataSerializable.writeToStream(buf);
         } else {
+            IronsSpellbooks.LOGGER.debug("ClientboundOnClientCast.toBytes.2");
             buf.writeBoolean(false);
         }
     }

@@ -1,10 +1,12 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -76,7 +78,7 @@ public class PlayerMagicData extends AbstractMagicData {
 
 
     public void resetCastingState() {
-        //irons_spellbooks.LOGGER.debug("resetCastingState: {}", serverPlayer);
+        IronsSpellbooks.LOGGER.debug("PlayerMagicData.resetCastingState: serverPlayer:{}", serverPlayer);
         this.castingSpellLevel = 0;
         this.castDuration = 0;
         this.castDurationRemaining = 0;
@@ -84,6 +86,12 @@ public class PlayerMagicData extends AbstractMagicData {
         this.castType = CastType.NONE;
         this.getSyncedData().setIsCasting(false, SpellType.NONE_SPELL.getValue(), 0);
         resetAdditionalCastData();
+
+        if(serverPlayer != null){
+            serverPlayer.stopUsingItem();
+        }else{
+            Minecraft.getInstance().player.stopUsingItem();
+        }
     }
 
     public void initiateCast(int spellId, int spellLevel, int castDuration, CastSource castSource) {

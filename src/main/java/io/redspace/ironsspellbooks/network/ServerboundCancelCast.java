@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,10 +49,9 @@ public class ServerboundCancelCast {
                     MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
                 }
 
-                playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, true);
-                playerMagicData.resetCastingState();
+                IronsSpellbooks.LOGGER.debug("ServerBoundCancelCast.cancelCast");
+                playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
 
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(spellId, 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                 if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
             }

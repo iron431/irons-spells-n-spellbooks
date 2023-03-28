@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.player;
 
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellTargetingData;
@@ -103,6 +104,7 @@ public class ClientMagicData {
     }
 
     public static void resetClientCastState(UUID playerUUID) {
+        IronsSpellbooks.LOGGER.debug("resetClientCastState.1: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
 
         playerMagicData.resetCastingState();
 
@@ -113,6 +115,7 @@ public class ClientMagicData {
         }
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUUID() == playerUUID) {
+            IronsSpellbooks.LOGGER.debug("resetClientCastState.2: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
             Minecraft.getInstance().player.stopUsingItem();
         }
         resetTargetingData();

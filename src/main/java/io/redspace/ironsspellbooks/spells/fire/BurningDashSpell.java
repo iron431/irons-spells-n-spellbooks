@@ -34,13 +34,13 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientCastComplete(Level level, LivingEntity entity, CastData castData) {
+    public void onClientCast(Level level, LivingEntity entity, CastData castData) {
         if (castData instanceof BurningDashCastData bdcd) {
             entity.hasImpulse = bdcd.hasImpulse;
             entity.setDeltaMovement(entity.getDeltaMovement().add(bdcd.x, bdcd.y, bdcd.z));
         }
 
-        super.onClientCastComplete(level, entity, castData);
+        super.onClientCast(level, entity, castData);
     }
 
     @Override
