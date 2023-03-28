@@ -19,6 +19,7 @@ public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
 
     public KeeperRenderer(EntityRendererProvider.Context context) {
         super(context, new KeeperModel());
+        //this.addLayer(new GeoKeeperGhostLayer(this));
         this.shadowRadius = 0.65f;
     }
 
@@ -31,5 +32,6 @@ public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
     @Override
     public RenderType getRenderType(AbstractSpellCastingMob animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
         return RenderType.entityTranslucent(texture);
+        //return RenderType.endGateway();
     }
 }
