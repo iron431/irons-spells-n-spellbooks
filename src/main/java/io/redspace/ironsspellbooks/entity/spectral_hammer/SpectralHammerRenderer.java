@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
 public class SpectralHammerRenderer extends GeoEntityRenderer<SpectralHammer> {
@@ -21,23 +22,11 @@ public class SpectralHammerRenderer extends GeoEntityRenderer<SpectralHammer> {
         return SpectralHammerModel.textureResource;
     }
 
-//    @Override
-//    public void render(GeoModel model, SpectralHammer animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-//
-//        poseStack.pushPose();
-//        PoseStack.Pose pose = poseStack.last();
-//        Matrix4f poseMatrix = pose.pose();
-//        Matrix3f normalMatrix = pose.normal();
-//        poseStack.mulPose(Vector3f.YP.rotationDegrees(-animatable.getYRot()));
-//        poseStack.mulPose(Vector3f.XP.rotationDegrees(animatable.getXRot()));
-//
-//        //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-//        var offset = getEnergySwirlOffset(animatable, partialTick);
-//        VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(animatable), offset.x, offset.y));
-//        RenderSystem.disableBlend();
-//        super.render(model, animatable, partialTick, type, poseStack, bufferSource, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0.65F, 0.65F, 0.65F, 1.0F);
-//        poseStack.popPose();
-//    }
+    @Override
+    public void render(GeoModel model, SpectralHammer animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        poseStack.scale(2.0f,2.0f,2.0f);
+        super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+    }
 
 
     @Override

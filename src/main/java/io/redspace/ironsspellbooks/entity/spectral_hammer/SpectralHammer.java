@@ -3,12 +3,17 @@ package io.redspace.ironsspellbooks.entity.spectral_hammer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -18,20 +23,19 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SpectralHammer extends LivingEntity implements IAnimatable {
 
-    @Nullable
-    private UUID ownerUUID;
-
-    @Nullable
-    private Entity cachedOwner;
-
-    private float damageAmount;
+    private final int ticksToLive = 25;
+    private final int doDamageTick = 13;
+    private boolean didDamage = false;
+    private int ticksAlive = 0;
     private boolean playSwingAnimation = true;
+    private BlockHitResult blockHitResult;
+    private float damageAmount;
 
     public SpectralHammer(EntityType<? extends SpectralHammer> entityType, Level level) {
         super(entityType, level);
@@ -41,9 +45,9 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
 
     public SpectralHammer(Level levelIn, LivingEntity owner, BlockHitResult blockHitResult, float damageAmount) {
         this(EntityRegistry.SPECTRAL_HAMMER.get(), levelIn);
-        this.damageAmount = damageAmount;
 
-        setOwner(owner);
+        this.blockHitResult = blockHitResult;
+        this.damageAmount = damageAmount;
 
         var xRot = owner.getXRot();
         var yRot = owner.getYRot();
@@ -56,28 +60,112 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
 
         IronsSpellbooks.LOGGER.debug("SpectralHammer: owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
         IronsSpellbooks.LOGGER.debug("SpectralHammer: this - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
+        IronsSpellbooks.LOGGER.debug("SpectralHammer: blockHitResult.dir:{}, damageAmount:{}", blockHitResult.getDirection(), damageAmount);
+    }
+
+    @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        return false;
     }
 
     @Override
     public void tick() {
-        super.tick();
+        if (++ticksAlive >= ticksToLive) {
+            discard();
+        }
 
-        if (level.isClientSide) {
-            //spawnParticles();
-        } else {
-            if (!playSwingAnimation && animationController.getAnimationState() == AnimationState.Stopped) {
-                this.discard();
+        if (ticksAlive >= doDamageTick && !didDamage) {
+            if (blockHitResult != null && blockHitResult.getType() != HitResult.Type.MISS) {
+                var blockPos = blockHitResult.getBlockPos();
+                var blockState = level.getBlockState(blockPos);
+
+                if (blockState.is(BlockTags.STONE_ORE_REPLACEABLES)) {
+                    var blockCollector = getBlockCollector(blockPos, blockHitResult.getDirection(), (int) damageAmount / 2, (int) damageAmount, new HashSet<>(), new HashSet<>());
+                    collectBlocks(blockPos, blockCollector);
+
+                    /*
+                     * Sets a block state into this world.Flags are as follows:
+                     * 1 will cause a block update.
+                     * 2 will send the change to clients.
+                     * 4 will prevent the block from being re-rendered.
+                     * 8 will force any re-renders to run on the main thread instead
+                     * 16 will prevent neighbor reactions (e.g. fences connecting, observers pulsing).
+                     * 32 will prevent neighbor reactions from spawning drops.
+                     * 64 will signify the block is being moved.
+                     * Flags can be OR-ed
+                     */
+                    final int flags = 1 | 2;// | 16 | 32;
+
+                    blockCollector.blocksToRemove.forEach(pos -> {
+                        IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: removing blockPos{}", pos);
+                        level.setBlock(pos, Blocks.AIR.defaultBlockState(), flags);
+                    });
+                }
             }
-            //this.playSound(SpectralHammerSpell.getImpactSound(), 1.0f, 1.0f);
+
+            didDamage = true;
+        }
+
+        super.tick();
+    }
+
+    private void collectBlocks(BlockPos blockPos, BlockCollectorHelper bch) {
+        IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos:{} checked:{} toRemove:{}", blockPos, bch.blocksChecked.size(), bch.blocksToRemove.size());
+
+        if (bch.blocksChecked.contains(blockPos) || bch.blocksToRemove.contains(blockPos)) {
+            return;
+        }
+
+        if (bch.isValidBlockToCollect(level, blockPos)) {
+            IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is valid", blockPos);
+            bch.blocksToRemove.add(blockPos);
+            collectBlocks(blockPos.above(), bch);
+            collectBlocks(blockPos.below(), bch);
+            collectBlocks(blockPos.north(), bch);
+            collectBlocks(blockPos.south(), bch);
+            collectBlocks(blockPos.east(), bch);
+            collectBlocks(blockPos.west(), bch);
+        } else {
+            IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is not valid", blockPos);
+            bch.blocksChecked.add(blockPos);
         }
     }
 
+    private BlockCollectorHelper getBlockCollector(BlockPos origin, Direction direction, int radius, int depth, Set<BlockPos> blocksToRemove, Set<BlockPos> blocksChecked) {
+        if (direction == Direction.WEST) {
+            int minX = origin.getX();
+            int maxX = origin.getX() + depth;
+            int minY = origin.getY() - radius;
+            int maxY = origin.getY() + radius;
+            int minZ = origin.getZ() - radius;
+            int maxZ = origin.getZ() + radius;
 
+            return new BlockCollectorHelper(origin, direction, minX, maxX, minY, maxY, minZ, maxZ, blocksToRemove, blocksChecked);
+        }
 
-    public void setOwner(@Nullable Entity pOwner) {
-        if (pOwner != null) {
-            this.ownerUUID = pOwner.getUUID();
-            this.cachedOwner = pOwner;
+        return null;
+    }
+
+    private record BlockCollectorHelper(
+            BlockPos origin,
+            Direction originVector,
+            int minX,
+            int maxX,
+            int minY,
+            int maxY,
+            int minZ,
+            int maxZ,
+            Set<BlockPos> blocksToRemove,
+            Set<BlockPos> blocksChecked) {
+
+        public boolean isValidBlockToCollect(Level level, BlockPos bp) {
+            return level.getBlockState(bp).is(BlockTags.STONE_ORE_REPLACEABLES)
+                    && bp.getX() >= minX
+                    && bp.getX() <= maxX
+                    && bp.getY() >= minY
+                    && bp.getY() <= maxY
+                    && bp.getZ() >= minZ
+                    && bp.getZ() <= maxZ;
         }
     }
 
@@ -95,20 +183,13 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
         return pDimensions.height * 0.6F;
     }
 
-
     @Override
     public boolean isNoGravity() {
         return true;
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
-        return LivingEntity.createLivingAttributes()
-                .add(Attributes.ATTACK_DAMAGE, 3.0)
-                .add(Attributes.MAX_HEALTH, 20.0)
-                .add(Attributes.FOLLOW_RANGE, 40.0)
-                .add(Attributes.FLYING_SPEED, .2)
-                .add(Attributes.MOVEMENT_SPEED, .2);
-
+        return LivingEntity.createLivingAttributes();
     }
 
     @Override
