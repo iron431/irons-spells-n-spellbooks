@@ -192,7 +192,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
-                playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount());
+                playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
                 IronsSpellbooks.LOGGER.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
                 event.setCanceled(true);
                 return;

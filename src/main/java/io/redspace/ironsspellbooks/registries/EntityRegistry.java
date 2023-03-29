@@ -27,6 +27,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEnti
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammer;
+import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import net.minecraft.resources.ResourceLocation;
@@ -237,5 +238,11 @@ public class EntityRegistry {
                     .sized(.85f, 2.3f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "citadel_keeper").toString()));
+
+    public static final RegistryObject<EntityType<VoidTentacle>> VOID_TENTACLE =
+            ENTITIES.register("void_tentacle", () -> EntityType.Builder.<VoidTentacle>of(VoidTentacle::new, MobCategory.MISC)
+                    .sized(2.5f, 4f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "void_tentacle").toString()));
 
 }

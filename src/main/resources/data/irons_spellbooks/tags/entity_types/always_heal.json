@@ -9,6 +9,10 @@
     "minecraft:chicken",
     "minecraft:wolf",
     "minecraft:cat",
-    "minecraft:wandering_trader"
+    "minecraft:wandering_trader",
+    {
+      "id": "guardvillagers:guard",
+      "required": false
+    }
   ]
 }

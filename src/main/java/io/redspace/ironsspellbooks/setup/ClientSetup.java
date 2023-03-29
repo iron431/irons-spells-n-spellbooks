@@ -30,6 +30,7 @@ import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
 import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammerRenderer;
+import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.item.AntiquatedCompass;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
@@ -175,6 +176,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARCHEVOKER.get(), ArchevokerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.KEEPER.get(), KeeperRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.VOID_TENTACLE.get(), VoidTentacleRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

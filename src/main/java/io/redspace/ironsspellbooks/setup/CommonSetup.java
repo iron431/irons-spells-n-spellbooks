@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammer;
+import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -68,6 +69,7 @@ public class CommonSetup {
         event.put(EntityRegistry.MAGEHUNTER_VINDICATOR.get(), Vindicator.createAttributes().build());
         event.put(EntityRegistry.ARCHEVOKER.get(), ArchevokerEntity.prepareAttributes().build());
         event.put(EntityRegistry.KEEPER.get(), KeeperEntity.prepareAttributes().build());
+        event.put(EntityRegistry.VOID_TENTACLE.get(), VoidTentacle.createLivingAttributes().build());
 
 
     }

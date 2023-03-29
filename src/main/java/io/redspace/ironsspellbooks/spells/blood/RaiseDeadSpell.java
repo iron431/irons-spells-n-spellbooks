@@ -47,7 +47,7 @@ public class RaiseDeadSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 3;
-        this.castTime = 40;
+        this.castTime = 30;
         this.baseManaCost = 50;
 
     }
