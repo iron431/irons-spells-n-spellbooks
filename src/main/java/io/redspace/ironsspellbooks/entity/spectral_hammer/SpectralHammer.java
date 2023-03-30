@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.entity.spectral_hammer;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -132,18 +131,41 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
     }
 
     private BlockCollectorHelper getBlockCollector(BlockPos origin, Direction direction, int radius, int depth, Set<BlockPos> blocksToRemove, Set<BlockPos> blocksChecked) {
-        if (direction == Direction.WEST) {
-            int minX = origin.getX();
-            int maxX = origin.getX() + depth;
-            int minY = origin.getY() - radius;
-            int maxY = origin.getY() + radius;
-            int minZ = origin.getZ() - radius;
-            int maxZ = origin.getZ() + radius;
+        int minX = origin.getX() - radius;
+        int maxX = origin.getX() + radius;
+        int minY = origin.getY() - radius;
+        int maxY = origin.getY() + radius;
+        int minZ = origin.getZ() - radius;
+        int maxZ = origin.getZ() + radius;
 
-            return new BlockCollectorHelper(origin, direction, minX, maxX, minY, maxY, minZ, maxZ, blocksToRemove, blocksChecked);
+        switch (direction) {
+            case WEST -> {
+                minX = origin.getX();
+                maxX = origin.getX() + depth;
+            }
+            case EAST -> {
+                minX = origin.getX() - depth;
+                maxX = origin.getX();
+            }
+            case SOUTH -> {
+                minZ = origin.getZ() - depth;
+                maxZ = origin.getZ();
+            }
+            case NORTH -> {
+                minZ = origin.getZ();
+                maxZ = origin.getZ() + depth;
+            }
+            case UP -> {
+                minY = origin.getY() - depth;
+                maxY = origin.getY();
+            }
+            case DOWN -> {
+                minY = origin.getY();
+                maxY = origin.getY() + depth;
+            }
         }
 
-        return null;
+        return new BlockCollectorHelper(origin, direction, minX, maxX, minY, maxY, minZ, maxZ, blocksToRemove, blocksChecked);
     }
 
     private record BlockCollectorHelper(
@@ -210,20 +232,6 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
     @Override
     public HumanoidArm getMainArm() {
         return HumanoidArm.LEFT;
-    }
-
-    //https://forge.gemwire.uk/wiki/Particles
-    public void spawnParticles() {
-        for (int i = 0; i < 2; i++) {
-            double speed = .02;
-            double dx = level.random.nextDouble() * 2 * speed - speed;
-            double dy = level.random.nextDouble() * 2 * speed - speed;
-            double dz = level.random.nextDouble() * 2 * speed - speed;
-            var tmp = ParticleHelper.UNSTABLE_ENDER;
-            IronsSpellbooks.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}, {} {} {}", this.level.isClientSide, this.position(), dx, dy, dz);
-            level.addParticle(ParticleHelper.WISP, this.xOld - dx, this.position().y + .3, this.zOld - dz, dx, dy, dz);
-            //level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx / 2, this.getY() + dy / 2, this.getZ() + dz / 2, dx, dy, dz);
-        }
     }
 
     @SuppressWarnings("removal")
