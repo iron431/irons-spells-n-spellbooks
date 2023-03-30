@@ -241,7 +241,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<VoidTentacle>> VOID_TENTACLE =
             ENTITIES.register("void_tentacle", () -> EntityType.Builder.<VoidTentacle>of(VoidTentacle::new, MobCategory.MISC)
-                    .sized(2.5f, 4f)
+                    .sized(2.5f, 5.5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "void_tentacle").toString()));
 

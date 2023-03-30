@@ -51,7 +51,7 @@ public class DustParticle extends TextureSheetParticle {
 
         public static Provider ProviderBlack(SpriteSet spriteSet) {
             Provider provider = new Provider(spriteSet);
-            provider.r = .09f;
+            provider.r = .08f;
             provider.g = .08f;
             provider.b = .12f;
             return provider;

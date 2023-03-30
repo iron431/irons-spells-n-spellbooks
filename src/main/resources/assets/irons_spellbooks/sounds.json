@@ -182,5 +182,25 @@
     "sounds": [
       "irons_spellbooks:raise_dead_cast"
     ]
+  },
+  "cast.void_tentacles.start": {
+    "sounds": [
+      "irons_spellbooks:void_tentacles_start"
+    ]
+  },
+  "cast.void_tentacles.finish": {
+    "sounds": [
+      "irons_spellbooks:void_tentacles_cast"
+    ]
+  },
+  "entity.void_tentacles.retreat": {
+    "sounds": [
+      "irons_spellbooks:void_tentacle_retreat"
+    ]
+  },
+  "entity.void_tentacles.ambient": {
+    "sounds": [
+      "irons_spellbooks:void_tentacle_ambient"
+    ]
   }
 }

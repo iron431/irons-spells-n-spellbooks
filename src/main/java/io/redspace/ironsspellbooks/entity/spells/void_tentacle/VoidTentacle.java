@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -68,8 +69,12 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
             } else {
                 if (age < 280 && (age) % 20 == 0) {
                     level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox()).forEach(this::dealDamage);
+                    if (level.random.nextFloat() < .07f)
+                        playSound(SoundRegistry.VOID_TENTACLES_AMBIENT.get(), 1.5f, .5f + level.random.nextFloat() * .65f);
                 }
             }
+            if (age == 260 && level.random.nextFloat() < .3f)
+                playSound(SoundRegistry.VOID_TENTACLES_LEAVE.get());
         } else {
             if (age < 280)
                 for (int i = 0; i < 4; i++) {

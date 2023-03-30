@@ -212,7 +212,7 @@
   "spell.irons_spellbooks.fang_ward": "Fang Ward",
   "spell.irons_spellbooks.evasion": "Evasion",
   "spell.irons_spellbooks.heartstop": "Heartstop",
-  "spell.irons_spellbooks.lightning_lance": "Lightning Lance",
+  "spell.irons_spellbooks.lightning_lance": "Lance of Lightning",
   "spell.irons_spellbooks.lightning_bolt": "Lightning Bolt",
   "spell.irons_spellbooks.raise_dead": "Raise Dead",
   "spell.irons_spellbooks.wither_skull": "Wither Skull",
@@ -235,10 +235,11 @@
   "spell.irons_spellbooks.fortify": "Fortify",
   "spell.irons_spellbooks.counterspell": "Counterspell",
   "spell.irons_spellbooks.charge": "Charge",
+  "spell.irons_spellbooks.void_tentacles": "Void Tentacles",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
-  "spell.irons_spellbooks.burning_dash.guide": "Quickly launch yourself forward in a haze of fire, igniting and dealing damage if a creature is hit.",
+  "spell.irons_spellbooks.burning_dash.guide": "Quickly launch yourself forward in a haze of fire, igniting and dealing damage to a creature if hit.",
   "spell.irons_spellbooks.teleport.guide": "Instantaneously teleport to where you are looking, leaving nothing but a cloud of ender energy behind.",
   "spell.irons_spellbooks.magic_missile.guide": "A basic attack that shoots a bolt of concentrated arcane magic. Also a trademark of every wizard.",
   "spell.irons_spellbooks.cone_of_cold.guide": "Hold cast out a cone of cold energy, freezing creatures in its path.",
@@ -282,6 +283,7 @@
   "spell.irons_spellbooks.fortify.guide": "Upon casting, fortify every friendly creature within a radius around you, giving them temporary HP.",
   "spell.irons_spellbooks.counterspell.guide": "Cast to interrupt any targeted magical process, such as a casting creature or a magical projectile.",
   "spell.irons_spellbooks.charge.guide": "Imbue yourself with the power of lightning, increasing your speed and combat abilities.",
+  "spell.irons_spellbooks.void_tentacles.guide": "From where you look, erupt a mass of void energy in the form of wailing tentacles, damaging and blinding creatures caught in the chaos.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -293,6 +295,7 @@
   "death.attack.raise_dead_spell": "%1$s was mauled by %2$s's undead.",
   "death.attack.summon_vex_spell": "%1$s was eviscerated by %2$s's vexes.",
   "death.attack.summon_polar_bear_spell": "%1$s was mauled by %2$s's polar bear.",
+  "death.attack.void_tentacles_spell": "%2$s caught %1$s in the void.",
 
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
@@ -320,9 +323,11 @@
   "entity.irons_spellbooks.summoned_polar_bear": "Summoned Polar Bear",
   "entity.irons_spellbooks.pyromancer": "Pyromancer",
   "entity.irons_spellbooks.necromancer": "Necromancer",
+  "entity.irons_spellbooks.archevoker": "Archevoker",
   "entity.irons_spellbooks.spectral_steed": "Spectral Steed",
   "entity.irons_spellbooks.dead_king": "The Dead King",
   "entity.irons_spellbooks.dead_king_corpse": "Skeleton",
+  "entity.irons_spellbooks.void_tentacle": "Void Tentacles",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
