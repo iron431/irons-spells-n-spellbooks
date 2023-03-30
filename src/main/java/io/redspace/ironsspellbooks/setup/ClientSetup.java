@@ -194,6 +194,7 @@ public class ClientSetup {
         event.register(ParticleRegistry.FIRE_PARTICLE.get(), FireParticle.Provider::new);
         event.register(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
         event.register(ParticleRegistry.SIPHON_PARTICLE.get(), SiphonParticle.Provider::new);
+        event.register(ParticleRegistry.BLACK_FOG_PARTICLE.get(), DustParticle.Provider::ProviderBlack);
     }
 
     @SubscribeEvent

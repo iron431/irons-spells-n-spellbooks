@@ -14,4 +14,5 @@ public class ParticleHelper {
     public static final ParticleOptions FIRE = ParticleRegistry.FIRE_PARTICLE.get();
     public static final ParticleOptions EMBERS = ParticleRegistry.EMBER_PARTICLE.get();
     public static final ParticleOptions SIPHON = ParticleRegistry.SIPHON_PARTICLE.get();
+    public static final ParticleOptions BLACK_FOG = ParticleRegistry.BLACK_FOG_PARTICLE.get();
 }

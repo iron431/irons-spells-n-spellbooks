@@ -54,7 +54,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         int rings = getRings();
         int count = 3;
-        Vec3 center = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 32).getLocation();
+        Vec3 center = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 48).getLocation();
 
         for (int r = 0; r < rings; r++) {
             float tentacles = count + r * 2;
@@ -62,7 +62,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
                 Vec3 random = new Vec3(Utils.getRandomScaled(1), Utils.getRandomScaled(1), Utils.getRandomScaled(1));
                 Vec3 spawn = center.add(new Vec3(0, 0, 1.5 * (r + 1)).yRot(((6.281f / tentacles) * i))).add(random);
 
-                spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevevl(level, spawn, 5), spawn.z);
+                spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevevl(level, spawn, 8), spawn.z);
                 if (!level.getBlockState(new BlockPos(spawn).below()).isAir()) {
                     VoidTentacle tentacle = new VoidTentacle(level, entity, getDamage(entity));
                     tentacle.moveTo(spawn);

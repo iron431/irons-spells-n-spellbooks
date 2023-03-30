@@ -1,11 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -62,20 +63,25 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
         age++;
         if (!level.isClientSide) {
             if (age > 300) {
-                IronsSpellbooks.LOGGER.debug("Discarding void Tentacle (age:{})", age);
+                //IronsSpellbooks.LOGGER.debug("Discarding void Tentacle (age:{})", age);
                 this.discard();
             } else {
-                if (age < 260 && (age) % 20 == 0) {
-                    level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(.25f)).forEach(this::dealDamage);
+                if (age < 280 && (age) % 20 == 0) {
+                    level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox()).forEach(this::dealDamage);
                 }
             }
+        } else {
+            if (age < 280)
+                for (int i = 0; i < 4; i++) {
+                    level.addParticle(ParticleHelper.BLACK_FOG, getX(), getY() + Utils.getRandomScaled(.5f) + .2f, getZ(), Utils.getRandomScaled(2f), Utils.getRandomScaled(.3f), Utils.getRandomScaled(2f));
+                }
         }
 
     }
 
     @Override
     public HumanoidArm getMainArm() {
-        return null;
+        return HumanoidArm.RIGHT;
     }
 
     public boolean dealDamage(LivingEntity target) {
@@ -187,12 +193,12 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
         //if (controller.getAnimationState() == AnimationState.Stopped) {
         //}
         //IronsSpellbooks.LOGGER.debug("TentacleAnimOffset: {}", controller.tickOffset);
-        if (age > 220 && level.random.nextFloat() < .04f) {
+        if (age > 250 && level.random.nextFloat() < .04f) {
             controller.setAnimation(ANIMATION_RETREAT);
         } else if (controller.getAnimationState() == AnimationState.Stopped) {
             controller.setAnimationSpeed((2 + this.level.random.nextFloat()) / 2f);
             int animation = random.nextInt(3);
-            IronsSpellbooks.LOGGER.debug("Choosing new animation ({})", animation);
+            //IronsSpellbooks.LOGGER.debug("Choosing new animation ({})", animation);
             switch (animation) {
                 case 0 -> controller.setAnimation(ANIMATION_FLAIL);
                 case 1 -> controller.setAnimation(ANIMATION_FLAIL2);
@@ -218,6 +224,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
 
         } else
             return PlayState.STOP;
+
 
     }
 

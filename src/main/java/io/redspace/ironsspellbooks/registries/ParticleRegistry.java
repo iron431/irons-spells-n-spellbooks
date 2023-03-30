@@ -34,4 +34,5 @@ public class ParticleRegistry {
     public static final RegistryObject<SimpleParticleType> FIRE_PARTICLE = PARTICLE_TYPES.register("fire", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> EMBER_PARTICLE = PARTICLE_TYPES.register("embers", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> SIPHON_PARTICLE = PARTICLE_TYPES.register("spell", () -> new SimpleParticleType(false));
+    public static final RegistryObject<SimpleParticleType> BLACK_FOG_PARTICLE = PARTICLE_TYPES.register("black_fog", () -> new SimpleParticleType(false));
 }
