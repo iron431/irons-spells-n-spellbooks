@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 public class DeadKingModel extends AbstractSpellCastingMobModel {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king.png");
@@ -32,8 +31,4 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
         return MODEL;
     }
 
-    @Override
-    public void setCustomAnimations(AbstractSpellCastingMob entity, int instanceId, AnimationEvent animationEvent) {
-        super.setCustomAnimations(entity, instanceId, animationEvent);
-    }
 }
