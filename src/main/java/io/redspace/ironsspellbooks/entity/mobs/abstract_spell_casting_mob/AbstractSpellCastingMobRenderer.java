@@ -12,7 +12,7 @@ public abstract class AbstractSpellCastingMobRenderer extends GeoHumanoidRendere
         super(renderManager, model);
         this.shadowRadius = 0.5f;
         this.addLayer(new GeoEvasionLayer(this));
-        this.addLayer(new GeoChargeSpellLayer(this));
+        this.addLayer(new ChargeSpellLayer.Geo(this));
         this.addLayer(new GlowingEyesLayer.GlowingEyesGeo(this));
         this.addLayer(new GeoHealTargetLayer(this));
     }

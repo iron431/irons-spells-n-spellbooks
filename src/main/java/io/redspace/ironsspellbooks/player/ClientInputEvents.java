@@ -112,11 +112,11 @@ public final class ClientInputEvents {
     @SubscribeEvent
     public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
         //irons_spellbooks.LOGGER.debug("onUseInput: keymapping: {} ({})", useKeyMapping.getKey(), useKeyMapping.getKey().getValue());
-        IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.1");
+        //IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.1");
         if (event.isUseItem()) {
-            IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.2");
+            //IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.2");
             if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
-                IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.3");
+                //IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.3");
                 event.setSwingHand(false);
                 event.setCanceled(true);
             }

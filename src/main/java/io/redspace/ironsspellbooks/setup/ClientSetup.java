@@ -114,7 +114,7 @@ public class ClientSetup {
             livingRenderer.addLayer(new AngelWingsLayer<>(livingRenderer));
             livingRenderer.addLayer(new EvasionLayer(livingRenderer));
             livingRenderer.addLayer(new ChargedEffectLayer(livingRenderer));
-            livingRenderer.addLayer(new ChargeSpellLayer(livingRenderer));
+            livingRenderer.addLayer(new ChargeSpellLayer.Vanilla<>(livingRenderer));
             livingRenderer.addLayer(new GlowingEyesLayer.GlowingEyesVanilla<>(livingRenderer));
         }
 

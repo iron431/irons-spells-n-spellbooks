@@ -157,6 +157,12 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
         }
     }
 
+//    @Override
+//    protected void handleItemAndBlockBoneRendering(PoseStack poseStack, GeoBone bone, @Nullable ItemStack boneItem, @Nullable BlockState boneBlock, int packedLight, int packedOverlay) {
+//        IronsSpellbooks.LOGGER.debug("{}",bone!=null?bone.getName():"null bone");
+//        super.handleItemAndBlockBoneRendering(poseStack, bone, boneItem, boneBlock, packedLight, packedOverlay);
+//    }
+
     @Override
     protected void preRenderBlock(PoseStack poseStack, BlockState state, String boneName, T animatable) {
 
