@@ -137,6 +137,13 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         castingSpell = null;
     }
 
+    public void startAutoSpinAttack(int pAttackTicks) {
+        this.autoSpinAttackTicks = pAttackTicks;
+        if (!this.level.isClientSide) {
+            this.setLivingEntityFlag(4, true);
+        }
+    }
+
     @Override
     public void aiStep() {
         super.aiStep();

@@ -8,14 +8,6 @@ import java.util.List;
 
 public class ClientRenderCache {
 
-    public static SpinAttackType lastSpinAttack = SpinAttackType.RIPTIDE;
-
-
-    public enum SpinAttackType {
-        RIPTIDE,
-        FIRE;
-    }
-
     /**
      * SPELL BAR RENDER CACHING
      *************************/

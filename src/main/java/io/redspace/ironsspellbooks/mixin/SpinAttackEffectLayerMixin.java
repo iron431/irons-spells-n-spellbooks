@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer;
@@ -15,21 +15,18 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(SpinAttackEffectLayer.class)
 public class SpinAttackEffectLayerMixin {
-    private static final ResourceLocation FIRE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID,"textures/entity/fire_riptide.png");
+    private static final ResourceLocation FIRE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/fire_riptide.png");
     private VertexConsumer texture = null;
 
     @ModifyVariable(method = "render", at = @At("STORE"))
-    public VertexConsumer selectSpinAttackTexture(VertexConsumer original,PoseStack poseStack, MultiBufferSource buffer, int p_117528_, LivingEntity livingEntity, float f1, float f2, float f3, float f4, float f5, float f6){
+    public VertexConsumer selectSpinAttackTexture(VertexConsumer original, PoseStack poseStack, MultiBufferSource buffer, int p_117528_, LivingEntity livingEntity, float f1, float f2, float f3, float f4, float f5, float f6) {
         //will need more refining if there become more ways to spin attack
         //Item usedItem = livingEntity.getItemInHand(livingEntity.getUsedItemHand()).getItem();
-        IronsSpellbooks.LOGGER.debug("Selecting Spin Attack Texture: {}", livingEntity.getName().getString());
-        switch(ClientRenderCache.lastSpinAttack){
+        switch (ClientMagicData.getSyncedSpellData(livingEntity).getSpinAttackType()) {
             case FIRE:
-                return  buffer.getBuffer(RenderType.entityCutoutNoCull(FIRE_TEXTURE));
-            default: return original;
-
+                return buffer.getBuffer(RenderType.entityCutoutNoCull(FIRE_TEXTURE));
+            default:
+                return original;
         }
-
     }
-
 }

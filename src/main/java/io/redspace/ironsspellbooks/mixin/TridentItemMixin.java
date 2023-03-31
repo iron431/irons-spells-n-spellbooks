@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.player.ClientRenderCache;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.player.SpinAttackType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TridentItem;
@@ -13,8 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TridentItem.class)
 public class TridentItemMixin {
     @Inject(method = "releaseUsing", at = @At(value = "TAIL"))
-    public void releaseUsing(ItemStack p_43394_, Level p_43395_, LivingEntity p_43396_, int p_43397_, CallbackInfo ci) {
-        ClientRenderCache.lastSpinAttack = ClientRenderCache.SpinAttackType.RIPTIDE;
+    public void releaseUsing(ItemStack p_43394_, Level p_43395_, LivingEntity livingEntity, int p_43397_, CallbackInfo ci) {
+        ClientMagicData.getSyncedSpellData(livingEntity).setSpinAttackType(SpinAttackType.RIPTIDE);
     }
-
 }

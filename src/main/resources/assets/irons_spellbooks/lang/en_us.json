@@ -239,7 +239,7 @@
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
-  "spell.irons_spellbooks.burning_dash.guide": "Quickly launch yourself forward in a haze of fire, igniting and dealing damage to a creature if hit.",
+  "spell.irons_spellbooks.burning_dash.guide": "Quickly launch yourself forward in a haze of fire, and leave a small shockwave that damages and ignites nearby creatures behind.",
   "spell.irons_spellbooks.teleport.guide": "Instantaneously teleport to where you are looking, leaving nothing but a cloud of ender energy behind.",
   "spell.irons_spellbooks.magic_missile.guide": "A basic attack that shoots a bolt of concentrated arcane magic. Also a trademark of every wizard.",
   "spell.irons_spellbooks.cone_of_cold.guide": "Hold cast out a cone of cold energy, freezing creatures in its path.",
