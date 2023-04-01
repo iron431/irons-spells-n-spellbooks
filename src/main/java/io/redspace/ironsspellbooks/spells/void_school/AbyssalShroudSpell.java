@@ -43,7 +43,7 @@ public class AbyssalShroudSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.DARK_SPELL_02.get());
+        return Optional.of(SoundRegistry.ABYSSAL_SHROUD.get());
     }
 
     @Override

@@ -61,14 +61,13 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
     @Override
     public void tick() {
         super.tick();
-        age++;
         if (!level.isClientSide) {
             if (age > 300) {
                 //IronsSpellbooks.LOGGER.debug("Discarding void Tentacle (age:{})", age);
                 this.discard();
             } else {
                 if (age < 280 && (age) % 20 == 0) {
-                    level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox()).forEach(this::dealDamage);
+                    level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.2)).forEach(this::dealDamage);
                     if (level.random.nextFloat() < .07f)
                         playSound(SoundRegistry.VOID_TENTACLES_AMBIENT.get(), 1.5f, .5f + level.random.nextFloat() * .65f);
                 }
@@ -81,6 +80,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
                     level.addParticle(ParticleHelper.BLACK_FOG, getX(), getY() + Utils.getRandomScaled(.5f) + .2f, getZ(), Utils.getRandomScaled(2f), Utils.getRandomScaled(.3f), Utils.getRandomScaled(2f));
                 }
         }
+        age++;
 
     }
 
@@ -91,7 +91,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
 
     public boolean dealDamage(LivingEntity target) {
         if (target != getOwner())
-            if (DamageSources.applyDamage(target, 6, SpellType.ABYSSAL_SHROUD_SPELL.getDamageSource(this, getOwner()), SchoolType.VOID)) {
+            if (DamageSources.applyDamage(target, 6, SpellType.VOID_TENTACLES_SPELL.getDamageSource(this, getOwner()), SchoolType.VOID)) {
                 target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
                 return true;
             }

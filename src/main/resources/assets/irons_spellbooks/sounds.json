@@ -202,5 +202,10 @@
     "sounds": [
       "irons_spellbooks:void_tentacle_ambient"
     ]
+  },
+  "cast.abyssal_shroud": {
+    "sounds": [
+      "irons_spellbooks:abyssal_shroud_cast"
+    ]
   }
 }
