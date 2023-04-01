@@ -265,7 +265,7 @@ public abstract class AbstractSpell {
 
         if (this.castType == CastType.INSTANT) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell -> onServerCastComplete (not continuous)");
-            onServerCastComplete(world, serverPlayer, playerMagicData);
+            onServerCastComplete(world, serverPlayer, playerMagicData, false);
         }
 
         if (serverPlayer.getMainHandItem().getItem() instanceof SpellBook || serverPlayer.getMainHandItem().getItem() instanceof Scroll)
@@ -339,11 +339,11 @@ public abstract class AbstractSpell {
     /**
      * Called on the server when a spell finishes casting or is cancelled, used for any cleanup or extra functionality
      */
-    public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData, boolean cancelled) {
         IronsSpellbooks.LOGGER.debug("AbstractSpell.onServerCastComplete");
         playerMagicData.resetCastingState();
         if (entity instanceof ServerPlayer serverPlayer) {
-            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType), serverPlayer, true);
+            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType, cancelled), serverPlayer, true);
         }
     }
 

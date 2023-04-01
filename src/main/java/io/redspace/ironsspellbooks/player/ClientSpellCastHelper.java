@@ -209,7 +209,7 @@ public class ClientSpellCastHelper {
 
     }
 
-    public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType) {
+    public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType, boolean cancelled) {
         ClientMagicData.resetClientCastState(castingEntityId);
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
         AbstractSpell.getSpell(spellType, 1)
@@ -217,7 +217,9 @@ public class ClientSpellCastHelper {
                 .right()
                 .ifPresent((resourceLocation -> {
                     IronsSpellbooks.LOGGER.debug("ClientSpellCastHelper.handleClientBoundOnCastFinished.1 -> ClientMagicData.resetClientCastState");
-                    animatePlayerStart(player, resourceLocation);
+                    if (!cancelled) {
+                        animatePlayerStart(player, resourceLocation);
+                    }
                 }));
     }
 }
