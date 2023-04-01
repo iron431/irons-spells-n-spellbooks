@@ -53,6 +53,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.SHIELD_SPELL, true, 8, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.SUMMON_HORSE_SPELL, true, 5, SpellRarity.COMMON, 20);
         createSpellConfig(SpellType.SUMMON_VEX_SPELL, true, 5, SpellRarity.RARE, 150);
+        createSpellConfig(SpellType.SPECTRAL_HAMMER_SPELL, true, 5, SpellRarity.UNCOMMON, 10);
         //Fire
         BUILDER.comment("Fire Spells");
         createSpellConfig(SpellType.BLAZE_STORM_SPELL, true, 10, SpellRarity.COMMON, 25);

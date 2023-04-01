@@ -34,6 +34,10 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
     private final int ticksToLive = 30;
     private final int doDamageTick = 13;
     private final int doAnimateTick = 20;
+
+    private int depth = 0;
+    private int radius = 0;
+
     private boolean didDamage = false;
     private boolean didAnimate = false;
     private int ticksAlive = 0;
@@ -48,11 +52,12 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
         this.setInvulnerable(true);
     }
 
-    public SpectralHammer(Level levelIn, LivingEntity owner, BlockHitResult blockHitResult, float damageAmount) {
+    public SpectralHammer(Level levelIn, LivingEntity owner, BlockHitResult blockHitResult, int depth, int radius) {
         this(EntityRegistry.SPECTRAL_HAMMER.get(), levelIn);
 
         this.blockHitResult = blockHitResult;
-        this.damageAmount = damageAmount;
+        this.depth = depth;
+        this.radius = radius;
 
         var xRot = owner.getXRot();
         var yRot = owner.getYRot();
@@ -98,7 +103,7 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
                 var blockState = level.getBlockState(blockPos);
 
                 if (blockState.is(BlockTags.STONE_ORE_REPLACEABLES)) {
-                    var blockCollector = getBlockCollector(blockPos, blockHitResult.getDirection(), (int) damageAmount / 2, (int) damageAmount, new HashSet<>(), new HashSet<>());
+                    var blockCollector = getBlockCollector(blockPos, blockHitResult.getDirection(), radius, depth, new HashSet<>(), new HashSet<>());
                     collectBlocks(blockPos, blockCollector);
 
                     if (!blockCollector.blocksToRemove.isEmpty()) {

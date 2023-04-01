@@ -26,7 +26,7 @@ public class SpectralHammerSpell extends AbstractSpell {
         super(SpellType.SPECTRAL_HAMMER_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 4;
+        this.baseSpellPower = 3;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 15;
@@ -54,7 +54,14 @@ public class SpectralHammerSpell extends AbstractSpell {
             position = Utils.getPositionFromEntityLookDirection(entity, distance - 1.5f);
         }
 
-        var spectralHammer = new SpectralHammer(world, entity, blockPosition, getSpellPower(entity));
+        int radius = level / 2;
+        int depth = level;
+
+        if (radius == 0) {
+            radius = 1;
+        }
+
+        var spectralHammer = new SpectralHammer(world, entity, blockPosition, depth, radius);
         spectralHammer.setPos(position.x, position.y - 1, position.z);
         IronsSpellbooks.LOGGER.debug("SpectralHammerSpell.onCast pos:{}", position);
         world.addFreshEntity(spectralHammer);
