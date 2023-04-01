@@ -183,18 +183,14 @@ public class Utils {
     }
 
     public static void quickCast(int slot) {
-        IronsSpellbooks.LOGGER.debug("quickCast.1");
         var player = Minecraft.getInstance().player;
         var itemStack = player.getMainHandItem();
         if (itemStack.getItem() instanceof SpellBook) {
-            IronsSpellbooks.LOGGER.debug("quickCast.2");
             var spellBookData = SpellBookData.getSpellBookData(itemStack);
 
             if (spellBookData.getSpellSlots() >= 1) {
-                IronsSpellbooks.LOGGER.debug("quickCast.3");
                 var spell = spellBookData.getSpell(slot);
                 if (spell != null) {
-                    IronsSpellbooks.LOGGER.debug("quickCast.4");
                     Messages.sendToServer(new ServerboundQuickCast(slot));
                 }
             }

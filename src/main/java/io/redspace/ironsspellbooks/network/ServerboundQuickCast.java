@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.network;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.spells.CastSource;
+import io.redspace.ironsspellbooks.spells.CastType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -36,7 +37,7 @@ public class ServerboundQuickCast {
                 if (spell != null) {
                     var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
                     if (playerMagicData.isCasting()) {
-                        ServerboundCancelCast.cancelCast(serverPlayer, true);
+                        ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                     }
                     spell.attemptInitiateCast(itemStack, serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
                 }
