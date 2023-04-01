@@ -184,14 +184,21 @@ public class Utils {
 
     public static void quickCast(int slot) {
         var player = Minecraft.getInstance().player;
-        var itemStack = player.getMainHandItem();
+        var hand = InteractionHand.MAIN_HAND;
+        var itemStack = player.getItemInHand(hand);
+
+        if (!(itemStack.getItem() instanceof SpellBook)) {
+            hand = InteractionHand.OFF_HAND;
+            itemStack = player.getItemInHand(hand);
+        }
+
         if (itemStack.getItem() instanceof SpellBook) {
             var spellBookData = SpellBookData.getSpellBookData(itemStack);
 
             if (spellBookData.getSpellSlots() >= 1) {
                 var spell = spellBookData.getSpell(slot);
                 if (spell != null) {
-                    Messages.sendToServer(new ServerboundQuickCast(slot));
+                    Messages.sendToServer(new ServerboundQuickCast(slot, hand));
                 }
             }
         }
