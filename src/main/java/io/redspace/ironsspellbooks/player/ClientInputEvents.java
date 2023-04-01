@@ -29,6 +29,7 @@ public final class ClientInputEvents {
 
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
+    private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
 
     private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
@@ -51,9 +52,6 @@ public final class ClientInputEvents {
                 SpellWheelOverlay.instance.close();
 
         }
-
-        //irons_spellbooks.LOGGER.debug("IsUseKeyDown: {} |\tSuppressRightClicks: {}", isUseKeyDown, ClientSpellCastHelper.shouldSuppressRightClicks());
-        //irons_spellbooks.LOGGER.debug("HasReleasedSinceCasting: {}", hasReleasedSinceCasting);
 
         update();
     }
@@ -111,12 +109,8 @@ public final class ClientInputEvents {
 
     @SubscribeEvent
     public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
-        //irons_spellbooks.LOGGER.debug("onUseInput: keymapping: {} ({})", useKeyMapping.getKey(), useKeyMapping.getKey().getValue());
-        //IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.1");
         if (event.isUseItem()) {
-            //IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.2");
             if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
-                //IronsSpellbooks.LOGGER.debug("ClientInputEvents.onUseInput.3");
                 event.setSwingHand(false);
                 event.setCanceled(true);
             }
@@ -125,7 +119,17 @@ public final class ClientInputEvents {
 
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
+        IronsSpellbooks.LOGGER.debug("onKeyInput key:{}", event.getKey());
         handleRightClickSuppression(event.getKey(), event.getAction());
+
+        for (int i = 0; i < QUICK_CAST_STATES.size(); i++) {
+            IronsSpellbooks.LOGGER.debug("onKeyInput i:{}",i);
+            if (QUICK_CAST_STATES.get(i).wasPressed()) {
+                IronsSpellbooks.LOGGER.debug("onKeyInput cast}");
+                Utils.quickCast(i);
+                break;
+            }
+        }
     }
 
     @SubscribeEvent
@@ -164,4 +168,15 @@ public final class ClientInputEvents {
         return k;
     }
 
+    private static List<KeyState> registerQuickCast(List<KeyMapping> mappings) {
+        var keyStates = new ArrayList<KeyState>();
+
+        mappings.forEach(keyMapping -> {
+            var k = new KeyState(keyMapping);
+            KEY_STATES.add(k);
+            keyStates.add(k);
+        });
+
+        return keyStates;
+    }
 }

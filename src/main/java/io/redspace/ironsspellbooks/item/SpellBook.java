@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
@@ -53,11 +54,14 @@ public class SpellBook extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        IronsSpellbooks.LOGGER.debug("Spellbook.use: level.isClientSide:{}", level.isClientSide);
         ItemStack itemStack = player.getItemInHand(hand);
         var spellBookData = SpellBookData.getSpellBookData(itemStack);
         AbstractSpell spell = spellBookData.getActiveSpell();
-        if(spell.getSpellType() == SpellType.NONE_SPELL)
+
+        if (spell.getSpellType() == SpellType.NONE_SPELL) {
             return InteractionResultHolder.pass(itemStack);
+        }
 
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {

@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.util;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
@@ -10,9 +11,12 @@ import io.redspace.ironsspellbooks.entity.spells.ConePart;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
+import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.tetra.TetraProxy;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -176,6 +180,25 @@ public class Utils {
     public static HitResult raycastForEntityOfClass(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Class<? extends Entity> c) {
 
         return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, (entity) -> entity.getClass() == c);
+    }
+
+    public static void quickCast(int slot) {
+        IronsSpellbooks.LOGGER.debug("quickCast.1");
+        var player = Minecraft.getInstance().player;
+        var itemStack = player.getMainHandItem();
+        if (itemStack.getItem() instanceof SpellBook) {
+            IronsSpellbooks.LOGGER.debug("quickCast.2");
+            var spellBookData = SpellBookData.getSpellBookData(itemStack);
+
+            if (spellBookData.getSpellSlots() >= 1) {
+                IronsSpellbooks.LOGGER.debug("quickCast.3");
+                var spell = spellBookData.getSpell(slot);
+                if (spell != null) {
+                    IronsSpellbooks.LOGGER.debug("quickCast.4");
+                    Messages.sendToServer(new ServerboundQuickCast(slot));
+                }
+            }
+        }
     }
 
     public static void releaseUsingHelper(LivingEntity entity) {
@@ -373,7 +396,7 @@ public class Utils {
     }
 
     /**
-    From the given start position, this finds the first air block within +/- maxSteps
+     * From the given start position, this finds the first air block within +/- maxSteps
      */
     public static int findRelativeGroundLevevl(Level level, Vec3 start, int maxSteps) {
         if (!level.getBlockState(new BlockPos(start)).isAir()) {

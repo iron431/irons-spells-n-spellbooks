@@ -1,12 +1,9 @@
 package io.redspace.ironsspellbooks.capabilities.spellbook;
 
-import com.google.common.collect.Lists;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -219,6 +216,10 @@ public class SpellBookData {
     }
 
     public static SpellBookData getSpellBookData(ItemStack stack) {
+        if(stack == null){
+            return new SpellBookData(0);
+        }
+
         CompoundTag tag = stack.getTagElement(ISB_SPELLBOOK);
 
         if (tag != null) {

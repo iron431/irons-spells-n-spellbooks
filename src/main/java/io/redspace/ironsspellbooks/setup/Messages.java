@@ -5,8 +5,6 @@ import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInsc
 import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
-
-
 import io.redspace.ironsspellbooks.network.*;
 import io.redspace.ironsspellbooks.network.spell.*;
 import net.minecraft.resources.ResourceLocation;
@@ -113,6 +111,12 @@ public class Messages {
                 .decoder(ServerboundCancelCast::new)
                 .encoder(ServerboundCancelCast::toBytes)
                 .consumer(ServerboundCancelCast::handle)
+                .add();
+
+        net.messageBuilder(ServerboundQuickCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundQuickCast::new)
+                .encoder(ServerboundQuickCast::toBytes)
+                .consumerNetworkThread(ServerboundQuickCast::handle)
                 .add();
 
         net.messageBuilder(ClientboundHealParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
