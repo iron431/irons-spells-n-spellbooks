@@ -16,10 +16,18 @@ import org.jetbrains.annotations.Nullable;
 
 public class PlayerMagicData extends AbstractMagicData {
 
+    private boolean isMob = false;
+
+    public PlayerMagicData(boolean isMob) {
+        this.isMob = isMob;
+    }
+
     public PlayerMagicData() {
+        this(false);
     }
 
     public PlayerMagicData(ServerPlayer serverPlayer) {
+        this(false);
         this.serverPlayer = serverPlayer;
     }
 
@@ -87,9 +95,9 @@ public class PlayerMagicData extends AbstractMagicData {
         this.getSyncedData().setIsCasting(false, SpellType.NONE_SPELL.getValue(), 0);
         resetAdditionalCastData();
 
-        if(serverPlayer != null){
+        if (serverPlayer != null) {
             serverPlayer.stopUsingItem();
-        }else{
+        } else if (!isMob) {
             Minecraft.getInstance().player.stopUsingItem();
         }
     }

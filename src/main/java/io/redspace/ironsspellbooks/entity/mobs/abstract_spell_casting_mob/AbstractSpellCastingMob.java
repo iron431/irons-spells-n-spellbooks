@@ -43,7 +43,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
 
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
-    private final PlayerMagicData playerMagicData = new PlayerMagicData();
+    private final PlayerMagicData playerMagicData = new PlayerMagicData(true);
 
     private @Nullable AbstractSpell castingSpell;
 
@@ -131,9 +131,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         //irons_spellbooks.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
         if (!level.isClientSide) {
             castingSpell.onServerCastComplete(level, this, playerMagicData);
+        }else{
+            playerMagicData.resetCastingState();
         }
 
-        playerMagicData.resetCastingState();
         castingSpell = null;
     }
 
