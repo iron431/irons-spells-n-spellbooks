@@ -1,16 +1,18 @@
 package io.redspace.ironsspellbooks.entity.spectral_hammer;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import software.bernie.geckolib3.core.AnimationState;
@@ -25,16 +27,20 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SpectralHammer extends LivingEntity implements IAnimatable {
 
-    private final int ticksToLive = 25;
+    private final int ticksToLive = 30;
     private final int doDamageTick = 13;
+    private final int doAnimateTick = 20;
     private boolean didDamage = false;
+    private boolean didAnimate = false;
     private int ticksAlive = 0;
     private boolean playSwingAnimation = true;
     private BlockHitResult blockHitResult;
     private float damageAmount;
+    Set<BlockPos> missedBlocks = new HashSet<>();
 
     public SpectralHammer(EntityType<? extends SpectralHammer> entityType, Level level) {
         super(entityType, level);
@@ -57,9 +63,9 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
         this.setYBodyRot(yRot);
         this.setYHeadRot(yHeadRot);
 
-        IronsSpellbooks.LOGGER.debug("SpectralHammer: owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
-        IronsSpellbooks.LOGGER.debug("SpectralHammer: this - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
-        IronsSpellbooks.LOGGER.debug("SpectralHammer: blockHitResult.dir:{}, damageAmount:{}", blockHitResult.getDirection(), damageAmount);
+//        IronsSpellbooks.LOGGER.debug("SpectralHammer: owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
+//        IronsSpellbooks.LOGGER.debug("SpectralHammer: this - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
+//        IronsSpellbooks.LOGGER.debug("SpectralHammer: blockHitResult.dir:{}, damageAmount:{}", blockHitResult.getDirection(), damageAmount);
     }
 
     @Override
@@ -73,6 +79,19 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
             discard();
         }
 
+        if (ticksAlive >= doAnimateTick && !didAnimate) {
+            missedBlocks.forEach(pos -> {
+                FallingBlockEntity.fall(level, pos, level.getBlockState(pos));
+            });
+            didAnimate = true;
+        }
+
+        if (ticksAlive == doDamageTick - 2 && !didDamage) {
+            var location = this.position();
+            level.playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2f, 1f);
+
+        }
+
         if (ticksAlive >= doDamageTick && !didDamage) {
             if (blockHitResult != null && blockHitResult.getType() != HitResult.Type.MISS) {
                 var blockPos = blockHitResult.getBlockPos();
@@ -82,23 +101,31 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
                     var blockCollector = getBlockCollector(blockPos, blockHitResult.getDirection(), (int) damageAmount / 2, (int) damageAmount, new HashSet<>(), new HashSet<>());
                     collectBlocks(blockPos, blockCollector);
 
-                    /*
-                     * Sets a block state into this world.Flags are as follows:
-                     * 1 will cause a block update.
-                     * 2 will send the change to clients.
-                     * 4 will prevent the block from being re-rendered.
-                     * 8 will force any re-renders to run on the main thread instead
-                     * 16 will prevent neighbor reactions (e.g. fences connecting, observers pulsing).
-                     * 32 will prevent neighbor reactions from spawning drops.
-                     * 64 will signify the block is being moved.
-                     * Flags can be OR-ed
-                     */
-                    final int flags = 1 | 2;// | 16 | 32;
+                    if (!blockCollector.blocksToRemove.isEmpty()) {
+                        //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: origin:{}", blockCollector.origin);
+                        var random = level.getRandom();
+                        AtomicInteger count = new AtomicInteger();
+                        blockCollector.blocksToRemove.forEach(pos -> {
+                            var distance = blockCollector.origin.distManhattan(pos);
+                            var missChance = random.nextFloat() * 3;
+                            float pct = (distance * distance) / 100.0f;
 
-                    blockCollector.blocksToRemove.forEach(pos -> {
-                        IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: removing blockPos{}", pos);
-                        level.setBlock(pos, Blocks.AIR.defaultBlockState(), flags);
-                    });
+                            if (missChance < pct) {
+                                //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: missed pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
+                                missedBlocks.add(pos);
+                            } else {
+                                if (count.incrementAndGet() % 5 == 0) {
+                                    //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.1 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
+                                    level.destroyBlock(pos, true);
+                                } else {
+                                    //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
+                                    var bState = level.getBlockState(pos);
+                                    Block.dropResources(bState, level, pos);
+                                    level.removeBlock(pos, false);
+                                }
+                            }
+                        });
+                    }
                 }
             }
 
@@ -109,14 +136,14 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
     }
 
     private void collectBlocks(BlockPos blockPos, BlockCollectorHelper bch) {
-        IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos:{} checked:{} toRemove:{}", blockPos, bch.blocksChecked.size(), bch.blocksToRemove.size());
+        //IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos:{} checked:{} toRemove:{}", blockPos, bch.blocksChecked.size(), bch.blocksToRemove.size());
 
         if (bch.blocksChecked.contains(blockPos) || bch.blocksToRemove.contains(blockPos)) {
             return;
         }
 
         if (bch.isValidBlockToCollect(level, blockPos)) {
-            IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is valid", blockPos);
+            //IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is valid", blockPos);
             bch.blocksToRemove.add(blockPos);
             collectBlocks(blockPos.above(), bch);
             collectBlocks(blockPos.below(), bch);
@@ -125,7 +152,7 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
             collectBlocks(blockPos.east(), bch);
             collectBlocks(blockPos.west(), bch);
         } else {
-            IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is not valid", blockPos);
+            //IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is not valid", blockPos);
             bch.blocksChecked.add(blockPos);
         }
     }
@@ -165,12 +192,14 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
             }
         }
 
-        return new BlockCollectorHelper(origin, direction, minX, maxX, minY, maxY, minZ, maxZ, blocksToRemove, blocksChecked);
+        return new BlockCollectorHelper(origin, direction, radius, depth, minX, maxX, minY, maxY, minZ, maxZ, blocksToRemove, blocksChecked);
     }
 
     private record BlockCollectorHelper(
             BlockPos origin,
             Direction originVector,
+            int radius,
+            int depth,
             int minX,
             int maxX,
             int minY,

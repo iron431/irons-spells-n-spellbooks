@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.spells.evocation;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammer;
-import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -35,16 +34,12 @@ public class SpectralHammerSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.MAGIC_SPELL_REVERSE_3.get());
+        return Optional.empty();
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.ARIAL_SUMMONING_5_CUSTOM_1.get());
-    }
-
-    public static SoundEvent getImpactSound() {
-        return SoundRegistry.DARK_MAGIC_BUFF_03_CUSTOM_1.get();
+        return Optional.empty();
     }
 
     @Override
@@ -63,7 +58,7 @@ public class SpectralHammerSpell extends AbstractSpell {
         spectralHammer.setPos(position.x, position.y - 1, position.z);
         IronsSpellbooks.LOGGER.debug("SpectralHammerSpell.onCast pos:{}", position);
         world.addFreshEntity(spectralHammer);
-        super.onCast(world, entity, playerMagicData);
+        //super.onCast(world, entity, playerMagicData);
     }
 
     private float getDistance(Entity sourceEntity) {
