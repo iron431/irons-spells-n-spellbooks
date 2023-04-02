@@ -50,7 +50,7 @@ public class ServerboundCancelCast {
                 }
 
                 IronsSpellbooks.LOGGER.debug("ServerBoundCancelCast.cancelCast");
-                playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData);
+                playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, true);
 
                 if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);

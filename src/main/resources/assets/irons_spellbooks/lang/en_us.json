@@ -331,6 +331,8 @@
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
+  "commands.irons_spellbooks.create_debug_wizard.failed": "Create DebugWizard Failed",
+  "commands.irons_spellbooks.create_spell.failed_max_level": "Create failed. Max level of %s is %d",
 
   "entity.irons_spellbooks.summoned_entity": "%s's %s",
   "entity.irons_spellbooks.wisp": "Wisp",
