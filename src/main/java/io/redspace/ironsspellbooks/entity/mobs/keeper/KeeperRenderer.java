@@ -21,14 +21,12 @@ public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
         super(context, new KeeperModel());
         //this.addLayer(new GeoKeeperGhostLayer(this));
         this.shadowRadius = 0.65f;
-        this.widthScale = 1.3f;
-        this.heightScale = 1.3f;
-
     }
 
     @Override
-    public float getWidthScale(AbstractSpellCastingMob animatable) {
-        return super.getWidthScale(animatable);
+    public void renderEarly(AbstractSpellCastingMob animatable, PoseStack poseStack, float partialTick, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float partialTicks) {
+        poseStack.scale(1.3f, 1.3f, 1.3f);
+        super.renderEarly(animatable, poseStack, partialTick, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, partialTicks);
     }
 
     @Override

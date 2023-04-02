@@ -73,12 +73,17 @@ public abstract class AbstractClientPlayerMixin extends Player {
                 float offsetY = 0;
                 float offsetZ = 0;
                 var pitch = player.getXRot();
+                var yaw = player.yHeadRot - player.yBodyRot;
                 pitch = (float) Math.toRadians(pitch);
+                yaw = (float) Math.toRadians(yaw);
                 switch (partName) {
 //                        case "body" -> {
 //                            rotationX = (-1F) * pitch;
 //                        }
-                    case "rightArm", "leftArm" -> rotationX = pitch;
+                    case "rightArm", "leftArm" -> {
+                        rotationX = pitch;
+                        rotationY = yaw;
+                    }
                     case "head" -> {
                         //rotationX = pitch / 8;
                         //rotationY = (float) Math.toRadians(player.yHeadRot - player.yBodyRot);

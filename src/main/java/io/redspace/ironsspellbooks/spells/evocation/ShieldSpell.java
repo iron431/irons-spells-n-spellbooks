@@ -59,7 +59,7 @@ public class ShieldSpell extends AbstractSpell {
     }
 
     private float getShieldHP(LivingEntity caster) {
-        return 10 + getSpellPower(caster);
+        return 5 + getSpellPower(caster);
     }
 
     //    @Override
