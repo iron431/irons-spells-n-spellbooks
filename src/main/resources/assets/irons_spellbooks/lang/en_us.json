@@ -98,6 +98,8 @@
   "item.irons_spellbooks.mana_ring": "Ring of Mana",
   "item.irons_spellbooks.silver_ring": "Silver Ring",
   "item.irons_spellbooks.cooldown_ring": "Ring of Cooldown Reduction",
+  "item.irons_spellbooks.emerald_stoneplate_ring": "Emerald Stoneplate Ring",
+  "item.irons_spellbooks.emerald_stoneplate_ring.desc": "Slain creatures drop +25% experience.",
   "item.irons_spellbooks.heavy_chain_necklace": "Heavy Chain",
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",

@@ -30,10 +30,12 @@ import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.Map;
 
@@ -87,6 +89,19 @@ public class ServerPlayerEvents {
         for (Map.Entry<Attribute, Integer> entry : upgrades.entrySet()) {
             double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, entry.getKey(), AttributeModifier.Operation.MULTIPLY_BASE);
             event.addModifier(entry.getKey(), new AttributeModifier(UpgradeUtils.UUIDForSlot(slot), "upgrade", baseAmount + UpgradeUtils.getModifierAmount(entry.getKey(), entry.getValue()), AttributeModifier.Operation.MULTIPLY_BASE));
+        }
+
+
+    }
+
+    @SubscribeEvent
+    public static void onExperienceDroppedEvent(LivingExperienceDropEvent event) {
+        var player = event.getAttackingPlayer();
+        if (player != null){
+            var ringCount = CuriosApi.getCuriosHelper().findCurios(player, ItemRegistry.EMERALD_STONEPLATE_RING.get()).size();
+            for (int i = 0; i < ringCount; i++) {
+                event.setDroppedExperience((int) (event.getDroppedExperience() * 1.25));
+            }
         }
 
 
