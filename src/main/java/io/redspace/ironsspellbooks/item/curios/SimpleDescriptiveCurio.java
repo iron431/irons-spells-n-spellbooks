@@ -26,6 +26,7 @@ public class SimpleDescriptiveCurio extends CurioBaseItem {
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.empty());
+        //currently only rings
         pTooltipComponents.add(whenWornAsRing);
         pTooltipComponents.add(description);
     }

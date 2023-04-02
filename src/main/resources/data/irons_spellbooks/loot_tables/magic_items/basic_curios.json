@@ -22,6 +22,10 @@
         {
           "type": "minecraft:item",
           "name": "irons_spellbooks:fireward_ring"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:frostward_ring"
         }
       ]
     }
