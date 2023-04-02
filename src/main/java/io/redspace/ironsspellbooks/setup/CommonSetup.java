@@ -32,6 +32,7 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -40,14 +41,17 @@ public class CommonSetup {
     @SubscribeEvent
     public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
         IronsSpellbooks.LOGGER.debug("onModConfigLoadingEvent");
-        ServerConfigs.cacheConfigs();
-        //SpellRarity.rarityTest();
+        if(event.getConfig().getType() == ModConfig.Type.SERVER){
+            ServerConfigs.cacheConfigs();
+        }
     }
 
     @SubscribeEvent
     public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
         IronsSpellbooks.LOGGER.debug("onModConfigReloadingEvent");
-        ServerConfigs.cacheConfigs();
+        if(event.getConfig().getType() == ModConfig.Type.SERVER){
+            ServerConfigs.cacheConfigs();
+        }
     }
 
     @SubscribeEvent

@@ -30,6 +30,9 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
 
+import static io.redspace.ironsspellbooks.config.ClientConfigs.SHOW_FIRST_PERSON_ARMS;
+import static io.redspace.ironsspellbooks.config.ClientConfigs.SHOW_FIRST_PERSON_ITEMS;
+
 public class ClientSpellCastHelper {
     /**
      * Right Click Suppression
@@ -134,6 +137,8 @@ public class ClientSpellCastHelper {
     /**
      * Animation Helper
      */
+
+    private static boolean didModify = false;
     private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         //IronsSpellbooks.LOGGER.debug("animatePlayerStart {} {}", player, resourceLocation);
         var keyframeAnimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
@@ -144,14 +149,33 @@ public class ClientSpellCastHelper {
                 var castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
                 ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), castingAnimationPlayer);
                 castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
-
-                //TODO: This should be configuration driven
-                if (false) {
-                    castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration().setShowLeftArm(true).setShowRightArm(true));
-                }
+                var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
+                var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
+                castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
 
                 //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
                 animation.setAnimation(castingAnimationPlayer);
+//                if(!didModify) {
+//                    animation.addModifierLast(new AdjustmentModifier((partName) -> {
+//                        float rotationX = 0;
+//                        float rotationY = 0;
+//                        float rotationZ = 0;
+//                        float offsetX = 0;
+//                        float offsetY = 0;
+//                        float offsetZ = 0;
+//                        switch (partName) {
+//                            case "rightArm", "leftArm" -> {
+//                                rotationY = (float) Math.toRadians(player.getViewYRot(5) / 4);
+//                                IronsSpellbooks.LOGGER.debug("ClientSpellCastHelper.animatePlayerStart rotationY:{}", rotationY);
+//                                return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(rotationX, rotationY, rotationZ), new Vec3f(offsetX, offsetY, offsetZ)));
+//                            }
+//                            default -> {
+//                                return Optional.empty();
+//                            }
+//                        }
+//                    }));
+//                    didModify = true;
+//                }
 //                animation.addModifierLast(new AdjustmentModifier((partName) -> {
 //                    float rotationX = 0;
 //                    float rotationY = 0;
