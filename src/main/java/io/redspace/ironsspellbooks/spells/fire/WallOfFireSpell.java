@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
@@ -65,12 +64,12 @@ public class WallOfFireSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.getAdditionalCastData() == null) {
-            IronsSpellbooks.LOGGER.debug("WallOfFireSpell: creating new data");
+            //IronsSpellbooks.LOGGER.debug("WallOfFireSpell: creating new data");
             var fireWallData = new FireWallData(getWallLength());
             playerMagicData.setAdditionalCastData(fireWallData);
 
         }
-        IronsSpellbooks.LOGGER.debug(playerMagicData.toString());
+        //IronsSpellbooks.LOGGER.debug(playerMagicData.toString());
         //if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData)
 
         super.onCast(world, entity, playerMagicData);
@@ -78,9 +77,9 @@ public class WallOfFireSpell extends AbstractSpell {
 
     @Override
     public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
-        IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastTick");
+        //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastTick");
         if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
-            IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastTick {}", fireWallData.ticks);
+            //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastTick {}", fireWallData.ticks);
             if (fireWallData.ticks++ % 4 == 0) {
                 addAnchor(fireWallData, level, entity);
             }
@@ -90,18 +89,16 @@ public class WallOfFireSpell extends AbstractSpell {
 
     @Override
     public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData, boolean cancelled) {
-//        for (Vec3 vec : spawnAnchors) {
-//            irons_spellbooks.LOGGER.debug(vec.toString());
-//
-//        }
-        super.onServerCastComplete(level, entity, playerMagicData, false);
-        IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onCastComplete");
+        //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.1");
         if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
+            //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.2");
             if (fireWallData.anchors.size() == 1) {
+                //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.3");
                 addAnchor(fireWallData, level, entity);
             }
 
             if (fireWallData.anchors.size() > 0) {
+                //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.4");
                 WallOfFireEntity fireWall = new WallOfFireEntity(level, entity, fireWallData.anchors, getDamage(entity));
                 Vec3 origin = fireWallData.anchors.get(0);
                 for (int i = 1; i < fireWallData.anchors.size(); i++) {
@@ -112,6 +109,7 @@ public class WallOfFireSpell extends AbstractSpell {
                 level.addFreshEntity(fireWall);
             }
         }
+        super.onServerCastComplete(level, entity, playerMagicData, false);
     }
 
     private float getWallLength() {
@@ -155,7 +153,7 @@ public class WallOfFireSpell extends AbstractSpell {
             //irons_spellbooks.LOGGER.debug("WallOfFire.currentDistance: {}", this.accumulatedDistance);
         }
         MagicManager.spawnParticles(level, ParticleTypes.FLAME, anchor.x, anchor.y + 1.5, anchor.z, 5, .05, .25, .05, 0, true);
-        IronsSpellbooks.LOGGER.debug("WallOfFireSpell: adding anchor");
+        //IronsSpellbooks.LOGGER.debug("WallOfFireSpell: adding anchor");
     }
 
     private Vec3 setOnGround(Vec3 in, Level level) {

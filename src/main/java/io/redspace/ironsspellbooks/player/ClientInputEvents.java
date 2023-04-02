@@ -119,13 +119,13 @@ public final class ClientInputEvents {
 
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
-        IronsSpellbooks.LOGGER.debug("onKeyInput key:{}", event.getKey());
+        //IronsSpellbooks.LOGGER.debug("onKeyInput key:{}", event.getKey());
         handleRightClickSuppression(event.getKey(), event.getAction());
 
         for (int i = 0; i < QUICK_CAST_STATES.size(); i++) {
-            IronsSpellbooks.LOGGER.debug("onKeyInput i:{}",i);
+            //IronsSpellbooks.LOGGER.debug("onKeyInput i:{}",i);
             if (QUICK_CAST_STATES.get(i).wasPressed()) {
-                IronsSpellbooks.LOGGER.debug("onKeyInput cast}");
+                //IronsSpellbooks.LOGGER.debug("onKeyInput cast}");
                 Utils.quickCast(i);
                 break;
             }
