@@ -127,8 +127,6 @@
   "ui.irons_spellbooks.ink_rarity_error": "Obtain higher quality ink",
   "ui.irons_spellbooks.empty_slot": "Empty Slot",
   "ui.irons_spellbooks.level": "Level %d",
-  "ui.irons_spellbooks.lvl": "Lvl:",
-  "ui.irons_spellbooks.cost": "Cost:",
   "ui.irons_spellbooks.mana_cost": "%d Mana",
   "ui.irons_spellbooks.cast_instant": "Instant Cast",
   "ui.irons_spellbooks.cast_long": "%s Cast Time",
