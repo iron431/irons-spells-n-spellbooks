@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item.curios;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -9,11 +10,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SimpleDescriptiveCurio extends CurioBaseItem {
+    final static Component whenWornAsRing = Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD);
     final Component description;
 
     public SimpleDescriptiveCurio(Properties properties, Component description) {
         super(properties);
-        this.description = description;
+        this.description = Component.literal(" ").append(description);
     }
 
     public SimpleDescriptiveCurio(Properties properties) {
@@ -23,7 +25,10 @@ public class SimpleDescriptiveCurio extends CurioBaseItem {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        //pTooltipComponents.add(Component.empty());
+        pTooltipComponents.add(Component.empty());
+        pTooltipComponents.add(whenWornAsRing);
         pTooltipComponents.add(description);
     }
+
+
 }

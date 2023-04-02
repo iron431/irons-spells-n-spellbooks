@@ -25,4 +25,5 @@ public class CurioBaseItem extends Item implements ICurioItem {
     public ICurio.SoundInfo getEquipSound(SlotContext slotContext, ItemStack stack) {
         return new ICurio.SoundInfo(SoundEvents.ARMOR_EQUIP_CHAIN, 1.0f, 1.0f);
     }
+
 }

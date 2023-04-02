@@ -11,7 +11,7 @@ public class ClientConfigs {
 
     static {
         BUILDER.push("animations");
-        SHOW_FIRST_PERSON_ARMS = BUILDER.define("showFirstPersonArms", false);
+        SHOW_FIRST_PERSON_ARMS = BUILDER.define("showFirstPersonArms", true);
         SHOW_FIRST_PERSON_ITEMS = BUILDER.define("showFirstPersonItems", true);
         BUILDER.pop();
         SPEC = BUILDER.build();
