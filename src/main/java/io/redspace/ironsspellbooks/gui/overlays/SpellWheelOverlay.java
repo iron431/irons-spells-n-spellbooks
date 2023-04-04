@@ -43,7 +43,7 @@ public class SpellWheelOverlay extends GuiComponent {
     private double ringOuterEdge = 80;
     private final double ringOuterEdgeMax = 80;
     private final double ringOuterEdgeMin = 65;
-    private final double categoryLineWidth = 1;
+    private final double categoryLineWidth = 2;
 
     public boolean active;
     private int selection;

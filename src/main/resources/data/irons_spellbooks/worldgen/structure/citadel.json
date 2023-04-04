@@ -22,7 +22,8 @@
     },
     "monster": {
       "bounding_box": "full",
-      "spawns": []
+      "spawns": [
+      ]
     },
     "underground_water_creature": {
       "bounding_box": "full",

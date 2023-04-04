@@ -1,7 +1,7 @@
 {
   "processors": [
     {
-      "integrity": 0.90,
+      "integrity": 0.95,
       "processor_type": "minecraft:block_rot",
       "rottable_blocks": "#irons_spellbooks:citadel_can_decay"
     },
@@ -12,13 +12,13 @@
           "input_predicate": {
             "block": "minecraft:deepslate_bricks",
             "predicate_type": "minecraft:random_block_match",
-            "probability": 0.05
+            "probability": 0.2
           },
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:deepslate_tiles"
+            "Name": "minecraft:cracked_deepslate_bricks"
           }
         },
         {

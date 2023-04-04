@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
 public class ScreenEffectsOverlay extends GuiComponent {
-    public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/vignette.png");
+    public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
     public final static ResourceLocation HEARTSTOP_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
     static final int IMAGE_WIDTH = 256;
     static final int IMAGE_HEIGHT = 256;
@@ -33,7 +33,11 @@ public class ScreenEffectsOverlay extends GuiComponent {
         if (player.hasEffect(MobEffectRegistry.ENCHANTED_WARD.get())) {
             //setupRenderer(0, .25f, 1, 1, MAGIC_AURA_TEXTURE);
 //            gui.blit(poseStack, 0, 0, 0, 0, screenWidth, screenHeight);
-            renderOverlay(MAGIC_AURA_TEXTURE, 1, .5f, 0, 1, screenWidth, screenHeight);
+            //0-1
+            float opacity = (float) ((Math.cos(player.tickCount * .2f) + 1) * .5f);
+            opacity = .25f + opacity * .75f;
+            //0.25-1
+            renderOverlay(MAGIC_AURA_TEXTURE, 1 *  opacity, .5f *  opacity, 0, 1, screenWidth, screenHeight);
         }
 
 //        gui.blit(poseStack, barX, barY, 0, IMAGE_HEIGHT * 3, (int) (COMPLETION_BAR_WIDTH * castCompletionPercent + (IMAGE_WIDTH - COMPLETION_BAR_WIDTH) / 2), IMAGE_HEIGHT);
