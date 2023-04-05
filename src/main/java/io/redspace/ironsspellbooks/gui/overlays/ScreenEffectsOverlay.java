@@ -15,8 +15,6 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 public class ScreenEffectsOverlay extends GuiComponent {
     public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
     public final static ResourceLocation HEARTSTOP_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
-    static final int IMAGE_WIDTH = 256;
-    static final int IMAGE_HEIGHT = 256;
 
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         //screenWidth = gui.getMinecraft().getWindow().getScreenWidth();
@@ -30,28 +28,15 @@ public class ScreenEffectsOverlay extends GuiComponent {
 
         }
 
-        if (player.hasEffect(MobEffectRegistry.ENCHANTED_WARD.get())) {
-            //setupRenderer(0, .25f, 1, 1, MAGIC_AURA_TEXTURE);
-//            gui.blit(poseStack, 0, 0, 0, 0, screenWidth, screenHeight);
-            //0-1
-            float opacity = (float) ((Math.cos(player.tickCount * .2f) + 1) * .5f);
-            opacity = .25f + opacity * .75f;
-            //0.25-1
-            renderOverlay(MAGIC_AURA_TEXTURE, 1 *  opacity, .5f *  opacity, 0, 1, screenWidth, screenHeight);
-        }
+        //TODO: Citadel reimplementation
+//        if (player.hasEffect(MobEffectRegistry.ENCHANTED_WARD.get())) {
+//            //0-1
+//            float opacity = (float) ((Math.cos(player.tickCount * .2f) + 1) * .5f);
+//            opacity = .25f + opacity * .75f;
+//            //0.25-1
+//            renderOverlay(MAGIC_AURA_TEXTURE, 1 *  opacity, .5f *  opacity, 0, 1, screenWidth, screenHeight);
+//        }
 
-//        gui.blit(poseStack, barX, barY, 0, IMAGE_HEIGHT * 3, (int) (COMPLETION_BAR_WIDTH * castCompletionPercent + (IMAGE_WIDTH - COMPLETION_BAR_WIDTH) / 2), IMAGE_HEIGHT);
-//
-//        int textX, textY;
-//        var textColor = ChatFormatting.WHITE;
-//        var font = gui.getFont();
-//
-//
-//
-//        textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;
-//        textY = barY + IMAGE_HEIGHT / 2 - font.lineHeight / 2 + 1;
-//
-//        gui.getFont().draw(poseStack, castTimeString, textX, textY, textColor.getColor());
     }
 
     private static void setupRenderer(float r, float g, float b, float a, ResourceLocation texture) {

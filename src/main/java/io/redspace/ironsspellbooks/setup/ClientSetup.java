@@ -7,7 +7,17 @@ import io.redspace.ironsspellbooks.entity.armor.*;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.simple_wizard.WizardArmorRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteedRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedSkeletonMultiRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedZombieMultiRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRenderer;
+import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashRenderer;
 import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdRenderer;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadRenderer;
@@ -17,22 +27,11 @@ import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizardRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoidRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteedRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedSkeletonMultiRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedZombieMultiRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerRenderer;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
-import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
-import io.redspace.ironsspellbooks.item.AntiquatedCompass;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
 import io.redspace.ironsspellbooks.particle.*;
@@ -201,7 +200,8 @@ public class ClientSetup {
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
         e.enqueueWork(() -> ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag()))));
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.ANTIQUATED_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> AntiquatedCompass.getCitadelLocation(entity, itemStack.getOrCreateTag()))));
+        //TODO: Citadel reimplementation
+        //e.enqueueWork(() -> ItemProperties.register(ItemRegistry.ANTIQUATED_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> AntiquatedCompass.getCitadelLocation(entity, itemStack.getOrCreateTag()))));
     }
 
 }
