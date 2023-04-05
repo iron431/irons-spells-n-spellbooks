@@ -27,7 +27,7 @@ public class GeoHealTargetLayer extends GeoLayerRenderer<AbstractSpellCastingMob
         if (HealTargetLayer.shouldRender(abstractSpellCastingMob)) {
             //Its upsidedown???
             poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
-            poseStack.translate(0, -abstractSpellCastingMob.getBbWidth() * 2, 0);
+            poseStack.translate(0, -(abstractSpellCastingMob.getBbWidth() + abstractSpellCastingMob.getBbHeight()) / 2, 0);
             HealTargetLayer.renderTargetLayer(poseStack, multiBufferSource, abstractSpellCastingMob);
         }
     }
