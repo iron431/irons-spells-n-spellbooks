@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -169,7 +170,7 @@ public abstract class AbstractConeProjectile extends Projectile{
         Vec3 vec3 = new Vec3(start.getX(), start.getEyeY(), start.getZ());
         Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
 
-        boolean isShieldBlockingLOS = Utils.raycastForEntityOfClass(start.level, start, vec3, vec31, false, AbstractShieldEntity.class).getType() == HitResult.Type.ENTITY;
+        boolean isShieldBlockingLOS = Utils.raycastForEntity(start.level, start, vec3, vec31, false, (entity) -> entity instanceof ShieldEntity).getType() == HitResult.Type.ENTITY;
         return !isShieldBlockingLOS && start.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
     }
 
