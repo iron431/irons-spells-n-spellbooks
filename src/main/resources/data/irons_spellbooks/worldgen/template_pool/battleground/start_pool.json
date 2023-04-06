@@ -1,0 +1,24 @@
+{
+  "name": "irons_spellbooks:battleground_start_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:battleground/origin",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:battleground/origin_2",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

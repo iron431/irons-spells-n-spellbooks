@@ -1,0 +1,51 @@
+{
+  "name": "irons_spellbooks:battleground_start_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:battleground/branch_1",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:battleground/branch_2",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:battleground/branch_3",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:battleground/branch_4",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:battleground/branch_5",
+        "processors": "irons_spellbooks:citadel_degradation",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}
