@@ -110,6 +110,7 @@
   "block.irons_spellbooks.pedestal": "Pedestal",
   "block.irons_spellbooks.arcane_anvil": "Arcane Anvil",
   "block.irons_spellbooks.arcane_debris": "Arcane Debris",
+  "block.irons_spellbooks.armor_pile": "Armor Pile",
   "tooltip.irons_spellbooks.level": "Level %d",
   "tooltip.irons_spellbooks.scroll_tooltip": "When in Spell Book:",
   "tooltip.irons_spellbooks.imbued_tooltip": "Imbued Spell:",

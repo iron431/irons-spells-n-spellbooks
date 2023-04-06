@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "irons_spellbooks:block/armor_pile",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "irons_spellbooks:block/armor_pile"
+    },
+    "facing=south": {
+      "model": "irons_spellbooks:block/armor_pile",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "irons_spellbooks:block/armor_pile",
+      "y": 270
+    }
+  }
+}
