@@ -2,6 +2,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 32],
 	"parent": "block/block",
+	"ambientocclusion": false,
 	"textures": {
 		"0": "models/armor/netherite_layer_1",
 		"particle": "block/netherite_block"

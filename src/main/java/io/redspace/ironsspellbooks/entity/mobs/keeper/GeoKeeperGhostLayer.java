@@ -38,7 +38,11 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
         model.getBone("body").ifPresent((rootBone) -> {
             rootBone.childBones.forEach(bone -> {
                 //IronsSpellbooks.LOGGER.debug("{}", bone.getName());
-                bone.setScale(.95f, .95f, .95f);
+                if (bone.getName().equals("head")){
+                    bone.setScale(.75f, .75f, .75f);
+                }
+                else
+                    bone.setScale(.95f, .99f, .95f);
             });
         });
 

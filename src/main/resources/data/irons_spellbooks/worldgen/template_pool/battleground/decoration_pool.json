@@ -6,7 +6,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/burial_1",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -15,7 +15,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/burial_2",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -24,7 +24,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/burial_3",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -33,16 +33,16 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/burial_4",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/armor_1",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -51,7 +51,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/armor_2",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -60,7 +60,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/banner",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -69,7 +69,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/banner_2",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -78,7 +78,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/wall_1",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -87,7 +87,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/wall_2",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -96,7 +96,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/wall_3",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -105,7 +105,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/wall_4",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -114,7 +114,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/wall_5",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -123,7 +123,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/wall_6",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -132,7 +132,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/wall_7",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -141,7 +141,7 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/fossil",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
@@ -150,7 +150,43 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:battleground/decorations/skull_pile",
-        "processors": "irons_spellbooks:citadel_degradation",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:battleground/decorations/hill_1",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:battleground/decorations/hill_2",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:battleground/decorations/hill_3",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:battleground/decorations/piglin_camp",
+        "processors": "irons_spellbooks:ancient_battlegrounds_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }

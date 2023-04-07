@@ -234,7 +234,7 @@ public class EntityRegistry {
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "magehunter_vindicator").toString()));
 
     public static final RegistryObject<EntityType<KeeperEntity>> KEEPER =
-            ENTITIES.register("citadel_keeper", () -> EntityType.Builder.of(KeeperEntity::new, MobCategory.MONSTER)
+            ENTITIES.register("citadel_keeper", () -> EntityType.Builder.<KeeperEntity>of(KeeperEntity::new, MobCategory.MONSTER)
                     .sized(.85f, 2.3f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "citadel_keeper").toString()));
