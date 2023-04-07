@@ -9,6 +9,8 @@ import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -84,6 +86,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
                 inkSlot.remove(1);
                 blankScrollSlot.remove(1);
                 focusSlot.remove(1);
+                level.playSound(null, blockEntity.getBlockPos(), SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.BLOCKS, .8f, 1.1f);
                 super.onTake(player, stack);
             }
         };

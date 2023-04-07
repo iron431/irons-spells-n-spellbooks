@@ -11,6 +11,8 @@ import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,6 +42,11 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
     protected void onTake(Player p_150601_, ItemStack p_150602_) {
         inputSlots.getItem(0).shrink(1);
         inputSlots.getItem(1).shrink(1);
+
+        this.access.execute((level, pos) -> {
+            level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, .8f, 1.1f);
+            level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1f, 1f);
+        });
     }
 
     @Override
