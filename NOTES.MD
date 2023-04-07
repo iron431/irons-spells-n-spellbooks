@@ -15,6 +15,17 @@
 - Testing Example on a Forge pull request: https://github.com/]MinecraftForge/MinecraftForge/pull/8918/files#diff-fae470ebbd5b00cd8bcd73d47b8cf766f3e19a42b3dc409440f9c884bbb41758
 - Curios Github tests: https://github.com/TheIllusiveC4/Curios/tree/1.18.x/src/test/java/top/theillusivec4/curiostest
 
+### Documentation Site
+- General
+  - https://jekyllrb.com/docs/continuous-integration/github-actions/
+  - https://jekyllrb.com/docs/themes/
+  - https://idratherbewriting.com/documentation-theme-jekyll/mydoc_publishing_github_pages.html
+- Theme
+  - https://github.com/chrisrhymes/bulma-clean-theme/#installation
+- Github Docs
+  - https://github.com/github/pages-gem
+  - https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/about-github-pages-and-jekyll
+
 ### Inventory tabs
 - Enchanted book example - EnchantedBookItem.fillItemCategory
 
