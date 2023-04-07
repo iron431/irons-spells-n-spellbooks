@@ -32,7 +32,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.BLOOD_SLASH_SPELL, true, 5, SpellRarity.RARE, 10);
         createSpellConfig(SpellType.BLOOD_STEP_SPELL, true, 5, SpellRarity.UNCOMMON, 5);
         createSpellConfig(SpellType.HEARTSTOP_SPELL, true, 10, SpellRarity.COMMON, 120);
-        createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 5, SpellRarity.UNCOMMON, 150);
+        createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 6, SpellRarity.UNCOMMON, 150);
         createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.WITHER_SKULL_SPELL, true, 10, SpellRarity.UNCOMMON, 2);
         //Ender

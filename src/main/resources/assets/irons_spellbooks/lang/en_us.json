@@ -355,6 +355,7 @@
   "entity.irons_spellbooks.dead_king": "The Dead King",
   "entity.irons_spellbooks.dead_king_corpse": "Skeleton",
   "entity.irons_spellbooks.void_tentacle": "Void Tentacles",
+  "entity.irons_spellbooks.citadel_keeper": "Ancient Knight",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
