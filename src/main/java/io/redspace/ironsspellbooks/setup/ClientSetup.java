@@ -115,6 +115,7 @@ public class ClientSetup {
             livingRenderer.addLayer(new ChargedEffectLayer(livingRenderer));
             livingRenderer.addLayer(new ChargeSpellLayer.Vanilla<>(livingRenderer));
             livingRenderer.addLayer(new GlowingEyesLayer.GlowingEyesVanilla<>(livingRenderer));
+            livingRenderer.addLayer(new HealTargetLayer(livingRenderer));
         }
 
         for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getEntityRenderDispatcher().renderers.entrySet()) {

@@ -6,6 +6,7 @@
   "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
     "AbstractClientPlayerMixin",
+    "ParticleMixin",
     "CauldronMixin",
     "GlassBottleMixin",
     "ItemRendererMixin",

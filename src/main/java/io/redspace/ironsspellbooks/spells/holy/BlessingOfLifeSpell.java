@@ -10,9 +10,9 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 public class BlessingOfLifeSpell extends AbstractSpell {
@@ -55,38 +56,31 @@ public class BlessingOfLifeSpell extends AbstractSpell {
 
 
     @Override
-    public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
-        var target = getTarget(entity);
-        playerMagicData.setAdditionalCastData(new HealTargetingData(target));
-        if (entity instanceof ServerPlayer serverPlayer && target != null)
-            Messages.sendToPlayer(new ClientboundSyncTargetingData(target), serverPlayer);
-        super.onServerPreCast(level, entity, playerMagicData);
-    }
-
-    @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
-//        var target = getTarget(entity);
-//        if (target != null) {
-//            var targetData = new SpellTargetingData();
-//            targetData.target = target;
-//            ClientMagicData.setTargetingData(targetData);
-//        }
-
-        super.onClientPreCast(level, entity, hand, playerMagicData);
+    public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        var target = findTarget(entity);
+        if (target == null)
+            return false;
+        else {
+            playerMagicData.setAdditionalCastData(new HealTargetingData(target));
+            if (entity instanceof ServerPlayer serverPlayer)
+                Messages.sendToPlayer(new ClientboundSyncTargetingData(target), serverPlayer);
+            return true;
+        }
     }
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof HealTargetingData healTargetingData) {
-            healTargetingData.targetEntity.heal(getSpellPower(entity));
-            Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(healTargetingData.targetEntity.position()), healTargetingData.targetEntity, true);
+            var targetEntity = healTargetingData.getTarget((ServerLevel) world);
+            targetEntity.heal(getSpellPower(entity));
+            Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(targetEntity.position()), targetEntity, true);
         }
 
         super.onCast(world, entity, playerMagicData);
     }
 
     @Nullable
-    private LivingEntity getTarget(LivingEntity caster) {
+    private LivingEntity findTarget(LivingEntity caster) {
         var target = Utils.raycastForEntity(caster.level, caster, 32, true);
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             return livingTarget;
@@ -95,27 +89,24 @@ public class BlessingOfLifeSpell extends AbstractSpell {
         }
     }
 
-    @Override
-    public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
-        super.onServerCastTick(level, entity, playerMagicData);
-        if (entity instanceof ServerPlayer serverPlayer && playerMagicData.getAdditionalCastData() instanceof HealTargetingData healTargetingData) {
-            if (healTargetingData.targetEntity == null)
-                Utils.serverSideCancelCast(serverPlayer);
-        }
-    }
 
     public class HealTargetingData implements CastData {
         //private Entity castingEntity;
-        private LivingEntity targetEntity;
-
+        //private LivingEntity targetEntity;
+        private UUID targetUUID;
 
         HealTargetingData(LivingEntity target) {
-            this.targetEntity = target;
+            //this.targetEntity = target;
+            this.targetUUID = target.getUUID();
         }
 
         @Override
         public void reset() {
 
+        }
+
+        public LivingEntity getTarget(ServerLevel level) {
+            return (LivingEntity) level.getEntity(targetUUID);
         }
     }
 }

@@ -28,8 +28,8 @@ public class ShieldEntity extends AbstractShieldEntity {
 
     public ShieldEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        width = 3;
-        height = 3;
+        width = 4;
+        height = 4;
         subEntities = new ShieldPart[width * height];
         subPositions = new Vec3[width * height];
         this.setHealth(10);

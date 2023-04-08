@@ -220,6 +220,9 @@ public abstract class AbstractSpell {
                 return false;
             }
 
+            if (!checkPreCastConditions(level, serverPlayer, playerMagicData))
+                return false;
+
             if (this.castType == CastType.INSTANT) {
                 /*
                  * Immediately cast spell
@@ -316,6 +319,13 @@ public abstract class AbstractSpell {
         }
 
         //entity.playSound(sound.orElse(this:def), 1.0f, 1.0f));
+    }
+
+    /**
+     * Server Side. Used to see if a spell is allowed to be cast, such as if it requires a target but finds none
+     */
+    public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        return true;
     }
 
     protected void playSound(Optional<SoundEvent> sound, Entity entity) {
