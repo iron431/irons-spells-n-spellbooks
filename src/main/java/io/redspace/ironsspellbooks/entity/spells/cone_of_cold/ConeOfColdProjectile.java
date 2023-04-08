@@ -56,8 +56,8 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         //irons_spellbooks.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         var entity = entityHitResult.getEntity();
-        DamageSources.applyDamage(entity, damage, SpellType.CONE_OF_COLD_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
-        entity.setTicksFrozen(entity.getTicksFrozen() + 80);
+        if (DamageSources.applyDamage(entity, damage, SpellType.CONE_OF_COLD_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE)  && !level.isClientSide)
+            entity.setTicksFrozen(entity.getTicksFrozen() + 80);
     }
 
 }
