@@ -1,1 +1,20 @@
-{  "type": "minecraft:crafting_shaped",  "pattern": [    "RRR",    "ROR",    "RRR"  ],  "key": {    "O": {      "item": "irons_spellbooks:upgrade_orb"    },    "R": {      "item": "irons_spellbooks:evocation_rune"    }  },  "result": {    "item": "irons_spellbooks:evocation_upgrade_orb",    "count": 1  }}
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "ROR",
+    "RRR"
+  ],
+  "key": {
+    "O": {
+      "item": "irons_spellbooks:upgrade_orb"
+    },
+    "R": {
+      "item": "irons_spellbooks:evocation_rune"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:evocation_upgrade_orb",
+    "count": 1
+  }
+}
