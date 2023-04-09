@@ -34,7 +34,7 @@ public class FangStrikeSpell extends AbstractSpell {
         super(SpellType.FANG_STRIKE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 3;
-        this.baseSpellPower = 8;
+        this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 30;

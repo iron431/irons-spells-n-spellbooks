@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
@@ -33,7 +34,7 @@ public class FangWardSpell extends AbstractSpell {
         super(SpellType.FANG_WARD_SPELL);
         this.level = level;
         this.manaCostPerLevel = 5;
-        this.baseSpellPower = 5;
+        this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 45;
@@ -61,7 +62,7 @@ public class FangWardSpell extends AbstractSpell {
         for (int r = 0; r < rings; r++) {
             float fangs = count + r * 2;
             for (int i = 0; i < fangs; i++) {
-                Vec3 spawn = center.add(new Vec3(0, 0, 1.5 * (r + 1)).yRot(((6.281f / fangs) * i)));
+                Vec3 spawn = center.add(new Vec3(0, 0, 1.5 * (r + 1)).yRot(entity.getYRot() * Mth.DEG_TO_RAD + ((6.281f / fangs) * i)));
                 spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevevl(world, spawn, 5), spawn.z);
                 if (!world.getBlockState(new BlockPos(spawn).below()).isAir()) {
                     ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, get2DAngle(center, spawn), r, entity, getDamage(entity));
@@ -90,7 +91,7 @@ public class FangWardSpell extends AbstractSpell {
 //    }
 
     private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity) *.5f;
+        return getSpellPower(entity);
     }
 
     private int getRings() {

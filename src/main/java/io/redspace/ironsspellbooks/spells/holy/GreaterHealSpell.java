@@ -32,7 +32,7 @@ public class GreaterHealSpell extends AbstractSpell {
         this.manaCostPerLevel = 0;
         this.baseSpellPower = 0;
         this.spellPowerPerLevel = 0;
-        this.castTime = 200;
+        this.castTime = 120;
         this.baseManaCost = 100;
     }
 

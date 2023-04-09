@@ -61,8 +61,8 @@ public abstract class AbstractSpell {
     protected int level;
     protected int baseManaCost;
     protected int manaCostPerLevel;
-    protected int baseSpellPower;
-    protected int spellPowerPerLevel;
+    protected float baseSpellPower;
+    protected float spellPowerPerLevel;
     //All time values in ticks
     protected int castTime;
     //protected int cooldown;

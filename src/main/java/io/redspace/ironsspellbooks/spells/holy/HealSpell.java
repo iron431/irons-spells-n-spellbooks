@@ -39,8 +39,8 @@ public class HealSpell extends AbstractSpell {
         super(SpellType.HEAL_SPELL);
         this.level = level;
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 2;
+        this.baseSpellPower = 6;
+        this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 30;
     }

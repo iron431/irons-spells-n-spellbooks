@@ -28,7 +28,7 @@ public class MagicMissileSpell extends AbstractSpell {
         super(SpellType.MAGIC_MISSILE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 2;
+        this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 10;
@@ -55,7 +55,7 @@ public class MagicMissileSpell extends AbstractSpell {
     }
 
     private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity);
+        return getSpellPower(entity) * .5f;
     }
 
 }

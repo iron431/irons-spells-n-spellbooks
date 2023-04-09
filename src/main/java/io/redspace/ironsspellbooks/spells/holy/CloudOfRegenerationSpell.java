@@ -40,7 +40,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         this.level = level;
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 2;
-        this.spellPowerPerLevel = 2;
+        this.spellPowerPerLevel = 1;
         this.castTime = 200;
         this.baseManaCost = 10;
 

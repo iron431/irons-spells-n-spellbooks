@@ -31,7 +31,7 @@ public class MagicArrowSpell extends AbstractSpell {
     public MagicArrowSpell(int level) {
         super(SpellType.MAGIC_ARROW_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 20;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 2;
         this.castTime = 30;

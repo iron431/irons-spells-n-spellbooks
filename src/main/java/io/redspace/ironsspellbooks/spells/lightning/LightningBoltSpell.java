@@ -33,7 +33,7 @@ public class LightningBoltSpell extends AbstractSpell {
         this.level = level;
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 10;
-        this.spellPowerPerLevel = 3;
+        this.spellPowerPerLevel = 2;
         this.castTime = 0;
         this.baseManaCost = 75;
 

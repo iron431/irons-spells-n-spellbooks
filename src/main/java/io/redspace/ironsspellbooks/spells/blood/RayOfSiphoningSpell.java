@@ -37,7 +37,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     public RayOfSiphoningSpell(int level) {
         super(SpellType.RAY_OF_SIPHONING_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 2;
+        this.manaCostPerLevel = 1;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;

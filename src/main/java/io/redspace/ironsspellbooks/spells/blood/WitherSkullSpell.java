@@ -30,7 +30,7 @@ public class WitherSkullSpell extends AbstractSpell {
         super(SpellType.WITHER_SKULL_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 6;
+        this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 25;
@@ -58,6 +58,6 @@ public class WitherSkullSpell extends AbstractSpell {
     }
 
     private float getDamage(LivingEntity entity) {
-        return this.getSpellPower(entity);
+        return this.getSpellPower(entity) * .5f;
     }
 }

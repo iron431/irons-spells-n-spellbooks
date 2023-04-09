@@ -38,8 +38,8 @@ public class FortifySpell extends AbstractSpell {
         super(SpellType.FORTIFY_SPELL);
         this.level = level;
         this.manaCostPerLevel = 5;
-        this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 2;
+        this.baseSpellPower = 6;
+        this.spellPowerPerLevel = 1;
         this.castTime = 40;
         this.baseManaCost = 40;
     }
