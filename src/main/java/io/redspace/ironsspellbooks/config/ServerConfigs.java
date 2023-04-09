@@ -44,9 +44,10 @@ public class ServerConfigs {
         createSpellConfig(SpellType.COUNTERSPELL_SPELL, true, 1, SpellRarity.EPIC, 15);
         //Evocation
         BUILDER.comment("Evocation Spells");
-        createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, true, 6, SpellRarity.UNCOMMON, 10);
-        createSpellConfig(SpellType.FANG_STRIKE_SPELL, true, 15, SpellRarity.COMMON, 5);
-        createSpellConfig(SpellType.FANG_WARD_SPELL, true, 15, SpellRarity.COMMON, 15);
+        createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, true, 6, SpellRarity.UNCOMMON, 15);
+        createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, true, 6, SpellRarity.UNCOMMON, 15);
+        createSpellConfig(SpellType.FANG_STRIKE_SPELL, true, 10, SpellRarity.COMMON, 5);
+        createSpellConfig(SpellType.FANG_WARD_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.FIRECRACKER_SPELL, true, 10, SpellRarity.COMMON, 1.5);
         createSpellConfig(SpellType.INVISIBILITY_SPELL, true, 6, SpellRarity.RARE, 60);
         createSpellConfig(SpellType.LOB_CREEPER_SPELL, true, 10, SpellRarity.UNCOMMON, 2);

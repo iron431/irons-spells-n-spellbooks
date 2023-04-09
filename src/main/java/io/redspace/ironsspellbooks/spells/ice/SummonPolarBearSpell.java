@@ -60,6 +60,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
 
         polarBear.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(getBearDamage(entity));
         polarBear.getAttributes().getInstance(Attributes.MAX_HEALTH).setBaseValue(getBearHealth(entity));
+        polarBear.setHealth(polarBear.getMaxHealth());
 
         world.addFreshEntity(polarBear);
 

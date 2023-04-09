@@ -21,17 +21,17 @@ public class IcicleSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
     public IcicleSpell(int level) {
         super(SpellType.ICICLE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 4;
+        this.baseSpellPower = 2;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 15;
+        this.baseManaCost = 10;
     }
 
     @Override
@@ -49,9 +49,13 @@ public class IcicleSpell extends AbstractSpell {
         IcicleProjectile icicle = new IcicleProjectile(world, entity);
         icicle.setPos(entity.position().add(0, entity.getEyeHeight() - icicle.getBoundingBox().getYsize() * .5f, 0));
         icicle.shoot(entity.getLookAngle());
-        icicle.setDamage(getSpellPower(entity));
+        icicle.setDamage(getDamage(entity));
         icicle.setNoGravity(true);
         world.addFreshEntity(icicle);
         super.onCast(world, entity, playerMagicData);
     }
+    private float getDamage(LivingEntity entity) {
+        return getSpellPower(entity);
+    }
+
 }

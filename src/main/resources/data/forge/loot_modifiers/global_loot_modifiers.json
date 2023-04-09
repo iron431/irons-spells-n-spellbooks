@@ -4,8 +4,9 @@
     "irons_spellbooks:entity_drops/stray_modifier",
     "irons_spellbooks:entity_drops/hoglin_modifier",
     "irons_spellbooks:entity_drops/evoker_modifier",
+    "irons_spellbooks:entity_drops/blaze_modifier",
     "irons_spellbooks:chest_loot/ancient_city_modifier",
     "irons_spellbooks:chest_loot/nether_loot_modifier",
-    "irons_spellbooks:chest_loot/low_quality_scroll_modifier"
+    "irons_spellbooks:chest_loot/generic_low_quality_loot_modifier"
   ]
 }

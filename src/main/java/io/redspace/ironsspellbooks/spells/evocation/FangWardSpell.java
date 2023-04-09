@@ -34,7 +34,7 @@ public class FangWardSpell extends AbstractSpell {
         this.level = level;
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 5;
-        this.spellPowerPerLevel = 2;
+        this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 45;
 
@@ -90,7 +90,7 @@ public class FangWardSpell extends AbstractSpell {
 //    }
 
     private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity);
+        return getSpellPower(entity) *.5f;
     }
 
     private int getRings() {

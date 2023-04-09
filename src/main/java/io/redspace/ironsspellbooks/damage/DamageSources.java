@@ -65,11 +65,14 @@ public class DamageSources {
         return new IndirectEntityDamageSource(source.msgId, projectile, attacker);
     }
 
+    /**
+     * Returns the resistance multiplier of the entity. (If they are resistant, the value is < 1)
+     */
     public static float getResist(LivingEntity entity, SchoolType damageSchool) {
-        if (damageSchool == null)
-            return 1;
-        else
-            return (float) entity.getAttributeValue(AttributeRegistry.SPELL_RESIST.get());
+//        if (damageSchool == null)
+//            return 1;
+//        else
+            return 2 - (float) entity.getAttributeValue(AttributeRegistry.SPELL_RESIST.get());
 //        return switch (damageSchool) {
 //            case FIRE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.FIRE_MAGIC_RESIST.get());
 //            case ICE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ICE_MAGIC_RESIST.get());

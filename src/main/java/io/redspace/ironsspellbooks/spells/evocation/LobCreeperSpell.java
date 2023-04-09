@@ -32,8 +32,8 @@ public class LobCreeperSpell extends AbstractSpell {
         super(SpellType.LOB_CREEPER_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 2;
+        this.baseSpellPower = 6;
+        this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 25;
     }

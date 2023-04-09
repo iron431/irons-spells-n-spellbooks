@@ -35,8 +35,8 @@ public class ChainCreeperSpell extends AbstractSpell {
         super(SpellType.CHAIN_CREEPER_SPELL);
         this.level = level;
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 1;
+        this.baseSpellPower = 5;
+        this.spellPowerPerLevel = 0;
         this.castTime = 30;
         this.baseManaCost = 40;
     }

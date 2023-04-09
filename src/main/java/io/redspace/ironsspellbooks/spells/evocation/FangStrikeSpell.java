@@ -85,6 +85,6 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity) * .5f;
+        return getSpellPower(entity);
     }
 }
