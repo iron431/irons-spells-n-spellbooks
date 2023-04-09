@@ -388,7 +388,6 @@ public abstract class AbstractSpell {
     }
 
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-
         return List.of();
     }
 
