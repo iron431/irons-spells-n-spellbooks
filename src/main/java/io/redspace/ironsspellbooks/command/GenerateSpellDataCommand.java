@@ -19,6 +19,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.AbstractCollection;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class GenerateSpellDataCommand {
 
@@ -67,18 +69,18 @@ public class GenerateSpellDataCommand {
                         var u4 = uniqueInfo.size() >= 4 ? uniqueInfo.get(3).getString() : "";
 
                         sb.append(String.format(SPELL_DATA_TEMPLATE,
-                                spellType.name(),
-                                spellType.getSchoolType().name(),
+                                handleCapitalization(spellType.name()),
+                                handleCapitalization(spellType.getSchoolType().name()),
                                 String.format("../img/spells/%s.png", spellType.getId()),
                                 spellType.getMinLevel(),
                                 spellType.getMaxLevel(),
                                 spellMin.getManaCost(),
                                 spellMax.getManaCost(),
                                 spellMin.getSpellCooldown(),
-                                spellType.getCastType().name(),
-                                spellMin.getRarity().name(),
-                                spellMax.getRarity().name(),
-                                "",
+                                handleCapitalization(spellType.getCastType().name()),
+                                handleCapitalization(spellMin.getRarity().name()),
+                                handleCapitalization(spellMax.getRarity().name()),
+                                Component.translatable(String.format("%s.guide", spellType.getComponentId())).getString(),
                                 u1,
                                 u2,
                                 u3,
@@ -93,5 +95,19 @@ public class GenerateSpellDataCommand {
         }
 
         throw ERROR_FAILED.create();
+    }
+
+    private static String handleCapitalization(String input) {
+        var newItmes = Arrays.stream(input.toLowerCase().split("[ |_]"))
+                .map(word -> {
+                    if (word == "spell") {
+                        return "";
+                    } else {
+                        var first = word.substring(0, 1);
+                        var rest = word.substring(1);
+                        return first.toUpperCase() + rest;
+                    }
+                });
+        return newItmes.collect(Collectors.joining(" "));
     }
 }
