@@ -98,16 +98,17 @@ public class GenerateSpellDataCommand {
     }
 
     private static String handleCapitalization(String input) {
-        var newItmes = Arrays.stream(input.toLowerCase().split("[ |_]"))
+        return Arrays.stream(input.toLowerCase().split("[ |_]"))
                 .map(word -> {
-                    if (word == "spell") {
+                    if (word.equals("spell")) {
                         return "";
                     } else {
                         var first = word.substring(0, 1);
                         var rest = word.substring(1);
                         return first.toUpperCase() + rest;
                     }
-                });
-        return newItmes.collect(Collectors.joining(" "));
+                })
+                .collect(Collectors.joining(" "))
+                .trim();
     }
 }
