@@ -23,7 +23,7 @@ public class FrostbiteSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.frostbite_success_chance", Utils.stringTruncation(getSpellPower(null), 1))
+                Component.translatable("ui.irons_spellbooks.frostbite_success_chance", Utils.stringTruncation(getSpellPower(caster), 1))
 
         );
     }

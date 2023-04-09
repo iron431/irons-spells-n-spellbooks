@@ -61,8 +61,8 @@ public abstract class AbstractSpell {
     protected int level;
     protected int baseManaCost;
     protected int manaCostPerLevel;
-    protected float baseSpellPower;
-    protected float spellPowerPerLevel;
+    protected int baseSpellPower;
+    protected int spellPowerPerLevel;
     //All time values in ticks
     protected int castTime;
     //protected int cooldown;
@@ -388,7 +388,6 @@ public abstract class AbstractSpell {
     }
 
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-
         return List.of();
     }
 
