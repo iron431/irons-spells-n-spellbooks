@@ -74,25 +74,34 @@ public class BloodStepSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        HitResult hitResult = Utils.raycastForEntity(level, entity, getDistance(entity), true);
         Vec3 dest = null;
-        if (entity.isPassenger()) {
-            entity.stopRiding();
-        }
-        if (hitResult.getType() == HitResult.Type.ENTITY && ((EntityHitResult) hitResult).getEntity() instanceof LivingEntity target) {
-            //dest = target.position().subtract(new Vec3(0, 0, 1.5).yRot(target.getYRot()));
-            for (int i = 0; i < 8; i++) {
-                dest = target.position().subtract(new Vec3(0, 0, 1.5).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
-                if (level.getBlockState(new BlockPos(dest).above()).isAir())
-                    break;
+        var teleportData = (TeleportSpell.TeleportData) playerMagicData.getAdditionalCastData();
+        if (teleportData != null) {
+            var potentialTarget = teleportData.getTeleportTargetPosition();
+            if (potentialTarget != null) {
+                dest = Utils.putVectorOnWorldSurface(level, potentialTarget);
+                entity.teleportTo(dest.x, dest.y, dest.z);
+            }
+        }else{
+            HitResult hitResult = Utils.raycastForEntity(level, entity, getDistance(entity), true);
+            if (entity.isPassenger()) {
+                entity.stopRiding();
+            }
+            if (hitResult.getType() == HitResult.Type.ENTITY && ((EntityHitResult) hitResult).getEntity() instanceof LivingEntity target) {
+                //dest = target.position().subtract(new Vec3(0, 0, 1.5).yRot(target.getYRot()));
+                for (int i = 0; i < 8; i++) {
+                    dest = target.position().subtract(new Vec3(0, 0, 1.5).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
+                    if (level.getBlockState(new BlockPos(dest).above()).isAir())
+                        break;
+
+                }
+                entity.teleportTo(dest.x, dest.y + 1f, dest.z);
+                entity.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition().subtract(0, .15, 0));
+            } else {
+                dest = TeleportSpell.findTeleportLocation(level, entity, getDistance(entity));
+                entity.teleportTo(dest.x, dest.y, dest.z);
 
             }
-            entity.teleportTo(dest.x, dest.y + 1f, dest.z);
-            entity.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition().subtract(0, .15, 0));
-        } else {
-            dest = TeleportSpell.findTeleportLocation(level, entity, getDistance(entity));
-            entity.teleportTo(dest.x, dest.y, dest.z);
-
         }
         entity.resetFallDistance();
         level.playSound(null, dest.x, dest.y, dest.z, getCastFinishSound().get(), SoundSource.NEUTRAL, 1f, 1f);

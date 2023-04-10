@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
+import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -143,6 +144,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         if (!this.level.isClientSide) {
             this.setLivingEntityFlag(4, true);
         }
+        //Lil trick
+        this.setYRot((float) (Math.atan2(getDeltaMovement().z, getDeltaMovement().x) * Mth.RAD_TO_DEG));
     }
 
     @Override
@@ -245,6 +248,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
             playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
         }
+    }
+
+    public void setBurningDashDirectionData() {
+        playerMagicData.setAdditionalCastData(new BurningDashSpell.BurningDashDirectionOverrideCastData());
     }
 
     private void forceLookAtTarget(LivingEntity target) {

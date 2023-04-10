@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,7 +75,15 @@ public class BurningDashSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.hasImpulse = true;
         float multiplier = (15 + getSpellPower(entity)) / 12f;
-        var vec = entity.getLookAngle().multiply(3, 1, 3).normalize().add(0, .25, 0).scale(multiplier);
+        Vec3 forward = entity.getLookAngle();
+        if (playerMagicData.getAdditionalCastData() instanceof BurningDashDirectionOverrideCastData) {
+            if (world.random.nextBoolean())
+                forward = forward.yRot(90);
+            else
+                forward = forward.yRot(-90);
+
+        }
+        var vec = forward.multiply(3, 1, 3).normalize().add(0, .25, 0).scale(multiplier);
         playerMagicData.setAdditionalCastData(new BurningDashCastData((float) vec.x, (float) vec.y, (float) vec.z, true));
         entity.setDeltaMovement(entity.getDeltaMovement().add(vec));
         if (entity.isOnGround())
@@ -136,6 +145,14 @@ public class BurningDashSpell extends AbstractSpell {
             this.z = buffer.readFloat();
             this.hasImpulse = buffer.readBoolean();
         }
+
+        @Override
+        public void reset() {
+
+        }
+    }
+
+    public static class BurningDashDirectionOverrideCastData implements CastData {
 
         @Override
         public void reset() {
