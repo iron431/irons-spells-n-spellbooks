@@ -23,7 +23,7 @@ public class WitherSkullSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
     public WitherSkullSpell(int level) {
@@ -33,7 +33,7 @@ public class WitherSkullSpell extends AbstractSpell {
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 25;
+        this.baseManaCost = 20;
     }
 
     @Override

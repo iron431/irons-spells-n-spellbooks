@@ -21,14 +21,14 @@ public class MagicMissileSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 2)));
     }
 
     public MagicMissileSpell(int level) {
         super(SpellType.MAGIC_MISSILE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 8;
+        this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 10;
@@ -55,7 +55,7 @@ public class MagicMissileSpell extends AbstractSpell {
     }
 
     private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity) * .5f;
+        return getSpellPower(entity);
     }
 
 }

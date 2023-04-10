@@ -35,7 +35,7 @@ public class LobCreeperSpell extends AbstractSpell {
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 25;
+        this.baseManaCost = 20;
     }
 
     @Override
