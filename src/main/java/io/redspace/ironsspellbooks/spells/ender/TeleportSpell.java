@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -113,15 +114,17 @@ public class TeleportSpell extends AbstractSpell {
         var pos = blockHitResult.getBlockPos();
 
         Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() / 3, 0, entity.getBbHeight() / 3);
-        Vec3 rawImpact = blockHitResult.getLocation().subtract(bbOffset);
-        int ledgeY = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
+        Vec3 bbImpact = blockHitResult.getLocation().subtract(bbOffset);
+        //        Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+        int ledgeY = (int) level.clip(new ClipContext(Vec3.atBottomCenterOf(pos).add(0, 3, 0), Vec3.atBottomCenterOf(pos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation().y;
         Vec3 correctedPos = new Vec3(pos.getX(), ledgeY, pos.getZ());
-        boolean los = level.clip(new ClipContext(rawImpact, rawImpact.add(0, ledgeY - pos.getY(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getType() == HitResult.Type.MISS;
+        boolean isAir = level.getBlockState(new BlockPos(correctedPos)).isAir();
+        boolean los = level.clip(new ClipContext(bbImpact, bbImpact.add(0, ledgeY - pos.getY(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getType() == HitResult.Type.MISS;
 
-        if (los && Math.abs(ledgeY - pos.getY()) <= 3) {
-            return correctedPos.add(0.5, 0, 0.5);
+        if (isAir && los && Math.abs(ledgeY - pos.getY()) <= 3) {
+            return correctedPos.add(0.5, 0.076, 0.5);
         } else {
-            return level.clip(new ClipContext(rawImpact, rawImpact.add(0, -entity.getEyeHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getLocation();
+            return level.clip(new ClipContext(bbImpact, bbImpact.add(0, -entity.getEyeHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getLocation().add(0, 0.076, 0);
         }
 
     }

@@ -401,7 +401,7 @@ public class Utils {
     /**
      * From the given start position, this finds the first air block within +/- maxSteps
      */
-    public static int findRelativeGroundLevevl(Level level, Vec3 start, int maxSteps) {
+    public static int findRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
         if (!level.getBlockState(new BlockPos(start)).isAir()) {
             for (int i = 0; i < maxSteps; i++) {
                 start = start.add(0, 1, 0);
