@@ -1,17 +1,17 @@
 package io.redspace.ironsspellbooks.item;
 
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import net.minecraft.world.item.Item;
 
 public class UpgradeOrbItem extends Item {
-    private final Attribute attribute;
+    private final UpgradeType upgrade;
 
-    public UpgradeOrbItem(Attribute attribute, Properties pProperties) {
+    public UpgradeOrbItem(UpgradeType upgrade, Properties pProperties) {
         super(pProperties);
-        this.attribute = attribute;
+        this.upgrade = upgrade;
     }
 
-    public Attribute getUpgradeAttribute() {
-        return this.attribute;
+    public UpgradeType getUpgradeType() {
+        return this.upgrade;
     }
 }

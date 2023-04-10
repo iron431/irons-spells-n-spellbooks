@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
+import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
@@ -88,9 +89,8 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             //Upgrade System
             else if (Utils.canBeUpgraded(baseItemStack) && UpgradeUtils.getUpgradeCount(baseItemStack) < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
                 result = baseItemStack.copy();
-                Attribute attribute = upgradeOrb.getUpgradeAttribute();
                 EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
-                UpgradeUtils.appendUpgrade(result, attribute, slot);
+                UpgradeUtils.appendUpgrade(result, upgradeOrb.getUpgradeType(), slot);
                 IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
             }
         }
