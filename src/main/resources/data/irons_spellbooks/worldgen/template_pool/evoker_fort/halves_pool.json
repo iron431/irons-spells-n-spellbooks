@@ -34,7 +34,7 @@
       "element": {
         "location": "irons_spellbooks:evoker_fort/halves/villager_cage",
         "processors": "irons_spellbooks:evoker_fort_randomizer",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     }

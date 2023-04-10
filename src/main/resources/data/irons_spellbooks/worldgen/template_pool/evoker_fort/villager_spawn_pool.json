@@ -1,0 +1,33 @@
+{
+  "name": "irons_spellbooks:evoker_fort_decoration_pool",
+  "fallback": "irons_spellbooks:catacombs_fallback_pool",
+  "elements": [
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:evoker_fort/villager_spawns/villager_normal",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:evoker_fort/villager_spawns/villager_mage",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:evoker_fort/villager_spawns/villager_bible",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}
