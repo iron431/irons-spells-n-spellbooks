@@ -206,6 +206,9 @@ dependencies {
     // CURIOS *****************************************************************************************************
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+
+    // JSON ******************************************************************************************************
+    implementation 'com.google.code.gson:gson:2.10.1'
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
