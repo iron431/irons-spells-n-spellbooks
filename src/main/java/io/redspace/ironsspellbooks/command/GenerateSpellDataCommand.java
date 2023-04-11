@@ -53,7 +53,6 @@ public class GenerateSpellDataCommand {
 
     private static int generateSpellData(CommandSourceStack source) throws CommandSyntaxException {
         try {
-            var file = new BufferedWriter(new FileWriter("spell_data.yml"));
             var sb = new StringBuilder();
 
             Arrays.stream(SpellType.values())
@@ -88,16 +87,19 @@ public class GenerateSpellDataCommand {
                         );
                     });
 
+            var file = new BufferedWriter(new FileWriter("spell_data.yml"));
             file.write(sb.toString());
             file.close();
+
             return 1;
+
         } catch (Exception e) {
         }
 
         throw ERROR_FAILED.create();
     }
 
-    private static String handleCapitalization(String input) {
+    public static String handleCapitalization(String input) {
         return Arrays.stream(input.toLowerCase().split("[ |_]"))
                 .map(word -> {
                     if (word.equals("spell")) {

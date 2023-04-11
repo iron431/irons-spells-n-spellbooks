@@ -17,5 +17,6 @@ public class CommandRegistry {
         CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());
         CreateDebugWizardCommand.register(event.getDispatcher());
         GenerateSpellDataCommand.register(event.getDispatcher());
+        GenerateRecipeDataCommand.register(event.getDispatcher());
     }
 }
