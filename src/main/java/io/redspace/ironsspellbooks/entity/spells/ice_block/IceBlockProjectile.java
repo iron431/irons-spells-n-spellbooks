@@ -150,7 +150,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
 
                     Vec3 diff = target.position().subtract(this.position());
                     if (diff.horizontalDistanceSqr() > 1) {
-                        this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.0125f)));
+                        this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.0105f)));
                     }
                     if (this.getY() - target.getY() > 3.5)
                         tooHigh = true;
@@ -167,7 +167,8 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
                 else
                     this.setDeltaMovement(getDeltaMovement().add(0, .01, 0));
 
-
+                if (airTime == 0)
+                    this.setDeltaMovement(0, 0.5, 0);
             } else {
                 this.setDeltaMovement(0, getDeltaMovement().y - .15, 0);
             }
@@ -192,6 +193,11 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
     }
 
     @Override
+    public void setYRot(float pYRot) {
+//        super.setYRot(pYRot);
+    }
+
+    @Override
     public boolean canBeCollidedWith() {
         return true;
     }
@@ -212,9 +218,17 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
         return Optional.empty();
     }
 
-    @Override
-    public void registerControllers(AnimationData data) {
+//    private final AnimationBuilder form = new AnimationBuilder().addAnimation("form", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+//
+//    private PlayState predicate(AnimationEvent animationEvent) {
+//        //IronsSpellbooks.LOGGER.debug("hello?");
+//        if (animationEvent.getController().getAnimationState() == AnimationState.Stopped)
+//            animationEvent.getController().setAnimation(form);
+//        return PlayState.CONTINUE;
+//    }
 
+    public void registerControllers(AnimationData data) {
+//        data.addAnimationController(new AnimationController(this, "ice_block_animations", 0, this::predicate));
     }
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);

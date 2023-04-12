@@ -26,6 +26,7 @@ public class ServerConfigs {
     static {
         //IronsSpellbooks.LOGGER.debug("CFG: static");
         BUILDER.comment("Individual Spell Configuration");
+        BUILDER.push("Spells");
 
         //Blood
         BUILDER.comment("Blood Spells");
@@ -92,7 +93,7 @@ public class ServerConfigs {
         BUILDER.comment("Void Spells");
         createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, true, 3, SpellRarity.LEGENDARY, 300);
         createSpellConfig(SpellType.VOID_TENTACLES_SPELL, true, 3, SpellRarity.LEGENDARY, 30);
-
+        BUILDER.pop();
 
         BUILDER.comment("Other Configuration");
         BUILDER.push("MISC");
