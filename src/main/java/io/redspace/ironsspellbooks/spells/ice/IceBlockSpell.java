@@ -6,11 +6,11 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -51,7 +51,7 @@ public class IceBlockSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        HitResult raycast = Utils.raycastForEntity(level, entity, 40, true);
+        HitResult raycast = Utils.raycastForEntity(level, entity, 32, true);
         Vec3 spawn;
         LivingEntity target = null;
         if (raycast.getType() == HitResult.Type.ENTITY) {
@@ -59,15 +59,25 @@ public class IceBlockSpell extends AbstractSpell {
             if (((EntityHitResult) raycast).getEntity() instanceof LivingEntity livingEntity)
                 target = livingEntity;
         } else {
-            spawn = raycast.getLocation().subtract(entity.getForward());
-            spawn = Utils.raycastForBlock(level, spawn.add(0, 2, 0), spawn.subtract(0, 2, 0), ClipContext.Fluid.NONE).getLocation().add(0, 1, 0);
+            spawn = raycast.getLocation().subtract(entity.getForward().normalize());
         }
         IceBlockProjectile iceBlock = new IceBlockProjectile(level, entity, target);
-        iceBlock.moveTo(spawn.add(0, 4, 0));
+        iceBlock.moveTo(raiseWithCollision(spawn, 4, level));
         iceBlock.setAirTime(target == null ? 20 : 50);
         iceBlock.setDamage(getDamage(entity));
         level.addFreshEntity(iceBlock);
         super.onCast(level, entity, playerMagicData);
+    }
+
+    private Vec3 raiseWithCollision(Vec3 start, int blocks, Level level) {
+        for (int i = 0; i < blocks; i++) {
+            Vec3 raised = start.add(0, 1, 0);
+            if (level.getBlockState(new BlockPos(raised)).isAir())
+                start = raised;
+            else
+                break;
+        }
+        return start;
     }
 
     private float getDamage(LivingEntity entity) {

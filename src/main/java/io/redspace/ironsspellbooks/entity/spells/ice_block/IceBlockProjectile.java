@@ -107,7 +107,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
     private void doFallingDamage(Entity target) {
         if (level.isClientSide)
             return;
-        if (victims.contains(target))
+        if (!canHitEntity(target) && victims.contains(target))
             return;
         boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
         if (flag) {
@@ -115,8 +115,26 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
             victims.add(target);
             target.invulnerableTime = 0;
         }
-        IronsSpellbooks.LOGGER.debug("IceBlockProjectileRotation.doFallingDamage: {}", target.getName().getString());
+        IronsSpellbooks.LOGGER.debug("IceBlockProjectile.doFallingDamage: {}", target.getName().getString());
 
+    }
+
+    private void doImpactDamage() {
+        float explosionRadius = 3.5f;
+        level.getEntities(this, this.getBoundingBox().inflate(explosionRadius)).forEach((entity) -> {
+            if (canHitEntity(entity)) {
+                double distance = entity.distanceToSqr(position());
+                if (distance < explosionRadius * explosionRadius) {
+                    double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
+                    float damage = (float) (this.damage * p);
+                    IronsSpellbooks.LOGGER.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
+
+                    if (DamageSources.applyDamage(entity, damage, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE))
+                        entity.setTicksFrozen(200);
+                }
+            }
+
+        });
     }
 
     @Override
@@ -130,11 +148,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
             if (airTime <= 0) {
                 //Falling
                 if (isOnGround()) {
-                    level.getEntities(this, getBoundingBox().inflate(1.5)).forEach((entity) ->
-                    {
-                        if (DamageSources.applyDamage(entity, getDamage(), SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE))
-                            entity.setTicksFrozen(200);
-                    });
+                    doImpactDamage();
                     playSound(SoundRegistry.ICE_BLOCK_IMPACT.get());
                     impactParticles(getX(), getY(), getZ());
                     discard();
@@ -200,6 +214,11 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
     @Override
     public boolean canBeCollidedWith() {
         return true;
+    }
+
+    @Override
+    protected boolean canHitEntity(Entity pTarget) {
+        return pTarget != getOwner() && super.canHitEntity(pTarget);
     }
 
     @Override
