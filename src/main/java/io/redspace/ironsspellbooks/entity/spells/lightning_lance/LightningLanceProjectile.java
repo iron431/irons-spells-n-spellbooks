@@ -91,7 +91,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public boolean canHaveGravity() {
+    public boolean respectsGravity() {
         return true;
     }
 }

@@ -145,7 +145,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             this.setLivingEntityFlag(4, true);
         }
         //Lil trick
-        this.setYRot((float) (Math.atan2(getDeltaMovement().z, getDeltaMovement().x) * Mth.RAD_TO_DEG));
+        this.setYRot((float) (Math.atan2(getDeltaMovement().x, getDeltaMovement().z) * Mth.RAD_TO_DEG));
     }
 
     @Override

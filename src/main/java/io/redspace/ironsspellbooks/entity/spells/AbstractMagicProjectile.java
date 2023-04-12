@@ -8,8 +8,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -48,7 +46,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         return damage;
     }
 
-    public boolean canHaveGravity() {
+    public boolean respectsGravity() {
         return false;
     }
 
@@ -69,7 +67,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         }
         setPos(position().add(getDeltaMovement()));
 
-        if (!this.isNoGravity() && canHaveGravity()) {
+        if (!this.isNoGravity() && respectsGravity()) {
             Vec3 vec34 = this.getDeltaMovement();
             this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
         }
@@ -79,11 +77,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     @Override
     protected void onHit(HitResult hitresult) {
-        if (hitresult.getType() == HitResult.Type.ENTITY) {
-            onHitEntity((EntityHitResult) hitresult);
-        } else if (hitresult.getType() == HitResult.Type.BLOCK) {
-            onHitBlock((BlockHitResult) hitresult);
-        }
+        super.onHit(hitresult);
         double x = xOld;
         double y = yOld;
         double z = zOld;

@@ -207,5 +207,15 @@
     "sounds": [
       "irons_spellbooks:abyssal_shroud_cast"
     ]
+  },
+  "cast.ice_block": {
+    "sounds": [
+      "irons_spellbooks:ice_block_cast"
+    ]
+  },
+  "entity.ice_block.impact": {
+    "sounds": [
+      "irons_spellbooks:ice_block_impact"
+    ]
   }
 }

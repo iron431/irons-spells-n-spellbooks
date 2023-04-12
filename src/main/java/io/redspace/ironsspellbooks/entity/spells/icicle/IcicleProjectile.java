@@ -83,7 +83,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public boolean canHaveGravity() {
+    public boolean respectsGravity() {
         return true;
     }
 }
