@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
@@ -41,6 +42,7 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
     protected void onHitEntity(EntityHitResult pResult) {
         Entity entity = pResult.getEntity();
         DamageSources.applyDamage(entity, damage, SpellType.WITHER_SKULL_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
+        IronsSpellbooks.LOGGER.debug("hmm.");
     }
 
     @Override

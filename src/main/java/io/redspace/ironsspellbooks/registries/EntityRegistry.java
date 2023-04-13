@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
+import io.redspace.ironsspellbooks.entity.spells.ExtendedLargeFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedSmallFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
@@ -196,6 +197,12 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "small_fireball").toString()));
+
+    public static final RegistryObject<EntityType<ExtendedLargeFireball>> LARGE_FIREBALL_PROJECTILE =
+            ENTITIES.register("large_fireball", () -> EntityType.Builder.<ExtendedLargeFireball>of(ExtendedLargeFireball::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(4)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "large_fireball").toString()));
 
     public static final RegistryObject<EntityType<SummonedPolarBear>> SUMMONED_POLAR_BEAR =
             ENTITIES.register("summoned_polar_bear", () -> EntityType.Builder.<SummonedPolarBear>of(SummonedPolarBear::new, MobCategory.CREATURE)
