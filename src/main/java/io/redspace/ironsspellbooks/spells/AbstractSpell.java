@@ -100,10 +100,6 @@ public abstract class AbstractSpell {
         return spellType.getSchoolType();
     }
 
-    public DamageSource getDamageSource() {
-        return this.spellType.getDamageSource();
-    }
-
     public int getLevel() {
         return this.level;
     }

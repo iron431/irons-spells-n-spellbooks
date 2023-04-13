@@ -81,7 +81,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.FROST_STEP, true, 8, SpellRarity.RARE, 10);
         createSpellConfig(SpellType.ICICLE_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, true, 10, SpellRarity.RARE, 180);
-        createSpellConfig(SpellType.ICE_BLOCK_SPELL, true, 10, SpellRarity.UNCOMMON, 20);
+        createSpellConfig(SpellType.ICE_BLOCK_SPELL, true, 6, SpellRarity.RARE, 20);
         //Lightning
         BUILDER.comment("Lightning Spells");
         createSpellConfig(SpellType.ELECTROCUTE_SPELL, true, 10, SpellRarity.COMMON, 25);

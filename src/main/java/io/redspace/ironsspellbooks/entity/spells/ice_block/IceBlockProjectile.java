@@ -107,7 +107,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
     private void doFallingDamage(Entity target) {
         if (level.isClientSide)
             return;
-        if (!canHitEntity(target) && victims.contains(target))
+        if (!canHitEntity(target) || victims.contains(target))
             return;
         boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
         if (flag) {

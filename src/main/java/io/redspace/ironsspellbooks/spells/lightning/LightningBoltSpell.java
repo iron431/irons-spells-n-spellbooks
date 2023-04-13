@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.entity.spells.ExtendedLightningBolt;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -9,7 +10,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -52,8 +52,8 @@ public class LightningBoltSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         Vec3 pos = Utils.raycastForEntity(level, entity, 100, true).getLocation();
-        LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
-        lightningBolt.setDamage(getSpellPower(entity));
+        LightningBolt lightningBolt = new ExtendedLightningBolt(level, entity, getSpellPower(entity));
+        //lightningBolt.setDamage(getSpellPower(entity));
         lightningBolt.setPos(pos);
         if (entity instanceof ServerPlayer serverPlayer)
             lightningBolt.setCause(serverPlayer);
