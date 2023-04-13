@@ -31,7 +31,7 @@ public class EvasionSpell extends AbstractSpell {
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 5;
+        this.baseManaCost = 40;
     }
 
     @Override

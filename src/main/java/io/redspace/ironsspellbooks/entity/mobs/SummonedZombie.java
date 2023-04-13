@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
@@ -116,7 +115,7 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
 
     @Override
     public LivingEntity getSummoner() {
-        if (this.cachedSummoner != null && !this.cachedSummoner.isRemoved()) {
+        if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
             return this.cachedSummoner;
         } else if (this.summonerUUID != null && this.level instanceof ServerLevel) {
             if (((ServerLevel) this.level).getEntity(this.summonerUUID) instanceof LivingEntity livingEntity)

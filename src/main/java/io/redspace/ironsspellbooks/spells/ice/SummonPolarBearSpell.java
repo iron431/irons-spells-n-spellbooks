@@ -25,7 +25,6 @@ public class SummonPolarBearSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.summon_count", 1),
                 Component.translatable("ui.irons_spellbooks.hp", getBearHealth(null)),
                 Component.translatable("ui.irons_spellbooks.damage", getBearDamage(null))
         );

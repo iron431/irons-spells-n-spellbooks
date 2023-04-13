@@ -126,7 +126,7 @@ public class SpectralSteed extends AbstractHorse implements MagicSummon {
     }
 
     public LivingEntity getSummoner() {
-        if (this.cachedSummoner != null && !this.cachedSummoner.isRemoved()) {
+        if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
             return this.cachedSummoner;
         } else if (this.getOwnerUUID() != null && this.level instanceof ServerLevel) {
             if (((ServerLevel) this.level).getEntity(this.getOwnerUUID()) instanceof LivingEntity livingEntity)
