@@ -61,7 +61,7 @@ public class ExtendedLargeFireball extends LargeFireball implements AntiMagicSus
                 }
             }
             boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-            this.level.explode(null, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
+            this.level.explode(null, SpellType.FIREBALL_SPELL.getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
             this.discard();
         }
     }
