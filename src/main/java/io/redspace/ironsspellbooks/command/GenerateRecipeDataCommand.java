@@ -79,8 +79,11 @@ public class GenerateRecipeDataCommand {
 
                         var resultItemResourceLocation = ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem());
                         var recipeData = new ArrayList<RecipeData>(10);
-                        recipeData.add(new RecipeData(recipe.getResultItem().getItem().getName(ItemStack.EMPTY).getString(),
-                                String.format("/img/items/%s.png", resultItemResourceLocation.getPath())));
+                        recipeData.add(new RecipeData(
+                                recipe.getResultItem().getItem().getName(ItemStack.EMPTY).getString(),
+                                String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
+                                recipe.getResultItem().getItem())
+                        );
 
                         recipe.getIngredients().forEach(ingredient -> {
                             Arrays.stream(ingredient.getItems())
@@ -97,7 +100,8 @@ public class GenerateRecipeDataCommand {
 
                                         recipeData.add(new RecipeData(
                                                 itemStack.getItem().getName(ItemStack.EMPTY).getString(),
-                                                path));
+                                                path,
+                                                recipe.getResultItem().getItem()));
                                     }, () -> {
                                         recipeData.add(RecipeData.EMPTY);
                                     });
@@ -105,7 +109,7 @@ public class GenerateRecipeDataCommand {
 
                         var name = getRecipeDataAtIndex(recipeData, 0).name;
 
-                        if(getRecipeDataAtIndex(recipeData, 0).item instanceof SpellBook){
+                        if (getRecipeDataAtIndex(recipeData, 0).item instanceof SpellBook) {
                             spellbookBuilder.append(String.format(RECIPE_DATA_TEMPLATE,
                                     getRecipeDataAtIndex(recipeData, 0).name,
                                     getRecipeDataAtIndex(recipeData, 0).path,
@@ -129,8 +133,7 @@ public class GenerateRecipeDataCommand {
                                     getRecipeDataAtIndex(recipeData, 9).name,
                                     getRecipeDataAtIndex(recipeData, 9).path
                             ));
-                        }
-                        else if (armorTypes.stream().anyMatch(item -> name.contains(item))) {
+                        } else if (armorTypes.stream().anyMatch(item -> name.contains(item))) {
                             var words = name.split(" ");
                             var group = Arrays.stream(words).limit(words.length - 1).collect(Collectors.joining(" "));
 
