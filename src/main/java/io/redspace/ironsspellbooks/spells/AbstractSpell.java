@@ -240,7 +240,6 @@ public abstract class AbstractSpell {
                  */
                 castSpell(level, serverPlayer, castSource, triggerCooldown);
             } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS || this.castType == CastType.CHARGE) {
-                //TODO: effective cast time needs better logic (it reduces continuous cast duration and will need to be utilized in faster charge casting)
                 /*
                  * Prepare to cast spell (magic manager will pick it up by itself)
                  */

@@ -26,6 +26,10 @@
         {
           "type": "minecraft:item",
           "name": "irons_spellbooks:frostward_ring"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:cast_time_ring"
         }
       ]
     }

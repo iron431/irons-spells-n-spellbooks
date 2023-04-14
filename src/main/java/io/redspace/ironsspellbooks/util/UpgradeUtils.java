@@ -117,12 +117,6 @@ public class UpgradeUtils {
         return 0;
     }
 
-//    public static float getModifierAmount(Attribute attribute, int upgradesApplied) {
-//        //TODO: switch to enum for way more flexibility
-//        float amountPerUpgrade = attribute == AttributeRegistry.COOLDOWN_REDUCTION.get() ? .05f : .025f;
-//        return upgradesApplied * amountPerUpgrade;
-//    }
-
     public static Map<UpgradeType, Integer> deserializeUpgrade(ItemStack stack) {
         ListTag upgrades = stack.getOrCreateTag().getList(Upgrades, 10);
         //String attributeName = Registry.ATTRIBUTE.getKey(attribute).toString();
