@@ -238,7 +238,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         float reverseScale = 1 / textScale;
 
         String castKey = spell.getCastType() == CastType.CONTINUOUS ? "ui.irons_spellbooks.cast_continuous" : "ui.irons_spellbooks.cast_type";
-        String castContents = spell.getCastType() == CastType.INSTANT ? "Instant" : Utils.timeFromTicks(spell.getCastTime(), 1);
+        String castContents = spell.getCastType() == CastType.INSTANT ? "Instant" : Utils.timeFromTicks(spell.getEffectiveCastTime(null), 1);
         Component school = spell.getSchoolType().getDisplayName();
         poseStack.scale(textScale, textScale, textScale);
 

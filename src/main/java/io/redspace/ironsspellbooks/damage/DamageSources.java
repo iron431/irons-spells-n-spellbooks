@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.damage;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
@@ -72,7 +73,7 @@ public class DamageSources {
 //        if (damageSchool == null)
 //            return 1;
 //        else
-            return 2 - (float) entity.getAttributeValue(AttributeRegistry.SPELL_RESIST.get());
+        return 2 - (float) Utils.softCapFormula(entity.getAttributeValue(AttributeRegistry.SPELL_RESIST.get()));
 //        return switch (damageSchool) {
 //            case FIRE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.FIRE_MAGIC_RESIST.get());
 //            case ICE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ICE_MAGIC_RESIST.get());

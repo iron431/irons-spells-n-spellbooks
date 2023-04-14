@@ -74,7 +74,7 @@ public class Utils {
     }
 
     public static boolean canBeUpgraded(ItemStack stack) {
-        //TODO: add config overrides to allow user specified items to be upgraded
+        //TODO: add config/tag support to allow user specified items to be upgraded
         return stack.getItem() instanceof SpellBook || stack.is(ModTags.CAN_BE_UPGRADED);
     }
 
@@ -88,6 +88,28 @@ public class Utils {
             affix = "m";
         }
         return stringTruncation(time, decimalPlaces) + affix;
+    }
+
+//    public static double getAttributeMultiplier(LivingEntity entity, Attribute attribute, boolean reductive/*, @Nullable ItemStack activeItem*/) {
+//        double baseValue = entity.getAttributeValue(attribute);
+////        if (activeItem != null && entity.getMainHandItem() != activeItem) {
+////            var itemAttributes = entity.getMainHandItem().getAttributeModifiers(EquipmentSlot.MAINHAND).get(attribute);
+////            for (AttributeModifier modifier : itemAttributes)
+////                if (modifier.getOperation() == AttributeModifier.Operation.MULTIPLY_BASE)
+////                    baseValue -= modifier.getAmount();
+////        }
+//        if (!reductive) {
+//            return baseValue;
+//        } else {
+//            return 2 - baseValue <= 1.7 ? baseValue : 2 - Math.pow(Math.E, -(baseValue - 0.6) * (baseValue - 0.6));
+//        }
+//    }
+    /**
+     * X should be between 0-2, and has a horizontal asymptote of 2 applied to soft-cap it for reductive attribute calculations
+     */
+    public static double softCapFormula(double x){
+        //Softcap (https://www.desmos.com/calculator/cokngo3opu)
+        return x <= 1.7 ? x : 2 - Math.pow(Math.E, -(x - 0.6) * (x - 0.6));
     }
 
     public static boolean isPlayerHoldingSpellBook(Player player) {

@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -134,7 +135,8 @@ public class MagicManager {
             itemCoolDownModifer = 2;
         }
 
-        return (int) (AbstractSpell.getSpell(spellType, 1).getSpellCooldown() * (2 - playerCooldownModifier) * itemCoolDownModifer);
+        IronsSpellbooks.LOGGER.debug("getEffectiveSpellCooldown before:{},after:{}", playerCooldownModifier, Utils.softCapFormula(playerCooldownModifier));
+        return (int) (AbstractSpell.getSpell(spellType, 1).getSpellCooldown() * (2 - Utils.softCapFormula(playerCooldownModifier)) * itemCoolDownModifer);
     }
 
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {

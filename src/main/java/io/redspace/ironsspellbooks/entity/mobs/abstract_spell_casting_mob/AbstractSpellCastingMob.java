@@ -215,7 +215,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
         //irons_spellbooks.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level.isClientSide);
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
-        playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getCastTime(), CastSource.MOB);
+        playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getEffectiveCastTime(this), CastSource.MOB);
 
         if (!level.isClientSide) {
             castingSpell.onServerPreCast(level, this, playerMagicData);
