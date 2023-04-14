@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -29,6 +31,7 @@ public class GenerateRecipeDataCommand {
     private static final String RECIPE_DATA_TEMPLATE = """
             - name: "%s"
               path: "%s"
+              group: "%s"
               item0: "%s"
               item0Path: "%s"
               item1: "%s"
@@ -61,7 +64,11 @@ public class GenerateRecipeDataCommand {
 
     private static int generateRecipeData(CommandSourceStack source) throws CommandSyntaxException {
         try {
-            var sb = new StringBuilder();
+            var itemBuilder = new StringBuilder();
+            var armorBuilder = new StringBuilder();
+            var spellbookBuilder = new StringBuilder();
+
+            var armorTypes = List.of("Archevoker", "Cryomancer", "Cultist", "Electromancer", "Priest", "Pumpkin", "Pyromancer", "Shadow-Walker", "Wandering Magician", "Ring");
 
             Minecraft.getInstance().level.getRecipeManager().getRecipes()
                     .stream()
@@ -96,32 +103,98 @@ public class GenerateRecipeDataCommand {
                                     });
                         });
 
-                        sb.append(String.format(RECIPE_DATA_TEMPLATE,
-                                getRecipeDataAtIndex(recipeData, 0).name,
-                                getRecipeDataAtIndex(recipeData, 0).path,
-                                getRecipeDataAtIndex(recipeData, 1).name,
-                                getRecipeDataAtIndex(recipeData, 1).path,
-                                getRecipeDataAtIndex(recipeData, 2).name,
-                                getRecipeDataAtIndex(recipeData, 2).path,
-                                getRecipeDataAtIndex(recipeData, 3).name,
-                                getRecipeDataAtIndex(recipeData, 3).path,
-                                getRecipeDataAtIndex(recipeData, 4).name,
-                                getRecipeDataAtIndex(recipeData, 4).path,
-                                getRecipeDataAtIndex(recipeData, 5).name,
-                                getRecipeDataAtIndex(recipeData, 5).path,
-                                getRecipeDataAtIndex(recipeData, 6).name,
-                                getRecipeDataAtIndex(recipeData, 6).path,
-                                getRecipeDataAtIndex(recipeData, 7).name,
-                                getRecipeDataAtIndex(recipeData, 7).path,
-                                getRecipeDataAtIndex(recipeData, 8).name,
-                                getRecipeDataAtIndex(recipeData, 8).path,
-                                getRecipeDataAtIndex(recipeData, 9).name,
-                                getRecipeDataAtIndex(recipeData, 9).path
-                        ));
+                        var name = getRecipeDataAtIndex(recipeData, 0).name;
+
+                        if(getRecipeDataAtIndex(recipeData, 0).item instanceof SpellBook){
+                            spellbookBuilder.append(String.format(RECIPE_DATA_TEMPLATE,
+                                    getRecipeDataAtIndex(recipeData, 0).name,
+                                    getRecipeDataAtIndex(recipeData, 0).path,
+                                    "",
+                                    getRecipeDataAtIndex(recipeData, 1).name,
+                                    getRecipeDataAtIndex(recipeData, 1).path,
+                                    getRecipeDataAtIndex(recipeData, 2).name,
+                                    getRecipeDataAtIndex(recipeData, 2).path,
+                                    getRecipeDataAtIndex(recipeData, 3).name,
+                                    getRecipeDataAtIndex(recipeData, 3).path,
+                                    getRecipeDataAtIndex(recipeData, 4).name,
+                                    getRecipeDataAtIndex(recipeData, 4).path,
+                                    getRecipeDataAtIndex(recipeData, 5).name,
+                                    getRecipeDataAtIndex(recipeData, 5).path,
+                                    getRecipeDataAtIndex(recipeData, 6).name,
+                                    getRecipeDataAtIndex(recipeData, 6).path,
+                                    getRecipeDataAtIndex(recipeData, 7).name,
+                                    getRecipeDataAtIndex(recipeData, 7).path,
+                                    getRecipeDataAtIndex(recipeData, 8).name,
+                                    getRecipeDataAtIndex(recipeData, 8).path,
+                                    getRecipeDataAtIndex(recipeData, 9).name,
+                                    getRecipeDataAtIndex(recipeData, 9).path
+                            ));
+                        }
+                        else if (armorTypes.stream().anyMatch(item -> name.contains(item))) {
+                            var words = name.split(" ");
+                            var group = Arrays.stream(words).limit(words.length - 1).collect(Collectors.joining(" "));
+
+                            armorBuilder.append(String.format(RECIPE_DATA_TEMPLATE,
+                                    getRecipeDataAtIndex(recipeData, 0).name,
+                                    getRecipeDataAtIndex(recipeData, 0).path,
+                                    group,
+                                    getRecipeDataAtIndex(recipeData, 1).name,
+                                    getRecipeDataAtIndex(recipeData, 1).path,
+                                    getRecipeDataAtIndex(recipeData, 2).name,
+                                    getRecipeDataAtIndex(recipeData, 2).path,
+                                    getRecipeDataAtIndex(recipeData, 3).name,
+                                    getRecipeDataAtIndex(recipeData, 3).path,
+                                    getRecipeDataAtIndex(recipeData, 4).name,
+                                    getRecipeDataAtIndex(recipeData, 4).path,
+                                    getRecipeDataAtIndex(recipeData, 5).name,
+                                    getRecipeDataAtIndex(recipeData, 5).path,
+                                    getRecipeDataAtIndex(recipeData, 6).name,
+                                    getRecipeDataAtIndex(recipeData, 6).path,
+                                    getRecipeDataAtIndex(recipeData, 7).name,
+                                    getRecipeDataAtIndex(recipeData, 7).path,
+                                    getRecipeDataAtIndex(recipeData, 8).name,
+                                    getRecipeDataAtIndex(recipeData, 8).path,
+                                    getRecipeDataAtIndex(recipeData, 9).name,
+                                    getRecipeDataAtIndex(recipeData, 9).path
+                            ));
+                        } else {
+
+                            itemBuilder.append(String.format(RECIPE_DATA_TEMPLATE,
+                                    getRecipeDataAtIndex(recipeData, 0).name,
+                                    getRecipeDataAtIndex(recipeData, 0).path,
+                                    "",
+                                    getRecipeDataAtIndex(recipeData, 1).name,
+                                    getRecipeDataAtIndex(recipeData, 1).path,
+                                    getRecipeDataAtIndex(recipeData, 2).name,
+                                    getRecipeDataAtIndex(recipeData, 2).path,
+                                    getRecipeDataAtIndex(recipeData, 3).name,
+                                    getRecipeDataAtIndex(recipeData, 3).path,
+                                    getRecipeDataAtIndex(recipeData, 4).name,
+                                    getRecipeDataAtIndex(recipeData, 4).path,
+                                    getRecipeDataAtIndex(recipeData, 5).name,
+                                    getRecipeDataAtIndex(recipeData, 5).path,
+                                    getRecipeDataAtIndex(recipeData, 6).name,
+                                    getRecipeDataAtIndex(recipeData, 6).path,
+                                    getRecipeDataAtIndex(recipeData, 7).name,
+                                    getRecipeDataAtIndex(recipeData, 7).path,
+                                    getRecipeDataAtIndex(recipeData, 8).name,
+                                    getRecipeDataAtIndex(recipeData, 8).path,
+                                    getRecipeDataAtIndex(recipeData, 9).name,
+                                    getRecipeDataAtIndex(recipeData, 9).path
+                            ));
+                        }
                     });
 
-            var file = new BufferedWriter(new FileWriter("recipe_data.yml"));
-            file.write(sb.toString());
+            var file = new BufferedWriter(new FileWriter("item_data.yml"));
+            file.write(itemBuilder.toString());
+            file.close();
+
+            file = new BufferedWriter(new FileWriter("armor_data.yml"));
+            file.write(armorBuilder.toString());
+            file.close();
+
+            file = new BufferedWriter(new FileWriter("spellbook_data.yml"));
+            file.write(spellbookBuilder.toString());
             file.close();
             return 1;
         } catch (Exception e) {
@@ -139,8 +212,8 @@ public class GenerateRecipeDataCommand {
         }
     }
 
-    private record RecipeData(String name, String path) {
-        public static RecipeData EMPTY = new RecipeData("", "");
+    private record RecipeData(String name, String path, Item item) {
+        public static RecipeData EMPTY = new RecipeData("", "", null);
 
     }
 }
