@@ -5,26 +5,24 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class GenerateRecipeDataCommand {
+public class GenerateSiteData {
 
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_recipe_data.failed"));
 
@@ -32,6 +30,7 @@ public class GenerateRecipeDataCommand {
             - name: "%s"
               path: "%s"
               group: "%s"
+              craftingType: "%s"
               item0: "%s"
               item0Path: "%s"
               item1: "%s"
@@ -54,27 +53,52 @@ public class GenerateRecipeDataCommand {
               
                     """;
 
+    private static final String SPELL_DATA_TEMPLATE = """
+            - name: "%s"
+              school: "%s"
+              icon: "%s"
+              level: "%d to %d"
+              mana: "%d to %d"
+              cooldown: "%ds"
+              cast_type: "%s"
+              rarity: "%s to %s"
+              description: "%s"
+              u1: "%s"
+              u2: "%s"
+              u3: "%s"
+              u4: "%s"
+              
+                    """;
+
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
-        pDispatcher.register(Commands.literal("generateRecipeData").requires((p_138819_) -> {
+        pDispatcher.register(Commands.literal("generateSiteData").requires((p_138819_) -> {
             return p_138819_.hasPermission(2);
         }).executes((commandContext) -> {
-            return generateRecipeData(commandContext.getSource());
+            return generateSiteData(commandContext.getSource());
         }));
     }
 
-    private static int generateRecipeData(CommandSourceStack source) throws CommandSyntaxException {
+    private static int generateSiteData(CommandSourceStack source) {
+        generateRecipeData();
+        generateSpellData();
+
+        return 1;
+    }
+
+    private static void generateRecipeData() {
         try {
             var itemBuilder = new StringBuilder();
             var armorBuilder = new StringBuilder();
             var spellbookBuilder = new StringBuilder();
 
             var armorTypes = List.of("Archevoker", "Cryomancer", "Cultist", "Electromancer", "Priest", "Pumpkin", "Pyromancer", "Shadow-Walker", "Wandering Magician", "Ring");
+            Set<Item> itemsTracked = new HashSet<>();
 
             Minecraft.getInstance().level.getRecipeManager().getRecipes()
                     .stream()
                     .filter(r -> r.getId().getNamespace().equals("irons_spellbooks"))
                     .forEach(recipe -> {
-                        //IronsSpellbooks.LOGGER.debug("recipe: {}", recipe.getId());
+                        //IronsSpellbooks.LOGGER.debug("recipe: {}, {}, {}", recipe.getId(), recipe.getClass(), recipe.getType());
                         //IronsSpellbooks.LOGGER.debug("recipe: resultItem: {}", ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem()));
 
                         var resultItemResourceLocation = ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem());
@@ -84,6 +108,8 @@ public class GenerateRecipeDataCommand {
                                 String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
                                 recipe.getResultItem().getItem())
                         );
+
+                        itemsTracked.add(recipe.getResultItem().getItem());
 
                         recipe.getIngredients().forEach(ingredient -> {
                             Arrays.stream(ingredient.getItems())
@@ -102,6 +128,7 @@ public class GenerateRecipeDataCommand {
                                                 itemStack.getItem().getName(ItemStack.EMPTY).getString(),
                                                 path,
                                                 recipe.getResultItem().getItem()));
+
                                     }, () -> {
                                         recipeData.add(RecipeData.EMPTY);
                                     });
@@ -109,11 +136,12 @@ public class GenerateRecipeDataCommand {
 
                         var name = getRecipeDataAtIndex(recipeData, 0).name;
 
-                        if (getRecipeDataAtIndex(recipeData, 0).item instanceof SpellBook) {
+                        if (getRecipeDataAtIndex(recipeData, 0).item instanceof SpellBook || getRecipeDataAtIndex(recipeData, 0).item instanceof ExtendedSwordItem) {
                             spellbookBuilder.append(String.format(RECIPE_DATA_TEMPLATE,
                                     getRecipeDataAtIndex(recipeData, 0).name,
                                     getRecipeDataAtIndex(recipeData, 0).path,
                                     "",
+                                    recipe.getType(),
                                     getRecipeDataAtIndex(recipeData, 1).name,
                                     getRecipeDataAtIndex(recipeData, 1).path,
                                     getRecipeDataAtIndex(recipeData, 2).name,
@@ -141,6 +169,7 @@ public class GenerateRecipeDataCommand {
                                     getRecipeDataAtIndex(recipeData, 0).name,
                                     getRecipeDataAtIndex(recipeData, 0).path,
                                     group,
+                                    recipe.getType(),
                                     getRecipeDataAtIndex(recipeData, 1).name,
                                     getRecipeDataAtIndex(recipeData, 1).path,
                                     getRecipeDataAtIndex(recipeData, 2).name,
@@ -166,6 +195,7 @@ public class GenerateRecipeDataCommand {
                                     getRecipeDataAtIndex(recipeData, 0).name,
                                     getRecipeDataAtIndex(recipeData, 0).path,
                                     "",
+                                    recipe.getType(),
                                     getRecipeDataAtIndex(recipeData, 1).name,
                                     getRecipeDataAtIndex(recipeData, 1).path,
                                     getRecipeDataAtIndex(recipeData, 2).name,
@@ -188,6 +218,42 @@ public class GenerateRecipeDataCommand {
                         }
                     });
 
+            ForgeRegistries.ITEMS.forEach(item -> {
+                var itemResource = ForgeRegistries.ITEMS.getKey(item);
+                if (itemResource.toString().contains("irons_spellbooks") && !itemsTracked.contains(item)) {
+                    //Non craftable items
+                    var name = item.getName(ItemStack.EMPTY).getString();
+                    if (armorTypes.stream().anyMatch(itemToMatch -> name.contains(itemToMatch))) {
+                        itemsTracked.add(item);
+                        armorBuilder.append(String.format(RECIPE_DATA_TEMPLATE,
+                                name,
+                                String.format("/img/items/%s.png", itemResource.getPath()),
+                                "",
+                                "none",
+                                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+                        ));
+                    } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem) {
+                        itemsTracked.add(item);
+                        spellbookBuilder.append(String.format(RECIPE_DATA_TEMPLATE,
+                                name,
+                                String.format("/img/items/%s.png", itemResource.getPath()),
+                                "",
+                                "none",
+                                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+                        ));
+                    } else {
+                        itemsTracked.add(item);
+                        itemBuilder.append(String.format(RECIPE_DATA_TEMPLATE,
+                                name,
+                                String.format("/img/items/%s.png", itemResource.getPath()),
+                                "",
+                                "none",
+                                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+                        ));
+                    }
+                }
+            });
+
             var file = new BufferedWriter(new FileWriter("item_data.yml"));
             file.write(itemBuilder.toString());
             file.close();
@@ -199,12 +265,9 @@ public class GenerateRecipeDataCommand {
             file = new BufferedWriter(new FileWriter("spellbook_data.yml"));
             file.write(spellbookBuilder.toString());
             file.close();
-            return 1;
         } catch (Exception e) {
             IronsSpellbooks.LOGGER.debug(e.getMessage());
         }
-
-        throw ERROR_FAILED.create();
     }
 
     private static RecipeData getRecipeDataAtIndex(List<RecipeData> recipeData, int index) {
@@ -218,5 +281,70 @@ public class GenerateRecipeDataCommand {
     private record RecipeData(String name, String path, Item item) {
         public static RecipeData EMPTY = new RecipeData("", "", null);
 
+    }
+
+    private static void generateSpellData() {
+        try {
+            var sb = new StringBuilder();
+
+            Arrays.stream(SpellType.values())
+                    .filter(st -> (st.isEnabled() && st != SpellType.NONE_SPELL))
+                    .forEach(spellType -> {
+                        var spellMin = AbstractSpell.getSpell(spellType, spellType.getMinLevel());
+                        var spellMax = AbstractSpell.getSpell(spellType, spellType.getMaxLevel());
+
+                        var uniqueInfo = spellMin.getUniqueInfo(null);
+                        var u1 = uniqueInfo.size() >= 1 ? uniqueInfo.get(0).getString() : "";
+                        var u2 = uniqueInfo.size() >= 2 ? uniqueInfo.get(1).getString() : "";
+                        var u3 = uniqueInfo.size() >= 3 ? uniqueInfo.get(2).getString() : "";
+                        var u4 = uniqueInfo.size() >= 4 ? uniqueInfo.get(3).getString() : "";
+
+                        sb.append(String.format(SPELL_DATA_TEMPLATE,
+                                handleCapitalization(spellType.name()),
+                                handleCapitalization(spellType.getSchoolType().name()),
+                                String.format("/img/spells/%s.png", spellType.getId()),
+                                spellType.getMinLevel(),
+                                spellType.getMaxLevel(),
+                                spellMin.getManaCost(),
+                                spellMax.getManaCost(),
+                                spellMin.getSpellCooldown(),
+                                handleCapitalization(spellType.getCastType().name()),
+                                handleCapitalization(spellMin.getRarity().name()),
+                                handleCapitalization(spellMax.getRarity().name()),
+                                Component.translatable(String.format("%s.guide", spellType.getComponentId())).getString(),
+                                u1,
+                                u2,
+                                u3,
+                                u4)
+                        );
+                    });
+
+            var file = new BufferedWriter(new FileWriter("spell_data.yml"));
+            file.write(sb.toString());
+            file.close();
+        } catch (Exception e) {
+            IronsSpellbooks.LOGGER.debug(e.getMessage());
+        }
+    }
+
+    public static String handleCapitalization(String input) {
+        return Arrays.stream(input.toLowerCase().split("[ |_]"))
+                .map(word -> {
+                    if (word.equals("spell")) {
+                        return "";
+                    } else {
+                        var first = word.substring(0, 1);
+                        var rest = word.substring(1);
+                        return first.toUpperCase() + rest;
+                    }
+                })
+                .collect(Collectors.joining(" "))
+                .trim();
+    }
+
+    private enum CraftingType {
+        CRAFTING_TABLE,
+        SMITHING_TABLE,
+        NOT_CRAFTABLE
     }
 }
