@@ -35,26 +35,36 @@ public class GenerateSiteData {
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_recipe_data.failed"));
 
     private static final String RECIPE_DATA_TEMPLATE = """
-            - name: "%s"
+            - id: "%s"
+              name: "%s"
               path: "%s"
               group: "%s"
               craftingType: "%s"
+              item0Id: "%s"
               item0: "%s"
               item0Path: "%s"
+              item1Id: "%s"
               item1: "%s"
               item1Path: "%s"
+              item2Id: "%s"
               item2: "%s"
               item2Path: "%s"
+              item3Id: "%s"
               item3: "%s"
               item3Path: "%s"
+              item4Id: "%s"
               item4: "%s"
               item4Path: "%s"
+              item5Id: "%s"
               item5: "%s"
               item5Path: "%s"
+              item6Id: "%s"
               item6: "%s"
               item6Path: "%s"
+              item7Id: "%s"
               item7: "%s"
               item7Path: "%s"
+              item8Id: "%s"
               item8: "%s"
               item8Path: "%s"
               tooltip: "%s"
@@ -114,6 +124,7 @@ public class GenerateSiteData {
                         var resultItemResourceLocation = ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem());
                         var recipeData = new ArrayList<RecipeData>(10);
                         recipeData.add(new RecipeData(
+                                resultItemResourceLocation.toString(),
                                 recipe.getResultItem().getItem().getName(ItemStack.EMPTY).getString(),
                                 String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
                                 recipe.getResultItem().getItem())
@@ -207,26 +218,36 @@ public class GenerateSiteData {
 
     private static void appendToBuilder(StringBuilder sb, Recipe recipe, List<RecipeData> recipeData, String group, String tooltip) {
         sb.append(String.format(RECIPE_DATA_TEMPLATE,
+                getRecipeDataAtIndex(recipeData, 0).id,
                 getRecipeDataAtIndex(recipeData, 0).name,
                 getRecipeDataAtIndex(recipeData, 0).path,
                 group,
                 recipe.getType(),
+                getRecipeDataAtIndex(recipeData, 1).id,
                 getRecipeDataAtIndex(recipeData, 1).name,
                 getRecipeDataAtIndex(recipeData, 1).path,
+                getRecipeDataAtIndex(recipeData, 2).id,
                 getRecipeDataAtIndex(recipeData, 2).name,
                 getRecipeDataAtIndex(recipeData, 2).path,
+                getRecipeDataAtIndex(recipeData, 3).id,
                 getRecipeDataAtIndex(recipeData, 3).name,
                 getRecipeDataAtIndex(recipeData, 3).path,
+                getRecipeDataAtIndex(recipeData, 4).id,
                 getRecipeDataAtIndex(recipeData, 4).name,
                 getRecipeDataAtIndex(recipeData, 4).path,
+                getRecipeDataAtIndex(recipeData, 5).id,
                 getRecipeDataAtIndex(recipeData, 5).name,
                 getRecipeDataAtIndex(recipeData, 5).path,
+                getRecipeDataAtIndex(recipeData, 6).id,
                 getRecipeDataAtIndex(recipeData, 6).name,
                 getRecipeDataAtIndex(recipeData, 6).path,
+                getRecipeDataAtIndex(recipeData, 7).id,
                 getRecipeDataAtIndex(recipeData, 7).name,
                 getRecipeDataAtIndex(recipeData, 7).path,
+                getRecipeDataAtIndex(recipeData, 8).id,
                 getRecipeDataAtIndex(recipeData, 8).name,
                 getRecipeDataAtIndex(recipeData, 8).path,
+                getRecipeDataAtIndex(recipeData, 9).id,
                 getRecipeDataAtIndex(recipeData, 9).name,
                 getRecipeDataAtIndex(recipeData, 9).path,
                 tooltip
@@ -235,11 +256,12 @@ public class GenerateSiteData {
 
     private static void appendToBuilder2(StringBuilder sb, String name, ResourceLocation itemResource, String tooltip) {
         sb.append(String.format(RECIPE_DATA_TEMPLATE,
+                itemResource.toString(),
                 name,
                 String.format("/img/items/%s.png", itemResource.getPath()),
                 "",
                 "none",
-                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", tooltip
+                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", tooltip
         ));
     }
 
@@ -257,6 +279,7 @@ public class GenerateSiteData {
                     }
 
                     recipeData.add(new RecipeData(
+                            itemResource.toString(),
                             itemStack.getItem().getName(ItemStack.EMPTY).getString(),
                             path,
                             recipe.getResultItem().getItem()));
@@ -274,9 +297,8 @@ public class GenerateSiteData {
         }
     }
 
-    private record RecipeData(String name, String path, Item item) {
-        public static RecipeData EMPTY = new RecipeData("", "", null);
-
+    private record RecipeData(String id, String name, String path, Item item) {
+        public static RecipeData EMPTY = new RecipeData("", "", "", null);
     }
 
     private static void generateSpellData() {
