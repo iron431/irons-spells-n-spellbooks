@@ -3,7 +3,7 @@
   "fallback": "irons_spellbooks:catacombs_fallback_pool",
   "elements": [
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_tee",
         "processors": "irons_spellbooks:catacombs_randomization",
@@ -30,7 +30,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_rope_bridge",
         "processors": "irons_spellbooks:catacombs_randomization",
@@ -39,7 +39,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_stairway",
         "processors": "irons_spellbooks:catacombs_randomization",
@@ -57,7 +57,7 @@
       }
     },
     {
-      "weight": 40,
+      "weight": 30,
       "element": {
         "location": "irons_spellbooks:catacombs/room_origin_1",
         "processors": "irons_spellbooks:catacombs_randomization",
@@ -66,7 +66,7 @@
       }
     },
     {
-      "weight": 10,
+      "weight": 15,
       "element": {
         "location": "irons_spellbooks:catacombs/room_origin_2",
         "processors": "irons_spellbooks:catacombs_randomization",

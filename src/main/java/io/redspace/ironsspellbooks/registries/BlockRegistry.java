@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.block.BloodSlashBlock;
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;
 import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableBlock;
-import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTablePlaceholderBlock;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalBlock;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalTile;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeBlock;
@@ -33,7 +32,6 @@ public class BlockRegistry {
     }
 
     public static final RegistryObject<Block> INSCRIPTION_TABLE_BLOCK = BLOCKS.register("inscription_table", InscriptionTableBlock::new);
-    public static final RegistryObject<Block> INSCRIPTION_TABLE_PLACEHOLDER_BLOCK = BLOCKS.register("inscription_table_placeholder", InscriptionTablePlaceholderBlock::new);
     public static final RegistryObject<Block> SCROLL_FORGE_BLOCK = BLOCKS.register("scroll_forge", ScrollForgeBlock::new);
     public static final RegistryObject<Block> BLOOD_SLASH_BLOCK = BLOCKS.register("blood_slash", BloodSlashBlock::new);
     public static final RegistryObject<Block> PEDESTAL_BLOCK = BLOCKS.register("pedestal", PedestalBlock::new);
