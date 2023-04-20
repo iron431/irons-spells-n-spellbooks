@@ -124,10 +124,11 @@ public class ServerPlayerEvents {
 //            PlayerMagicData.getPlayerMagicData(serverPlayer).resetCastingState();
 //        }
 //    }
-
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
-        IronsSpellbooks.LOGGER.debug("onPlayerCloned: {}", event.getEntity().getName().getString());
+        IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
+        event.getEntity().clearFire();
+        event.getEntity().setTicksFrozen(0);
     }
 
     @SubscribeEvent
@@ -143,6 +144,10 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
+        event.getEntity().clearFire();
+        event.getEntity().setTicksFrozen(0);
+
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             playerMagicData.resetCastingState();
