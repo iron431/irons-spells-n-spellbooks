@@ -3,7 +3,7 @@
 	"animations": {
 		"charged_throw": {
 			"loop": "hold_on_last_frame",
-			"animation_length": 5.5,
+			"animation_length": 25,
 			"bones": {
 				"torso": {
 					"rotation": {
@@ -13,7 +13,7 @@
 						"0.25": {
 							"vector": [0, 30, 0]
 						},
-						"5.5": {
+						"25.0": {
 							"vector": [0, 30, 0]
 						}
 					}
@@ -35,7 +35,7 @@
 							"vector": [-210.90686, -10.58927, -17.06488],
 							"easing": "easeInOutSine"
 						},
-						"5.5": {
+						"25.0": {
 							"vector": [-210.91, -10.59, -17.06]
 						}
 					},
@@ -55,7 +55,7 @@
 							"vector": [1, 0, 1],
 							"easing": "easeInOutSine"
 						},
-						"5.5": {
+						"25.0": {
 							"vector": [1, 0, 1]
 						}
 					}
@@ -69,7 +69,7 @@
 							"vector": [-102.5, 0, 0],
 							"easing": "easeInOutSine"
 						},
-						"5.5": {
+						"25.0": {
 							"vector": [-102.5, 0, 0]
 						}
 					},
@@ -81,7 +81,7 @@
 							"vector": [0, 0, -1],
 							"easing": "easeInOutSine"
 						},
-						"5.5": {
+						"25.0": {
 							"vector": [0, 0, -1]
 						}
 					}
@@ -1117,7 +1117,7 @@
 		},
 		"charge_arrow": {
 			"loop": "hold_on_last_frame",
-			"animation_length": 5,
+			"animation_length": 25.04,
 			"bones": {
 				"torso": {
 					"rotation": {
@@ -1128,7 +1128,7 @@
 							"vector": [0, -37.5, 0],
 							"easing": "easeInOutQuad"
 						},
-						"5.0": {
+						"25.0": {
 							"vector": [0, -37.5, 0]
 						}
 					}
@@ -1138,7 +1138,7 @@
 						"0.0": {
 							"vector": [-90, 0, 0]
 						},
-						"5.0": {
+						"25.0": {
 							"vector": [-90, 0, 0]
 						}
 					},
@@ -1146,7 +1146,7 @@
 						"0.0": {
 							"vector": [2, 0, -3]
 						},
-						"5.0": {
+						"25.0": {
 							"vector": [2, 0, -3]
 						}
 					}
@@ -1160,7 +1160,7 @@
 							"vector": [-84.68, 19.92, 1.82],
 							"easing": "easeInOutQuad"
 						},
-						"5.0": {
+						"25.0": {
 							"vector": [-84.68, 19.92, 1.82]
 						}
 					},
@@ -1172,8 +1172,26 @@
 							"vector": [0, 0, 6],
 							"easing": "easeInOutQuad"
 						},
-						"5.0": {
+						"25.0": {
 							"vector": [0, 0, 6]
+						}
+					}
+				},
+				"rightItem": {
+					"rotation": {
+						"0.0": {
+							"vector": [-75, 0, 0]
+						},
+						"25.0": {
+							"vector": [-75, 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 2]
+						},
+						"25.0": {
+							"vector": [0, 0, 2]
 						}
 					}
 				}
