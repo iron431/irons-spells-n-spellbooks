@@ -32,7 +32,7 @@ public class FortifySpell extends AbstractSpell {
         );
     }
 
-    public static final float radius = 7;
+    public static final float radius = 16;
 
     public FortifySpell(int level) {
         super(SpellType.FORTIFY_SPELL);

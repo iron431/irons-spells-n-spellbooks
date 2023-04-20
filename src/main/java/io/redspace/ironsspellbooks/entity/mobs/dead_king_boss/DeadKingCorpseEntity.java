@@ -75,9 +75,9 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                     boss.moveTo(this.position().add(0, 1, 0));
                     boss.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null, null);
                     int playerCount = Math.max(level.getEntitiesOfClass(Player.class, boss.getBoundingBox().inflate(32)).size(), 1);
-                    boss.getAttributes().getInstance(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Gank Health Bonus", playerCount - 1, AttributeModifier.Operation.MULTIPLY_BASE));
+                    boss.getAttributes().getInstance(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Gank Health Bonus", (playerCount - 1) * .5, AttributeModifier.Operation.MULTIPLY_BASE));
                     boss.setHealth(boss.getMaxHealth());
-                    boss.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier("Gank Damage Bonus", (playerCount - 1) * .5, AttributeModifier.Operation.MULTIPLY_BASE));
+                    boss.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier("Gank Damage Bonus", (playerCount - 1) * .25, AttributeModifier.Operation.MULTIPLY_BASE));
                     boss.getAttributes().getInstance(AttributeRegistry.SPELL_RESIST.get()).addPermanentModifier(new AttributeModifier("Gank Spell Resist Bonus", (playerCount - 1) * .1, AttributeModifier.Operation.MULTIPLY_BASE));
                     level.addFreshEntity(boss);
                     MagicManager.spawnParticles(level, ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);

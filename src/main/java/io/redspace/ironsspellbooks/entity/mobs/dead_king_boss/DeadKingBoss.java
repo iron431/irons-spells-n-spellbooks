@@ -99,7 +99,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 25, 50, 3.5f).setSpellLevels(3, 5).setSpells(
+        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 35, 65, 3.5f).setSpellLevels(3, 5).setSpells(
                 List.of(
                         SpellType.RAY_OF_SIPHONING_SPELL, SpellType.RAY_OF_SIPHONING_SPELL,
                         SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL,
@@ -108,8 +108,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                         SpellType.FANG_STRIKE_SPELL, SpellType.FANG_STRIKE_SPELL,
                         SpellType.MAGIC_ARROW_SPELL, SpellType.MAGIC_ARROW_SPELL
                 ),
-                List.of(SpellType.FANG_WARD_SPELL),
-                List.of(SpellType.BLOOD_STEP_SPELL),
+                List.of(SpellType.FANG_WARD_SPELL, SpellType.BLOOD_STEP_SPELL),
+                List.of(/*SpellType.BLOOD_STEP_SPELL*/),
                 List.of()
         ).setMeleeBias(0.75f);
     }
@@ -117,17 +117,19 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     protected void setFirstPhaseGoals() {
         this.goalSelector.removeAllGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellType.WITHER_SKULL_SPELL, 3, 4, 80, 160, 3));
+        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellType.WITHER_SKULL_SPELL, 3, 4, 70, 140, 3));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.RAISE_DEAD_SPELL, 3, 5, 600, 900, 1));
-        this.goalSelector.addGoal(3, getCombatGoal().setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 10, 50, 10, 10));
+        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellType.BLOOD_STEP_SPELL, 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 10, 50, 8, 8));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
     }
 
     protected void setFinalPhaseGoals() {
         this.goalSelector.removeAllGoals();
         this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellType.WITHER_SKULL_SPELL, 5, 5, 60, 140, 4));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.SUMMON_VEX_SPELL, 4, 6, 400, 600, 1));
-        this.goalSelector.addGoal(3, getCombatGoal().setIsFlying().setSingleUseSpell(SpellType.BLAZE_STORM_SPELL, 10, 30, 10, 10));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.SUMMON_VEX_SPELL, 3, 5, 400, 600, 1));
+        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellType.BLOOD_STEP_SPELL, 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellType.BLAZE_STORM_SPELL, 10, 30, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
 
         //this.goalSelector.addGoal(2, new VexRandomMoveGoal());

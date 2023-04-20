@@ -170,7 +170,7 @@ public abstract class AbstractConeProjectile extends Projectile{
         Vec3 vec3 = new Vec3(start.getX(), start.getEyeY(), start.getZ());
         Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
 
-        boolean isShieldBlockingLOS = Utils.raycastForEntity(start.level, start, vec3, vec31, false, (entity) -> entity instanceof ShieldEntity).getType() == HitResult.Type.ENTITY;
+        boolean isShieldBlockingLOS = Utils.raycastForEntity(start.level, start, vec3, vec31, false, 0, (entity) -> entity instanceof ShieldEntity).getType() == HitResult.Type.ENTITY;
         return !isShieldBlockingLOS && start.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
     }
 

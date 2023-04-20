@@ -250,12 +250,16 @@ public class WizardAttackGoal extends Goal {
 
         var spellType = getNextSpellType();
 
-        if (spellType == SpellType.TELEPORT_SPELL || spellType == SpellType.BLOOD_STEP_SPELL || spellType == SpellType.FROST_STEP) {
+        if (spellType == SpellType.TELEPORT_SPELL || spellType == SpellType.FROST_STEP) {
             mob.setTeleportLocationBehindTarget(10);
         }
+        if (spellType == SpellType.BLOOD_STEP_SPELL) {
+            mob.setTeleportLocationBehindTarget(3);
+        }
 
-        if (spellType == SpellType.BURNING_DASH_SPELL)
+        if (spellType == SpellType.BURNING_DASH_SPELL){
             mob.setBurningDashDirectionData();
+        }
 //        if (spellType == SpellType.WALL_OF_FIRE_SPELL) {
 //            mob.setTeleportLocationBehindTarget(15);
 //        }
@@ -267,7 +271,7 @@ public class WizardAttackGoal extends Goal {
     protected SpellType getNextSpellType() {
 
         if (this.singleUseCooldown <= 0) {
-            singleUseCooldown = 6000 + singleUseDelay;
+            singleUseCooldown = 12000 + singleUseDelay;
             return singleUseSpell;
         }
 

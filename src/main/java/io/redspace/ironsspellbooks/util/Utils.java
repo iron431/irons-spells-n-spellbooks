@@ -159,18 +159,18 @@ public class Utils {
         return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, null));
     }
 
-    public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end) {
+    public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float bbInflation) {
         Vec3 hitPos = null;
         if (entity.isMultipartEntity()) {
             for (PartEntity p : entity.getParts()) {
-                var hit = p.getBoundingBox().clip(start, end).orElse(null);
+                var hit = p.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
                 if (hit != null) {
                     hitPos = hit;
                     break;
                 }
             }
         } else {
-            hitPos = entity.getBoundingBox().clip(start, end).orElse(null);
+            hitPos = entity.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
         }
         if (hitPos != null)
             return new EntityHitResult(entity, hitPos);
@@ -191,17 +191,24 @@ public class Utils {
         return raycastForEntity(level, originEntity, start, end, checkForBlocks);
     }
 
-    public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks) {
-        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, Utils::canHitWithRaycast);
+    public static HitResult raycastForEntity(Level level, Entity originEntity, float distance, boolean checkForBlocks, float bbInflation) {
+        Vec3 start = originEntity.getEyePosition();
+        Vec3 end = originEntity.getLookAngle().normalize().scale(distance).add(start);
+
+        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, bbInflation, Utils::canHitWithRaycast);
     }
 
-    public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Predicate<? super Entity> filter) {
-        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, filter);
+    public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks) {
+        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, 0, Utils::canHitWithRaycast);
+    }
+
+    public static HitResult raycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
+        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, bbInflation, filter);
     }
 
     public static HitResult raycastForEntityOfClass(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Class<? extends Entity> c) {
 
-        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, (entity) -> entity.getClass() == c);
+        return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, 0, (entity) -> entity.getClass() == c);
     }
 
     public static void quickCast(int slot) {
@@ -237,7 +244,7 @@ public class Utils {
         }
     }
 
-    private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, Predicate<? super Entity> filter) {
+    private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
         AABB range = originEntity.getBoundingBox().expandTowards(end.subtract(start));
 
         if (checkForBlocks) {
@@ -248,7 +255,7 @@ public class Utils {
         List<HitResult> hits = new ArrayList<>();
         List<? extends Entity> entities = level.getEntities(originEntity, range, filter);
         for (Entity target : entities) {
-            HitResult hit = checkEntityIntersecting(target, start, end);
+            HitResult hit = checkEntityIntersecting(target, start, end, bbInflation);
             if (hit.getType() != HitResult.Type.MISS)
                 hits.add(hit);
         }

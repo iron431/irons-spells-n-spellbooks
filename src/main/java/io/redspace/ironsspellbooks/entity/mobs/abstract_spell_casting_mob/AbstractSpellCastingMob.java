@@ -9,6 +9,8 @@ import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
+import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -21,7 +23,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -233,17 +235,14 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             var pos = target.position();
             var teleportPos = rotation.add(pos);
 
-            int y = target.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) teleportPos.x, (int) teleportPos.z);
 
-            if (Math.abs(teleportPos.y - y) > 3) {
-                rotation = target.getLookAngle().normalize().scale(-((float) distance / 2));
-                teleportPos = rotation.add(pos);
-                y = target.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) teleportPos.x, (int) teleportPos.z);
+            for (int i = 0; i < 16; i++) {
+                teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float)(i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
+                int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 3);
+                teleportPos = new Vec3(teleportPos.x, y, teleportPos.z);
+                if (level.getBlockState(new BlockPos(teleportPos).above()).isAir())
+                    break;
 
-                if (Math.abs(teleportPos.y - y) > 3) {
-                    rotation = target.getLookAngle().normalize().scale(-1);
-                    teleportPos = rotation.add(pos);
-                }
             }
 
             playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
