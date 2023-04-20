@@ -87,11 +87,14 @@ public class MagicManager {
                                 //irons_spellbooks.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                                 //Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
-                                spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, false);
-                                IronsSpellbooks.LOGGER.debug("MagicManager.tick.2");
+
+                                //IronsSpellbooks.LOGGER.debug("MagicManager.tick.2 {}", playerMagicData.getCastSource());
                                 if (playerMagicData.getCastSource() == CastSource.SCROLL) {
                                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                                 }
+
+                                spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, false);
+
                             } else {
                                 spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), false);
                             }
