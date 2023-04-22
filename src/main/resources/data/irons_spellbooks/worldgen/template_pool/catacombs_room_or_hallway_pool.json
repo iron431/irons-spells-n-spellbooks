@@ -3,9 +3,9 @@
   "fallback": "irons_spellbooks:catacombs_fallback_pool",
   "elements": [
     {
-      "weight": 2,
+      "weight": 1,
       "element": {
-        "location": "irons_spellbooks:catacombs/hallway_tee",
+        "location": "irons_spellbooks:catacombs/hallway_tee_1",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
@@ -13,6 +13,15 @@
     },
     {
       "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway_tee_2",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_turn_1",
         "processors": "irons_spellbooks:catacombs_randomization",
@@ -42,15 +51,6 @@
       "weight": 2,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_stairway",
-        "processors": "irons_spellbooks:catacombs_randomization",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
-        "location": "irons_spellbooks:catacombs/hallway_turn_2",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

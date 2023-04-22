@@ -14,15 +14,6 @@
     {
       "weight": 1,
       "element": {
-        "location": "irons_spellbooks:catacombs/room_balcony",
-        "processors": "irons_spellbooks:catacombs_randomization",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
         "location": "irons_spellbooks:catacombs/room_boiler",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
@@ -60,15 +51,6 @@
       "weight": 1,
       "element": {
         "location": "irons_spellbooks:catacombs/room_double_storage",
-        "processors": "irons_spellbooks:catacombs_randomization",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-      "weight": 1,
-      "element": {
-        "location": "irons_spellbooks:catacombs/room_large_storage",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"

@@ -150,7 +150,6 @@ public class ServerConfigs {
             CONFIG_LIST.remove().construct();
     }
 
-    //TODO: is this being static going to fuck shit up? (seems to work fine...)
     private static class DelayedConfigConstructor {
         final ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
         final ForgeConfigSpec.ConfigValue<Integer> MAX_LEVEL;
