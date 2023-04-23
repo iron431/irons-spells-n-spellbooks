@@ -3,9 +3,18 @@
   "fallback": "irons_spellbooks:catacombs_fallback_pool",
   "elements": [
     {
-      "weight": 3,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_straight",
+        "processors": "irons_spellbooks:catacombs_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:catacombs/hallway_straight_trapped",
         "processors": "irons_spellbooks:catacombs_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
