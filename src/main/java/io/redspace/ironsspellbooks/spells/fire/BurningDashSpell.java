@@ -1,9 +1,6 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
-import io.redspace.ironsspellbooks.capabilities.magic.CastDataSerializable;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
@@ -12,7 +9,6 @@ import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
@@ -48,7 +44,7 @@ public class BurningDashSpell extends AbstractSpell {
 
     @Override
     public void onClientCast(Level level, LivingEntity entity, CastData castData) {
-        if (castData instanceof BurningDashCastData bdcd) {
+        if (castData instanceof ImpulseCastData bdcd) {
             entity.hasImpulse = bdcd.hasImpulse;
             entity.setDeltaMovement(entity.getDeltaMovement().add(bdcd.x, bdcd.y, bdcd.z));
         }
@@ -58,7 +54,7 @@ public class BurningDashSpell extends AbstractSpell {
 
     @Override
     public CastDataSerializable getEmptyCastData() {
-        return new BurningDashCastData();
+        return new ImpulseCastData();
     }
 
     @Override
@@ -75,6 +71,8 @@ public class BurningDashSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         entity.hasImpulse = true;
         float multiplier = (15 + getSpellPower(entity)) / 12f;
+
+        //Direction for Mobs to cast in
         Vec3 forward = entity.getLookAngle();
         if (playerMagicData.getAdditionalCastData() instanceof BurningDashDirectionOverrideCastData) {
             if (world.random.nextBoolean())
@@ -83,13 +81,18 @@ public class BurningDashSpell extends AbstractSpell {
                 forward = forward.yRot(-90);
 
         }
+
+        //Create Dashing Movement Impulse
         var vec = forward.multiply(3, 1, 3).normalize().add(0, .25, 0).scale(multiplier);
-        playerMagicData.setAdditionalCastData(new BurningDashCastData((float) vec.x, (float) vec.y, (float) vec.z, true));
+        playerMagicData.setAdditionalCastData(new ImpulseCastData((float) vec.x, (float) vec.y, (float) vec.z, true));
         entity.setDeltaMovement(entity.getDeltaMovement().add(vec));
+
+        //Start Spin Attack
         if (entity.isOnGround())
             entity.setPos(entity.position().add(0, 1.2, 0));
         startSpinAttack(entity, 5 + 2 * level);
 
+        //Deal Shockwave Damage and particles
         world.getEntities(entity, entity.getBoundingBox().inflate(4)).forEach((target) -> {
             if (target.distanceToSqr(entity) < 16) {
                 if (DamageSources.applyDamage(target, getDamage(entity), SpellType.BURNING_DASH_SPELL.getDamageSource(entity), SchoolType.FIRE))
@@ -111,45 +114,6 @@ public class BurningDashSpell extends AbstractSpell {
             player.startAutoSpinAttack(durationInTicks);
         else if (entity instanceof AbstractSpellCastingMob mob)
             mob.startAutoSpinAttack(durationInTicks);
-    }
-
-
-    public class BurningDashCastData implements CastDataSerializable {
-        float x;
-        float y;
-        float z;
-        boolean hasImpulse;
-
-        public BurningDashCastData() {
-        }
-
-        public BurningDashCastData(float x, float y, float z, boolean hasImpulse) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.hasImpulse = hasImpulse;
-        }
-
-        @Override
-        public void writeToStream(FriendlyByteBuf buffer) {
-            buffer.writeFloat(x);
-            buffer.writeFloat(y);
-            buffer.writeFloat(z);
-            buffer.writeBoolean(hasImpulse);
-        }
-
-        @Override
-        public void readFromStream(FriendlyByteBuf buffer) {
-            this.x = buffer.readFloat();
-            this.y = buffer.readFloat();
-            this.z = buffer.readFloat();
-            this.hasImpulse = buffer.readBoolean();
-        }
-
-        @Override
-        public void reset() {
-
-        }
     }
 
     public static class BurningDashDirectionOverrideCastData implements CastData {
