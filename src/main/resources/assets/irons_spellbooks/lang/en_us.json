@@ -351,7 +351,7 @@
   "death.attack.lob_creeper_spell": "%1$s was blown to smithereens by %2$s",
   "death.attack.chain_creeper_spell": "%1$s was blown to smithereens by %2$s",
   "death.attack.blaze_storm_spell": "%1$s was engulfed by %2$s's blazing fires",
-  "death.attack.ascension_spell": "%1$s conducted too much of %2$s's electricity",
+  "death.attack.ascension_spell": "%1$s was ascended to the afterlife with %2$s's help",
 
   "death.attack.raise_dead_spell.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.summon_vex_spell.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
@@ -381,7 +381,7 @@
   "death.attack.lob_creeper_spell.item": "%1$s was blown to smithereens by %2$s using %3$s",
   "death.attack.chain_creeper_spell.item": "%1$s was blown to smithereens by %2$s using %3$s",
   "death.attack.blaze_storm_spell.item": "%1$s was engulfed by %2$s's blazing fires using %3$s",
-  "death.attack.ascension_spell.item": "%1$s conducted too much of %2$s's electricity while using %3$s",
+  "death.attack.ascension_spell.item": "%1$s was ascended to the afterlife with help from %2$s's %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.heartstop": "Heartstop",
