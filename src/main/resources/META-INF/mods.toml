@@ -31,7 +31,7 @@ logoFile="spellbooks title small background low res.png" #optional
 # A text field displayed in the mod UI
 credits="Some assets remixed from J. W. Bjerk (eleazzaar)'s Painterly Spell Icon Packs -- www.jwbjerk.com/art  -- find this and other open art at: http://opengameart.org. Some Spell Books remixed from xali's Enchanted Books." #optional
 # A text field displayed in the mod UI
-authors="Iron431" #optional
+authors="Iron431, Lab3" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 A magic mod for Minecraft returning to the classic RPG spellcasting fantasy.'''
