@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -59,7 +60,7 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
         this.depth = depth;
         this.radius = radius;
 
-        var xRot = owner.getXRot();
+        var xRot = blockHitResult.getDirection().getAxis().isVertical() ? 90 : 0;
         var yRot = owner.getYRot();
         var yHeadRot = owner.getYHeadRot();
 
@@ -93,7 +94,8 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
 
         if (ticksAlive == doDamageTick - 2 && !didDamage) {
             var location = this.position();
-            level.playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2f, 1f);
+            level.playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2f, random.nextIntBetweenInclusive(6, 8) * .1f);
+            level.playSound(null, location.x, location.y, location.z, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1f, random.nextIntBetweenInclusive(6, 8) * .1f);
 
         }
 

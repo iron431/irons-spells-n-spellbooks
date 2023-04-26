@@ -156,7 +156,7 @@ public abstract class AbstractSpell {
         float entitySchoolPowerModifier = 1;
         float configPowerModifier = (powerMultiplier.orElse(1d)).floatValue();
         if (sourceEntity instanceof LivingEntity sourceLivingEntity) {
-            IronsSpellbooks.LOGGER.debug("AbsSpell.getSpellPower: \"use item\": {}", sourceLivingEntity.getUseItem());
+            //IronsSpellbooks.LOGGER.debug("AbsSpell.getSpellPower: \"use item\": {}", sourceLivingEntity.getUseItem());
             entitySpellPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
             switch (this.getSchoolType()) {
                 case FIRE ->
@@ -313,7 +313,6 @@ public abstract class AbstractSpell {
      */
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         playSound(getCastFinishSound(), entity, true);
-        //IronsSpellbooks.LOGGER.debug("Yrot:{},BodyYRot:{},HeadYRot:{}", entity.getYRot(), entity.yBodyRot, entity.yHeadRot);
     }
 
     protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {

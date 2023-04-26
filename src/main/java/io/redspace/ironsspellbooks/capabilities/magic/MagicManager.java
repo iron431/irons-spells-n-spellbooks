@@ -138,7 +138,7 @@ public class MagicManager {
             itemCoolDownModifer = 2;
         }
 
-        IronsSpellbooks.LOGGER.debug("getEffectiveSpellCooldown before:{},after:{}", playerCooldownModifier, Utils.softCapFormula(playerCooldownModifier));
+        //IronsSpellbooks.LOGGER.debug("getEffectiveSpellCooldown before:{},after:{}", playerCooldownModifier, Utils.softCapFormula(playerCooldownModifier));
         return (int) (AbstractSpell.getSpell(spellType, 1).getSpellCooldown() * (2 - Utils.softCapFormula(playerCooldownModifier)) * itemCoolDownModifer);
     }
 
