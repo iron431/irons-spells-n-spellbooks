@@ -82,7 +82,6 @@ public class IronsSpellbooks {
     @SuppressWarnings("removal")
     private void clientSetup(final FMLClientSetupEvent e) {
 
-        //TODO: find a better place for this
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
         MenuScreens.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);

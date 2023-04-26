@@ -9,6 +9,7 @@ import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.impl.IAnimatedPlayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import io.redspace.ironsspellbooks.item.armor.ArmorCapeProvider;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -39,7 +40,7 @@ public abstract class AbstractClientPlayerMixin extends Player {
     @Inject(method = "getCloakTextureLocation", at = @At(value = "HEAD"), cancellable = true)
     public void getCloakTextureLocation(CallbackInfoReturnable<ResourceLocation> cir) {
         ItemStack itemstack = this.getItemBySlot(EquipmentSlot.CHEST);
-        if(itemstack.getItem() instanceof ArmorCapeProvider capeProvider){
+        if (itemstack.getItem() instanceof ArmorCapeProvider capeProvider && !hasEffect(MobEffectRegistry.ANGEL_WINGS.get())) {
             cir.setReturnValue(capeProvider.getCapeResourceLocation());
         }
     }

@@ -63,24 +63,6 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
         super(BlockBehaviour.Properties.of(Material.WOOD).strength(2.5F).sound(SoundType.WOOD).noOcclusion());
     }
 
-//    @Override
-//    public void playerWillDestroy(Level pLevel, BlockPos pPos, BlockState pState, Player pPlayer) {
-//        IronsSpellbooks.LOGGER.debug("InscriptionTablePlaceholderBlock.playerWillDestroy: {} {}", pPos, pState);
-//
-//        if (!pLevel.isClientSide) {
-//            var placeholderDirection = getPlaceholderDirection(pState.getValue(FACING));
-//            var neighborPos = pPos.relative(placeholderDirection);
-//            var blockstate = pLevel.getBlockState(neighborPos);
-//            if (blockstate.is(BlockRegistry.INSCRIPTION_TABLE_PLACEHOLDER_BLOCK.get())) {
-//                pLevel.setBlock(neighborPos, Blocks.AIR.defaultBlockState(), 35);
-//                //TODO: research if we need to raise a levelEvent here
-//                //pLevel.levelEvent(pPlayer, 2001, blockpos, Block.getId(blockstate));
-//            }
-//        }
-//
-//        super.playerWillDestroy(pLevel, pPos, pState, pPlayer);
-//    }
-
     public void playerWillDestroy(Level pLevel, BlockPos pos1, BlockState state1, Player pPlayer) {
         if (!pLevel.isClientSide/* && pPlayer.isCreative()*/) {
             ChestType half = state1.getValue(PART);
@@ -112,32 +94,9 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
         };
     }
 
-    //    public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-//        IronsSpellbooks.LOGGER.debug("updateShape: {} {} {} {} {}", pState, pFacing, pFacingState, pCurrentPos, pFacingPos);
-//        return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
-//    }
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-//    if (pFacing == getNeighbourDirection(pState.getValue(PART), pState.getValue(FACING))) {
-//        return pFacingState.is(this) && pFacingState.getValue(PART) != pState.getValue(PART) ? pState.setValue(OCCUPIED, pFacingState.getValue(OCCUPIED)) : Blocks.AIR.defaultBlockState();
-//    } else {
         return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
-//    }
     }
-
-
-//    @Nullable
-//    public BlockState getStateForPlacement(BlockPlaceContext context) {
-//        Direction placingDirection = context.getHorizontalDirection().getOpposite();
-//        BlockPos blockpos = context.getClickedPos();
-//        BlockPos blockpos1 = blockpos.relative(getPlaceholderDirection(placingDirection));
-//        Level level = context.getLevel();
-//
-//        if (level.getBlockState(blockpos1).canBeReplaced(context) && level.getWorldBorder().isWithinBounds(blockpos1)) {
-//            return this.defaultBlockState().setValue(FACING, placingDirection);
-//        }
-//
-//        return null;
-//    }
 
     @javax.annotation.Nullable
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
@@ -151,29 +110,6 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
 
         return null;
     }
-
-//    private Direction getPlaceholderDirection(Direction facing) {
-//        return switch (facing) {
-//            case NORTH -> Direction.EAST;
-//            case SOUTH -> Direction.WEST;
-//            case WEST -> Direction.NORTH;
-//            default -> Direction.SOUTH;
-//        };
-//    }
-
-//    @Override
-//    public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @javax.annotation.Nullable LivingEntity pPlacer, ItemStack pStack) {
-//        super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
-//        if (!pLevel.isClientSide) {
-//            var placeholderDirection = getPlaceholderDirection(pState.getValue(FACING));
-//            BlockPos blockpos = pPos.relative(placeholderDirection);
-//            var state = BlockRegistry.INSCRIPTION_TABLE_PLACEHOLDER_BLOCK.get().defaultBlockState().setValue(FACING, placeholderDirection.getOpposite());
-//            pLevel.setBlock(blockpos, state, 3);
-//            // pLevel.setBlock(blockpos, pState.setValue(PART, InscriptionTablePart.PLACEHOLDER), 3);
-//            //pLevel.blockUpdated(blockpos, BlockRegistry.INSCRIPTION_TABLE_PLACEHOLDER_BLOCK.get());
-//            IronsSpellbooks.LOGGER.debug("setPlacedBy {} {}", pPos, blockpos);
-//        }
-//    }
 
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
@@ -203,18 +139,6 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock /*implemen
     public PushReaction getPistonPushReaction(BlockState pState) {
         return PushReaction.BLOCK;
     }
-
-//    @Override
-//    @SuppressWarnings("deprecation")
-//    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-//        if (pState.getBlock() != pNewState.getBlock()) {
-//            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-//            if (blockEntity instanceof InscriptionTableTile) {
-//                ((InscriptionTableTile) blockEntity).drops();
-//            }
-//        }
-//        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
-//    }
 
     @Override
     @SuppressWarnings("deprecation")

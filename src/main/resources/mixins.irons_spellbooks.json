@@ -15,7 +15,8 @@
     "SpinAttackEffectLayerMixin",
     "SwordItemMixin",
     "TetraBladedItemMixin",
-    "TridentItemMixin"
+    "TridentItemMixin",
+    "ItemStackMixin"
   ],
   "client": [
   ],

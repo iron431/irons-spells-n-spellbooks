@@ -12,6 +12,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import software.bernie.example.client.DefaultBipedBoneIdents;
@@ -34,8 +35,7 @@ public class ChargeSpellLayer {
             var spell = syncedSpellData.getCastingSpellType();
             if (spell == SpellType.LIGHTNING_LANCE_SPELL) {
                 poseStack.pushPose();
-                //TODO: arm based on handedness
-                var arm = HumanoidArm.RIGHT;
+                var arm = getArmFromUseHand(entity);
                 this.getParentModel().translateToHand(arm, poseStack);
                 boolean flag = arm == HumanoidArm.LEFT;
                 poseStack.translate((double) ((float) (flag ? -1 : 1) / 32.0F) - .125, .5, 0);
@@ -45,8 +45,7 @@ public class ChargeSpellLayer {
                 LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
                 poseStack.popPose();
             } else if (spell == SpellType.MAGIC_ARROW_SPELL) {
-                //TODO: arm based on handedness
-                var arm = HumanoidArm.RIGHT;
+                var arm = getArmFromUseHand(entity);
                 this.getParentModel().translateToHand(arm, poseStack);
                 boolean flag = arm == HumanoidArm.LEFT;
                 poseStack.translate((double) ((float) (flag ? -1 : 1) / 32.0F) + .125, .5, 0);
@@ -86,7 +85,7 @@ public class ChargeSpellLayer {
                 RenderUtils.rotateMatrixAroundBone(poseStack, model.getBone("right_arm").get());
                 RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
                 //poseStack.translate(0,bone.getPivotY()/2/16,0);
-                var arm = HumanoidArm.RIGHT;
+                var arm = getArmFromUseHand(entity);
                 boolean flag = arm == HumanoidArm.LEFT;
                 poseStack.translate(-(((flag ? -1 : 1) / 32.0F) - .125), .5, 0);
                 poseStack.translate(0, -bone.getPivotY() / 16, 0);
@@ -106,7 +105,7 @@ public class ChargeSpellLayer {
                 RenderUtils.rotateMatrixAroundBone(poseStack, model.getBone("right_arm").get());
                 RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
                 //poseStack.translate(0,bone.getPivotY()/2/16,0);
-                var arm = HumanoidArm.RIGHT;
+                var arm = getArmFromUseHand(entity);
                 boolean flag = arm == HumanoidArm.LEFT;
                 poseStack.translate(0, -bone.getPivotY() / 16, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
@@ -119,5 +118,9 @@ public class ChargeSpellLayer {
                 poseStack.popPose();
             }
         }
+    }
+
+    private static HumanoidArm getArmFromUseHand(LivingEntity livingEntity) {
+        return livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? livingEntity.getMainArm() : livingEntity.getMainArm().getOpposite();
     }
 }

@@ -149,7 +149,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
                 //Falling
                 if (isOnGround()) {
                     doImpactDamage();
-                    playSound(SoundRegistry.ICE_BLOCK_IMPACT.get());
+                    playSound(SoundRegistry.ICE_BLOCK_IMPACT.get(), 2.5f, .8f + random.nextFloat() * .4f);
                     impactParticles(getX(), getY(), getZ());
                     discard();
                 } else {
@@ -170,11 +170,14 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
                         tooHigh = true;
 
                 } else {
-                    HitResult ground = Utils.raycastForBlock(level, position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
-                    if (ground.getType() == HitResult.Type.MISS) {
-                        tooHigh = true;
-                    } else if (Math.abs(position().y - ground.getLocation().y) < 4) {
+                    if (airTime % 3 == 0) {
+                        HitResult ground = Utils.raycastForBlock(level, position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
+                        if (ground.getType() == HitResult.Type.MISS) {
+                            tooHigh = true;
+                        } else if (Math.abs(position().y - ground.getLocation().y) < 4) {
+                        }
                     }
+
                 }
                 if (tooHigh)
                     this.setDeltaMovement(getDeltaMovement().add(0, -.005, 0));

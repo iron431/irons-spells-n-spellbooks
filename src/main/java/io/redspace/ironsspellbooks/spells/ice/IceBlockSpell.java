@@ -51,7 +51,7 @@ public class IceBlockSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        HitResult raycast = Utils.raycastForEntity(level, entity, 32, true);
+        HitResult raycast = Utils.raycastForEntity(level, entity, 32, true, .25f);
         Vec3 spawn;
         LivingEntity target = null;
         if (raycast.getType() == HitResult.Type.ENTITY) {

@@ -1,11 +1,9 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
-import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
@@ -15,7 +13,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -91,7 +88,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 result = baseItemStack.copy();
                 EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
                 UpgradeUtils.appendUpgrade(result, upgradeOrb.getUpgradeType(), slot);
-                IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
+                //IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
             }
         }
 

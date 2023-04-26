@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
@@ -69,8 +70,7 @@ public class ManaBarOverlay {
     }
 
     private static boolean shouldShowManaBar(Player player) {
-        //TODO: introduce config options
         //We show mana if they are holding an item that can cast spells or if their mana is not full
-        return player.isHolding((itemstack -> itemstack.getItem() instanceof SpellBook || SpellData.hasSpellData(itemstack))) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get());
+        return ClientConfigs.ALWAYS_SHOW_MANA_BAR.get() || player.isHolding((itemstack -> itemstack.getItem() instanceof SpellBook || SpellData.hasSpellData(itemstack))) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get());
     }
 }

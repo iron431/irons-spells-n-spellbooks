@@ -72,11 +72,9 @@ public class WispSpell extends AbstractSpell {
     }
 
     private Vec3 getTargetLocation(Level level, LivingEntity entity) {
-        //TODO: potentially cache this result
         var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, getDistance(entity));
         var pos = blockHitResult.getBlockPos();
 
-        //TODO: if this is a performance hit can just manually check the few blocks over this position
         int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
 
         if (y - pos.getY() > 3 || blockHitResult.getType() == HitResult.Type.MISS) {

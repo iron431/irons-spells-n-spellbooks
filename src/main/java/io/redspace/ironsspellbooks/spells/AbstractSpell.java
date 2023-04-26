@@ -263,7 +263,6 @@ public abstract class AbstractSpell {
         PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
 
         if (castSource.consumesMana()) {
-            //TODO: sword mana multiplier?
             int newMana = playerMagicData.getMana() - getManaCost();
             magicManager.setPlayerCurrentMana(serverPlayer, newMana);
             Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
