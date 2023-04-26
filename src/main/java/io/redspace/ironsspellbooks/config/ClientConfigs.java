@@ -11,11 +11,15 @@ public class ClientConfigs {
     public static final ForgeConfigSpec SPEC;
 
     static {
-        BUILDER.push("animations");
+        BUILDER.push("Animations");
         SHOW_FIRST_PERSON_ARMS = BUILDER.define("showFirstPersonArms", true);
         SHOW_FIRST_PERSON_ITEMS = BUILDER.define("showFirstPersonItems", true);
+        BUILDER.pop();
+        
+        BUILDER.push("UI");
         ALWAYS_SHOW_MANA_BAR = BUILDER.define("alwaysShowManaBar", false);
         BUILDER.pop();
+
         SPEC = BUILDER.build();
     }
 }
