@@ -2,11 +2,11 @@ package io.redspace.ironsspellbooks.entity.spectral_hammer;
 
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -104,7 +104,7 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
                 var blockPos = blockHitResult.getBlockPos();
                 var blockState = level.getBlockState(blockPos);
 
-                if (blockState.is(BlockTags.STONE_ORE_REPLACEABLES)) {
+                if (blockState.is(ModTags.SPECTRAL_HAMMER_MINEABLE)) {
                     var blockCollector = getBlockCollector(blockPos, blockHitResult.getDirection(), radius, depth, new HashSet<>(), new HashSet<>());
                     collectBlocks(blockPos, blockCollector);
 
@@ -217,7 +217,7 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
             Set<BlockPos> blocksChecked) {
 
         public boolean isValidBlockToCollect(Level level, BlockPos bp) {
-            return level.getBlockState(bp).is(BlockTags.STONE_ORE_REPLACEABLES)
+            return level.getBlockState(bp).is(ModTags.SPECTRAL_HAMMER_MINEABLE)
                     && bp.getX() >= minX
                     && bp.getX() <= maxX
                     && bp.getY() >= minY

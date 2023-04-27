@@ -285,7 +285,7 @@
   "spell.irons_spellbooks.firecracker.guide": "Instantaneously conjure a firework where you look that explodes in a small radius around it.",
   "spell.irons_spellbooks.angel_wing.guide": "Cast to gain wings made of holy energy, acting as an elytra, for a brief period of time.",
   "spell.irons_spellbooks.summon_horse.guide": "Conjure a spectral steed that will follow you around and only let you ride. The horse's speed, health, and jump height scales with spell power.",
-  "spell.irons_spellbooks.spectral_hammer.guide": "Conjure a spectral hammer out from where you look that will mine a cube stone-type blocks where it hits, leaving only ores and rubble behind.",
+  "spell.irons_spellbooks.spectral_hammer.guide": "Conjure a spectral hammer out from where you look that will mine all connected stone-type blocks in a cube where it hits, leaving only ores and rubble behind.",
   "spell.irons_spellbooks.shield.guide": "Conjure a stationary shield of arcane energy where you look that will block projectiles, but allow creatures to pass through.",
   "spell.irons_spellbooks.wall_of_fire.guide": "Hold to draw out a wall of fire that erupts when the cast finishes. It can be canceled early to immediately trigger, or will automatically cancel if you run out of length. This wall blocks projectiles and ignites creatures that pass through it.",
   "spell.irons_spellbooks.wisp.guide": "Conjure a projectile of holy energy that will float towards nearby targets and deal damage upon impact.",

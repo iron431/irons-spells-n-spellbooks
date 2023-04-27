@@ -37,10 +37,10 @@ public class SpectralHammerSpell extends AbstractSpell {
     public SpectralHammerSpell(int level) {
         super(SpellType.SPECTRAL_HAMMER_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 2;
+        this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
-        this.castTime = 20;
+        this.castTime = 25;
         this.baseManaCost = 15;
     }
 
