@@ -217,5 +217,10 @@
     "sounds": [
       "irons_spellbooks:ice_block_impact"
     ]
+  },
+  "loop.ray_of_siphoning": {
+    "sounds": [
+      "irons_spellbooks:ray_of_siphoning_loop"
+    ]
   }
 }
