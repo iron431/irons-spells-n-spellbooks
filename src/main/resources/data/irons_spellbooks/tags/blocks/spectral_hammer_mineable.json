@@ -1,7 +1,9 @@
 {
   "values": [
     "#minecraft:base_stone_overworld",
-    "#minecraft:base_stone_nether"
-
+    "#minecraft:base_stone_nether",
+    "#minecraft:ice",
+    "#minecraft:sand",
+    "minecraft:gravel"
   ]
 }

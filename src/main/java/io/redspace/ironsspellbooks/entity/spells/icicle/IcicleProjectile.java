@@ -48,7 +48,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
         super.onHitEntity(entityHitResult);
         boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellType.ICICLE_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
         IronsSpellbooks.LOGGER.debug("IcilePorjectile: Hit: {}",hit);
-        if (hit && entityHitResult.getEntity() instanceof LivingEntity target && !level.isClientSide) {
+        if (hit && entityHitResult.getEntity() instanceof LivingEntity target && !level.isClientSide && target.canFreeze()) {
             target.setTicksFrozen(target.getTicksFrozen() + 165);
         }
 

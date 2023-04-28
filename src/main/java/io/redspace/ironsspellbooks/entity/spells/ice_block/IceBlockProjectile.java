@@ -111,7 +111,8 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
             return;
         boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
         if (flag) {
-            target.setTicksFrozen(200);
+            if(target.canFreeze())
+                target.setTicksFrozen(200);
             victims.add(target);
             target.invulnerableTime = 0;
         }
@@ -129,7 +130,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
                     float damage = (float) (this.damage * p);
                     IronsSpellbooks.LOGGER.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
 
-                    if (DamageSources.applyDamage(entity, damage, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE))
+                    if (DamageSources.applyDamage(entity, damage, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE)  && entity.canFreeze())
                         entity.setTicksFrozen(200);
                 }
             }

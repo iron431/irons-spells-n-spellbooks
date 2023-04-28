@@ -175,8 +175,4 @@ public class TeleportSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(caster), 1)));
     }
 
-    @Override
-    public Either<AnimationBuilder, ResourceLocation> getCastStartAnimation(Player player) {
-        return Either.left(null);
-    }
 }

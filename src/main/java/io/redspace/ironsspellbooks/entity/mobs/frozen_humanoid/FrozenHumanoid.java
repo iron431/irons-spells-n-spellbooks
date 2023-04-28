@@ -4,17 +4,16 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.UUID;
 
 public class FrozenHumanoid extends LivingEntity {
     protected static final EntityDataAccessor<Boolean> DATA_IS_BABY = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.BOOLEAN);
@@ -35,6 +35,8 @@ public class FrozenHumanoid extends LivingEntity {
 
     private float shatterProjectileDamage;
     private int deathTimer = -1;
+    private UUID summonerUUID;
+    private LivingEntity cachedSummoner;
 
     public FrozenHumanoid(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -110,6 +112,27 @@ public class FrozenHumanoid extends LivingEntity {
             this.setCustomNameVisible(true);
         } else {
             this.setCustomNameVisible(false);
+        }
+
+        setSummoner(entityToCopy);
+    }
+
+    public void setSummoner(@javax.annotation.Nullable LivingEntity owner) {
+        if (owner != null) {
+            this.summonerUUID = owner.getUUID();
+            this.cachedSummoner = owner;
+        }
+    }
+
+    public LivingEntity getSummoner() {
+        if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
+            return this.cachedSummoner;
+        } else if (this.summonerUUID != null && this.level instanceof ServerLevel) {
+            if (((ServerLevel) this.level).getEntity(this.summonerUUID) instanceof LivingEntity livingEntity)
+                this.cachedSummoner = livingEntity;
+            return this.cachedSummoner;
+        } else {
+            return null;
         }
     }
 
@@ -201,11 +224,11 @@ public class FrozenHumanoid extends LivingEntity {
             motion = motion.yRot(offset * i * Mth.DEG_TO_RAD);
 
 
-            IcicleProjectile shard = new IcicleProjectile(level, this);
+            IcicleProjectile shard = new IcicleProjectile(level, getSummoner());
             shard.setDamage(damage);
             shard.setDeltaMovement(motion);
 
-            Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.3f));
+            Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.5f));
             var angle = Utils.rotationFromDirection(motion);
 
             shard.moveTo(spawn.x, spawn.y - shard.getBoundingBox().getYsize() / 2, spawn.z, angle.y, angle.x);
@@ -235,6 +258,27 @@ public class FrozenHumanoid extends LivingEntity {
     @Override
     public void setItemSlot(EquipmentSlot pSlot, ItemStack pStack) {
 
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        //irons_spellbooks.LOGGER.debug("Reading Summoned Vex save data");
+
+        if (compoundTag.hasUUID("Summoner")) {
+            this.summonerUUID = compoundTag.getUUID("Summoner");
+        }
+
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        //irons_spellbooks.LOGGER.debug("Writing Summoned Vex save data");
+
+        if (this.summonerUUID != null) {
+            compoundTag.putUUID("Summoner", this.summonerUUID);
+        }
     }
 
     @Override

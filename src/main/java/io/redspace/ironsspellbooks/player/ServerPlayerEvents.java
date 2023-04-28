@@ -213,6 +213,8 @@ public class ServerPlayerEvents {
 
             if (playerMagicData.isCasting() &&
                     SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
+                    event.getSource() != DamageSource.FREEZE &&
+                    event.getSource() != DamageSource.STARVE &&
                     event.getSource() != DamageSource.ON_FIRE &&
                     event.getSource() != DamageSource.WITHER) {
                 Utils.serverSideCancelCast(serverPlayer);

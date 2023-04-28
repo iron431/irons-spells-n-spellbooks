@@ -16,11 +16,15 @@ public class CatacombsZombie extends Zombie {
     //This is a wrapper class that in reality creates a vanilla zombie, but with some cool stuff thrown on top
     public CatacombsZombie(EntityType<? extends Zombie> pEntityType, Level pLevel) {
         super(EntityType.ZOMBIE, pLevel);
-        if (this.random.nextFloat() < .1f) {
-            if (this.random.nextBoolean())
-                addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, Integer.MAX_VALUE));
-            else
-                addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Integer.MAX_VALUE, 1));
+        if (this.random.nextFloat() < .2f) {
+            switch (this.random.nextIntBetweenInclusive(1, 4)) {
+
+                case 1 -> addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, Integer.MAX_VALUE));
+                case 2 -> addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Integer.MAX_VALUE, 1));
+                case 3 -> addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
+                case 4 -> addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, Integer.MAX_VALUE));
+            }
+
         }
     }
 

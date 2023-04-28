@@ -117,9 +117,5 @@ public class BloodStepSpell extends AbstractSpell {
     private float getDistance(Entity sourceEntity) {
         return getSpellPower(sourceEntity);
     }
-    
-    @Override
-    public Either<AnimationBuilder, ResourceLocation> getCastStartAnimation(Player player) {
-        return Either.right(null);
-    }
+
 }

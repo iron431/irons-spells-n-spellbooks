@@ -70,8 +70,8 @@ public class HealSpell extends AbstractSpell {
         super.onCast(world, entity, playerMagicData);
     }
 
-    public static ResourceLocation ANIMATION_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "instant_self");
-    private final AnimationBuilder ANIMATION_CAST = new AnimationBuilder().addAnimation(ANIMATION_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final ResourceLocation ANIMATION_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "instant_self");
+    public static final AnimationBuilder ANIMATION_CAST = new AnimationBuilder().addAnimation(ANIMATION_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 
     @Override
     public Either<AnimationBuilder, ResourceLocation> getCastStartAnimation(Player player) {
