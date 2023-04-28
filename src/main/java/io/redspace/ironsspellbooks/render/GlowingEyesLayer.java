@@ -23,9 +23,9 @@ public class GlowingEyesLayer {
     public static final ResourceLocation EYE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/purple_eyes.png");
     public static final RenderType EYES = RenderType.eyes(EYE_TEXTURE);
 
-    public static class GlowingEyesVanilla<T extends LivingEntity, M extends HumanoidModel<T>> extends EyesLayer<T, M> {
+    public static class Vanilla<T extends LivingEntity, M extends HumanoidModel<T>> extends EyesLayer<T, M> {
 
-        public GlowingEyesVanilla(RenderLayerParent pRenderer) {
+        public Vanilla(RenderLayerParent pRenderer) {
             super(pRenderer);
         }
 
@@ -48,8 +48,8 @@ public class GlowingEyesLayer {
         }
     }
 
-    public static class GlowingEyesGeo extends GeoLayerRenderer<AbstractSpellCastingMob> {
-        public GlowingEyesGeo(IGeoRenderer entityRendererIn) {
+    public static class Geo extends GeoLayerRenderer<AbstractSpellCastingMob> {
+        public Geo(IGeoRenderer entityRendererIn) {
             super(entityRendererIn);
         }
 
@@ -76,8 +76,8 @@ public class GlowingEyesLayer {
         //Sorted by most prioritized color
         if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ABYSSAL_SHROUD))
             return EyeType.Abyssal;
-        else if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.SHADOWWALKER_HELMET.get()))
-            return EyeType.Ender_Armor;
+//        else if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.SHADOWWALKER_HELMET.get()))
+//            return EyeType.Ender_Armor;
         else return EyeType.None;
     }
 

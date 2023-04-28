@@ -9,4 +9,5 @@ public class CryomancerRenderer extends AbstractSpellCastingMobRenderer {
     public CryomancerRenderer(EntityRendererProvider.Context context) {
         super(context, new CryomancerModel());
     }
+
 }

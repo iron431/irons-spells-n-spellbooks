@@ -121,7 +121,7 @@ public class ClientSetup {
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, EVASION_TEXTURE, SyncedSpellData.EVASION));
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, CHARGE_TEXTURE, SyncedSpellData.CHARGED));
             livingRenderer.addLayer(new ChargeSpellLayer.Vanilla<>(livingRenderer));
-            livingRenderer.addLayer(new GlowingEyesLayer.GlowingEyesVanilla<>(livingRenderer));
+            livingRenderer.addLayer(new GlowingEyesLayer.Vanilla<>(livingRenderer));
             livingRenderer.addLayer(new HealTargetLayer(livingRenderer));
         }
 

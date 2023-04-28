@@ -159,13 +159,13 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
             }
             if (airTime-- > 0) {
                 boolean tooHigh = false;
-                this.setDeltaMovement(getDeltaMovement().multiply(.99f, .75f, .99f));
+                this.setDeltaMovement(getDeltaMovement().multiply(.95f, .75f, .95f));
                 if (getTarget() != null) {
                     var target = getTarget();
 
                     Vec3 diff = target.position().subtract(this.position());
                     if (diff.horizontalDistanceSqr() > 1) {
-                        this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.0105f)));
+                        this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.02f)));
                     }
                     if (this.getY() - target.getY() > 3.5)
                         tooHigh = true;

@@ -219,7 +219,7 @@ public class FrozenHumanoid extends LivingEntity {
         int offset = 360 / count;
         for (int i = 0; i < count; i++) {
 
-            Vec3 motion = new Vec3(0, 0, 0.45);
+            Vec3 motion = new Vec3(0, 0, 0.55);
             motion = motion.xRot(30 * Mth.DEG_TO_RAD);
             motion = motion.yRot(offset * i * Mth.DEG_TO_RAD);
 

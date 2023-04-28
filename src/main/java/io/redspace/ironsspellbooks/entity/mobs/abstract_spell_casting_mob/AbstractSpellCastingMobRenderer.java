@@ -19,7 +19,7 @@ public abstract class AbstractSpellCastingMobRenderer extends GeoHumanoidRendere
         this.addLayer(new EnergySwirlLayer.Geo(this, EVASION_TEXTURE, SyncedSpellData.EVASION));
         this.addLayer(new EnergySwirlLayer.Geo(this, CHARGE_TEXTURE, SyncedSpellData.CHARGED));
         this.addLayer(new ChargeSpellLayer.Geo(this));
-        this.addLayer(new GlowingEyesLayer.GlowingEyesGeo(this));
+        this.addLayer(new GlowingEyesLayer.Geo(this));
         this.addLayer(new GeoHealTargetLayer(this));
         this.addLayer(new GeoSpinAttackLayer(this));
     }
