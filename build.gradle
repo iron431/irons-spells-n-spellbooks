@@ -17,8 +17,8 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'maven-publish'
 
-version = '1.0'
-group = 'com.example.irons_spellbooks'
+version = '1.0.0'
+group = 'io.redspace.ironsspellbooks'
 archivesBaseName = 'irons_spellbooks'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
