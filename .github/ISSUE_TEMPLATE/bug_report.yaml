@@ -27,10 +27,9 @@ body:
       label: Steps to reproduce
       description: Step by step instructions on how to reproduce the observed behaviour
       placeholder: |
-        1. Place a vanilla pickaxe in a workbench
-        2. Select [module] and [schematic]
-        3. Place [item] in the material slot
-        4. Note [issue] with [something]
+        1. Do X
+        2. Then do Y
+        3. Note [issue] with [something]
     validations:
       required: true
   - type: input
