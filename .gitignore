@@ -18,6 +18,7 @@ build
 .gradle
 
 # other
+mcmodsrepo/
 eclipse
 run
 run2
