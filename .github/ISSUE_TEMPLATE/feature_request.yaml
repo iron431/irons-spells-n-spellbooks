@@ -19,7 +19,7 @@ body:
   - type: textarea
     id: synergies
     attributes:
-      label: Tetra synergies
-      description: How does this synergize with current features in tetra, or how does it align the the goals of tetra
+      label: Iron's Spells N Spellbooks synergies
+      description: How does this synergize with current features in Iron's Spells N Spellbooks, or how does it align the the goals of the mod
     validations:
       required: true
