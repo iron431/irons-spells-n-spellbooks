@@ -245,15 +245,15 @@ publishing {
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/mcmodsrepo"
-        }
-        maven {
             name = "GitHubPackages"
             url = "https://maven.pkg.github.com/iron431/Irons-Spells-n-Spellbooks"
             credentials {
                 username = System.getenv("USERNAME")
                 password = System.getenv("TOKEN")
             }
+        }
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
         }
     }
 }
