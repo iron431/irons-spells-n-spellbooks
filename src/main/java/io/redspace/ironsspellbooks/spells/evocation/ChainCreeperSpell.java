@@ -1,12 +1,17 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
+import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
+import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -52,10 +57,25 @@ public class ChainCreeperSpell extends AbstractSpell {
     }
 
     @Override
+    public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        HitResult raycast = Utils.raycastForEntity(level, entity, 40, true);
+
+        if (raycast.getType() == HitResult.Type.ENTITY && ((EntityHitResult) raycast).getEntity() instanceof LivingEntity target) {
+            playerMagicData.setAdditionalCastData(new CastTargetingData(target));
+            if (entity instanceof ServerPlayer serverPlayer)
+                Messages.sendToPlayer(new ClientboundSyncTargetingData(target, getSpellType()), serverPlayer);
+        }
+        return true;
+
+    }
+
+    @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         HitResult raycast = Utils.raycastForEntity(level, entity, 40, true);
         Vec3 spawn;
-        if (raycast.getType() == HitResult.Type.ENTITY) {
+        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
+            spawn = castTargetingData.getTarget((ServerLevel) level).getEyePosition();
+        } else if (raycast.getType() == HitResult.Type.ENTITY) {
             spawn = ((EntityHitResult) raycast).getEntity().getEyePosition();
         } else {
             spawn = raycast.getLocation().subtract(entity.getForward());

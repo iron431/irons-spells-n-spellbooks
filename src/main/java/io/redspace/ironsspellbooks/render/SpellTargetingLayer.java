@@ -63,8 +63,9 @@ public class SpellTargetingLayer {
     private static Vector3f getColor(int spellId) {
         return switch (SpellType.getTypeFromValue(spellId)) {
             case BLESSING_OF_LIFE_SPELL -> new Vector3f(.85f, 0, 0);
-            case WISP_SPELL -> new Vector3f(.85f, .85f, .25f);
-            default -> new Vector3f(1, 1, 1);
+            case WISP_SPELL -> new Vector3f(.85f, .75f, .25f);
+            case ICE_BLOCK_SPELL -> new Vector3f(.25f, .25f, 1f);
+            default -> new Vector3f(.8f, .8f, .8f);
         };
     }
 
