@@ -10,6 +10,10 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.holy.WispSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -80,7 +84,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
 
     @Override
     protected void registerGoals() {
-        IronsSpellbooks.LOGGER.debug("WispEntity.registerGoals");
+        //IronsSpellbooks.LOGGER.debug("WispEntity.registerGoals");
         this.goalSelector.addGoal(2, new WispAttackGoal(this, 1));
 //        this.targetSelector.addGoal(1, new AcquireTargetNearLocationGoal<>(
 //                this,
@@ -117,7 +121,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
             var target = this.getTarget();
             if (target != null) {
                 if (this.getBoundingBox().inflate(.3).intersects(target.getBoundingBox())) {
-                    IronsSpellbooks.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
+                   // IronsSpellbooks.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
                     DamageSources.applyDamage(target, damageAmount, SpellType.WISP_SPELL.getDamageSource(this,cachedOwner), SchoolType.HOLY);
                     this.playSound(WispSpell.getImpactSound(), 1.0f, 1.0f);
                     var p = target.getEyePosition();
@@ -237,6 +241,16 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
 
     }
 
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        if (!this.level.isClientSide) {
+            this.playSound(SoundEvents.SHULKER_BULLET_HURT, 1.0F, 1.0F);
+            ((ServerLevel)this.level).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 15, 0.2D, 0.2D, 0.2D, 0.0D);
+            this.discard();
+        }
+
+        return true;
+    }
+
     @Override
     public HumanoidArm getMainArm() {
         return HumanoidArm.LEFT;
@@ -244,15 +258,15 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
 
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
-        for (int i = 0; i < 2; i++) {
-            double speed = .02;
-            double dx = level.random.nextDouble() * 2 * speed - speed;
-            double dy = level.random.nextDouble() * 2 * speed - speed;
-            double dz = level.random.nextDouble() * 2 * speed - speed;
-            var tmp = ParticleHelper.UNSTABLE_ENDER;
-            IronsSpellbooks.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}, {} {} {}", this.level.isClientSide, this.position(), dx, dy, dz);
-            level.addParticle(ParticleHelper.WISP, this.xOld - dx, this.position().y + .3, this.zOld - dz, dx, dy, dz);
-            //level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx / 2, this.getY() + dy / 2, this.getZ() + dz / 2, dx, dy, dz);
-        }
+//        for (int i = 0; i < 1; i++) {
+//            double speed = .02;
+//            double dx = level.random.nextDouble() * 2 * speed - speed;
+//            double dy = level.random.nextDouble() * 2 * speed - speed;
+//            double dz = level.random.nextDouble() * 2 * speed - speed;
+//            var tmp = ParticleHelper.UNSTABLE_ENDER;
+//            //IronsSpellbooks.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}, {} {} {}", this.level.isClientSide, this.position(), dx, dy, dz);
+//            level.addParticle(ParticleHelper.WISP, this.xOld - dx, this.position().y, this.zOld - dz, dx, dy, dz);
+//            //level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx / 2, this.getY() + dy / 2, this.getZ() + dz / 2, dx, dy, dz);
+//        }
     }
 }

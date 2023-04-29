@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells.wisp;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -26,7 +26,7 @@ public class WispRenderer extends GeoEntityRenderer<WispEntity> {
 
     @Override
     public RenderType getRenderType(WispEntity animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-        return super.getRenderType(animatable, partialTick, poseStack, bufferSource, buffer, packedLight, texture);
+        return RenderType.energySwirl(texture, 0, 0);
     }
 
     @Override

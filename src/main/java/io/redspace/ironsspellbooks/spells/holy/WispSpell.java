@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
@@ -10,15 +9,19 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class WispSpell extends AbstractSpell {
@@ -27,11 +30,16 @@ public class WispSpell extends AbstractSpell {
         this(1);
     }
 
+    @Override
+    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+    }
+
     public WispSpell(int level) {
         super(SpellType.WISP_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 4;
+        this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 15;
@@ -39,12 +47,12 @@ public class WispSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.MAGIC_SPELL_REVERSE_3.get());
+        return Optional.of(SoundEvents.ILLUSIONER_PREPARE_MIRROR);
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.ARIAL_SUMMONING_5_CUSTOM_1.get());
+        return Optional.of(SoundRegistry.EVOCATION_CAST.get());
     }
 
     public static SoundEvent getImpactSound() {
@@ -72,7 +80,6 @@ public class WispSpell extends AbstractSpell {
             wispEntity.setTarget(targetEntity);
             wispEntity.setPos(Utils.getPositionFromEntityLookDirection(entity, 2).subtract(0, .2, 0));
             world.addFreshEntity(wispEntity);
-            IronsSpellbooks.LOGGER.debug("WispSpell.onCast entityDuration:{}, target:{}", getDuration(entity), targetEntity);
         }
 
         //wispEntity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_TIMER.get(), (int) getDuration(entity), 0, false, false, false));
