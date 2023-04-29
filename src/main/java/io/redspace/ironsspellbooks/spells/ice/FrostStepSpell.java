@@ -92,9 +92,7 @@ public class FrostStepSpell extends AbstractSpell {
         Vec3 dest = null;
         if (teleportData != null) {
             var potentialTarget = teleportData.getTeleportTargetPosition();
-            if (potentialTarget != null) {
-                dest = Utils.putVectorOnWorldSurface(level, potentialTarget);
-            }
+            dest = potentialTarget;
         }
 
         if (dest == null) {

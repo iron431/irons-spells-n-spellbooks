@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -23,6 +22,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -235,17 +235,21 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             var pos = target.position();
             var teleportPos = rotation.add(pos);
 
-
-            for (int i = 0; i < 16; i++) {
-                teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float)(i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
+            boolean valid = false;
+            for (int i = 0; i < 24; i++) {
+                teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
                 int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 3);
                 teleportPos = new Vec3(teleportPos.x, y, teleportPos.z);
-                if (level.getBlockState(new BlockPos(teleportPos).above()).isAir())
+                var bb = this.getBoundingBox();
+                var reposBB = new AABB(bb.minX + teleportPos.x, bb.minY + teleportPos.y, bb.minZ + teleportPos.z, bb.maxX + teleportPos.x, bb.maxY + teleportPos.y, bb.maxZ + teleportPos.z);
+                if (!level.collidesWithSuffocatingBlock(this, reposBB)) {
+                    valid = true;
                     break;
+                }
 
             }
-
-            playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
+            if (valid)
+                playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
         }
     }
 

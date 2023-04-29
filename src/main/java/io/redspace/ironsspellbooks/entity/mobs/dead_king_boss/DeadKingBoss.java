@@ -273,7 +273,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     public boolean hurt(DamageSource pSource, float pAmount) {
         //reduces damage of projectiles and summons
         if (pSource instanceof IndirectEntityDamageSource)
-            pAmount *= .5f;
+            pAmount *= .75f;
         return super.hurt(pSource, pAmount);
     }
 
@@ -300,8 +300,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
                 .add(AttributeRegistry.SPELL_POWER.get(), 1.25)
-                .add(Attributes.ARMOR, 10)
-                .add(AttributeRegistry.SPELL_RESIST.get(), 1.15)
+                .add(Attributes.ARMOR, 15)
+                .add(AttributeRegistry.SPELL_RESIST.get(), 1)
                 .add(Attributes.MAX_HEALTH, 300.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)

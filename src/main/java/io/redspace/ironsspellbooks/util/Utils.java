@@ -19,6 +19,7 @@ import io.redspace.ironsspellbooks.tetra.TetraProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -40,7 +41,6 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
@@ -74,8 +74,10 @@ public class Utils {
     }
 
     public static boolean canBeUpgraded(ItemStack stack) {
-        //TODO: add config/tag support to allow user specified items to be upgraded
-        return stack.getItem() instanceof SpellBook || stack.is(ModTags.CAN_BE_UPGRADED);
+        return !ServerConfigs.UPGRADE_BLACKLIST.get().contains(Registry.ITEM.getKey(stack.getItem()).toString())
+                && (stack.getItem() instanceof SpellBook || stack.is(ModTags.CAN_BE_UPGRADED)
+                || ServerConfigs.UPGRADE_WHITELIST.get().contains(Registry.ITEM.getKey(stack.getItem()).toString())
+        );
     }
 
     public static String timeFromTicks(float ticks, int decimalPlaces) {
@@ -291,11 +293,6 @@ public class Utils {
         float pitch = (float) Math.asin(vector.y);
         float yaw = (float) Math.atan2(vector.x, vector.z);
         return new Vec2(pitch, yaw);
-    }
-
-    public static Vec3 putVectorOnWorldSurface(Level level, Vec3 location) {
-        int y = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) location.x, (int) location.z);
-        return new Vec3(location.x, y, location.z);
     }
 
     public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource, @Nullable SchoolType damageSchool) {

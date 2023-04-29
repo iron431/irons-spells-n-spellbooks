@@ -15,6 +15,9 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
     public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
+    //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
     public static final ForgeConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
 
@@ -96,7 +99,7 @@ public class ServerConfigs {
         BUILDER.pop();
 
         BUILDER.comment("Other Configuration");
-        BUILDER.push("MISC");
+        BUILDER.push("Misc");
 
         RARITY_CONFIG = BUILDER.worldRestart()
                 .comment(String.format("rarityConfig array values must sum to 1: [%s, %s, %s, %s, %s]", SpellRarity.COMMON, SpellRarity.UNCOMMON, SpellRarity.RARE, SpellRarity.EPIC, SpellRarity.LEGENDARY))
@@ -105,7 +108,14 @@ public class ServerConfigs {
         SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
         CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", false);
         MAX_UPGRADES = BUILDER.worldRestart().define("maxUpgrades", 3);
+        BUILDER.pop();
 
+        BUILDER.push("Upgrade Overrides");
+        BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's upgrade system. This can also be done via datapack.");
+        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: minecraft:iron_sword");
+        UPGRADE_WHITELIST = BUILDER.defineList("upgradeWhitelist", ArrayList::new, (string) -> true);
+        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being upgraded, ex: minecraft:iron_sword");
+        UPGRADE_BLACKLIST = BUILDER.defineList("upgradeBlacklist", ArrayList::new, (string) -> true);
         SPEC = BUILDER.build();
     }
 
