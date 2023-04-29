@@ -299,9 +299,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
-                .add(AttributeRegistry.SPELL_POWER.get(), 1.5)
-                .add(Attributes.ARMOR, 15)
-                .add(AttributeRegistry.SPELL_RESIST.get(), 1.2)
+                .add(AttributeRegistry.SPELL_POWER.get(), 1.25)
+                .add(Attributes.ARMOR, 10)
+                .add(AttributeRegistry.SPELL_RESIST.get(), 1.15)
                 .add(Attributes.MAX_HEALTH, 300.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, .6)
