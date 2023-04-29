@@ -391,7 +391,7 @@
   "effect.irons_spellbooks.vex_timer": "Summoned Vexes",
   "effect.irons_spellbooks.raise_dead_timer": "Summoned Dead",
   "effect.irons_spellbooks.polar_bear_timer": "Summoned Polar Bear",
-  "effect.irons_spellbooks.horse_timer": "Summoned Horse",
+  "effect.irons_spellbooks.summon_horse_timer": "Summoned Horse",
   "effect.irons_spellbooks.abyssal_shroud": "Abyssal Shroud",
   "effect.irons_spellbooks.true_invisibility": "True Invisibility",
   "effect.irons_spellbooks.ascension": "Ascension",
