@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
+import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 
 public class BlessingOfLifeSpell extends AbstractSpell {
@@ -61,16 +60,16 @@ public class BlessingOfLifeSpell extends AbstractSpell {
         if (target == null)
             return false;
         else {
-            playerMagicData.setAdditionalCastData(new HealTargetingData(target));
+            playerMagicData.setAdditionalCastData(new CastTargetingData(target));
             if (entity instanceof ServerPlayer serverPlayer)
-                Messages.sendToPlayer(new ClientboundSyncTargetingData(target), serverPlayer);
+                Messages.sendToPlayer(new ClientboundSyncTargetingData(target, getSpellType()), serverPlayer);
             return true;
         }
     }
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        if (playerMagicData.getAdditionalCastData() instanceof HealTargetingData healTargetingData) {
+        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData healTargetingData) {
             var targetEntity = healTargetingData.getTarget((ServerLevel) world);
             targetEntity.heal(getSpellPower(entity));
             Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(targetEntity.position()), targetEntity, true);
@@ -89,24 +88,4 @@ public class BlessingOfLifeSpell extends AbstractSpell {
         }
     }
 
-
-    public class HealTargetingData implements CastData {
-        //private Entity castingEntity;
-        //private LivingEntity targetEntity;
-        private UUID targetUUID;
-
-        HealTargetingData(LivingEntity target) {
-            //this.targetEntity = target;
-            this.targetUUID = target.getUUID();
-        }
-
-        @Override
-        public void reset() {
-
-        }
-
-        public LivingEntity getTarget(ServerLevel level) {
-            return (LivingEntity) level.getEntity(targetUUID);
-        }
-    }
 }

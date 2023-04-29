@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.entity.spells.wisp;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.entity.mobs.goals.AcquireTargetNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WispAttackGoal;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
@@ -57,10 +56,10 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
         this.setNoGravity(true);
     }
 
-    public WispEntity(Level levelIn, LivingEntity owner, Vec3 targetSearchStart, float damageAmount) {
+    public WispEntity(Level levelIn, LivingEntity owner, float damageAmount) {
         this(EntityRegistry.WISP.get(), levelIn);
         this.moveControl = new FlyingMoveControl(this, 20, true);
-        this.targetSearchStart = targetSearchStart;
+        //this.targetSearchStart = targetSearchStart;
         this.damageAmount = damageAmount;
 
         setOwner(owner);
@@ -83,14 +82,14 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     protected void registerGoals() {
         IronsSpellbooks.LOGGER.debug("WispEntity.registerGoals");
         this.goalSelector.addGoal(2, new WispAttackGoal(this, 1));
-        this.targetSelector.addGoal(1, new AcquireTargetNearLocationGoal<>(
-                this,
-                LivingEntity.class,
-                0,
-                false,
-                true,
-                targetSearchStart,
-                WispEntity::isValidTarget));
+//        this.targetSelector.addGoal(1, new AcquireTargetNearLocationGoal<>(
+//                this,
+//                LivingEntity.class,
+//                0,
+//                false,
+//                true,
+//                targetSearchStart,
+//                WispEntity::isValidTarget));
     }
 
     public static boolean isValidTarget(@Nullable Entity entity) {

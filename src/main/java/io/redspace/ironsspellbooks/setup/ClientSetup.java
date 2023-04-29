@@ -122,7 +122,7 @@ public class ClientSetup {
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, CHARGE_TEXTURE, SyncedSpellData.CHARGED));
             livingRenderer.addLayer(new ChargeSpellLayer.Vanilla<>(livingRenderer));
             livingRenderer.addLayer(new GlowingEyesLayer.Vanilla<>(livingRenderer));
-            livingRenderer.addLayer(new HealTargetLayer(livingRenderer));
+            livingRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(livingRenderer));
         }
 
         for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : Minecraft.getInstance().getEntityRenderDispatcher().renderers.entrySet()) {
@@ -132,7 +132,7 @@ public class ClientSetup {
                 //noinspection unchecked,rawtypes
                 var renderer = event.getRenderer((EntityType) entityType);
                 if (renderer != null) {
-                    renderer.addLayer(new HealTargetLayer(renderer));
+                    renderer.addLayer(new SpellTargetingLayer.Vanilla<>(renderer));
                     //IronsSpellbooks.LOGGER.debug("registerRenderers: Found LivingEntityRenderer for {}", entityType);
                 } else {
                     //IronsSpellbooks.LOGGER.debug("registerRenderers: Missing LivingEntityRenderer for {}", entityType);

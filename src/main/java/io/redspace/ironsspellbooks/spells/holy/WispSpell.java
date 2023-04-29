@@ -1,21 +1,23 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
+import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -50,37 +52,42 @@ public class WispSpell extends AbstractSpell {
     }
 
     @Override
+    public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+        var target = findTarget(entity);
+        if (target == null)
+            return false;
+        else {
+            playerMagicData.setAdditionalCastData(new CastTargetingData(target));
+            if (entity instanceof ServerPlayer serverPlayer)
+                Messages.sendToPlayer(new ClientboundSyncTargetingData(target, getSpellType()), serverPlayer);
+            return true;
+        }
+    }
+
+    @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        var wispEntity = new WispEntity(world, entity, getTargetLocation(world, entity), getSpellPower(entity));
-        wispEntity.setPos(Utils.getPositionFromEntityLookDirection(entity, 2).subtract(0, .2, 0));
+        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetingData) {
+            var targetEntity = targetingData.getTarget((ServerLevel) world);
+            WispEntity wispEntity = new WispEntity(world, entity, getSpellPower(entity));
+            wispEntity.setTarget(targetEntity);
+            wispEntity.setPos(Utils.getPositionFromEntityLookDirection(entity, 2).subtract(0, .2, 0));
+            world.addFreshEntity(wispEntity);
+            IronsSpellbooks.LOGGER.debug("WispSpell.onCast entityDuration:{}, target:{}", getDuration(entity), targetEntity);
+        }
+
         //wispEntity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_TIMER.get(), (int) getDuration(entity), 0, false, false, false));
-        var target = getTarget(world, entity);
 
-        IronsSpellbooks.LOGGER.debug("WispSpell.onCast entityDuration:{}, target:{}", getDuration(entity), target);
 
-        target.ifPresent(wispEntity::setTarget);
-        world.addFreshEntity(wispEntity);
         super.onCast(world, entity, playerMagicData);
     }
 
-    private Optional<LivingEntity> getTarget(Level level, LivingEntity entity) {
-        var startPos = Utils.getPositionFromEntityLookDirection(entity, 1);
-        var endPos = Utils.getPositionFromEntityLookDirection(entity, getDistance(entity));
-        var bb = new AABB(startPos, endPos);
-        IronsSpellbooks.LOGGER.debug("WispSpell.getTarget: bb:{}", bb);
-        return level.getEntities((Entity) null, bb, WispEntity::isValidTarget).stream().findFirst().map(e -> (LivingEntity) e);
-    }
-
-    private Vec3 getTargetLocation(Level level, LivingEntity entity) {
-        var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, getDistance(entity));
-        var pos = blockHitResult.getBlockPos();
-
-        int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ());
-
-        if (y - pos.getY() > 3 || blockHitResult.getType() == HitResult.Type.MISS) {
-            return blockHitResult.getLocation();
+    @Nullable
+    private LivingEntity findTarget(LivingEntity caster) {
+        var target = Utils.raycastForEntity(caster.level, caster, 32, true, 0.35f);
+        if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
+            return livingTarget;
         } else {
-            return new Vec3(pos.getX(), y + 1, pos.getZ());
+            return null;
         }
     }
 

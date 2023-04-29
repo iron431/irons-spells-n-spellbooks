@@ -4,7 +4,7 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.capabilities.magic.SpellTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.CastSource;
@@ -33,15 +33,15 @@ public class ClientMagicData {
     /**
      * Local Targeting data
      */
-    private static SpellTargetingData spellTargetingData;
+    private static ClientSpellTargetingData spellTargetingData;
 
-    public static void setTargetingData(SpellTargetingData spellTargetingData) {
+    public static void setTargetingData(ClientSpellTargetingData spellTargetingData) {
         ClientMagicData.spellTargetingData = spellTargetingData;
     }
 
-    public static SpellTargetingData getTargetingData() {
+    public static ClientSpellTargetingData getTargetingData() {
         if (spellTargetingData == null)
-            setTargetingData(new SpellTargetingData());
+            setTargetingData(new ClientSpellTargetingData());
         return spellTargetingData;
     }
 

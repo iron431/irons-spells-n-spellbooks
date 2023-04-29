@@ -22,7 +22,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -241,7 +240,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
                 int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 3);
                 teleportPos = new Vec3(teleportPos.x, y, teleportPos.z);
                 var bb = this.getBoundingBox();
-                var reposBB = new AABB(bb.minX + teleportPos.x, bb.minY + teleportPos.y, bb.minZ + teleportPos.z, bb.maxX + teleportPos.x, bb.maxY + teleportPos.y, bb.maxZ + teleportPos.z);
+                var reposBB = bb.move(teleportPos.subtract(target.position()));
                 if (!level.collidesWithSuffocatingBlock(this, reposBB)) {
                     valid = true;
                     break;
