@@ -222,5 +222,10 @@
     "sounds": [
       "irons_spellbooks:ray_of_siphoning_loop"
     ]
+  },
+  "cast.fireball": {
+    "sounds": [
+      "irons_spellbooks:fireball_start"
+    ]
   }
 }
