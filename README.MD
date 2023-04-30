@@ -7,6 +7,8 @@
 --->
 # Iron's Spells 'n Spellbooks
 
+[Curseforge Page](https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks)
+
 ## Info
 ## License & Use (to be completed)
 We reserve all rights. The points below outline what you can, cannot and must do when dealing with the
