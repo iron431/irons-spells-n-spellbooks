@@ -77,7 +77,7 @@ public class MagicManager {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
                             //Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                             spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
-                            IronsSpellbooks.LOGGER.debug("MagicManager.tick.1");
+ //Ironsspellbooks.logger.debug("MagicManager.tick.1");
                             spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, false);
                             Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                         }

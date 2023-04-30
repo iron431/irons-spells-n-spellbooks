@@ -29,7 +29,7 @@ public class ServerboundCancelCast {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
-        IronsSpellbooks.LOGGER.debug("PacketCancelCast.handle");
+ //Ironsspellbooks.logger.debug("PacketCancelCast.handle");
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.getSender();
@@ -42,14 +42,14 @@ public class ServerboundCancelCast {
         if (serverPlayer != null) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
-                IronsSpellbooks.LOGGER.debug("PacketCancelCast.cancelCast currently casting");
+ //Ironsspellbooks.logger.debug("PacketCancelCast.cancelCast currently casting");
                 int spellId = playerMagicData.getCastingSpellId();
 
                 if (triggerCooldown) {
                     MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
                 }
 
-                IronsSpellbooks.LOGGER.debug("ServerBoundCancelCast.cancelCast");
+ //Ironsspellbooks.logger.debug("ServerBoundCancelCast.cancelCast");
                 playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, true);
 
                 if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)

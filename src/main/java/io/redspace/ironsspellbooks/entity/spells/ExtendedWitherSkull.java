@@ -42,7 +42,7 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
     protected void onHitEntity(EntityHitResult pResult) {
         Entity entity = pResult.getEntity();
         DamageSources.applyDamage(entity, damage, SpellType.WITHER_SKULL_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
-        IronsSpellbooks.LOGGER.debug("hmm.");
+ //Ironsspellbooks.logger.debug("hmm.");
     }
 
     @Override

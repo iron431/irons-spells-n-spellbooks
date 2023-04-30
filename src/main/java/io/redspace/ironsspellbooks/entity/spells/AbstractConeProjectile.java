@@ -43,7 +43,7 @@ public abstract class AbstractConeProjectile extends Projectile{
                 new ConePart(this, "part3", 3.5F, 2.0F),
                 new ConePart(this, "part4", 4.5F, 3.0F)
         };
-        IronsSpellbooks.LOGGER.debug("AbstractConeProjectile: Creating sub-entities");
+ //Ironsspellbooks.logger.debug("AbstractConeProjectile: Creating sub-entities");
 
         //this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
     }

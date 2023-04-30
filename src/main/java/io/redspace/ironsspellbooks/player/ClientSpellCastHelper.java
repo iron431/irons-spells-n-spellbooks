@@ -44,7 +44,7 @@ public class ClientSpellCastHelper {
     }
 
     public static void setSuppressRightClicks(boolean suppressRightClicks) {
-        IronsSpellbooks.LOGGER.debug("ClientSpellCastHelper.setSuppressRightClicks {}", suppressRightClicks);
+ //Ironsspellbooks.logger.debug("ClientSpellCastHelper.setSuppressRightClicks {}", suppressRightClicks);
         ClientSpellCastHelper.suppressRightClicks = suppressRightClicks;
     }
 
@@ -234,7 +234,7 @@ public class ClientSpellCastHelper {
     }
 
     public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType, boolean cancelled) {
-        IronsSpellbooks.LOGGER.debug("ClientSpellCastHelper.handleClientBoundOnCastFinished.1 -> ClientMagicData.resetClientCastState: {}", castingEntityId);
+ //Ironsspellbooks.logger.debug("ClientSpellCastHelper.handleClientBoundOnCastFinished.1 -> ClientMagicData.resetClientCastState: {}", castingEntityId);
         ClientMagicData.resetClientCastState(castingEntityId);
 
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);

@@ -28,7 +28,7 @@ public class DebugTargetClosestEntityGoal extends TargetGoal {
         target = mob.level.getNearestPlayer(this.mob, 40);
 
         if (tmp != target) {
-            IronsSpellbooks.LOGGER.debug("DebugTargetClosestEntityGoal: Target Changed old:{} new:{}", tmp, target);
+ //Ironsspellbooks.logger.debug("DebugTargetClosestEntityGoal: Target Changed old:{} new:{}", tmp, target);
         }
     }
 

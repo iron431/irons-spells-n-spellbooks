@@ -50,7 +50,7 @@ public class DebugWizardAttackGoal extends Goal {
 
             if (cancelCastAfterTicks == castingTicks) {
                 mob.cancelCast();
-                IronsSpellbooks.LOGGER.debug("DebugWizardAttackGoal cancelling spell cast.");
+ //Ironsspellbooks.logger.debug("DebugWizardAttackGoal cancelling spell cast.");
             }
         }
     }

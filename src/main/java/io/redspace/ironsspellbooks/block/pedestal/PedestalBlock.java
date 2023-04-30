@@ -55,7 +55,7 @@ public class PedestalBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);
-            IronsSpellbooks.LOGGER.debug("PedestalBlock.use");
+ //Ironsspellbooks.logger.debug("PedestalBlock.use");
             if (entity instanceof PedestalTile pedestalTile) {
 
                 ItemStack currentPedestalItem = pedestalTile.getHeldItem();

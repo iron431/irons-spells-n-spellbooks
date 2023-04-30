@@ -61,7 +61,7 @@ public class HeartstopEffect extends MobEffect {
                 float damage = ClientMagicData.getSyncedSpellData(player).getHeartstopAccumulatedDamage();
                 float f = 1 - Mth.clamp(damage / player.getHealth(), 0, 1);
                 int i = (int) (10 + (40 - 10) * f);
-                IronsSpellbooks.LOGGER.debug("{} ({}/{} = {})", i, damage, player.getHealth(), f);
+ //Ironsspellbooks.logger.debug("{} ({}/{} = {})", i, damage, player.getHealth(), f);
                 if (this.duration % Math.max(i, 1) == 0) {
                     player.playSound(SoundEvents.WARDEN_HEARTBEAT, 1, 0.85f);
                 }

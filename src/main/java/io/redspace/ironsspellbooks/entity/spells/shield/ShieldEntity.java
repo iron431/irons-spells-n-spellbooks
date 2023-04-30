@@ -47,7 +47,7 @@ public class ShieldEntity extends AbstractShieldEntity {
 
     @Override
     protected void createShield() {
-        IronsSpellbooks.LOGGER.debug("ShieldEntity.createShield");
+ //Ironsspellbooks.logger.debug("ShieldEntity.createShield");
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int i = x * height + y;

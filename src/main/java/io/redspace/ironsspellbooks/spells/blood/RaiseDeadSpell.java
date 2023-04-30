@@ -85,11 +85,11 @@ public class RaiseDeadSpell extends AbstractSpell {
                     break;
             }
 
-            IronsSpellbooks.LOGGER.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
-            IronsSpellbooks.LOGGER.debug("RaiseDeadSpell caster rotation: {}", entity.getYRot());
+ //Ironsspellbooks.logger.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
+ //Ironsspellbooks.logger.debug("RaiseDeadSpell caster rotation: {}", entity.getYRot());
             undead.moveTo(spawn.x, spawn.y, spawn.z, entity.getYRot(), 0);
             world.addFreshEntity(undead);
-            IronsSpellbooks.LOGGER.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
+ //Ironsspellbooks.logger.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
 
 
         }

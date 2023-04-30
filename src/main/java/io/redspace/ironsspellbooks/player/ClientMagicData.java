@@ -104,22 +104,22 @@ public class ClientMagicData {
     }
 
     public static void resetClientCastState(UUID playerUUID) {
-        IronsSpellbooks.LOGGER.debug("resetClientCastState.1: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
+ //Ironsspellbooks.logger.debug("resetClientCastState.1: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
 
         if (Minecraft.getInstance().player.getUUID().equals(playerUUID)) {
-            IronsSpellbooks.LOGGER.debug("resetClientCastState.1.1");
+ //Ironsspellbooks.logger.debug("resetClientCastState.1.1");
             playerMagicData.resetCastingState();
             resetTargetingData();
         }
 
         var animationPlayer = castingAnimationPlayerLookup.getOrDefault(playerUUID, null);
         if (animationPlayer != null) {
-            IronsSpellbooks.LOGGER.debug("resetClientCastState.1.2");
+ //Ironsspellbooks.logger.debug("resetClientCastState.1.2");
             animationPlayer.stop();
         }
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUUID().equals(playerUUID)) {
-            IronsSpellbooks.LOGGER.debug("resetClientCastState.2: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
+ //Ironsspellbooks.logger.debug("resetClientCastState.2: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
             Minecraft.getInstance().player.stopUsingItem();
         }
     }

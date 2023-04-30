@@ -11,7 +11,7 @@ public class CommandRegistry {
 
     @SubscribeEvent
     public static void onCommandsRegister(RegisterCommandsEvent event) {
-        IronsSpellbooks.LOGGER.debug("onCommandsRegister");
+ //Ironsspellbooks.logger.debug("onCommandsRegister");
         CreateScrollCommand.register(event.getDispatcher());
         CreateSpellBookCommand.register(event.getDispatcher());
         CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());

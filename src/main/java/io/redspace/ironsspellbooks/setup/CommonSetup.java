@@ -41,7 +41,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class CommonSetup {
     @SubscribeEvent
     public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
-        IronsSpellbooks.LOGGER.debug("onModConfigLoadingEvent");
+ //Ironsspellbooks.logger.debug("onModConfigLoadingEvent");
         if(event.getConfig().getType() == ModConfig.Type.SERVER){
             ServerConfigs.cacheConfigs();
         }
@@ -49,7 +49,7 @@ public class CommonSetup {
 
     @SubscribeEvent
     public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
-        IronsSpellbooks.LOGGER.debug("onModConfigReloadingEvent");
+ //Ironsspellbooks.logger.debug("onModConfigReloadingEvent");
         if(event.getConfig().getType() == ModConfig.Type.SERVER){
             ServerConfigs.cacheConfigs();
         }

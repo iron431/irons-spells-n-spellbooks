@@ -107,7 +107,7 @@ public class ClientSetup {
         GeoArmorRenderer.registerArmorRenderer(TarnishedCrownArmorItem.class, () -> new GenericCustomArmorRenderer(new TarnishedCrownModel()));
         GeoArmorRenderer.registerArmorRenderer(PumpkinArmorItem.class, () -> new PumpkinArmorRenderer(new PumpkinArmorModel()));
 
-        IronsSpellbooks.LOGGER.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
+ //Ironsspellbooks.logger.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
 
         addLayerToPlayerSkin(event, "default");
         addLayerToPlayerSkin(event, "slim");

@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
@@ -58,7 +57,7 @@ public class ServerPlayerEvents {
         if (event.getEntity().level.isClientSide) {
             return;
         }
-        IronsSpellbooks.LOGGER.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
+ //Ironsspellbooks.logger.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
@@ -110,7 +109,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            IronsSpellbooks.LOGGER.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
+ //Ironsspellbooks.logger.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
             playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
@@ -126,23 +125,23 @@ public class ServerPlayerEvents {
 //    }
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
-        IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
+ //Ironsspellbooks.logger.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
         event.getEntity().clearFire();
         event.getEntity().setTicksFrozen(0);
     }
 
     @SubscribeEvent
     public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        IronsSpellbooks.LOGGER.debug("PlayerChangedDimension: {}", event.getEntity().getName().getString());
+ //Ironsspellbooks.logger.debug("PlayerChangedDimension: {}", event.getEntity().getName().getString());
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            IronsSpellbooks.LOGGER.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
+ //Ironsspellbooks.logger.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
             Utils.serverSideCancelCast(serverPlayer);
         }
     }
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        IronsSpellbooks.LOGGER.debug("onPlayerRespawn: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
+ //Ironsspellbooks.logger.debug("onPlayerRespawn: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
         event.getEntity().clearFire();
         event.getEntity().setTicksFrozen(0);
 
@@ -202,7 +201,7 @@ public class ServerPlayerEvents {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
                 playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
-                IronsSpellbooks.LOGGER.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+ //Ironsspellbooks.logger.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
                 event.setCanceled(true);
                 return;
             }

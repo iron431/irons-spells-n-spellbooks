@@ -15,7 +15,7 @@ public class OverlayRegistry {
 
     @SubscribeEvent
     public static void onRegisterOverlays(RegisterGuiOverlaysEvent event) {
-        IronsSpellbooks.LOGGER.debug("Registering Overlays");
+ //Ironsspellbooks.logger.debug("Registering Overlays");
         event.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "mana_overlay", ManaBarOverlay::render);
         event.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "cast_bar", CastBarOverlay::render);
 

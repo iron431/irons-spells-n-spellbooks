@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_block;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -116,7 +115,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
             victims.add(target);
             target.invulnerableTime = 0;
         }
-        IronsSpellbooks.LOGGER.debug("IceBlockProjectile.doFallingDamage: {}", target.getName().getString());
+ //Ironsspellbooks.logger.debug("IceBlockProjectile.doFallingDamage: {}", target.getName().getString());
 
     }
 
@@ -128,7 +127,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
                 if (distance < explosionRadius * explosionRadius) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
-                    IronsSpellbooks.LOGGER.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
+ //Ironsspellbooks.logger.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
 
                     if (DamageSources.applyDamage(entity, damage, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE)  && entity.canFreeze())
                         entity.setTicksFrozen(200);

@@ -45,7 +45,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
     public WallOfFireEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        IronsSpellbooks.LOGGER.debug("WallOfFire.attempting to create sub entities");
+ //Ironsspellbooks.logger.debug("WallOfFire.attempting to create sub entities");
         subEntities = new ShieldPart[0];
 
     }
@@ -104,11 +104,11 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
     @Override
     public void createShield() {
-        IronsSpellbooks.LOGGER.debug("Attempting to create shield, achor points length: {}", anchorPoints.size());
+ //Ironsspellbooks.logger.debug("Attempting to create shield, achor points length: {}", anchorPoints.size());
         float height = 3;
         float step = .8f;
         List<ShieldPart> entitiesList = new ArrayList<>();
-        IronsSpellbooks.LOGGER.debug("WallOfFire:Creating shield");
+ //Ironsspellbooks.logger.debug("WallOfFire:Creating shield");
         for (int i = 0; i < anchorPoints.size() - 1; i++) {
             Vec3 start = anchorPoints.get(i);
             Vec3 end = anchorPoints.get(i + 1);
@@ -130,14 +130,14 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
                 Vec3 pos = new Vec3(x, y, z);
 
                 partPositions.add(pos);
-                IronsSpellbooks.LOGGER.debug("WallOfFire:Creating shield: new sub entity {}", pos);
+ //Ironsspellbooks.logger.debug("WallOfFire:Creating shield: new sub entity {}", pos);
                 entitiesList.add(part);
             }
 
         }
         //subEntities = new ShieldPart[entitiesList.size()];
         subEntities = entitiesList.toArray(subEntities);
-        IronsSpellbooks.LOGGER.debug("WallOfFire.createShield (array length: {}, real length: {}),", subEntities.length, entitiesList.size());
+ //Ironsspellbooks.logger.debug("WallOfFire.createShield (array length: {}, real length: {}),", subEntities.length, entitiesList.size());
 
     }
 
@@ -208,7 +208,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
     }
 
     public void writeSpawnData(FriendlyByteBuf buffer) {
-        IronsSpellbooks.LOGGER.debug("WallOfFire.writeSpawnData");
+ //Ironsspellbooks.logger.debug("WallOfFire.writeSpawnData");
         buffer.writeInt(anchorPoints.size());
         for (Vec3 vec : anchorPoints) {
             buffer.writeFloat((float) vec.x);
@@ -218,7 +218,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
     }
 
     public void readSpawnData(FriendlyByteBuf additionalData) {
-        IronsSpellbooks.LOGGER.debug("WallOfFire.readSpawnData");
+ //Ironsspellbooks.logger.debug("WallOfFire.readSpawnData");
 
         anchorPoints = new ArrayList<>();
         int length = additionalData.readInt();

@@ -31,7 +31,7 @@ public class ClientboundSyncCooldown {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            IronsSpellbooks.LOGGER.debug("ClientboundSyncCooldown: {}", duration);
+ //Ironsspellbooks.logger.debug("ClientboundSyncCooldown: {}", duration);
             ClientMagicData.getCooldowns().addCooldown(SpellType.values()[spellId], duration);
         });
         return true;

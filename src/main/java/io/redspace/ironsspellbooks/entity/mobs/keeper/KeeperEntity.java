@@ -67,7 +67,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
 
     public void randomizeNextAttack() {
         entityData.set(DATA_ATTACK_TYPE, random.nextInt(AttackType.values().length));
-        IronsSpellbooks.LOGGER.debug("KeeperEntity Next Attack: {}", getNextAttackType());
+ //Ironsspellbooks.logger.debug("KeeperEntity Next Attack: {}", getNextAttackType());
     }
 
     @Override

@@ -100,11 +100,11 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
     public void onSlotsChanged() {
         setupResultSlot(spellRecipeSelection);
-        IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.slotsChanged");
+ //Ironsspellbooks.logger.debug("ScrollForgeMenu.slotsChanged");
     }
 
     private void setupResultSlot(SpellType selectedSpellType) {
-        IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.setupResultSlot");
+ //Ironsspellbooks.logger.debug("ScrollForgeMenu.setupResultSlot");
 
         ItemStack scrollStack = this.blankScrollSlot.getItem();
         ItemStack inkStack = this.inkSlot.getItem();
@@ -125,7 +125,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
     public void setRecipeSpell(SpellType typeFromValue) {
         this.spellRecipeSelection = typeFromValue;
-        IronsSpellbooks.LOGGER.debug("Setting selected Spell");
+ //Ironsspellbooks.logger.debug("Setting selected Spell");
         setupResultSlot(typeFromValue);
     }
 

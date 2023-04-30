@@ -84,7 +84,7 @@ public enum SpellRarity {
             }
         });
 
-        IronsSpellbooks.LOGGER.debug(sb.toString());
+ //Ironsspellbooks.logger.debug(sb.toString());
     }
 
     public ChatFormatting getChatFormatting() {

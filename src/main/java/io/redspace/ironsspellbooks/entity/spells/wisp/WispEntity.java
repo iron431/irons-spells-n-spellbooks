@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.wisp;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WispAttackGoal;
@@ -78,8 +77,8 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
         this.setYHeadRot(yHeadRot);
         this.lastTickPos = this.position();
 
-        IronsSpellbooks.LOGGER.debug("WispEntity: Owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
-        IronsSpellbooks.LOGGER.debug("WispEntity: Wisp - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
+ //Ironsspellbooks.logger.debug("WispEntity: Owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
+ //Ironsspellbooks.logger.debug("WispEntity: Wisp - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
     }
 
     @Override

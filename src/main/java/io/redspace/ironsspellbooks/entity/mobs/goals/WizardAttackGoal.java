@@ -177,7 +177,7 @@ public class WizardAttackGoal extends Goal {
         //irons_spellbooks.LOGGER.debug("{},{}", mob.getLastHurtByMobTimestamp(), mob.tickCount);
         if (mob.getLastHurtByMobTimestamp() == mob.tickCount - 1) {
             int t = (int) (Mth.lerp(.6f, attackTime, 0) + 1);
-            IronsSpellbooks.LOGGER.debug("Ouch! {}->{}", attackTime, t);
+ //Ironsspellbooks.logger.debug("Ouch! {}->{}", attackTime, t);
             attackTime = t;
             //attackTime = (int) (Mth.lerp(.25f, attackTime, 0) + 1);
         }

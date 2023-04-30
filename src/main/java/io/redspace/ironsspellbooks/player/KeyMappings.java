@@ -27,7 +27,7 @@ public final class KeyMappings {
 
     @SubscribeEvent
     public static void onRegisterKeybinds(RegisterKeyMappingsEvent event) {
-        IronsSpellbooks.LOGGER.debug("KeyMappings.onRegisterKeybinds");
+ //Ironsspellbooks.logger.debug("KeyMappings.onRegisterKeybinds");
         event.register(SPELL_WHEEL_KEYMAP);
         event.register(SPELLBAR_SCROLL_MODIFIER_KEYMAP);
         QUICK_CAST_MAPPINGS.forEach(event::register);

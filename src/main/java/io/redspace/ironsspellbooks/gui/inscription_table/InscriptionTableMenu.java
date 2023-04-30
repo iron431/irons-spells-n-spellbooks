@@ -83,7 +83,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
             @Override
             public void onTake(Player player, ItemStack stack) {
-                IronsSpellbooks.LOGGER.debug("InscriptionTableMenu.take spell!");
+ //Ironsspellbooks.logger.debug("InscriptionTableMenu.take spell!");
                 var spellBookStack = spellBookSlot.getItem();
                 var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
                 spellBookData.removeSpell(selectedSpellIndex, spellBookStack);
@@ -117,7 +117,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     @Override
     public void slotsChanged(Container pContainer) {
         super.slotsChanged(pContainer);
-        IronsSpellbooks.LOGGER.debug("InscriptionTableMenu.slotsChanged");
+ //Ironsspellbooks.logger.debug("InscriptionTableMenu.slotsChanged");
         setupResultSlot();
     }
 
@@ -152,8 +152,8 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     }
 
     private void setupResultSlot() {
-        IronsSpellbooks.LOGGER.debug("InscriptionTableMenu.setupResultSlot");
-        IronsSpellbooks.LOGGER.debug("InscriptionTableMenu.selected spell index: {}", selectedSpellIndex);
+ //Ironsspellbooks.logger.debug("InscriptionTableMenu.setupResultSlot");
+ //Ironsspellbooks.logger.debug("InscriptionTableMenu.selected spell index: {}", selectedSpellIndex);
 
         ItemStack resultStack = ItemStack.EMPTY;
         ItemStack spellBookStack = spellBookSlot.getItem();

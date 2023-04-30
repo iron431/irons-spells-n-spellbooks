@@ -46,7 +46,7 @@ public class SpellBarrageGoal extends Goal {
         if (attackTime <= -interval * (projectileCount - 1)) {
             resetAttackTimer();
         }
-        IronsSpellbooks.LOGGER.debug("SpellBarrageGoal ({}) canUse: attackTime: {}, reset threshold: {}", spell, attackTime, -interval * (projectileCount - 1));
+ //Ironsspellbooks.logger.debug("SpellBarrageGoal ({}) canUse: attackTime: {}, reset threshold: {}", spell, attackTime, -interval * (projectileCount - 1));
         return --attackTime <= 0 && attackTime % interval == 0;
 
     }

@@ -86,7 +86,7 @@ public class PlayerMagicData extends AbstractMagicData {
 
 
     public void resetCastingState() {
-        IronsSpellbooks.LOGGER.debug("PlayerMagicData.resetCastingState: serverPlayer:{}", serverPlayer);
+ //Ironsspellbooks.logger.debug("PlayerMagicData.resetCastingState: serverPlayer:{}", serverPlayer);
         this.castingSpellLevel = 0;
         this.castDuration = 0;
         this.castDurationRemaining = 0;

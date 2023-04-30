@@ -36,7 +36,7 @@ public class LightningLanceSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        IronsSpellbooks.LOGGER.debug("LightningLanceSpell.getCastStartSound");
+ //Ironsspellbooks.logger.debug("LightningLanceSpell.getCastStartSound");
         return Optional.of(SoundRegistry.LIGHTNING_LANCE_CAST.get());
     }
 

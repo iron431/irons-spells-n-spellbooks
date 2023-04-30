@@ -60,7 +60,7 @@ public class PedestalTile extends BlockEntity {
     @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
-        IronsSpellbooks.LOGGER.debug("Loading Pedestal NBT");
+ //Ironsspellbooks.logger.debug("Loading Pedestal NBT");
         readNBT(nbt);
 
     }
@@ -128,11 +128,11 @@ public class PedestalTile extends BlockEntity {
     private CompoundTag readNBT(CompoundTag nbt) {
         if (nbt.contains(NBT_HELD_ITEM)) {
             //itemHandler.deserializeNBT(nbt.getCompound("inventory"));
-            IronsSpellbooks.LOGGER.debug("Pedestal NBT contains held item ({})", nbt.getCompound(NBT_HELD_ITEM));
+ //Ironsspellbooks.logger.debug("Pedestal NBT contains held item ({})", nbt.getCompound(NBT_HELD_ITEM));
 
             //heldItem.deserializeNBT(nbt.getCompound(NBT_HELD_ITEM));
             heldItem = ItemStack.of(nbt.getCompound(NBT_HELD_ITEM));
-            IronsSpellbooks.LOGGER.debug("Held Item: {}", heldItem);
+ //Ironsspellbooks.logger.debug("Held Item: {}", heldItem);
 
         }
         return nbt;

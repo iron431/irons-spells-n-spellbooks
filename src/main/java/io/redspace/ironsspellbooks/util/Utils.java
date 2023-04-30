@@ -400,7 +400,7 @@ public class Utils {
                     //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.6");
                     spell.onClientPreCast(level, player, hand, null);
                     if (spell.getCastType().holdToCast()) {
-                        IronsSpellbooks.LOGGER.debug("onUseCastingHelper.1");
+ //Ironsspellbooks.logger.debug("onUseCastingHelper.1");
                         player.startUsingItem(hand);
                     }
                     return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
@@ -409,7 +409,7 @@ public class Utils {
 
             if (spell.attemptInitiateCast(stack, level, player, CastSource.SWORD, true)) {
                 if (spell.getCastType().holdToCast()) {
-                    IronsSpellbooks.LOGGER.debug("onUseCastingHelper.2");
+ //Ironsspellbooks.logger.debug("onUseCastingHelper.2");
                     player.startUsingItem(hand);
                 }
                 return InteractionResultHolder.success(stack);
