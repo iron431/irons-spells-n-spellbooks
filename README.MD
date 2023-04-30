@@ -9,6 +9,8 @@
 
 [Curseforge Page](https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks)
 
+[Documentation Site](https://iron431.github.io/Irons-Spellbooks-Docs/)
+
 ## Info
 ## License & Use (to be completed)
 We reserve all rights. The points below outline what you can, cannot and must do when dealing with the
