@@ -90,7 +90,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onExperienceDroppedEvent(LivingExperienceDropEvent event) {
         var player = event.getAttackingPlayer();
-        if (player != null){
+        if (player != null) {
             var ringCount = CuriosApi.getCuriosHelper().findCurios(player, ItemRegistry.EMERALD_STONEPLATE_RING.get()).size();
             for (int i = 0; i < ringCount; i++) {
                 event.setDroppedExperience((int) (event.getDroppedExperience() * 1.25));
@@ -117,7 +117,7 @@ public class ServerPlayerEvents {
         }
     }
 
-//This causes an issue with saving the PlayerMagicData to nbt. you can't save it if you clear it.
+    //This causes an issue with saving the PlayerMagicData to nbt. you can't save it if you clear it.
 //    @SubscribeEvent
 //    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
 //        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
@@ -136,22 +136,18 @@ public class ServerPlayerEvents {
         IronsSpellbooks.LOGGER.debug("PlayerChangedDimension: {}", event.getEntity().getName().getString());
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             IronsSpellbooks.LOGGER.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
-            playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
+            Utils.serverSideCancelCast(serverPlayer);
         }
     }
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
+        IronsSpellbooks.LOGGER.debug("onPlayerRespawn: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
         event.getEntity().clearFire();
         event.getEntity().setTicksFrozen(0);
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            playerMagicData.resetCastingState();
-            playerMagicData.getSyncedData().doSync();
+            Utils.serverSideCancelCast(serverPlayer);
         }
     }
 
