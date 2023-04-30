@@ -19,10 +19,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -128,6 +125,17 @@ public class ServerPlayerEvents {
  //Ironsspellbooks.logger.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
         event.getEntity().clearFire();
         event.getEntity().setTicksFrozen(0);
+    }
+
+    @SubscribeEvent
+    public static void onLivingDeathEvent(LivingDeathEvent event) {
+        //IronsSpellbooks.LOGGER.debug("onLivingDeathEvent: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
+        event.getEntity().clearFire();
+        event.getEntity().setTicksFrozen(0);
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            //IronsSpellbooks.LOGGER.debug("onLivingDeathEvent: {}", serverPlayer.getName().getString());
+            Utils.serverSideCancelCast(serverPlayer);
+        }
     }
 
     @SubscribeEvent
