@@ -482,7 +482,11 @@
   "advancements.irons_spellbooks.magic_aura.title": "Enchanted Ward",
   "advancements.irons_spellbooks.magic_aura.description": "Encounter the magic aura blockading the Lost Citadel",
   "advancements.irons_spellbooks.enter_catacombs.title": "Dungeon Delving",
-  "advancements.irons_spellbooks.enter_catacombs.description": "Enter the Catacombs"
+  "advancements.irons_spellbooks.enter_catacombs.description": "Enter the Catacombs",
 
+  "irons_spellbooks.tetra_effect.freeze.name": "Freezing",
+  "irons_spellbooks.tetra_effect.freeze.tooltip": "Stacks the freezing effect for §e%s seconds.",
 
+  "tetra.material.irons_spellbooks:frozen_bone": "Frozen Bone",
+  "tetra.material.irons_spellbooks:frozen_bone.prefix": "Frozen Bone"
 }

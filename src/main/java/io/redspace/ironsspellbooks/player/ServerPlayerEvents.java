@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.server.level.ServerPlayer;
@@ -163,22 +164,20 @@ public class ServerPlayerEvents {
         var livingEntity = event.getEntity();
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
 
-        if (!(livingEntity instanceof ServerPlayer) && !(livingEntity instanceof AbstractSpellCastingMob)) {
-            return;
-        }
-
-        //irons_spellbooks.LOGGER.debug("onLivingAttack.2: {}", livingEntity);
-
-        var playerMagicData = PlayerMagicData.getPlayerMagicData(livingEntity);
-        if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
-            if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
-                event.setCanceled(true);
-            }
-        } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
-            if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
-                event.setCanceled(true);
+        if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof AbstractSpellCastingMob)) {
+            var playerMagicData = PlayerMagicData.getPlayerMagicData(livingEntity);
+            if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
+                if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
+                    event.setCanceled(true);
+                }
+            } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
+                    event.setCanceled(true);
+                }
             }
         }
+
+        TetraProxy.PROXY.handleLivingAttackEvent(event);
     }
 //
 //    @SubscribeEvent

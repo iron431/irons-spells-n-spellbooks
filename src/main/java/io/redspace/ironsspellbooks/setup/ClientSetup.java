@@ -43,6 +43,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.render.*;
+import io.redspace.ironsspellbooks.tetra.effects.FreezeTetraEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
@@ -211,6 +212,7 @@ public class ClientSetup {
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
         e.enqueueWork(() -> ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag()))));
+        FreezeTetraEffect.init();
         //TODO: Citadel reimplementation
         //e.enqueueWork(() -> ItemProperties.register(ItemRegistry.ANTIQUATED_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> AntiquatedCompass.getCitadelLocation(entity, itemStack.getOrCreateTag()))));
     }
