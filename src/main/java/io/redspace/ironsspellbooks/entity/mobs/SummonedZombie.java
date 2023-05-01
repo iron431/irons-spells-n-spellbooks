@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.OwnerHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -12,12 +12,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -80,13 +78,6 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
 
     }
 
-    public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner != null) {
-            this.summonerUUID = owner.getUUID();
-            this.cachedSummoner = owner;
-        }
-    }
-
     @Override
     public boolean isAlliedTo(Entity pEntity) {
         return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
@@ -115,14 +106,13 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
 
     @Override
     public LivingEntity getSummoner() {
-        if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
-            return this.cachedSummoner;
-        } else if (this.summonerUUID != null && this.level instanceof ServerLevel) {
-            if (((ServerLevel) this.level).getEntity(this.summonerUUID) instanceof LivingEntity livingEntity)
-                this.cachedSummoner = livingEntity;
-            return this.cachedSummoner;
-        } else {
-            return null;
+        return OwnerHelper.cacheOwner(level, cachedSummoner, summonerUUID);
+    }
+
+    public void setSummoner(@Nullable LivingEntity owner) {
+        if (owner != null) {
+            this.summonerUUID = owner.getUUID();
+            this.cachedSummoner = owner;
         }
     }
 
@@ -133,14 +123,9 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!pSource.isBypassInvul()) {
-            if (isAnimatingRise())
-                return false;
-            if (pSource instanceof EntityDamageSource && !ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get())
-                if (this.getSummoner() != null && (pSource.getEntity().equals(this.getSummoner()) || this.getSummoner().isAlliedTo(pSource.getEntity())))
-                    return false;
+        if (!pSource.isBypassInvul() && (isAnimatingRise() || shouldIgnoreDamage(pSource))) {
+            return false;
         }
-
         return super.hurt(pSource, pAmount);
     }
 
@@ -176,24 +161,13 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Reading Summoned Vex save data");
-
-        if (compoundTag.hasUUID("Summoner")) {
-            this.summonerUUID = compoundTag.getUUID("Summoner");
-        }
-
-
+        this.summonerUUID = OwnerHelper.deserializeOwner(compoundTag);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Writing Summoned Vex save data");
-
-        if (this.summonerUUID != null) {
-            compoundTag.putUUID("Summoner", this.summonerUUID);
-        }
-
+        OwnerHelper.serializeOwner(compoundTag, summonerUUID);
     }
 
     //

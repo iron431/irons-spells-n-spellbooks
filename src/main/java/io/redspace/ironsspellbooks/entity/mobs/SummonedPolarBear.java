@@ -1,15 +1,14 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.OwnerHelper;
 import io.redspace.ironsspellbooks.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -91,8 +90,8 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
     }
 
     @Override
-    public boolean doHurtTarget(Entity pEntity) {
-        return Utils.doMeleeAttack(this, pEntity, SpellType.SUMMON_POLAR_BEAR_SPELL.getDamageSource(this, getSummoner()), null);
+    public LivingEntity getSummoner() {
+        return OwnerHelper.cacheOwner(level, cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -103,21 +102,25 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        this.summonerUUID = OwnerHelper.deserializeOwner(compoundTag);
     }
 
     @Override
-    public LivingEntity getSummoner() {
-        if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
-            return this.cachedSummoner;
-        } else if (this.summonerUUID != null && this.level instanceof ServerLevel) {
-            if (((ServerLevel) this.level).getEntity(this.summonerUUID) instanceof LivingEntity livingEntity)
-                this.cachedSummoner = livingEntity;
-            return this.cachedSummoner;
-        } else {
-            return null;
-        }
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        OwnerHelper.serializeOwner(compoundTag, summonerUUID);
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity pEntity) {
+        return Utils.doMeleeAttack(this, pEntity, SpellType.SUMMON_POLAR_BEAR_SPELL.getDamageSource(this, getSummoner()), null);
+    }
+
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
     }
 
     @Override
@@ -134,27 +137,6 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
             if (this.getSummoner() != null && (pSource.getEntity().equals(this.getSummoner()) || this.getSummoner().isAlliedTo(pSource.getEntity())))
                 return false;
         return super.hurt(pSource, pAmount);
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Reading Summoned Vex save data");
-
-        if (compoundTag.hasUUID("Summoner")) {
-            this.summonerUUID = compoundTag.getUUID("Summoner");
-        }
-
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Writing Summoned Vex save data");
-
-        if (this.summonerUUID != null) {
-            compoundTag.putUUID("Summoner", this.summonerUUID);
-        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {

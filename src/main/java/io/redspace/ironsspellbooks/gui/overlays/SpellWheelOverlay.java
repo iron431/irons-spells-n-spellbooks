@@ -86,6 +86,10 @@ public class SpellWheelOverlay extends GuiComponent {
         spellBookData = SpellBookData.getSpellBookData(spellBookStack);
         List<AbstractSpell> spells = spellBookData.getActiveInscribedSpells();
         int spellCount = spells.size();
+        if (spellCount == 0) {
+            active = false;
+            return;
+        }
 
         Vec2 screenCenter = new Vec2(minecraft.getWindow().getScreenWidth() * .5f, minecraft.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());

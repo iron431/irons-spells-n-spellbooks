@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.OwnerHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -12,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -80,11 +80,28 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
 
     }
 
+    @Override
+    public LivingEntity getSummoner() {
+        return OwnerHelper.cacheOwner(level, cachedSummoner, summonerUUID);
+    }
+
     public void setSummoner(@Nullable LivingEntity owner) {
         if (owner != null) {
             this.summonerUUID = owner.getUUID();
             this.cachedSummoner = owner;
         }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        this.summonerUUID = OwnerHelper.deserializeOwner(compoundTag);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        OwnerHelper.serializeOwner(compoundTag, summonerUUID);
     }
 
     @Override
@@ -122,47 +139,12 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
     }
 
     @Override
-    public LivingEntity getSummoner() {
-        if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
-            return this.cachedSummoner;
-        } else if (this.summonerUUID != null && this.level instanceof ServerLevel) {
-            if (((ServerLevel) this.level).getEntity(this.summonerUUID) instanceof LivingEntity livingEntity)
-                this.cachedSummoner = livingEntity;
-            return this.cachedSummoner;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public void onUnSummon() {
         if (!level.isClientSide) {
             MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             discard();
         }
     }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Reading Summoned Vex save data");
-
-        if (compoundTag.hasUUID("Summoner")) {
-            this.summonerUUID = compoundTag.getUUID("Summoner");
-        }
-
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Writing Summoned Vex save data");
-
-        if (this.summonerUUID != null) {
-            compoundTag.putUUID("Summoner", this.summonerUUID);
-        }
-    }
-
 
     @Override
     protected boolean isSunBurnTick() {
