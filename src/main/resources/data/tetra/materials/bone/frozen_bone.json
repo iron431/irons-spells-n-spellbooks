@@ -1,21 +1,21 @@
 {
-  "key": "irons_spellbooks:frozen_bone",
+  "key": "irons_spellbooks_frozen_bone",
   "category": "bone",
-  "primary": 5,
+  "primary": 5.5,
   "secondary": 1.9,
   "tertiary": 4.5,
-  "durability": 120,
+  "durability": 180,
   "integrityCost": 1,
   "integrityGain": 5,
-  "magicCapacity": 108,
+  "magicCapacity": 158,
   "toolLevel": "minecraft:stone",
   "toolEfficiency": 4.5,
   "effects": {
     "irons_spellbooks:freeze": 5
   },
   "tints": {
-    "glyph": "3d91ff",
-    "texture": "3d91ff"
+    "glyph": "caeced",
+    "texture": "caeced"
   },
   "textures": [
     "bone",

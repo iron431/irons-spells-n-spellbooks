@@ -5,6 +5,11 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 public class TetraDummyImpl implements ITetraProxy {
     @Override
+    public void initClient() {
+
+    }
+
+    @Override
     public boolean canImbue(ItemStack itemStack) {
         return false;
     }

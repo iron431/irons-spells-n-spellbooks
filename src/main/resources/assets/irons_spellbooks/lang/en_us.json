@@ -486,7 +486,13 @@
 
   "irons_spellbooks.tetra_effect.freeze.name": "Freezing",
   "irons_spellbooks.tetra_effect.freeze.tooltip": "Stacks the freezing effect for §e%s seconds.",
+  "irons_spellbooks.tetra_bar.cooldown_reduction.tooltip": "Reduces imbued spell cooldown by §e%s.",
+  "irons_spellbooks.tetra_bar.max_mana.tooltip": "Increases Max Mana when held by §e%s.",
 
-  "tetra.material.irons_spellbooks:frozen_bone": "Frozen Bone",
-  "tetra.material.irons_spellbooks:frozen_bone.prefix": "Frozen Bone"
+  "tetra.material.irons_spellbooks_frozen_bone": "Frozen Bone",
+  "tetra.material.irons_spellbooks_frozen_bone.prefix": "Frozen Bone",
+  "tetra.material.irons_spellbooks_arcane_ingot": "Arcane",
+  "tetra.material.irons_spellbooks_arcane_ingot.prefix": "Arcane",
+  "tetra.material.irons_spellbooks_arcane_cloth": "Arcane Cloth",
+  "tetra.material.irons_spellbooks_arcane_cloth.prefix": "Arcane Cloth"
 }
