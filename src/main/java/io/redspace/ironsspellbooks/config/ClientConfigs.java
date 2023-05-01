@@ -9,6 +9,7 @@ public class ClientConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ITEMS;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALWAYS_SHOW_MANA_BAR;
     public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_Y_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_X_OFFSET;
     public static final ForgeConfigSpec SPEC;
 
     static {
@@ -23,6 +24,7 @@ public class ClientConfigs {
         ALWAYS_SHOW_MANA_BAR = BUILDER.define("alwaysShowManaBar", false);
         BUILDER.comment("Use to adjust if the mana bar conflicts with other mod's ui elements (11 is one full hunger bar up).");
         MANA_BAR_Y_OFFSET = BUILDER.define("manaBarYOffset", 0);
+        MANA_BAR_X_OFFSET = BUILDER.define("manaBarXOffset", 0);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

@@ -38,10 +38,11 @@ public class ManaBarOverlay {
         int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
         int mana = ClientMagicData.getPlayerMana();
         int barX, barY;
-        int configOffset = ClientConfigs.MANA_BAR_Y_OFFSET.get();
+        int configOffsetY = ClientConfigs.MANA_BAR_Y_OFFSET.get();
+        int configOffsetX = ClientConfigs.MANA_BAR_X_OFFSET.get();
 
-        barX = screenWidth / 2 - IMAGE_WIDTH / 2 + (centered ? 0 : HUNGER_BAR_OFFSET);
-        barY = screenHeight - HOTBAR_HEIGHT - ICON_ROW_HEIGHT * getOffsetCountFromHotbar(player) - IMAGE_HEIGHT / 2 - configOffset;
+        barX = screenWidth / 2 - IMAGE_WIDTH / 2 + (centered ? 0 : HUNGER_BAR_OFFSET) - configOffsetX;
+        barY = screenHeight - HOTBAR_HEIGHT - ICON_ROW_HEIGHT * getOffsetCountFromHotbar(player) - IMAGE_HEIGHT / 2 - configOffsetY;
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
