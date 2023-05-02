@@ -68,7 +68,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
             } else {
                 if (age < 280 && (age) % 20 == 0) {
                     level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.2)).forEach(this::dealDamage);
-                    if (level.random.nextFloat() < .07f)
+                    if (level.random.nextFloat() < .15f)
                         playSound(SoundRegistry.VOID_TENTACLES_AMBIENT.get(), 1.5f, .5f + level.random.nextFloat() * .65f);
                 }
             }
@@ -76,9 +76,10 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
                 playSound(SoundRegistry.VOID_TENTACLES_LEAVE.get());
         } else {
             if (age < 280)
-                for (int i = 0; i < 4; i++) {
-                    level.addParticle(ParticleHelper.BLACK_FOG, getX(), getY() + Utils.getRandomScaled(.5f) + .2f, getZ(), Utils.getRandomScaled(2f), Utils.getRandomScaled(.3f), Utils.getRandomScaled(2f));
-                }
+//                for (int i = 0; i < 4; i++) {
+                if (level.random.nextFloat() < .15f)
+                    level.addParticle(ParticleHelper.VOID_TENTACLE_FOG, getX() + Utils.getRandomScaled(.5f), getY() + Utils.getRandomScaled(.5f) + .2f, getZ() + Utils.getRandomScaled(.5f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
+//                }
         }
         age++;
 
