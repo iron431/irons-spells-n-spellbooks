@@ -23,5 +23,6 @@ eclipse
 run
 run2
 runServer
+libs
 # Files from Forge MDK
 forge*changelog.txt

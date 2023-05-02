@@ -149,9 +149,9 @@ repositories {
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
-    //    flatDir {
-    //         dir 'libs'
-    //     }
+    flatDir {
+         dir 'libs'
+    }
 
     maven { url = "https://maven.enginehub.org/repo/" }
     maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
@@ -209,6 +209,10 @@ dependencies {
 
     // JSON ******************************************************************************************************
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    // LOCAL LIBS FOR TESTING (put the jar in /libs/ folder
+    //Dimensional-Threading-Reforged-1.19.2-1.2.7.jar
+    //implementation fg.deobf('wearblackallday.dimthread:Dimensional-Threading-Reforged:1.19.2-1.2.7')
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
