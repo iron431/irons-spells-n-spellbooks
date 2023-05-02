@@ -109,6 +109,14 @@
   "item.irons_spellbooks.frostward_ring": "Frostward Ring",
   "item.irons_spellbooks.frostward_ring.desc": "Grants freezing immunity.",
   "item.irons_spellbooks.heavy_chain_necklace": "Heavy Chain",
+
+  "item.irons_spellbooks.keeper_spawn_egg": "Keeper Spawn Egg",
+  "item.irons_spellbooks.necromancer_spawn_egg": "Necromancer Spawn Egg",
+  "item.irons_spellbooks.pyromancer_spawn_egg": "Pyromancer Spawn Egg",
+  "item.irons_spellbooks.cryomancer_spawn_egg": "Cryomancer Spawn Egg",
+  "item.irons_spellbooks.archevoker_spawn_egg": "Archevoker Spawn Egg",
+  "item.irons_spellbooks.dead_king_corpse_spawn_egg": "Dead King Corpse Spawn Egg",
+
   "block.irons_spellbooks.inscription_table": "Inscription Table",
   "block.irons_spellbooks.scroll_forge": "Scroll Forge",
   "block.irons_spellbooks.pedestal": "Pedestal",
@@ -499,6 +507,9 @@
   "irons_spellbooks.tetra_bar.blood_spell_power.tooltip": "Increases imbued blood spell power by §e%s.",
   "irons_spellbooks.tetra_bar.evocation_spell_power.tooltip": "Increases imbued evocation spell power by §e%s.",
   "irons_spellbooks.tetra_bar.spell_resist.tooltip": "Increases spell resistance while held by §e%s.",
+
+
+
 
   "tetra.material.irons_spellbooks_frozen_bone": "Frozen Bone",
   "tetra.material.irons_spellbooks_frozen_bone.prefix": "Frozen Bone",
