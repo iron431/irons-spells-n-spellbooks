@@ -1,7 +1,7 @@
 
 name: 💡 Feature request
 description: Suggest new functionality, new content or balancing changes
-labels: [enhancement]
+labels: [feature request]
 body:
   - type: textarea
     id: description
