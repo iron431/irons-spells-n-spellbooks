@@ -87,7 +87,7 @@ public class SpellWheelOverlay extends GuiComponent {
         List<AbstractSpell> spells = spellBookData.getActiveInscribedSpells();
         int spellCount = spells.size();
         if (spellCount == 0) {
-            active = false;
+            close();
             return;
         }
 
