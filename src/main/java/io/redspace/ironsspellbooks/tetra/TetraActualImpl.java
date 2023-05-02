@@ -3,16 +3,14 @@ package io.redspace.ironsspellbooks.tetra;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.tetra.effects.FreezeTetraEffect;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
+import io.redspace.ironsspellbooks.tetra.effects.ManaSiphonTetraEffect;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import se.mickelus.tetra.blocks.workbench.gui.WorkbenchStatsGui;
 import se.mickelus.tetra.gui.stats.StatsHelper;
 import se.mickelus.tetra.gui.stats.bar.GuiStatBar;
 import se.mickelus.tetra.gui.stats.getter.*;
-import se.mickelus.tetra.items.modular.ModularItem;
 import se.mickelus.tetra.items.modular.impl.ModularBladedItem;
 import se.mickelus.tetra.items.modular.impl.holo.gui.craft.HoloStatsGui;
 
@@ -20,19 +18,22 @@ public class TetraActualImpl implements ITetraProxy {
 
     @Override
     public void initClient() {
+
         FreezeTetraEffect.addGuiBars();
+        ManaSiphonTetraEffect.addGuiBars();
 
         /*
         Cooldown Attribute (From magic cloth) display
          */
-        IStatGetter cooldownStat = new StatGetterPercentAttribute(AttributeRegistry.COOLDOWN_REDUCTION.get());
-        GuiStatBar cooldownBar = new GuiStatBar(0, 0, StatsHelper.barLength, "attribute.irons_spellbooks.cooldown_reduction", 0, 100, false,
-                cooldownStat,
-                LabelGetterBasic.percentageLabel,
-                new TooltipGetterPercentage(IronsSpellbooks.MODID + ".tetra_bar.cooldown_reduction.tooltip", cooldownStat));
-        WorkbenchStatsGui.addBar(cooldownBar);
-        HoloStatsGui.addBar(cooldownBar);
-
+        createPercentAttributeBar(AttributeRegistry.COOLDOWN_REDUCTION.get(), "cooldown_reduction");
+        createPercentAttributeBar(AttributeRegistry.FIRE_SPELL_POWER.get(), "fire_spell_power");
+        createPercentAttributeBar(AttributeRegistry.ICE_SPELL_POWER.get(), "ice_spell_power");
+        createPercentAttributeBar(AttributeRegistry.LIGHTNING_SPELL_POWER.get(), "lightning_spell_power");
+        createPercentAttributeBar(AttributeRegistry.HOLY_SPELL_POWER.get(), "holy_spell_power");
+        createPercentAttributeBar(AttributeRegistry.ENDER_SPELL_POWER.get(), "ender_spell_power");
+        createPercentAttributeBar(AttributeRegistry.BLOOD_SPELL_POWER.get(), "blood_spell_power");
+        createPercentAttributeBar(AttributeRegistry.EVOCATION_SPELL_POWER.get(), "evocation_spell_power");
+        createPercentAttributeBar(AttributeRegistry.SPELL_RESIST.get(), "spell_resist");
         /*
         Mana Attribute (From arcane ingot) display
          */
@@ -43,6 +44,8 @@ public class TetraActualImpl implements ITetraProxy {
                 new TooltipGetterInteger(IronsSpellbooks.MODID + ".tetra_bar.max_mana.tooltip", manaStat));
         WorkbenchStatsGui.addBar(manaStatBar);
         HoloStatsGui.addBar(manaStatBar);
+
+
     }
 
     @Override
@@ -55,18 +58,17 @@ public class TetraActualImpl implements ITetraProxy {
 
     @Override
     public void handleLivingAttackEvent(LivingAttackEvent event) {
-        LivingEntity attackedEntity = event.getEntity();
-        DamageSource source = event.getSource();
-        Entity attacker = source.getEntity();
-        /*
-        Attacker Effects
-         */
-        if (attacker instanceof LivingEntity livingAttacker) {
-            ItemStack heldStack = livingAttacker.getMainHandItem();
-            if (heldStack.getItem() instanceof ModularItem item) {
+        FreezeTetraEffect.handleLivingAttackEvent(event);
+        ManaSiphonTetraEffect.handleLivingAttackEvent(event);
+    }
 
-                FreezeTetraEffect.handleFreezeEffect(livingAttacker, attackedEntity, heldStack);
-            }
-        }
+    private static void createPercentAttributeBar(Attribute attribute, String languageKey) {
+        IStatGetter statGetter = new StatGetterPercentAttribute(attribute);
+        GuiStatBar statBar = new GuiStatBar(0, 0, StatsHelper.barLength, attribute.getDescriptionId(), 0, 100, false,
+                statGetter,
+                LabelGetterBasic.percentageLabel,
+                new TooltipGetterPercentage(IronsSpellbooks.MODID + ".tetra_bar." + languageKey + ".tooltip", statGetter));
+        WorkbenchStatsGui.addBar(statBar);
+        HoloStatsGui.addBar(statBar);
     }
 }

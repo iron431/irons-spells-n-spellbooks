@@ -1,21 +1,21 @@
 {
-  "key": "irons_spellbooks_arcane_cloth",
-  "category": "fabric",
-  "primary": 1,
+  "key": "irons_spellbooks_hogskin",
+  "category": "skin",
+  "primary": 1.5,
   "secondary": 1,
   "tertiary": 5,
-  "durability": 300,
+  "durability": 250,
   "integrityCost": 1,
   "integrityGain": 6,
-  "magicCapacity": 180,
+  "magicCapacity": 80,
   "toolLevel": 0,
   "toolEfficiency": 0,
   "tints": {
-    "glyph": "d291ff",
-    "texture": "d291ff"
+    "glyph": "ffabb7",
+    "texture": "ffabb7"
   },
-  "attributes": {
-    "**irons_spellbooks:cooldown_reduction": 0.15
+  "effects": {
+    "irons_spellbooks:mana_siphon": 150
   },
   "textures": [
     "crude",
@@ -23,7 +23,7 @@
   ],
   "material": {
     "items": [
-      "irons_spellbooks:magic_cloth"
+      "irons_spellbooks:hogskin"
     ]
   },
   "requiredTools": {
