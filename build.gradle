@@ -17,7 +17,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'maven-publish'
 
-version = '1.0.4'
+version = '1.0.5'
 group = 'io.redspace.ironsspellbooks'
 archivesBaseName = 'irons_spellbooks'
 

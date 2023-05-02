@@ -6,6 +6,8 @@ import io.redspace.ironsspellbooks.tetra.effects.FreezeTetraEffect;
 import io.redspace.ironsspellbooks.tetra.effects.ManaSiphonTetraEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import se.mickelus.tetra.blocks.workbench.gui.WorkbenchStatsGui;
 import se.mickelus.tetra.gui.stats.StatsHelper;
@@ -16,6 +18,7 @@ import se.mickelus.tetra.items.modular.impl.holo.gui.craft.HoloStatsGui;
 
 public class TetraActualImpl implements ITetraProxy {
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void initClient() {
 
@@ -61,7 +64,7 @@ public class TetraActualImpl implements ITetraProxy {
         FreezeTetraEffect.handleLivingAttackEvent(event);
         ManaSiphonTetraEffect.handleLivingAttackEvent(event);
     }
-
+    @OnlyIn(Dist.CLIENT)
     private static void createPercentAttributeBar(Attribute attribute, String languageKey) {
         IStatGetter statGetter = new StatGetterPercentAttribute(attribute);
         GuiStatBar statBar = new GuiStatBar(0, 0, StatsHelper.barLength, attribute.getDescriptionId(), 0, 100, false,
