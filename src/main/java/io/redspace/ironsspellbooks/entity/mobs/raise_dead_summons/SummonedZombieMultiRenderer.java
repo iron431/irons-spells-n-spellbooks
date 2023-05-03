@@ -6,12 +6,19 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.GeoHum
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ZombieRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.monster.Zombie;
 
 public class SummonedZombieMultiRenderer extends GeoHumanoidRenderer<SummonedZombie> {
     ZombieRenderer vanillaRenderer;
     public SummonedZombieMultiRenderer(EntityRendererProvider.Context pContext) {
         super(pContext, new SummonedZombieModel());
-        vanillaRenderer = new ZombieRenderer(pContext);
+        vanillaRenderer = new ZombieRenderer(pContext) {
+            @Override
+            public ResourceLocation getTextureLocation(Zombie pEntity) {
+                return SummonedZombieModel.TEXTURE;
+            }
+        };
     }
 
     @Override
