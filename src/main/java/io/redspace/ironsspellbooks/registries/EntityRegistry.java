@@ -28,6 +28,7 @@ import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceProjectile;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileProjectile;
+import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloudEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
@@ -264,5 +265,11 @@ public class EntityRegistry {
                     .sized(1.25f, 1)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_block_projectile").toString()));
+
+    public static final RegistryObject<EntityType<PoisonCloudEntity>> POISON_CLOUD =
+            ENTITIES.register("poison_cloud", () -> EntityType.Builder.<PoisonCloudEntity>of(PoisonCloudEntity::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_cloud").toString()));
 
 }
