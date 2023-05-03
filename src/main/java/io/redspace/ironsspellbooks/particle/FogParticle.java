@@ -46,7 +46,7 @@ public class FogParticle extends TextureSheetParticle {
 
     @Override
     public float getQuadSize(float pScaleFactor) {
-        return this.quadSize * (1 + Mth.clamp((this.age + pScaleFactor) / (float) this.lifetime * 0.75F, 0.0F, 1.0F)) * Mth.clamp(age / 8f, 0, 1);
+        return this.quadSize * (1 + Mth.clamp((this.age + pScaleFactor) / (float) this.lifetime * 0.75F, 0.0F, 1.0F)) * Mth.clamp(age / 5f, 0, 1);
     }
 
     @Override
