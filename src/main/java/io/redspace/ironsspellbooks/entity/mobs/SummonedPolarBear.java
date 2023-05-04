@@ -67,7 +67,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
         if (this.isVehicle()) {
             return super.mobInteract(pPlayer, pHand);
         }
-        if (pPlayer.getUUID() == summonerUUID) {
+        if (pPlayer == getSummoner()) {
             this.doPlayerRide(pPlayer);
         }
         return InteractionResult.sidedSuccess(this.level.isClientSide);
@@ -90,7 +90,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public LivingEntity getSummoner() {
-        return OwnerHelper.cacheOwner(level, cachedSummoner, summonerUUID);
+        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {

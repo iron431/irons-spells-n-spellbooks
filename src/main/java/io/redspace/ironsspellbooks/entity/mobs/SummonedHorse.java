@@ -143,7 +143,7 @@ public class SummonedHorse extends AbstractHorse implements MagicSummon {
 
     @Override
     public LivingEntity getSummoner() {
-        return OwnerHelper.cacheOwner(level, cachedSummoner, getOwnerUUID());
+        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, getOwnerUUID());
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
