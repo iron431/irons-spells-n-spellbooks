@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteed;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -46,7 +46,7 @@ public class SummonHorseSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        SpectralSteed horse = new SpectralSteed(world, entity);
+        SummonedHorse horse = new SummonedHorse(world, entity);
         int summonTime = 20 * 60 * 3;
         Vec3 spawn = entity.position();
         Vec3 forward = entity.getForward().normalize().scale(1.5f);
@@ -56,7 +56,7 @@ public class SummonHorseSpell extends AbstractSpell {
         setAttributes(horse, getSpellPower(entity));
 
         //Remove pre-existing horses
-        world.getEntitiesOfClass(SpectralSteed.class, entity.getBoundingBox().inflate(100), (spectralSteed) -> spectralSteed.getSummoner() == entity).forEach((SpectralSteed::onUnSummon));
+        world.getEntitiesOfClass(SummonedHorse.class, entity.getBoundingBox().inflate(100), (summonedHorse) -> summonedHorse.getSummoner() == entity).forEach((SummonedHorse::onUnSummon));
         world.addFreshEntity(horse);
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, true));
         super.onCast(world, entity, playerMagicData);

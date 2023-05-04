@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -17,7 +16,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -93,6 +91,12 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
     }
 
     @Override
+    public void die(DamageSource pDamageSource) {
+        this.onDeathHelper();
+        super.die(pDamageSource);
+    }
+
+    @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         this.summonerUUID = OwnerHelper.deserializeOwner(compoundTag);
@@ -111,14 +115,9 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!pSource.isBypassInvul()) {
-            if (isAnimatingRise())
-                return false;
-            if (pSource instanceof EntityDamageSource && !ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get())
-                if (this.getSummoner() != null && (pSource.getEntity().equals(this.getSummoner()) || this.getSummoner().isAlliedTo(pSource.getEntity())))
-                    return false;
+        if (!pSource.isBypassInvul() && (isAnimatingRise() || shouldIgnoreDamage(pSource))) {
+            return false;
         }
-
         return super.hurt(pSource, pAmount);
     }
 

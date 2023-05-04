@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
-import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteed;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
@@ -54,7 +54,7 @@ public class CommonSetup {
         event.put(EntityRegistry.DEBUG_WIZARD.get(), DebugWizard.prepareAttributes().build());
         event.put(EntityRegistry.PYROMANCER.get(), PyromancerEntity.prepareAttributes().build());
         event.put(EntityRegistry.NECROMANCER.get(), NecromancerEntity.prepareAttributes().build());
-        event.put(EntityRegistry.SPECTRAL_STEED.get(), SpectralSteed.prepareAttributes().build());
+        event.put(EntityRegistry.SPECTRAL_STEED.get(), SummonedHorse.prepareAttributes().build());
         event.put(EntityRegistry.WISP.get(), WispEntity.prepareAttributes().build());
         event.put(EntityRegistry.SPECTRAL_HAMMER.get(), SpectralHammer.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_VEX.get(), SummonedVex.createAttributes().build());

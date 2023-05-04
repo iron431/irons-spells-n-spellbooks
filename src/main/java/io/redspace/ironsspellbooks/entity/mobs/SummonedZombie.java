@@ -117,6 +117,12 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
     }
 
     @Override
+    public void die(DamageSource pDamageSource) {
+        this.onDeathHelper();
+        super.die(pDamageSource);
+    }
+
+    @Override
     public boolean doHurtTarget(Entity pEntity) {
         return Utils.doMeleeAttack(this, pEntity, SpellType.RAISE_DEAD_SPELL.getDamageSource(this, getSummoner()), null);
     }
