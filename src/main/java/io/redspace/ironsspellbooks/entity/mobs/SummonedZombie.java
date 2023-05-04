@@ -1,8 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -120,6 +122,22 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
     public void die(DamageSource pDamageSource) {
         this.onDeathHelper();
         super.die(pDamageSource);
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        if (!level.isClientSide)
+            IronsSpellbooks.LOGGER.debug("Summoned Zombie: Removed from world, {}", this.getRemovalReason());
+        this.onRemovedHelper(this, MobEffectRegistry.RAISE_DEAD_TIMER.get());
+        super.onRemovedFromWorld();
+    }
+
+
+    @Override
+    public void remove(RemovalReason pReason) {
+        // IronsSpellbooks.LOGGER.debug("Summoned Zombie: Attempt remove for: {}",pReason.toString());
+
+        super.remove(pReason);
     }
 
     @Override

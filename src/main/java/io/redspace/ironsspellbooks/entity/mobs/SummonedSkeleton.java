@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -92,8 +93,14 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
 
     @Override
     public void die(DamageSource pDamageSource) {
-        this.onDeathHelper();
+        this.onDeathHelper(/*MobEffectRegistry.RAISE_DEAD_TIMER.get()*/);
         super.die(pDamageSource);
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        this.onRemovedHelper(this, MobEffectRegistry.RAISE_DEAD_TIMER.get());
+        super.onRemovedFromWorld();
     }
 
     @Override

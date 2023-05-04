@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
+import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -14,6 +16,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -123,9 +126,24 @@ public class ServerPlayerEvents {
 //    }
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
- //Ironsspellbooks.logger.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
-        event.getEntity().clearFire();
-        event.getEntity().setTicksFrozen(0);
+        IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
+        if (event.isWasDeath()) {
+            //Clear potentially broken spell effects
+            event.getEntity().clearFire();
+            event.getEntity().setTicksFrozen(0);
+            if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
+                //IronsSpellbooks.LOGGER.debug("onPlayerCloned: original player effects:\n ------------------------");
+                //Persist summon timers across death
+                event.getOriginal().getActiveEffects().forEach((effect -> {
+                    IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
+                    if (effect.getEffect() instanceof SummonTimer) {
+                        newServerPlayer.addEffect(effect, newServerPlayer);
+                        newServerPlayer.connection.send(new ClientboundUpdateMobEffectPacket(newServerPlayer.getId(), effect));
+
+                    }
+                }));
+            }
+        }
     }
 
     @SubscribeEvent
@@ -150,7 +168,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
- //Ironsspellbooks.logger.debug("onPlayerRespawn: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
+        //Ironsspellbooks.logger.debug("onPlayerRespawn: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
         event.getEntity().clearFire();
         event.getEntity().setTicksFrozen(0);
 
