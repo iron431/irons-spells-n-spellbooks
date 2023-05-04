@@ -16,7 +16,8 @@
     "SwordItemMixin",
     "TetraBladedItemMixin",
     "TridentItemMixin",
-    "ItemMixin"
+    "ItemMixin",
+    "EntityMixin"
   ],
   "client": [
   ],

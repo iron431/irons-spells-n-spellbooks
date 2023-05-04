@@ -11,6 +11,7 @@ import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 
@@ -34,7 +35,11 @@ public interface MagicSummon extends AntiMagicSusceptible {
     }
 
     default boolean isAlliedHelper(Entity entity) {
-        return getSummoner() != null && (entity == getSummoner() || entity.isAlliedTo(getSummoner()));
+        if (getSummoner() == null)
+            return false;
+        boolean isFellowSummon = entity == getSummoner() || entity.isAlliedTo(getSummoner());
+        boolean hasCommonOwner = entity instanceof OwnableEntity ownableEntity && ownableEntity.getOwner() == getSummoner();
+        return isFellowSummon || hasCommonOwner;
     }
 
     default void onDeathHelper() {

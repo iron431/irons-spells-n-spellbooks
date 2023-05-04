@@ -111,7 +111,7 @@ public class SummonedVex extends Vex implements MagicSummon {
 
     @Override
     public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     public void onUnSummon() {

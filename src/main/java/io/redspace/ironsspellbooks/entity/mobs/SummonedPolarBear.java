@@ -131,7 +131,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
                 //Health and Damage overridden by summoning via spell
                 .add(Attributes.MAX_HEALTH, 30.0D)
                 .add(Attributes.FOLLOW_RANGE, 20.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.25D)
+                .add(Attributes.MOVEMENT_SPEED, 0.3D)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D);
     }
 

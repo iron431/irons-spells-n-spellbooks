@@ -82,7 +82,7 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
 
     @Override
     public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     @Override
