@@ -64,7 +64,10 @@ public class SummonPolarBearSpell extends AbstractSpell {
         world.addFreshEntity(polarBear);
 
         polarBear.addEffect(new MobEffectInstance(MobEffectRegistry.POLAR_BEAR_TIMER.get(), summonTime, 0, false, false, false));
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.POLAR_BEAR_TIMER.get(), summonTime, 0, false, false, true));
+        int effectAmplifier = 0;
+        if(entity.hasEffect(MobEffectRegistry.POLAR_BEAR_TIMER.get()))
+            effectAmplifier += entity.getEffect(MobEffectRegistry.POLAR_BEAR_TIMER.get()).getAmplifier() + 1;
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.POLAR_BEAR_TIMER.get(), summonTime, effectAmplifier, false, false, true));
 
         super.onCast(world, entity, playerMagicData);
     }

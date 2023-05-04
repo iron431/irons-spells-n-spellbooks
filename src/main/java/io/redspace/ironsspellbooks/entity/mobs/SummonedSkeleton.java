@@ -93,7 +93,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
 
     @Override
     public void die(DamageSource pDamageSource) {
-        this.onDeathHelper(/*MobEffectRegistry.RAISE_DEAD_TIMER.get()*/);
+        this.onDeathHelper();
         super.die(pDamageSource);
     }
 

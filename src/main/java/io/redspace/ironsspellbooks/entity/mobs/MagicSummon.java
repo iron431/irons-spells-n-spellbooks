@@ -49,12 +49,12 @@ public interface MagicSummon extends AntiMagicSusceptible {
     }
 
     default void onRemovedHelper(Entity entity, SummonTimer timer) {
-        //onDeathHelper();
+        /*
+        Decreases player's summon timer amplifier to keep track of how many of their summons remain.
+        */
         var reason = entity.getRemovalReason();
         if (reason != null && getSummoner() instanceof ServerPlayer player && reason.shouldDestroy()) {
-            /*
-            Decreases player's summon timer amplifier to keep track of how many of their summons remain.
-             */
+
             var effect = player.getEffect(timer);
             if (effect != null) {
                 var decrement = new MobEffectInstance(timer, effect.getDuration(), effect.getAmplifier() - 1, false, false, true);

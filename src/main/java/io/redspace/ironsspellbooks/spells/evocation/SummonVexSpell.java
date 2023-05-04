@@ -59,7 +59,10 @@ public class SummonVexSpell extends AbstractSpell {
             vex.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, 0, false, false, false));
             world.addFreshEntity(vex);
         }
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, 0, false, false, true));
+        int effectAmplifier = level - 1;
+        if(entity.hasEffect(MobEffectRegistry.VEX_TIMER.get()))
+            effectAmplifier += entity.getEffect(MobEffectRegistry.VEX_TIMER.get()).getAmplifier() + 1;
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, effectAmplifier, false, false, true));
         super.onCast(world, entity, playerMagicData);
     }
 }

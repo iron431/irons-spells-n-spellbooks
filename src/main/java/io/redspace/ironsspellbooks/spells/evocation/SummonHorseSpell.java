@@ -46,19 +46,23 @@ public class SummonHorseSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        SummonedHorse horse = new SummonedHorse(world, entity);
         int summonTime = 20 * 60 * 3;
         Vec3 spawn = entity.position();
         Vec3 forward = entity.getForward().normalize().scale(1.5f);
         spawn.add(forward.x, 0.15f, forward.z);
+
+        //Teleport pre-existing or create new horse
+        var horses = world.getEntitiesOfClass(SummonedHorse.class, entity.getBoundingBox().inflate(100), (summonedHorse) -> summonedHorse.getSummoner() == entity);
+        SummonedHorse horse = horses.size() > 0 ? horses.get(0) : new SummonedHorse(world, entity);
+
         horse.setPos(spawn);
-        horse.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, false));
+        horse.removeEffectNoUpdate(MobEffectRegistry.SUMMON_HORSE_TIMER.get());
+        horse.forceAddEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, false), null);
         setAttributes(horse, getSpellPower(entity));
 
-        //Remove pre-existing horses
-        world.getEntitiesOfClass(SummonedHorse.class, entity.getBoundingBox().inflate(100), (summonedHorse) -> summonedHorse.getSummoner() == entity).forEach((SummonedHorse::onUnSummon));
         world.addFreshEntity(horse);
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, true));
+
         super.onCast(world, entity, playerMagicData);
     }
 
