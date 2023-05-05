@@ -13,7 +13,7 @@
 [Documentation Site](https://iron431.github.io/Irons-Spellbooks-Docs/)
 
 ## Info
-## License & Use (to be completed)
+## License & Use
 We reserve all rights. The points below outline what you can, cannot and must do when dealing with the
 contents of this repository.
 
