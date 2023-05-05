@@ -51,7 +51,7 @@ public class MagicArrowRenderer extends EntityRenderer<MagicArrowProjectile> {
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.eyes(getTextureLocation()));
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(), 0, 0));
 
         float halfWidth = 16;
         float halfHeight = 16;
