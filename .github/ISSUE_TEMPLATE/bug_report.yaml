@@ -32,6 +32,16 @@ body:
         3. Note [issue] with [something]
     validations:
       required: true
+  - type: dropdown
+    id: run-type
+    attributes:
+      label: Server Type
+      description: Are you running minecraft in single player or dedicated server?
+      options:
+        - Single Player
+        - Dedicated Server
+    validations:
+      required: true        
   - type: input
     id: crashlog
     attributes:
@@ -52,16 +62,6 @@ body:
       placeholder: 1.19.2 - 43.2.8
     validations:
       required: true
-  - type: dropdown
-    id: run-type
-    attributes:
-      label: Server Type
-      description: How are you running minecraft?
-      options:
-        - Single Player
-        - Dedicated Server
-    validations:
-      required: true      
   - type: textarea
     id: other-mods
     attributes:
