@@ -82,13 +82,15 @@ public class RaiseDeadSpell extends AbstractSpell {
                 if (!world.getBlockState(new BlockPos(spawn).below()).isAir())
                     break;
             }
-// //Ironsspellbooks.logger.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
-// //Ironsspellbooks.logger.debug("RaiseDeadSpell caster rotation: {}", entity.getYRot());
             undead.moveTo(spawn.x, spawn.y, spawn.z, entity.getYRot(), 0);
             world.addFreshEntity(undead);
-// //Ironsspellbooks.logger.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
         }
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, true));
+
+        int effectAmplifier = level - 1;
+        if(entity.hasEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()))
+            effectAmplifier += entity.getEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()).getAmplifier() + 1;
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, effectAmplifier, false, false, true));
+
         super.onCast(world, entity, playerMagicData);
     }
 

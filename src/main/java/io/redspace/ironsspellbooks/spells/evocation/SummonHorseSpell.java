@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteed;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -46,19 +46,23 @@ public class SummonHorseSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        SpectralSteed horse = new SpectralSteed(world, entity);
         int summonTime = 20 * 60 * 3;
         Vec3 spawn = entity.position();
         Vec3 forward = entity.getForward().normalize().scale(1.5f);
         spawn.add(forward.x, 0.15f, forward.z);
+
+        //Teleport pre-existing or create new horse
+        var horses = world.getEntitiesOfClass(SummonedHorse.class, entity.getBoundingBox().inflate(100), (summonedHorse) -> summonedHorse.getSummoner() == entity);
+        SummonedHorse horse = horses.size() > 0 ? horses.get(0) : new SummonedHorse(world, entity);
+
         horse.setPos(spawn);
-        horse.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, false));
+        horse.removeEffectNoUpdate(MobEffectRegistry.SUMMON_HORSE_TIMER.get());
+        horse.forceAddEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, false), null);
         setAttributes(horse, getSpellPower(entity));
 
-        //Remove pre-existing horses
-        world.getEntitiesOfClass(SpectralSteed.class, entity.getBoundingBox().inflate(100), (spectralSteed) -> spectralSteed.getSummoner() == entity).forEach((SpectralSteed::onUnSummon));
         world.addFreshEntity(horse);
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, true));
+
         super.onCast(world, entity, playerMagicData);
     }
 

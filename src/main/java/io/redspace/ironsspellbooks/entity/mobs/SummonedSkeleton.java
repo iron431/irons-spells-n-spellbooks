@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -17,7 +17,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -82,7 +81,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
 
     @Override
     public LivingEntity getSummoner() {
-        return OwnerHelper.cacheOwner(level, cachedSummoner, summonerUUID);
+        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -90,6 +89,18 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
             this.summonerUUID = owner.getUUID();
             this.cachedSummoner = owner;
         }
+    }
+
+    @Override
+    public void die(DamageSource pDamageSource) {
+        this.onDeathHelper();
+        super.die(pDamageSource);
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        this.onRemovedHelper(this, MobEffectRegistry.RAISE_DEAD_TIMER.get());
+        super.onRemovedFromWorld();
     }
 
     @Override
@@ -106,19 +117,14 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
 
     @Override
     public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!pSource.isBypassInvul()) {
-            if (isAnimatingRise())
-                return false;
-            if (pSource instanceof EntityDamageSource && !ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get())
-                if (this.getSummoner() != null && (pSource.getEntity().equals(this.getSummoner()) || this.getSummoner().isAlliedTo(pSource.getEntity())))
-                    return false;
+        if (!pSource.isBypassInvul() && (isAnimatingRise() || shouldIgnoreDamage(pSource))) {
+            return false;
         }
-
         return super.hurt(pSource, pAmount);
     }
 

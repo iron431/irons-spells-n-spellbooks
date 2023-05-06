@@ -109,6 +109,7 @@
   "item.irons_spellbooks.frostward_ring": "Frostward Ring",
   "item.irons_spellbooks.frostward_ring.desc": "Grants freezing immunity.",
   "item.irons_spellbooks.heavy_chain_necklace": "Heavy Chain",
+  "item.irons_spellbooks.conjurers_talisman": "Conjurer's Talisman",
 
   "item.irons_spellbooks.keeper_spawn_egg": "Ancient Knight Spawn Egg",
   "item.irons_spellbooks.necromancer_spawn_egg": "Necromancer Spawn Egg",
@@ -174,6 +175,7 @@
   "ui.irons_spellbooks.hits_dodged": "%d Hits Dodged",
   "ui.irons_spellbooks.cast_error_mana": "Not enough mana to cast %s!",
   "ui.irons_spellbooks.cast_error_cooldown": "%s is on cooldown.",
+  "ui.irons_spellbooks.summon_despawn_message": "%s faded from this world.",
   "school.irons_spellbooks.fire": "Fire",
   "school.irons_spellbooks.ice": "Ice",
   "school.irons_spellbooks.lightning": "Lightning",
@@ -206,6 +208,7 @@
   "attribute.irons_spellbooks.blood_spell_power": "Blood Spell Power",
   "attribute.irons_spellbooks.evocation_spell_power": "Evocation Spell Power",
   "attribute.irons_spellbooks.spell_resist": "Spell Resistance",
+  "attribute.irons_spellbooks.summon_damage": "Summon Damage",
 
   "key.irons_spellbooks.group_1": "Iron's Spells 'n Spellbooks - General",
   "key.irons_spellbooks.group_2": "Iron's Spells 'n Spellbooks - Quick Cast",

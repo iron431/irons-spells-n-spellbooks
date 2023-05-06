@@ -48,7 +48,7 @@ public class ChargeSpellLayer {
                 var arm = getArmFromUseHand(entity);
                 this.getParentModel().translateToHand(arm, poseStack);
                 boolean flag = arm == HumanoidArm.LEFT;
-                poseStack.translate((double) ((float) (flag ? -1 : 1) / 32.0F) + .125, .5, 0);
+                poseStack.translate((double) ((float) (flag ? -1 : 1) / 32.0F), .5, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
                 float castCompletion = Utils.smoothstep(.65f, 1, ClientMagicData.getCastCompletionPercent());
@@ -96,7 +96,6 @@ public class ChargeSpellLayer {
 
 
             } else if (spell == SpellType.MAGIC_ARROW_SPELL) {
-                //TODO: arm based on handedness
                 var modelResource = entityRenderer.getGeoModelProvider().getModelResource(entity);
                 var model = entityRenderer.getGeoModelProvider().getModel(modelResource);
                 var bone = model.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT).get();
@@ -110,7 +109,7 @@ public class ChargeSpellLayer {
                 poseStack.translate(0, -bone.getPivotY() / 16, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                poseStack.translate(-((flag ? -1 : 1) / 32.0F) + .125, .5, -.55);
+                poseStack.translate(-((flag ? -1 : 1) / 32.0F), .5, -.55);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 
                 MagicArrowRenderer.renderModel(poseStack, bufferSource);

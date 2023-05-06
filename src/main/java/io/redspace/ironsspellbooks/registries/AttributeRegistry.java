@@ -27,6 +27,7 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> SPELL_POWER = ATTRIBUTES.register("spell_power", () -> (new RangedAttribute("attribute.irons_spellbooks.spell_power", 1.0D, 1, 10.0D).setSyncable(true)));
     public static final RegistryObject<Attribute> SPELL_RESIST = ATTRIBUTES.register("spell_resist", () -> (new RangedAttribute("attribute.irons_spellbooks.spell_resist", 1.0D, 1, 10.0D).setSyncable(true)));
     public static final RegistryObject<Attribute> CAST_TIME_REDUCTION = ATTRIBUTES.register("cast_time_reduction", () -> (new RangedAttribute("attribute.irons_spellbooks.cast_time_reduction", 1.0D, 1, 10.0D).setSyncable(true)));
+    public static final RegistryObject<Attribute> SUMMON_DAMAGE = ATTRIBUTES.register("summon_damage", () -> (new RangedAttribute("attribute.irons_spellbooks.summon_damage", 1.0D, 1, 10.0D).setSyncable(true)));
 
 //    public static final RegistryObject<Attribute> FIRE_MAGIC_RESIST = newResistanceAttribute("fire");
 //    public static final RegistryObject<Attribute> ICE_MAGIC_RESIST = newResistanceAttribute("ice");
@@ -52,6 +53,7 @@ public class AttributeRegistry {
             e.add(entity, SPELL_RESIST.get());
             e.add(entity, COOLDOWN_REDUCTION.get());
             e.add(entity, CAST_TIME_REDUCTION.get());
+            e.add(entity, SUMMON_DAMAGE.get());
 
 //            e.add(entity, FIRE_MAGIC_RESIST.get());
 //            e.add(entity, ICE_MAGIC_RESIST.get());

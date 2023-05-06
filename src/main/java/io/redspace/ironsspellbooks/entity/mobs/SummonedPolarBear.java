@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -12,7 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -68,7 +67,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
         if (this.isVehicle()) {
             return super.mobInteract(pPlayer, pHand);
         }
-        if (pPlayer.getUUID() == summonerUUID) {
+        if (pPlayer == getSummoner()) {
             this.doPlayerRide(pPlayer);
         }
         return InteractionResult.sidedSuccess(this.level.isClientSide);
@@ -91,7 +90,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public LivingEntity getSummoner() {
-        return OwnerHelper.cacheOwner(level, cachedSummoner, summonerUUID);
+        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -99,6 +98,18 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
             this.summonerUUID = owner.getUUID();
             this.cachedSummoner = owner;
         }
+    }
+
+    @Override
+    public void die(DamageSource pDamageSource) {
+        this.onDeathHelper();
+        super.die(pDamageSource);
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        this.onRemovedHelper(this, MobEffectRegistry.POLAR_BEAR_TIMER.get());
+        super.onRemovedFromWorld();
     }
 
     @Override
@@ -120,7 +131,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     @Override
@@ -133,9 +144,8 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get() && pSource instanceof EntityDamageSource && !pSource.isBypassInvul())
-            if (this.getSummoner() != null && (pSource.getEntity().equals(this.getSummoner()) || this.getSummoner().isAlliedTo(pSource.getEntity())))
-                return false;
+        if (shouldIgnoreDamage(pSource))
+            return false;
         return super.hurt(pSource, pAmount);
     }
 
@@ -144,7 +154,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
                 //Health and Damage overridden by summoning via spell
                 .add(Attributes.MAX_HEALTH, 30.0D)
                 .add(Attributes.FOLLOW_RANGE, 20.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.25D)
+                .add(Attributes.MOVEMENT_SPEED, 0.3D)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D);
     }
 
