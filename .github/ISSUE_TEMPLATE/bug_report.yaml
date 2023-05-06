@@ -52,14 +52,14 @@ body:
     id: irons-spellbooks-version
     attributes:
       label: Iron's Spells N Spellbooks version
-      placeholder: 1.0.1
+      placeholder: example: 1.0.1
     validations:
       required: true
   - type: input
     id: forge-version
     attributes:
       label: Forge version
-      placeholder: 1.19.2 - 43.2.8
+      placeholder: example: 1.19.2 - 43.2.8
     validations:
       required: true
   - type: textarea
