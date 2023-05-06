@@ -211,8 +211,15 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
 
     // LOCAL LIBS FOR TESTING (put the jar in /libs/ folder
+//    fileTree("libs"){
+//        runtimeOnly
+//    }
     //Dimensional-Threading-Reforged-1.19.2-1.2.7.jar
     //implementation fg.deobf('wearblackallday.dimthread:Dimensional-Threading-Reforged:1.19.2-1.2.7')
+
+//    for ( File file : fileTree(dir: 'libs', include: '*.jar') ) {
+//        implementation fg.deobf(files(file))
+//    }
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

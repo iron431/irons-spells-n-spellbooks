@@ -37,11 +37,29 @@ public enum SpellRarity {
         return DISPLAYS[getValue()];
     }
 
-    private final static LazyOptional<List<Double>> rawRarityConfig = LazyOptional.of(() -> (List<Double>) ServerConfigs.RARITY_CONFIG.get());
+    private final static LazyOptional<List<Double>> rawRarityConfig = LazyOptional.of(SpellRarity::getRawRarityConfigInternal);
     private static List<Double> rarityConfig = null;
 
     public static List<Double> getRawRarityConfig() {
         return rawRarityConfig.resolve().get();
+    }
+
+    private static List<Double> getRawRarityConfigInternal() {
+        var fromConfig = (List<Double>) ServerConfigs.RARITY_CONFIG.get();
+
+        if (fromConfig.size() != 5) {
+            var configDefault = (List<Double>) ServerConfigs.RARITY_CONFIG.getDefault();
+            IronsSpellbooks.LOGGER.info("INVALID RARITY CONFIG FOUND (Size != 5): {} FALLING BACK TO DEFAULT: {}", fromConfig, configDefault);
+            return configDefault;
+        }
+
+        if (fromConfig.stream().mapToDouble(a -> a).sum() != 1) {
+            var configDefault = (List<Double>) ServerConfigs.RARITY_CONFIG.getDefault();
+            IronsSpellbooks.LOGGER.info("INVALID RARITY CONFIG FOUND (Values must add up to 1): {} FALLING BACK TO DEFAULT: {}", fromConfig, configDefault);
+            return configDefault;
+        }
+
+        return fromConfig;
     }
 
     public static List<Double> getRarityConfig() {
@@ -84,7 +102,7 @@ public enum SpellRarity {
             }
         });
 
- //Ironsspellbooks.logger.debug(sb.toString());
+        //Ironsspellbooks.logger.debug(sb.toString());
     }
 
     public ChatFormatting getChatFormatting() {

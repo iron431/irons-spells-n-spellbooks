@@ -82,8 +82,7 @@ public enum SpellType {
     SPECTRAL_HAMMER_SPELL(45),
     CHARGE_SPELL(46),
     VOID_TENTACLES_SPELL(47),
-    ICE_BLOCK_SPELL(48)
-    ;
+    ICE_BLOCK_SPELL(48);
 
     private final int value;
     private final LazyOptional<Boolean> isEnabled;
