@@ -23,6 +23,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 public enum SpellType {
     /**
@@ -318,28 +319,33 @@ public enum SpellType {
     }
 
     private void initializeRarityWeights() {
-        int minRarity = getMinRarity();
-        int maxRarity = getMaxRarity();
-        List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
-        List<Double> rarityConfig = SpellRarity.getRarityConfig();
+        var l = new ReentrantLock();
+        l.lock();
+        if (rarityWeights == null) {
+            int minRarity = getMinRarity();
+            int maxRarity = getMaxRarity();
+            List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
+            List<Double> rarityConfig = SpellRarity.getRarityConfig();
 
-        List<Double> rarityRawWeights;
-        if (minRarity != 0) {
-            //Must balance remaining weights
+            List<Double> rarityRawWeights;
+            if (minRarity != 0) {
+                //Must balance remaining weights
 
-            var subList = rarityRawConfig.subList(minRarity, maxRarity + 1);
-            double subtotal = subList.stream().reduce(0d, Double::sum);
-            rarityRawWeights = subList.stream().map(item -> ((item / subtotal) * (1 - subtotal)) + item).toList();
+                var subList = rarityRawConfig.subList(minRarity, maxRarity + 1);
+                double subtotal = subList.stream().reduce(0d, Double::sum);
+                rarityRawWeights = subList.stream().map(item -> ((item / subtotal) * (1 - subtotal)) + item).toList();
 
-            var counter = new AtomicDouble();
-            rarityWeights = new ArrayList<>();
-            rarityRawWeights.forEach(item -> {
-                rarityWeights.add(counter.addAndGet(item));
-            });
-        } else {
-            //rarityRawWeights = rarityRawConfig;
-            rarityWeights = rarityConfig;
+                var counter = new AtomicDouble();
+                rarityWeights = new ArrayList<>();
+                rarityRawWeights.forEach(item -> {
+                    rarityWeights.add(counter.addAndGet(item));
+                });
+            } else {
+                //rarityRawWeights = rarityRawConfig;
+                rarityWeights = rarityConfig;
+            }
         }
+        l.unlock();
     }
 
     public SpellRarity getRarity(int level) {
