@@ -52,6 +52,16 @@ body:
       placeholder: 1.19.2 - 43.2.8
     validations:
       required: true
+  - type: dropdown
+    id: run-type
+    attributes:
+      label: Server Type
+      description: How are you running minecraft?
+      options:
+        - Single Player
+        - Dedicated Server
+    validations:
+      required: true      
   - type: textarea
     id: other-mods
     attributes:
