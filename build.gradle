@@ -150,7 +150,7 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
     flatDir {
-         dir 'libs'
+        dir 'libs'
     }
 
     maven { url = "https://maven.enginehub.org/repo/" }
@@ -159,12 +159,16 @@ repositories {
     maven { url = "https://cursemaven.com" }
     maven { url = "https://maven.blamejared.com" }
     maven { url = "https://maven.kosmx.dev/" }
-    maven { url "https://maven.shedaniel.me" }
 
-//    maven {
-//        name "Modding Legacy Maven (Structure Gel)"
-//        url "https://maven.moddinglegacy.com/maven"
-//    }
+    //    maven {
+    //        name "REI"
+    //        url "https://maven.shedaniel.me"
+    //    }
+
+    //    maven {
+    //        name "Modding Legacy Maven (Structure Gel)"
+    //        url "https://maven.moddinglegacy.com/maven"
+    //    }
 }
 
 dependencies {
@@ -224,7 +228,7 @@ dependencies {
     //    implementation fg.deobf("dev.architectury:architectury-forge:6.5.82")
     //    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.2.88")
     //    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.1.595")
-    //runtimeOnly fg.deobf('me.shedaniel:RoughlyEnoughItems-plugin-compatibilities-forge:9.0.480')
+    //    runtimeOnly fg.deobf('me.shedaniel:RoughlyEnoughItems-plugin-compatibilities-forge:9.0.480')
 
     //valhelsia_structures-forge-1.19.2-1.0.2.jar
     //runtimeOnly fg.deobf('com.stal111.valhelsia_structures:valhelsia_core-forge:1.19.2-0.5.0')
@@ -239,7 +243,6 @@ dependencies {
     //Blue Skies
     //runtimeOnly fg.deobf('com.legacy:blue_skies:1.19.2-1.3.20')
     //implementation fg.deobf("com.legacy:structure-gel:1.19.2-2.7.2")
-
 
     //    for ( File file : fileTree(dir: 'libs', include: '*.jar') ) {
     //        runtimeOnly files(file)

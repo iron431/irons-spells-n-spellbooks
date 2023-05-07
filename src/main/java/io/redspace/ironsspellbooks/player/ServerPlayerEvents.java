@@ -58,7 +58,7 @@ public class ServerPlayerEvents {
         if (event.getEntity().level.isClientSide) {
             return;
         }
- //Ironsspellbooks.logger.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
+        //Ironsspellbooks.logger.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
@@ -110,7 +110,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
- //Ironsspellbooks.logger.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
+            //Ironsspellbooks.logger.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
             playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
@@ -126,20 +126,19 @@ public class ServerPlayerEvents {
 //    }
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
-        IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
+        //IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
         if (event.isWasDeath()) {
             //Clear potentially broken spell effects
             event.getEntity().clearFire();
             event.getEntity().setTicksFrozen(0);
+
             if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
                 //IronsSpellbooks.LOGGER.debug("onPlayerCloned: original player effects:\n ------------------------");
                 //Persist summon timers across death
                 event.getOriginal().getActiveEffects().forEach((effect -> {
-                    IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
+                    //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
                     if (effect.getEffect() instanceof SummonTimer) {
                         newServerPlayer.addEffect(effect, newServerPlayer);
-                        newServerPlayer.connection.send(new ClientboundUpdateMobEffectPacket(newServerPlayer.getId(), effect));
-
                     }
                 }));
             }
@@ -159,9 +158,9 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
- //Ironsspellbooks.logger.debug("PlayerChangedDimension: {}", event.getEntity().getName().getString());
+        //Ironsspellbooks.logger.debug("PlayerChangedDimension: {}", event.getEntity().getName().getString());
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
- //Ironsspellbooks.logger.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
+            //Ironsspellbooks.logger.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
             Utils.serverSideCancelCast(serverPlayer);
         }
     }
@@ -174,6 +173,12 @@ public class ServerPlayerEvents {
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             Utils.serverSideCancelCast(serverPlayer);
+
+            serverPlayer.getActiveEffects().forEach((effect -> {
+                if (effect.getEffect() instanceof SummonTimer) {
+                    serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), effect));
+                }
+            }));
         }
     }
 
@@ -226,7 +231,7 @@ public class ServerPlayerEvents {
             var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
                 playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
- //Ironsspellbooks.logger.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+                //Ironsspellbooks.logger.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
                 event.setCanceled(true);
                 return;
             }
