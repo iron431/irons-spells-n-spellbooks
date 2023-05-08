@@ -24,6 +24,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -223,12 +224,12 @@ public abstract class AbstractSpell {
             boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
 
             if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
-                serverPlayer.sendSystemMessage(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spellType.getDisplayName()).withStyle(ChatFormatting.RED));
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spellType.getDisplayName()).withStyle(ChatFormatting.RED)));
                 return false;
             }
 
             if (castSource.consumesMana() && !hasEnoughMana) {
-                serverPlayer.sendSystemMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", spellType.getDisplayName()).withStyle(ChatFormatting.RED));
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_mana", spellType.getDisplayName()).withStyle(ChatFormatting.RED)));
                 return false;
             }
 
