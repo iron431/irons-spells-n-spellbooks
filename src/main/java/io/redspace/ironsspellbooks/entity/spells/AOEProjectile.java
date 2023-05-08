@@ -81,20 +81,29 @@ public abstract class AOEProjectile extends Projectile {
             return;
 
         float f = getParticleCount();
-        f = Mth.clamp(f * (1 - getRadius()), f / 2, f * 2);
+        f = Mth.clamp(f * getRadius(), f / 4, f * 3);
         for (int i = 0; i < f; i++) {
             if (f - i < 1 && random.nextFloat() > f - i)
                 return;
             var r = getRadius();
-            Vec3 random = new Vec3(
-                    Utils.getRandomScaled(r * .85f),
-                    .2f + Utils.getRandomScaled(.1f),
-                    Utils.getRandomScaled(r * .85f)
+            Vec3 pos;
+            if (isCircular()) {
+                float distance = this.random.nextFloat() * r;
+                pos = new Vec3(0, 0, distance).yRot(this.random.nextFloat() * 360);
+            } else {
+                pos = new Vec3(
+                        Utils.getRandomScaled(r * .85f),
+                        .2f,
+                        Utils.getRandomScaled(r * .85f)
+                );
+            }
+            Vec3 motion = new Vec3(
+                    Utils.getRandomScaled(.03f),
+                    this.random.nextDouble() * .01f,
+                    Utils.getRandomScaled(.03f)
             );
-            if (isCircular())
-                random = random.normalize();
 
-            level.addParticle(getParticle(), getX() + random.x, getY() + random.y, getZ() + random.z, 0, .025f, 0);
+            level.addParticle(getParticle(), getX() + pos.x, getY() + pos.y, getZ() + pos.z, motion.x, motion.y, motion.z);
         }
     }
 
@@ -107,6 +116,8 @@ public abstract class AOEProjectile extends Projectile {
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
         if (DATA_RADIUS.equals(pKey)) {
             this.refreshDimensions();
+            if (getRadius() < .1f)
+                this.discard();
         }
 
         super.onSyncedDataUpdated(pKey);
@@ -155,6 +166,7 @@ public abstract class AOEProjectile extends Projectile {
         pCompound.putFloat("RadiusOnUse", this.radiusOnUse);
         pCompound.putFloat("RadiusPerTick", this.radiusPerTick);
         pCompound.putFloat("Radius", this.getRadius());
+        pCompound.putFloat("Damage", this.getDamage());
         pCompound.putBoolean("Circular", this.isCircular());
         super.addAdditionalSaveData(pCompound);
 
@@ -168,9 +180,13 @@ public abstract class AOEProjectile extends Projectile {
             this.reapplicationDelay = pCompound.getInt("ReapplicationDelay");
         if (pCompound.getInt("Radius") > 0)
             this.setRadius(pCompound.getFloat("Radius"));
-        this.durationOnUse = pCompound.getInt("DurationOnUse");
-        this.radiusOnUse = pCompound.getFloat("RadiusOnUse");
-        this.radiusPerTick = pCompound.getFloat("RadiusPerTick");
+        if (pCompound.getInt("DurationOnUse") > 0)
+            this.durationOnUse = pCompound.getInt("DurationOnUse");
+        if (pCompound.getInt("RadiusOnUse") > 0)
+            this.radiusOnUse = pCompound.getFloat("RadiusOnUse");
+        if (pCompound.getInt("RadiusPerTick") > 0)
+            this.radiusPerTick = pCompound.getFloat("RadiusPerTick");
+        this.setDamage(pCompound.getFloat("Damage"));
         if (pCompound.getBoolean("Circular"))
             setCircular();
 

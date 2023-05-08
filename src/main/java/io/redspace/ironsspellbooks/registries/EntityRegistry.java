@@ -16,9 +16,11 @@ import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLargeFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedSmallFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
+import io.redspace.ironsspellbooks.entity.spells.acid_breath.AcidBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
 import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdProjectile;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
+import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
@@ -271,5 +273,17 @@ public class EntityRegistry {
                     .sized(4f, .8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_cloud").toString()));
+
+    public static final RegistryObject<EntityType<DragonBreathPool>> DRAGON_BREATH_POOL =
+            ENTITIES.register("dragon_breath", () -> EntityType.Builder.<DragonBreathPool>of(DragonBreathPool::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath").toString()));
+
+    public static final RegistryObject<EntityType<AcidBreathProjectile>> ACID_BREATH_PROJECTILE =
+            ENTITIES.register("acid_breath_projectile", () -> EntityType.Builder.<AcidBreathProjectile>of(AcidBreathProjectile::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "acid_breath_projectile").toString()));
 
 }

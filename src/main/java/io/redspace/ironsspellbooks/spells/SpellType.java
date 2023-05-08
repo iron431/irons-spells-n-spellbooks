@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.spells.fire.*;
 import io.redspace.ironsspellbooks.spells.holy.*;
 import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.*;
+import io.redspace.ironsspellbooks.spells.poison.AcidBreathSpell;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
 import net.minecraft.network.chat.Component;
@@ -23,7 +24,6 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 public enum SpellType {
     /**
@@ -83,7 +83,9 @@ public enum SpellType {
     SPECTRAL_HAMMER_SPELL(45),
     CHARGE_SPELL(46),
     VOID_TENTACLES_SPELL(47),
-    ICE_BLOCK_SPELL(48);
+    ICE_BLOCK_SPELL(48),
+    ACID_BREATH_SPELL(49)
+    ;
 
     private final int value;
     private final LazyOptional<Boolean> isEnabled;
@@ -129,7 +131,7 @@ public enum SpellType {
         return switch (this) {
             case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SUMMON_POLAR_BEAR_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL, VOID_TENTACLES_SPELL, SUMMON_HORSE_SPELL, ICE_BLOCK_SPELL ->
                     CastType.LONG;
-            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL ->
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL, ACID_BREATH_SPELL ->
                     CastType.CONTINUOUS;
             case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL -> CastType.CHARGE;
             default -> CastType.INSTANT;
@@ -149,8 +151,9 @@ public enum SpellType {
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL, DRAGON_BREATH_SPELL, COUNTERSPELL_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL, RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL};
-    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL};
+    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SPECTRAL_HAMMER_SPELL};
     private static final SpellType[] VOID_SPELLS = {ABYSSAL_SHROUD_SPELL, VOID_TENTACLES_SPELL};
+    private static final SpellType[] POISON_SPELLS = {ACID_BREATH_SPELL};
 
     public AbstractSpell getSpellForType(int level) {
         switch (this) {
@@ -298,6 +301,9 @@ public enum SpellType {
             case ICE_BLOCK_SPELL -> {
                 return new IceBlockSpell(level);
             }
+            case ACID_BREATH_SPELL -> {
+                return new AcidBreathSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -432,6 +438,8 @@ public enum SpellType {
             return SchoolType.BLOOD;
         if (quickSearch(VOID_SPELLS, this))
             return SchoolType.VOID;
+        if (quickSearch(POISON_SPELLS, this))
+            return SchoolType.POISON;
         else
             return SchoolType.EVOCATION;
     }
@@ -454,6 +462,8 @@ public enum SpellType {
             return EVOCATION_SPELLS;
         else if (school.equals(SchoolType.VOID))
             return VOID_SPELLS;
+        else if (school.equals(SchoolType.POISON))
+            return POISON_SPELLS;
         else
             return new SpellType[]{SpellType.NONE_SPELL};
     }

@@ -19,18 +19,18 @@ public class PoisonCloudEntity extends AOEProjectile {
     }
 
     public PoisonCloudEntity(Level level) {
-        super(EntityRegistry.POISON_CLOUD.get(), level);
+        this(EntityRegistry.POISON_CLOUD.get(), level);
     }
 
     @Override
     public void applyEffect(LivingEntity target) {
         //DamageSources.applyDamage(target,getDamage(),)
-        target.addEffect(new MobEffectInstance(MobEffects.POISON, 1000, 1));
+        target.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 1));
     }
 
     @Override
     public float getParticleCount() {
-        return .55f;
+        return .25f;
     }
 
     @Override

@@ -211,7 +211,7 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${forge_version}-forge-api:${jei_version}"))
 
     //at runtime, use the full JEI jar for Forge. Good for dev
-    //runtimeOnly(fg.deobf("mezz.jei:jei-${forge_version}-forge:${jei_version}"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${forge_version}-forge:${jei_version}"))
 
     // CURIOS *****************************************************************************************************
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
