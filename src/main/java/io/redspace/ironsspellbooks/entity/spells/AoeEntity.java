@@ -27,6 +27,7 @@ public abstract class AoeEntity extends Projectile {
     protected int durationOnUse;
     protected float radiusOnUse;
     protected float radiusPerTick;
+    protected int effectDuration;
 
     public AoeEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -41,6 +42,14 @@ public abstract class AoeEntity extends Projectile {
         return damage;
     }
 
+    public void setEffectDuration(int effectDuration) {
+        this.effectDuration = effectDuration;
+    }
+
+    public int getEffectDuration() {
+        return effectDuration;
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -51,20 +60,7 @@ public abstract class AoeEntity extends Projectile {
         }
         if (!level.isClientSide) {
             if (tickCount % reapplicationDelay == 0) {
-                List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox());
-                boolean hit = false;
-                for (LivingEntity target : targets) {
-                    if (!isCircular() || target.distanceTo(this) < getRadius()) {
-                        if (target.isOnGround() || target.getY() - getY() < .5) {
-                            applyEffect(target);
-                            hit = true;
-                        }
-                    }
-                }
-                if (hit) {
-                    this.setRadius(getRadius() + radiusOnUse);
-                    this.duration += durationOnUse;
-                }
+                checkHits();
             }
             if (tickCount % 5 == 0)
                 this.setRadius(getRadius() + radiusPerTick);
@@ -72,6 +68,33 @@ public abstract class AoeEntity extends Projectile {
             ambientParticles();
         }
         setPos(position().add(getDeltaMovement()));
+    }
+
+    protected void checkHits() {
+        if (level.isClientSide)
+            return;
+        List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox());
+        boolean hit = false;
+        for (LivingEntity target : targets) {
+            if (!isCircular() || target.distanceTo(this) < getRadius()) {
+                if (target.isOnGround() || target.getY() - getY() < .5) {
+                    applyEffect(target);
+                    hit = true;
+                }
+            }
+        }
+        if (hit) {
+            this.setRadius(getRadius() + radiusOnUse);
+            this.duration += durationOnUse;
+            onPostHit();
+        }
+    }
+
+    /**
+     * Server Side, called if any entities were hit
+     */
+    public void onPostHit() {
+
     }
 
     public abstract void applyEffect(LivingEntity target);
@@ -174,6 +197,7 @@ public abstract class AoeEntity extends Projectile {
         pCompound.putFloat("Radius", this.getRadius());
         pCompound.putFloat("Damage", this.getDamage());
         pCompound.putBoolean("Circular", this.isCircular());
+        pCompound.putInt("EffectDuration", this.effectDuration);
         super.addAdditionalSaveData(pCompound);
 
     }
@@ -192,6 +216,8 @@ public abstract class AoeEntity extends Projectile {
             this.radiusOnUse = pCompound.getFloat("RadiusOnUse");
         if (pCompound.getInt("RadiusPerTick") > 0)
             this.radiusPerTick = pCompound.getFloat("RadiusPerTick");
+        if (pCompound.getInt("EffectDuration") > 0)
+            this.effectDuration = pCompound.getInt("EffectDuration");
         this.setDamage(pCompound.getFloat("Damage"));
         if (pCompound.getBoolean("Circular"))
             setCircular();

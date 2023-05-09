@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.*;
 import io.redspace.ironsspellbooks.spells.poison.AcidBreathSpell;
 import io.redspace.ironsspellbooks.spells.poison.PoisonArrowSpell;
+import io.redspace.ironsspellbooks.spells.poison.PoisonSplashSpell;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
 import net.minecraft.network.chat.Component;
@@ -86,7 +87,8 @@ public enum SpellType {
     VOID_TENTACLES_SPELL(47),
     ICE_BLOCK_SPELL(48),
     ACID_BREATH_SPELL(49),
-    POISON_ARROW_SPELL(50)
+    POISON_ARROW_SPELL(50),
+    POISON_SPLASH_SPELL(51)
     ;
 
     private final int value;
@@ -131,7 +133,7 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SUMMON_POLAR_BEAR_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL, VOID_TENTACLES_SPELL, SUMMON_HORSE_SPELL, ICE_BLOCK_SPELL ->
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SUMMON_POLAR_BEAR_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL, VOID_TENTACLES_SPELL, SUMMON_HORSE_SPELL, ICE_BLOCK_SPELL, POISON_SPLASH_SPELL ->
                     CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL, ACID_BREATH_SPELL ->
                     CastType.CONTINUOUS;
@@ -155,7 +157,7 @@ public enum SpellType {
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL, RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL};
     private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SPECTRAL_HAMMER_SPELL};
     private static final SpellType[] VOID_SPELLS = {ABYSSAL_SHROUD_SPELL, VOID_TENTACLES_SPELL};
-    private static final SpellType[] POISON_SPELLS = {ACID_BREATH_SPELL, POISON_ARROW_SPELL};
+    private static final SpellType[] POISON_SPELLS = {ACID_BREATH_SPELL, POISON_ARROW_SPELL, POISON_SPLASH_SPELL};
 
     public AbstractSpell getSpellForType(int level) {
         switch (this) {
@@ -308,6 +310,9 @@ public enum SpellType {
             }
             case POISON_ARROW_SPELL -> {
                 return new PoisonArrowSpell(level);
+            }
+            case POISON_SPLASH_SPELL -> {
+                return new PoisonSplashSpell(level);
             }
             default -> {
                 return new NoneSpell(0);

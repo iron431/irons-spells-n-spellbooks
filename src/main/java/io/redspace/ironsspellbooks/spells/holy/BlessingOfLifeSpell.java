@@ -71,8 +71,10 @@ public class BlessingOfLifeSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData healTargetingData) {
             var targetEntity = healTargetingData.getTarget((ServerLevel) world);
-            targetEntity.heal(getSpellPower(entity));
-            Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(targetEntity.position()), targetEntity, true);
+            if (targetEntity != null) {
+                targetEntity.heal(getSpellPower(entity));
+                Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(targetEntity.position()), targetEntity, true);
+            }
         }
 
         super.onCast(world, entity, playerMagicData);

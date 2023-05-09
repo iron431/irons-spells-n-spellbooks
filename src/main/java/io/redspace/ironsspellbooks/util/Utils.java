@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.util;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -438,6 +437,10 @@ public class Utils {
         //Vec3 upper = level.clip(new ClipContext(start, start.add(0, maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
         Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
         return (int) lower.y;
+    }
+
+    public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
+        return new Vec3(start.x, findRelativeGroundLevel(level, start, maxSteps), start.z);
     }
 
     public static boolean checkMonsterSpawnRules(EntityType<? extends Monster> pType, ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {

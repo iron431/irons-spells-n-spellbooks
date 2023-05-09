@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEnti
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
+import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonSplash;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLargeFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedSmallFireball;
@@ -292,5 +293,11 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_arrow").toString()));
+
+    public static final RegistryObject<EntityType<PoisonSplash>> POISON_SPLASH =
+            ENTITIES.register("poison_splash", () -> EntityType.Builder.<PoisonSplash>of(PoisonSplash::new, MobCategory.MISC)
+                    .sized(3.5f, 4f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_splash").toString()));
 
 }
