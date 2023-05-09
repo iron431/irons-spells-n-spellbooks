@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.entity.spells.poison_arrow;
 
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import net.minecraft.core.particles.ParticleTypes;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -95,8 +96,9 @@ public class PoisonArrow extends AbstractMagicProjectile {
         this.playSound(SoundEvents.ARROW_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
         this.inGround = true;
         this.shakeTime = 7;
-        if (!level.isClientSide && !hasEmittedPoison)
+        if (!level.isClientSide && !hasEmittedPoison){
             createPoisonCloud(pResult.getLocation());
+        }
 
         //IronsSpellbooks.LOGGER.debug("Poison Arrow onHitBlock: {}", inGround);
 
@@ -116,6 +118,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
                     createPoisonCloud(entity.position());
                 if (entity instanceof LivingEntity livingEntity)
                     livingEntity.setArrowCount(livingEntity.getArrowCount() + 1);
+                var spawn = entityHitResult.getLocation();
                 this.discard();
             }
         } else {
@@ -158,12 +161,12 @@ public class PoisonArrow extends AbstractMagicProjectile {
     @Override
     public void trailParticles() {
         Vec3 vec3 = this.position().subtract(getDeltaMovement().scale(2));
-        level.addParticle(ParticleTypes.CRIT, vec3.x, vec3.y, vec3.z, 0, 0, 0);
+        level.addParticle(ParticleHelper.ACID, vec3.x, vec3.y, vec3.z, 0, 0, 0);
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        //MagicManager.spawnParticles(level, ParticleHelper.POISON_CLOUD, x, y, z, 3, .03, .03, .03, 5, true);
+        MagicManager.spawnParticles(level, ParticleHelper.ACID, x, y, z, 15, .03, .03, .03, 0.2, true);
     }
 
     @Override

@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -39,7 +38,7 @@ public class AcidBreathProjectile extends AbstractConeProjectile {
         double z = pos.z;
 
         double speed = random.nextDouble() * .4 + .45;
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 20; i++) {
             double offset = .25;
             double ox = Math.random() * 2 * offset - offset;
             double oy = Math.random() * 2 * offset - offset;
@@ -48,7 +47,7 @@ public class AcidBreathProjectile extends AbstractConeProjectile {
             double angularness = .8;
             Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(Math.random() > .05 ? ParticleTypes.SNEEZE : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level.addParticle(random.nextFloat() < .25f ? ParticleHelper.ACID_BUBBLE : ParticleHelper.ACID, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }
 
 
