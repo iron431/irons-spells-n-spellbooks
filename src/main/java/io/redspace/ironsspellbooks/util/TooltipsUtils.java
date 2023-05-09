@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class TooltipsUtils {
                 spellType.getDisplayName(),
                 Component.literal("" + spell.getLevel())).withStyle(spellType.getSchoolType().getDisplayName().getStyle());
         var uniqueInfo = spell.getUniqueInfo(player);
-        var manaCost = Component.translatable("tooltip.irons_spellbooks.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE);
+        var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost()).withStyle(ChatFormatting.BLUE);
         var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spellType, player, castSource), 1)).withStyle(ChatFormatting.BLUE);
 
         List<Component> lines = new ArrayList<>();
@@ -42,8 +43,7 @@ public class TooltipsUtils {
         lines.add(title);
         uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(ChatFormatting.DARK_GREEN))));
         if (spell.getCastType() != CastType.INSTANT) {
-            String castKey = spell.getCastType() == CastType.CONTINUOUS ? "tooltip.irons_spellbooks.cast_continuous" : "tooltip.irons_spellbooks.cast_long";
-            lines.add(Component.literal(" ").append(Component.translatable(castKey, Utils.timeFromTicks(spell.getEffectiveCastTime(player), 1)).withStyle(ChatFormatting.BLUE)));
+            lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(player), 1)).withStyle(ChatFormatting.BLUE)));
         }
         if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get())
             lines.add(manaCost);
@@ -60,16 +60,14 @@ public class TooltipsUtils {
         var title = Component.translatable("tooltip.irons_spellbooks.level", spell.getLevel()).append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity().getDisplayName().getString())).withStyle(spell.getRarity().getDisplayName().getStyle());
         var uniqueInfo = spell.getUniqueInfo(player);
         var whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
-        var manaCost = Component.translatable("tooltip.irons_spellbooks.mana_cost", spell.getManaCost()).withStyle(ChatFormatting.BLUE);
+        var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost()).withStyle(ChatFormatting.BLUE);
         var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spellType, player, CastSource.SCROLL), 1)).withStyle(ChatFormatting.BLUE);
 
         List<Component> lines = new ArrayList<>();
         lines.add(Component.literal(" ").append(title));
         uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(ChatFormatting.DARK_GREEN))));
         if (spell.getCastType() != CastType.INSTANT) {
-            String castKey = spell.getCastType() == CastType.CONTINUOUS ? "tooltip.irons_spellbooks.cast_continuous" : "tooltip.irons_spellbooks.cast_long";
-            lines.add(Component.literal(" ").append(Component.translatable(castKey, Utils.timeFromTicks(spell.getEffectiveCastTime(player), 1)).withStyle(ChatFormatting.BLUE)));
-
+            lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(player), 1)).withStyle(ChatFormatting.BLUE)));
         }
         lines.add(Component.empty());
         lines.add(whenInSpellBook);
@@ -78,5 +76,22 @@ public class TooltipsUtils {
         lines.add(spell.getSchoolType().getDisplayName().copy());
 
         return lines;
+    }
+
+    public static MutableComponent getCastTimeComponent(CastType type, String castTime) {
+        return switch (type) {
+            case CONTINUOUS -> Component.translatable("tooltip.irons_spellbooks.cast_continuous", castTime);
+            case LONG -> Component.translatable("tooltip.irons_spellbooks.cast_long", castTime);
+            case CHARGE -> Component.translatable("tooltip.irons_spellbooks.cast_charge", castTime);
+            default -> Component.translatable("ui.irons_spellbooks.cast_instant");
+        };
+    }
+
+    public static MutableComponent getManaCostComponent(CastType castType, int manaCost) {
+        if (castType == CastType.CONTINUOUS) {
+            return Component.translatable("tooltip.irons_spellbooks.mana_cost_per_second", manaCost * (20 / MagicManager.CONTINUOUS_CAST_TICK_INTERVAL));
+        } else {
+            return Component.translatable("tooltip.irons_spellbooks.mana_cost", manaCost);
+        }
     }
 }

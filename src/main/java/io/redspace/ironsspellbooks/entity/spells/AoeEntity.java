@@ -17,9 +17,9 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public abstract class AOEProjectile extends Projectile {
-    private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(AOEProjectile.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Boolean> DATA_CIRCULAR = SynchedEntityData.defineId(AOEProjectile.class, EntityDataSerializers.BOOLEAN);
+public abstract class AoeEntity extends Projectile {
+    private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> DATA_CIRCULAR = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.BOOLEAN);
 
     protected float damage;
     protected int duration = 600;
@@ -28,7 +28,7 @@ public abstract class AOEProjectile extends Projectile {
     protected float radiusOnUse;
     protected float radiusPerTick;
 
-    public AOEProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public AoeEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.noPhysics = true;
     }
@@ -126,6 +126,12 @@ public abstract class AOEProjectile extends Projectile {
     public void setRadius(float pRadius) {
         if (!this.level.isClientSide) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(pRadius, 0.0F, 32.0F));
+        }
+    }
+
+    public void setDuration(int duration){
+        if (!this.level.isClientSide) {
+            this.duration = duration;
         }
     }
 

@@ -25,7 +25,9 @@ public class PoisonArrowSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getArrowDamage(caster), 1)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getAOEDamage(caster), 1)));
     }
 
     public PoisonArrowSpell(int level) {
@@ -54,9 +56,18 @@ public class PoisonArrowSpell extends AbstractSpell {
         PoisonArrow magicArrow = new PoisonArrow(level, entity);
         magicArrow.setPos(entity.position().add(0, entity.getEyeHeight() - magicArrow.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
         magicArrow.shoot(entity.getLookAngle());
-        magicArrow.setDamage(getSpellPower(entity));
+        magicArrow.setDamage(getArrowDamage(entity));
+        magicArrow.setAoeDamage(getAOEDamage(entity));
         level.addFreshEntity(magicArrow);
         super.onCast(level, entity, playerMagicData);
+    }
+
+    public float getArrowDamage(LivingEntity caster) {
+        return getSpellPower(caster);
+    }
+
+    public float getAOEDamage(LivingEntity caster) {
+        return getSpellPower(caster) * .185f;
     }
 
     public static ResourceLocation ANIMATION_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "charge_arrow");

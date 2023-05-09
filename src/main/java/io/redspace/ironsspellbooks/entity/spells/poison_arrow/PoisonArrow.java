@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.poison_arrow;
 
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
-import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloudEntity;
+import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -38,8 +38,9 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     public int shakeTime;
-    public boolean hasEmittedPoison;
-    public boolean inGround;
+    protected boolean hasEmittedPoison;
+    protected boolean inGround;
+    protected float aoeDamage;
 
     @Override
     public void tick() {
@@ -70,6 +71,14 @@ public class PoisonArrow extends AbstractMagicProjectile {
         super.defineSynchedData();
         this.getEntityData().define(IN_GROUND, false);
 
+    }
+
+    public void setAoeDamage(float damage) {
+        this.aoeDamage = damage;
+    }
+
+    public float getAoeDamage() {
+        return aoeDamage;
     }
 
     private boolean shouldFall() {
@@ -123,12 +132,15 @@ public class PoisonArrow extends AbstractMagicProjectile {
         super.addAdditionalSaveData(pCompound);
         pCompound.putBoolean("inGround", this.inGround);
         pCompound.putBoolean("hasEmittedPoison", hasEmittedPoison);
+        pCompound.putFloat("aoeDamage", aoeDamage);
     }
 
     public void createPoisonCloud(Vec3 location) {
         if (!level.isClientSide) {
-            PoisonCloudEntity cloud = new PoisonCloudEntity(level);
+            PoisonCloud cloud = new PoisonCloud(level);
             cloud.setOwner(getOwner());
+            cloud.setDuration(200);
+            cloud.setDamage(aoeDamage);
             cloud.moveTo(location);
             level.addFreshEntity(cloud);
             hasEmittedPoison = true;
@@ -140,6 +152,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         super.readAdditionalSaveData(pCompound);
         this.inGround = pCompound.getBoolean("inGround");
         this.hasEmittedPoison = pCompound.getBoolean("hasEmittedPoison");
+        this.aoeDamage = pCompound.getFloat("aoeDamage");
     }
 
     @Override
