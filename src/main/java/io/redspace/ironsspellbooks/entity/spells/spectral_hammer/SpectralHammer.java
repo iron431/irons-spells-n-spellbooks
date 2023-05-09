@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spectral_hammer;
+package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;

@@ -175,6 +175,8 @@ public abstract class AbstractSpell {
                         entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER.get());
                 case EVOCATION ->
                         entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.EVOCATION_SPELL_POWER.get());
+                case POISON ->
+                        entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.POISON_SPELL_POWER.get());
             }
 
         }

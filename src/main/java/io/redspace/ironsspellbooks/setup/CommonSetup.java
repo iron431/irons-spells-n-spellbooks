@@ -14,7 +14,7 @@ import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
-import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammer;
+import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;

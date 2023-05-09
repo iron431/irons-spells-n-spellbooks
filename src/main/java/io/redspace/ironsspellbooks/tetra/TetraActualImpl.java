@@ -36,6 +36,7 @@ public class TetraActualImpl implements ITetraProxy {
         createPercentAttributeBar(AttributeRegistry.ENDER_SPELL_POWER.get(), "ender_spell_power");
         createPercentAttributeBar(AttributeRegistry.BLOOD_SPELL_POWER.get(), "blood_spell_power");
         createPercentAttributeBar(AttributeRegistry.EVOCATION_SPELL_POWER.get(), "evocation_spell_power");
+        createPercentAttributeBar(AttributeRegistry.POISON_SPELL_POWER.get(), "poison_spell_power");
         createPercentAttributeBar(AttributeRegistry.SPELL_RESIST.get(), "spell_resist");
         /*
         Mana Attribute (From arcane ingot) display

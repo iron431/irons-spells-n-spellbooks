@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spectral_hammer;
+package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

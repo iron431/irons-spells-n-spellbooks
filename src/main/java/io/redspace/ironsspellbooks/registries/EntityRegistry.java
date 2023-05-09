@@ -12,7 +12,8 @@ import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
-import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammer;
+import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
+import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLargeFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedSmallFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
@@ -275,15 +276,21 @@ public class EntityRegistry {
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_cloud").toString()));
 
     public static final RegistryObject<EntityType<DragonBreathPool>> DRAGON_BREATH_POOL =
-            ENTITIES.register("dragon_breath", () -> EntityType.Builder.<DragonBreathPool>of(DragonBreathPool::new, MobCategory.MISC)
+            ENTITIES.register("dragon_breath_pool", () -> EntityType.Builder.<DragonBreathPool>of(DragonBreathPool::new, MobCategory.MISC)
                     .sized(4f, .8f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath_pool").toString()));
 
     public static final RegistryObject<EntityType<AcidBreathProjectile>> ACID_BREATH_PROJECTILE =
-            ENTITIES.register("acid_breath_projectile", () -> EntityType.Builder.<AcidBreathProjectile>of(AcidBreathProjectile::new, MobCategory.MISC)
+            ENTITIES.register("acid_breath", () -> EntityType.Builder.<AcidBreathProjectile>of(AcidBreathProjectile::new, MobCategory.MISC)
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "acid_breath_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "acid_breath").toString()));
+
+    public static final RegistryObject<EntityType<PoisonArrow>> POISON_ARROW =
+            ENTITIES.register("poison_arrow", () -> EntityType.Builder.<PoisonArrow>of(PoisonArrow::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_arrow").toString()));
 
 }

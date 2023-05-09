@@ -14,6 +14,7 @@ public enum UpgradeType {
     ENDER_SPELL_POWER("ender_power", AttributeRegistry.ENDER_SPELL_POWER.get(), AttributeModifier.Operation.MULTIPLY_BASE, .025f),
     BLOOD_SPELL_POWER("blood_power", AttributeRegistry.BLOOD_SPELL_POWER.get(), AttributeModifier.Operation.MULTIPLY_BASE, .025f),
     EVOCATION_SPELL_POWER("evocation_power", AttributeRegistry.EVOCATION_SPELL_POWER.get(), AttributeModifier.Operation.MULTIPLY_BASE, .025f),
+    POISON_SPELL_POWER("poison_power", AttributeRegistry.POISON_SPELL_POWER.get(), AttributeModifier.Operation.MULTIPLY_BASE, .025f),
     COOLDOWN("cooldown", AttributeRegistry.COOLDOWN_REDUCTION.get(), AttributeModifier.Operation.MULTIPLY_BASE, .05f),
     SPELL_RESISTANCE("spell_resistance", AttributeRegistry.SPELL_RESIST.get(), AttributeModifier.Operation.MULTIPLY_BASE, .025f),
     MANA("mana", AttributeRegistry.MAX_MANA.get(), AttributeModifier.Operation.ADDITION, 50)

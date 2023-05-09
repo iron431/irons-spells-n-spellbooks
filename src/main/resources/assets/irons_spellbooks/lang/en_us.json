@@ -208,6 +208,7 @@
   "attribute.irons_spellbooks.ender_spell_power": "Ender Spell Power",
   "attribute.irons_spellbooks.blood_spell_power": "Blood Spell Power",
   "attribute.irons_spellbooks.evocation_spell_power": "Evocation Spell Power",
+  "attribute.irons_spellbooks.poison_spell_power": "Poison Spell Power",
   "attribute.irons_spellbooks.spell_resist": "Spell Resistance",
   "attribute.irons_spellbooks.summon_damage": "Summon Damage",
 
@@ -458,7 +459,7 @@
   "entity.irons_spellbooks.void_tentacle": "Void Tentacles",
   "entity.irons_spellbooks.citadel_keeper": "Ancient Knight",
   "entity.irons_spellbooks.poison_cloud": "Poison Cloud",
-  "entity.irons_spellbooks.dragon_breath": "Dragon Breath",
+  "entity.irons_spellbooks.dragon_breath_pool": "Dragon Breath",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",

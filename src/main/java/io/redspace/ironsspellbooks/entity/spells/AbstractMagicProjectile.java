@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
@@ -93,7 +94,20 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     @Override
     public void onAntiMagic(PlayerMagicData playerMagicData) {
-        this.impactParticles(getX(),getY(), getZ());
+        this.impactParticles(getX(), getY(), getZ());
         this.discard();
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.putFloat("Damage", this.getDamage());
+
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.damage = pCompound.getFloat("Damage");
     }
 }

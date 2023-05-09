@@ -22,7 +22,8 @@ import io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons.SummonedZombie
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRenderer;
-import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammerRenderer;
+import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashRenderer;
 import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdRenderer;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadRenderer;
@@ -195,6 +196,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.CRYOMANCER.get(), CryomancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.POISON_CLOUD.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DRAGON_BREATH_POOL.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.POISON_ARROW.get(), PoisonArrowRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
