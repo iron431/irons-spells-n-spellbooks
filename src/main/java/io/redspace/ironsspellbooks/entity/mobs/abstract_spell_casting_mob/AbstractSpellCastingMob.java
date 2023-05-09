@@ -237,7 +237,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             boolean valid = false;
             for (int i = 0; i < 24; i++) {
                 teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
-                int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 3);
+                int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 5);
                 teleportPos = new Vec3(teleportPos.x, y, teleportPos.z);
                 var bb = this.getBoundingBox();
                 var reposBB = bb.move(teleportPos.subtract(target.position()));

@@ -30,7 +30,7 @@ public class PoisonCloudEntity extends AOEProjectile {
 
     @Override
     public float getParticleCount() {
-        return .25f;
+        return .15f;
     }
 
     @Override

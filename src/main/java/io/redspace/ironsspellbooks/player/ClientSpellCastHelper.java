@@ -7,7 +7,6 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
@@ -148,7 +147,7 @@ public class ClientSpellCastHelper {
             if (animation != null) {
                 var castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
                 ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), castingAnimationPlayer);
-                castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
+                castingAnimationPlayer.setFirstPersonMode(resourceLocation.getPath().equals("charge_arrow") ? FirstPersonMode.VANILLA : FirstPersonMode.THIRD_PERSON_MODEL);
                 var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
                 var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
                 castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));

@@ -33,6 +33,13 @@ public class PoisonArrowRenderer extends EntityRenderer<PoisonArrow> {
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+
+        float f9 = entity.shakeTime - partialTicks;
+        if (f9 > 0.0F) {
+            float f10 = -Mth.sin(f9 * 3.0F) * f9;
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(f10));
+        }
+
         renderModel(poseStack, bufferSource, light);
         poseStack.popPose();
 
@@ -51,6 +58,8 @@ public class PoisonArrowRenderer extends EntityRenderer<PoisonArrow> {
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(getTextureLocation()));
         poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+        poseStack.translate(-2, 0, 0);
+
         for (int j = 0; j < 4; ++j) {
             poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
             vertex(poseMatrix, normalMatrix, consumer, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, light);

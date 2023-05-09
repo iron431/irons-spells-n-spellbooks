@@ -38,9 +38,11 @@ public class FogParticle extends TextureSheetParticle {
         this.quadSize = 1.5f * options.getScale();
         this.lifetime = pLevel.random.nextIntBetweenInclusive(60, 120);
         this.gravity = .1f;
-        this.rCol = options.getColor().x();
-        this.gCol = options.getColor().y();
-        this.bCol = options.getColor().z();
+
+        float f = random.nextFloat() * 0.14F + 0.85F;
+        this.rCol = options.getColor().x() * f;
+        this.gCol = options.getColor().y() * f;
+        this.bCol = options.getColor().z() * f;
         this.friction = 1;
     }
 

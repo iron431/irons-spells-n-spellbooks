@@ -52,7 +52,7 @@ public class ChargeSpellLayer {
                 poseStack.scale(castCompletion, castCompletion, castCompletion);
                 MagicArrowRenderer.renderModel(poseStack, bufferSource);
             } else if (spell == SpellType.POISON_ARROW_SPELL) {
-                poseStack.translate(((float) (flag ? -1 : 1) / 32.0F), .5, 0);
+                poseStack.translate(((float) (flag ? -1 : 1) / 32.0F), 1, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
                 float castCompletion = Utils.smoothstep(.65f, 1, ClientMagicData.getCastCompletionPercent());
