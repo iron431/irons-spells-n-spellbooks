@@ -250,7 +250,7 @@ public class WizardAttackGoal extends Goal {
 
         var spellType = getNextSpellType();
 
-        if (spellType == SpellType.TELEPORT_SPELL || spellType == SpellType.FROST_STEP) {
+        if (spellType == SpellType.TELEPORT_SPELL || spellType == SpellType.FROST_STEP_SPELL) {
             mob.setTeleportLocationBehindTarget(10);
         }
         if (spellType == SpellType.BLOOD_STEP_SPELL) {

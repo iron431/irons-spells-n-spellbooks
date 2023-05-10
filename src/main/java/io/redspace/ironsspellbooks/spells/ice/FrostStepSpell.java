@@ -37,7 +37,7 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     public FrostStepSpell(int level) {
-        super(SpellType.FROST_STEP);
+        super(SpellType.FROST_STEP_SPELL);
         this.level = level;
         this.baseSpellPower = 14;
         this.spellPowerPerLevel = 3;

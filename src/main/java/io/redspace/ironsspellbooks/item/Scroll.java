@@ -107,7 +107,7 @@ public class Scroll extends Item {
     @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         //entity.stopUsingItem();
-        if (getUseDuration(itemStack) - ticksUsed >= 4) {
+        if (SpellData.getSpellData(itemStack).getSpell().getCastType() != CastType.CONTINUOUS || getUseDuration(itemStack) - ticksUsed >= 4) {
             Utils.releaseUsingHelper(entity);
         }
         super.releaseUsing(itemStack, level, entity, ticksUsed);

@@ -37,74 +37,74 @@ public enum SpellType {
      * Translation
      * Icon
      */
-    NONE_SPELL(0),
-    FIREBALL_SPELL(1),
-    BURNING_DASH_SPELL(2),
-    TELEPORT_SPELL(3),
-    MAGIC_MISSILE_SPELL(4),
-    ELECTROCUTE_SPELL(5),
-    CONE_OF_COLD_SPELL(6),
-    HEAL_SPELL(7),
-    BLOOD_SLASH_SPELL(8),
-    SUMMON_VEX_SPELL(9),
-    FIREBOLT_SPELL(10),
-    FIRE_BREATH_SPELL(11),
-    ICICLE_SPELL(12),
-    FIRECRACKER_SPELL(13),
-    SUMMON_HORSE_SPELL(14),
-    ANGEL_WING_SPELL(15),
-    SHIELD_SPELL(16),
-    WALL_OF_FIRE_SPELL(17),
-    WISP_SPELL(18),
-    FANG_STRIKE_SPELL(19),
-    FANG_WARD_SPELL(20),
-    EVASION_SPELL(21),
-    HEARTSTOP_SPELL(22),
-    LIGHTNING_LANCE_SPELL(23),
-    LIGHTNING_BOLT_SPELL(24),
-    RAISE_DEAD_SPELL(25),
-    WITHER_SKULL_SPELL(26),
-    GREATER_HEAL_SPELL(27),
-    CLOUD_OF_REGENERATION_SPELL(28),
-    RAY_OF_SIPHONING_SPELL(29),
-    MAGIC_ARROW_SPELL(30),
-    LOB_CREEPER_SPELL(31),
-    CHAIN_CREEPER_SPELL(32),
-    BLAZE_STORM_SPELL(33),
-    FROST_STEP(34),
-    ABYSSAL_SHROUD_SPELL(35),
-    FROSTBITE_SPELL(36),
-    ASCENSION_SPELL(37),
-    INVISIBILITY_SPELL(38),
-    BLOOD_STEP_SPELL(39),
-    SUMMON_POLAR_BEAR_SPELL(40),
-    BLESSING_OF_LIFE_SPELL(41),
-    DRAGON_BREATH_SPELL(42),
-    FORTIFY_SPELL(43),
-    COUNTERSPELL_SPELL(44),
-    SPECTRAL_HAMMER_SPELL(45),
-    CHARGE_SPELL(46),
-    VOID_TENTACLES_SPELL(47),
-    ICE_BLOCK_SPELL(48),
-    ACID_BREATH_SPELL(49),
-    POISON_ARROW_SPELL(50),
-    POISON_SPLASH_SPELL(51)
-    ;
+    NONE_SPELL(0, NoneSpell::new),
+    FIREBALL_SPELL(1, FireballSpell::new),
+    BURNING_DASH_SPELL(2, BurningDashSpell::new),
+    TELEPORT_SPELL(3, TeleportSpell::new),
+    MAGIC_MISSILE_SPELL(4, MagicMissileSpell::new),
+    ELECTROCUTE_SPELL(5, ElectrocuteSpell::new),
+    CONE_OF_COLD_SPELL(6, ConeOfColdSpell::new),
+    HEAL_SPELL(7, HealSpell::new),
+    BLOOD_SLASH_SPELL(8, BloodSlashSpell::new),
+    SUMMON_VEX_SPELL(9, SummonVexSpell::new),
+    FIREBOLT_SPELL(10, FireboltSpell::new),
+    FIRE_BREATH_SPELL(11, FireBreathSpell::new),
+    ICICLE_SPELL(12, IcicleSpell::new),
+    FIRECRACKER_SPELL(13, FirecrackerSpell::new),
+    SUMMON_HORSE_SPELL(14, SummonHorseSpell::new),
+    ANGEL_WING_SPELL(15, AngelWingsSpell::new),
+    SHIELD_SPELL(16, ShieldSpell::new),
+    WALL_OF_FIRE_SPELL(17, WallOfFireSpell::new),
+    WISP_SPELL(18, WispSpell::new),
+    FANG_STRIKE_SPELL(19, FangStrikeSpell::new),
+    FANG_WARD_SPELL(20, FangWardSpell::new),
+    EVASION_SPELL(21, EvasionSpell::new),
+    HEARTSTOP_SPELL(22, HeartstopSpell::new),
+    LIGHTNING_LANCE_SPELL(23, LightningLanceSpell::new),
+    LIGHTNING_BOLT_SPELL(24, LightningBoltSpell::new),
+    RAISE_DEAD_SPELL(25, RaiseDeadSpell::new),
+    WITHER_SKULL_SPELL(26, WitherSkullSpell::new),
+    GREATER_HEAL_SPELL(27, GreaterHealSpell::new),
+    CLOUD_OF_REGENERATION_SPELL(28, CloudOfRegenerationSpell::new),
+    RAY_OF_SIPHONING_SPELL(29, RayOfSiphoningSpell::new),
+    MAGIC_ARROW_SPELL(30, MagicArrowSpell::new),
+    LOB_CREEPER_SPELL(31, LobCreeperSpell::new),
+    CHAIN_CREEPER_SPELL(32, ChainCreeperSpell::new),
+    BLAZE_STORM_SPELL(33, BlazeStormSpell::new),
+    FROST_STEP_SPELL(34, FrostStepSpell::new),
+    ABYSSAL_SHROUD_SPELL(35, AbyssalShroudSpell::new),
+    FROSTBITE_SPELL(36, FrostbiteSpell::new),
+    ASCENSION_SPELL(37, AscensionSpell::new),
+    INVISIBILITY_SPELL(38, InvisibilitySpell::new),
+    BLOOD_STEP_SPELL(39, BloodStepSpell::new),
+    SUMMON_POLAR_BEAR_SPELL(40, SummonPolarBearSpell::new),
+    BLESSING_OF_LIFE_SPELL(41, BlessingOfLifeSpell::new),
+    DRAGON_BREATH_SPELL(42, DragonBreathSpell::new),
+    FORTIFY_SPELL(43, FortifySpell::new),
+    COUNTERSPELL_SPELL(44, CounterspellSpell::new),
+    SPECTRAL_HAMMER_SPELL(45, SpectralHammerSpell::new),
+    CHARGE_SPELL(46, ChargeSpell::new),
+    VOID_TENTACLES_SPELL(47, VoidTentaclesSpell::new),
+    ICE_BLOCK_SPELL(48, IceBlockSpell::new),
+    ACID_BREATH_SPELL(49, AcidBreathSpell::new),
+    POISON_ARROW_SPELL(50, PoisonArrowSpell::new),
+    POISON_SPLASH_SPELL(51, PoisonSplashSpell::new);
 
     private final int value;
     private final LazyOptional<Boolean> isEnabled;
     private final LazyOptional<Integer> maxLevel;
     private final LazyOptional<Integer> minRarity;
     private final int maxRarity;
-
+    private final GetSpellForType getSpellForType;
     private volatile List<Double> rarityWeights;
 
-    SpellType(final int newValue) {
+    SpellType(final int newValue, GetSpellForType getter) {
         value = newValue;
         isEnabled = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).ENABLED));
         maxLevel = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).MAX_LEVEL));
         minRarity = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).MIN_RARITY.getValue()));
         maxRarity = SpellRarity.LEGENDARY.getValue();
+        getSpellForType = getter;
     }
 
     public int getValue() {
@@ -150,7 +150,7 @@ public enum SpellType {
     }
 
     private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, BLAZE_STORM_SPELL};
-    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL, FROST_STEP, FROSTBITE_SPELL, SUMMON_POLAR_BEAR_SPELL, ICE_BLOCK_SPELL};
+    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL, FROST_STEP_SPELL, FROSTBITE_SPELL, SUMMON_POLAR_BEAR_SPELL, ICE_BLOCK_SPELL};
     private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL, ASCENSION_SPELL, CHARGE_SPELL};
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL, DRAGON_BREATH_SPELL, COUNTERSPELL_SPELL};
@@ -160,175 +160,8 @@ public enum SpellType {
     private static final SpellType[] POISON_SPELLS = {ACID_BREATH_SPELL, POISON_ARROW_SPELL, POISON_SPLASH_SPELL};
 
     public AbstractSpell getSpellForType(int level) {
-        switch (this) {
-            case BURNING_DASH_SPELL -> {
-                return new BurningDashSpell(level);
-            }
-            case FIREBALL_SPELL -> {
-                return new FireballSpell(level);
-            }
-            case TELEPORT_SPELL -> {
-                return new TeleportSpell(level);
-            }
-            case MAGIC_MISSILE_SPELL -> {
-                return new MagicMissileSpell(level);
-            }
-            case CONE_OF_COLD_SPELL -> {
-                return new ConeOfColdSpell(level);
-            }
-            case ELECTROCUTE_SPELL -> {
-                return new ElectrocuteSpell(level);
-            }
-            case HEAL_SPELL -> {
-                return new HealSpell(level);
-            }
-            case BLOOD_SLASH_SPELL -> {
-                return new BloodSlashSpell(level);
-            }
-            case SUMMON_VEX_SPELL -> {
-                return new SummonVexSpell(level);
-            }
-            case FIREBOLT_SPELL -> {
-                return new FireboltSpell(level);
-            }
-            case FIRE_BREATH_SPELL -> {
-                return new FireBreathSpell(level);
-            }
-            case ICICLE_SPELL -> {
-                return new IcicleSpell(level);
-            }
-            case FIRECRACKER_SPELL -> {
-                return new FirecrackerSpell(level);
-            }
-            case SUMMON_HORSE_SPELL -> {
-                return new SummonHorseSpell(level);
-            }
-            case ANGEL_WING_SPELL -> {
-                return new AngelWingsSpell(level);
-            }
-            case SHIELD_SPELL -> {
-                return new ShieldSpell(level);
-            }
-            case WALL_OF_FIRE_SPELL -> {
-                return new WallOfFireSpell(level);
-            }
-            case WISP_SPELL -> {
-                return new WispSpell(level);
-            }
-            case FANG_STRIKE_SPELL -> {
-                return new FangStrikeSpell(level);
-            }
-            case FANG_WARD_SPELL -> {
-                return new FangWardSpell(level);
-            }
-            case EVASION_SPELL -> {
-                return new EvasionSpell(level);
-            }
-            case HEARTSTOP_SPELL -> {
-                return new HeartstopSpell(level);
-            }
-            case LIGHTNING_LANCE_SPELL -> {
-                return new LightningLanceSpell(level);
-            }
-            case LIGHTNING_BOLT_SPELL -> {
-                return new LightningBoltSpell(level);
-            }
-            case RAISE_DEAD_SPELL -> {
-                return new RaiseDeadSpell(level);
-            }
-            case WITHER_SKULL_SPELL -> {
-                return new WitherSkullSpell(level);
-            }
-            case GREATER_HEAL_SPELL -> {
-                return new GreaterHealSpell(level);
-            }
-            case CLOUD_OF_REGENERATION_SPELL -> {
-                return new CloudOfRegenerationSpell(level);
-            }
-            case RAY_OF_SIPHONING_SPELL -> {
-                return new RayOfSiphoningSpell(level);
-            }
-            case MAGIC_ARROW_SPELL -> {
-                return new MagicArrowSpell(level);
-            }
-            case LOB_CREEPER_SPELL -> {
-                return new LobCreeperSpell(level);
-            }
-            case CHAIN_CREEPER_SPELL -> {
-                return new ChainCreeperSpell(level);
-            }
-            case BLAZE_STORM_SPELL -> {
-                return new BlazeStormSpell(level);
-            }
-            case FROST_STEP -> {
-                return new FrostStepSpell(level);
-            }
-            case ABYSSAL_SHROUD_SPELL -> {
-                return new AbyssalShroudSpell(level);
-            }
-            case FROSTBITE_SPELL -> {
-                return new FrostbiteSpell(level);
-            }
-            case ASCENSION_SPELL -> {
-                return new AscensionSpell(level);
-            }
-            case INVISIBILITY_SPELL -> {
-                return new InvisibilitySpell(level);
-            }
-            case BLOOD_STEP_SPELL -> {
-                return new BloodStepSpell(level);
-            }
-            case SUMMON_POLAR_BEAR_SPELL -> {
-                return new SummonPolarBearSpell(level);
-            }
-            case BLESSING_OF_LIFE_SPELL -> {
-                return new BlessingOfLifeSpell(level);
-            }
-            case DRAGON_BREATH_SPELL -> {
-                return new DragonBreathSpell(level);
-            }
-            case FORTIFY_SPELL -> {
-                return new FortifySpell(level);
-            }
-            case COUNTERSPELL_SPELL -> {
-                return new CounterspellSpell(level);
-            }
-            case SPECTRAL_HAMMER_SPELL -> {
-                return new SpectralHammerSpell(level);
-            }
-            case CHARGE_SPELL -> {
-                return new ChargeSpell(level);
-            }
-            case VOID_TENTACLES_SPELL -> {
-                return new VoidTentaclesSpell(level);
-            }
-            case ICE_BLOCK_SPELL -> {
-                return new IceBlockSpell(level);
-            }
-            case ACID_BREATH_SPELL -> {
-                return new AcidBreathSpell(level);
-            }
-            case POISON_ARROW_SPELL -> {
-                return new PoisonArrowSpell(level);
-            }
-            case POISON_SPLASH_SPELL -> {
-                return new PoisonSplashSpell(level);
-            }
-            default -> {
-                return new NoneSpell(0);
-            }
-        }
+        return getSpellForType.get(level);
     }
-    //    public SpellRarity getRarity(int level) {
-//        //float adjustedRarity = getRarityMapped(minLevel, maxLevel, minRarity, maxRarity, level);
-//        int maxLevel = this.maxLevel.resolve().get();
-//        int minRarity = this.minRarity.resolve().get();
-//        //https://www.desmos.com/calculator/fumipfwdfr
-//        float rarityPercent = level / (float) maxLevel;
-//        float scaledRarity = Mth.clamp(lerp(minRarity, maxRarity, rarityPercent * rarityPercent), minRarity, maxRarity);
-//        return SpellRarity.values()[(int) scaledRarity];
-//        //return SpellRarity.getRarityFromPercent(adjustedRarity);
-//    }
 
     public static float getRarityMapped(float levelMin, float levelMax, float rarityMin, float rarityMax, float levelToMap) {
         return rarityMin + ((levelToMap - levelMin) * (rarityMax - rarityMin)) / (levelMax - levelMin);
@@ -515,5 +348,9 @@ public enum SpellType {
             if (spellType.equals(query))
                 return true;
         return false;
+    }
+
+    private interface GetSpellForType {
+        AbstractSpell get(int level);
     }
 }

@@ -83,7 +83,7 @@ public class ServerConfigs {
         BUILDER.comment("Ice Spells");
         createSpellConfig(SpellType.CONE_OF_COLD_SPELL, true, 10, SpellRarity.COMMON, 25);
         createSpellConfig(SpellType.FROSTBITE_SPELL, false, 0, SpellRarity.COMMON, 0);
-        createSpellConfig(SpellType.FROST_STEP, true, 8, SpellRarity.RARE, 10);
+        createSpellConfig(SpellType.FROST_STEP_SPELL, true, 8, SpellRarity.RARE, 10);
         createSpellConfig(SpellType.ICICLE_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, true, 10, SpellRarity.RARE, 180);
         createSpellConfig(SpellType.ICE_BLOCK_SPELL, true, 6, SpellRarity.RARE, 20);
