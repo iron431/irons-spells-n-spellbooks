@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.config;
 
+import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ClientConfigs {
@@ -10,6 +11,7 @@ public class ClientConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALWAYS_SHOW_MANA_BAR;
     public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_Y_OFFSET;
     public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_X_OFFSET;
+    public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Anchor> MANA_BAR_ANCHOR;
     public static final ForgeConfigSpec SPEC;
 
     static {
@@ -25,6 +27,7 @@ public class ClientConfigs {
         BUILDER.comment("Use to adjust if the mana bar conflicts with other mod's ui elements (11 is one full hunger bar up).");
         MANA_BAR_Y_OFFSET = BUILDER.define("manaBarYOffset", 0);
         MANA_BAR_X_OFFSET = BUILDER.define("manaBarXOffset", 0);
+        MANA_BAR_ANCHOR = BUILDER.defineEnum("manaBarAnchor", ManaBarOverlay.Anchor.Hunger);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

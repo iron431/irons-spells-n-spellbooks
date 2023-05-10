@@ -16,7 +16,8 @@
     "TetraBladedItemMixin",
     "TridentItemMixin",
     "ItemMixin",
-    "EntityMixin"
+    "EntityMixin",
+    "GuiMixin"
   ],
   "client": [
   ],

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -58,9 +59,9 @@ public class ImbuedSpellOverlay extends GuiComponent {
         setOpaqueTexture(spell.getSpellType().getResourceLocation());
         gui.blit(poseStack, centerX + 3, centerY + 4, 0, 0, 16, 16, 16, 16);
         //Border + Cooldowns
-        setTranslucentTexture(TEXTURE);
         float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
-        if (f > 0) {
+        if (f > 0 && !stack.getItem().equals(ItemRegistry.SCROLL.get())) {
+            setTranslucentTexture(TEXTURE);
             int pixels = (int) (16 * f + 1f);
             gui.blit(poseStack, centerX + 3, centerY + 20 - pixels, 47, 87, 16, pixels);
         }

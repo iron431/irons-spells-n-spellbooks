@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -31,7 +32,7 @@ public class ItemRendererMixin {
         if (item instanceof SpellBook) {
             AbstractSpell spell = SpellBookData.getSpellBookData(stack).getActiveSpell();
             renderSpellCooldown(one, two, spell);
-        } else if (SpellData.hasSpellData(stack)) {
+        } else if (SpellData.hasSpellData(stack) && !stack.getItem().equals(ItemRegistry.SCROLL.get())) {
             AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
             renderSpellCooldown(one, two, spell);
         }

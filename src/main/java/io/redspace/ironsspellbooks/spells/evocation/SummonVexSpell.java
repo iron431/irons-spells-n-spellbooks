@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -54,7 +55,7 @@ public class SummonVexSpell extends AbstractSpell {
         int summonTime = 20 * 60 * 3;
         for (int i = 0; i < this.level; i++) {
             SummonedVex vex = new SummonedVex(world, entity);
-            vex.setPos(entity.getEyePosition().add(new Vec3(1, 1, 1).yRot(i * 25)));
+            vex.moveTo(entity.getEyePosition().add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));
             vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
             vex.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, 0, false, false, false));
             world.addFreshEntity(vex);
