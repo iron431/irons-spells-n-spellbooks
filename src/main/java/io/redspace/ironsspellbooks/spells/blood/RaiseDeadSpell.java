@@ -63,7 +63,7 @@ public class RaiseDeadSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        int summonTime = 20 * 60 * 3;
+        int summonTime = 20 * 60 * 10;
         for (int i = 0; i < this.level; i++) {
             boolean isSkeleton = world.random.nextDouble() < .3;
             var equipment = getEquipment(getSpellPower(entity), world.getRandom());

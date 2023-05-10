@@ -52,7 +52,7 @@ public class SummonVexSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        int summonTime = 20 * 60 * 3;
+        int summonTime = 20 * 60 * 10;
         for (int i = 0; i < this.level; i++) {
             SummonedVex vex = new SummonedVex(world, entity);
             vex.moveTo(entity.getEyePosition().add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));

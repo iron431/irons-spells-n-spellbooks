@@ -46,7 +46,7 @@ public class SummonHorseSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        int summonTime = 20 * 60 * 3;
+        int summonTime = 20 * 60 * 10;
         Vec3 spawn = entity.position();
         Vec3 forward = entity.getForward().normalize().scale(1.5f);
         spawn.add(forward.x, 0.15f, forward.z);

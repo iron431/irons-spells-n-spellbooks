@@ -52,7 +52,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        int summonTime = 20 * 60 * 3;
+        int summonTime = 20 * 60 * 10;
 
         SummonedPolarBear polarBear = new SummonedPolarBear(world, entity);
         polarBear.setPos(entity.position());

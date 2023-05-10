@@ -42,7 +42,7 @@ public class PoisonSplashSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
-        this.castTime = 30;
+        this.castTime = 15;
         this.baseManaCost = 40;
     }
 

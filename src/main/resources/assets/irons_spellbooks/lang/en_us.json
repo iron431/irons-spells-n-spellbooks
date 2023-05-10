@@ -432,6 +432,7 @@
   "effect.irons_spellbooks.enchanted_ward": "Enchanted Ward",
   "effect.irons_spellbooks.evasion": "Evasion",
   "effect.irons_spellbooks.charged": "Charged",
+  "effect.irons_spellbooks.rend": "Rend",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
