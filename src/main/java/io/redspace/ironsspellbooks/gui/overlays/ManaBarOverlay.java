@@ -55,7 +55,8 @@ public class ManaBarOverlay {
         int configOffsetY = ClientConfigs.MANA_BAR_Y_OFFSET.get();
         int configOffsetX = ClientConfigs.MANA_BAR_X_OFFSET.get();
         Anchor anchor = ClientConfigs.MANA_BAR_ANCHOR.get();
-
+        if (anchor == Anchor.XP && player.getJumpRidingScale() > 0) //Hide XP Mana bar when actively jumping on a horse
+            return;
         barX = getBarX(anchor, screenWidth, player) + configOffsetX;
         barY = getBarY(anchor, screenHeight, player) - configOffsetY;
 
@@ -73,7 +74,7 @@ public class ManaBarOverlay {
         String manaFraction = (mana) + "/" + maxMana;
 
         textX = barX + imageWidth / 2 - (int) ((("" + mana).length() + 0.5) * CHAR_WIDTH);
-        textY = barY + (anchor == Anchor.XP ? ICON_ROW_HEIGHT / 2 : ICON_ROW_HEIGHT);
+        textY = barY + (anchor == Anchor.XP ? ICON_ROW_HEIGHT / 3 : ICON_ROW_HEIGHT);
 
         gui.getFont().drawShadow(poseStack, manaFraction, textX, textY, TEXT_COLOR);
         //gui.getFont().draw(poseStack, manaFraction, textX, textY, TEXT_COLOR);
