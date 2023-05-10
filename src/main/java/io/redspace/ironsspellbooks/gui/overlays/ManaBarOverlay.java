@@ -31,6 +31,12 @@ public class ManaBarOverlay {
         BottomRight
     }
 
+    public enum Display {
+        Never,
+        Always,
+        Contextual
+    }
+
     static final int DEFAULT_IMAGE_WIDTH = 98;
     static final int XP_IMAGE_WIDTH = 188;
     static final int IMAGE_HEIGHT = 21;
@@ -40,7 +46,6 @@ public class ManaBarOverlay {
     static final int HUNGER_BAR_OFFSET = 50;
     static final int SCREEN_BORDER_MARGIN = 20;
     static final int TEXT_COLOR = ChatFormatting.AQUA.getColor();
-    static boolean centered = false;
 
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         var player = Minecraft.getInstance().player;
@@ -83,7 +88,7 @@ public class ManaBarOverlay {
     }
 
     private static int getOffsetCountFromHotbar(Player player) {
-        if (centered || !(player == null || player.getAirSupply() <= 0 || player.getAirSupply() >= 300))
+        if (!(player == null || player.getAirSupply() <= 0 || player.getAirSupply() >= 300))
             return 3;
         else if (!player.isCreative())
             return 2;
@@ -93,7 +98,8 @@ public class ManaBarOverlay {
 
     public static boolean shouldShowManaBar(Player player) {
         //We show mana if they are holding an item that can cast spells or if their mana is not full
-        return !player.isSpectator() && (ClientConfigs.ALWAYS_SHOW_MANA_BAR.get() || player.isHolding((itemstack -> itemstack.getItem() instanceof SpellBook || SpellData.hasSpellData(itemstack))) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get()));
+        var display = ClientConfigs.MANA_BAR_DISPLAY.get();
+        return !player.isSpectator() && display != Display.Never && (display == Display.Always || player.isHolding((itemstack -> itemstack.getItem() instanceof SpellBook || SpellData.hasSpellData(itemstack))) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get()));
     }
 
     private static int getBarX(Anchor anchor, int screenWidth, Player player) {
