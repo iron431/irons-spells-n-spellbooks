@@ -376,9 +376,13 @@ public class Utils {
     }
 
     public static boolean canImbue(ItemStack itemStack) {
-        if ((itemStack.getItem() instanceof SwordItem swordItem && !(swordItem instanceof UniqueItem))) {
+        String id = Registry.ITEM.getKey(itemStack.getItem()).toString();
+        if (ServerConfigs.IMBUE_BLACKLIST.get().contains(id))
+            return false;
+        if (ServerConfigs.IMBUE_WHITELIST.get().contains(id))
             return true;
-        }
+        if ((itemStack.getItem() instanceof SwordItem swordItem && !(swordItem instanceof UniqueItem)))
+            return true;
 
         return TetraProxy.PROXY.canImbue(itemStack);
     }

@@ -13,7 +13,6 @@
     "LivingEntityMixin",
     "LocalPlayerMixin",
     "SpinAttackEffectLayerMixin",
-    "SwordItemMixin",
     "TetraBladedItemMixin",
     "TridentItemMixin",
     "ItemMixin",

@@ -1,19 +1,18 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,14 +31,14 @@ public class ItemRendererMixin {
         if (item instanceof SpellBook) {
             AbstractSpell spell = SpellBookData.getSpellBookData(stack).getActiveSpell();
             renderSpellCooldown(one, two, spell);
-        } else if (item instanceof SwordItem) {
+        } else if (SpellData.hasSpellData(stack)) {
             AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
             renderSpellCooldown(one, two, spell);
         }
     }
 
     private void renderSpellCooldown(int one, int two, AbstractSpell spell) {
-        if (spell != null) {
+        if (spell.getSpellType().getValue() > 0) {
             float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
 
             if (f > 0.0F) {
