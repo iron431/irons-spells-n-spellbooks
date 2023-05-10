@@ -16,7 +16,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -71,17 +70,19 @@ public class ChainCreeperSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        HitResult raycast = Utils.raycastForEntity(level, entity, 40, true);
-        Vec3 spawn;
+        Vec3 spawn = null;
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
-            spawn = castTargetingData.getTarget((ServerLevel) level).getEyePosition();
-        } else if (raycast.getType() == HitResult.Type.ENTITY) {
-            spawn = ((EntityHitResult) raycast).getEntity().getEyePosition();
-        } else {
-            spawn = raycast.getLocation().subtract(entity.getForward());
-            spawn = Utils.raycastForBlock(level, spawn.add(0, 2, 0), spawn.subtract(0, 2, 0), ClipContext.Fluid.NONE).getLocation().add(0, 1, 0);
+            spawn = castTargetingData.getTargetPosition((ServerLevel) level);
         }
-        summonCreeperRing(level, entity, spawn, getDamage(entity), getCount());
+        if (spawn == null) {
+            HitResult raycast = Utils.raycastForEntity(level, entity, 32, true);
+            if (raycast.getType() == HitResult.Type.ENTITY) {
+                spawn = ((EntityHitResult) raycast).getEntity().position();
+            } else {
+                spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 5);
+            }
+        }
+        summonCreeperRing(level, entity, spawn.add(0, 0.5, 0), getDamage(entity), getCount());
 
         super.onCast(level, entity, playerMagicData);
     }

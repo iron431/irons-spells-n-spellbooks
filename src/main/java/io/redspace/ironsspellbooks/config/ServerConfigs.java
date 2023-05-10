@@ -17,6 +17,8 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
     public static final ForgeConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
@@ -112,10 +114,19 @@ public class ServerConfigs {
 
         BUILDER.push("Upgrade Overrides");
         BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's upgrade system. This can also be done via datapack.");
-        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: minecraft:iron_sword");
+        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: \"minecraft:iron_sword\"");
         UPGRADE_WHITELIST = BUILDER.defineList("upgradeWhitelist", ArrayList::new, (string) -> true);
-        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being upgraded, ex: minecraft:iron_sword");
+        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being upgraded, ex: \"minecraft:iron_sword\"");
         UPGRADE_BLACKLIST = BUILDER.defineList("upgradeBlacklist", ArrayList::new, (string) -> true);
+        BUILDER.pop();
+
+        BUILDER.push("Imbue Overrides");
+        BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's imbue system.");
+        BUILDER.comment("!THIS MAY HAVE UNINTENDED CONSEQUENCES!");
+        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be imbued, ex: \"minecraft:iron_sword\"");
+        IMBUE_WHITELIST = BUILDER.defineList("imbueWhitelist", ArrayList::new, (string) -> true);
+        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being imbued, ex: \"minecraft:iron_sword\"");
+        IMBUE_BLACKLIST = BUILDER.defineList("imbueBlacklist", ArrayList::new, (string) -> true);
         SPEC = BUILDER.build();
     }
 

@@ -69,16 +69,18 @@ public class IceBlockSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        Vec3 spawn;
+        Vec3 spawn = null;
         LivingEntity target = null;
 
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
             target = castTargetingData.getTarget((ServerLevel) level);
-            spawn = target.getEyePosition();
-        } else {
+            if (target != null)
+                spawn = target.position();
+        }
+        if (spawn == null) {
             HitResult raycast = Utils.raycastForEntity(level, entity, 32, true, .25f);
             if (raycast.getType() == HitResult.Type.ENTITY) {
-                spawn = ((EntityHitResult) raycast).getEntity().getEyePosition();
+                spawn = ((EntityHitResult) raycast).getEntity().position();
                 if (((EntityHitResult) raycast).getEntity() instanceof LivingEntity livingEntity)
                     target = livingEntity;
             } else {

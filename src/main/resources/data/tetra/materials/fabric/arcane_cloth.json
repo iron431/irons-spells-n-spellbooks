@@ -1,0 +1,32 @@
+{
+  "key": "irons_spellbooks_arcane_cloth",
+  "category": "fabric",
+  "primary": 1,
+  "secondary": 1,
+  "tertiary": 5,
+  "durability": 300,
+  "integrityCost": 1,
+  "integrityGain": 6,
+  "magicCapacity": 180,
+  "toolLevel": 0,
+  "toolEfficiency": 0,
+  "tints": {
+    "glyph": "d291ff",
+    "texture": "d291ff"
+  },
+  "attributes": {
+    "**irons_spellbooks:cooldown_reduction": 0.15
+  },
+  "textures": [
+    "crude",
+    "default"
+  ],
+  "material": {
+    "items": [
+      "irons_spellbooks:magic_cloth"
+    ]
+  },
+  "requiredTools": {
+    "cut": "minecraft:wood"
+  }
+}

@@ -10,7 +10,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.CastType;
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -237,8 +237,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         float textScale = 1f;
         float reverseScale = 1 / textScale;
 
-        String castKey = spell.getCastType() == CastType.CONTINUOUS ? "ui.irons_spellbooks.cast_continuous" : "ui.irons_spellbooks.cast_type";
-        String castContents = spell.getCastType() == CastType.INSTANT ? "Instant" : Utils.timeFromTicks(spell.getEffectiveCastTime(null), 1);
         Component school = spell.getSchoolType().getDisplayName();
         poseStack.scale(textScale, textScale, textScale);
 
@@ -270,7 +268,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Cast Time
         //
-        descLine += drawStatText(font, poseStack, x + margin, descLine, castKey, textColor, Component.translatable(castContents), colorCast, textScale);
+
+        descLine += drawText(font, poseStack, TooltipsUtils.getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(null), 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
 
         //
         // Cooldown

@@ -6,10 +6,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -63,19 +59,22 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
     }
 
     private void createDragonBreathPuddle(Vec3 pos) {
-        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
-        Entity entity = this.getOwner();
-        if (entity instanceof LivingEntity) {
-            areaeffectcloud.setOwner((LivingEntity) entity);
-        }
-
-        areaeffectcloud.setParticle(ParticleTypes.DRAGON_BREATH);
-        areaeffectcloud.setRadius(2.0F);
-        areaeffectcloud.setDuration(80);
-        areaeffectcloud.setRadiusPerTick(-.2f * ((7.0F - areaeffectcloud.getRadius()) / (float) areaeffectcloud.getDuration()));
-        areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.HARM, 1, (int) (damage / 5)));
-        areaeffectcloud.moveTo(pos);
-        this.level.addFreshEntity(areaeffectcloud);
+//        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
+//        Entity entity = this.getOwner();
+//        if (entity instanceof LivingEntity) {
+//            areaeffectcloud.setOwner((LivingEntity) entity);
+//        }
+//
+//        areaeffectcloud.setParticle(ParticleTypes.DRAGON_BREATH);
+//        areaeffectcloud.setRadius(2.0F);
+//        areaeffectcloud.setDuration(80);
+//        areaeffectcloud.setRadiusPerTick(-.2f * ((7.0F - areaeffectcloud.getRadius()) / (float) areaeffectcloud.getDuration()));
+//        areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.HARM, 1, (int) (damage / 5)));
+        DragonBreathPool pool = new DragonBreathPool(level);
+        pool.setOwner(getOwner());
+        pool.setDamage(this.damage);
+        pool.moveTo(pos);
+        this.level.addFreshEntity(pool);
 
     }
 }

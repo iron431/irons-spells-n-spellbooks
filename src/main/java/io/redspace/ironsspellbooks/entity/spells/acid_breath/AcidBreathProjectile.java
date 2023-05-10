@@ -1,0 +1,64 @@
+package io.redspace.ironsspellbooks.entity.spells.acid_breath;
+
+import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
+import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.spells.SchoolType;
+import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
+
+public class AcidBreathProjectile extends AbstractConeProjectile {
+    public AcidBreathProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level) {
+        super(entityType, level);
+    }
+
+    public AcidBreathProjectile(Level level, LivingEntity entity) {
+        super(EntityRegistry.ACID_BREATH_PROJECTILE.get(), level, entity);
+    }
+
+
+    @Override
+    public void spawnParticles() {
+        var owner = getOwner();
+        if (!level.isClientSide || owner == null) {
+            return;
+        }
+        Vec3 rotation = owner.getLookAngle().normalize();
+        var pos = owner.position().add(rotation.scale(1.6));
+
+        double x = pos.x;
+        double y = pos.y + owner.getEyeHeight() * .9f;
+        double z = pos.z;
+
+        double speed = random.nextDouble() * .4 + .45;
+        for (int i = 0; i < 20; i++) {
+            double offset = .25;
+            double ox = Math.random() * 2 * offset - offset;
+            double oy = Math.random() * 2 * offset - offset;
+            double oz = Math.random() * 2 * offset - offset;
+
+            double angularness = .8;
+            Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness).normalize();
+            Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
+            level.addParticle(random.nextFloat() < .25f ? ParticleHelper.ACID_BUBBLE : ParticleHelper.ACID, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+        }
+
+
+    }
+
+    @Override
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        //irons_spellbooks.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
+        var entity = entityHitResult.getEntity();
+        if (DamageSources.applyDamage(entity, damage, SpellType.ACID_BREATH_SPELL.getDamageSource(this, getOwner()), SchoolType.POISON) && entity instanceof LivingEntity livingEntity)
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0));
+    }
+
+}

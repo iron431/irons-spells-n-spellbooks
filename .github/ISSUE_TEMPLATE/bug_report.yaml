@@ -32,6 +32,16 @@ body:
         3. Note [issue] with [something]
     validations:
       required: true
+  - type: dropdown
+    id: run-type
+    attributes:
+      label: Server Type
+      description: Are you running minecraft in single player or dedicated server?
+      options:
+        - Single Player
+        - Dedicated Server
+    validations:
+      required: true        
   - type: input
     id: crashlog
     attributes:
@@ -42,14 +52,14 @@ body:
     id: irons-spellbooks-version
     attributes:
       label: Iron's Spells N Spellbooks version
-      placeholder: 1.0.1
+      placeholder: "example: 1.0.1"
     validations:
       required: true
   - type: input
     id: forge-version
     attributes:
       label: Forge version
-      placeholder: 1.19.2 - 43.2.8
+      placeholder: "example: 1.19.2 - 43.2.8"
     validations:
       required: true
   - type: textarea

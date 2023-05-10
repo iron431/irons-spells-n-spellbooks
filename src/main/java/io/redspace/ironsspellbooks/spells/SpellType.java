@@ -11,6 +11,9 @@ import io.redspace.ironsspellbooks.spells.fire.*;
 import io.redspace.ironsspellbooks.spells.holy.*;
 import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.*;
+import io.redspace.ironsspellbooks.spells.poison.AcidBreathSpell;
+import io.redspace.ironsspellbooks.spells.poison.PoisonArrowSpell;
+import io.redspace.ironsspellbooks.spells.poison.PoisonSplashSpell;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
 import net.minecraft.network.chat.Component;
@@ -82,7 +85,10 @@ public enum SpellType {
     SPECTRAL_HAMMER_SPELL(45),
     CHARGE_SPELL(46),
     VOID_TENTACLES_SPELL(47),
-    ICE_BLOCK_SPELL(48)
+    ICE_BLOCK_SPELL(48),
+    ACID_BREATH_SPELL(49),
+    POISON_ARROW_SPELL(50),
+    POISON_SPLASH_SPELL(51)
     ;
 
     private final int value;
@@ -91,7 +97,7 @@ public enum SpellType {
     private final LazyOptional<Integer> minRarity;
     private final int maxRarity;
 
-    private List<Double> rarityWeights;
+    private volatile List<Double> rarityWeights;
 
     SpellType(final int newValue) {
         value = newValue;
@@ -127,11 +133,11 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SUMMON_POLAR_BEAR_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL, VOID_TENTACLES_SPELL, SUMMON_HORSE_SPELL, ICE_BLOCK_SPELL ->
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SUMMON_POLAR_BEAR_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL, VOID_TENTACLES_SPELL, SUMMON_HORSE_SPELL, ICE_BLOCK_SPELL, POISON_SPLASH_SPELL ->
                     CastType.LONG;
-            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL ->
+            case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL, ACID_BREATH_SPELL ->
                     CastType.CONTINUOUS;
-            case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL -> CastType.CHARGE;
+            case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL, POISON_ARROW_SPELL -> CastType.CHARGE;
             default -> CastType.INSTANT;
         };
     }
@@ -149,8 +155,9 @@ public enum SpellType {
     private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL};
     private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL, DRAGON_BREATH_SPELL, COUNTERSPELL_SPELL};
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL, RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL};
-    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL};
+    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SPECTRAL_HAMMER_SPELL};
     private static final SpellType[] VOID_SPELLS = {ABYSSAL_SHROUD_SPELL, VOID_TENTACLES_SPELL};
+    private static final SpellType[] POISON_SPELLS = {ACID_BREATH_SPELL, POISON_ARROW_SPELL, POISON_SPLASH_SPELL};
 
     public AbstractSpell getSpellForType(int level) {
         switch (this) {
@@ -298,6 +305,15 @@ public enum SpellType {
             case ICE_BLOCK_SPELL -> {
                 return new IceBlockSpell(level);
             }
+            case ACID_BREATH_SPELL -> {
+                return new AcidBreathSpell(level);
+            }
+            case POISON_ARROW_SPELL -> {
+                return new PoisonArrowSpell(level);
+            }
+            case POISON_SPLASH_SPELL -> {
+                return new PoisonSplashSpell(level);
+            }
             default -> {
                 return new NoneSpell(0);
             }
@@ -319,27 +335,32 @@ public enum SpellType {
     }
 
     private void initializeRarityWeights() {
-        int minRarity = getMinRarity();
-        int maxRarity = getMaxRarity();
-        List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
-        List<Double> rarityConfig = SpellRarity.getRarityConfig();
+        synchronized (SpellType.NONE_SPELL) {
+            if (rarityWeights == null) {
+                int minRarity = getMinRarity();
+                int maxRarity = getMaxRarity();
+                List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
+                List<Double> rarityConfig = SpellRarity.getRarityConfig();
+                //IronsSpellbooks.LOGGER.debug("rarityRawConfig: {} rarityConfig:{}, {}, {}", rarityRawConfig.size(), rarityConfig.size(), this.hashCode(), this.name());
 
-        List<Double> rarityRawWeights;
-        if (minRarity != 0) {
-            //Must balance remaining weights
+                List<Double> rarityRawWeights;
+                if (minRarity != 0) {
+                    //Must balance remaining weights
 
-            var subList = rarityRawConfig.subList(minRarity, maxRarity + 1);
-            double subtotal = subList.stream().reduce(0d, Double::sum);
-            rarityRawWeights = subList.stream().map(item -> ((item / subtotal) * (1 - subtotal)) + item).toList();
+                    var subList = rarityRawConfig.subList(minRarity, maxRarity + 1);
+                    double subtotal = subList.stream().reduce(0d, Double::sum);
+                    rarityRawWeights = subList.stream().map(item -> ((item / subtotal) * (1 - subtotal)) + item).toList();
 
-            var counter = new AtomicDouble();
-            rarityWeights = new ArrayList<>();
-            rarityRawWeights.forEach(item -> {
-                rarityWeights.add(counter.addAndGet(item));
-            });
-        } else {
-            //rarityRawWeights = rarityRawConfig;
-            rarityWeights = rarityConfig;
+                    var counter = new AtomicDouble();
+                    rarityWeights = new ArrayList<>();
+                    rarityRawWeights.forEach(item -> {
+                        rarityWeights.add(counter.addAndGet(item));
+                    });
+                } else {
+                    //rarityRawWeights = rarityRawConfig;
+                    rarityWeights = rarityConfig;
+                }
+            }
         }
     }
 
@@ -427,6 +448,8 @@ public enum SpellType {
             return SchoolType.BLOOD;
         if (quickSearch(VOID_SPELLS, this))
             return SchoolType.VOID;
+        if (quickSearch(POISON_SPELLS, this))
+            return SchoolType.POISON;
         else
             return SchoolType.EVOCATION;
     }
@@ -449,6 +472,8 @@ public enum SpellType {
             return EVOCATION_SPELLS;
         else if (school.equals(SchoolType.VOID))
             return VOID_SPELLS;
+        else if (school.equals(SchoolType.POISON))
+            return POISON_SPELLS;
         else
             return new SpellType[]{SpellType.NONE_SPELL};
     }

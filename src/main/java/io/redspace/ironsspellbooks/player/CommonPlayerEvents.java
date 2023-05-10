@@ -11,7 +11,7 @@ public class CommonPlayerEvents {
         //IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onPlayerRightClickItem {}", event.getSide());
         var stack = event.getItemStack();
 
-        if (Utils.canImbue(stack)) {
+        if (SpellData.hasSpellData(stack)) {
             var spellData = SpellData.getSpellData(stack);
             var result = Utils.onUseCastingHelper(event.getLevel(), event.getEntity(), event.getHand(), stack, spellData.getSpell());
 
@@ -25,7 +25,7 @@ public class CommonPlayerEvents {
     public static void onUseItemStop(LivingEntityUseItemEvent.Stop event) {
         //IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemStop {} {}", event.getEntity().getLevel().isClientSide, event.getItem().getItem());
         var stack = event.getItem();
-        if (Utils.canImbue(stack)) {
+        if (SpellData.hasSpellData(stack)) {
             var spell = SpellData.getSpellData(stack).getSpell();
             var entity = event.getEntity();
 

@@ -27,7 +27,7 @@ public class CastBarOverlay extends GuiComponent {
         String castTimeString = Utils.timeFromTicks((1 - castCompletionPercent) * ClientMagicData.getCastDuration(), 1);
         if (ClientMagicData.getCastType() == CastType.CHARGE && ClientMagicData.getCastDurationRemaining() < 0) {
             castCompletionPercent = 1;
-                castTimeString = Component.translatable("ui.irons_spellbooks.charge_ready").getString();
+            castTimeString = Component.translatable("ui.irons_spellbooks.charge_ready").getString();
         } else if (ClientMagicData.getCastType() == CastType.CONTINUOUS) {
             castCompletionPercent = 1 - castCompletionPercent;
         }

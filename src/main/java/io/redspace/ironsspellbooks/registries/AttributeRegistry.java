@@ -27,6 +27,7 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> SPELL_POWER = ATTRIBUTES.register("spell_power", () -> (new RangedAttribute("attribute.irons_spellbooks.spell_power", 1.0D, 1, 10.0D).setSyncable(true)));
     public static final RegistryObject<Attribute> SPELL_RESIST = ATTRIBUTES.register("spell_resist", () -> (new RangedAttribute("attribute.irons_spellbooks.spell_resist", 1.0D, 1, 10.0D).setSyncable(true)));
     public static final RegistryObject<Attribute> CAST_TIME_REDUCTION = ATTRIBUTES.register("cast_time_reduction", () -> (new RangedAttribute("attribute.irons_spellbooks.cast_time_reduction", 1.0D, 1, 10.0D).setSyncable(true)));
+    public static final RegistryObject<Attribute> SUMMON_DAMAGE = ATTRIBUTES.register("summon_damage", () -> (new RangedAttribute("attribute.irons_spellbooks.summon_damage", 1.0D, 1, 10.0D).setSyncable(true)));
 
 //    public static final RegistryObject<Attribute> FIRE_MAGIC_RESIST = newResistanceAttribute("fire");
 //    public static final RegistryObject<Attribute> ICE_MAGIC_RESIST = newResistanceAttribute("ice");
@@ -43,6 +44,7 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> ENDER_SPELL_POWER = newPowerAttribute("ender");
     public static final RegistryObject<Attribute> BLOOD_SPELL_POWER = newPowerAttribute("blood");
     public static final RegistryObject<Attribute> EVOCATION_SPELL_POWER = newPowerAttribute("evocation");
+    public static final RegistryObject<Attribute> POISON_SPELL_POWER = newPowerAttribute("poison");
 
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
@@ -52,6 +54,7 @@ public class AttributeRegistry {
             e.add(entity, SPELL_RESIST.get());
             e.add(entity, COOLDOWN_REDUCTION.get());
             e.add(entity, CAST_TIME_REDUCTION.get());
+            e.add(entity, SUMMON_DAMAGE.get());
 
 //            e.add(entity, FIRE_MAGIC_RESIST.get());
 //            e.add(entity, ICE_MAGIC_RESIST.get());
@@ -68,6 +71,7 @@ public class AttributeRegistry {
             e.add(entity, ENDER_SPELL_POWER.get());
             e.add(entity, BLOOD_SPELL_POWER.get());
             e.add(entity, EVOCATION_SPELL_POWER.get());
+            e.add(entity, POISON_SPELL_POWER.get());
         });
     }
 

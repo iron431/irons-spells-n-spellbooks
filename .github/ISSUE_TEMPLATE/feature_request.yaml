@@ -1,6 +1,7 @@
 
 name: 💡 Feature request
 description: Suggest new functionality, new content or balancing changes
+labels: [feature request]
 body:
   - type: textarea
     id: description
@@ -14,12 +15,5 @@ body:
     attributes:
       label: How it improves the player experience
       description: Describe how this would make the game more fun, deep, intuitive, interesting or immersive
-    validations:
-      required: true
-  - type: textarea
-    id: synergies
-    attributes:
-      label: Iron's Spells N Spellbooks synergies
-      description: How does this synergize with current features in Iron's Spells N Spellbooks, or how does it align the the goals of the mod
     validations:
       required: true

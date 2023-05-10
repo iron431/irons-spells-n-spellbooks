@@ -13,10 +13,10 @@
     "LivingEntityMixin",
     "LocalPlayerMixin",
     "SpinAttackEffectLayerMixin",
-    "SwordItemMixin",
     "TetraBladedItemMixin",
     "TridentItemMixin",
-    "ItemStackMixin"
+    "ItemMixin",
+    "EntityMixin"
   ],
   "client": [
   ],

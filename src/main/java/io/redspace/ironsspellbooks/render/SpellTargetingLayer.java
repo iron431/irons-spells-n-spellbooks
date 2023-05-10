@@ -65,6 +65,7 @@ public class SpellTargetingLayer {
             case BLESSING_OF_LIFE_SPELL -> new Vector3f(.85f, 0, 0);
             case WISP_SPELL -> new Vector3f(.85f, .75f, .25f);
             case ICE_BLOCK_SPELL -> new Vector3f(.25f, .25f, 1f);
+            case POISON_SPLASH_SPELL -> new Vector3f(.41f, .88f, .22f);
             default -> new Vector3f(.8f, .8f, .8f);
         };
     }

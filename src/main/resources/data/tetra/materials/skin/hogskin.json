@@ -1,0 +1,32 @@
+{
+  "key": "irons_spellbooks_hogskin",
+  "category": "skin",
+  "primary": 1.5,
+  "secondary": 1,
+  "tertiary": 5,
+  "durability": 250,
+  "integrityCost": 1,
+  "integrityGain": 6,
+  "magicCapacity": 80,
+  "toolLevel": 0,
+  "toolEfficiency": 0,
+  "tints": {
+    "glyph": "ffabb7",
+    "texture": "ffabb7"
+  },
+  "effects": {
+    "irons_spellbooks:mana_siphon": 150
+  },
+  "textures": [
+    "crude",
+    "default"
+  ],
+  "material": {
+    "items": [
+      "irons_spellbooks:hogskin"
+    ]
+  },
+  "requiredTools": {
+    "cut": "minecraft:wood"
+  }
+}

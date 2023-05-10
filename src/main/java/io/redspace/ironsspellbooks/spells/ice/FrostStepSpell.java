@@ -17,7 +17,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -57,9 +56,7 @@ public class FrostStepSpell extends AbstractSpell {
 
         if (playerMagicData != null) {
             if (playerMagicData.getAdditionalCastData() instanceof TeleportSpell.TeleportData teleportData) {
-                var tmp = teleportData.getTeleportTargetPosition();
-                int y = entity.level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, (int) tmp.x, (int) tmp.z);
-                dest = new Vec3(tmp.x, y, tmp.z);
+                dest = teleportData.getTeleportTargetPosition();
             }
         }
 

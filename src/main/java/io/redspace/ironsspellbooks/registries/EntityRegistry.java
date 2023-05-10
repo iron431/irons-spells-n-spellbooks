@@ -6,19 +6,24 @@ import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
-import io.redspace.ironsspellbooks.entity.mobs.horse.SpectralSteed;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
-import io.redspace.ironsspellbooks.entity.spectral_hammer.SpectralHammer;
+import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
+import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
+import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonSplash;
+import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLargeFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedSmallFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
+import io.redspace.ironsspellbooks.entity.spells.acid_breath.AcidBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
 import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdProjectile;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
+import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
@@ -114,8 +119,8 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "simple_wizard").toString()));
 
-    public static final RegistryObject<EntityType<SpectralSteed>> SPECTRAL_STEED =
-            ENTITIES.register("spectral_steed", () -> EntityType.Builder.<SpectralSteed>of(SpectralSteed::new, MobCategory.CREATURE)
+    public static final RegistryObject<EntityType<SummonedHorse>> SPECTRAL_STEED =
+            ENTITIES.register("spectral_steed", () -> EntityType.Builder.<SummonedHorse>of(SummonedHorse::new, MobCategory.CREATURE)
                     .sized(1.3964844F, 1.6F)
                     .clientTrackingRange(10)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "spectral_steed").toString()));
@@ -264,5 +269,35 @@ public class EntityRegistry {
                     .sized(1.25f, 1)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ice_block_projectile").toString()));
+
+    public static final RegistryObject<EntityType<PoisonCloud>> POISON_CLOUD =
+            ENTITIES.register("poison_cloud", () -> EntityType.Builder.<PoisonCloud>of(PoisonCloud::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_cloud").toString()));
+
+    public static final RegistryObject<EntityType<DragonBreathPool>> DRAGON_BREATH_POOL =
+            ENTITIES.register("dragon_breath_pool", () -> EntityType.Builder.<DragonBreathPool>of(DragonBreathPool::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath_pool").toString()));
+
+    public static final RegistryObject<EntityType<AcidBreathProjectile>> ACID_BREATH_PROJECTILE =
+            ENTITIES.register("acid_breath", () -> EntityType.Builder.<AcidBreathProjectile>of(AcidBreathProjectile::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "acid_breath").toString()));
+
+    public static final RegistryObject<EntityType<PoisonArrow>> POISON_ARROW =
+            ENTITIES.register("poison_arrow", () -> EntityType.Builder.<PoisonArrow>of(PoisonArrow::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_arrow").toString()));
+
+    public static final RegistryObject<EntityType<PoisonSplash>> POISON_SPLASH =
+            ENTITIES.register("poison_splash", () -> EntityType.Builder.<PoisonSplash>of(PoisonSplash::new, MobCategory.MISC)
+                    .sized(3.5f, 4f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_splash").toString()));
 
 }

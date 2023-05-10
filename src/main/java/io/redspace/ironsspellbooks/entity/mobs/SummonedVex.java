@@ -1,20 +1,18 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-
-import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.OwnerHelper;
 import io.redspace.ironsspellbooks.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -70,10 +68,14 @@ public class SummonedVex extends Vex implements MagicSummon {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get() && pSource instanceof EntityDamageSource && !pSource.isBypassInvul())
-            if (this.getSummoner() != null && (pSource.getEntity().equals(this.getSummoner()) || this.getSummoner().isAlliedTo(pSource.getEntity())))
-                return false;
+        if (shouldIgnoreDamage(pSource))
+            return false;
         return super.hurt(pSource, pAmount);
+    }
+
+    @Override
+    public LivingEntity getSummoner() {
+        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -84,20 +86,32 @@ public class SummonedVex extends Vex implements MagicSummon {
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity == this.getSummoner();
+    public void die(DamageSource pDamageSource) {
+        this.onDeathHelper();
+        super.die(pDamageSource);
     }
 
-    public LivingEntity getSummoner() {
-        if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
-            return this.cachedSummoner;
-        } else if (this.summonerUUID != null && this.level instanceof ServerLevel) {
-            if (((ServerLevel) this.level).getEntity(this.summonerUUID) instanceof LivingEntity livingEntity)
-                this.cachedSummoner = livingEntity;
-            return this.cachedSummoner;
-        } else {
-            return null;
-        }
+    @Override
+    public void onRemovedFromWorld() {
+        this.onRemovedHelper(this, MobEffectRegistry.VEX_TIMER.get());
+        super.onRemovedFromWorld();
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        this.summonerUUID = OwnerHelper.deserializeOwner(compoundTag);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        OwnerHelper.serializeOwner(compoundTag, summonerUUID);
+    }
+
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     public void onUnSummon() {
@@ -110,29 +124,6 @@ public class SummonedVex extends Vex implements MagicSummon {
     @Override
     protected boolean shouldDespawnInPeaceful() {
         return false;
-    }
-    
-    @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
-        super.readAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Reading Summoned Vex save data");
-
-        if (compoundTag.hasUUID("Summoner")) {
-            this.summonerUUID = compoundTag.getUUID("Summoner");
-        }
-
-
-    }
-
-    @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
-        super.addAdditionalSaveData(compoundTag);
-        //irons_spellbooks.LOGGER.debug("Writing Summoned Vex save data");
-
-        if (this.summonerUUID != null) {
-            compoundTag.putUUID("Summoner", this.summonerUUID);
-        }
-
     }
 
     class VexChargeAttackGoal extends Goal {

@@ -42,6 +42,12 @@ public class DamageSources {
         if (target instanceof LivingEntity livingTarget) {
             //Todo: should this be handled in damage event? (would by where enchantments and stuff also get put)
             float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
+            boolean fromSummon = false;
+            if (damageSource.getDirectEntity() instanceof MagicSummon summon) {
+                fromSummon = true;
+                if (summon.getSummoner() != null)
+                    adjustedDamage *= summon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get());
+            }
 
             if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
                 if (livingAttacker.isAlliedTo(livingTarget))
@@ -49,7 +55,7 @@ public class DamageSources {
                 livingAttacker.setLastHurtMob(target);
             }
             var flag = livingTarget.hurt(damageSource, adjustedDamage);
-            if (flag && damageSource.getDirectEntity() instanceof MagicSummon)
+            if (fromSummon)
                 livingTarget.setLastHurtByMob((LivingEntity) damageSource.getDirectEntity());
             return flag;
         } else {

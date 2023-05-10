@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.render;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRenderer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -33,28 +34,32 @@ public class ChargeSpellLayer {
             var syncedSpellData = ClientMagicData.getSyncedSpellData(entity);
             //irons_spellbooks.LOGGER.debug("ChargeSpellLayer.render: {}", syncedSpellData);
             var spell = syncedSpellData.getCastingSpellType();
+            poseStack.pushPose();
+            var arm = getArmFromUseHand(entity);
+            this.getParentModel().translateToHand(arm, poseStack);
+            boolean flag = arm == HumanoidArm.LEFT;
             if (spell == SpellType.LIGHTNING_LANCE_SPELL) {
-                poseStack.pushPose();
-                var arm = getArmFromUseHand(entity);
-                this.getParentModel().translateToHand(arm, poseStack);
-                boolean flag = arm == HumanoidArm.LEFT;
                 poseStack.translate((double) ((float) (flag ? -1 : 1) / 32.0F) - .125, .5, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 float castCompletion = Utils.smoothstep(.35f, 1, ClientMagicData.getCastCompletionPercent());
                 poseStack.scale(castCompletion, castCompletion, castCompletion);
                 LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
-                poseStack.popPose();
             } else if (spell == SpellType.MAGIC_ARROW_SPELL) {
-                var arm = getArmFromUseHand(entity);
-                this.getParentModel().translateToHand(arm, poseStack);
-                boolean flag = arm == HumanoidArm.LEFT;
-                poseStack.translate((double) ((float) (flag ? -1 : 1) / 32.0F) + .125, .5, 0);
+                poseStack.translate(((float) (flag ? -1 : 1) / 32.0F), .5, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
                 float castCompletion = Utils.smoothstep(.65f, 1, ClientMagicData.getCastCompletionPercent());
                 poseStack.scale(castCompletion, castCompletion, castCompletion);
                 MagicArrowRenderer.renderModel(poseStack, bufferSource);
+            } else if (spell == SpellType.POISON_ARROW_SPELL) {
+                poseStack.translate(((float) (flag ? -1 : 1) / 32.0F), 1, 0);
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                float castCompletion = Utils.smoothstep(.65f, 1, ClientMagicData.getCastCompletionPercent());
+                poseStack.scale(castCompletion, castCompletion, castCompletion);
+                PoisonArrowRenderer.renderModel(poseStack, bufferSource, pPackedLight);
             }
+            poseStack.popPose();
         }
     }
     public static class Geo extends GeoLayerRenderer<AbstractSpellCastingMob> {
@@ -68,55 +73,43 @@ public class ChargeSpellLayer {
 
             //irons_spellbooks.LOGGER.debug("GeoChargeSpellLayer.render: {}", syncedSpellData);
             var spell = syncedSpellData.getCastingSpellType();
+            var modelResource = entityRenderer.getGeoModelProvider().getModelResource(entity);
+            var model = entityRenderer.getGeoModelProvider().getModel(modelResource);
+            var bone = model.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT).get();
+            poseStack.pushPose();
+            RenderUtils.translateToPivotPoint(poseStack, bone);
+            RenderUtils.rotateMatrixAroundBone(poseStack, model.getBone("right_arm").get());
+            RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
+            //poseStack.translate(0,bone.getPivotY()/2/16,0);
+            var arm = getArmFromUseHand(entity);
+            boolean flag = arm == HumanoidArm.LEFT;
+
             if (spell == SpellType.LIGHTNING_LANCE_SPELL) {
-                var modelResource = entityRenderer.getGeoModelProvider().getModelResource(entity);
-                var model = entityRenderer.getGeoModelProvider().getModel(modelResource);
-                var bone = model.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT).get();
-
-//            IronsSpellbooks.LOGGER.debug("GeoChargeSpellLayer pos:{}, {}, {} local:{}, {}, {} world:{}, {}, {} model:{}, {}, {} pivot:{}, {}, {}",
-//                    bone.getPosition().x, bone.getPosition().y, bone.getPosition().y,
-//                    bone.getLocalPosition().x, bone.getLocalPosition().y, bone.getLocalPosition().z,
-//                    bone.getWorldPosition().x, bone.getWorldPosition().y, bone.getWorldPosition().z,
-//                    bone.getModelPosition().x, bone.getModelPosition().y, bone.getModelPosition().z,
-//                    bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-
-                poseStack.pushPose();
-                RenderUtils.translateToPivotPoint(poseStack, bone);
-                RenderUtils.rotateMatrixAroundBone(poseStack, model.getBone("right_arm").get());
-                RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
-                //poseStack.translate(0,bone.getPivotY()/2/16,0);
-                var arm = getArmFromUseHand(entity);
-                boolean flag = arm == HumanoidArm.LEFT;
                 poseStack.translate(-(((flag ? -1 : 1) / 32.0F) - .125), .5, 0);
                 poseStack.translate(0, -bone.getPivotY() / 16, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
                 LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
 
-                poseStack.popPose();
-
-
             } else if (spell == SpellType.MAGIC_ARROW_SPELL) {
-                //TODO: arm based on handedness
-                var modelResource = entityRenderer.getGeoModelProvider().getModelResource(entity);
-                var model = entityRenderer.getGeoModelProvider().getModel(modelResource);
-                var bone = model.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT).get();
-                poseStack.pushPose();
-                RenderUtils.translateToPivotPoint(poseStack, bone);
-                RenderUtils.rotateMatrixAroundBone(poseStack, model.getBone("right_arm").get());
-                RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
-                //poseStack.translate(0,bone.getPivotY()/2/16,0);
-                var arm = getArmFromUseHand(entity);
-                boolean flag = arm == HumanoidArm.LEFT;
                 poseStack.translate(0, -bone.getPivotY() / 16, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                poseStack.translate(-((flag ? -1 : 1) / 32.0F) + .125, .5, -.55);
+                poseStack.translate(-((flag ? -1 : 1) / 32.0F), .5, -.55);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-
                 MagicArrowRenderer.renderModel(poseStack, bufferSource);
 
-                poseStack.popPose();
+            } else if (spell == SpellType.POISON_ARROW_SPELL) {
+
+                poseStack.translate(0, -bone.getPivotY() / 16, 0);
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+                poseStack.translate(-((flag ? -1 : 1) / 32.0F), .5, -.55);
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+                PoisonArrowRenderer.renderModel(poseStack, bufferSource, packedLight);
+
             }
+            poseStack.popPose();
+
         }
     }
 

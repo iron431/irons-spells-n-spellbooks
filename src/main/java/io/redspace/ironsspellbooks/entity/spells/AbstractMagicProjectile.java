@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
@@ -14,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 
 public abstract class AbstractMagicProjectile extends Projectile implements AntiMagicSusceptible {
-    private static final int EXPIRE_TIME = 15 * 20;
+    protected static final int EXPIRE_TIME = 15 * 20;
 
     protected int age;
     protected float damage;
@@ -57,13 +58,14 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
             discard();
             return;
         }
-        if (!level.isClientSide) {
-            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-            if (hitresult.getType() != HitResult.Type.MISS) {
-                onHit(hitresult);
-            }
-        } else {
+        if (level.isClientSide) {
             trailParticles();
+
+
+        }
+        HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
+        if (hitresult.getType() != HitResult.Type.MISS) {
+            onHit(hitresult);
         }
         setPos(position().add(getDeltaMovement()));
 
@@ -82,8 +84,10 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         double y = yOld;
         double z = zOld;
 
-        impactParticles(x, y, z);
-        getImpactSound().ifPresent((soundEvent -> level.playSound(null, getX(), getY(), getZ(), soundEvent, SoundSource.NEUTRAL, 2, .9f + level.random.nextFloat() * .2f)));
+        if (!level.isClientSide) {
+            impactParticles(x, y, z);
+            getImpactSound().ifPresent((soundEvent -> level.playSound(null, getX(), getY(), getZ(), soundEvent, SoundSource.NEUTRAL, 2, .9f + level.random.nextFloat() * .2f)));
+        }
     }
 
     @Override
@@ -93,7 +97,20 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     @Override
     public void onAntiMagic(PlayerMagicData playerMagicData) {
-        this.impactParticles(getX(),getY(), getZ());
+        this.impactParticles(getX(), getY(), getZ());
         this.discard();
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.putFloat("Damage", this.getDamage());
+
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.damage = pCompound.getFloat("Damage");
     }
 }

@@ -31,23 +31,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 
 @Mixin(AbstractClientPlayer.class)
-public abstract class AbstractClientPlayerMixin extends Player {
-
-    public AbstractClientPlayerMixin(Level pLevel, BlockPos pPos, float pYRot, GameProfile pGameProfile, @Nullable ProfilePublicKey pProfilePublicKey) {
-        super(pLevel, pPos, pYRot, pGameProfile, pProfilePublicKey);
-    }
+public class AbstractClientPlayerMixin{
 
     @Inject(method = "getCloakTextureLocation", at = @At(value = "HEAD"), cancellable = true)
     public void getCloakTextureLocation(CallbackInfoReturnable<ResourceLocation> cir) {
-        ItemStack itemstack = this.getItemBySlot(EquipmentSlot.CHEST);
-        if (itemstack.getItem() instanceof ArmorCapeProvider capeProvider && !hasEffect(MobEffectRegistry.ANGEL_WINGS.get())) {
+        var player = (Player) (Object)this;
+        ItemStack itemstack = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (itemstack.getItem() instanceof ArmorCapeProvider capeProvider && !player.hasEffect(MobEffectRegistry.ANGEL_WINGS.get())) {
             cir.setReturnValue(capeProvider.getCapeResourceLocation());
         }
     }
 
     @Inject(method = "isCapeLoaded", at = @At(value = "HEAD"), cancellable = true)
     public void isCapeLoaded(CallbackInfoReturnable<Boolean> cir) {
-        ItemStack itemstack = this.getItemBySlot(EquipmentSlot.CHEST);
+        var player = (Player) (Object)this;
+        ItemStack itemstack = player.getItemBySlot(EquipmentSlot.CHEST);
         if (itemstack.getItem() instanceof ArmorCapeProvider capeProvider) {
             cir.setReturnValue(true);
         }
@@ -55,17 +53,7 @@ public abstract class AbstractClientPlayerMixin extends Player {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void postInit(ClientLevel world, GameProfile profile, ProfilePublicKey publicKey, CallbackInfo ci) {
-        var stack = ((IAnimatedPlayer) this).getAnimationStack();
-//        stack.addAnimLayer(1, offHandItemPose.base);
-//        stack.addAnimLayer(2, offHandBodyPose.base);
-//        stack.addAnimLayer(3, mainHandItemPose.base);
-//        stack.addAnimLayer(4, mainHandBodyPose.base);
-//        stack.addAnimLayer(2000, attackAnimation.base);
-//        stack.addAnimLayer(Integer.MAX_VALUE, createAttackAdjustment());
-//
-//        mainHandBodyPose.configure = this::updateAnimationByCurrentActivity;
-//        offHandBodyPose.configure = this::updateAnimationByCurrentActivity;
-        var player = (Player) this;
+        var player = (Player) (Object)this;
         var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(AbstractSpell.ANIMATION_RESOURCE);
         if (animation != null) {
             animation.addModifierLast(new AdjustmentModifier((partName) -> {
@@ -106,32 +94,5 @@ public abstract class AbstractClientPlayerMixin extends Player {
         }
 
     }
-//
-//    private AdjustmentModifier createAttackAdjustment() {
-//        var player = (Player) this;
-//        return new AdjustmentModifier((partName) -> {
-//            float rotationX = 0;
-//            float rotationY = 0;
-//            float rotationZ = 0;
-//            float offsetX = 0;
-//            float offsetY = 0;
-//            float offsetZ = 0;
-//            var pitch = player.getXRot() / 2F;
-//            pitch = (float) Math.toRadians(pitch);
-//            switch (partName) {
-//                case "body" -> {
-//                    rotationX = (-1F) * pitch;
-//                }
-//                case "rightArm", "leftArm" -> {
-//                    rotationX = pitch;
-//                }
-//                default -> {
-//                    return Optional.empty();
-//                }
-//            }
-//            return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(rotationX, rotationY, rotationZ), new Vec3f(offsetX, offsetY, offsetZ)));
-//        });
-//    }
-
 
 }

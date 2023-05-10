@@ -100,6 +100,11 @@ public class Scroll extends Item {
     }
 
     @Override
+    public UseAnim getUseAnimation(ItemStack pStack) {
+        return UseAnim.BOW;
+    }
+
+    @Override
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         //entity.stopUsingItem();
         if (getUseDuration(itemStack) - ticksUsed >= 4) {

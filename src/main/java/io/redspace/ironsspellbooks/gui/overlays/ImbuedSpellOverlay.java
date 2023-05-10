@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
@@ -21,21 +20,24 @@ public class ImbuedSpellOverlay extends GuiComponent {
 
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         Player player = Minecraft.getInstance().player;
-
+        if (player == null)
+            return;
         //This might be expensive
         ItemStack stack = player.getMainHandItem();
         SpellData spellData = null;
 
-        if (Utils.canImbue(stack)) {
+        if (SpellData.hasSpellData(stack)) {
             spellData = SpellData.getSpellData(stack);
+        } else {
+            stack = player.getOffhandItem();
+            if (SpellData.hasSpellData(stack)) {
+                spellData = SpellData.getSpellData(stack);
+            }else{
+                return;
+            }
         }
 
-        stack = player.getOffhandItem();
-        if (spellData == null && Utils.canImbue(stack)) {
-            spellData = SpellData.getSpellData(stack);
-        }
-
-        if (spellData == null || spellData.getSpellId() == 0) {
+        if (spellData.getSpellId() == 0) {
             return;
         }
 

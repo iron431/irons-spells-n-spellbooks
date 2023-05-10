@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spectral_hammer;
+package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;

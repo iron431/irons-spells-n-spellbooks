@@ -10,7 +10,9 @@ import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -22,11 +24,9 @@ import static io.redspace.ironsspellbooks.registries.AttributeRegistry.COOLDOWN_
 import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
 
 public class MagicManager {
-
-    public static final int TICKS_PER_CYCLE = 10;
+    public static final int MANA_REGEN_TICKS = 10;
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
-    private int counter = 0;
     private static MagicManager magicManager = null;
 
     @Nonnull
@@ -41,7 +41,6 @@ public class MagicManager {
         }
         return magicManager;
     }
-
 
     public void setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
         var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
@@ -62,7 +61,8 @@ public class MagicManager {
     }
 
     public void tick(Level level) {
-        counter--;
+        boolean doManaRegen = level.getServer().getTickCount() % MANA_REGEN_TICKS == 0;
+        //IronsSpellbooks.LOGGER.debug("MagicManager.tick: {}, {}, {}, {}, {}", this.hashCode(), level.hashCode(), level.getServer().getTickCount(), level.players().size(), doManaRegen);
 
         level.players().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {
@@ -77,7 +77,7 @@ public class MagicManager {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
                             //Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                             spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
- //Ironsspellbooks.logger.debug("MagicManager.tick.1");
+                            //Ironsspellbooks.logger.debug("MagicManager.tick.1");
                             spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, false);
                             Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                         }
@@ -106,16 +106,12 @@ public class MagicManager {
                     }
                 }
 
-                if (counter <= 0) {
+                if (doManaRegen) {
                     regenPlayerMana(serverPlayer, playerMagicData);
                     Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
                 }
             }
         });
-
-        if (counter <= 0) {
-            counter = TICKS_PER_CYCLE;
-        }
     }
 
     public void addCooldown(ServerPlayer serverPlayer, SpellType spellType, CastSource castSource) {

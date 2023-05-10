@@ -1,11 +1,12 @@
-package io.redspace.ironsspellbooks.entity.mobs.horse;
+package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -23,22 +24,23 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
-public class SpectralSteed extends AbstractHorse implements MagicSummon {
-    public SpectralSteed(EntityType<? extends AbstractHorse> pEntityType, Level pLevel) {
+public class SummonedHorse extends AbstractHorse implements MagicSummon {
+    public SummonedHorse(EntityType<? extends AbstractHorse> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         //randomizeAttributes(level.random);
 
     }
 
-    public SpectralSteed(Level pLevel) {
+    public SummonedHorse(Level pLevel) {
         this(EntityRegistry.SPECTRAL_STEED.get(), pLevel);
         //randomizeAttributes(level.random);
 
     }
 
-    public SpectralSteed(Level pLevel, LivingEntity owner) {
+    public SummonedHorse(Level pLevel, LivingEntity owner) {
         this(pLevel);
         setOwnerUUID(owner.getUUID());
+        setSummoner(owner);
     }
 
     protected LivingEntity cachedSummoner;
@@ -83,6 +85,20 @@ public class SpectralSteed extends AbstractHorse implements MagicSummon {
         return SoundEvents.HORSE_DEATH;
     }
 
+    public void onUnSummon() {
+        if (!level.isClientSide) {
+            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
+            discard();
+        }
+    }
+
+    @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        if (shouldIgnoreDamage(pSource))
+            return false;
+        return super.hurt(pSource, pAmount);
+    }
+
     @Nullable
     protected SoundEvent getEatingSound() {
         return SoundEvents.HORSE_EAT;
@@ -125,30 +141,40 @@ public class SpectralSteed extends AbstractHorse implements MagicSummon {
         return InteractionResult.sidedSuccess(this.level.isClientSide);
     }
 
+    @Override
     public LivingEntity getSummoner() {
-        if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
-            return this.cachedSummoner;
-        } else if (this.getOwnerUUID() != null && this.level instanceof ServerLevel) {
-            if (((ServerLevel) this.level).getEntity(this.getOwnerUUID()) instanceof LivingEntity livingEntity)
-                this.cachedSummoner = livingEntity;
-            return this.cachedSummoner;
-        } else {
-            return null;
-        }
+        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, getOwnerUUID());
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
         if (owner != null) {
-            this.setOwnerUUID(owner.getUUID());
+            setOwnerUUID(owner.getUUID());
             this.cachedSummoner = owner;
         }
     }
 
-    public void onUnSummon() {
-        if (!level.isClientSide) {
-            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
-            discard();
-        }
+    @Override
+    public void die(DamageSource pDamageSource) {
+        this.onDeathHelper();
+        super.die(pDamageSource);
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        this.onRemovedHelper(this, MobEffectRegistry.SUMMON_HORSE_TIMER.get());
+        super.onRemovedFromWorld();
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        setOwnerUUID(OwnerHelper.deserializeOwner(compoundTag));
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
+        OwnerHelper.serializeOwner(compoundTag, getOwnerUUID());
     }
 
     @Override

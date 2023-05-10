@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
@@ -73,7 +72,6 @@ public class RaiseDeadSpell extends AbstractSpell {
             undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
             undead.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
             equip(undead, equipment);
-
             Vec3 spawn = entity.position();
             for (int j = 0; j < 4; j++) {
                 //Going to try to spawn 3 times
@@ -84,16 +82,15 @@ public class RaiseDeadSpell extends AbstractSpell {
                 if (!world.getBlockState(new BlockPos(spawn).below()).isAir())
                     break;
             }
-
- //Ironsspellbooks.logger.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
- //Ironsspellbooks.logger.debug("RaiseDeadSpell caster rotation: {}", entity.getYRot());
             undead.moveTo(spawn.x, spawn.y, spawn.z, entity.getYRot(), 0);
             world.addFreshEntity(undead);
- //Ironsspellbooks.logger.debug("RaiseDeadSpell summon rotation: {}", undead.getYRot());
-
-
         }
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, true));
+
+        int effectAmplifier = level - 1;
+        if(entity.hasEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()))
+            effectAmplifier += entity.getEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()).getAmplifier() + 1;
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, effectAmplifier, false, false, true));
+
         super.onCast(world, entity, playerMagicData);
     }
 
