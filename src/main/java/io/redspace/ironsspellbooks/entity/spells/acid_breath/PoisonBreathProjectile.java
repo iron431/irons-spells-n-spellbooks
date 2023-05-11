@@ -14,13 +14,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class AcidBreathProjectile extends AbstractConeProjectile {
-    public AcidBreathProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level) {
+public class PoisonBreathProjectile extends AbstractConeProjectile {
+    public PoisonBreathProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level) {
         super(entityType, level);
     }
 
-    public AcidBreathProjectile(Level level, LivingEntity entity) {
-        super(EntityRegistry.ACID_BREATH_PROJECTILE.get(), level, entity);
+    public PoisonBreathProjectile(Level level, LivingEntity entity) {
+        super(EntityRegistry.POISON_BREATH_PROJECTILE.get(), level, entity);
     }
 
 
@@ -57,7 +57,7 @@ public class AcidBreathProjectile extends AbstractConeProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         //irons_spellbooks.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         var entity = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(entity, damage, SpellType.ACID_BREATH_SPELL.getDamageSource(this, getOwner()), SchoolType.POISON) && entity instanceof LivingEntity livingEntity)
+        if (DamageSources.applyDamage(entity, damage, SpellType.POISON_BREATH_SPELL.getDamageSource(this, getOwner()), SchoolType.POISON) && entity instanceof LivingEntity livingEntity)
             livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0));
     }
 

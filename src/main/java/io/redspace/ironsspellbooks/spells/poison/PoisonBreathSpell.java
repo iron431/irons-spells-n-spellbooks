@@ -4,7 +4,7 @@ package io.redspace.ironsspellbooks.spells.poison;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
-import io.redspace.ironsspellbooks.entity.spells.acid_breath.AcidBreathProjectile;
+import io.redspace.ironsspellbooks.entity.spells.acid_breath.PoisonBreathProjectile;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.EntityCastData;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -18,8 +18,8 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
-public class AcidBreathSpell extends AbstractSpell {
-    public AcidBreathSpell() {
+public class PoisonBreathSpell extends AbstractSpell {
+    public PoisonBreathSpell() {
         this(1);
     }
 
@@ -28,8 +28,8 @@ public class AcidBreathSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
     }
 
-    public AcidBreathSpell(int level) {
-        super(SpellType.ACID_BREATH_SPELL);
+    public PoisonBreathSpell(int level) {
+        super(SpellType.POISON_BREATH_SPELL);
         this.level = level;
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 1;
@@ -57,7 +57,7 @@ public class AcidBreathSpell extends AbstractSpell {
                 && entityCastData.getCastingEntity() instanceof AbstractConeProjectile cone) {
             cone.setDealDamageActive();
         } else {
-            AcidBreathProjectile breath = new AcidBreathProjectile(world, entity);
+            PoisonBreathProjectile breath = new PoisonBreathProjectile(world, entity);
             breath.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
             breath.setDamage(getSpellPower(entity));
             world.addFreshEntity(breath);

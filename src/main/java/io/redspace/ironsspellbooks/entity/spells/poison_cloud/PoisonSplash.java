@@ -45,6 +45,9 @@ public class PoisonSplash extends AoeEntity {
 
                     level.addParticle(ParticleHelper.ACID, getX() + pos.x, getY() + pos.y + getBoundingBox().getYsize(), getZ() + pos.z, motion.x, motion.y, motion.z);
                 }
+            }else{
+                MagicManager.spawnParticles(level, ParticleHelper.POISON_CLOUD, getX(), getY()  + getBoundingBox().getYsize(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
+
             }
         }
 
@@ -52,10 +55,22 @@ public class PoisonSplash extends AoeEntity {
             checkHits();
             if (!level.isClientSide)
                 MagicManager.spawnParticles(level, ParticleHelper.POISON_CLOUD, getX(), getY(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
+            createPoisonCloud();
         }
 
         if (this.tickCount > 6) {
             discard();
+        }
+    }
+
+    public void createPoisonCloud() {
+        if (!level.isClientSide) {
+            PoisonCloud cloud = new PoisonCloud(level);
+            cloud.setOwner(getOwner());
+            cloud.setDuration(getEffectDuration());
+            cloud.setDamage(getDamage() * .1f);
+            cloud.moveTo(this.position());
+            level.addFreshEntity(cloud);
         }
     }
 

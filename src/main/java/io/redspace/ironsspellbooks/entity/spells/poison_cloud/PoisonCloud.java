@@ -30,7 +30,7 @@ public class PoisonCloud extends AoeEntity {
     public void applyEffect(LivingEntity target) {
         var damageSource = DamageSources.indirectDamageSource(DAMAGE_SOURCE, this, getOwner());
         target.hurt(damageSource, getDamage());
-        target.addEffect(new MobEffectInstance(MobEffects.POISON, 120, 0));
+        target.addEffect(new MobEffectInstance(MobEffects.POISON, 120, (int) getDamage()));
     }
 
     @Override
