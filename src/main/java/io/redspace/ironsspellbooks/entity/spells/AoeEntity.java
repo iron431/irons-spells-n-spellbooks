@@ -7,10 +7,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -76,7 +73,7 @@ public abstract class AoeEntity extends Projectile {
         List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox());
         boolean hit = false;
         for (LivingEntity target : targets) {
-            if (target != getOwner() && !isCircular() || target.distanceTo(this) < getRadius()) {
+            if (canHitEntity(target) && (!isCircular() || target.distanceTo(this) < getRadius())) {
                 if (target.isOnGround() || target.getY() - getY() < .5) {
                     applyEffect(target);
                     hit = true;
@@ -88,6 +85,11 @@ public abstract class AoeEntity extends Projectile {
             this.duration += durationOnUse;
             onPostHit();
         }
+    }
+
+    @Override
+    protected boolean canHitEntity(Entity pTarget) {
+        return pTarget != getOwner() && super.canHitEntity(pTarget);
     }
 
     /**
