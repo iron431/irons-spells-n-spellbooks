@@ -81,11 +81,6 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
-    }
-
-    @Override
     protected boolean isSunSensitive() {
         return false;
     }
@@ -104,6 +99,11 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
             this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
 
         return pSpawnData;
+    }
+
+    @Override
+    public boolean isAlliedTo(Entity pEntity) {
+        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     @Override

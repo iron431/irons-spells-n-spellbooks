@@ -167,6 +167,7 @@
   "ui.irons_spellbooks.dimensions": "%dx%dx%d",
   "ui.irons_spellbooks.radius": "%d Block Radius",
   "ui.irons_spellbooks.absorption": "%d Temporary HP",
+  "ui.irons_spellbooks.rend": "-%d%% Armor",
   "ui.irons_spellbooks.summon_count": "%d Summons",
   "ui.irons_spellbooks.shatter_damage": "%d Shatter Damage",
   "ui.irons_spellbooks.fang_count": "%d Fangs",
@@ -288,6 +289,7 @@
   "spell.irons_spellbooks.poison_breath": "Poison Breath",
   "spell.irons_spellbooks.poison_arrow": "Poison Arrow",
   "spell.irons_spellbooks.poison_splash": "Poison Splash",
+  "spell.irons_spellbooks.acid_orb": "Acid Spit",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -341,6 +343,7 @@
   "spell.irons_spellbooks.poison_breath.guide": "Spew forth a cone of poison, damaging and poisoning creatures in its reach",
   "spell.irons_spellbooks.poison_arrow.guide": "Charge a powerful arrow, imbued with poison magic, that will release a poisonous cloud upon impact",
   "spell.irons_spellbooks.poison_splash.guide": "Around a targeted creature or block, conjure a wave of poisonous magic that splashes down, damaging creatures hit and leaving behind a poisonous cloud",
+  "spell.irons_spellbooks.acid_orb.guide": "Spit an orb of acid, splashing in a radius upon impact and rending creatures hit, melting away and reducing their armor",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -538,9 +541,6 @@
   "irons_spellbooks.tetra_bar.blood_spell_power.tooltip": "Increases imbued blood spell power by §e%s.",
   "irons_spellbooks.tetra_bar.evocation_spell_power.tooltip": "Increases imbued evocation spell power by §e%s.",
   "irons_spellbooks.tetra_bar.spell_resist.tooltip": "Increases spell resistance while held by §e%s.",
-
-
-
 
   "tetra.material.irons_spellbooks_frozen_bone": "Frozen Bone",
   "tetra.material.irons_spellbooks_frozen_bone.prefix": "Frozen Bone",

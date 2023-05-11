@@ -1,13 +1,16 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 
 import java.util.EnumSet;
+import java.util.stream.Collectors;
 
 public class GenericOwnerHurtTargetGoal extends TargetGoal {
     private final Mob entity;
@@ -45,6 +48,15 @@ public class GenericOwnerHurtTargetGoal extends TargetGoal {
      */
     public void start() {
         this.mob.setTarget(this.ownerLastHurt);
+        IronsSpellbooks.LOGGER.debug("GenericOwnerHurtTargetGoal.start");
+        IronsSpellbooks.LOGGER.debug("Brain before: {}",this.mob.getBrain().getMemories().keySet().stream()
+                .map(key -> key + "=" + this.mob.getBrain().getMemories().get(key))
+                .collect(Collectors.joining(", ", "{", "}")));
+        this.mob.getBrain().setMemoryWithExpiry(MemoryModuleType.NEAREST_ATTACKABLE, this.ownerLastHurt, 200L);
+        IronsSpellbooks.LOGGER.debug("Brain After: {}",this.mob.getBrain().getMemories().keySet().stream()
+                .map(key -> key + "=" + this.mob.getBrain().getMemories().get(key))
+                .collect(Collectors.joining(", ", "{", "}")));
+
         LivingEntity owner = this.owner.get();
         if (owner != null) {
             this.timestamp = owner.getLastHurtMobTimestamp();

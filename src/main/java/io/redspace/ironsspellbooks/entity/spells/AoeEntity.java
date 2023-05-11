@@ -76,7 +76,7 @@ public abstract class AoeEntity extends Projectile {
         List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox());
         boolean hit = false;
         for (LivingEntity target : targets) {
-            if (!isCircular() || target.distanceTo(this) < getRadius()) {
+            if (target != getOwner() && !isCircular() || target.distanceTo(this) < getRadius()) {
                 if (target.isOnGround() || target.getY() - getY() < .5) {
                     applyEffect(target);
                     hit = true;

@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spells.acid_breath;
+package io.redspace.ironsspellbooks.entity.spells.poison_breath;
 
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;

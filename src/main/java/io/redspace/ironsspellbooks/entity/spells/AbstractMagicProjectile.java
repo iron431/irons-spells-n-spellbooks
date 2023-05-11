@@ -19,6 +19,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     protected int age;
     protected float damage;
+    protected float explosionRadius;
 
     /**
      * Client Side, called every tick
@@ -31,7 +32,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     public abstract float getSpeed();
     public abstract Optional<SoundEvent> getImpactSound();
 
-    protected AbstractMagicProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+    public AbstractMagicProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -45,6 +46,14 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public float getDamage() {
         return damage;
+    }
+
+    public float getExplosionRadius() {
+        return explosionRadius;
+    }
+
+    public void setExplosionRadius(float explosionRadius) {
+        this.explosionRadius = explosionRadius;
     }
 
     public boolean respectsGravity() {
@@ -105,6 +114,8 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     protected void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putFloat("Damage", this.getDamage());
+        pCompound.putFloat("ExplosionRadius", explosionRadius);
+
 
     }
 
@@ -112,5 +123,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.damage = pCompound.getFloat("Damage");
+        this.explosionRadius = pCompound.getFloat("ExplosionRadius");
+
     }
 }

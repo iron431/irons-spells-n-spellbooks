@@ -15,6 +15,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
     public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
+    public static final ForgeConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
@@ -29,6 +30,39 @@ public class ServerConfigs {
     private static final Queue<DelayedConfigConstructor> CONFIG_LIST = new LinkedList<>();
 
     static {
+        BUILDER.comment("Other Configuration");
+        BUILDER.push("Misc");
+
+        RARITY_CONFIG = BUILDER.worldRestart()
+                .comment(String.format("rarityConfig array values must sum to 1: [%s, %s, %s, %s, %s]. Default: [.3d, .25d, .2d, .15d, .1d]", SpellRarity.COMMON, SpellRarity.UNCOMMON, SpellRarity.RARE, SpellRarity.EPIC, SpellRarity.LEGENDARY))
+                .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
+
+        BUILDER.comment("Whether or not imbued weapons require mana to be casted. Default: true");
+        SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
+        BUILDER.comment("Whether or not players can harm their own magic summons. Default: false");
+        CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", false);
+        BUILDER.comment("The maximum amount of times an applicable piece of equipment can be upgraded in the arcane anvil. Default: 3");
+        MAX_UPGRADES = BUILDER.worldRestart().define("maxUpgrades", 3);
+        BUILDER.comment("From 0-1, the percent of max mana a player respawns with. Default: 0.0");
+        MANA_SPAWN_PERCENT = BUILDER.worldRestart().define("manaSpawnPercent", 0.0);
+        BUILDER.pop();
+
+        BUILDER.push("Upgrade Overrides");
+        BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's upgrade system. This can also be done via datapack.");
+        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: \"minecraft:iron_sword\"");
+        UPGRADE_WHITELIST = BUILDER.defineList("upgradeWhitelist", ArrayList::new, (string) -> true);
+        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being upgraded, ex: \"minecraft:iron_sword\"");
+        UPGRADE_BLACKLIST = BUILDER.defineList("upgradeBlacklist", ArrayList::new, (string) -> true);
+        BUILDER.pop();
+
+        BUILDER.push("Imbue Overrides");
+        BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's imbue system.");
+        BUILDER.comment("!THIS MAY HAVE UNINTENDED CONSEQUENCES!");
+        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be imbued, ex: \"minecraft:iron_sword\"");
+        IMBUE_WHITELIST = BUILDER.defineList("imbueWhitelist", ArrayList::new, (string) -> true);
+        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being imbued, ex: \"minecraft:iron_sword\"");
+        IMBUE_BLACKLIST = BUILDER.defineList("imbueBlacklist", ArrayList::new, (string) -> true);
+        BUILDER.pop();
         //IronsSpellbooks.LOGGER.debug("CFG: static");
         BUILDER.comment("Individual Spell Configuration");
         BUILDER.push("Spells");
@@ -100,33 +134,8 @@ public class ServerConfigs {
         createSpellConfig(SpellType.VOID_TENTACLES_SPELL, true, 3, SpellRarity.LEGENDARY, 30);
         BUILDER.pop();
 
-        BUILDER.comment("Other Configuration");
-        BUILDER.push("Misc");
 
-        RARITY_CONFIG = BUILDER.worldRestart()
-                .comment(String.format("rarityConfig array values must sum to 1: [%s, %s, %s, %s, %s]", SpellRarity.COMMON, SpellRarity.UNCOMMON, SpellRarity.RARE, SpellRarity.EPIC, SpellRarity.LEGENDARY))
-                .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
 
-        SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
-        CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", false);
-        MAX_UPGRADES = BUILDER.worldRestart().define("maxUpgrades", 3);
-        BUILDER.pop();
-
-        BUILDER.push("Upgrade Overrides");
-        BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's upgrade system. This can also be done via datapack.");
-        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be upgraded, ex: \"minecraft:iron_sword\"");
-        UPGRADE_WHITELIST = BUILDER.defineList("upgradeWhitelist", ArrayList::new, (string) -> true);
-        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being upgraded, ex: \"minecraft:iron_sword\"");
-        UPGRADE_BLACKLIST = BUILDER.defineList("upgradeBlacklist", ArrayList::new, (string) -> true);
-        BUILDER.pop();
-
-        BUILDER.push("Imbue Overrides");
-        BUILDER.comment("Use these lists to change what items can interact with the Arcane Anvil's imbue system.");
-        BUILDER.comment("!THIS MAY HAVE UNINTENDED CONSEQUENCES!");
-        BUILDER.comment("Upgrade Whitelist. Use an item's id to allow it to be imbued, ex: \"minecraft:iron_sword\"");
-        IMBUE_WHITELIST = BUILDER.defineList("imbueWhitelist", ArrayList::new, (string) -> true);
-        BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being imbued, ex: \"minecraft:iron_sword\"");
-        IMBUE_BLACKLIST = BUILDER.defineList("imbueBlacklist", ArrayList::new, (string) -> true);
         SPEC = BUILDER.build();
     }
 

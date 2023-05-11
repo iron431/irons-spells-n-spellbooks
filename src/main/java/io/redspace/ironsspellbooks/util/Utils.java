@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.ConePart;
+import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
@@ -155,6 +156,19 @@ public class Utils {
 //        var pos = entity.getEyePosition();
 //        return rotation.add(pos);
 //    }
+
+    public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForShields){
+        if(checkForShields){
+            List<ShieldEntity> shieldEntities = level.getEntitiesOfClass(ShieldEntity.class,new AABB(start,end));
+            if(shieldEntities.size()>0){
+                var shieldImpact = checkEntityIntersecting(shieldEntities.get(0),start,end,0);
+                if(shieldImpact.getType()!= HitResult.Type.MISS)
+                    end = shieldImpact.getLocation();
+            }
+        }
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType() == HitResult.Type.MISS;
+
+    }
 
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
         return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, clipContext, null));

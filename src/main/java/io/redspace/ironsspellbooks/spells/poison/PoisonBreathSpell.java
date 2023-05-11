@@ -4,7 +4,7 @@ package io.redspace.ironsspellbooks.spells.poison;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
-import io.redspace.ironsspellbooks.entity.spells.acid_breath.PoisonBreathProjectile;
+import io.redspace.ironsspellbooks.entity.spells.poison_breath.PoisonBreathProjectile;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.EntityCastData;
 import io.redspace.ironsspellbooks.spells.SpellType;
