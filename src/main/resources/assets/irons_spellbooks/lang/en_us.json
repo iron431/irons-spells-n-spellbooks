@@ -481,6 +481,7 @@
   "entity.irons_spellbooks.poison_arrow": "Poison Arrow",
   "entity.irons_spellbooks.poison_splash": "Poison Splash",
   "entity.irons_spellbooks.poison_breath": "Poison Breath",
+  "entity.irons_spellbooks.acid_orb": "Acid Orb",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
