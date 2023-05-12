@@ -7,6 +7,9 @@ import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.ender.MagicArrowSpell;
+import io.redspace.ironsspellbooks.spells.holy.HealSpell;
+import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -70,11 +73,9 @@ public class PoisonArrowSpell extends AbstractSpell {
         return getSpellPower(caster) * .185f;
     }
 
-    public static ResourceLocation ANIMATION_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "charge_arrow");
-    private final AnimationBuilder ANIMATION_CAST = new AnimationBuilder().addAnimation(ANIMATION_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-
     @Override
-    public Either<AnimationBuilder, ResourceLocation> getCastStartAnimation(Player player) {
-        return player == null ? Either.left(ANIMATION_CAST) : Either.right(ANIMATION_CAST_RESOURCE);
+    public AnimationHolder getCastStartAnimation() {
+        return MagicArrowSpell.BOW_CHARGE_ANIMATION;
     }
+
 }

@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
+import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -137,4 +138,8 @@ public class FrostStepSpell extends AbstractSpell {
         return this.getSpellPower(caster) / 3;
     }
 
+    @Override
+    public AnimationHolder getCastStartAnimation() {
+        return AnimationHolder.none();
+    }
 }

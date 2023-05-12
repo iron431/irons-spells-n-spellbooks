@@ -226,8 +226,8 @@ public class ClientSpellCastHelper {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
         //IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
         AbstractSpell.getSpell(spellType, 1)
-                .getCastStartAnimation(player)
-                .right()
+                .getCastStartAnimation()
+                .getForPlayer()
                 .ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
 
     }
@@ -238,8 +238,8 @@ public class ClientSpellCastHelper {
 
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
         AbstractSpell.getSpell(spellType, 1)
-                .getCastFinishAnimation(player)
-                .right()
+                .getCastFinishAnimation()
+                .getForPlayer()
                 .ifPresent((resourceLocation -> {
                     if (!cancelled) {
                         animatePlayerStart(player, resourceLocation);

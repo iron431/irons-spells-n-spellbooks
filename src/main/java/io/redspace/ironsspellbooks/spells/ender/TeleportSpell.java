@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundTeleportParticles;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -103,7 +104,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     public static Vec3 findTeleportLocation(Level level, LivingEntity entity, float maxDistance) {
-        var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, maxDistance);
+        var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, maxDistance);
         var pos = blockHitResult.getBlockPos();
 
         Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() / 3, 0, entity.getBbHeight() / 3);
@@ -112,12 +113,12 @@ public class TeleportSpell extends AbstractSpell {
         int ledgeY = (int) level.clip(new ClipContext(Vec3.atBottomCenterOf(pos).add(0, 3, 0), Vec3.atBottomCenterOf(pos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation().y;
         Vec3 correctedPos = new Vec3(pos.getX(), ledgeY, pos.getZ());
         boolean isAir = level.getBlockState(new BlockPos(correctedPos)).isAir();
-        boolean los = level.clip(new ClipContext(bbImpact, bbImpact.add(0, ledgeY - pos.getY(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getType() == HitResult.Type.MISS;
+        boolean los = level.clip(new ClipContext(bbImpact, bbImpact.add(0, ledgeY - pos.getY(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
 
         if (isAir && los && Math.abs(ledgeY - pos.getY()) <= 3) {
             return correctedPos.add(0.5, 0.076, 0.5);
         } else {
-            return level.clip(new ClipContext(bbImpact, bbImpact.add(0, -entity.getEyeHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, entity)).getLocation().add(0, 0.076, 0);
+            return level.clip(new ClipContext(bbImpact, bbImpact.add(0, -entity.getEyeHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getLocation().add(0, 0.076, 0);
         }
 
     }
@@ -166,6 +167,11 @@ public class TeleportSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(caster), 1)));
+    }
+
+    @Override
+    public AnimationHolder getCastStartAnimation() {
+        return AnimationHolder.none();
     }
 
 }

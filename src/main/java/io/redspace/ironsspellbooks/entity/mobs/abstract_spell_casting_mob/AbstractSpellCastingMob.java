@@ -326,7 +326,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             setStartAnimationFromSpell(controller, castingSpell);
         }
 
-        if (!isCasting() && lastCastSpellType.getCastType() == CastType.LONG) {
+        if (!isCasting() /*&& lastCastSpellType.getCastType() == CastType.LONG*/) {
             setFinishAnimationFromSpell(controller, lastCastSpellType);
         }
 
@@ -354,7 +354,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        spell.getCastStartAnimation(null).left().ifPresent(animationBuilder -> {
+        spell.getCastStartAnimation().getForMob().ifPresent(animationBuilder -> {
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
             lastCastSpellType = spell.getSpellType();
@@ -364,7 +364,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private void setFinishAnimationFromSpell(AnimationController controller, SpellType spellType) {
         var spell = AbstractSpell.getSpell(spellType, 1);
-        spell.getCastFinishAnimation(null).left().ifPresent(animationBuilder -> {
+        spell.getCastFinishAnimation().getForMob().ifPresent(animationBuilder -> {
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
             lastCastSpellType = SpellType.NONE_SPELL;

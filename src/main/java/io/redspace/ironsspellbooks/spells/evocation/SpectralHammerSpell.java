@@ -56,12 +56,12 @@ public class SpectralHammerSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        return Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, distance).getType() == HitResult.Type.BLOCK;
+        return Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, distance).getType() == HitResult.Type.BLOCK;
     }
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        var blockPosition = Utils.getTargetBlock(world, entity, ClipContext.Fluid.ANY, distance);
+        var blockPosition = Utils.getTargetBlock(world, entity, ClipContext.Fluid.NONE, distance);
         var face = blockPosition.getDirection();
 
         int radius = getRadius(entity);

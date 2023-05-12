@@ -227,5 +227,15 @@
     "sounds": [
       "irons_spellbooks:fireball_start"
     ]
+  },
+  "spell.acid_orb.cast": {
+    "sounds": [
+      "irons_spellbooks:acid_spit_cast"
+    ]
+  },
+  "spell.acid_orb.charge": {
+    "sounds": [
+      "irons_spellbooks:acid_spit_charge"
+    ]
   }
 }

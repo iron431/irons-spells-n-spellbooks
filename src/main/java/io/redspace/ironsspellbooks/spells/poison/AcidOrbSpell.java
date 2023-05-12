@@ -1,16 +1,25 @@
 package io.redspace.ironsspellbooks.spells.poison;
 
+import com.mojang.datafixers.util.Either;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.holy.HealSpell;
+import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.checkerframework.checker.units.qual.A;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.builder.ILoopType;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,12 +47,12 @@ public class AcidOrbSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.MAGIC_ARROW_CHARGE.get());
+        return Optional.of(SoundRegistry.ACID_ORB_CHARGE.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.MAGIC_ARROW_RELEASE.get());
+        return Optional.of(SoundRegistry.ACID_ORB_CAST.get());
     }
 
     @Override
@@ -71,11 +80,17 @@ public class AcidOrbSpell extends AbstractSpell {
         return (int) (getSpellPower(caster) * 20 * 15);
     }
 
-    //public static ResourceLocation ANIMATION_CAST_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "charge_arrow");
-    //private final AnimationBuilder ANIMATION_CAST = new AnimationBuilder().addAnimation(ANIMATION_CAST_RESOURCE.getPath(), ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-//
-//    @Override
-//    public Either<AnimationBuilder, ResourceLocation> getCastStartAnimation(Player player) {
-//        return player == null ? Either.left(ANIMATION_CAST) : Either.right(ANIMATION_CAST_RESOURCE);
-//    }
+    public static final AnimationHolder CHARGE_SPIT_ANIMATION = new AnimationHolder("charge_spit", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final AnimationHolder SPIT_FINISH_ANIMATION = new AnimationHolder("charge_spit_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+
+    @Override
+    public AnimationHolder getCastStartAnimation() {
+        return CHARGE_SPIT_ANIMATION;
+    }
+
+    @Override
+    public AnimationHolder getCastFinishAnimation() {
+        return SPIT_FINISH_ANIMATION;
+    }
+
 }

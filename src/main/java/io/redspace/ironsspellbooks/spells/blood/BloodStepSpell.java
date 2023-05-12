@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
+import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -112,6 +113,11 @@ public class BloodStepSpell extends AbstractSpell {
 
     private float getDistance(Entity sourceEntity) {
         return getSpellPower(sourceEntity);
+    }
+
+    @Override
+    public AnimationHolder getCastStartAnimation() {
+        return AnimationHolder.none();
     }
 
 }

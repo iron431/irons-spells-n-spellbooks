@@ -50,7 +50,7 @@ public class AbyssalShroudEffect extends MobEffect {
         particleCloud(livingEntity);
 
         Vec3 ground = livingEntity.position().add(sideStep);
-        ground = level.clip(new ClipContext(ground.add(0, 3.5, 0), ground.add(0, -3.5, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null)).getLocation();
+        ground = level.clip(new ClipContext(ground.add(0, 3.5, 0), ground.add(0, -3.5, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
 
         if (livingEntity.isPassenger()) {
             livingEntity.stopRiding();
