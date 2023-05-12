@@ -134,12 +134,12 @@ public class ServerConfigs {
         createSpellConfig(SpellType.VOID_TENTACLES_SPELL, true, 3, SpellRarity.LEGENDARY, 30);
         BUILDER.pop();
         //Poison
-        BUILDER.comment("Poison Spells");
-        createSpellConfig(SpellType.POISON_ARROW_SPELL, true, 10, SpellRarity.COMMON, 25);
-        createSpellConfig(SpellType.POISON_SPLASH_SPELL, true, 10, SpellRarity.UNCOMMON, 20);
-        createSpellConfig(SpellType.POISON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 25);
-        createSpellConfig(SpellType.ACID_ORB_SPELL, true, 10, SpellRarity.COMMON, 15);
-        createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, true, 8, SpellRarity.COMMON, 35);
+//        BUILDER.comment("Poison Spells");
+//        createSpellConfig(SpellType.POISON_ARROW_SPELL, true, 10, SpellRarity.COMMON, 25);
+//        createSpellConfig(SpellType.POISON_SPLASH_SPELL, true, 10, SpellRarity.UNCOMMON, 20);
+//        createSpellConfig(SpellType.POISON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 25);
+//        createSpellConfig(SpellType.ACID_ORB_SPELL, true, 10, SpellRarity.COMMON, 15);
+//        createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, true, 8, SpellRarity.COMMON, 35);
 
 
 

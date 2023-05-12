@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.render;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
-import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRenderer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -51,14 +50,15 @@ public class ChargeSpellLayer {
                 float castCompletion = Utils.smoothstep(.65f, 1, ClientMagicData.getCastCompletionPercent());
                 poseStack.scale(castCompletion, castCompletion, castCompletion);
                 MagicArrowRenderer.renderModel(poseStack, bufferSource);
-            } else if (spell == SpellType.POISON_ARROW_SPELL) {
-                poseStack.translate(((float) (flag ? -1 : 1) / 32.0F), 1, 0);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                float castCompletion = Utils.smoothstep(.65f, 1, ClientMagicData.getCastCompletionPercent());
-                poseStack.scale(castCompletion, castCompletion, castCompletion);
-                PoisonArrowRenderer.renderModel(poseStack, bufferSource, pPackedLight);
             }
+//            else if (spell == SpellType.POISON_ARROW_SPELL) {
+//                poseStack.translate(((float) (flag ? -1 : 1) / 32.0F), 1, 0);
+//                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+//                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+//                float castCompletion = Utils.smoothstep(.65f, 1, ClientMagicData.getCastCompletionPercent());
+//                poseStack.scale(castCompletion, castCompletion, castCompletion);
+//                PoisonArrowRenderer.renderModel(poseStack, bufferSource, pPackedLight);
+//            }
             poseStack.popPose();
         }
     }
@@ -98,16 +98,17 @@ public class ChargeSpellLayer {
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 MagicArrowRenderer.renderModel(poseStack, bufferSource);
 
-            } else if (spell == SpellType.POISON_ARROW_SPELL) {
-
-                poseStack.translate(0, -bone.getPivotY() / 16, 0);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                poseStack.translate(-((flag ? -1 : 1) / 32.0F), .5, -.55);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-                PoisonArrowRenderer.renderModel(poseStack, bufferSource, packedLight);
-
             }
+//            else if (spell == SpellType.POISON_ARROW_SPELL) {
+//
+//                poseStack.translate(0, -bone.getPivotY() / 16, 0);
+//                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+//                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+//                poseStack.translate(-((flag ? -1 : 1) / 32.0F), .5, -.55);
+//                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+//                PoisonArrowRenderer.renderModel(poseStack, bufferSource, packedLight);
+//
+//            }
             poseStack.popPose();
 
         }
