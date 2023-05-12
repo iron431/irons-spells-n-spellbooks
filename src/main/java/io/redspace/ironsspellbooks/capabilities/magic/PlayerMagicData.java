@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
@@ -199,22 +198,24 @@ public class PlayerMagicData extends AbstractMagicData {
     public static PlayerMagicData getPlayerMagicData(LivingEntity livingEntity) {
         if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
             return abstractSpellCastingMob.getPlayerMagicData();
-        }
+        } else if (livingEntity instanceof ServerPlayer serverPlayer) {
 
-        ServerPlayer serverPlayer = (ServerPlayer) livingEntity;
+            var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
+            if (capContainer.isPresent()) {
+                var opt = capContainer.resolve();
+                if (opt.isEmpty()) {
+                    return new PlayerMagicData(serverPlayer);
+                }
 
-        var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
-        if (capContainer.isPresent()) {
-            var opt = capContainer.resolve();
-            if (opt.isEmpty()) {
-                return new PlayerMagicData(serverPlayer);
+                var pmd = opt.get();
+                pmd.setServerPlayer(serverPlayer);
+                return pmd;
             }
+            return new PlayerMagicData(serverPlayer);
+        } else
+            return new PlayerMagicData(null);
 
-            var pmd = opt.get();
-            pmd.setServerPlayer(serverPlayer);
-            return pmd;
-        }
-        return new PlayerMagicData(serverPlayer);
+
     }
 
     public void saveNBTData(CompoundTag compound) {

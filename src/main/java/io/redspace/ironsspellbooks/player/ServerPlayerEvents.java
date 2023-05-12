@@ -1,17 +1,20 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
+import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.tetra.TetraProxy;
@@ -20,6 +23,9 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
@@ -228,15 +234,36 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLivingTakeDamage(LivingDamageEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
-                playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
-                //Ironsspellbooks.logger.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
-                event.setCanceled(true);
-                return;
+        /*
+        Damage Increasing Effects
+         */
+        Entity attacker = event.getSource().getEntity();
+        if (attacker instanceof LivingEntity livingAttacker) {
+            IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {}", livingAttacker.getName().getString());
+            if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT.get())) {
+                if (event.getEntity().hasEffect(MobEffects.POISON)) {
+                    int lvl = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT.get()).getAmplifier() + 1;
+                    float before = event.getAmount();
+                    float multiplier = 1 + SpiderAspectEffect.DAMAGE_PER_LEVEL * lvl;
+                    event.setAmount(event.getAmount() * multiplier);
+                    IronsSpellbooks.LOGGER.debug("spider mode {}->{}", before, event.getAmount());
+
+                }
             }
 
+        }
+        /*
+        Damage Reducing Effects
+         */
+        var playerMagicData = PlayerMagicData.getPlayerMagicData(event.getEntity());
+        if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
+            playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
+            //Ironsspellbooks.logger.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+            event.setCanceled(true);
+            return;
+        }
+
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             if (playerMagicData.isCasting() &&
                     SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
                     event.getSource() != DamageSource.FREEZE &&
@@ -246,6 +273,7 @@ public class ServerPlayerEvents {
                 Utils.serverSideCancelCast(serverPlayer);
             }
         }
+
     }
 
     @SubscribeEvent
