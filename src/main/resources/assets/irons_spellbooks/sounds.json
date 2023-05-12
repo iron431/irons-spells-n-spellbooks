@@ -237,5 +237,10 @@
     "sounds": [
       "irons_spellbooks:acid_spit_charge"
     ]
+  },
+  "entity.acid_orb.impact": {
+    "sounds": [
+      "irons_spellbooks:acid_orb_impact"
+    ]
   }
 }

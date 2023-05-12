@@ -48,6 +48,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> FIREBALL_START = registerSoundEvent("cast.fireball");
     public static RegistryObject<SoundEvent> ACID_ORB_CHARGE = registerSoundEvent("spell.acid_orb.charge");
     public static RegistryObject<SoundEvent> ACID_ORB_CAST = registerSoundEvent("spell.acid_orb.cast");
+    public static RegistryObject<SoundEvent> ACID_ORB_IMPACT = registerSoundEvent("entity.acid_orb.impact");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
