@@ -415,7 +415,7 @@ public class Utils {
                     return InteractionResultHolder.pass(stack);
                 } else {
                     //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.6");
-                    spell.onClientPreCast(level, player, hand, null);
+                    //spell.onClientPreCast(level, player, hand, null);
                     if (spell.getCastType().holdToCast()) {
  //Ironsspellbooks.logger.debug("onUseCastingHelper.1");
                         player.startUsingItem(hand);

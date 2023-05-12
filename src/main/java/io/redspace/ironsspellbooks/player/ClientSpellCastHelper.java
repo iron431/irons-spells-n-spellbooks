@@ -147,7 +147,7 @@ public class ClientSpellCastHelper {
             if (animation != null) {
                 var castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
                 ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), castingAnimationPlayer);
-                castingAnimationPlayer.setFirstPersonMode(resourceLocation.getPath().equals("charge_arrow") ? FirstPersonMode.VANILLA : FirstPersonMode.THIRD_PERSON_MODEL);
+                castingAnimationPlayer.setFirstPersonMode(/*resourceLocation.getPath().equals("charge_arrow") ? FirstPersonMode.VANILLA : */FirstPersonMode.THIRD_PERSON_MODEL);
                 var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
                 var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
                 castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
@@ -224,11 +224,11 @@ public class ClientSpellCastHelper {
 
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
+        var spell = AbstractSpell.getSpell(spellType, 1);
         //IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
-        AbstractSpell.getSpell(spellType, 1)
-                .getCastStartAnimation()
-                .getForPlayer()
-                .ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
+
+        spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
+        spell.onClientPreCast(player.level, player, player.getUsedItemHand(), null);
 
     }
 

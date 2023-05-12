@@ -73,7 +73,7 @@ public class Scroll extends Item {
             if (ClientMagicData.isCasting()) {
                 return InteractionResultHolder.fail(stack);
             } else {
-                spell.onClientPreCast(level, player, hand, null);
+                //spell.onClientPreCast(level, player, hand, null);
                 if (spell.getCastType().holdToCast()) {
                     player.startUsingItem(hand);
                 }
