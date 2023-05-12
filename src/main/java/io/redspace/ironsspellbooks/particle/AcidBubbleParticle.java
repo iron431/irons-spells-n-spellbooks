@@ -18,7 +18,7 @@ public class AcidBubbleParticle extends TextureSheetParticle {
         this.yd = yd;
         this.zd = zd;
         this.quadSize *= 1f;
-        this.scale(1.15f);
+        this.scale(3f);
         this.lifetime = 10 + (int) (Math.random() * 5);
         sprites = spriteSet;
         this.gravity = 0.35F;

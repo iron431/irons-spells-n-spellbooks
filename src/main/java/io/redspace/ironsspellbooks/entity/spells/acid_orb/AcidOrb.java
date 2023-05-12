@@ -57,8 +57,8 @@ public class AcidOrb extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.ACID, x, y, z, 55, .08, .08, .08, 0.3, false);
-        MagicManager.spawnParticles(level, ParticleHelper.ACID, x, y, z, 25, .08, .08, .08, 0.3, true);
+        MagicManager.spawnParticles(level, ParticleHelper.ACID, x, y, z, 55, .08, .08, .08, 0.3, true);
+        MagicManager.spawnParticles(level, ParticleHelper.ACID_BUBBLE, x, y, z, 25, .08, .08, .08, 0.3, false);
     }
 
     @Override
