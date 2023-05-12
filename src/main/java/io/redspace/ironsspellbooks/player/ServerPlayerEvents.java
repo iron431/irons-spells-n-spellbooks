@@ -237,6 +237,7 @@ public class ServerPlayerEvents {
         /*
         Damage Increasing Effects
          */
+        //TODO: subscribe in effect class?
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity livingAttacker) {
             IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {}", livingAttacker.getName().getString());

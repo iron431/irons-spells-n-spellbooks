@@ -22,6 +22,8 @@ import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
+import static io.redspace.ironsspellbooks.spells.SpellType.BLESSING_OF_LIFE_SPELL;
+
 public class SpellTargetingLayer {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/target/heal.png");
 
@@ -61,11 +63,14 @@ public class SpellTargetingLayer {
     }
 
     private static Vector3f getColor(int spellId) {
-        return switch (SpellType.getTypeFromValue(spellId)) {
-            case BLESSING_OF_LIFE_SPELL -> new Vector3f(.85f, 0, 0);
-            case WISP_SPELL -> new Vector3f(.85f, .75f, .25f);
-            case ICE_BLOCK_SPELL -> new Vector3f(.25f, .25f, 1f);
-            case POISON_SPLASH_SPELL -> new Vector3f(.41f, .88f, .22f);
+        //Specific Spells
+        if(spellId == BLESSING_OF_LIFE_SPELL.getValue())
+            return new Vector3f(.85f, 0, 0);
+        //By School Otherwise
+        return switch (SpellType.getTypeFromValue(spellId).getSchoolType()) {
+            case HOLY -> new Vector3f(.85f, .75f, .25f);
+            case ICE -> new Vector3f(.25f, .25f, 1f);
+            case POISON -> new Vector3f(.41f, .88f, .22f);
             default -> new Vector3f(.8f, .8f, .8f);
         };
     }
