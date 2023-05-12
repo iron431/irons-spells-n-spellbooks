@@ -242,5 +242,20 @@
     "sounds": [
       "irons_spellbooks:acid_orb_impact"
     ]
+  },
+  "spell.poison_arrow.cast": {
+    "sounds": [
+      "irons_spellbooks:poison_arrow_cast"
+    ]
+  },
+  "spell.poison_arrow.charge": {
+    "sounds": [
+      "irons_spellbooks:poison_arrow_charge"
+    ]
+  },
+  "spell.poison_breath.loop": {
+    "sounds": [
+      "irons_spellbooks:poison_breath_loop"
+    ]
   }
 }

@@ -1,25 +1,18 @@
 package io.redspace.ironsspellbooks.spells.poison;
 
-import com.mojang.datafixers.util.Either;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.MagicArrowSpell;
-import io.redspace.ironsspellbooks.spells.holy.HealSpell;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,12 +39,12 @@ public class PoisonArrowSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.MAGIC_ARROW_CHARGE.get());
+        return Optional.of(SoundRegistry.POISON_ARROW_CHARGE.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.MAGIC_ARROW_RELEASE.get());
+        return Optional.of(SoundRegistry.POISON_ARROW_CAST.get());
     }
 
     @Override

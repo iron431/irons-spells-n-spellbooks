@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.poison_breath.PoisonBreathProjectile;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.EntityCastData;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -46,7 +47,7 @@ public class PoisonBreathSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.POISON_BREATH_LOOP.get());
     }
 
     @Override
