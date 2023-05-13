@@ -27,7 +27,7 @@ public class ServerConfigs {
     //https://forge.gemwire.uk/wiki/Configs
 
     private static final Map<SpellType, SpellConfigParameters> SPELL_CONFIGS = new HashMap<>();
-    private static final Queue<DelayedConfigConstructor> CONFIG_LIST = new LinkedList<>();
+    private static final LinkedList<DelayedConfigConstructor> CONFIG_LIST = new LinkedList<>();
 
     static {
         BUILDER.comment("Other Configuration");
