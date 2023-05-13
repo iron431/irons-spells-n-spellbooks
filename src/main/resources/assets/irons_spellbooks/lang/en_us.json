@@ -451,6 +451,10 @@
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
   "commands.irons_spellbooks.create_debug_wizard.failed": "Create DebugWizard Failed",
   "commands.irons_spellbooks.create_spell.failed_max_level": "Create failed. Max level of %s is %d",
+  "commands.mana.set.success.multiple": "Set mana to %s for %s players",
+  "commands.mana.set.success.single": "Set mana to %s for %s",
+  "commands.mana.add.success.multiple": "Gave %s mana to %s players",
+  "commands.mana.add.success.single": "Gave %s mana to %s",
 
   "entity.irons_spellbooks.wisp": "Wisp",
   "entity.irons_spellbooks.spectral_hammer": "Spectral Hammer",

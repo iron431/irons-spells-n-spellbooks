@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.registries;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.command.*;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,6 +15,7 @@ public class CommandRegistry {
         CreateSpellBookCommand.register(event.getDispatcher());
         CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());
         CreateDebugWizardCommand.register(event.getDispatcher());
+        ManaCommand.register(event.getDispatcher());
 //        GenerateSiteData.register(event.getDispatcher());
     }
 }
