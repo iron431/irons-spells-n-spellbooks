@@ -8,6 +8,8 @@ import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.armor.*;
+import io.redspace.ironsspellbooks.entity.armor.plagued.PlaguedArmorModel;
+import io.redspace.ironsspellbooks.entity.armor.plagued.PlaguedArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.simple_wizard.WizardArmorRenderer;
@@ -114,6 +116,7 @@ public class ClientSetup {
         GeoArmorRenderer.registerArmorRenderer(PriestArmorItem.class, () -> new GenericCustomArmorRenderer(new PriestArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(TarnishedCrownArmorItem.class, () -> new GenericCustomArmorRenderer(new TarnishedCrownModel()));
         GeoArmorRenderer.registerArmorRenderer(PumpkinArmorItem.class, () -> new PumpkinArmorRenderer(new PumpkinArmorModel()));
+        GeoArmorRenderer.registerArmorRenderer(PlaguedArmorItem.class, () -> new PlaguedArmorRenderer(new PlaguedArmorModel()));
 
  //Ironsspellbooks.logger.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
 

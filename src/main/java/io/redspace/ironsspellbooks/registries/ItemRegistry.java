@@ -177,6 +177,11 @@ public class ItemRegistry {
     public static final RegistryObject<Item> PRIEST_LEGGINGS = ITEMS.register("priest_leggings", () -> new PriestArmorItem(EquipmentSlot.LEGS, new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB)));
     public static final RegistryObject<Item> PRIEST_BOOTS = ITEMS.register("priest_boots", () -> new PriestArmorItem(EquipmentSlot.FEET, new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB)));
 
+    public static final RegistryObject<Item> PLAGUED_HELMET = ITEMS.register("plagued_helmet", () -> new PlaguedArmorItem(EquipmentSlot.HEAD, new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB)));
+    public static final RegistryObject<Item> PLAGUED_CHESTPLATE = ITEMS.register("plagued_chestplate", () -> new PlaguedArmorItem(EquipmentSlot.CHEST, new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB)));
+    public static final RegistryObject<Item> PLAGUED_LEGGINGS = ITEMS.register("plagued_leggings", () -> new PlaguedArmorItem(EquipmentSlot.LEGS, new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB)));
+    public static final RegistryObject<Item> PLAGUED_BOOTS = ITEMS.register("plagued_boots", () -> new PlaguedArmorItem(EquipmentSlot.FEET, new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB)));
+
     public static final RegistryObject<Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(EquipmentSlot.HEAD, new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).rarity(Rarity.UNCOMMON)));
 
     /**

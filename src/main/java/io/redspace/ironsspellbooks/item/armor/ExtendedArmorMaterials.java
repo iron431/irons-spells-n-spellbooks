@@ -58,6 +58,10 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.ENDER_SPELL_POWER.get(), new AttributeModifier("Ender Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
+    PLAGUED("plagued", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.POISON_SPELL_POWER.get(), new AttributeModifier("Poison Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
+    )),
     ELECTROMANCER("electromancer", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)

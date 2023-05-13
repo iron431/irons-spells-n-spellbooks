@@ -41,8 +41,6 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
 
     }
 
-
-
     @Override
     public GeoArmorRenderer applySlot(EquipmentSlot slot) {
         //What is this for?
@@ -79,8 +77,8 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
             default -> {
             }
         }
-        if (this.entityLiving instanceof IAnimatable)
-            setBoneVisibility(leggingTorsoLayerBone, false);
+//        if (this.entityLiving instanceof IAnimatable)
+//            setBoneVisibility(leggingTorsoLayerBone, false);
 
         return this;
     }

@@ -2,7 +2,9 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -20,8 +22,10 @@ import software.bernie.example.client.EntityResources;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib3.item.GeoArmorItem;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.ExtendedGeoEntityRenderer;
+import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 import java.util.List;
 
@@ -44,6 +48,9 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
 
     @Override
     protected boolean isArmorBone(GeoBone bone) {
+//        boolean f = bone.getName().startsWith("armor") || bone.getName().equals(GenericCustomArmorRenderer.leggingTorsoLayerBone);
+//        IronsSpellbooks.LOGGER.debug("GeoHumanoidRenderer.isArmorBone: {} - {}",bone.getName(),f);
+
         return bone.getName().startsWith("armor");
     }
 
@@ -69,6 +76,7 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
     @Override
     protected void prepareArmorPositionAndScale(GeoBone bone, List<ModelPart.Cube> cubeList, ModelPart sourceLimb, PoseStack poseStack, boolean geoArmor, boolean modMatrixRot) {
         if (bone.getName().equals(GenericCustomArmorRenderer.leggingTorsoLayerBone)) {
+            IronsSpellbooks.LOGGER.debug("GeoHumanoidRenderer: attempting to prepare leggingTorsoLayer");
             super.prepareArmorPositionAndScale((GeoBone) this.modelProvider.getBone(DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT), cubeList, sourceLimb, poseStack, false, modMatrixRot);
         } else {
             super.prepareArmorPositionAndScale(bone, cubeList, sourceLimb, poseStack, false, modMatrixRot);
@@ -100,25 +108,59 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
             case DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_2_IDENT,
-                    DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.FEET);
+                    DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT ->
+                    currentEntity.getItemBySlot(EquipmentSlot.FEET);
             case DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_2_IDENT,
-                    DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.LEGS);
+                    DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT ->
+                    currentEntity.getItemBySlot(EquipmentSlot.LEGS);
             case DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT,
                     DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT,
-                    DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.CHEST);
+                    DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT ->
+                    currentEntity.getItemBySlot(EquipmentSlot.CHEST);
             case DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT -> currentEntity.getItemBySlot(EquipmentSlot.HEAD);
             default -> null;
         };
+    }
+
+//    @Override
+//    protected void setLimbBoneVisible(GeoArmorRenderer<? extends GeoArmorItem> armorRenderer, ModelPart limb, HumanoidModel<?> armorModel, EquipmentSlot slot) {
+//        super.setLimbBoneVisible(armorRenderer, limb, armorModel, slot);
+//        IBone gbBootL = armorRenderer.getGeoModelProvider().getBone(GenericCustomArmorRenderer.leggingTorsoLayerBone);
+//        gbBootL.setHidden(true);
+//        if (limb == armorModel.body) {
+//            if (slot == EquipmentSlot.LEGS) {
+//                gbBootL.setHidden(false);
+//            }
+//            return;
+//        }
+//    }
+
+
+    private static final EquipmentSlot[] SLOTS = {EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
+
+    @Override
+    protected void handleArmorRenderingForBone(GeoBone bone, PoseStack stack, VertexConsumer buffer, int packedLight, int packedOverlay, ResourceLocation currentTexture) {
+        super.handleArmorRenderingForBone(bone, stack, buffer, packedLight, packedOverlay, currentTexture);
+        for (EquipmentSlot slot : SLOTS)
+            if (currentEntityBeingRendered.getItemBySlot(slot).getItem() instanceof GeoArmorItem geoArmorItem) {
+                if(GeoArmorRenderer.getRenderer(geoArmorItem.getClass(), this.currentEntityBeingRendered) instanceof GenericCustomArmorRenderer<?> armorRenderer){
+
+                }
+                //HumanoidModel<?> armorModel = (HumanoidModel<?>) geoArmorRenderer;
+            }
+
     }
 
     @Nullable
     @Override
     protected ItemStack getHeldItemForBone(String boneName, T entity) {
         return switch (boneName) {
-            case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT -> entity.isLeftHanded() ? entity.getMainHandItem() : entity.getOffhandItem();
-            case DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT -> entity.isLeftHanded() ? entity.getOffhandItem() : entity.getMainHandItem();
+            case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT ->
+                    entity.isLeftHanded() ? entity.getMainHandItem() : entity.getOffhandItem();
+            case DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT ->
+                    entity.isLeftHanded() ? entity.getOffhandItem() : entity.getMainHandItem();
             default -> null;
         };
     }
