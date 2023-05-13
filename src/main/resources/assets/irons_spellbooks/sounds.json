@@ -252,10 +252,5 @@
     "sounds": [
       "irons_spellbooks:poison_arrow_charge"
     ]
-  },
-  "spell.poison_breath.loop": {
-    "sounds": [
-      "irons_spellbooks:poison_breath_loop"
-    ]
   }
 }
