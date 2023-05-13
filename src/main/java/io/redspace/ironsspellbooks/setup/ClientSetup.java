@@ -35,6 +35,7 @@ import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceR
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.root.RootRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
@@ -196,6 +197,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.ARCHEVOKER.get(), ArchevokerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.KEEPER.get(), KeeperRenderer::new);
         event.registerEntityRenderer(EntityRegistry.VOID_TENTACLE.get(), VoidTentacleRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ROOT.get(), RootRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ICE_BLOCK_PROJECTILE.get(), IceBlockRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CRYOMANCER.get(), CryomancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.POISON_CLOUD.get(), NoopRenderer::new);

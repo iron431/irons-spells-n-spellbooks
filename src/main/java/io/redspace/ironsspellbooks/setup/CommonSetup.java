@@ -20,6 +20,7 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.entity.spells.root.Root;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Vindicator;
@@ -72,8 +73,7 @@ public class CommonSetup {
         event.put(EntityRegistry.VOID_TENTACLE.get(), VoidTentacle.createLivingAttributes().build());
         event.put(EntityRegistry.CRYOMANCER.get(), CryomancerEntity.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_FROG.get(), SummonedFrog.createAttributes().build());
-
-
+        event.put(EntityRegistry.ROOT.get(), Root.createLivingAttributes().build());
     }
 
     @SubscribeEvent

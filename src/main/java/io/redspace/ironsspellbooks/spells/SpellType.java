@@ -89,7 +89,8 @@ public enum SpellType {
     POISON_SPLASH_SPELL(51, PoisonSplashSpell::new),
     ACID_ORB_SPELL(52, AcidOrbSpell::new),
     SPIDER_ASPECT_SPELL(53,SpiderAspectSpell::new),
-    BLIGHT_SPELL(54,BlightSpell::new)
+    BLIGHT_SPELL(54,BlightSpell::new),
+    ROOT_SPELL(55, RootSpell::new),
     ;
 
     private final int value;
@@ -159,7 +160,7 @@ public enum SpellType {
     private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL, RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL};
     private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SPECTRAL_HAMMER_SPELL};
     private static final SpellType[] VOID_SPELLS = {ABYSSAL_SHROUD_SPELL, VOID_TENTACLES_SPELL};
-    private static final SpellType[] POISON_SPELLS = {POISON_BREATH_SPELL, POISON_ARROW_SPELL, POISON_SPLASH_SPELL, ACID_ORB_SPELL, SPIDER_ASPECT_SPELL, BLIGHT_SPELL};
+    private static final SpellType[] POISON_SPELLS = {POISON_BREATH_SPELL, POISON_ARROW_SPELL, POISON_SPLASH_SPELL, ACID_ORB_SPELL, SPIDER_ASPECT_SPELL, BLIGHT_SPELL, ROOT_SPELL};
 
     public AbstractSpell getSpellForType(int level) {
         return getSpellForType.get(level);

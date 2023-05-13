@@ -37,6 +37,7 @@ import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectil
 import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileProjectile;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
+import io.redspace.ironsspellbooks.entity.spells.root.Root;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import net.minecraft.resources.ResourceLocation;
@@ -314,5 +315,9 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "acid_orb").toString()));
 
-
+    public static final RegistryObject<EntityType<Root>> ROOT =
+            ENTITIES.register("root", () -> EntityType.Builder.<Root>of(Root::new, MobCategory.MISC)
+                    .sized(1, 1)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "root").toString()));
 }
