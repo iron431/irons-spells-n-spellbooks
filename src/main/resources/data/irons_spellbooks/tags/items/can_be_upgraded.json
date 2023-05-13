@@ -29,6 +29,10 @@
     "irons_spellbooks:archevoker_chestplate",
     "irons_spellbooks:archevoker_leggings",
     "irons_spellbooks:archevoker_boots",
-    "irons_spellbooks:tarnished_helmet"
+    "irons_spellbooks:tarnished_helmet",
+    "irons_spellbooks:plagued_chestplate",
+    "irons_spellbooks:plagued_leggings",
+    "irons_spellbooks:plagued_boots",
+    "irons_spellbooks:plagued_helmet"
   ]
 }

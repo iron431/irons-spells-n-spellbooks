@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.armor.plagued;
+package io.redspace.ironsspellbooks.entity.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PlaguedArmorItem;
