@@ -1,14 +1,12 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-import static net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED;
 
 //@Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 @Mod.EventBusSubscriber()
@@ -29,22 +26,22 @@ public class RootEffect extends MobEffect {
     }
 
     public void removeAttributeModifiers(LivingEntity livingEntity, @NotNull AttributeMap attributeMap, int amplifier) {
-        var attr = livingEntity.getAttribute(MOVEMENT_SPEED);
+        var attr = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attr != null) {
-            attr.removeModifier(createRootedTransientModifier());
+            attr.removeModifier(createRootedModifier());
         }
         super.removeAttributeModifiers(livingEntity, attributeMap, amplifier);
     }
 
     public void addAttributeModifiers(LivingEntity livingEntity, @NotNull AttributeMap attributeMap, int amplifier) {
-        var attr = livingEntity.getAttribute(MOVEMENT_SPEED);
+        var attr = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         if (attr != null) {
-            attr.addPermanentModifier(createRootedTransientModifier());
+            attr.addPermanentModifier(createRootedModifier());
         }
         super.addAttributeModifiers(livingEntity, attributeMap, amplifier);
     }
 
-    public AttributeModifier createRootedTransientModifier() {
+    public AttributeModifier createRootedModifier() {
         return new AttributeModifier(attrUUID, "root", -100, AttributeModifier.Operation.ADDITION);
     }
 
