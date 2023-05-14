@@ -53,7 +53,6 @@ public class RootEntity extends LivingEntity implements IAnimatable {
         this.moveTo(target.position());
     }
 
-
     @Override
     public boolean canCollideWith(Entity pEntity) {
         return false;
@@ -65,10 +64,31 @@ public class RootEntity extends LivingEntity implements IAnimatable {
     }
 
     @Override
+    protected void doPush(Entity pEntity) {
+
+    }
+
+    @Override
+    public void push(Entity pEntity) {
+
+    }
+
+//    @Override
+//    public AABB getBoundingBoxForCulling() {
+//        return new AABB(0, 0, 0, 0, 0, 0);
+//    }
+
+    @Override
+    protected void pushEntities() {
+
+    }
+
+    @Override
     public void tick() {
         super.tick();
 
-        if(target!= null){
+        // This might be needed to deal with a fast moving target
+        if (target != null && !this.position().equals(target.position())) {
             this.moveTo(target.position());
         }
 
