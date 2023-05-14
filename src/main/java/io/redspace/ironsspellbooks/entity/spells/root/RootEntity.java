@@ -108,7 +108,7 @@ public class RootEntity extends LivingEntity implements IAnimatable {
         }
 
         if (!level.isClientSide) {
-            if (age > duration) {
+            if (age > duration || (target != null && target.isDeadOrDying())) {
                 this.discard();
             }
         } else {
