@@ -102,6 +102,11 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
             addRotationX(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
             bobBone(rightArm, entity.tickCount, 1);
             bobBone(leftArm, entity.tickCount, -1);
+            if (entity.isDrinkingPotion()) {
+                addRotationX(entity.isLeftHanded() ? leftArm : rightArm, 35 * Mth.DEG_TO_RAD);
+                addRotationZ(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? 15 : -15) * Mth.DEG_TO_RAD);
+                addRotationY(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? -25 : 25) * Mth.DEG_TO_RAD);
+            }
         } else if (entity.shouldPointArmsWhileCasting()) {
             addRotationX(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD);
             addRotationX(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD);
@@ -134,6 +139,10 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
 
     private void addRotationZ(IBone bone, float rotation) {
         bone.setRotationZ(wrapRadians(bone.getRotationZ() + rotation));
+    }
+
+    private void addRotationY(IBone bone, float rotation) {
+        bone.setRotationY(wrapRadians(bone.getRotationY() + rotation));
     }
 
     public static float wrapRadians(float pValue) {

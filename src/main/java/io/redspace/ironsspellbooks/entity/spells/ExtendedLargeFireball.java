@@ -54,7 +54,7 @@ public class ExtendedLargeFireball extends LargeFireball implements AntiMagicSus
             var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
-                if (distance < explosionRadius * explosionRadius) {
+                if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
                     DamageSources.applyDamage(entity, damage, SpellType.FIREBALL_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE);

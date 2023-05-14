@@ -69,6 +69,8 @@ public class BlightSpell extends AbstractSpell {
             playerMagicData.setAdditionalCastData(new CastTargetingData(target));
             if (entity instanceof ServerPlayer serverPlayer)
                 Messages.sendToPlayer(new ClientboundSyncTargetingData(target, getSpellType()), serverPlayer);
+            if(target instanceof ServerPlayer serverPlayer)
+                Utils.sendTargetedNotification(serverPlayer, entity, this.getSpellType());
             return true;
         }
     }

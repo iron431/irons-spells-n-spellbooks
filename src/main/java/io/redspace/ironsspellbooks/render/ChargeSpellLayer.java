@@ -82,7 +82,9 @@ public class ChargeSpellLayer {
             RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
             //poseStack.translate(0,bone.getPivotY()/2/16,0);
             var arm = getArmFromUseHand(entity);
+            //TODO: hold on... were still rotating around the right arm regardless...
             boolean flag = arm == HumanoidArm.LEFT;
+
 
             if (spell == SpellType.LIGHTNING_LANCE_SPELL) {
                 poseStack.translate(-(((flag ? -1 : 1) / 32.0F) - .125), .5, 0);
@@ -113,7 +115,7 @@ public class ChargeSpellLayer {
         }
     }
 
-    private static HumanoidArm getArmFromUseHand(LivingEntity livingEntity) {
+    public static HumanoidArm getArmFromUseHand(LivingEntity livingEntity) {
         return livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? livingEntity.getMainArm() : livingEntity.getMainArm().getOpposite();
     }
 }

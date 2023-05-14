@@ -3,7 +3,10 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.CastSource;
+import io.redspace.ironsspellbooks.spells.CastType;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -13,10 +16,14 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -33,6 +40,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
+import java.util.UUID;
 
 public abstract class AbstractSpellCastingMob extends Monster implements IAnimatable {
     public static final ResourceLocation modelResource = new ResourceLocation(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
@@ -40,11 +48,13 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     public static final ResourceLocation animationInstantCast = new ResourceLocation(IronsSpellbooks.MODID, "animations/casting_animations.json");
     private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SyncedSpellData.SYNCED_SPELL_DATA);
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
-
-    private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
+    private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private final PlayerMagicData playerMagicData = new PlayerMagicData(true);
+    private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
     private @Nullable AbstractSpell castingSpell;
+    private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
+    private int drinkTime;
 
     protected AbstractSpellCastingMob(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -60,7 +70,37 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         super.defineSynchedData();
         this.entityData.define(DATA_SPELL, new SyncedSpellData(-1));
         this.entityData.define(DATA_CANCEL_CAST, false);
+        this.entityData.define(DATA_DRINKING_POTION, false);
         //irons_spellbooks.LOGGER.debug("ASCM.defineSynchedData DATA_SPELL:{}", DATA_SPELL);
+    }
+
+    public boolean isDrinkingPotion() {
+        return entityData.get(DATA_DRINKING_POTION);
+    }
+
+    protected void setDrinkingPotion(boolean drinkingPotion) {
+        this.entityData.set(DATA_DRINKING_POTION, drinkingPotion);
+    }
+
+    public void startDrinkingPotion() {
+        if (!level.isClientSide) {
+            setDrinkingPotion(true);
+            drinkTime = 35;
+
+
+            AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
+            attributeinstance.removeModifier(SPEED_MODIFIER_DRINKING);
+            attributeinstance.addTransientModifier(SPEED_MODIFIER_DRINKING);
+        }
+    }
+
+    private void finishDrinkingPotion() {
+        setDrinkingPotion(false);
+        this.heal(Math.min(10, getMaxHealth() / 4));
+        this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_MODIFIER_DRINKING);
+        if (!this.isSilent()) {
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_DRINK, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
+        }
     }
 
     @Override
@@ -173,7 +213,14 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     protected void customServerAiStep() {
         super.customServerAiStep();
         //irons_spellbooks.LOGGER.debug("AbstractSpellCastingMob.customServerAiStep");
+        if (isDrinkingPotion()) {
+            if (drinkTime-- <= 0) {
+                finishDrinkingPotion();
+            } else if (drinkTime % 4 == 0)
+                if (!this.isSilent())
+                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, this.level.random.nextFloat() * 0.1F + 0.9F);
 
+        }
 
         if (castingSpell == null || entityData.isDirty()) {
             return;
@@ -213,6 +260,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
         //irons_spellbooks.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level.isClientSide);
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
+        if (!castingSpell.checkPreCastConditions(level, this, playerMagicData)) {
+            castingSpell = null;
+            return;
+        }
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getEffectiveCastTime(this), CastSource.MOB);
 
         if (!level.isClientSide) {

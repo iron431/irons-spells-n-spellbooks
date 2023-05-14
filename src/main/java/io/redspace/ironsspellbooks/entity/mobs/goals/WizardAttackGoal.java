@@ -47,6 +47,8 @@ public class WizardAttackGoal extends Goal {
     protected int minSpellLevel = 1;
     protected int maxSpellLevel = 3;
 
+    protected boolean drinksPotions;
+
     public WizardAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
         this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
     }
@@ -109,6 +111,11 @@ public class WizardAttackGoal extends Goal {
 
     public WizardAttackGoal setIsFlying() {
         isFlying = true;
+        return this;
+    }
+
+    public WizardAttackGoal setDrinksPotions() {
+        drinksPotions = true;
         return this;
     }
 
@@ -183,7 +190,8 @@ public class WizardAttackGoal extends Goal {
         }
 
         //default attack timer
-        handleAttackLogic(distanceSquared);
+        if (!mob.isDrinkingPotion())
+            handleAttackLogic(distanceSquared);
 
         //handle single use spell
         if (this.singleUseCooldown > 0)
@@ -294,7 +302,7 @@ public class WizardAttackGoal extends Goal {
             total += movementWeight;
             weightedSpells.put(total, movementSpells);
         }
-        if (!supportSpells.isEmpty() && supportWeight > 0) {
+        if ((!supportSpells.isEmpty() || drinksPotions) && supportWeight > 0) {
             total += supportWeight;
             weightedSpells.put(total, supportSpells);
         }
@@ -308,10 +316,17 @@ public class WizardAttackGoal extends Goal {
             int seed = mob.getRandom().nextInt(total);
             var spellList = weightedSpells.higherEntry(seed).getValue();
             lastSpellCategory = spellList;
-            IronsSpellbooks.LOGGER.info("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} ({}/{})", attackWeight, defenseWeight, movementWeight, supportWeight, seed, total);
+            IronsSpellbooks.LOGGER.debug("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} ({}/{})", attackWeight, defenseWeight, movementWeight, supportWeight, seed, total);
+            if (drinksPotions && spellList == supportSpells) {
+                if (supportSpells.isEmpty() || mob.getRandom().nextFloat() < .5f) {
+                    IronsSpellbooks.LOGGER.debug("Drinking Potion");
+                    mob.startDrinkingPotion();
+                    return SpellType.NONE_SPELL;
+                }
+            }
             return (SpellType) spellList.get(mob.getRandom().nextInt(spellList.size()));
         } else {
-            IronsSpellbooks.LOGGER.info("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} (no spell)", attackWeight, defenseWeight, movementWeight, supportWeight);
+            IronsSpellbooks.LOGGER.debug("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} (no spell)", attackWeight, defenseWeight, movementWeight, supportWeight);
             return SpellType.NONE_SPELL;
         }
 

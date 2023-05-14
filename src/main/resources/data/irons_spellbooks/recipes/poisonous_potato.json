@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "ROR",
+    "RRR"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:poisonous_potato"
+    },
+    "R": {
+      "item": "minecraft:potato"
+    }
+  },
+  "result": {
+    "item": "minecraft:poisonous_potato",
+    "count": 4
+  }
+}

@@ -1,10 +1,19 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.render.*;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import org.jetbrains.annotations.Nullable;
+import software.bernie.example.client.DefaultBipedBoneIdents;
+import software.bernie.geckolib3.core.processor.IBone;
 
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTURE;
@@ -22,6 +31,29 @@ public abstract class AbstractSpellCastingMobRenderer extends GeoHumanoidRendere
         this.addLayer(new GlowingEyesLayer.Geo(this));
         this.addLayer(new SpellTargetingLayer.Geo(this));
         this.addLayer(new GeoSpinAttackLayer(this));
+    }
+
+    @Nullable
+    @Override
+    protected ItemStack getHeldItemForBone(String boneName, AbstractSpellCastingMob entity) {
+        if (animatable.isDrinkingPotion()) {
+            if (animatable.isLeftHanded() && boneName.equals(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT) || !animatable.isLeftHanded() && boneName.equals(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT))
+                return makePotion(entity);
+
+        }
+        return super.getHeldItemForBone(boneName, entity);
+    }
+
+    @Override
+    protected void preRenderItem(PoseStack poseStack, ItemStack itemStack, String boneName, AbstractSpellCastingMob animatable, IBone bone) {
+        if (currentEntityBeingRendered.isDrinkingPotion())
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(-90f));
+        super.preRenderItem(poseStack, itemStack, boneName, animatable, bone);
+    }
+
+    private ItemStack makePotion(AbstractSpellCastingMob entity) {
+        ItemStack healthPotion = new ItemStack(Items.POTION);
+        return PotionUtils.setPotion(healthPotion, entity.isInvertedHealAndHarm() ? Potions.HARMING : Potions.HEALING);
     }
 
 }

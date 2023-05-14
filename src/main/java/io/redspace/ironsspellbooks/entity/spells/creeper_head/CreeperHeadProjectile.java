@@ -97,7 +97,7 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
                 double distance = entity.position().distanceTo(hitResult.getLocation());
                 if (distance < explosionRadius) {
                     //Prevent duplicate chains
-                    if (entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying())
+                    if (entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying() && !canHitEntity(entity))
                         break;
                     float damage = (float) (this.damage * (1 - Math.pow(distance / (explosionRadius), 2)));
                     DamageSources.applyDamage(entity, damage, SpellType.LOB_CREEPER_SPELL.getDamageSource(this, getOwner()), SchoolType.EVOCATION);

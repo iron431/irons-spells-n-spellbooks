@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
@@ -34,14 +35,17 @@ public class PyromancerEntity extends AbstractSpellCastingMob implements Enemy {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.25f, 25, 50).setSpells(
-                List.of(SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIRE_BREATH_SPELL, SpellType.BLAZE_STORM_SPELL, SpellType.FIREBALL_SPELL),
-                List.of(),
-                List.of(SpellType.BURNING_DASH_SPELL),
-                List.of(SpellType.HEAL_SPELL)
-        ));
+        this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.25f, 25, 50)
+                .setSpells(
+                        List.of(SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIREBOLT_SPELL, SpellType.FIRE_BREATH_SPELL, SpellType.BLAZE_STORM_SPELL),
+                        List.of(),
+                        List.of(SpellType.BURNING_DASH_SPELL),
+                        List.of()
+                )
+                .setDrinksPotions());
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
 
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));

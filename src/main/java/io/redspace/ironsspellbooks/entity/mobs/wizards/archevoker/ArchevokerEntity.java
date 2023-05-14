@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -47,9 +48,11 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
                     List.of(),
                     List.of(SpellType.HEAL_SPELL))
                 .setSpellLevels(8, 8)
-                .setSingleUseSpell(SpellType.INVISIBILITY_SPELL, 40, 80, 5, 5));
+                .setSingleUseSpell(SpellType.INVISIBILITY_SPELL, 40, 80, 5, 5)
+                .setDrinksPotions());
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
 
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));

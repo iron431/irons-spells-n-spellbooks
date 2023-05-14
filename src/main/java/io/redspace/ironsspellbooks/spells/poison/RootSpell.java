@@ -3,9 +3,7 @@ package io.redspace.ironsspellbooks.spells.poison;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.effect.BlightEffect;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
-import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -69,6 +67,8 @@ public class RootSpell extends AbstractSpell {
             playerMagicData.setAdditionalCastData(new CastTargetingData(target));
             if (entity instanceof ServerPlayer serverPlayer)
                 Messages.sendToPlayer(new ClientboundSyncTargetingData(target, getSpellType()), serverPlayer);
+            if(target instanceof ServerPlayer serverPlayer)
+                Utils.sendTargetedNotification(serverPlayer, entity, this.getSpellType());
             return true;
         }
     }
@@ -81,7 +81,7 @@ public class RootSpell extends AbstractSpell {
                 targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ROOT.get(), getDuration(entity), getAmplifier(entity)));
                 IronsSpellbooks.LOGGER.debug("RootSpell.onCast targetEntity:{}", targetEntity);
                 RootEntity rootEntity = new RootEntity(world, entity, getDuration(entity));
-                rootEntity.setTarget(targetEntity, true);
+                rootEntity.setTarget(targetEntity);
                 rootEntity.moveTo(targetEntity.getPosition(2));
                 world.addFreshEntity(rootEntity);
             }
