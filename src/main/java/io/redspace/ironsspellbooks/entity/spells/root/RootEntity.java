@@ -1,11 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells.root;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.nbt.CompoundTag;
@@ -13,16 +10,15 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -33,34 +29,65 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.UUID;
 
-public class Root extends LivingEntity implements IAnimatable {
+public class RootEntity extends LivingEntity implements IAnimatable {
     @Nullable
     private LivingEntity owner;
     @Nullable
     private UUID ownerUUID;
     private int age;
     private int duration;
+    private boolean playSound = true;
+    private LivingEntity target;
 
-    public Root(EntityType<? extends Root> pEntityType, Level pLevel) {
+    public RootEntity(EntityType<? extends RootEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         duration = 200;
     }
 
-    public Root(Level level, LivingEntity owner, int duration) {
+    public RootEntity(Level level, LivingEntity owner, int duration, LivingEntity target) {
         this(EntityRegistry.ROOT.get(), level);
         setOwner(owner);
         this.duration = duration;
+        this.target = target;
+        this.setBoundingBox(new AABB(0, 0, 0, 0, 0, 0));
+        this.moveTo(target.position());
+    }
+
+
+    @Override
+    public boolean canCollideWith(Entity pEntity) {
+        return false;
+    }
+
+    @Override
+    public boolean canBeCollidedWith() {
+        return false;
     }
 
     @Override
     public void tick() {
         super.tick();
+
+        if(target!= null){
+            this.moveTo(target.position());
+        }
+
+        if (playSound) {
+            IronsSpellbooks.LOGGER.debug("Root play sound");
+            playSound(SoundRegistry.ROOT.get(), 1.5f, 1);
+            playSound = false;
+        }
+
         if (!level.isClientSide) {
             if (age > duration) {
                 this.discard();
             }
-            age++;
+        } else {
+            if (age < 40 && level.random.nextFloat() < .15f) {
+                level.addParticle(ParticleHelper.ROOT_FOG, getX() + Utils.getRandomScaled(.1f), getY() + Utils.getRandomScaled(.1f), getZ() + Utils.getRandomScaled(.1f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
+            }
         }
+        age++;
     }
 
     @Override
@@ -82,6 +109,7 @@ public class Root extends LivingEntity implements IAnimatable {
     public boolean isPickable() {
         return false;
     }
+
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
@@ -139,17 +167,22 @@ public class Root extends LivingEntity implements IAnimatable {
         return new ClientboundAddEntityPacket(this);
     }
 
+    private boolean played = false;
+
     private PlayState animationPredicate(AnimationEvent event) {
         var controller = event.getController();
-        if (controller.getAnimationState() == AnimationState.Stopped) {
+
+        if (!played && controller.getAnimationState() == AnimationState.Stopped) {
+            controller.markNeedsReload();
             controller.setAnimation(ANIMATION);
+            played = true;
         }
 
         return PlayState.CONTINUE;
     }
 
-    private final AnimationBuilder ANIMATION = new AnimationBuilder().addAnimation("root");
-    private final AnimationController controller = new AnimationController(this, "root_controller", 10, this::animationPredicate);
+    private final AnimationBuilder ANIMATION = new AnimationBuilder().playAndHold("root");
+    private final AnimationController controller = new AnimationController(this, "root_controller", 0, this::animationPredicate);
 
     @Override
     public void registerControllers(AnimationData data) {

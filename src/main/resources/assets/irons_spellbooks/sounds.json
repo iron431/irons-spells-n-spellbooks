@@ -203,6 +203,11 @@
       "irons_spellbooks:void_tentacle_ambient"
     ]
   },
+  "entity.root.start": {
+    "sounds": [
+      "irons_spellbooks:root_start"
+    ]
+  },
   "cast.abyssal_shroud": {
     "sounds": [
       "irons_spellbooks:abyssal_shroud_cast"

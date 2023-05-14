@@ -20,5 +20,6 @@ public class ParticleHelper {
     public static final ParticleOptions ACID_BUBBLE = ParticleRegistry.ACID_BUBBLE_PARTICLE.get();
     public static final ParticleOptions FOG = new FogParticleOptions(new Vector3f(1, 1, 1), 1);
     public static final ParticleOptions VOID_TENTACLE_FOG = new FogParticleOptions(new Vector3f(.18f, 0.15f, .22f), 2);
+    public static final ParticleOptions ROOT_FOG = new FogParticleOptions(new Vector3f(61/255f, 40/255f, 18/255f), .6f);
     public static final ParticleOptions POISON_CLOUD = new FogParticleOptions(new Vector3f(.08f, 0.64f, .16f), 1f);
 }

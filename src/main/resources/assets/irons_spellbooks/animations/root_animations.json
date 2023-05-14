@@ -2,8 +2,7 @@
 	"format_version": "1.8.0",
 	"animations": {
 		"root": {
-			"loop": "hold_on_last_frame",
-			"animation_length": 0.5,
+			"animation_length": 152.8,
 			"bones": {
 				"arm1": {
 					"rotation": {
