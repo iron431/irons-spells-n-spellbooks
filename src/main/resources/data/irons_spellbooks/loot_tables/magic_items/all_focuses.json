@@ -37,6 +37,11 @@
           "type": "minecraft:tag",
           "name": "irons_spellbooks:evocation_focus",
           "expand": true
+        },
+        {
+          "type": "minecraft:tag",
+          "name": "irons_spellbooks:poison_focus",
+          "expand": true
         }
       ]
     }

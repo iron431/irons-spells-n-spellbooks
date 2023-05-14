@@ -112,6 +112,8 @@
   "item.irons_spellbooks.emerald_stoneplate_ring.desc": "Slain creatures drop +25% experience.",
   "item.irons_spellbooks.fireward_ring": "Fireward Ring",
   "item.irons_spellbooks.fireward_ring.desc": "Grants fire resistance.",
+  "item.irons_spellbooks.poisonward_ring": "Poisonward Ring",
+  "item.irons_spellbooks.poisonward_ring.desc": "Grants poison immunity.",
   "item.irons_spellbooks.frostward_ring": "Frostward Ring",
   "item.irons_spellbooks.frostward_ring.desc": "Grants freezing immunity.",
   "item.irons_spellbooks.heavy_chain_necklace": "Heavy Chain",

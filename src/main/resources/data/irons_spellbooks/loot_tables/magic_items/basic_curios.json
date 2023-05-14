@@ -34,6 +34,10 @@
         {
           "type": "minecraft:item",
           "name": "irons_spellbooks:conjurers_talisman"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:poisonward_ring"
         }
       ]
     }
