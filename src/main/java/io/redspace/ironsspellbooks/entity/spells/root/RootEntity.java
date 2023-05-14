@@ -13,8 +13,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -32,6 +30,12 @@ import java.util.UUID;
 public class RootEntity extends LivingEntity implements IAnimatable {
     @Nullable
     private LivingEntity owner;
+
+    @Override
+    public float getScale() {
+        return target == null ? 1 : target.getScale();
+    }
+
     @Nullable
     private UUID ownerUUID;
     private int age;
@@ -44,13 +48,18 @@ public class RootEntity extends LivingEntity implements IAnimatable {
         duration = 200;
     }
 
-    public RootEntity(Level level, LivingEntity owner, int duration, LivingEntity target) {
+    public RootEntity(Level level, LivingEntity owner, int duration) {
         this(EntityRegistry.ROOT.get(), level);
         setOwner(owner);
         this.duration = duration;
+    }
+
+    public LivingEntity getTarget() {
+        return this.target;
+    }
+
+    public void setTarget(LivingEntity target) {
         this.target = target;
-        this.setBoundingBox(new AABB(0, 0, 0, 0, 0, 0));
-        this.moveTo(target.position());
     }
 
     @Override

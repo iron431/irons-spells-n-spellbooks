@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.poison;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.effect.BlightEffect;
@@ -78,7 +79,9 @@ public class RootSpell extends AbstractSpell {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
                 targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ROOT.get(), getDuration(entity), getAmplifier(entity)));
-                RootEntity rootEntity = new RootEntity(world, entity, getDuration(entity), targetEntity);
+                IronsSpellbooks.LOGGER.debug("RootSpell.onCast targetEntity:{}", targetEntity);
+                RootEntity rootEntity = new RootEntity(world, entity, getDuration(entity));
+                rootEntity.setTarget(targetEntity, true);
                 rootEntity.moveTo(targetEntity.getPosition(2));
                 world.addFreshEntity(rootEntity);
             }
