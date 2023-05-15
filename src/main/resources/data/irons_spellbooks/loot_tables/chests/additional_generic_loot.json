@@ -46,6 +46,12 @@
           "type": "minecraft:empty",
           "weight": 2
         }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.75
+        }
       ]
     },
     {
@@ -54,6 +60,21 @@
         {
           "type": "minecraft:item",
           "name": "irons_spellbooks:rotten_spell_book"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.035
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:blank_rune"
         }
       ],
       "conditions": [

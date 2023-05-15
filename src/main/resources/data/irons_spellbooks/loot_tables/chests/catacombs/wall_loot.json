@@ -42,7 +42,8 @@
         },
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:blank_rune"
+          "name": "irons_spellbooks:blank_rune",
+          "weight": 2
         },
         {
           "type": "minecraft:loot_table",
@@ -52,7 +53,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.25
+          "chance": 0.35
         }
       ]
     },

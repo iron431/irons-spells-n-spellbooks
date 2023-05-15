@@ -2,6 +2,15 @@
   "type": "minecraft:entity",
   "pools": [
     {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:ice_rune"
+        }
+      ]
+    },
+    {
       "bonus_rolls": 0.0,
       "entries": [
         {
@@ -40,8 +49,8 @@
             {
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
-                "min": 0.15,
-                "max": 0.75
+                "min": 0.25,
+                "max": 0.85
               },
               "school": "ice"
             }
@@ -49,6 +58,18 @@
         }
       ],
       "rolls": 1
+    },
+    {
+      "rolls": {
+        "min": 1,
+        "max": 3
+      },
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "irons_spellbooks:magic_items/great_ink"
+        }
+      ]
     }
   ]
 }

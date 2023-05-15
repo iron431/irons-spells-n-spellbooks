@@ -53,10 +53,7 @@
       ]
     },
     {
-      "rolls": {
-        "min": 0,
-        "max": 2
-      },
+      "rolls": 1,
       "entries": [
         {
           "type": "minecraft:loot_table",

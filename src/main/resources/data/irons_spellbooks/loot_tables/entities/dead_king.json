@@ -54,6 +54,21 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "name": "irons_spellbooks:blank_rune",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:legendary_ink"
+        }
+      ],
+      "rolls": 3
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
           "name": "irons_spellbooks:blood_staff",
           "conditions": [
             {

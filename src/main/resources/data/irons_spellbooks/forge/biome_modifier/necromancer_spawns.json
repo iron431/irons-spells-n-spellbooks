@@ -4,7 +4,7 @@
   "spawners":
   {
     "type": "irons_spellbooks:necromancer", // Type of mob to spawn
-    "weight": 25, // int, spawn weighting
+    "weight": 18, // int, spawn weighting
     "minCount": 1, // int, minimum pack size
     "maxCount": 1 // int, maximum pack size
   }
