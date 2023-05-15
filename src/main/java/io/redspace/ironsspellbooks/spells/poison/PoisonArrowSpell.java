@@ -29,7 +29,7 @@ public class PoisonArrowSpell extends AbstractSpell {
     public PoisonArrowSpell(int level) {
         super(SpellType.POISON_ARROW_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 8;
+        this.manaCostPerLevel = 5;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;

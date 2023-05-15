@@ -26,14 +26,14 @@ public class FireBreathSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
     public FireBreathSpell(int level) {
         super(SpellType.FIRE_BREATH_SPELL);
         this.level = level;
         this.manaCostPerLevel = 1;
-        this.baseSpellPower = 1;
+        this.baseSpellPower = 0;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 5;
@@ -60,12 +60,16 @@ public class FireBreathSpell extends AbstractSpell {
         } else {
             FireBreathProjectile fireBreathProjectile = new FireBreathProjectile(world, entity);
             fireBreathProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
-            fireBreathProjectile.setDamage(getSpellPower(entity));
+            fireBreathProjectile.setDamage(getDamage(entity));
             world.addFreshEntity(fireBreathProjectile);
 
             playerMagicData.setAdditionalCastData(new EntityCastData(fireBreathProjectile));
         }
         super.onCast(world, entity, playerMagicData);
+    }
+
+    public float getDamage(LivingEntity caster) {
+        return 1 + getSpellPower(caster) * .75f;
     }
 
     @Override

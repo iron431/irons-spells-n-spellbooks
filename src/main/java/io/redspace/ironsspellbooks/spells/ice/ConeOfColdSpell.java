@@ -26,7 +26,7 @@ public class ConeOfColdSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
     public ConeOfColdSpell(int level) {
@@ -60,11 +60,15 @@ public class ConeOfColdSpell extends AbstractSpell {
         } else {
             ConeOfColdProjectile coneOfColdProjectile = new ConeOfColdProjectile(world, entity);
             coneOfColdProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
-            coneOfColdProjectile.setDamage(getSpellPower(entity));
+            coneOfColdProjectile.setDamage(getDamage(entity));
             world.addFreshEntity(coneOfColdProjectile);
             playerMagicData.setAdditionalCastData(new EntityCastData(coneOfColdProjectile));
             super.onCast(world, entity, playerMagicData);
         }
+    }
+
+    public float getDamage(LivingEntity caster) {
+        return 1 + getSpellPower(caster) * .75f;
     }
 
     @Override

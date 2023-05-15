@@ -28,7 +28,7 @@ public class IcicleSpell extends AbstractSpell {
         super(SpellType.ICICLE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 4;
+        this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 10;
@@ -55,7 +55,7 @@ public class IcicleSpell extends AbstractSpell {
         super.onCast(world, entity, playerMagicData);
     }
     private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity);
+        return getSpellPower(entity) * .5f;
     }
 
 }

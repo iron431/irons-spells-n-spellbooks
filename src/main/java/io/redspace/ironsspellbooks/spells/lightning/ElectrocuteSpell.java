@@ -26,14 +26,14 @@ public class ElectrocuteSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
     public ElectrocuteSpell(int level) {
         super(SpellType.ELECTROCUTE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 1;
-        this.baseSpellPower = 1;
+        this.baseSpellPower = 0;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 3;
@@ -60,11 +60,15 @@ public class ElectrocuteSpell extends AbstractSpell {
         } else {
             ElectrocuteProjectile electrocuteProjectile = new ElectrocuteProjectile(world, entity);
             electrocuteProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
-            electrocuteProjectile.setDamage(getSpellPower(entity));
+            electrocuteProjectile.setDamage(getDamage(entity));
             world.addFreshEntity(electrocuteProjectile);
             playerMagicData.setAdditionalCastData(new EntityCastData(electrocuteProjectile));
         }
         super.onCast(world, entity, playerMagicData);
+    }
+
+    public float getDamage(LivingEntity caster) {
+        return 1 + getSpellPower(caster) * .75f;
     }
 
     @Override

@@ -74,15 +74,15 @@ public class ServerConfigs {
         createSpellConfig(SpellType.HEARTSTOP_SPELL, true, 10, SpellRarity.COMMON, 120);
         createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 6, SpellRarity.UNCOMMON, 150);
         createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, true, 10, SpellRarity.COMMON, 15);
-        createSpellConfig(SpellType.WITHER_SKULL_SPELL, true, 10, SpellRarity.UNCOMMON, 2);
+        createSpellConfig(SpellType.WITHER_SKULL_SPELL, true, 10, SpellRarity.UNCOMMON, 1);
         //Ender
         BUILDER.comment("Ender Spells");
         createSpellConfig(SpellType.EVASION_SPELL, true, 5, SpellRarity.EPIC, 180);
-        createSpellConfig(SpellType.MAGIC_ARROW_SPELL, true, 10, SpellRarity.RARE, 12);
+        createSpellConfig(SpellType.MAGIC_ARROW_SPELL, true, 10, SpellRarity.RARE, 8);
         createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.TELEPORT_SPELL, true, 5, SpellRarity.UNCOMMON, 3);
         createSpellConfig(SpellType.COUNTERSPELL_SPELL, true, 1, SpellRarity.EPIC, 15);
-        createSpellConfig(SpellType.DRAGON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.DRAGON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 12);
 
         //Evocation
         BUILDER.comment("Evocation Spells");
@@ -90,20 +90,20 @@ public class ServerConfigs {
         createSpellConfig(SpellType.FANG_STRIKE_SPELL, true, 10, SpellRarity.COMMON, 5);
         createSpellConfig(SpellType.FANG_WARD_SPELL, true, 8, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.FIRECRACKER_SPELL, true, 10, SpellRarity.COMMON, 1.5);
-        createSpellConfig(SpellType.INVISIBILITY_SPELL, true, 6, SpellRarity.RARE, 60);
+        createSpellConfig(SpellType.INVISIBILITY_SPELL, true, 6, SpellRarity.RARE, 45);
         createSpellConfig(SpellType.LOB_CREEPER_SPELL, true, 10, SpellRarity.UNCOMMON, 2);
-        createSpellConfig(SpellType.SHIELD_SPELL, true, 8, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.SHIELD_SPELL, true, 8, SpellRarity.COMMON, 8);
         createSpellConfig(SpellType.SUMMON_HORSE_SPELL, true, 5, SpellRarity.COMMON, 20);
         createSpellConfig(SpellType.SUMMON_VEX_SPELL, true, 5, SpellRarity.RARE, 150);
         createSpellConfig(SpellType.SPECTRAL_HAMMER_SPELL, true, 5, SpellRarity.UNCOMMON, 10);
         //Fire
         BUILDER.comment("Fire Spells");
-        createSpellConfig(SpellType.BLAZE_STORM_SPELL, true, 10, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.BLAZE_STORM_SPELL, true, 10, SpellRarity.COMMON, 20);
         createSpellConfig(SpellType.BURNING_DASH_SPELL, true, 10, SpellRarity.COMMON, 10);
         createSpellConfig(SpellType.FIREBALL_SPELL, true, 3, SpellRarity.EPIC, 25);
         createSpellConfig(SpellType.FIREBOLT_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.FIRE_BREATH_SPELL, true, 10, SpellRarity.COMMON, 25);
-        createSpellConfig(SpellType.WALL_OF_FIRE_SPELL, true, 5, SpellRarity.COMMON, 30);
+        createSpellConfig(SpellType.FIRE_BREATH_SPELL, true, 10, SpellRarity.COMMON, 12);
+        createSpellConfig(SpellType.WALL_OF_FIRE_SPELL, true, 5, SpellRarity.COMMON, 20);
         //Holy
         BUILDER.comment("Holy Spells");
         createSpellConfig(SpellType.ANGEL_WING_SPELL, true, 5, SpellRarity.EPIC, 120);
@@ -115,19 +115,19 @@ public class ServerConfigs {
         createSpellConfig(SpellType.BLESSING_OF_LIFE_SPELL, true, 10, SpellRarity.COMMON, 10);
         //Ice
         BUILDER.comment("Ice Spells");
-        createSpellConfig(SpellType.CONE_OF_COLD_SPELL, true, 10, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.CONE_OF_COLD_SPELL, true, 10, SpellRarity.COMMON, 12);
         createSpellConfig(SpellType.FROSTBITE_SPELL, false, 0, SpellRarity.COMMON, 0);
         createSpellConfig(SpellType.FROST_STEP_SPELL, true, 8, SpellRarity.RARE, 10);
         createSpellConfig(SpellType.ICICLE_SPELL, true, 10, SpellRarity.COMMON, 1);
         createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, true, 10, SpellRarity.RARE, 180);
-        createSpellConfig(SpellType.ICE_BLOCK_SPELL, true, 6, SpellRarity.RARE, 20);
+        createSpellConfig(SpellType.ICE_BLOCK_SPELL, true, 6, SpellRarity.RARE, 15);
         //Lightning
         BUILDER.comment("Lightning Spells");
-        createSpellConfig(SpellType.ELECTROCUTE_SPELL, true, 10, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.ELECTROCUTE_SPELL, true, 10, SpellRarity.COMMON, 12);
         createSpellConfig(SpellType.LIGHTNING_BOLT_SPELL, true, 10, SpellRarity.EPIC, 25);
-        createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, true, 10, SpellRarity.RARE, 12);
+        createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, true, 10, SpellRarity.RARE, 8);
         createSpellConfig(SpellType.CHARGE_SPELL, true, 3, SpellRarity.RARE, 40);
-        createSpellConfig(SpellType.ASCENSION_SPELL, true, 10, SpellRarity.RARE, 30);
+        createSpellConfig(SpellType.ASCENSION_SPELL, true, 10, SpellRarity.RARE, 15);
         //Void
         BUILDER.comment("Void Spells");
         createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, true, 3, SpellRarity.LEGENDARY, 300);
@@ -135,9 +135,9 @@ public class ServerConfigs {
         BUILDER.pop();
         //Poison
         BUILDER.comment("Poison Spells");
-        createSpellConfig(SpellType.POISON_ARROW_SPELL, true, 10, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.POISON_ARROW_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.POISON_SPLASH_SPELL, true, 10, SpellRarity.UNCOMMON, 20);
-        createSpellConfig(SpellType.POISON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.POISON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 12);
         createSpellConfig(SpellType.ACID_ORB_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, true, 8, SpellRarity.COMMON, 35);
 

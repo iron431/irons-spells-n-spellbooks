@@ -36,14 +36,14 @@ public class CryomancerEntity extends AbstractSpellCastingMob implements Enemy {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.SUMMON_POLAR_BEAR_SPELL, 3, 6, 100, 250, 1));
-        this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.25f, 25, 50)
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.ICE_BLOCK_SPELL, 3, 6, 100, 250, 1));
+        this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.25f, 50, 75)
                 .setSpells(
-                        List.of(SpellType.ICICLE_SPELL, SpellType.ICICLE_SPELL, SpellType.ICICLE_SPELL, SpellType.CONE_OF_COLD_SPELL, SpellType.ICE_BLOCK_SPELL, SpellType.ICE_BLOCK_SPELL),
+                        List.of(SpellType.ICICLE_SPELL, SpellType.ICICLE_SPELL, SpellType.ICICLE_SPELL, SpellType.CONE_OF_COLD_SPELL),
                         List.of(SpellType.COUNTERSPELL_SPELL),
                         List.of(SpellType.FROST_STEP_SPELL),
                         List.of()
-                )
+                ).setSingleUseSpell(SpellType.SUMMON_POLAR_BEAR_SPELL, 80, 400, 3, 6)
                 .setDrinksPotions());
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));

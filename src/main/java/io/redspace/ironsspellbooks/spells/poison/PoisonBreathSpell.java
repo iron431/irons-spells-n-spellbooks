@@ -26,7 +26,7 @@ public class PoisonBreathSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
     public PoisonBreathSpell(int level) {
@@ -60,11 +60,15 @@ public class PoisonBreathSpell extends AbstractSpell {
         } else {
             PoisonBreathProjectile breath = new PoisonBreathProjectile(world, entity);
             breath.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
-            breath.setDamage(getSpellPower(entity));
+            breath.setDamage(getDamage(entity));
             world.addFreshEntity(breath);
             playerMagicData.setAdditionalCastData(new EntityCastData(breath));
             super.onCast(world, entity, playerMagicData);
         }
+    }
+
+    public float getDamage(LivingEntity caster) {
+        return 1 + getSpellPower(caster) * .75f;
     }
 
     @Override

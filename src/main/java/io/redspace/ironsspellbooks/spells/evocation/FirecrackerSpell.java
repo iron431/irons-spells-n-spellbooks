@@ -34,7 +34,7 @@ public class FirecrackerSpell extends AbstractSpell {
         super(SpellType.FIRECRACKER_SPELL);
         this.level = level;
         this.manaCostPerLevel = 2;
-        this.baseSpellPower = 2;
+        this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 20;
@@ -69,7 +69,7 @@ public class FirecrackerSpell extends AbstractSpell {
     }
 
     private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity);
+        return getSpellPower(entity) * .5f;
     }
 
     private ItemStack randomFireworkRocket() {
