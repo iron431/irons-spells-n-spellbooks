@@ -7,10 +7,12 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -62,6 +64,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.LIGHTNING_LANCE_SPELL.getDamageSource(this, getOwner()), SchoolType.LIGHTNING);
+
     }
 
     @Override

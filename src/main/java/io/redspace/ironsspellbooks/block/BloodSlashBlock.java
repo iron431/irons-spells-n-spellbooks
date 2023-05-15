@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.block;
 
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -28,7 +26,7 @@ public class BloodSlashBlock extends Block {
         if (entity instanceof Player player) {
             int duration = 200;
             int amplifier = 2;
-            player.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), duration, amplifier));
+            //player.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), duration, amplifier));
         }
     }
 }

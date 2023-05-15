@@ -13,11 +13,13 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -86,6 +88,7 @@ public class AscensionSpell extends AbstractSpell {
 
         LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
         lightningBolt.setVisualOnly(true);
+        lightningBolt.setDamage(0);
         lightningBolt.setPos(strikePos);
         level.addFreshEntity(lightningBolt);
 
@@ -96,6 +99,8 @@ public class AscensionSpell extends AbstractSpell {
             if (distance < radius * radius) {
                 float finalDamage = (float) (getDamage(entity) * (1 - distance / (radius * radius)));
                 DamageSources.applyDamage(target, finalDamage, SpellType.ASCENSION_SPELL.getDamageSource(lightningBolt, entity), SchoolType.LIGHTNING);
+                if (target instanceof Creeper creeper)
+                    creeper.thunderHit((ServerLevel) level, lightningBolt);
             }
         });
 
