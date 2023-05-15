@@ -44,21 +44,21 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
-        particleCloud(level, entity, entity.getPosition(1));
-
-        Vec3 dest = null;
-
-        if (playerMagicData != null) {
-            if (playerMagicData.getAdditionalCastData() instanceof TeleportData teleportData) {
-                dest = teleportData.getTeleportTargetPosition();
-            }
-        }
-
-        if (dest == null) {
-            dest = findTeleportLocation(level, entity, getDistance(entity));
-        }
-
-        particleCloud(level, entity, dest);
+//        particleCloud(level, entity, entity.position());
+//
+//        Vec3 dest = null;
+//
+//        if (playerMagicData != null) {
+//            if (playerMagicData.getAdditionalCastData() instanceof TeleportData teleportData) {
+//                dest = teleportData.getTeleportTargetPosition();
+//            }
+//        }
+//
+//        if (dest == null) {
+//            dest = findTeleportLocation(level, entity, getDistance(entity));
+//        }
+//
+//        particleCloud(level, entity, dest);
         super.onClientPreCast(level, entity, hand, playerMagicData);
     }
 
@@ -88,7 +88,7 @@ public class TeleportSpell extends AbstractSpell {
             dest = findTeleportLocation(level, entity, getDistance(entity));
         }
 
-        Messages.sendToPlayersTrackingEntity(new ClientboundTeleportParticles(entity.position(), dest), entity);
+        Messages.sendToPlayersTrackingEntity(new ClientboundTeleportParticles(entity.position(), dest), entity, true);
         if (entity.isPassenger()) {
             entity.stopRiding();
         }
@@ -123,10 +123,10 @@ public class TeleportSpell extends AbstractSpell {
 
     }
 
-    public static void particleCloud(Level level, LivingEntity entity, Vec3 pos) {
+    public static void particleCloud(Level level, Vec3 pos) {
         if (level.isClientSide) {
             double width = 0.5;
-            float height = entity.getBbHeight() / 2;
+            float height = 1;
             for (int i = 0; i < 55; i++) {
                 double x = pos.x + level.random.nextDouble() * width * 2 - width;
                 double y = pos.y + height + level.random.nextDouble() * height * 1.2 * 2 - height * 1.2;

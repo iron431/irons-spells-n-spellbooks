@@ -217,8 +217,8 @@ public class ClientSpellCastHelper {
 
         if (player != null) {
             var level = Minecraft.getInstance().player.level;
-            TeleportSpell.particleCloud(level, player, pos1);
-            TeleportSpell.particleCloud(level, player, pos2);
+            TeleportSpell.particleCloud(level, pos1);
+            TeleportSpell.particleCloud(level, pos2);
         }
     }
 
