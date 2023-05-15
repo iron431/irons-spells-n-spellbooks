@@ -17,7 +17,8 @@
     "TridentItemMixin",
     "ItemMixin",
     "EntityMixin",
-    "GuiMixin"
+    "GuiMixin",
+    "SmithingMenuMixin"
   ],
   "client": [
   ],

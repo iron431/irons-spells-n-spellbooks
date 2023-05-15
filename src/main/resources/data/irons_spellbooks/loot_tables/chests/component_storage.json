@@ -22,6 +22,11 @@
           ]
         },
         {
+          "type": "minecraft:item",
+          "weight": 1,
+          "name": "irons_spellbooks:shriving_stone"
+        },
+        {
           "type": "minecraft:loot_table",
           "name": "irons_spellbooks:magic_items/all_focuses",
           "weight": 4,

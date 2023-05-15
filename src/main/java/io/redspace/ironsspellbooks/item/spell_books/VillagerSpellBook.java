@@ -15,7 +15,7 @@ public class VillagerSpellBook extends SpellBook {
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
     public VillagerSpellBook() {
-        super(6, SpellRarity.LEGENDARY);
+        super(6, SpellRarity.EPIC);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(AttributeRegistry.HOLY_SPELL_POWER.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .08, AttributeModifier.Operation.MULTIPLY_BASE));
         builder.put(AttributeRegistry.CAST_TIME_REDUCTION.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .08, AttributeModifier.Operation.MULTIPLY_BASE));
