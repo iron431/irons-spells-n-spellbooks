@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.entity.mobs.necromancer;
 
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
+import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
@@ -41,7 +43,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
         this.goalSelector.addGoal(4, new WizardAttackGoal(this, 1.25f, 35, 80)
                 .setSpells(
                         List.of(SpellType.FANG_STRIKE_SPELL, SpellType.ICICLE_SPELL, SpellType.MAGIC_MISSILE_SPELL),
-                        List.of(SpellType.FANG_WARD_SPELL, SpellType.FANG_WARD_SPELL, SpellType.EVASION_SPELL),
+                        List.of(SpellType.FANG_WARD_SPELL, SpellType.FORTIFY_SPELL),
                         List.of(),
                         List.of(SpellType.BLIGHT_SPELL)
                 )
@@ -50,6 +52,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -86,7 +89,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.TARNISHED_CROWN.get()));
-        this.setDropChance(EquipmentSlot.HEAD, 0.05f);
+        this.setDropChance(EquipmentSlot.HEAD, 0.15f);
 //        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
 //        this.setDropChance(EquipmentSlot.CHEST, 0.0F);
     }
@@ -117,6 +120,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
                 .add(Attributes.MAX_HEALTH, 25.0)
                 .add(Attributes.FOLLOW_RANGE, 25.0)
+                .add(AttributeRegistry.SPELL_POWER.get(), 0.88f)
                 .add(Attributes.MOVEMENT_SPEED, .25);
     }
 

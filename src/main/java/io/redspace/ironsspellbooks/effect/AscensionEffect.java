@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -27,6 +28,12 @@ public class AscensionEffect extends MobEffect {
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
         PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ASCENSION);
+    }
+
+    @Override
+    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+        pLivingEntity.resetFallDistance();
+        IronsSpellbooks.LOGGER.debug("Ascension Tick");
     }
 
     public static void ambientParticles(ClientLevel level, LivingEntity entity) {

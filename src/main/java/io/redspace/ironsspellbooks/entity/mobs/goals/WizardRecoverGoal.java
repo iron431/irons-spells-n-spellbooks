@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -11,7 +10,7 @@ public class WizardRecoverGoal extends Goal {
     protected int delay = 15;
 
     public WizardRecoverGoal(AbstractSpellCastingMob mob) {
-        this(mob, 15, 70);
+        this(mob, 25, 55);
     }
 
     public WizardRecoverGoal(AbstractSpellCastingMob mob, int minDelay, int maxDelay) {
@@ -23,7 +22,7 @@ public class WizardRecoverGoal extends Goal {
     @Override
     public boolean canUse() {
         // Delay only gets decremented if the first conditions are true, so it's smart.
-        IronsSpellbooks.LOGGER.debug("WizardRecoverGoal {} {} {} {}", mob.getTarget(), mob.isDrinkingPotion(), mob.isCasting(), delay);
+        //IronsSpellbooks.LOGGER.debug("WizardRecoverGoal {} {} {} {}", mob.getTarget(), mob.isDrinkingPotion(), mob.isCasting(), delay);
         return mob.getTarget() == null && mob.getHealth() < mob.getMaxHealth() && !mob.isDrinkingPotion() && !mob.isCasting() && --delay <= 0;
     }
 
