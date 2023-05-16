@@ -39,11 +39,6 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "minecraft:diamond"
-        },
-        {
-          "type": "minecraft:item",
           "weight": 6,
           "name": "minecraft:amethyst_shard"
         },
@@ -103,7 +98,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.4
+          "chance": 0.3
         }
       ]
     }
