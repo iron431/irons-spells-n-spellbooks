@@ -1,13 +1,16 @@
 package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -33,7 +36,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.UUID;
 
-public class VoidTentacle extends LivingEntity implements IAnimatable {
+public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagicSusceptible {
     //private static final EntityDataAccessor<Integer> DATA_DELAY = SynchedEntityData.defineId(VoidTentacle.class, EntityDataSerializers.INT);
 
     @Nullable
@@ -177,8 +180,10 @@ public class VoidTentacle extends LivingEntity implements IAnimatable {
         return new ClientboundAddEntityPacket(this);
     }
 
+    @Override
     public void onAntiMagic(PlayerMagicData playerMagicData) {
-        /*this.discard();*/
+        MagicManager.spawnParticles(level, ParticleTypes.SMOKE, getX(), getY() + 1, getZ(), 50, .2, 1.25, .2, .08, false);
+        this.discard();
     }
 
 

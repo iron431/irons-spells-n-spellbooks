@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEnti
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
+import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonSplash;
@@ -320,4 +321,10 @@ public class EntityRegistry {
                     .sized(1, 1)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "root").toString()));
+
+    public static final RegistryObject<EntityType<BlackHole>> BLACK_HOLE =
+            ENTITIES.register("black_hole", () -> EntityType.Builder.<BlackHole>of(BlackHole::new, MobCategory.MISC)
+                    .sized(11, 11)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "black_hole").toString()));
 }

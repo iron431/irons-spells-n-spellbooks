@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
-    private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/icicle_projectile.png");
+    public static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/icicle_projectile.png");
 
     public IcicleRenderer(Context context) {
         super(context);
