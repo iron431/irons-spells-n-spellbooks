@@ -306,6 +306,7 @@
   "spell.irons_spellbooks.acid_orb": "Acid Spit",
   "spell.irons_spellbooks.spider_aspect": "Aspect of the Spider",
   "spell.irons_spellbooks.blight": "Blight",
+  "spell.irons_spellbooks.black_hole": "Black Hole",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -404,6 +405,7 @@
   "death.attack.poison_arrow_spell": "%1$s was punctured by %2$s's poisonous arrow",
   "death.attack.poison_cloud": "%1$s was suffocated by %2$s's poisonous cloud",
   "death.attack.poison_splash_spell": "%1$s was melted by %2$s's poisonous splash",
+  "death.attack.black_hole_spell": "%1$s's atoms were crushed in %2$s's black hole",
 
   "death.attack.raise_dead_spell.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.summon_vex_spell.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
@@ -439,6 +441,7 @@
   "death.attack.poison_arrow_spell.item": "%1$s was punctured by %2$s's poisonous arrow using %3$s",
   "death.attack.poison_cloud.item": "%1$s was suffocated by %2$s's poisonous cloud while using %3$s",
   "death.attack.poison_splash_spell.item": "%1$s was melted by %2$s's poisonous splash using %3$s",
+  "death.attack.black_hole_spell.item": "%1$s's atoms were crushed in %2$s's black hole while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -524,6 +527,7 @@
   "entity.irons_spellbooks.poison_splash": "Poison Splash",
   "entity.irons_spellbooks.poison_breath": "Poison Breath",
   "entity.irons_spellbooks.acid_orb": "Acid Orb",
+  "entity.irons_spellbooks.black_hole": "Black Hole",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",

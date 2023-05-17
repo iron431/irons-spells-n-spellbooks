@@ -50,7 +50,7 @@ public class DamageSources {
             }
 
             if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
-                if (livingAttacker.isAlliedTo(livingTarget))
+                if (isFriendlyFireBetween(livingAttacker, livingTarget))
                     return false;
                 livingAttacker.setLastHurtMob(target);
             }
@@ -62,6 +62,16 @@ public class DamageSources {
             return target.hurt(damageSource, baseAmount);
         }
 
+    }
+
+    public static boolean isFriendlyFireBetween(Entity attacker, Entity target) {
+        if (attacker == null || target == null)
+            return false;
+        var team = attacker.getTeam();
+        if (team != null) {
+            return team.isAlliedTo(target.getTeam()) && !team.isAllowFriendlyFire();
+        }
+        return false;
     }
 
     public static DamageSource directDamageSource(DamageSource source, Entity attacker) {

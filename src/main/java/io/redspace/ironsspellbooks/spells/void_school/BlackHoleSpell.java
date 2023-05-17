@@ -6,14 +6,15 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class BlackHoleSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(caster), 1)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(caster), 1))
         );
     }
@@ -36,40 +37,48 @@ public class BlackHoleSpell extends AbstractSpell {
         super(SpellType.BLACK_HOLE_SPELL);
         this.level = level;
         this.manaCostPerLevel = 100;
-        this.baseSpellPower = 6;
-        this.spellPowerPerLevel = 2;
-        this.castTime = 20;
+        this.baseSpellPower = 1;
+        this.spellPowerPerLevel = 0;
+        this.castTime = 90;
         this.baseManaCost = 300;
     }
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.VOID_TENTACLES_START.get());
+        return Optional.of(SoundRegistry.BLACK_HOLE_CHARGE.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.VOID_TENTACLES_FINISH.get());
+        return Optional.of(SoundRegistry.BLACK_HOLE_CAST.get());
     }
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        Vec3 center = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 48).getLocation();
-        level.playSound(entity instanceof Player player ? player : null, center.x, center.y, center.z, SoundRegistry.VOID_TENTACLES_FINISH.get(), SoundSource.AMBIENT, 1, 1);
+        float radius = getRadius(entity);
+
+        BlockHitResult raycast = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 16 + radius * 1.5f);
+        Vec3 center = raycast.getLocation();
+        if (raycast.getDirection().getAxis().isHorizontal())
+            center = center.subtract(0, radius, 0);
+        else if (raycast.getDirection() == Direction.DOWN)
+            center = center.subtract(0, radius * 2, 0);
+
+        level.playSound(null, center.x, center.y, center.z, SoundRegistry.BLACK_HOLE_CAST.get(), SoundSource.AMBIENT, 4, 1);
 
         BlackHole blackHole = new BlackHole(level, entity);
-        float radius = getRadius(entity);
         blackHole.setRadius(radius);
+        blackHole.setDamage(getDamage(entity));
         blackHole.moveTo(center);
         level.addFreshEntity(blackHole);
         super.onCast(level, entity, playerMagicData);
     }
 
     private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity);
+        return getSpellPower(entity) * 2;
     }
 
-    private int getRadius(LivingEntity entity) {
-        return 2 * level + 4;
+    private float getRadius(LivingEntity entity) {
+        return (2 * level + 4) * getSpellPower(entity);
     }
 }

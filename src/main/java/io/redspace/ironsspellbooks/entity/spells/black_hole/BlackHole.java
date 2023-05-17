@@ -1,13 +1,18 @@
 package io.redspace.ironsspellbooks.entity.spells.black_hole;
 
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.spells.SchoolType;
+import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
@@ -37,6 +42,16 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         double d2 = this.getZ();
         super.refreshDimensions();
         this.setPos(d0, d1, d2);
+    }
+
+    private float damage;
+
+    public void setDamage(float damage) {
+        this.damage = damage;
+    }
+
+    public float getDamage() {
+        return damage;
     }
 
     @Override
@@ -72,12 +87,15 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     protected void addAdditionalSaveData(CompoundTag pCompound) {
         pCompound.putFloat("Radius", this.getRadius());
         pCompound.putInt("Age", this.tickCount);
+        pCompound.putFloat("Damage", this.getDamage());
 
         super.addAdditionalSaveData(pCompound);
     }
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         this.tickCount = pCompound.getInt("Age");
-
+        this.damage = pCompound.getFloat("Damage");
+        if (damage == 0)
+            damage = 1;
         if (pCompound.getInt("Radius") > 0)
             this.setRadius(pCompound.getFloat("Radius"));
 
@@ -89,18 +107,35 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         super.tick();
         List<Entity> entities = level.getEntities(this, this.getBoundingBox());
         for (Entity entity : entities) {
-            Vec3 center = this.position().add(0, this.getBoundingBox().getYsize() / 2, 0);
-            float distance = (float) center.distanceTo(entity.position());
-            float radius = (float) (this.getBoundingBox().getXsize());
-            float scale = (float) Math.pow(1 - distance / radius, 4) * .25f;
-            Vec3 diff = center.subtract(entity.position()).scale(scale);
-            entity.push(diff.x, diff.y, diff.z);
-            if (this.tickCount % 10 == 0) {
-                if (distance < 3f)
-                    entity.hurt(DamageSource.CRAMMING, 2);
+            if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity)) {
+                Vec3 center = this.position().add(0, this.getBoundingBox().getYsize() / 2, 0);
+                float distance = (float) center.distanceTo(entity.position());
+                float radius = (float) (this.getBoundingBox().getXsize());
+                float f = 1 - distance / radius;
+                float scale = f * f * f * f * .25f;
+                Vec3 diff = center.subtract(entity.position()).scale(scale);
+                entity.push(diff.x, diff.y, diff.z);
+                if (this.tickCount % 10 == 0) {
+                    if (distance < 3f)
+                        DamageSources.applyDamage(entity, damage, SpellType.BLACK_HOLE_SPELL.getDamageSource(this, getOwner()), SchoolType.VOID);
+                }
             }
+
+        }
+        if (!level.isClientSide) {
+            if (tickCount > 20 * 16 * 2) {
+                this.discard();
+                this.playSound(SoundRegistry.BLACK_HOLE_CAST.get(), getRadius() / 2f, 2);
+                MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, getX(), getY() + getRadius(), getZ(), 200, 1, 1, 1, 1, true);
+            } else if ((tickCount - 1) % loopSoundDurationInTicks == 0) {
+                //TODO: stop sound
+                this.playSound(SoundRegistry.BLACK_HOLE_LOOP.get(), getRadius() / 3f, 1);
+            }
+
         }
     }
+
+    private static final int loopSoundDurationInTicks = 320;
 
     @Override
     public boolean displayFireAnimation() {

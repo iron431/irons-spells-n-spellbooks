@@ -262,5 +262,20 @@
     "sounds": [
       "irons_spellbooks:poison_breath_loop"
     ]
+  },
+  "spell.black_hole.cast": {
+    "sounds": [
+      "irons_spellbooks:black_hole_cast"
+    ]
+  },
+  "spell.black_hole.charge": {
+    "sounds": [
+      "irons_spellbooks:black_hole_charge"
+    ]
+  },
+  "entity.black_hole.loop": {
+    "sounds": [
+      "irons_spellbooks:black_hole_loop"
+    ]
   }
 }
