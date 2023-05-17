@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
@@ -277,8 +278,6 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onEntityMountEvent(EntityMountEvent event) {
-        IronsSpellbooks.LOGGER.debug("onEntityMountEvent {} {} {} {}", event.getEntity(), event.isMounting(), event.isDismounting(), event.getEntityBeingMounted());
-
         if (event.getEntity().level.isClientSide) {
             return;
         }
@@ -290,6 +289,14 @@ public class ServerPlayerEvents {
             }
         }
     }
+
+    @SubscribeEvent
+    public static void preventDismount(EntityMountEvent event) {
+        if (!event.getEntity().level.isClientSide && event.getEntityBeingMounted() instanceof PreventDismount && event.isDismounting() && !event.getEntityBeingMounted().isRemoved()) {
+            event.setCanceled(true);
+        }
+    }
+
 
 //    //TODO: Citadel reimplementation
 //    @SubscribeEvent

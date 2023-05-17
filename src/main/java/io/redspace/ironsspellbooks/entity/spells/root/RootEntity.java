@@ -1,20 +1,25 @@
 package io.redspace.ironsspellbooks.entity.spells.root;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.AnimationState;
@@ -31,7 +36,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.UUID;
 
-public class RootEntity extends LivingEntity implements IAnimatable {
+public class RootEntity extends LivingEntity implements IAnimatable, PreventDismount, AntiMagicSusceptible {
     @Nullable
     private LivingEntity owner;
 
@@ -107,10 +112,6 @@ public class RootEntity extends LivingEntity implements IAnimatable {
     }
 
     @Override
-    public void positionRider(@NotNull Entity passenger) {
-    }
-
-    @Override
     public boolean shouldRiderFaceForward(@NotNull Player player) {
         return false;
     }
@@ -138,25 +139,79 @@ public class RootEntity extends LivingEntity implements IAnimatable {
         }
 
         if (!level.isClientSide) {
-            if (age > duration || (target != null && target.isDeadOrDying())) {
-                this.discard();
+            if (age > duration || (target != null && target.isDeadOrDying()) || !isVehicle()) {
+                this.removeRoot();
             }
         } else {
-            if (age < 40 && level.random.nextFloat() < .15f) {
-                level.addParticle(ParticleHelper.ROOT_FOG, getX() + Utils.getRandomScaled(.1f), getY() + Utils.getRandomScaled(.1f), getZ() + Utils.getRandomScaled(.1f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
+            if (age < 20 && level.random.nextFloat() < .15f) {
+                clientDiggingParticles(this);
             }
         }
         age++;
     }
 
-    @Override
-    public HumanoidArm getMainArm() {
-        return HumanoidArm.RIGHT;
+    protected void clientDiggingParticles(LivingEntity livingEntity) {
+        RandomSource randomsource = livingEntity.getRandom();
+        BlockState blockstate = livingEntity.getBlockStateOn();
+        if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
+            for (int i = 0; i < 15; ++i) {
+                double d0 = livingEntity.getX() + (double) Mth.randomBetween(randomsource, -0.5F, 0.5F);
+                double d1 = livingEntity.getY();
+                double d2 = livingEntity.getZ() + (double) Mth.randomBetween(randomsource, -0.5F, 0.5F);
+                livingEntity.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), d0, d1, d2, 0.0D, 0.0D, 0.0D);
+            }
+        }
     }
 
     public void setOwner(@Nullable LivingEntity pOwner) {
         this.owner = pOwner;
         this.ownerUUID = pOwner == null ? null : pOwner.getUUID();
+    }
+
+    @Nullable
+    public LivingEntity getOwner() {
+        if (this.owner == null && this.ownerUUID != null && this.level instanceof ServerLevel) {
+            Entity entity = ((ServerLevel) this.level).getEntity(this.ownerUUID);
+            if (entity instanceof LivingEntity) {
+                this.owner = (LivingEntity) entity;
+            }
+        }
+
+        return this.owner;
+    }
+
+    public void removeRoot() {
+        this.ejectPassengers();
+        this.discard();
+    }
+
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.putInt("Age", this.age);
+        if (this.ownerUUID != null) {
+            pCompound.putUUID("Owner", this.ownerUUID);
+        }
+    }
+
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.age = pCompound.getInt("Age");
+        if (pCompound.hasUUID("Owner")) {
+            this.ownerUUID = pCompound.getUUID("Owner");
+        }
+    }
+
+    @Override
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        this.removeRoot();
+    }
+
+    @Override
+    public HumanoidArm getMainArm() {
+        return HumanoidArm.RIGHT;
     }
 
     @Override
@@ -180,12 +235,14 @@ public class RootEntity extends LivingEntity implements IAnimatable {
     }
 
     @Override
-    public boolean isVehicle() {
-        return true;
+    public void knockback(double pStrength, double pX, double pZ) {
+
     }
 
     @Override
-    public void knockback(double pStrength, double pX, double pZ) {
+    public void positionRider(Entity pPassenger) {
+        //super.positionRider(pPassenger);
+        pPassenger.setPos(this.getX(), this.getY(), this.getZ());
 
     }
 
@@ -200,51 +257,19 @@ public class RootEntity extends LivingEntity implements IAnimatable {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource pSource) {
-        return true;
-    }
-
-    @Override
-    public boolean isInvulnerable() {
-        return true;
-    }
-
-    @Override
     public boolean isPushedByFluid(FluidType type) {
         return false;
     }
 
     @Override
-    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
-    }
-
-    @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
+        if (pSource.isBypassInvul()) {
+            this.removeRoot();
+            return true;
+        }
         return false;
     }
 
-    @Nullable
-    public LivingEntity getOwner() {
-        if (this.owner == null && this.ownerUUID != null && this.level instanceof ServerLevel) {
-            Entity entity = ((ServerLevel) this.level).getEntity(this.ownerUUID);
-            if (entity instanceof LivingEntity) {
-                this.owner = (LivingEntity) entity;
-            }
-        }
-
-        return this.owner;
-    }
-
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
-    public void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        this.age = pCompound.getInt("Age");
-        if (pCompound.hasUUID("Owner")) {
-            this.ownerUUID = pCompound.getUUID("Owner");
-        }
-    }
 
     @Override
     public Iterable<ItemStack> getArmorSlots() {
@@ -259,14 +284,6 @@ public class RootEntity extends LivingEntity implements IAnimatable {
     @Override
     public void setItemSlot(EquipmentSlot pSlot, ItemStack pStack) {
 
-    }
-
-    public void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-        pCompound.putInt("Age", this.age);
-        if (this.ownerUUID != null) {
-            pCompound.putUUID("Owner", this.ownerUUID);
-        }
     }
 
     @Override
@@ -288,7 +305,8 @@ public class RootEntity extends LivingEntity implements IAnimatable {
         return PlayState.CONTINUE;
     }
 
-    private final AnimationBuilder ANIMATION = new AnimationBuilder().playAndHold("root");
+    private final AnimationBuilder ANIMATION = new AnimationBuilder().playAndHold("emerge");
+
     private final AnimationController controller = new AnimationController(this, "root_controller", 0, this::animationPredicate);
 
     @Override

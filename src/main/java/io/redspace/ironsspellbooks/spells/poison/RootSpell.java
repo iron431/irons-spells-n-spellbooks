@@ -1,11 +1,9 @@
 package io.redspace.ironsspellbooks.spells.poison;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
-import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
@@ -16,10 +14,10 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -73,22 +71,38 @@ public class RootSpell extends AbstractSpell {
         }
     }
 
+
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
-            var targetEntity = targetData.getTarget((ServerLevel) world);
-            if (targetEntity != null) {
-                //targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ROOT.get(), getDuration(entity), getAmplifier(entity)));
-                IronsSpellbooks.LOGGER.debug("RootSpell.onCast targetEntity:{}", targetEntity);
-                RootEntity rootEntity = new RootEntity(world, entity, getDuration(entity));
-                rootEntity.setTarget(targetEntity);
-                rootEntity.moveTo(targetEntity.getPosition(2));
-                world.addFreshEntity(rootEntity);
-                targetEntity.startRiding(rootEntity, true);
+    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+//        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
+//            var targetEntity = targetData.getTarget((ServerLevel) level);
+//            if (targetEntity != null) {
+//                //targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ROOT.get(), getDuration(entity), getAmplifier(entity)));
+//                IronsSpellbooks.LOGGER.debug("RootSpell.onCast targetEntity:{}", targetEntity);
+//                RootEntity rootEntity = new RootEntity(level, entity, getDuration(entity));
+//                rootEntity.setTarget(targetEntity);
+//                rootEntity.moveTo(targetEntity.getPosition(2));
+//                level.addFreshEntity(rootEntity);
+//                targetEntity.stopRiding();
+//                targetEntity.startRiding(rootEntity, true);
+//            }
+//
+//        }
+
+        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
+            LivingEntity target = castTargetingData.getTarget((ServerLevel) level);
+            if (target != null){
+                Vec3 spawn = target.position();
+                RootEntity rootEntity = new RootEntity(level, entity, getDuration(entity));
+                rootEntity.setTarget(target);
+                rootEntity.moveTo(spawn);
+                level.addFreshEntity(rootEntity);
+                target.stopRiding();
+                target.startRiding(rootEntity, true);
             }
         }
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(level, entity, playerMagicData);
     }
 
     @Nullable
