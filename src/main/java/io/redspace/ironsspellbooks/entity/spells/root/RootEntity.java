@@ -5,14 +5,18 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -63,7 +67,7 @@ public class RootEntity extends LivingEntity implements IAnimatable {
     }
 
     @Override
-    public boolean canCollideWith(Entity pEntity) {
+    public boolean canCollideWith(@NotNull Entity pEntity) {
         return false;
     }
 
@@ -73,19 +77,14 @@ public class RootEntity extends LivingEntity implements IAnimatable {
     }
 
     @Override
-    protected void doPush(Entity pEntity) {
+    protected void doPush(@NotNull Entity pEntity) {
 
     }
 
     @Override
-    public void push(Entity pEntity) {
+    public void push(@NotNull Entity pEntity) {
 
     }
-
-//    @Override
-//    public AABB getBoundingBoxForCulling() {
-//        return new AABB(0, 0, 0, 0, 0, 0);
-//    }
 
     @Override
     protected void pushEntities() {
@@ -93,16 +92,47 @@ public class RootEntity extends LivingEntity implements IAnimatable {
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public boolean rideableUnderWater() {
+        return true;
+    }
 
-        // This might be needed to deal with a fast moving target
-        if (target != null && !this.position().equals(target.position())) {
-            this.moveTo(target.position());
+    @Override
+    public boolean shouldRiderSit() {
+        return false;
+    }
+
+    @Override
+    public double getPassengersRidingOffset() {
+        return 0d;
+    }
+
+    @Override
+    public void positionRider(@NotNull Entity passenger) {
+    }
+
+    @Override
+    public boolean shouldRiderFaceForward(@NotNull Player player) {
+        return false;
+    }
+
+    @Override
+    public EntityDimensions getDimensions(Pose pPose) {
+        var rooted = getFirstPassenger();
+
+        if (rooted != null) {
+            IronsSpellbooks.LOGGER.debug("getDimensions {}", rooted.getBbWidth());
+            return EntityDimensions.fixed(rooted.getBbWidth() * 1.25f, .75f);
         }
 
+        return super.getDimensions(pPose);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        //IronsSpellbooks.LOGGER.debug("RootEntity.tick {}, {}", getFirstPassenger(), this.level.isClientSide);
         if (playSound) {
-            IronsSpellbooks.LOGGER.debug("Root play sound");
+            this.refreshDimensions();
             playSound(SoundRegistry.ROOT.get(), 1.5f, 1);
             playSound = false;
         }
@@ -139,6 +169,54 @@ public class RootEntity extends LivingEntity implements IAnimatable {
         return false;
     }
 
+    @Override
+    public boolean isDamageSourceBlocked(DamageSource pDamageSource) {
+        return true;
+    }
+
+    @Override
+    public boolean showVehicleHealth() {
+        return false;
+    }
+
+    @Override
+    public boolean isVehicle() {
+        return true;
+    }
+
+    @Override
+    public void knockback(double pStrength, double pX, double pZ) {
+
+    }
+
+    @Override
+    protected boolean isImmobile() {
+        return true;
+    }
+
+    @Override
+    public boolean isAffectedByPotions() {
+        return false;
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource pSource) {
+        return true;
+    }
+
+    @Override
+    public boolean isInvulnerable() {
+        return true;
+    }
+
+    @Override
+    public boolean isPushedByFluid(FluidType type) {
+        return false;
+    }
+
+    @Override
+    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
+    }
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {

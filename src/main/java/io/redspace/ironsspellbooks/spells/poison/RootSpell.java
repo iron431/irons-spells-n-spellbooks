@@ -67,7 +67,7 @@ public class RootSpell extends AbstractSpell {
             playerMagicData.setAdditionalCastData(new CastTargetingData(target));
             if (entity instanceof ServerPlayer serverPlayer)
                 Messages.sendToPlayer(new ClientboundSyncTargetingData(target, getSpellType()), serverPlayer);
-            if(target instanceof ServerPlayer serverPlayer)
+            if (target instanceof ServerPlayer serverPlayer)
                 Utils.sendTargetedNotification(serverPlayer, entity, this.getSpellType());
             return true;
         }
@@ -78,12 +78,13 @@ public class RootSpell extends AbstractSpell {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ROOT.get(), getDuration(entity), getAmplifier(entity)));
+                //targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ROOT.get(), getDuration(entity), getAmplifier(entity)));
                 IronsSpellbooks.LOGGER.debug("RootSpell.onCast targetEntity:{}", targetEntity);
                 RootEntity rootEntity = new RootEntity(world, entity, getDuration(entity));
                 rootEntity.setTarget(targetEntity);
                 rootEntity.moveTo(targetEntity.getPosition(2));
                 world.addFreshEntity(rootEntity);
+                targetEntity.startRiding(rootEntity, true);
             }
         }
 
