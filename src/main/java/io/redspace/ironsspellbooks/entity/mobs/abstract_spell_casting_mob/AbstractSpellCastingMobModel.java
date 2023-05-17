@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
+import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
@@ -79,7 +80,7 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
         /*
             Leg Controls
          */
-        if (entity.isPassenger()) {
+        if (entity.isPassenger() && !(entity.getVehicle() instanceof RootEntity)) {
             //If we are riding something, pose ourselves sitting
             rightLeg.setRotationX(1.4137167F);
             rightLeg.setRotationY(-(float) Math.PI / 10F);

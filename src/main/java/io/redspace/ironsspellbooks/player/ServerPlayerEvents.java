@@ -41,7 +41,6 @@ import java.util.Map;
 @Mod.EventBusSubscriber()
 public class ServerPlayerEvents {
 
-
     @SubscribeEvent()
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
 
@@ -240,7 +239,7 @@ public class ServerPlayerEvents {
         //TODO: subscribe in effect class?
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity livingAttacker) {
-            IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {}", livingAttacker.getName().getString());
+            IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {} target:{}", livingAttacker.getName().getString(), event.getEntity());
             if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT.get())) {
                 if (event.getEntity().hasEffect(MobEffects.POISON)) {
                     int lvl = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT.get()).getAmplifier() + 1;
@@ -251,7 +250,6 @@ public class ServerPlayerEvents {
 
                 }
             }
-
         }
         /*
         Damage Reducing Effects
@@ -279,6 +277,8 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onEntityMountEvent(EntityMountEvent event) {
+        IronsSpellbooks.LOGGER.debug("onEntityMountEvent {} {} {} {}", event.getEntity(), event.isMounting(), event.isDismounting(), event.getEntityBeingMounted());
+
         if (event.getEntity().level.isClientSide) {
             return;
         }
