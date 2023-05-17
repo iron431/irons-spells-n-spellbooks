@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.shield;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
@@ -28,8 +27,8 @@ public class ShieldEntity extends AbstractShieldEntity {
 
     public ShieldEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        width = 4;
-        height = 4;
+        width = 5;
+        height = 5;
         subEntities = new ShieldPart[width * height];
         subPositions = new Vec3[width * height];
         this.setHealth(10);
