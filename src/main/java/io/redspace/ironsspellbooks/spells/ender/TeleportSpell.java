@@ -43,26 +43,6 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
-//        particleCloud(level, entity, entity.position());
-//
-//        Vec3 dest = null;
-//
-//        if (playerMagicData != null) {
-//            if (playerMagicData.getAdditionalCastData() instanceof TeleportData teleportData) {
-//                dest = teleportData.getTeleportTargetPosition();
-//            }
-//        }
-//
-//        if (dest == null) {
-//            dest = findTeleportLocation(level, entity, getDistance(entity));
-//        }
-//
-//        particleCloud(level, entity, dest);
-        super.onClientPreCast(level, entity, hand, playerMagicData);
-    }
-
-    @Override
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.empty();
     }

@@ -2,7 +2,9 @@ package io.redspace.ironsspellbooks.spells.ice;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
+import io.redspace.ironsspellbooks.network.spell.ClientboundFrostStepParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
@@ -14,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -50,26 +51,6 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, PlayerMagicData playerMagicData) {
-        particleCloud(level, entity, entity.getPosition(1));
-
-        Vec3 dest = null;
-
-        if (playerMagicData != null) {
-            if (playerMagicData.getAdditionalCastData() instanceof TeleportSpell.TeleportData teleportData) {
-                dest = teleportData.getTeleportTargetPosition();
-            }
-        }
-
-        if (dest == null) {
-            dest = findTeleportLocation(level, entity);
-        }
-
-        particleCloud(level, entity, dest);
-        super.onClientPreCast(level, entity, hand, playerMagicData);
-    }
-
-    @Override
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.empty();
     }
@@ -96,7 +77,7 @@ public class FrostStepSpell extends AbstractSpell {
         if (dest == null) {
             dest = findTeleportLocation(level, entity);
         }
-
+        Messages.sendToPlayersTrackingEntity(new ClientboundFrostStepParticles(entity.position(), dest), entity, true);
         if (entity.isPassenger()) {
             entity.stopRiding();
         }
@@ -113,10 +94,10 @@ public class FrostStepSpell extends AbstractSpell {
         return TeleportSpell.findTeleportLocation(level, entity, getDistance(entity));
     }
 
-    public static void particleCloud(Level level, LivingEntity entity, Vec3 pos) {
+    public static void particleCloud(Level level, Vec3 pos) {
         if (level.isClientSide) {
             double width = 0.5;
-            float height = entity.getBbHeight() / 2;
+            float height = 1;
             for (int i = 0; i < 25; i++) {
                 double x = pos.x + level.random.nextDouble() * width * 2 - width;
                 double y = pos.y + height + level.random.nextDouble() * height * 1.2 * 2 - height * 1.2;

@@ -89,6 +89,13 @@ public class Messages {
                 .consumer(ClientboundTeleportParticles::handle)
                 .add();
 
+        net.messageBuilder(ClientboundFrostStepParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundFrostStepParticles::new)
+                .encoder(ClientboundFrostStepParticles::toBytes)
+                .consumer(ClientboundFrostStepParticles::handle)
+                .add();
+
+
         net.messageBuilder(ServerboundSetSpellBookActiveIndex.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundSetSpellBookActiveIndex::new)
                 .encoder(ServerboundSetSpellBookActiveIndex::toBytes)

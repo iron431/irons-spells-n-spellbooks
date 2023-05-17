@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
+import io.redspace.ironsspellbooks.spells.ice.FrostStepSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -219,6 +220,17 @@ public class ClientSpellCastHelper {
             var level = Minecraft.getInstance().player.level;
             TeleportSpell.particleCloud(level, pos1);
             TeleportSpell.particleCloud(level, pos2);
+        }
+    }
+
+
+    public static void handleClientboundFrostStep(Vec3 pos1, Vec3 pos2) {
+        var player = Minecraft.getInstance().player;
+
+        if (player != null) {
+            var level = Minecraft.getInstance().player.level;
+            FrostStepSpell.particleCloud(level, pos1);
+            FrostStepSpell.particleCloud(level, pos2);
         }
     }
 
