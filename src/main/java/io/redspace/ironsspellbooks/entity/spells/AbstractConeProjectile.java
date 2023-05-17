@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.util.Mth;
@@ -46,6 +45,11 @@ public abstract class AbstractConeProjectile extends Projectile{
  //Ironsspellbooks.logger.debug("AbstractConeProjectile: Creating sub-entities");
 
         //this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
+    }
+
+    @Override
+    public boolean isOnFire() {
+        return false;
     }
 
     public abstract void spawnParticles();

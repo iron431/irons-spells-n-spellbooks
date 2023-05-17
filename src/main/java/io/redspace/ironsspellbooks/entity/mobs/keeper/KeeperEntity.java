@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
@@ -16,7 +15,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -51,6 +49,8 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
     public KeeperEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 25;
+        maxUpStep = 1f;
+
     }
 
     public KeeperEntity(Level pLevel) {
@@ -128,7 +128,12 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
                 .add(Attributes.FOLLOW_RANGE, 25.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, 2.0)
-                .add(Attributes.MOVEMENT_SPEED, .155);
+                .add(Attributes.MOVEMENT_SPEED, .185);
+    }
+
+    @Override
+    public boolean fireImmune() {
+        return true;
     }
 
     private final AnimationBuilder doubleSlash = new AnimationBuilder().addAnimation("sword_double_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
@@ -137,6 +142,12 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
     private final AnimationBuilder tripleSlash = new AnimationBuilder().addAnimation("sword_triple_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 
     private final AnimationController meleeController = new AnimationController(this, "keeper_animations", 2, this::predicate);
+
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource pSource) {
+        return super.isInvulnerableTo(pSource) || pSource.isFall();
+    }
 
     private PlayState predicate(AnimationEvent animationEvent) {
 //        if(true)

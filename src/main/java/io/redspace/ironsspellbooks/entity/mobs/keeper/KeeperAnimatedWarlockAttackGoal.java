@@ -84,9 +84,14 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     resetAttackTimer(distanceSquared);
 
                 }
+            } else if (--this.attackTime < 0) {
+                //Always keep the clock running, eventually he'll lunge to close distance. Otherwise he can be kited incredibly easily
+                resetAttackTimer(distanceSquared);
+                keeper.randomizeNextAttack();
             }
         }
     }
+
 
     private void forceFaceTarget() {
 

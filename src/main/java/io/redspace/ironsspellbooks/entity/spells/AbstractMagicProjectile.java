@@ -126,4 +126,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         this.explosionRadius = pCompound.getFloat("ExplosionRadius");
 
     }
+
+    @Override
+    public boolean isOnFire() {
+        return false;
+    }
 }

@@ -1679,16 +1679,21 @@
 							"vector": [0, 0, 0]
 						},
 						"1.6": {
-							"vector": [-27.5, 0, 0],
+							"vector": [-5, 0, 0],
 							"easing": "easeInOutCubic"
 						},
 						"1.72": {
-							"vector": [22.5, 0, 0],
+							"vector": [35, 0, 0],
 							"easing": "easeInOutCubic"
 						}
 					},
 					"position": {
-						"vector": [0, 0, 1]
+						"1.6": {
+							"vector": [0, 0, 0]
+						},
+						"1.72": {
+							"vector": [0, 0, 1]
+						}
 					}
 				},
 				"left_arm": {
@@ -2012,7 +2017,7 @@
 			}
 		},
 		"sword_triple_slash": {
-			"animation_length": 2.12,
+			"animation_length": 2.04,
 			"bones": {
 				"body": {
 					"rotation": {
@@ -2023,14 +2028,15 @@
 							"vector": [0, 40, 0],
 							"easing": "easeInOutSine"
 						},
-						"2.04": {
-							"vector": [0, 360, 0],
-							"easing": "easeInElastic"
+						"1.76": {
+							"vector": [0, 180, 0]
 						},
-						"2.08": {
+						"1.8": {
+							"vector": [0, -180, 0]
+						},
+						"2.04": {
 							"vector": [0, 0, 0],
-							"easing": "step",
-							"easingArgs": [2]
+							"easing": "easeInElastic"
 						}
 					},
 					"position": {
@@ -2248,7 +2254,15 @@
 						}
 					},
 					"position": {
-						"vector": [0, 0, 1]
+						"1.04": {
+							"vector": [0, 0, 0]
+						},
+						"1.24": {
+							"vector": [0, 0, 1]
+						},
+						"1.8": {
+							"vector": [0, 0, 0]
+						}
 					}
 				},
 				"left_arm": {
