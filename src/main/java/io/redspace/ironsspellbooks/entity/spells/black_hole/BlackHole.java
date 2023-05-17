@@ -116,16 +116,17 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 Vec3 diff = center.subtract(entity.position()).scale(scale);
                 entity.push(diff.x, diff.y, diff.z);
                 if (this.tickCount % 10 == 0) {
-                    if (distance < 3f)
+                    if (distance < 3f && canHitEntity(entity))
                         DamageSources.applyDamage(entity, damage, SpellType.BLACK_HOLE_SPELL.getDamageSource(this, getOwner()), SchoolType.VOID);
                 }
+                entity.resetFallDistance();
             }
 
         }
         if (!level.isClientSide) {
             if (tickCount > 20 * 16 * 2) {
                 this.discard();
-                this.playSound(SoundRegistry.BLACK_HOLE_CAST.get(), getRadius() / 2f, 2);
+                this.playSound(SoundRegistry.BLACK_HOLE_CAST.get(), getRadius() / 2f, 1);
                 MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, getX(), getY() + getRadius(), getZ(), 200, 1, 1, 1, 1, true);
             } else if ((tickCount - 1) % loopSoundDurationInTicks == 0) {
                 //TODO: stop sound

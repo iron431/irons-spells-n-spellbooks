@@ -363,6 +363,7 @@
   "spell.irons_spellbooks.acid_orb.guide": "Spit an orb of acid, splashing in a radius upon impact and rending creatures hit, melting away and reducing their armor",
   "spell.irons_spellbooks.spider_aspect.guide": "Instill yourself with poisonous magic, dealing additional melee, ranged, or spell damage creatures that are poisoned",
   "spell.irons_spellbooks.blight.guide": "Target a creature to blight them, reducing their incoming healing and outgoing damage",
+  "spell.irons_spellbooks.black_hole.guide": "Around a targeted location, create a fissure into the void, manifesting a black hole that will suck in nearby creatures and slowly crush them to death.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

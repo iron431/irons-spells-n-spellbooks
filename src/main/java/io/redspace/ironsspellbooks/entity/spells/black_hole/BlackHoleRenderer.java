@@ -7,6 +7,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
 
 public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
     public BlackHoleRenderer(EntityRendererProvider.Context pContext) {
@@ -36,7 +38,7 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         poseStack.scale(.5f * entityScale, .5f * entityScale, .5f * entityScale);
         poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
         poseStack.mulPose(Vector3f.YP.rotationDegrees(90f));
-        poseStack.translate(7, 0, 0);
+        poseStack.translate(1, 0, 0);
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(CENTER_TEXTURE));
 
@@ -46,6 +48,11 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         consumer.vertex(poseMatrix, 0, -8, 8).color(0, 0, 0, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         poseStack.popPose();
         poseStack.pushPose();
+        if (Minecraft.getInstance().player != null) {
+            Vec3 backwards = Minecraft.getInstance().player.position().subtract(entity.getPosition(partialTicks)).normalize().scale(-2);
+            poseStack.translate(backwards.x, backwards.y, backwards.z);
+        }
+
         poseStack.translate(0, entity.getBoundingBox().getYsize() / 2, 0);
         float animationProgress = (entity.tickCount + partialTicks) / 200.0F;
         //float fadeProgress = Math.min(animationProgress > 0.8F ? (animationProgress - 0.8F) / 0.2F : 0.0F, 1.0F);

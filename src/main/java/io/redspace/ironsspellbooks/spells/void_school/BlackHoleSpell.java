@@ -39,7 +39,7 @@ public class BlackHoleSpell extends AbstractSpell {
         this.manaCostPerLevel = 100;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
-        this.castTime = 90;
+        this.castTime = 100;
         this.baseManaCost = 300;
     }
 
