@@ -31,5 +31,6 @@ public class ModTags {
     public static final ResourceKey<Structure> MAGIC_AURA_TEMP = ResourceKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "citadel"));
 
     public static final TagKey<EntityType<?>> ALWAYS_HEAL = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "always_heal"));
+    public static final TagKey<EntityType<?>> CANT_ROOT = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "cant_root"));
 
 }

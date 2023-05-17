@@ -42,6 +42,7 @@ public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile>
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees((entity.tickCount + partialTicks) * 40));
 
         //Vertical plane
         consumer.vertex(poseMatrix, 0, -8, -8).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();

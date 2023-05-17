@@ -7,7 +7,9 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.ConePart;
+import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
+import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
@@ -302,7 +304,7 @@ public class Utils {
 
     private static boolean canHitWithRaycast(Entity entity) {
         //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
-        return !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart || entity instanceof ItemEntity);
+        return !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart || entity instanceof ItemEntity || entity instanceof VoidTentacle || entity instanceof RootEntity);
     }
 
     public static Vec2 rotationFromDirection(Vec3 vector) {

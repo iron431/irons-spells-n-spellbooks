@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -39,11 +40,11 @@ public class RootSpell extends AbstractSpell {
     public RootSpell(int level) {
         super(SpellType.ROOT_SPELL);
         this.level = level;
-        this.manaCostPerLevel = 10;
-        this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 0;
-        this.castTime = 50;
-        this.baseManaCost = 20;
+        this.manaCostPerLevel = 3;
+        this.baseSpellPower = 5;
+        this.spellPowerPerLevel = 1;
+        this.castTime = 40;
+        this.baseManaCost = 45;
     }
 
     @Override
@@ -91,9 +92,10 @@ public class RootSpell extends AbstractSpell {
 
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
             LivingEntity target = castTargetingData.getTarget((ServerLevel) level);
-            if (target != null){
+            if (target != null && !target.getType().is(ModTags.CANT_ROOT)){
                 Vec3 spawn = target.position();
-                RootEntity rootEntity = new RootEntity(level, entity, getDuration(entity));
+                RootEntity rootEntity = new RootEntity(level, entity);
+                rootEntity.setDuration(getDuration(entity));
                 rootEntity.setTarget(target);
                 rootEntity.moveTo(spawn);
                 level.addFreshEntity(rootEntity);
@@ -120,7 +122,7 @@ public class RootSpell extends AbstractSpell {
     }
 
     public int getDuration(LivingEntity caster) {
-        return (int) (getSpellPower(caster) * 20 * 30);
+        return (int) (getSpellPower(caster) * 20);
     }
 
 }

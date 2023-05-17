@@ -5,6 +5,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -47,20 +49,17 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
 
     @Nullable
     private UUID ownerUUID;
-    private int age;
     private int duration;
     private boolean playSound = true;
     private LivingEntity target;
 
     public RootEntity(EntityType<? extends RootEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        duration = 200;
     }
 
-    public RootEntity(Level level, LivingEntity owner, int duration) {
+    public RootEntity(Level level, LivingEntity owner) {
         this(EntityRegistry.ROOT.get(), level);
         setOwner(owner);
-        this.duration = duration;
     }
 
     public LivingEntity getTarget() {
@@ -139,15 +138,14 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
         }
 
         if (!level.isClientSide) {
-            if (age > duration || (target != null && target.isDeadOrDying()) || !isVehicle()) {
+            if (tickCount > duration || (target != null && target.isDeadOrDying()) || !isVehicle()) {
                 this.removeRoot();
             }
         } else {
-            if (age < 20 && level.random.nextFloat() < .15f) {
+            if (tickCount < 20) {
                 clientDiggingParticles(this);
             }
         }
-        age++;
     }
 
     protected void clientDiggingParticles(LivingEntity livingEntity) {
@@ -168,6 +166,10 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
         this.ownerUUID = pOwner == null ? null : pOwner.getUUID();
     }
 
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
     @Nullable
     public LivingEntity getOwner() {
         if (this.owner == null && this.ownerUUID != null && this.level instanceof ServerLevel) {
@@ -181,16 +183,22 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
     }
 
     public void removeRoot() {
+        if (level.isClientSide) {
+            for (int i = 0; i < 5; i++) {
+                level.addParticle(ParticleHelper.ROOT_FOG, getX() + Utils.getRandomScaled(.1f), getY() + Utils.getRandomScaled(.1f), getZ() + Utils.getRandomScaled(.1f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
+            }
+        }
         this.ejectPassengers();
         this.discard();
     }
 
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.putInt("Age", this.age);
+        pCompound.putInt("Age", this.tickCount);
         if (this.ownerUUID != null) {
             pCompound.putUUID("Owner", this.ownerUUID);
         }
+        pCompound.putInt("Duration", duration);
     }
 
     /**
@@ -198,10 +206,11 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
      */
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.age = pCompound.getInt("Age");
+        this.tickCount = pCompound.getInt("Age");
         if (pCompound.hasUUID("Owner")) {
             this.ownerUUID = pCompound.getUUID("Owner");
         }
+        this.duration = pCompound.getInt("Duration");
     }
 
     @Override
@@ -240,9 +249,19 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
     }
 
     @Override
-    public void positionRider(Entity pPassenger) {
+    public void positionRider(Entity passenger) {
         //super.positionRider(pPassenger);
-        pPassenger.setPos(this.getX(), this.getY(), this.getZ());
+        int x = (int) (this.getX() - passenger.getX());
+        int y = (int) (this.getY() - passenger.getY());
+        int z = (int) (this.getZ() - passenger.getZ());
+        x *= x;
+        y *= y;
+        z *= z;
+        //probably teleported away
+        if (x + y + z > 5 * 5)
+            this.removeRoot();
+        else
+            passenger.setPos(this.getX(), this.getY(), this.getZ());
 
     }
 
