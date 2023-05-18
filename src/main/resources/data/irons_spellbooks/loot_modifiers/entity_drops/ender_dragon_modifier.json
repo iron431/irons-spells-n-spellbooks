@@ -1,0 +1,13 @@
+{
+  "type": "irons_spellbooks:append_loot",
+  "conditions": [
+    {
+      "condition": "minecraft:entity_properties",
+      "entity": "this",
+      "predicate": {
+        "type": "minecraft:ender_dragon"
+      }
+    }
+  ],
+  "key": "irons_spellbooks:entities/additional_dragon_loot"
+}

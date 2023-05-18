@@ -132,17 +132,17 @@ public class ServerConfigs {
         BUILDER.comment("Void Spells");
         createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, true, 3, SpellRarity.LEGENDARY, 300);
         createSpellConfig(SpellType.VOID_TENTACLES_SPELL, true, 3, SpellRarity.LEGENDARY, 30);
-        createSpellConfig(SpellType.BLACK_HOLE_SPELL, true, 6, SpellRarity.LEGENDARY, 40);
-        BUILDER.pop();
+        createSpellConfig(SpellType.BLACK_HOLE_SPELL, true, 6, SpellRarity.LEGENDARY, 120);
         //Poison
         BUILDER.comment("Poison Spells");
         createSpellConfig(SpellType.POISON_ARROW_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.POISON_SPLASH_SPELL, true, 10, SpellRarity.UNCOMMON, 20);
         createSpellConfig(SpellType.POISON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 12);
         createSpellConfig(SpellType.ACID_ORB_SPELL, true, 10, SpellRarity.COMMON, 15);
-        createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, true, 8, SpellRarity.COMMON, 35);
-
-
+        createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, true, 8, SpellRarity.RARE, 35);
+        createSpellConfig(SpellType.BLIGHT_SPELL, true, 10, SpellRarity.RARE, 35);
+        createSpellConfig(SpellType.ROOT_SPELL, true, 10, SpellRarity.UNCOMMON, 35);
+        BUILDER.pop();
 
 
         SPEC = BUILDER.build();

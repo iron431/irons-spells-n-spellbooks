@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "DOD",
+    "DRD",
+    "DOD"
+  ],
+  "key":
+  {
+    "O":
+    {
+      "tag": "forge:obsidian"
+    },
+    "R":
+    {
+      "item": "irons_spellbooks:ruined_book"
+    },
+    "D":
+    {
+      "item": "irons_spellbooks:dragonskin"
+    }
+  },
+  "result":
+  {
+    "item": "irons_spellbooks:dragonskin_spell_book",
+    "count": 1
+  }
+}

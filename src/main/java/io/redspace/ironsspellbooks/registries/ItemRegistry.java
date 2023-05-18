@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.armor.*;
 import io.redspace.ironsspellbooks.item.curios.*;
-import io.redspace.ironsspellbooks.item.spell_books.BlazeSpellBook;
+import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import io.redspace.ironsspellbooks.item.spell_books.VillagerSpellBook;
 import io.redspace.ironsspellbooks.item.weapons.BloodStaffItem;
 import io.redspace.ironsspellbooks.item.weapons.MagehunterItem;
@@ -47,14 +47,15 @@ public class ItemRegistry {
      */
     public static final RegistryObject<Item> WIMPY_SPELL_BOOK = ITEMS.register("wimpy_spell_book", () -> new SpellBook(0, SpellRarity.LEGENDARY, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> LEGENDARY_SPELL_BOOK = ITEMS.register("legendary_spell_book", () -> new SpellBook(12, SpellRarity.LEGENDARY, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
-    public static final RegistryObject<Item> NETHERITE_SPELL_BOOK = ITEMS.register("netherite_spell_book", () -> new SpellBook(10, SpellRarity.LEGENDARY));
+    public static final RegistryObject<Item> NETHERITE_SPELL_BOOK = ITEMS.register("netherite_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.COOLDOWN_REDUCTION.get(), .20));
     public static final RegistryObject<Item> DIAMOND_SPELL_BOOK = ITEMS.register("diamond_spell_book", () -> new SpellBook(8, SpellRarity.EPIC));
     public static final RegistryObject<Item> GOLD_SPELL_BOOK = ITEMS.register("gold_spell_book", () -> new SpellBook(6, SpellRarity.RARE));
     public static final RegistryObject<Item> IRON_SPELL_BOOK = ITEMS.register("iron_spell_book", () -> new SpellBook(5, SpellRarity.UNCOMMON));
     public static final RegistryObject<Item> COPPER_SPELL_BOOK = ITEMS.register("copper_spell_book", () -> new SpellBook(4, SpellRarity.COMMON));
     public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(SpellRarity.COMMON, new AbstractSpell[]{new FangStrikeSpell(6), new FangWardSpell(4), new SummonVexSpell(4)}));
     public static final RegistryObject<Item> ROTTEN_SPELL_BOOK = ITEMS.register("rotten_spell_book", () -> new SpellBook(3, SpellRarity.RARE));
-    public static final RegistryObject<Item> BLAZE_SPELL_BOOK = ITEMS.register("blaze_spell_book", BlazeSpellBook::new);
+    public static final RegistryObject<Item> BLAZE_SPELL_BOOK = ITEMS.register("blaze_spell_book", () -> new SimpleAttributeSpellBook(5, SpellRarity.EPIC, AttributeRegistry.FIRE_SPELL_POWER.get(), .10));
+    public static final RegistryObject<Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.ENDER_SPELL_POWER.get(), .10));
     public static final RegistryObject<Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", VillagerSpellBook::new);
     public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new BloodStaffItem(new AbstractSpell[]{new WitherSkullSpell(6), new RayOfSiphoningSpell(6), new BloodStepSpell(3), new BloodSlashSpell(6), new BlazeStormSpell(6)}));
     public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", () -> new MagehunterItem(SpellType.COUNTERSPELL_SPELL, 1));
@@ -93,6 +94,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> BLOOD_VIAL = ITEMS.register("blood_vial", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> DIVINE_PEARL = ITEMS.register("divine_pearl", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> HOGSKIN = ITEMS.register("hogskin", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
+    public static final RegistryObject<Item> DRAGONSKIN = ITEMS.register("dragonskin", DragonskinItem::new);
     public static final RegistryObject<Item> ARCANE_ESSENCE = ITEMS.register("arcane_essence", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> MAGIC_CLOTH = ITEMS.register("magic_cloth", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> BLANK_RUNE = ITEMS.register("blank_rune", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));

@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.entity.mobs.necromancer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
@@ -47,7 +46,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
                         List.of(),
                         List.of(SpellType.BLIGHT_SPELL)
                 )
-                .setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 80, 350, 3, 5)
+                .setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 80, 350, 4, 5)
                 .setDrinksPotions());
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
