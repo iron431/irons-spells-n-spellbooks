@@ -139,8 +139,8 @@ public class ServerConfigs {
         createSpellConfig(SpellType.POISON_SPLASH_SPELL, true, 10, SpellRarity.UNCOMMON, 20);
         createSpellConfig(SpellType.POISON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 12);
         createSpellConfig(SpellType.ACID_ORB_SPELL, true, 10, SpellRarity.COMMON, 15);
-        createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, true, 8, SpellRarity.RARE, 35);
-        createSpellConfig(SpellType.BLIGHT_SPELL, true, 10, SpellRarity.RARE, 35);
+        createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, true, 8, SpellRarity.RARE, 90);
+        createSpellConfig(SpellType.BLIGHT_SPELL, true, 8, SpellRarity.RARE, 35);
         createSpellConfig(SpellType.ROOT_SPELL, true, 10, SpellRarity.UNCOMMON, 35);
         BUILDER.pop();
 

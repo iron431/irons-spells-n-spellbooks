@@ -3442,17 +3442,6 @@
 		"charge_black_hole": {
 			"animation_length": 30,
 			"bones": {
-				"head": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.6": {
-							"vector": [70, 0, 0],
-							"easing": "easeInOutQuad"
-						}
-					}
-				},
 				"right_arm": {
 					"rotation": {
 						"0.0": {
