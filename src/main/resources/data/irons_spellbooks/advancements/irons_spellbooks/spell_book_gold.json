@@ -10,7 +10,7 @@
       "translate": "advancements.irons_spellbooks.spell_book_gold.description"
     },
     "announce_to_chat": false,
-    "show_toast": false,
+    "show_toast": true,
     "frame": "task"
   },
   "parent": "irons_spellbooks:irons_spellbooks/spell_book_iron",

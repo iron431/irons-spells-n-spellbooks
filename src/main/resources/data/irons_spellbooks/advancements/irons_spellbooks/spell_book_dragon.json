@@ -1,13 +1,13 @@
 {
   "display": {
     "icon": {
-      "item": "irons_spellbooks:netherite_spell_book"
+      "item": "irons_spellbooks:dragonskin_spell_book"
     },
     "title": {
-      "translate": "advancements.irons_spellbooks.spell_book_netherite.title"
+      "translate": "advancements.irons_spellbooks.spell_book_dragon.title"
     },
     "description": {
-      "translate": "advancements.irons_spellbooks.spell_book_netherite.description"
+      "translate": "advancements.irons_spellbooks.spell_book_dragon.description"
     },
     "announce_to_chat": false,
     "show_toast": true,
@@ -20,7 +20,7 @@
         "items": [
           {
             "items": [
-              "irons_spellbooks:netherite_spell_book"
+              "irons_spellbooks:dragonskin_spell_book"
             ]
           }
         ]

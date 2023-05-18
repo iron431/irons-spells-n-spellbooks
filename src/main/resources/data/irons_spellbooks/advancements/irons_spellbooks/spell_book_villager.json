@@ -14,7 +14,7 @@
     "show_toast": true,
     "frame": "task"
   },
-  "parent": "irons_spellbooks:irons_spellbooks/spell_book_diamond",
+  "parent": "irons_spellbooks:irons_spellbooks/spell_book_gold",
   "criteria": {
     "requirement": {
       "conditions": {
