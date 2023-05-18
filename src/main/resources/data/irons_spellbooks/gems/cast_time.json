@@ -1,0 +1,60 @@
+{
+    "variant": "cast_time",
+    "weight": 5,
+    "quality": 0,
+    "dimensions": [],
+    "bonuses": [
+        {
+            "type": "apotheosis:attribute",
+            "gem_class":
+            {
+                "key": "armor",
+                "types": ["helmet",
+                    "chestplate",
+                    "leggings",
+                    "boots"]
+            },
+            "attribute": "irons_spellbooks:cast_time_reduction",
+            "operation": "MULTIPLY_TOTAL",
+            "values":
+            {
+                "common":
+                {
+                    "min": 0.001,
+                    "steps": 10,
+                    "step": 0.001
+                },
+                "uncommon":
+                {
+                    "min": 0.03,
+                    "steps": 10,
+                    "step": 0.001
+                },
+                "rare":
+                {
+                    "min": 0.05,
+                    "steps": 10,
+                    "step": 0.001
+                },
+                "epic":
+                {
+                    "min": 0.07,
+                    "steps": 10,
+                    "step": 0.001
+                },
+                "mythic":
+                {
+                    "min": 0.09,
+                    "steps": 10,
+                    "step": 0.001
+                },
+                "ancient":
+                {
+                    "min": 0.1,
+                    "steps": 10,
+                    "step": 0.001
+                }
+            }
+        }
+    ]
+}

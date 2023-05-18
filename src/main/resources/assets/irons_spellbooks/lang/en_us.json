@@ -626,5 +626,23 @@
   "tetra.stats.irons_spellbooks:freeze": "Freeze",
   "tetra.stats.irons_spellbooks:freeze.tooltip_short": "Stacks the freezing effect on mobs hit.",
   "tetra.stats.irons_spellbooks:mana_siphon": "Mana Siphon",
-  "tetra.stats.irons_spellbooks:mana_siphon.tooltip_short": "Regenerates mana as a percent of damage dealt."
+  "tetra.stats.irons_spellbooks:mana_siphon.tooltip_short": "Regenerates mana as a percent of damage dealt.",
+
+  "item.apotheosis.gem.irons_spellbooks:intelligent": "Intelligence Gem",
+  "item.apotheosis.gem.irons_spellbooks:fire": "Inferno Gem",
+  "item.apotheosis.gem.irons_spellbooks:ice": "Frozen Gem",
+  "item.apotheosis.gem.irons_spellbooks:lightning": "Storm Gem",
+  "item.apotheosis.gem.irons_spellbooks:holy": "Holy Gem",
+  "item.apotheosis.gem.irons_spellbooks:ender": "Ender Gem",
+  "item.apotheosis.gem.irons_spellbooks:blood": "Blood Gem",
+  "item.apotheosis.gem.irons_spellbooks:evocation": "Illager's Gem",
+  "item.apotheosis.gem.irons_spellbooks:cast_time": "Gem of Arcane Efficiency",
+  "item.apotheosis.gem.irons_spellbooks:cooldown": "Gem of Arcane Recovery",
+  "item.apotheosis.gem.irons_spellbooks:summoning": "Necromancy Gem",
+  "item.apotheosis.gem.irons_spellbooks:spell_resist": "Gem of Arcane Protection",
+
+  "affix.irons_spellbooks:armor/attribute/mana": "Intelligent",
+  "affix.irons_spellbooks:armor/attribute/mana.suffix": "of the Artificer",
+  "affix.irons_spellbooks:armor/attribute/cooldown": "Quick-Minded",
+  "affix.irons_spellbooks:armor/attribute/cooldown.suffix": "of the Fast-Wit"
 }

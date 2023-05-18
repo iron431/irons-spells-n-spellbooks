@@ -24,6 +24,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public enum SpellType {

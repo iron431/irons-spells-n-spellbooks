@@ -347,6 +347,7 @@ public abstract class AbstractSpell {
             case ENDER -> SoundRegistry.ENDER_CAST.get();
             case BLOOD -> SoundRegistry.BLOOD_CAST.get();
             case EVOCATION -> SoundRegistry.EVOCATION_CAST.get();
+            case POISON -> SoundRegistry.POISON_CAST.get();
             default -> SoundRegistry.EVOCATION_CAST.get();
         };
     }
