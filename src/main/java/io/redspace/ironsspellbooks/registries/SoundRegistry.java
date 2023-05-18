@@ -52,10 +52,13 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> POISON_ARROW_CHARGE = registerSoundEvent("spell.poison_arrow.charge");
     public static RegistryObject<SoundEvent> POISON_ARROW_CAST = registerSoundEvent("spell.poison_arrow.cast");
     public static RegistryObject<SoundEvent> POISON_BREATH_LOOP = registerSoundEvent("spell.poison_breath.loop");
-    public static RegistryObject<SoundEvent> ROOT = registerSoundEvent("entity.root.start");
+    public static RegistryObject<SoundEvent> ROOT_EMERGE = registerSoundEvent("entity.root.emerge");
     public static RegistryObject<SoundEvent> BLACK_HOLE_CHARGE = registerSoundEvent("spell.black_hole.charge");
     public static RegistryObject<SoundEvent> BLACK_HOLE_CAST = registerSoundEvent("spell.black_hole.cast");
     public static RegistryObject<SoundEvent> BLACK_HOLE_LOOP = registerSoundEvent("entity.black_hole.loop");
+    public static RegistryObject<SoundEvent> POISON_SPLASH_BEGIN = registerSoundEvent("spell.poison_splash.begin");
+    public static RegistryObject<SoundEvent> BLIGHT_BEGIN = registerSoundEvent("spell.blight.begin");
+    public static RegistryObject<SoundEvent> SPIDER_ASPECT_CAST = registerSoundEvent("spell.spider_aspect.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

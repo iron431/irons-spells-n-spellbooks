@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.effect.BlightEffect;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -51,7 +52,7 @@ public class BlightSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.BLIGHT_BEGIN.get());
     }
 
     @Override

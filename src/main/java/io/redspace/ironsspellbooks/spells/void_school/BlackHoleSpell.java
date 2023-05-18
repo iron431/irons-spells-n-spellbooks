@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib3.core.builder.ILoopType;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,5 +82,18 @@ public class BlackHoleSpell extends AbstractSpell {
 
     private float getRadius(LivingEntity entity) {
         return (2 * level + 4) * getSpellPower(entity);
+    }
+
+    public static final AnimationHolder CHARGE_ANIMATION = new AnimationHolder("charge_black_hole", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final AnimationHolder FINISH_ANIMATION = new AnimationHolder("long_cast_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+
+    @Override
+    public AnimationHolder getCastStartAnimation() {
+        return CHARGE_ANIMATION;
+    }
+
+    @Override
+    public AnimationHolder getCastFinishAnimation() {
+        return FINISH_ANIMATION;
     }
 }

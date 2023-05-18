@@ -133,7 +133,7 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
         //IronsSpellbooks.LOGGER.debug("RootEntity.tick {}, {}", getFirstPassenger(), this.level.isClientSide);
         if (playSound) {
             this.refreshDimensions();
-            playSound(SoundRegistry.ROOT.get(), 1.5f, 1);
+            playSound(SoundRegistry.ROOT_EMERGE.get(), 2f, 1);
             playSound = false;
         }
 

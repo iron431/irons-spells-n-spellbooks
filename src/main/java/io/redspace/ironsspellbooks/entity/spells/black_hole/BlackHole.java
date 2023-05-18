@@ -18,6 +18,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlackHole extends Projectile implements AntiMagicSusceptible {
@@ -28,9 +29,11 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     }
 
     public BlackHole(Level pLevel, LivingEntity owner) {
-        super(EntityRegistry.BLACK_HOLE.get(), pLevel);
+        this(EntityRegistry.BLACK_HOLE.get(), pLevel);
         setOwner(owner);
     }
+
+    List<Entity> trackingEntities = new ArrayList<>();
 
     @Override
     public void onAntiMagic(PlayerMagicData playerMagicData) {
@@ -76,7 +79,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
 
     public void setRadius(float pRadius) {
         if (!this.level.isClientSide) {
-            this.getEntityData().set(DATA_RADIUS, pRadius);
+            this.getEntityData().set(DATA_RADIUS, Math.min(pRadius, 48));
         }
     }
 
@@ -105,8 +108,11 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     @Override
     public void tick() {
         super.tick();
-        List<Entity> entities = level.getEntities(this, this.getBoundingBox());
-        for (Entity entity : entities) {
+        int update = (int) (getRadius() / 2);
+        //prevent lag from giagantic black holes
+        if (tickCount % update == 0)
+            updateTrackingEntities();
+        for (Entity entity : trackingEntities) {
             if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity)) {
                 Vec3 center = this.position().add(0, this.getBoundingBox().getYsize() / 2, 0);
                 float distance = (float) center.distanceTo(entity.position());
@@ -134,6 +140,10 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
             }
 
         }
+    }
+
+    private void updateTrackingEntities() {
+        trackingEntities = level.getEntities(this, this.getBoundingBox().inflate(1));
     }
 
     private static final int loopSoundDurationInTicks = 320;

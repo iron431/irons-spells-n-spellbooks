@@ -62,7 +62,7 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.energySwirl(BEAM_TEXTURE, 0, 0));
         //poseStack.translate(0.0D, -1.0D, -2.0D);
 
-        float segments = Math.min(animationProgress, .6f);
+        float segments = Math.min(animationProgress, .8f);
         for (int i = 0; (float) i < (segments + segments * segments) / 2.0F * 60.0F; ++i) {
             poseStack.mulPose(Vector3f.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
             poseStack.mulPose(Vector3f.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
