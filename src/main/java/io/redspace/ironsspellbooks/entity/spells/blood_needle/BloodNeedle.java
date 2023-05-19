@@ -84,6 +84,12 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
+    protected void doImpactSound(SoundEvent sound) {
+        if (level.getEntitiesOfClass(BloodNeedle.class, getBoundingBox().inflate(2)).size() <= 1)
+            super.doImpactSound(sound);
+    }
+
+    @Override
     public void trailParticles() {
 
         for (int i = 0; i < 2; i++) {

@@ -61,18 +61,7 @@ public class WispSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        var target = findTarget(entity);
-        if (target == null)
-            return false;
-        else {
-            playerMagicData.setAdditionalCastData(new CastTargetingData(target));
-            if (entity instanceof ServerPlayer serverPlayer)
-                Messages.sendToPlayer(new ClientboundSyncTargetingData(target, getSpellType()), serverPlayer);
-            if(target instanceof ServerPlayer serverPlayer)
-                Utils.sendTargetedNotification(serverPlayer, entity, this.getSpellType());
-
-            return true;
-        }
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 48, .35f);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.util;
 
+import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -14,6 +15,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
+import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.*;
@@ -471,7 +473,27 @@ public class Utils {
         return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && !pLevel.getBiome(pPos).is(Biomes.MUSHROOM_FIELDS) && Monster.checkMonsterSpawnRules(pType, pLevel, pSpawnType, pPos, pRandom);
     }
 
-    public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, SpellType spell){
-        target.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_warning",caster.getDisplayName().getString(), spell.getDisplayName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
+    public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, SpellType spell) {
+        target.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_warning", caster.getDisplayName().getString(), spell.getDisplayName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
+    }
+
+    public static boolean preCastTargetHelper(Level level, LivingEntity caster, PlayerMagicData playerMagicData, SpellType spellType, int range, float aimAssist) {
+        return preCastTargetHelper(level, caster, playerMagicData, spellType, range, aimAssist, true);
+    }
+
+    public static boolean preCastTargetHelper(Level level, LivingEntity caster, PlayerMagicData playerMagicData, SpellType spellType, int range, float aimAssist, boolean sendFailureMessage) {
+        var target = Utils.raycastForEntity(caster.level, caster, range, true, aimAssist);
+        if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
+            playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
+            if (caster instanceof ServerPlayer serverPlayer)
+                Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spellType), serverPlayer);
+            if (livingTarget instanceof ServerPlayer serverPlayer)
+                Utils.sendTargetedNotification(serverPlayer, caster, spellType);
+            return true;
+        } else if (sendFailureMessage && caster instanceof ServerPlayer serverPlayer) {
+            serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_target").withStyle(ChatFormatting.RED)));
+        }
+        return false;
+
     }
 }

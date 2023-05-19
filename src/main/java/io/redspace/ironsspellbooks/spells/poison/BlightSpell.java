@@ -63,17 +63,7 @@ public class BlightSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        var target = findTarget(entity);
-        if (target == null)
-            return false;
-        else {
-            playerMagicData.setAdditionalCastData(new CastTargetingData(target));
-            if (entity instanceof ServerPlayer serverPlayer)
-                Messages.sendToPlayer(new ClientboundSyncTargetingData(target, getSpellType()), serverPlayer);
-            if(target instanceof ServerPlayer serverPlayer)
-                Utils.sendTargetedNotification(serverPlayer, entity, this.getSpellType());
-            return true;
-        }
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 32, .35f);
     }
 
     @Override
@@ -86,16 +76,6 @@ public class BlightSpell extends AbstractSpell {
         }
 
         super.onCast(world, entity, playerMagicData);
-    }
-
-    @Nullable
-    private LivingEntity findTarget(LivingEntity caster) {
-        var target = Utils.raycastForEntity(caster.level, caster, 32, true, 0.35f);
-        if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
-            return livingTarget;
-        } else {
-            return null;
-        }
     }
 
     public int getAmplifier(LivingEntity caster) {
