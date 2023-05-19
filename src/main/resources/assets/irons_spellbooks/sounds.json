@@ -297,5 +297,10 @@
     "sounds": [
       "irons_spellbooks:spider_aspect_cast"
     ]
+  },
+  "entity.blood_needle.impact": {
+    "sounds": [
+      "irons_spellbooks:blood_needle_impact"
+    ]
   }
 }

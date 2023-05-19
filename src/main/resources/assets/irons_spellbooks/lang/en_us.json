@@ -310,6 +310,7 @@
   "spell.irons_spellbooks.blight": "Blight",
   "spell.irons_spellbooks.black_hole": "Black Hole",
   "spell.irons_spellbooks.root": "Root",
+  "spell.irons_spellbooks.blood_needles": "Blood Needles",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -319,7 +320,7 @@
   "spell.irons_spellbooks.cone_of_cold.guide": "Hold to cast out a cone of cold energy, freezing creatures in its path.",
   "spell.irons_spellbooks.electrocute.guide": "Hold to manifest a cone of electrical energy, damaging creatures in its path.",
   "spell.irons_spellbooks.heal.guide": "Cast to infuse yourself with holy energy and immediately regain health.",
-  "spell.irons_spellbooks.blood_slash.guide": "Slash forward to send out a concentrated blade of blood, growing in size as it travels.",
+  "spell.irons_spellbooks.blood_slash.guide": "Slash forward to send out a concentrated blade of blood, slicing through creatures and healing for 15% of damage done.",
   "spell.irons_spellbooks.summon_vex.guide": "Cast to conjure vexes that will follow, protect, and fight for you.",
   "spell.irons_spellbooks.firebolt.guide": "Shoot a small projectile of fire, igniting whatever it hits.",
   "spell.irons_spellbooks.fire_breath.guide": "Hold to spew a cone of fire outwards, igniting creatures and blocks in its path.",
@@ -341,7 +342,7 @@
   "spell.irons_spellbooks.wither_skull.guide": "Launch a wither skull forward that explodes in a small radius around the impact. The higher the level, the faster the projectile.",
   "spell.irons_spellbooks.greater_heal.guide": "A more powerful but much slower version of heal, this spell will completely heal yourself upon being casted.",
   "spell.irons_spellbooks.cloud_of_regeneration.guide": "Hold to slowly heal friendly creatures within a radius around you.",
-  "spell.irons_spellbooks.ray_of_siphoning.guide": "Hold to cast a ray of necrotic energy that siphons health from creatures it hits, damaging them and healing you.",
+  "spell.irons_spellbooks.ray_of_siphoning.guide": "Hold to cast a ray of necrotic energy that siphons health from creatures it hits, damaging them and healing you for 100% of damage done.",
   "spell.irons_spellbooks.magic_arrow.guide": "Hold to charge a piercing arrow made of arcane energy. This arrow has no gravity and can travel through blocks.",
   "spell.irons_spellbooks.lob_creeper.guide": "Lob the head of a creeper forward that explodes in a medium radius around the impact. The higher the level, the faster the projectile.",
   "spell.irons_spellbooks.creeper_revenge.guide": "The creeper tryna steal my stuff again",
@@ -368,6 +369,7 @@
   "spell.irons_spellbooks.blight.guide": "Target a creature to blight them, reducing their incoming healing and outgoing damage",
   "spell.irons_spellbooks.black_hole.guide": "Around a targeted location, create a fissure into the void, manifesting a black hole that will suck in nearby creatures and slowly crush them to death",
   "spell.irons_spellbooks.root.guide": "Around a targeted creature, sprout magical roots than entangle them and completely prevent non-magical movement",
+  "spell.irons_spellbooks.blood_needles.guide": "Create a ring of needles made from blood and fire them forward, skewering targets and healing you for 50% of damage done",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -411,6 +413,7 @@
   "death.attack.poison_cloud": "%1$s was suffocated by %2$s's poisonous cloud",
   "death.attack.poison_splash_spell": "%1$s was melted by %2$s's poisonous splash",
   "death.attack.black_hole_spell": "%1$s's atoms were crushed in %2$s's black hole",
+  "death.attack.blood_needles_spell": "%1$s was skewered by %2$s's blood needles",
 
   "death.attack.raise_dead_spell.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.summon_vex_spell.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
@@ -447,6 +450,7 @@
   "death.attack.poison_cloud.item": "%1$s was suffocated by %2$s's poisonous cloud while using %3$s",
   "death.attack.poison_splash_spell.item": "%1$s was melted by %2$s's poisonous splash using %3$s",
   "death.attack.black_hole_spell.item": "%1$s's atoms were crushed in %2$s's black hole while using %3$s",
+  "death.attack.blood_needles_spell.item": "%1$s was skewered by %2$s's blood needles while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -533,6 +537,7 @@
   "entity.irons_spellbooks.poison_breath": "Poison Breath",
   "entity.irons_spellbooks.acid_orb": "Acid Orb",
   "entity.irons_spellbooks.black_hole": "Black Hole",
+  "entity.irons_spellbooks.blood_needle": "Blood Needle",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",

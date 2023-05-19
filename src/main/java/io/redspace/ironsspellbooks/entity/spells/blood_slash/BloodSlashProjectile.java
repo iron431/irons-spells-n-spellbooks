@@ -194,7 +194,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
             if (hit && entity instanceof LivingEntity livingEntity) {
                 //livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
                 if (getOwner() instanceof LivingEntity livingOwner) {
-                    livingOwner.heal(damage * .1f * DamageSources.getResist(livingEntity, SchoolType.BLOOD));
+                    livingOwner.heal(damage * .15f * DamageSources.getResist(livingEntity, SchoolType.BLOOD));
                 }
             }
             victims.add(entity);

@@ -65,7 +65,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
                 if (DamageSources.applyDamage(target, getTickDamage(entity), getSpellType().getDamageSource(entity), SchoolType.BLOOD)) {
-                    entity.heal(getTickDamage(entity) * .35f);
+                    entity.heal(getTickDamage(entity));
                     Messages.sendToPlayersTrackingEntity(new ClientboundBloodSiphonParticles(target.position().add(0, target.getBbHeight() / 2, 0), entity.position().add(0, entity.getBbHeight() / 2, 0)), entity, true);
                 }
             }
