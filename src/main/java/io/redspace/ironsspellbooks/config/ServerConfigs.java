@@ -75,6 +75,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 6, SpellRarity.UNCOMMON, 150);
         createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, true, 10, SpellRarity.COMMON, 15);
         createSpellConfig(SpellType.WITHER_SKULL_SPELL, true, 10, SpellRarity.UNCOMMON, 1);
+        createSpellConfig(SpellType.BlOOD_NEEDLES_SPELL, true, 10, SpellRarity.UNCOMMON, 10);
         //Ender
         BUILDER.comment("Ender Spells");
         createSpellConfig(SpellType.EVASION_SPELL, true, 5, SpellRarity.EPIC, 180);

@@ -95,8 +95,12 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
         if (!level.isClientSide) {
             impactParticles(x, y, z);
-            getImpactSound().ifPresent((soundEvent -> level.playSound(null, getX(), getY(), getZ(), soundEvent, SoundSource.NEUTRAL, 2, .9f + level.random.nextFloat() * .2f)));
+            getImpactSound().ifPresent(this::doImpactSound);
         }
+    }
+
+    protected void doImpactSound(SoundEvent sound) {
+        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, .9f + level.random.nextFloat() * .2f);
     }
 
     @Override

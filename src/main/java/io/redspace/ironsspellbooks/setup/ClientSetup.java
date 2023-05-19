@@ -25,6 +25,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerRend
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHoleRenderer;
+import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashRenderer;
 import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdRenderer;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadRenderer;
@@ -208,6 +209,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.SUMMONED_FROG.get(), FrogRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ACID_ORB.get(), AcidOrbRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BLACK_HOLE.get(), BlackHoleRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.BLOOD_NEEDLE.get(), BloodNeedleRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

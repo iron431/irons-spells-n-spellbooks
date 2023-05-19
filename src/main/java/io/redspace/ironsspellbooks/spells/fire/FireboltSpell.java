@@ -21,7 +21,7 @@ public class FireboltSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 2)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
     public FireboltSpell(int level) {
