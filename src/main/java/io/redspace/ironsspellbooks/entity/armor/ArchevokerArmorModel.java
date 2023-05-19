@@ -12,17 +12,17 @@ public class ArchevokerArmorModel extends AnimatedGeoModel<ArchevokerArmorItem> 
 
     }
     @Override
-    public ResourceLocation getModelResource(ArchevokerArmorItem object) {
+    public ResourceLocation getModelLocation(ArchevokerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/archevoker_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(ArchevokerArmorItem object) {
+    public ResourceLocation getTextureLocation(ArchevokerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/archevoker.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(ArchevokerArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(ArchevokerArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){

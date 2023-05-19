@@ -11,15 +11,15 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<AbstractSpellCastingMob> {
 
     @Override
-    public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
+    public ResourceLocation getModelLocation(AbstractSpellCastingMob object) {
         return AbstractSpellCastingMob.modelResource;
     }
 
     @Override
-    public abstract ResourceLocation getTextureResource(AbstractSpellCastingMob mob);
+    public abstract ResourceLocation getTextureLocation(AbstractSpellCastingMob mob);
 
     @Override
-    public ResourceLocation getAnimationResource(AbstractSpellCastingMob animatable) {
+    public ResourceLocation getAnimationFileLocation(AbstractSpellCastingMob animatable) {
         return AbstractSpellCastingMob.animationInstantCast;
     }
 

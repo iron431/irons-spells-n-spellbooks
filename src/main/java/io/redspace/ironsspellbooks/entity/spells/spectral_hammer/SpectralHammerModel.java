@@ -11,17 +11,17 @@ public class SpectralHammerModel extends AnimatedGeoModel<SpectralHammer> {
     public static final ResourceLocation animationResource = new ResourceLocation(IronsSpellbooks.MODID, "animations/spectral_hammer.animation.json");
 
     @Override
-    public ResourceLocation getModelResource(SpectralHammer object) {
+    public ResourceLocation getModelLocation(SpectralHammer object) {
         return modelResource;
     }
 
     @Override
-    public ResourceLocation getTextureResource(SpectralHammer object) {
+    public ResourceLocation getTextureLocation(SpectralHammer object) {
         return textureResource;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(SpectralHammer animatable) {
+    public ResourceLocation getAnimationFileLocation(SpectralHammer animatable) {
         return animationResource;
     }
 }

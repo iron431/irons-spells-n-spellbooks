@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.command.EnumArgument;
 
 public class CreateDebugWizardCommand {
@@ -40,8 +41,8 @@ public class CreateDebugWizardCommand {
             throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spellType, spellType.getMaxLevel())).create();
         }
 
-        var serverPlayer = source.getPlayer();
-        if (serverPlayer != null) {
+
+        if (source.getEntity() instanceof ServerPlayer serverPlayer) {
             var debugWizard = new DebugWizard(EntityRegistry.DEBUG_WIZARD.get(), serverPlayer.level, spellType, spellLevel, targetsPlayer, cancelAfterTicks);
             debugWizard.setPos(serverPlayer.position());
             if (serverPlayer.level.addFreshEntity(debugWizard)) {

@@ -12,17 +12,17 @@ public class PlaguedArmorModel extends AnimatedGeoModel<PlaguedArmorItem> {
 
     }
     @Override
-    public ResourceLocation getModelResource(PlaguedArmorItem object) {
+    public ResourceLocation getModelLocation(PlaguedArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/plagued_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(PlaguedArmorItem object) {
+    public ResourceLocation getTextureLocation(PlaguedArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/plagued.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(PlaguedArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(PlaguedArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){

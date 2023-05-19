@@ -13,7 +13,7 @@ public class CommandRegistry {
  //Ironsspellbooks.logger.debug("onCommandsRegister");
         CreateScrollCommand.register(event.getDispatcher());
         CreateSpellBookCommand.register(event.getDispatcher());
-        CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());
+        CreateImbuedSwordCommand.register(event.getDispatcher());
         CreateDebugWizardCommand.register(event.getDispatcher());
         ManaCommand.register(event.getDispatcher());
 //        GenerateSiteData.register(event.getDispatcher());

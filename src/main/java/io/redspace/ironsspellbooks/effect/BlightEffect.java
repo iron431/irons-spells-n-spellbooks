@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.effect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -21,7 +22,7 @@ public class BlightEffect extends MobEffect {
 
     @SubscribeEvent
     public static void reduceHealing(LivingHealEvent event) {
-        var effect = event.getEntity().getEffect(MobEffectRegistry.BLIGHT.get());
+        MobEffectInstance effect = event.getEntityLiving().getEffect(MobEffectRegistry.BLIGHT.get());
         if (effect != null) {
             int lvl = effect.getAmplifier() + 1;
             float healingMult = 1 + HEALING_PER_LEVEL * lvl;

@@ -10,10 +10,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SimpleDescriptiveCurio extends CurioBaseItem {
-    final static Component whenWornAsRing = Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD);
-    final Component description;
+    final static net.minecraft.network.chat.Component whenWornAsRing = Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD);
+    final net.minecraft.network.chat.Component description;
 
-    public SimpleDescriptiveCurio(Properties properties, Component description) {
+    public SimpleDescriptiveCurio(Properties properties, net.minecraft.network.chat.Component description) {
         super(properties);
         this.description = Component.literal(" ").append(description);
     }
@@ -23,7 +23,7 @@ public class SimpleDescriptiveCurio extends CurioBaseItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<net.minecraft.network.chat.Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.empty());
         //currently only rings

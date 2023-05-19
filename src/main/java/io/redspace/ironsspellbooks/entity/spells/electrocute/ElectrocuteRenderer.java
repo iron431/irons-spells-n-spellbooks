@@ -56,7 +56,8 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         List<Vec3> segments = entity.getBeamCache();
         //irons_spellbooks.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(getTextureLocation(entity)));
+        //was entityEmissive. Doesnt exist in 1.18?
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.lightning());
         float width = .25f;
         float height = width;
         Vec3 start = Vec3.ZERO;//entity.getOwner().getEyePosition().add(entity.getForward().normalize().scale(.15f));

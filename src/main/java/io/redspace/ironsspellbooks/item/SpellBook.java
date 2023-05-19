@@ -111,7 +111,7 @@ public class SpellBook extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<net.minecraft.network.chat.Component> lines, TooltipFlag flag) {
         if (!this.isUnique()) {
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", this.rarity.getDisplayName()).withStyle(ChatFormatting.GRAY));
         } else {

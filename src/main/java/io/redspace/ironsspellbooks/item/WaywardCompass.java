@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class WaywardCompass extends Item {
-    private static final Component description = Component.translatable("item.irons_spellbooks.wayward_compass_desc").withStyle(ChatFormatting.DARK_AQUA);
+    private static final net.minecraft.network.chat.Component description = Component.translatable("item.irons_spellbooks.wayward_compass_desc").withStyle(ChatFormatting.DARK_AQUA);
     public WaywardCompass() {
         super(new Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
     }
@@ -35,7 +35,7 @@ public class WaywardCompass extends Item {
     @Override
     public void onCraftedBy(ItemStack pStack, Level pLevel, Player pPlayer) {
         if (pLevel instanceof ServerLevel serverlevel) {
-            BlockPos blockpos = serverlevel.findNearestMapStructure(ModTags.WAYWARD_COMPASS_LOCATOR, pPlayer.blockPosition(), 100, false);
+            BlockPos blockpos = serverlevel.findNearestMapFeature(ModTags.WAYWARD_COMPASS_LOCATOR, pPlayer.blockPosition(), 100, false);
             if (blockpos != null) {
                 var tag = pStack.getOrCreateTag();
                 tag.put("CatacombsPos", NbtUtils.writeBlockPos(blockpos));
@@ -46,7 +46,7 @@ public class WaywardCompass extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<net.minecraft.network.chat.Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(description);
     }

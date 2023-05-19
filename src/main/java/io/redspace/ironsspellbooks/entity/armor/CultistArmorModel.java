@@ -12,17 +12,17 @@ public class CultistArmorModel extends AnimatedGeoModel<CultistArmorItem> {
 
     }
     @Override
-    public ResourceLocation getModelResource(CultistArmorItem object) {
+    public ResourceLocation getModelLocation(CultistArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/cultist_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(CultistArmorItem object) {
+    public ResourceLocation getTextureLocation(CultistArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/cultist.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(CultistArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(CultistArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){

@@ -12,17 +12,17 @@ public class PumpkinArmorModel extends AnimatedGeoModel<PumpkinArmorItem> {
 
     }
     @Override
-    public ResourceLocation getModelResource(PumpkinArmorItem object) {
+    public ResourceLocation getModelLocation(PumpkinArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/pumpkin_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(PumpkinArmorItem object) {
+    public ResourceLocation getTextureLocation(PumpkinArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/pumpkin.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(PumpkinArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(PumpkinArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){

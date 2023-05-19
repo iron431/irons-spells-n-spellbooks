@@ -12,17 +12,17 @@ public class CryomancerArmorModel extends AnimatedGeoModel<CryomancerArmorItem> 
 
     }
     @Override
-    public ResourceLocation getModelResource(CryomancerArmorItem object) {
+    public ResourceLocation getModelLocation(CryomancerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/cryomancer_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(CryomancerArmorItem object) {
+    public ResourceLocation getTextureLocation(CryomancerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/cryomancer.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(CryomancerArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(CryomancerArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){

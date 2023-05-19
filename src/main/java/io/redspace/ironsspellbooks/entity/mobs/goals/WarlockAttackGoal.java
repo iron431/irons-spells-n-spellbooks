@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     public WarlockAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.meleeRange = meleeRange;
-        meleeTimeDelay = abstractSpellCastingMob.getRandom().nextIntBetweenInclusive(80, 200);
+        meleeTimeDelay = Mth.randomBetweenInclusive(abstractSpellCastingMob.getRandom(), 80, 200);
         meleeBias = .5f;
     }
 
@@ -27,7 +28,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         if (++meleeTime > meleeTimeDelay && !mob.isCasting()) {
             meleeTime = 0;
             wantsToMelee = mob.getRandom().nextFloat() <= meleeBias;
-            meleeTimeDelay = mob.getRandom().nextIntBetweenInclusive(60, 120);
+            meleeTimeDelay = Mth.randomBetweenInclusive(mob.getRandom(), 60, 120);
         }
     }
 

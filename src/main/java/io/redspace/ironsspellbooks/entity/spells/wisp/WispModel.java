@@ -11,17 +11,17 @@ public class WispModel extends AnimatedGeoModel<WispEntity> {
 
 
     @Override
-    public ResourceLocation getModelResource(WispEntity object) {
+    public ResourceLocation getModelLocation(WispEntity object) {
         return modelResource;
     }
 
     @Override
-    public ResourceLocation getTextureResource(WispEntity object) {
+    public ResourceLocation getTextureLocation(WispEntity object) {
         return textureResource;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(WispEntity animatable) {
+    public ResourceLocation getAnimationFileLocation(WispEntity animatable) {
         return animationResource;
     }
 }

@@ -73,14 +73,6 @@ public class FrozenHumanoidRenderer extends LivingEntityRenderer<FrozenHumanoid,
             f2 *= -1.0F;
         }
 
-        if (iceMan.hasPose(Pose.SLEEPING)) {
-            Direction direction = iceMan.getBedOrientation();
-            if (direction != null) {
-                float f4 = iceMan.getEyeHeight(Pose.STANDING) - 0.1F;
-                pMatrixStack.translate((double) ((float) (-direction.getStepX()) * f4), 0.0D, (double) ((float) (-direction.getStepZ()) * f4));
-            }
-        }
-
         float bob = 0;
         this.setupRotations(iceMan, pMatrixStack, bob, bodyYRot, pPartialTicks);
         pMatrixStack.scale(-1.0F, -1.0F, 1.0F);

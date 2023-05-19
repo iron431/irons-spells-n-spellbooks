@@ -13,16 +13,16 @@ public class SummonedZombieModel extends AnimatedGeoModel<SummonedZombie> {
 
 
     @Override
-    public ResourceLocation getTextureResource(SummonedZombie object) {
+    public ResourceLocation getTextureLocation(SummonedZombie object) {
         return TEXTURE;
     }
     @Override
-    public ResourceLocation getModelResource(SummonedZombie object) {
+    public ResourceLocation getModelLocation(SummonedZombie object) {
         return MODEL;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(SummonedZombie animatable) {
+    public ResourceLocation getAnimationFileLocation(SummonedZombie animatable) {
         return ANIMATIONS;
     }
 

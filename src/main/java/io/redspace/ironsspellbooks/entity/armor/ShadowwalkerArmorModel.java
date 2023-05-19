@@ -12,17 +12,17 @@ public class ShadowwalkerArmorModel extends AnimatedGeoModel<ShadowwalkerArmorIt
 
     }
     @Override
-    public ResourceLocation getModelResource(ShadowwalkerArmorItem object) {
+    public ResourceLocation getModelLocation(ShadowwalkerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/shadowwalker_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(ShadowwalkerArmorItem object) {
+    public ResourceLocation getTextureLocation(ShadowwalkerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/shadowwalker.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(ShadowwalkerArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(ShadowwalkerArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }

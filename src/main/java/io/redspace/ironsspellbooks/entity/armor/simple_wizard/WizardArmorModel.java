@@ -12,17 +12,17 @@ public class WizardArmorModel extends AnimatedGeoModel<WizardArmorItem> {
 
     }
     @Override
-    public ResourceLocation getModelResource(WizardArmorItem object) {
+    public ResourceLocation getModelLocation(WizardArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/wizard_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(WizardArmorItem object) {
+    public ResourceLocation getTextureLocation(WizardArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/wizard_armor.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(WizardArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(WizardArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){

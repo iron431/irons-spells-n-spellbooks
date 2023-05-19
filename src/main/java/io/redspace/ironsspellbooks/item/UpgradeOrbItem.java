@@ -16,8 +16,8 @@ import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 
 public class UpgradeOrbItem extends Item {
     private final UpgradeType upgrade;
-    private final static Component TOOLTIP_HEADER = Component.translatable("tooltip.irons_spellbooks.upgrade_tooltip").withStyle(ChatFormatting.GRAY);
-    private final Component TOOLTIP_TEXT;
+    private final static net.minecraft.network.chat.Component TOOLTIP_HEADER = Component.translatable("tooltip.irons_spellbooks.upgrade_tooltip").withStyle(ChatFormatting.GRAY);
+    private final net.minecraft.network.chat.Component TOOLTIP_TEXT;
 
     public UpgradeOrbItem(UpgradeType upgrade, Properties pProperties) {
         super(pProperties);
@@ -30,12 +30,12 @@ public class UpgradeOrbItem extends Item {
     }
 
     @Override
-    public Component getName(ItemStack pStack) {
+    public net.minecraft.network.chat.Component getName(ItemStack pStack) {
         return super.getName(pStack);
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<net.minecraft.network.chat.Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.empty());
         pTooltipComponents.add(TOOLTIP_HEADER);

@@ -12,17 +12,17 @@ public class PriestArmorModel extends AnimatedGeoModel<PriestArmorItem> {
 
     }
     @Override
-    public ResourceLocation getModelResource(PriestArmorItem object) {
+    public ResourceLocation getModelLocation(PriestArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/priest_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(PriestArmorItem object) {
+    public ResourceLocation getTextureLocation(PriestArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/priest.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(PriestArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(PriestArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){

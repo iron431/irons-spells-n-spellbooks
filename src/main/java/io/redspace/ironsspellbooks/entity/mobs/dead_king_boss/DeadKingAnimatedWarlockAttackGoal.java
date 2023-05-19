@@ -34,7 +34,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeAnimTimer--;
             if (slam) {
                 if (meleeAnimTimer == slamSoundTimestamp)
-                    mob.playSound(SoundRegistry.DEAD_KING_SLAM.get());
+                    mob.playSound(SoundRegistry.DEAD_KING_SLAM.get(), 1, 1);
                 if (meleeAnimTimer == slamTimestamp) {
                     Vec3 slamPos = mob.position().add(mob.getForward().multiply(1, 0, 1).normalize());
                     Vec3 bbHalf = new Vec3(meleeRange, meleeRange, meleeRange).scale(.4);
@@ -50,7 +50,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                 }
             } else {
                 if (meleeAnimTimer == swingSoundTimestamp)
-                    mob.playSound(SoundRegistry.DEAD_KING_SWING.get());
+                    mob.playSound(SoundRegistry.DEAD_KING_SWING.get(), 1,1  );
                 if (meleeAnimTimer == firstSwingTimestamp || meleeAnimTimer == secondSwingTimestamp) {
                     if (distanceSquared <= meleeRange * meleeRange) {
                         this.mob.doHurtTarget(target);

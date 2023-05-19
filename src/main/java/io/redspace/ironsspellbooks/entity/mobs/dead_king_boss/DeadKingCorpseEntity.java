@@ -81,7 +81,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                     boss.getAttributes().getInstance(AttributeRegistry.SPELL_RESIST.get()).addPermanentModifier(new AttributeModifier("Gank Spell Resist Bonus", (playerCount - 1) * .1, AttributeModifier.Operation.MULTIPLY_BASE));
                     boss.setPersistenceRequired();
                     level.addFreshEntity(boss);
-                    MagicManager.spawnParticles(level, ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
+                    MagicManager.spawnParticles(level, ParticleTypes.SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
                     level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.get(), SoundSource.MASTER, 20, 1);
                     discard();
                 }
@@ -98,7 +98,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         float distance = Mth.clamp(Utils.smoothstep(0, 1.15f, f * 3), 0, 1.15f);
         Vec3 pos = new Vec3(0, 0, distance).yRot(rot * Mth.DEG_TO_RAD).add(0, height, 0).add(position());
 
-        level.addParticle(ParticleTypes.SCULK_SOUL, pos.x, pos.y, pos.z, 0, 0, 0);
+        level.addParticle(ParticleTypes.SOUL, pos.x, pos.y, pos.z, 0, 0, 0);
         float radius = 4;
         if (random.nextFloat() < f * 1.5f) {
             Vec3 random = position().add(new Vec3(
@@ -107,7 +107,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                     (this.random.nextFloat() * 2 - 1) * radius
             ));
             Vec3 motion = position().subtract(random).scale(.04f);
-            level.addParticle(ParticleTypes.SCULK_SOUL, random.x, random.y, random.z, motion.x, motion.y, motion.z);
+            level.addParticle(ParticleTypes.SOUL, random.x, random.y, random.z, motion.x, motion.y, motion.z);
         }
     }
 

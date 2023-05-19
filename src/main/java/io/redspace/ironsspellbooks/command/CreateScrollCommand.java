@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.server.command.EnumArgument;
 
@@ -36,8 +37,7 @@ public class CreateScrollCommand {
             throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spellType, spellType.getMaxLevel())).create();
         }
 
-        var serverPlayer = source.getPlayer();
-        if (serverPlayer != null) {
+        if (source.getEntity() instanceof ServerPlayer serverPlayer) {
             ItemStack itemstack = new ItemStack(ItemRegistry.SCROLL.get());
             SpellData.setSpellData(itemstack, spellType, spellLevel);
             if (serverPlayer.getInventory().add(itemstack)) {

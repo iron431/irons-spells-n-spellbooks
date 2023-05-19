@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class ArcaneAnvilScreen extends ItemCombinerScreen<ArcaneAnvilMenu> {
     private static final ResourceLocation ANVIL_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/arcane_anvil.png");
 
-    public ArcaneAnvilScreen(ArcaneAnvilMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
+    public ArcaneAnvilScreen(ArcaneAnvilMenu pMenu, Inventory pPlayerInventory, net.minecraft.network.chat.Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, ANVIL_LOCATION);
         this.titleLabelX = 48;
         this.titleLabelY = 24;

@@ -14,17 +14,17 @@ public class IceBlockModel extends AnimatedGeoModel<IceBlockProjectile> {
     }
 
     @Override
-    public ResourceLocation getTextureResource(IceBlockProjectile object) {
+    public ResourceLocation getTextureLocation(IceBlockProjectile object) {
         return TEXTURE;
     }
 
     @Override
-    public ResourceLocation getModelResource(IceBlockProjectile object) {
+    public ResourceLocation getModelLocation(IceBlockProjectile object) {
         return MODEL;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(IceBlockProjectile animatable) {
+    public ResourceLocation getAnimationFileLocation(IceBlockProjectile animatable) {
         return ANIMS;
     }
 }

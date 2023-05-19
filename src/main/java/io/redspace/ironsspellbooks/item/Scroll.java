@@ -114,14 +114,14 @@ public class Scroll extends Item {
     }
 
     @Override
-    public @NotNull Component getName(@NotNull ItemStack itemStack) {
+    public @NotNull net.minecraft.network.chat.Component getName(@NotNull ItemStack itemStack) {
         var scrollData = SpellData.getSpellData(itemStack);
         return scrollData.getDisplayName();
 
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, List<Component> lines, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, List<net.minecraft.network.chat.Component> lines, @NotNull TooltipFlag flag) {
         //if (level != null && level.isClientSide)
             lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack/*, Minecraft.getInstance().player*/));
         super.appendHoverText(itemStack, level, lines, flag);

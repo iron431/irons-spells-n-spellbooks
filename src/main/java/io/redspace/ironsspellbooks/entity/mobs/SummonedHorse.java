@@ -57,7 +57,7 @@ public class SummonedHorse extends AbstractHorse implements MagicSummon {
     }
 
     @Override
-    public void openCustomInventoryScreen(Player pPlayer) {
+    public void openInventory(Player pPlayer) {
         return;
     }
 

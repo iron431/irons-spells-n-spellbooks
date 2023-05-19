@@ -79,7 +79,7 @@ public class SpellData {
         return spellLevel;
     }
 
-    public Component getDisplayName() {
+    public net.minecraft.network.chat.Component getDisplayName() {
         if (displayName == null) {
             displayName = getSpell().getSpellType().getDisplayName().append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));//.append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity",getSpell().getRarity().getDisplayName().getString()));
         }

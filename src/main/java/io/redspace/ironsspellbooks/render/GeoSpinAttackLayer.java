@@ -31,7 +31,7 @@ public class GeoSpinAttackLayer extends GeoLayerRenderer<AbstractSpellCastingMob
                 float f1 = 0.75F * (float) i;
                 matrixStackIn.scale(f1, f1, f1);
                 matrixStackIn.translate(0.0D, (double) (-0.2F + 0.6F * (float) i), 0.0D);
-                renderModel(modelProvider, modelProvider.getTextureResource(entity), matrixStackIn, bufferIn, packedLightIn, entity, partialTicks, 1, 1, 1);
+                renderModel(modelProvider, modelProvider.getTextureLocation(entity), matrixStackIn, bufferIn, packedLightIn, entity, partialTicks, 1, 1, 1);
                 matrixStackIn.popPose();
             }
         }

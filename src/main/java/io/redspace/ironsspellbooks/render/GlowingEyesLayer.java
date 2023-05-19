@@ -62,7 +62,7 @@ public class GlowingEyesLayer {
         public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, AbstractSpellCastingMob abstractSpellCastingMob, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             var eye = getEyeType(abstractSpellCastingMob);
             if (eye != EyeType.None) {
-                var model = entityRenderer.getGeoModelProvider().getModel(entityRenderer.getGeoModelProvider().getModelResource(abstractSpellCastingMob));
+                var model = entityRenderer.getGeoModelProvider().getModel(entityRenderer.getGeoModelProvider().getModelLocation(abstractSpellCastingMob));
                 model.getBone("head").ifPresent((headBone) -> {
                     var scale = getEyeScale(abstractSpellCastingMob);
                     headBone.setScale(scale, scale, scale);

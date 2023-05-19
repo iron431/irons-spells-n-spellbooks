@@ -59,7 +59,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private int selectedSpellIndex = -1;
     private int inscriptionErrorCode = 0;
 
-    public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, Component title) {
+    public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, net.minecraft.network.chat.Component title) {
         super(menu, playerInventory, title);
         this.imageWidth = 256;
         this.imageHeight = 166;
@@ -135,7 +135,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         return 0;
     }
 
-    private Component getErrorMessage(int code) {
+    private net.minecraft.network.chat.Component getErrorMessage(int code) {
         if (code == 1)
             return Component.translatable("ui.irons_spellbooks.inscription_table_rarity_error");
         else
@@ -220,7 +220,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             font.draw(poseStack, line, titleX, titleY, 0xFFFFFF);
             titleY += font.lineHeight;
         }
-        var titleHeight = font.wordWrapHeight(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
+        var titleHeight = font.wordWrapHeight(title.getString() , LORE_PAGE_WIDTH);
         int descLine = /*y + titleHeight + font.lineHeight*/titleY + 4;
 
         if (selectedSpellIndex < 0 || !spellSlots.get(selectedSpellIndex).hasSpell()) {
@@ -237,7 +237,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         float textScale = 1f;
         float reverseScale = 1 / textScale;
 
-        Component school = spell.getSchoolType().getDisplayName();
+        net.minecraft.network.chat.Component school = spell.getSchoolType().getDisplayName();
         poseStack.scale(textScale, textScale, textScale);
 
         //
@@ -288,19 +288,19 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         poseStack.scale(reverseScale, reverseScale, reverseScale);
     }
 
-    private void drawTextWithShadow(Font font, PoseStack poseStack, Component text, int x, int y, int color, float scale) {
+    private void drawTextWithShadow(Font font, PoseStack poseStack, net.minecraft.network.chat.Component text, int x, int y, int color, float scale) {
         x /= scale;
         y /= scale;
         font.draw(poseStack, text, x, y, color);
         font.drawShadow(poseStack, text, x, y, color);
     }
 
-    private int drawText(Font font, PoseStack poseStack, Component text, int x, int y, int color, float scale) {
+    private int drawText(Font font, PoseStack poseStack, net.minecraft.network.chat.Component text, int x, int y, int color, float scale) {
         x /= scale;
         y /= scale;
         //font.draw(poseStack, text, x, y, color);
         font.drawWordWrap(text, x, y, LORE_PAGE_WIDTH, color);
-        return font.wordWrapHeight(text, LORE_PAGE_WIDTH);
+        return font.wordWrapHeight(text.getString(), LORE_PAGE_WIDTH);
 
     }
 

@@ -43,7 +43,7 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
         if ("bipedCape".equals(boneName))
             return EntityResources.EXTENDED_CAPE_TEXTURE;
 
-        return modelProvider.getTextureResource(animatable);
+        return modelProvider.getTextureLocation(animatable);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 public class CreateSpellBookCommand {
@@ -25,8 +26,7 @@ public class CreateSpellBookCommand {
     }
 
     private static int crateSpellBook(CommandSourceStack source, int slots) throws CommandSyntaxException {
-        var serverPlayer = source.getPlayer();
-        if (serverPlayer != null) {
+        if (source.getEntity() instanceof ServerPlayer serverPlayer)  {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
             var spellBookData = new SpellBookData(slots);
             SpellBookData.setSpellBookData(itemstack, spellBookData);

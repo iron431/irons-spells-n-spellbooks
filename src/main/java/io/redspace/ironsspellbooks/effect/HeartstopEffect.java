@@ -63,7 +63,7 @@ public class HeartstopEffect extends MobEffect {
                 int i = (int) (10 + (40 - 10) * f);
  //Ironsspellbooks.logger.debug("{} ({}/{} = {})", i, damage, player.getHealth(), f);
                 if (this.duration % Math.max(i, 1) == 0) {
-                    player.playSound(SoundEvents.WARDEN_HEARTBEAT, 1, 0.85f);
+                    player.playSound(SoundEvents.NOTE_BLOCK_BASS, 1, 0.5f);
                 }
             }
         }

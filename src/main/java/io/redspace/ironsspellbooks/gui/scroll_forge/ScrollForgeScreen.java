@@ -39,7 +39,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private SpellType selectedSpell = SpellType.NONE_SPELL;
     private int scrollOffset;
 
-    public ScrollForgeScreen(ScrollForgeMenu menu, Inventory inventory, Component title) {
+    public ScrollForgeScreen(ScrollForgeMenu menu, Inventory inventory, net.minecraft.network.chat.Component title) {
         super(menu, inventory, title);
         this.imageWidth = 218;
         this.imageHeight = 166;
@@ -238,7 +238,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             return this.button.active ? getDisplayName() : Component.translatable("ui.irons_spellbooks.ink_rarity_error");
         }
 
-        private FormattedText trimText(Font font, Component component, int maxWidth) {
+        private FormattedText trimText(Font font, net.minecraft.network.chat.Component component, int maxWidth) {
             var text = font.getSplitter().splitLines(component, maxWidth, component.getStyle()).get(0);
             if (text.getString().length() < component.getString().length())
                 text = FormattedText.composite(text, FormattedText.of("..."));

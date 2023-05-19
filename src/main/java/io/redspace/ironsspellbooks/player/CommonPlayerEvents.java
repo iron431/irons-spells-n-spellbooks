@@ -13,7 +13,7 @@ public class CommonPlayerEvents {
 
         if (Utils.canImbue(stack)) {
             var spellData = SpellData.getSpellData(stack);
-            var result = Utils.onUseCastingHelper(event.getLevel(), event.getEntity(), event.getHand(), stack, spellData.getSpell());
+            var result = Utils.onUseCastingHelper(event.getWorld(), event.getPlayer(), event.getHand(), stack, spellData.getSpell());
 
             if (result != null) {
                 event.setCancellationResult(result.getResult());
@@ -27,7 +27,7 @@ public class CommonPlayerEvents {
         var stack = event.getItem();
         if (Utils.canImbue(stack)) {
             var spell = SpellData.getSpellData(stack).getSpell();
-            var entity = event.getEntity();
+            var entity = event.getEntityLiving();
 
             if (spell.getSpellType() != SpellType.NONE_SPELL) {
                 entity.stopUsingItem();

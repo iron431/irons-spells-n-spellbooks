@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -83,7 +84,7 @@ public class SpellBarrageGoal extends Goal {
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         if (distanceSquared < attackRadiusSqr) {
             this.mob.getLookControl().setLookAt(this.target, 45, 45);
-            mob.initiateCastSpell(spell, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
+            mob.initiateCastSpell(spell, Mth.randomBetweenInclusive(mob.getRandom(), minSpellLevel, maxSpellLevel));
         }
 
 
@@ -91,6 +92,6 @@ public class SpellBarrageGoal extends Goal {
     }
 
     protected void resetAttackTimer() {
-        this.attackTime = mob.getRandom().nextIntBetweenInclusive(attackIntervalMin, attackIntervalMax);
+        this.attackTime = Mth.randomBetweenInclusive(mob.getRandom(), attackIntervalMin, attackIntervalMax);
     }
 }

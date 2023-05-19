@@ -123,7 +123,7 @@ public class Messages {
         net.messageBuilder(ServerboundQuickCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundQuickCast::new)
                 .encoder(ServerboundQuickCast::toBytes)
-                .consumerNetworkThread(ServerboundQuickCast::handle)
+                .consumer(ServerboundQuickCast::handle)
                 .add();
 
         net.messageBuilder(ClientboundHealParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)

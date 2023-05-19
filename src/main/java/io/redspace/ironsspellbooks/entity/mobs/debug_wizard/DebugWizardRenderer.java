@@ -17,7 +17,7 @@ public class DebugWizardRenderer extends AbstractSpellCastingMobRenderer {
     public DebugWizardRenderer(EntityRendererProvider.Context context) {
         super(context, new AbstractSpellCastingMobModel() {
             @Override
-            public ResourceLocation getTextureResource(AbstractSpellCastingMob mob) {
+            public ResourceLocation getTextureLocation(AbstractSpellCastingMob mob) {
                 return AbstractSpellCastingMob.textureResource;
             }
         });

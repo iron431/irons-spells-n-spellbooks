@@ -12,17 +12,17 @@ public class TarnishedCrownModel extends AnimatedGeoModel<TarnishedCrownArmorIte
 
     }
     @Override
-    public ResourceLocation getModelResource(TarnishedCrownArmorItem object) {
+    public ResourceLocation getModelLocation(TarnishedCrownArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(TarnishedCrownArmorItem object) {
+    public ResourceLocation getTextureLocation(TarnishedCrownArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/tarnished.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(TarnishedCrownArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(TarnishedCrownArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){

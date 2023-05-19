@@ -191,7 +191,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLivingAttack(LivingAttackEvent event) {
-        var livingEntity = event.getEntity();
+        var livingEntity = event.getEntityLiving();
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
 
         if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof AbstractSpellCastingMob)) {
@@ -242,7 +242,7 @@ public class ServerPlayerEvents {
         if (attacker instanceof LivingEntity livingAttacker) {
             IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {} target:{}", livingAttacker.getName().getString(), event.getEntity());
             if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT.get())) {
-                if (event.getEntity().hasEffect(MobEffects.POISON)) {
+                if (event.getEntityLiving().hasEffect(MobEffects.POISON)) {
                     int lvl = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT.get()).getAmplifier() + 1;
                     float before = event.getAmount();
                     float multiplier = 1 + SpiderAspectEffect.DAMAGE_PER_LEVEL * lvl;
@@ -255,7 +255,7 @@ public class ServerPlayerEvents {
         /*
         Damage Reducing Effects
          */
-        var playerMagicData = PlayerMagicData.getPlayerMagicData(event.getEntity());
+        var playerMagicData = PlayerMagicData.getPlayerMagicData(event.getEntityLiving());
         if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
             playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
             //Ironsspellbooks.logger.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());

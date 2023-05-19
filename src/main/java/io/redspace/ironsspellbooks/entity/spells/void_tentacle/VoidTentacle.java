@@ -76,7 +76,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
                 }
             }
             if (age == 260 && level.random.nextFloat() < .3f)
-                playSound(SoundRegistry.VOID_TENTACLES_LEAVE.get());
+                playSound(SoundRegistry.VOID_TENTACLES_LEAVE.get(),1,1);
         } else {
             if (age < 280)
 //                for (int i = 0; i < 4; i++) {

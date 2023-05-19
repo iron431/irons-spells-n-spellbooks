@@ -16,7 +16,7 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
     }
 
     @Override
-    public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
+    public ResourceLocation getTextureLocation(AbstractSpellCastingMob object) {
         if (object instanceof DeadKingBoss boss) {
             if (boss.isPhase(DeadKingBoss.Phases.FinalPhase))
                 return TEXTURE3;
@@ -27,7 +27,7 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
     }
 
     @Override
-    public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
+    public ResourceLocation getModelLocation(AbstractSpellCastingMob object) {
         return MODEL;
     }
 

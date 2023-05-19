@@ -102,9 +102,9 @@ public class WizardAttackGoal extends Goal {
 
     public WizardAttackGoal setSingleUseSpell(SpellType spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         this.singleUseSpell = spellType;
-        this.singleUseDelay = mob.level.random.nextIntBetweenInclusive(minDelay, maxDelay);
+        this.singleUseDelay = Mth.randomBetweenInclusive(mob.level.random, minDelay, maxDelay);
         this.singleUseCooldown = singleUseDelay;
-        this.singleUseLevel = mob.level.random.nextIntBetweenInclusive(minLevel, maxLevel);
+        this.singleUseLevel = Mth.randomBetweenInclusive(mob.level.random, minLevel, maxLevel);
 
         return this;
     }
@@ -254,7 +254,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
-        int spellLevel = singleUseCooldown <= 0 ? singleUseLevel : mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel);
+        int spellLevel = singleUseCooldown <= 0 ? singleUseLevel : Mth.randomBetweenInclusive(mob.getRandom(), minSpellLevel, maxSpellLevel);
 
         var spellType = getNextSpellType();
 

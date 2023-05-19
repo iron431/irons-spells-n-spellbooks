@@ -10,17 +10,17 @@ public class VoidTentacleModel extends AnimatedGeoModel<VoidTentacle> {
     public static final ResourceLocation animationResource = new ResourceLocation(IronsSpellbooks.MODID, "animations/void_tentacle_animations.json");
 
     @Override
-    public ResourceLocation getModelResource(VoidTentacle object) {
+    public ResourceLocation getModelLocation(VoidTentacle object) {
         return modelResource;
     }
 
     @Override
-    public ResourceLocation getTextureResource(VoidTentacle mob) {
+    public ResourceLocation getTextureLocation(VoidTentacle mob) {
         return textureResource;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(VoidTentacle animatable) {
+    public ResourceLocation getAnimationFileLocation(VoidTentacle animatable) {
         return animationResource;
     }
 

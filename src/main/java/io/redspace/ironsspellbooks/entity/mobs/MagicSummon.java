@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.Util;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -48,7 +49,7 @@ public interface MagicSummon extends AntiMagicSusceptible {
             var deathMessage = entity.getCombatTracker().getDeathMessage();
 
             if (!level.isClientSide && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && getSummoner() instanceof ServerPlayer player) {
-                player.sendSystemMessage(deathMessage);
+                player.sendMessage(deathMessage, Util.NIL_UUID);
             }
         }
     }
@@ -71,7 +72,7 @@ public interface MagicSummon extends AntiMagicSusceptible {
                 }
             }
             if (reason.equals(Entity.RemovalReason.DISCARDED))
-                player.sendSystemMessage(Component.translatable("ui.irons_spellbooks.summon_despawn_message", ((Entity) this).getDisplayName()));
+                player.sendMessage(Component.translatable("ui.irons_spellbooks.summon_despawn_message", ((Entity) this).getDisplayName()), Util.NIL_UUID);
 
         }
     }

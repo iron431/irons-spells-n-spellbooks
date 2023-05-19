@@ -13,17 +13,17 @@ public class RootModel extends AnimatedGeoModel<RootEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureResource(RootEntity object) {
+    public ResourceLocation getTextureLocation(RootEntity object) {
         return TEXTURE;
     }
 
     @Override
-    public ResourceLocation getModelResource(RootEntity object) {
+    public ResourceLocation getModelLocation(RootEntity object) {
         return MODEL;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(RootEntity animatable) {
+    public ResourceLocation getAnimationFileLocation(RootEntity animatable) {
         return ANIMS;
     }
 }

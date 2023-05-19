@@ -12,17 +12,17 @@ public class ElectromancerArmorModel extends AnimatedGeoModel<ElectromancerArmor
 
     }
     @Override
-    public ResourceLocation getModelResource(ElectromancerArmorItem object) {
+    public ResourceLocation getModelLocation(ElectromancerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/electromancer_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(ElectromancerArmorItem object) {
+    public ResourceLocation getTextureLocation(ElectromancerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/models/armor/electromancer.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(ElectromancerArmorItem animatable) {
+    public ResourceLocation getAnimationFileLocation(ElectromancerArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){

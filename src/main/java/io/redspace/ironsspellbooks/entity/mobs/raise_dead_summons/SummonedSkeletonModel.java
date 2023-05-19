@@ -15,16 +15,16 @@ public class SummonedSkeletonModel extends AnimatedGeoModel<SummonedSkeleton> {
 
 
     @Override
-    public ResourceLocation getTextureResource(SummonedSkeleton object) {
+    public ResourceLocation getTextureLocation(SummonedSkeleton object) {
         return TEXTURE;
     }
     @Override
-    public ResourceLocation getModelResource(SummonedSkeleton object) {
+    public ResourceLocation getModelLocation(SummonedSkeleton object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/skeleton_mob.geo.json");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(SummonedSkeleton animatable) {
+    public ResourceLocation getAnimationFileLocation(SummonedSkeleton animatable) {
         return ANIMATIONS;
     }
 

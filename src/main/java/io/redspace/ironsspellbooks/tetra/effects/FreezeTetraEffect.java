@@ -34,7 +34,7 @@ public class FreezeTetraEffect {
     }
 
     public static void handleLivingAttackEvent(LivingAttackEvent event) {
-        LivingEntity attackedEntity = event.getEntity();
+        LivingEntity attackedEntity = event.getEntityLiving();
         DamageSource source = event.getSource();
         Entity attacker = source.getEntity();
         if (attacker instanceof LivingEntity livingAttacker) {

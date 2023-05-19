@@ -309,7 +309,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
-    public void setCustomName(@Nullable Component pName) {
+    public void setCustomName(@Nullable net.minecraft.network.chat.Component pName) {
         super.setCustomName(pName);
         this.bossEvent.setName(this.getDisplayName());
     }

@@ -13,6 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.codehaus.plexus.util.introspection.MethodMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -36,7 +37,7 @@ public class FogParticle extends TextureSheetParticle {
         this.zd = this.zd / d1 * d0 * mag;
 
         this.quadSize = 1.5f * options.getScale();
-        this.lifetime = pLevel.random.nextIntBetweenInclusive(60, 120);
+        this.lifetime = Mth.randomBetweenInclusive(pLevel.random, 60, 120);
         this.gravity = .1f;
 
         float f = random.nextFloat() * 0.14F + 0.85F;

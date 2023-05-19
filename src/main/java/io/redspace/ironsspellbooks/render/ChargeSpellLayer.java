@@ -73,7 +73,7 @@ public class ChargeSpellLayer {
 
             //irons_spellbooks.LOGGER.debug("GeoChargeSpellLayer.render: {}", syncedSpellData);
             var spell = syncedSpellData.getCastingSpellType();
-            var modelResource = entityRenderer.getGeoModelProvider().getModelResource(entity);
+            var modelResource = entityRenderer.getGeoModelProvider().getModelLocation(entity);
             var model = entityRenderer.getGeoModelProvider().getModel(modelResource);
             var bone = model.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT).get();
             poseStack.pushPose();

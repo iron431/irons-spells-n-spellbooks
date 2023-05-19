@@ -44,7 +44,7 @@ public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> ex
     @Override
     public GeoArmorRenderer applySlot(EquipmentSlot slot) {
         //What is this for?
-        this.getGeoModelProvider().getModel(this.getGeoModelProvider().getModelResource(this.currentArmorItem));
+        this.getGeoModelProvider().getModel(this.getGeoModelProvider().getModelLocation(this.currentArmorItem));
 
         setBoneVisibility(this.headBone, false);
         setBoneVisibility(this.bodyBone, false);

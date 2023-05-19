@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 public class WizardRecoverGoal extends Goal {
@@ -29,7 +30,7 @@ public class WizardRecoverGoal extends Goal {
     @Override
     public void start() {
         mob.startDrinkingPotion();
-        delay = mob.getRandom().nextIntBetweenInclusive(minDelay, maxDelay);
+        delay = Mth.randomBetweenInclusive(mob.getRandom(),minDelay, maxDelay);
         //IronsSpellbooks.LOGGER.debug("WizardRecoverGoal begin {}", delay);
     }
 }
