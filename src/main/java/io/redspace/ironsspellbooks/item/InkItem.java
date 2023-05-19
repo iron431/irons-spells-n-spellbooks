@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.item;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;

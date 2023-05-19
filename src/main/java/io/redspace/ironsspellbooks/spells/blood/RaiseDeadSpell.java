@@ -7,14 +7,15 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.Component;
 import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,10 +26,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class RaiseDeadSpell extends AbstractSpell {
     public RaiseDeadSpell() {
@@ -105,7 +108,7 @@ public class RaiseDeadSpell extends AbstractSpell {
         mob.setDropChance(EquipmentSlot.HEAD, 0.0F);
     }
 
-    private ItemStack[] getEquipment(float power, RandomSource random) {
+    private ItemStack[] getEquipment(float power, Random random) {
         Item[] leather = {Items.LEATHER_BOOTS, Items.LEATHER_LEGGINGS, Items.LEATHER_CHESTPLATE, Items.LEATHER_HELMET};
         Item[] chain = {Items.CHAINMAIL_BOOTS, Items.CHAINMAIL_LEGGINGS, Items.CHAINMAIL_CHESTPLATE, Items.CHAINMAIL_HELMET};
         Item[] iron = {Items.IRON_BOOTS, Items.IRON_LEGGINGS, Items.IRON_CHESTPLATE, Items.IRON_HELMET};
@@ -115,7 +118,7 @@ public class RaiseDeadSpell extends AbstractSpell {
 
         ItemStack[] result = new ItemStack[4];
         for (int i = 0; i < 4; i++) {
-            float quality = Mth.clamp((power + (random.nextIntBetweenInclusive(-3, 8)) - minQuality) / (maxQuality - minQuality), 0, .95f);
+            float quality = Mth.clamp((power + (Mth.randomBetweenInclusive(random, -3, 8)) - minQuality) / (maxQuality - minQuality), 0, .95f);
             if (random.nextDouble() < quality * quality) {
                 if (quality > .85) {
                     result[i] = new ItemStack(iron[i]);

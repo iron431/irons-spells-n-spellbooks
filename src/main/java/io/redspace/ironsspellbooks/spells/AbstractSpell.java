@@ -22,7 +22,7 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;

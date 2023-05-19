@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -45,16 +45,17 @@ public enum SpellRarity {
     }
 
     private static List<Double> getRawRarityConfigInternal() {
+        //TODO: these gets used to say getDefault (1.19 shit) I feel like i broke them
         var fromConfig = (List<Double>) ServerConfigs.RARITY_CONFIG.get();
 
         if (fromConfig.size() != 5) {
-            var configDefault = (List<Double>) ServerConfigs.RARITY_CONFIG.getDefault();
+            var configDefault = (List<Double>) ServerConfigs.RARITY_CONFIG.get();
             IronsSpellbooks.LOGGER.info("INVALID RARITY CONFIG FOUND (Size != 5): {} FALLING BACK TO DEFAULT: {}", fromConfig, configDefault);
             return configDefault;
         }
 
         if (fromConfig.stream().mapToDouble(a -> a).sum() != 1) {
-            var configDefault = (List<Double>) ServerConfigs.RARITY_CONFIG.getDefault();
+            var configDefault = (List<Double>) ServerConfigs.RARITY_CONFIG.get();
             IronsSpellbooks.LOGGER.info("INVALID RARITY CONFIG FOUND (Values must add up to 1): {} FALLING BACK TO DEFAULT: {}", fromConfig, configDefault);
             return configDefault;
         }

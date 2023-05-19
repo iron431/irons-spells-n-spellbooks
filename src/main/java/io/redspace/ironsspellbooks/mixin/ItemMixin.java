@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;

@@ -21,7 +21,7 @@ import io.redspace.ironsspellbooks.spells.evocation.SummonVexSpell;
 import io.redspace.ironsspellbooks.spells.fire.BlazeStormSpell;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.BlockItem;

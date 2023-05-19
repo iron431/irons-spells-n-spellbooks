@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -26,6 +25,7 @@ import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Random;
 
 //https://youtu.be/CUHEKcaIpOk?t=451
 public class PedestalBlock extends BaseEntityBlock {
@@ -86,19 +86,6 @@ public class PedestalBlock extends BaseEntityBlock {
         }
 
         return InteractionResult.sidedSuccess(pLevel.isClientSide());
-    }
-
-    public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
-        super.animateTick(pState, pLevel, pPos, pRandom);
-        //irons_spellbooks.LOGGER.debug("Pedestal Block: animate tick");
-        for (BlockPos blockpos : BOOKSHELF_OFFSETS) {
-            //irons_spellbooks.LOGGER.debug("Pedestal Block: {}", blockpos);
-
-            if (pRandom.nextInt(16) == 0 && pLevel.getBlockState(pPos.offset(blockpos)).is(Tags.Blocks.BOOKSHELVES)) {
-                pLevel.addParticle(ParticleTypes.ENCHANT, (double) pPos.getX() + 0.5D, (double) pPos.getY() + 2.0D, (double) pPos.getZ() + 0.5D, (double) ((float) blockpos.getX() + pRandom.nextFloat()) - 0.5D, (double) ((float) blockpos.getY() - pRandom.nextFloat() - 1.0F), (double) ((float) blockpos.getZ() + pRandom.nextFloat()) - 0.5D);
-            }
-        }
-
     }
 
     private void dropItem(ItemStack itemstack, Player owner) {

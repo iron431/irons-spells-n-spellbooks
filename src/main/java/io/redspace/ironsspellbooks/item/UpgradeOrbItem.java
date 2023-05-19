@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

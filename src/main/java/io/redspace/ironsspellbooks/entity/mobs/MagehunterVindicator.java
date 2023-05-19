@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -17,8 +16,8 @@ public class MagehunterVindicator extends Vindicator {
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance pDifficulty) {
-        super.populateDefaultEquipmentSlots(random, pDifficulty);
+    protected void populateDefaultEquipmentSlots(DifficultyInstance pDifficulty) {
+        super.populateDefaultEquipmentSlots(pDifficulty);
         ItemStack magehunter = new ItemStack(ItemRegistry.MAGEHUNTER.get());
 
         magehunter.enchant(Enchantments.SHARPNESS, 5);

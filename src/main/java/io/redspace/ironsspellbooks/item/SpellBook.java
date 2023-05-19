@@ -10,7 +10,7 @@ import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

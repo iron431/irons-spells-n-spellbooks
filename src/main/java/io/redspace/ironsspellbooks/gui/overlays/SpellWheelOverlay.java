@@ -10,19 +10,20 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.util.Component;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public class SpellWheelOverlay extends GuiComponent {
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
-    public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+    public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         if (!active)
             return;
 

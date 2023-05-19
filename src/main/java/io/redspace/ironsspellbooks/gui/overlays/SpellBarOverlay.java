@@ -15,7 +15,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import io.redspace.ironsspellbooks.util.Component;
+
 
 public class SpellBarOverlay extends GuiComponent {
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -28,7 +30,7 @@ public class SpellBarOverlay extends GuiComponent {
 
     private static ItemStack lastSpellBook = ItemStack.EMPTY;
 
-    public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+    public static void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         Player player = Minecraft.getInstance().player;
 
         if (!Utils.isPlayerHoldingSpellBook(player))

@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -21,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.levelgen.RandomSource;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -55,13 +55,12 @@ public class PyromancerEntity extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
-        RandomSource randomsource = pLevel.getRandom();
-        this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
+        this.populateDefaultEquipmentSlots(pDifficulty);
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
+    protected void populateDefaultEquipmentSlots(DifficultyInstance pDifficulty) {
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.PYROMANCER_HELMET.get()));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.PYROMANCER_CHESTPLATE.get()));
         this.setDropChance(EquipmentSlot.HEAD, 0.0F);

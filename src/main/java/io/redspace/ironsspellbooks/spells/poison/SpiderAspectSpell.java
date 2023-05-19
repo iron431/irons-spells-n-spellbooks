@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.holy.HealSpell;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;

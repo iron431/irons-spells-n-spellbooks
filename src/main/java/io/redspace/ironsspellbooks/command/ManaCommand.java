@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Collection;

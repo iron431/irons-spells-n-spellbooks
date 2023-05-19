@@ -14,7 +14,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -36,6 +34,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.Random;
 import java.util.UUID;
 
 public class RootEntity extends LivingEntity implements IAnimatable, PreventDismount, AntiMagicSusceptible {
@@ -149,8 +148,8 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
     }
 
     protected void clientDiggingParticles(LivingEntity livingEntity) {
-        RandomSource randomsource = livingEntity.getRandom();
-        BlockState blockstate = livingEntity.getBlockStateOn();
+        Random randomsource = livingEntity.getRandom();
+        BlockState blockstate = this.getBlockStateOn();
         if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
             for (int i = 0; i < 15; ++i) {
                 double d0 = livingEntity.getX() + (double) Mth.randomBetween(randomsource, -0.5F, 0.5F);
@@ -276,7 +275,7 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
     }
 
     @Override
-    public boolean isPushedByFluid(FluidType type) {
+    public boolean isPushedByFluid() {
         return false;
     }
 

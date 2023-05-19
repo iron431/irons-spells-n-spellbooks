@@ -10,7 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 
 public class ModTags {
     public static final TagKey<Item> SCHOOL_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID,"school_focus"));
@@ -26,9 +26,9 @@ public class ModTags {
     public static final TagKey<Item> CAN_BE_UPGRADED = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "can_be_upgraded"));
     public static final TagKey<Block> SPECTRAL_HAMMER_MINEABLE = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer_mineable"));
 
-    public static final TagKey<Structure> WAYWARD_COMPASS_LOCATOR = TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "wayward_compass_locator"));
-    public static final TagKey<Structure> ANTIQUATED_COMPASS_LOCATOR = TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "antiquated_compass_locator"));
-    public static final ResourceKey<Structure> MAGIC_AURA_TEMP = ResourceKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "citadel"));
+    public static final TagKey<ConfiguredStructureFeature<?, ?>> WAYWARD_COMPASS_LOCATOR = TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "wayward_compass_locator"));
+    public static final TagKey<ConfiguredStructureFeature<?, ?>> ANTIQUATED_COMPASS_LOCATOR = TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "antiquated_compass_locator"));
+    public static final ResourceKey<ConfiguredStructureFeature<?, ?>> MAGIC_AURA_TEMP = ResourceKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "citadel"));
 
     public static final TagKey<EntityType<?>> ALWAYS_HEAL = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "always_heal"));
     public static final TagKey<EntityType<?>> CANT_ROOT = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(IronsSpellbooks.MODID, "cant_root"));

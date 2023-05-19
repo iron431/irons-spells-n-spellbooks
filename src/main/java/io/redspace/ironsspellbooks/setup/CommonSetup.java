@@ -11,7 +11,6 @@ import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
-import io.redspace.ironsspellbooks.entity.mobs.summoned_frog.SummonedFrog;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
@@ -27,7 +26,6 @@ import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -72,14 +70,13 @@ public class CommonSetup {
         event.put(EntityRegistry.KEEPER.get(), KeeperEntity.prepareAttributes().build());
         event.put(EntityRegistry.VOID_TENTACLE.get(), VoidTentacle.createLivingAttributes().build());
         event.put(EntityRegistry.CRYOMANCER.get(), CryomancerEntity.prepareAttributes().build());
-        event.put(EntityRegistry.SUMMONED_FROG.get(), SummonedFrog.createAttributes().build());
         event.put(EntityRegistry.ROOT.get(), RootEntity.createLivingAttributes().build());
     }
-
-    @SubscribeEvent
-    public static void spawnPlacements(SpawnPlacementRegisterEvent event) {
-        event.register(EntityRegistry.NECROMANCER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Utils::checkMonsterSpawnRules, SpawnPlacementRegisterEvent.Operation.OR);
-    }
+//
+//    @SubscribeEvent
+//    public static void spawnPlacements(SpawnPlacementRegisterEvent event) {
+//        event.register(EntityRegistry.NECROMANCER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Utils::checkMonsterSpawnRules, SpawnPlacementRegisterEvent.Operation.OR);
+//    }
 
 
 }

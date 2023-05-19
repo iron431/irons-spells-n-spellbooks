@@ -14,7 +14,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -41,6 +41,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 import java.util.UUID;
 
 public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatable {
@@ -159,8 +160,8 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
-        RandomSource randomsource = pLevel.getRandom();
-        this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
+        Random randomsource = pLevel.getRandom();
+        this.populateDefaultEquipmentSlots(pDifficulty);
         if (randomsource.nextDouble() < .3)
             this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
 
@@ -185,8 +186,8 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
     //
 
     protected void clientDiggingParticles(LivingEntity livingEntity) {
-        RandomSource randomsource = livingEntity.getRandom();
-        BlockState blockstate = livingEntity.getBlockStateOn();
+        Random randomsource = livingEntity.getRandom();
+        BlockState blockstate = this.getBlockStateOn();
         if (blockstate.getRenderShape() != RenderShape.INVISIBLE) {
             for (int i = 0; i < 15; ++i) {
                 double d0 = livingEntity.getX() + (double) Mth.randomBetween(randomsource, -0.5F, 0.5F);
@@ -242,7 +243,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
         if (!isAnimatingRise())
             return PlayState.STOP;
         if (event.getController().getAnimationState() == AnimationState.Stopped) {
-            String animation = new String[]{"rise_from_ground_01", "rise_from_ground_02", "rise_from_ground_03", "rise_from_ground_04"}[random.nextIntBetweenInclusive(0, 3)];
+            String animation = new String[]{"rise_from_ground_01", "rise_from_ground_02", "rise_from_ground_03", "rise_from_ground_04"}[Mth.randomBetweenInclusive(random, 0, 3)];
             event.getController().setAnimation(new AnimationBuilder().addAnimation(animation, ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;

@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MinecartItem;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 
@@ -29,7 +31,7 @@ public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile
     ItemRenderer itemRenderer;
 
     public ScrollForgeRenderer(BlockEntityRendererProvider.Context context) {
-        this.itemRenderer = context.getItemRenderer();
+        this.itemRenderer = Minecraft.getInstance().getItemRenderer();
     }
 
     private static final Vec3 INK_POS = new Vec3(.175, .876, .25);

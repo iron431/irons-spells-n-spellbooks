@@ -9,9 +9,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import io.redspace.ironsspellbooks.util.Component;
+
 
 public class CastBarOverlay extends GuiComponent {
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -19,7 +20,7 @@ public class CastBarOverlay extends GuiComponent {
     static final int COMPLETION_BAR_WIDTH = 44;
     static final int IMAGE_HEIGHT = 21;
 
-    public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+    public static void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         if (!ClientMagicData.isCasting())
             return;
 

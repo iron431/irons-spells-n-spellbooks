@@ -11,7 +11,6 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -26,9 +25,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.levelgen.RandomSource;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 
 public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
 
@@ -62,13 +63,13 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
-        RandomSource randomsource = pLevel.getRandom();
-        this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
+        Random randomsource = pLevel.getRandom();
+        this.populateDefaultEquipmentSlots(pDifficulty);
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
+    protected void populateDefaultEquipmentSlots(DifficultyInstance pDifficulty) {
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.ARCHEVOKER_HELMET.get()));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.ARCHEVOKER_CHESTPLATE.get()));
         this.setDropChance(EquipmentSlot.HEAD, 0.0F);

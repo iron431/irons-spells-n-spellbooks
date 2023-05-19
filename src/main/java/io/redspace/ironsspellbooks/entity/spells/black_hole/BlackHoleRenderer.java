@@ -15,8 +15,10 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Random;
 
 public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
     public BlackHoleRenderer(EntityRendererProvider.Context pContext) {
@@ -57,20 +59,20 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         float animationProgress = (entity.tickCount + partialTicks) / 200.0F;
         //float fadeProgress = Math.min(animationProgress > 0.8F ? (animationProgress - 0.8F) / 0.2F : 0.0F, 1.0F);
         float fadeProgress = .5f;
-        RandomSource randomSource = RandomSource.create(432L);
+        Random random = new Random(432L);
 //        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.lightning());
         VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.energySwirl(BEAM_TEXTURE, 0, 0));
         //poseStack.translate(0.0D, -1.0D, -2.0D);
 
         float segments = Math.min(animationProgress, .8f);
         for (int i = 0; (float) i < (segments + segments * segments) / 2.0F * 60.0F; ++i) {
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F + animationProgress * 90.0F));
-            float size1 = (randomSource.nextFloat() * 10.0F + 5.0F + fadeProgress * 5.0F) * entityScale * .4f;
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F + animationProgress * 90.0F));
+            float size1 = (random.nextFloat() * 10.0F + 5.0F + fadeProgress * 5.0F) * entityScale * .4f;
             //float size2 = randomSource.nextFloat() * 2.0F + 1.0F + fadeProgress * 2.0F;
             Matrix4f matrix = poseStack.last().pose();
             Matrix3f normalMatrix2 = poseStack.last().normal();

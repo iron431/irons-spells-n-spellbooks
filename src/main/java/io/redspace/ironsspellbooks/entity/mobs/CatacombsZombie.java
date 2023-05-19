@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
-import net.minecraft.util.RandomSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -11,13 +11,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.RandomSource;
 
 public class CatacombsZombie extends Zombie {
     //This is a wrapper class that in reality creates a vanilla zombie, but with some cool stuff thrown on top
     public CatacombsZombie(EntityType<? extends Zombie> pEntityType, Level pLevel) {
         super(EntityType.ZOMBIE, pLevel);
         if (this.random.nextFloat() < .2f) {
-            switch (this.random.nextIntBetweenInclusive(1, 4)) {
+            switch (Mth.randomBetweenInclusive(random, 1, 4) ) {
 
                 case 1 -> addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, Integer.MAX_VALUE));
                 case 2 -> addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Integer.MAX_VALUE, 1));
@@ -29,8 +30,8 @@ public class CatacombsZombie extends Zombie {
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance pDifficulty) {
-        super.populateDefaultEquipmentSlots(random, pDifficulty);
+    protected void populateDefaultEquipmentSlots(DifficultyInstance pDifficulty) {
+        super.populateDefaultEquipmentSlots(pDifficulty);
         Item[] leather = {Items.LEATHER_BOOTS, Items.LEATHER_LEGGINGS, Items.LEATHER_CHESTPLATE, Items.LEATHER_HELMET};
         Item[] chain = {Items.CHAINMAIL_BOOTS, Items.CHAINMAIL_LEGGINGS, Items.CHAINMAIL_CHESTPLATE, Items.CHAINMAIL_HELMET};
         Item[] iron = {Items.IRON_BOOTS, Items.IRON_LEGGINGS, Items.IRON_CHESTPLATE, Items.IRON_HELMET};

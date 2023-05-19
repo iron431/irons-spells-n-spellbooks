@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;

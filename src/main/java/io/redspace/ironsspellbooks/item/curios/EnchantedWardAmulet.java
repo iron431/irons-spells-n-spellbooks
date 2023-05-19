@@ -3,7 +3,7 @@
 //import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 //import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 //import net.minecraft.ChatFormatting;
-//import net.minecraft.network.chat.Component;
+//import io.redspace.ironsspellbooks.util.Component;
 //import net.minecraft.sounds.SoundEvents;
 //import net.minecraft.world.item.Item;
 //import net.minecraft.world.item.ItemStack;

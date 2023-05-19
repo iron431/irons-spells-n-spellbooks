@@ -14,7 +14,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -24,7 +24,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -44,6 +43,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.AnimationState;
@@ -161,8 +161,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
-        RandomSource randomsource = pLevel.getRandom();
-        this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
+        this.populateDefaultEquipmentSlots(pDifficulty);
         return pSpawnData;
     }
 
@@ -172,7 +171,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
+    protected void populateDefaultEquipmentSlots(DifficultyInstance pDifficulty) {
         this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ItemRegistry.BLOOD_STAFF.get()));
         this.setDropChance(EquipmentSlot.OFFHAND, 0f);
 //        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.WANDERING_MAGICIAN_ROBE.get()));
@@ -238,7 +237,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                     if (player != null)
                         lookAt(player, 360, 360);
                     setHealth(halfHealth);
-                    playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get());
+                    playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get(), 2, 1);
                     //Overriding isInvulnerable just doesn't seem to work
                     setInvulnerable(true);
                 }
@@ -248,7 +247,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                     MagicManager.spawnParticles(level, ParticleHelper.FIRE, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
                     setFinalPhaseGoals();
                     setNoGravity(true);
-                    playSound(SoundRegistry.DEAD_KING_EXPLODE.get());
+                    playSound(SoundRegistry.DEAD_KING_EXPLODE.get(), 2, 1);
                     level.getEntities(this, this.getBoundingBox().inflate(5), (entity) -> entity.distanceToSqr(position()) < 5 * 5).forEach(super::doHurtTarget);
                     setInvulnerable(false);
                 }

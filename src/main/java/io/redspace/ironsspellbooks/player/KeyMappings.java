@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,11 +26,11 @@ public final class KeyMappings {
     }
 
     @SubscribeEvent
-    public static void onRegisterKeybinds(RegisterKeyMappingsEvent event) {
+    public static void onRegisterKeybinds() {
  //Ironsspellbooks.logger.debug("KeyMappings.onRegisterKeybinds");
-        event.register(SPELL_WHEEL_KEYMAP);
-        event.register(SPELLBAR_SCROLL_MODIFIER_KEYMAP);
-        QUICK_CAST_MAPPINGS.forEach(event::register);
+        ClientRegistry .registerKeyBinding(SPELL_WHEEL_KEYMAP) ;
+        ClientRegistry .registerKeyBinding(SPELLBAR_SCROLL_MODIFIER_KEYMAP) ;
+        QUICK_CAST_MAPPINGS.forEach(ClientRegistry::registerKeyBinding);
     }
 
     private static List<KeyMapping> createQuickCastKeybinds() {

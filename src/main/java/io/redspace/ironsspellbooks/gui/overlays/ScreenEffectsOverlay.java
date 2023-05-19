@@ -10,13 +10,15 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.ForgeIngameGui;
+import io.redspace.ironsspellbooks.util.Component;
+
 
 public class ScreenEffectsOverlay extends GuiComponent {
     public final static ResourceLocation MAGIC_AURA_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
     public final static ResourceLocation HEARTSTOP_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
 
-    public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+    public static void render(ForgeIngameGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         //screenWidth = gui.getMinecraft().getWindow().getScreenWidth();
         //screenHeight = gui.getMinecraft().getWindow().getScreenHeight();
         Player player = Minecraft.getInstance().player;

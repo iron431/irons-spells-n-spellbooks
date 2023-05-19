@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -56,13 +55,12 @@ public class CryomancerEntity extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
-        RandomSource randomsource = pLevel.getRandom();
-        this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
+        this.populateDefaultEquipmentSlots(pDifficulty);
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
+    protected void populateDefaultEquipmentSlots(DifficultyInstance pDifficulty) {
         this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.CRYOMANCER_BOOTS.get()));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.CRYOMANCER_BOOTS.get()));
         this.setDropChance(EquipmentSlot.HEAD, 0.0F);

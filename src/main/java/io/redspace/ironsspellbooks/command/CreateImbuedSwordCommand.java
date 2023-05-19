@@ -7,14 +7,14 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import net.minecraft.commands.CommandBuildContext;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.server.command.EnumArgument;
@@ -31,11 +31,11 @@ public class CreateImbuedSwordCommand {
         return SharedSuggestionProvider.suggestResource(resources, p_180254_);
     };
 
-    public static void register(CommandDispatcher<CommandSourceStack> pDispatcher, CommandBuildContext context) {
+    public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
 
         pDispatcher.register(Commands.literal("createImbuedSword").requires((commandSourceStack) -> {
             return commandSourceStack.hasPermission(2);
-        }).then(Commands.argument("item", ItemArgument.item(context)).suggests(SWORD_SUGGESTIONS)
+        }).then(Commands.argument("item", ItemArgument.item()).suggests(SWORD_SUGGESTIONS)
                 .then(Commands.argument("spellType", EnumArgument.enumArgument(SpellType.class))
                         .then(Commands.argument("level", IntegerArgumentType.integer(1)).executes((ctx) -> {
                             return createImbuedSword(ctx.getSource(), ctx.getArgument("item", ItemInput.class), ctx.getArgument("spellType", SpellType.class), IntegerArgumentType.getInteger(ctx, "level"));
@@ -47,8 +47,7 @@ public class CreateImbuedSwordCommand {
             throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spellType, spellType.getMaxLevel())).create();
         }
 
-        var serverPlayer = source.getPlayer();
-        if (serverPlayer != null) {
+        if (source.getEntity() instanceof ServerPlayer serverPlayer) {
             ItemStack itemstack = new ItemStack(itemInput.getItem());
             if (itemstack.getItem() instanceof SwordItem) {
                 SpellData.setSpellData(itemstack, spellType, spellLevel);

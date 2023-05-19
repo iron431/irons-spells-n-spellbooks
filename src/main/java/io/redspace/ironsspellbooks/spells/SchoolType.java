@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.spells;
 
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
@@ -27,7 +27,7 @@ public enum SchoolType {
         return value;
     }
 
-    public Component getDisplayName() {
+    public net.minecraft.network.chat.Component getDisplayName() {
         return DISPLAYS[getValue()];
     }
 
@@ -53,16 +53,16 @@ public enum SchoolType {
         } else return null;
     }
 
-    public static final Component DISPLAY_FIRE = Component.translatable("school.irons_spellbooks.fire").withStyle(ChatFormatting.GOLD);
-    public static final Component DISPLAY_ICE = Component.translatable("school.irons_spellbooks.ice").withStyle(Style.EMPTY.withColor(0xd0f9ff));
-    public static final Component DISPLAY_LIGHTNING = Component.translatable("school.irons_spellbooks.lightning").withStyle(ChatFormatting.AQUA);
-    public static final Component DISPLAY_HOLY = Component.translatable("school.irons_spellbooks.holy").withStyle(Style.EMPTY.withColor(0xfff8d4));
-    public static final Component DISPLAY_ENDER = Component.translatable("school.irons_spellbooks.ender").withStyle(ChatFormatting.LIGHT_PURPLE);
-    public static final Component DISPLAY_BLOOD = Component.translatable("school.irons_spellbooks.blood").withStyle(ChatFormatting.DARK_RED);
-    public static final Component DISPLAY_EVOCATION = Component.translatable("school.irons_spellbooks.evocation").withStyle(ChatFormatting.WHITE);
-    public static final Component DISPLAY_VOID = Component.translatable("school.irons_spellbooks.void").withStyle(Style.EMPTY.withColor(0x490059));
-    public static final Component DISPLAY_POISON = Component.translatable("school.irons_spellbooks.poison").withStyle(ChatFormatting.GREEN);
-    public static final Component[] DISPLAYS = {DISPLAY_FIRE, DISPLAY_ICE, DISPLAY_LIGHTNING, DISPLAY_HOLY, DISPLAY_ENDER, DISPLAY_BLOOD, DISPLAY_EVOCATION, DISPLAY_VOID, DISPLAY_POISON};
+    public static final net.minecraft.network.chat.Component DISPLAY_FIRE = Component.translatable("school.irons_spellbooks.fire").withStyle(ChatFormatting.GOLD);
+    public static final net.minecraft.network.chat.Component DISPLAY_ICE = Component.translatable("school.irons_spellbooks.ice").withStyle(Style.EMPTY.withColor(0xd0f9ff));
+    public static final net.minecraft.network.chat.Component DISPLAY_LIGHTNING = Component.translatable("school.irons_spellbooks.lightning").withStyle(ChatFormatting.AQUA);
+    public static final net.minecraft.network.chat.Component DISPLAY_HOLY = Component.translatable("school.irons_spellbooks.holy").withStyle(Style.EMPTY.withColor(0xfff8d4));
+    public static final net.minecraft.network.chat.Component DISPLAY_ENDER = Component.translatable("school.irons_spellbooks.ender").withStyle(ChatFormatting.LIGHT_PURPLE);
+    public static final net.minecraft.network.chat.Component DISPLAY_BLOOD = Component.translatable("school.irons_spellbooks.blood").withStyle(ChatFormatting.DARK_RED);
+    public static final net.minecraft.network.chat.Component DISPLAY_EVOCATION = Component.translatable("school.irons_spellbooks.evocation").withStyle(ChatFormatting.WHITE);
+    public static final net.minecraft.network.chat.Component DISPLAY_VOID = Component.translatable("school.irons_spellbooks.void").withStyle(Style.EMPTY.withColor(0x490059));
+    public static final net.minecraft.network.chat.Component DISPLAY_POISON = Component.translatable("school.irons_spellbooks.poison").withStyle(ChatFormatting.GREEN);
+    public static final net.minecraft.network.chat.Component[] DISPLAYS = {DISPLAY_FIRE, DISPLAY_ICE, DISPLAY_LIGHTNING, DISPLAY_HOLY, DISPLAY_ENDER, DISPLAY_BLOOD, DISPLAY_EVOCATION, DISPLAY_VOID, DISPLAY_POISON};
 
 
 }

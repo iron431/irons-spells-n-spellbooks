@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,7 +21,7 @@ import java.util.List;
 public class TooltipsUtils {
 
 
-    public static List<Component> formatActiveSpellTooltip(ItemStack stack, CastSource castSource) {
+    public static List<net.minecraft.network.chat.Component> formatActiveSpellTooltip(ItemStack stack, CastSource castSource) {
         var player = Minecraft.getInstance().player;
         AbstractSpell spell = stack.getItem() instanceof SpellBook ? SpellBookData.getSpellBookData(stack).getActiveSpell() : SpellData.getSpellData(stack).getSpell(); //Put me in utils?
         SpellType spellType = spell.getSpellType();
@@ -38,7 +38,7 @@ public class TooltipsUtils {
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost()).withStyle(ChatFormatting.BLUE);
         var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spellType, player, castSource), 1)).withStyle(ChatFormatting.BLUE);
 
-        List<Component> lines = new ArrayList<>();
+        List<net.minecraft.network.chat.Component> lines = new ArrayList<>();
         lines.add(Component.empty());
         lines.add(title);
         uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(ChatFormatting.DARK_GREEN))));
@@ -51,7 +51,7 @@ public class TooltipsUtils {
         return lines;
     }
 
-    public static List<Component> formatScrollTooltip(ItemStack stack) {
+    public static List<net.minecraft.network.chat.Component> formatScrollTooltip(ItemStack stack) {
         var player = Minecraft.getInstance().player;
         AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
         SpellType spellType = spell.getSpellType();
@@ -63,7 +63,7 @@ public class TooltipsUtils {
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost()).withStyle(ChatFormatting.BLUE);
         var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spellType, player, CastSource.SCROLL), 1)).withStyle(ChatFormatting.BLUE);
 
-        List<Component> lines = new ArrayList<>();
+        List<net.minecraft.network.chat.Component> lines = new ArrayList<>();
         lines.add(Component.literal(" ").append(title));
         uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(ChatFormatting.DARK_GREEN))));
         if (spell.getCastType() != CastType.INSTANT) {

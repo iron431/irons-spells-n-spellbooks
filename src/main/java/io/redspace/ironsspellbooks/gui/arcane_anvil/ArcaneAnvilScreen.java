@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 

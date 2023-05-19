@@ -57,7 +57,7 @@ public final class ClientInputEvents {
     }
 
     @SubscribeEvent
-    public static void clientMouseScrolled(InputEvent.MouseScrollingEvent event) {
+    public static void clientMouseScrolled(InputEvent.MouseScrollEvent event) {
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player == null)
@@ -107,18 +107,18 @@ public final class ClientInputEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
-        if (event.isUseItem()) {
-            if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
-                event.setSwingHand(false);
-                event.setCanceled(true);
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
+//        if (event.isUseItem()) {
+//            if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
+//                event.setSwingHand(false);
+//                event.setCanceled(true);
+//            }
+//        }
+//    }
 
     @SubscribeEvent
-    public static void onKeyInput(InputEvent.Key event) {
+    public static void onKeyInput(InputEvent.KeyInputEvent event) {
         //IronsSpellbooks.LOGGER.debug("onKeyInput key:{}", event.getKey());
         handleRightClickSuppression(event.getKey(), event.getAction());
 
@@ -130,10 +130,11 @@ public final class ClientInputEvents {
                 break;
             }
         }
+
     }
 
     @SubscribeEvent
-    public static void onMouseInput(InputEvent.MouseButton.Pre event) {
+    public static void onMouseInput(InputEvent.MouseInputEvent event) {
         handleRightClickSuppression(event.getButton(), event.getAction());
     }
 

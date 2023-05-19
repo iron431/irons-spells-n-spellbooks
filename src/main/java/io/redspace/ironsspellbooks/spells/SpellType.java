@@ -15,7 +15,7 @@ import io.redspace.ironsspellbooks.spells.poison.*;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;

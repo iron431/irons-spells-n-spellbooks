@@ -51,8 +51,8 @@ public class ArmorPileBlock extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void spawnAfterBreak(BlockState pState, ServerLevel level, BlockPos pos, ItemStack pStack, boolean pDropExperience) {
-        super.spawnAfterBreak(pState, level, pos, pStack, pDropExperience);
+    public void spawnAfterBreak(BlockState pState, ServerLevel level, BlockPos pos, ItemStack pStack) {
+        super.spawnAfterBreak(pState, level, pos, pStack);
         KeeperEntity keeper = new KeeperEntity(level);
         keeper.moveTo(Vec3.atCenterOf(pos));
         keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.TRIGGERED, null, null);

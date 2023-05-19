@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.block.scroll_forge;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 //https://youtu.be/CUHEKcaIpOk?t=451
 public class ScrollForgeBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    private static final Component CONTAINER_TITLE = Component.translatable("container.crafting");
+    private static final TranslatableComponent CONTAINER_TITLE = Component.translatable("container.crafting");
     public static final VoxelShape SHAPE_TABLETOP = Block.box(0, 10, 0, 16, 14, 16);
     public static final VoxelShape SHAPE_LEG_1 = Block.box(2, 0, 2, 14, 4, 14);
     public static final VoxelShape SHAPE_LEG_2 = Block.box(4, 4, 4, 12, 10, 12);
@@ -73,7 +74,7 @@ public class ScrollForgeBlock extends BaseEntityBlock {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);
             if (entity instanceof ScrollForgeTile) {
-                NetworkHooks.openScreen(((ServerPlayer) player), (ScrollForgeTile) entity, pos);
+                NetworkHooks.openGui(((ServerPlayer) player), (ScrollForgeTile) entity, pos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }

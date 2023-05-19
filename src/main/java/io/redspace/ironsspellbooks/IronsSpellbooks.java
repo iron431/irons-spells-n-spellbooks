@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
+import io.redspace.ironsspellbooks.player.KeyMappings;
 import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.setup.ModSetup;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -89,6 +90,7 @@ public class IronsSpellbooks {
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.ARMOR_PILE_BLOCK.get(), RenderType.translucent());
 
+        KeyMappings.onRegisterKeybinds();
 
     }
 

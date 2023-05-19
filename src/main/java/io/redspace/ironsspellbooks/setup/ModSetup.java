@@ -4,11 +4,15 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicEvents;
 import io.redspace.ironsspellbooks.entity.mobs.MobSyncedCastingData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.player.CommonPlayerEvents;
+import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.tetra.TetraActualImpl;
 import io.redspace.ironsspellbooks.tetra.TetraProxy;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
@@ -56,6 +60,9 @@ public class ModSetup {
 
         EntityDataSerializers.registerSerializer(MobSyncedCastingData.MOB_SYNCED_CASTING_DATA);
         EntityDataSerializers.registerSerializer(SyncedSpellData.SYNCED_SPELL_DATA);
+
+        SpawnPlacements.register(EntityRegistry.NECROMANCER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Utils::checkMonsterSpawnRules);
+
     }
 
 

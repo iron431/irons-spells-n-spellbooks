@@ -20,7 +20,7 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalTile> {
     ItemRenderer itemRenderer;
 
     public PedestalRenderer(BlockEntityRendererProvider.Context context) {
-        this.itemRenderer = context.getItemRenderer();
+        this.itemRenderer = Minecraft.getInstance().getItemRenderer();
     }
 
     private static final Vec3 ITEM_POS = new Vec3(.5, 1.5, .5);
