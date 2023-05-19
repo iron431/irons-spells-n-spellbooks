@@ -59,7 +59,13 @@ public class SyncedSpellData {
         this.livingEntity = livingEntity;
     }
 
-    public static final EntityDataSerializer<SyncedSpellData> SYNCED_SPELL_DATA = new EntityDataSerializer.ForValueType<SyncedSpellData>() {
+    public interface ForValueType<T> extends EntityDataSerializer<T> {
+        default T copy(T p_238112_) {
+            return p_238112_;
+        }
+    }
+
+    public static final EntityDataSerializer<SyncedSpellData> SYNCED_SPELL_DATA = new ForValueType<SyncedSpellData>() {
         public void write(FriendlyByteBuf buffer, SyncedSpellData data) {
             buffer.writeInt(data.serverPlayerId);
             buffer.writeBoolean(data.isCasting);
