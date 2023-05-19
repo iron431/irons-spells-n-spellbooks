@@ -4,8 +4,11 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import mezz.jei.api.recipe.RecipeType;
@@ -14,14 +17,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -111,12 +108,16 @@ public class GenerateSiteData {
             var spellbookBuilder = new StringBuilder();
             var blockBuilder = new StringBuilder();
 
-            var armorTypes = List.of("Archevoker", "Cryomancer", "Cultist", "Electromancer", "Priest", "Pumpkin", "Pyromancer", "Shadow-Walker", "Wandering Magician", "Ring", "Heavy Chain");
+            var armorTypes = List.of("Archevoker", "Cryomancer", "Cultist", "Electromancer", "Priest", "Pumpkin", "Pyromancer", "Shadow-Walker", "Wandering Magician", "Ring", "Heavy Chain", "Scarecrow", "Plagued");
             Set<Item> itemsTracked = new HashSet<>();
+            //This will exclude these items
+            itemsTracked.add(ItemRegistry.WIMPY_SPELL_BOOK.get());
+            itemsTracked.add(ItemRegistry.LEGENDARY_SPELL_BOOK.get());
+            itemsTracked.add(Items.POISONOUS_POTATO);
 
             Minecraft.getInstance().level.getRecipeManager().getRecipes()
                     .stream()
-                    .filter(r -> r.getId().getNamespace().equals("irons_spellbooks"))
+                    .filter(r -> r.getId().getNamespace().equals("irons_spellbooks") && !r.getId().toString().contains("poisonous_potato"))
                     .forEach(recipe -> {
                         //IronsSpellbooks.LOGGER.debug("recipe: {}, {}, {}", recipe.getId(), recipe.getClass(), recipe.getType());
                         //IronsSpellbooks.LOGGER.debug("recipe: resultItem: {}", ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem()));
@@ -132,7 +133,7 @@ public class GenerateSiteData {
 
                         itemsTracked.add(recipe.getResultItem().getItem());
 
-                        if (recipe instanceof ShapedRecipe) {
+                        if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
                             recipe.getIngredients().forEach(ingredient -> {
                                 handleIngeredient(ingredient, recipeData, recipe);
                             });
@@ -164,40 +165,64 @@ public class GenerateSiteData {
                 if (itemResource.toString().contains("irons_spellbooks") && !itemsTracked.contains(item)) {
                     //Non craftable items
                     var name = item.getName(ItemStack.EMPTY).getString();
-                    if (armorTypes.stream().anyMatch(itemToMatch -> name.contains(itemToMatch))) {
-                        itemsTracked.add(item);
+                    if (item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
+                        //Skip
+                    } else if (armorTypes.stream().anyMatch(itemToMatch -> name.contains(itemToMatch))) {
                         appendToBuilder2(armorBuilder, name, itemResource, tooltip);
+                    } else if (item instanceof UniqueSpellBook) {
+                        appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
                     } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem) {
-                        itemsTracked.add(item);
                         appendToBuilder2(spellbookBuilder, name, itemResource, tooltip);
                     } else if (item instanceof BlockItem) {
-                        itemsTracked.add(item);
                         appendToBuilder2(blockBuilder, name, itemResource, tooltip);
                     } else {
-                        itemsTracked.add(item);
                         appendToBuilder2(itemBuilder, name, itemResource, tooltip);
                     }
+                    itemsTracked.add(item);
+
                 }
             });
 
             var file = new BufferedWriter(new FileWriter("item_data.yml"));
-            file.write(itemBuilder.toString());
+            file.write(postProcess(itemBuilder));
             file.close();
 
             file = new BufferedWriter(new FileWriter("armor_data.yml"));
-            file.write(armorBuilder.toString());
+            file.write(postProcess(armorBuilder));
             file.close();
 
             file = new BufferedWriter(new FileWriter("spellbook_data.yml"));
-            file.write(spellbookBuilder.toString());
+            file.write(postProcess(spellbookBuilder));
             file.close();
 
             file = new BufferedWriter(new FileWriter("block_data.yml"));
-            file.write(blockBuilder.toString());
+            file.write(postProcess(blockBuilder));
             file.close();
         } catch (Exception e) {
             IronsSpellbooks.LOGGER.debug(e.getMessage());
         }
+    }
+
+    private static String postProcess(StringBuilder sb) {
+        return sb.toString()
+                .replace("netherite_spell_book.png", "netherite_spell_book.gif")
+                .replace("ruined_book.png", "ruined_book.gif")
+                .replace("lightning_bottle.png", "lightning_bottle.gif")
+                .replace("/upgrade_orb.png", "/upgrade_orb.gif")
+                .replace("fire_upgrade_orb.png", "fire_upgrade_orb.gif")
+                .replace("holy_upgrade_orb.png", "holy_upgrade_orb.gif")
+                .replace("lightning_upgrade_orb.png", "lightning_upgrade_orb.gif")
+                .replace("ender_upgrade_orb.png", "ender_upgrade_orb.gif")
+                .replace("wayward_compass.png", "wayward_compass.gif");
+    }
+
+    private static String getSpells(ItemStack itemStack) {
+        if (itemStack.getItem() instanceof SpellBook) {
+            return SpellBookData.getSpellBookData(itemStack).getActiveInscribedSpells().stream().map(spell -> {
+                return spell.getSpellType().getDisplayName().getString() + " (" + spell.getLevel() + ")";
+            }).collect(Collectors.joining(", "));
+        }
+        return "";
     }
 
     private static String getTooltip(ItemStack itemStack) {
