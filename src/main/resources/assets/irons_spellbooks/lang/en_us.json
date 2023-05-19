@@ -195,6 +195,7 @@
   "ui.irons_spellbooks.hits_dodged": "%d Hits Dodged",
   "ui.irons_spellbooks.cast_error_mana": "Not enough mana to cast %s!",
   "ui.irons_spellbooks.cast_error_cooldown": "%s is on cooldown.",
+  "ui.irons_spellbooks.cast_error_target": "This spell requires a target.",
   "ui.irons_spellbooks.summon_despawn_message": "%s faded from this world.",
   "ui.irons_spellbooks.spell_target_warning": "%s is targeting you with %s!",
   "school.irons_spellbooks.fire": "Fire",

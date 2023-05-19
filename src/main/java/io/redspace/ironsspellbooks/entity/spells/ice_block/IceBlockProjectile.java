@@ -144,6 +144,12 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
 //        this.setXRot(0);
 //        this.yRotO = this.getYRot();
 //        this.xRotO = this.getXRot();
+        baseTick();
+        xOld = getX();
+        yOld = getY();
+        zOld = getZ();
+        yRotO = getYRot();
+        xRotO = getXRot();
         if (!level.isClientSide) {
             if (airTime <= 0) {
                 //Falling
@@ -192,14 +198,10 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
         } else {
             trailParticles();
         }
-        xOld = getX();
-        yOld = getY();
-        zOld = getZ();
-        yRotO = getYRot();
-        xRotO = getXRot();
+
         move(MoverType.SELF, getDeltaMovement());
 
-        baseTick();
+
 
     }
 

@@ -58,17 +58,8 @@ public class PoisonSplashSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        HitResult raycast = Utils.raycastForEntity(level, entity, 40, true);
-
-        if (raycast.getType() == HitResult.Type.ENTITY && ((EntityHitResult) raycast).getEntity() instanceof LivingEntity target) {
-            playerMagicData.setAdditionalCastData(new CastTargetingData(target));
-            if (entity instanceof ServerPlayer serverPlayer)
-                Messages.sendToPlayer(new ClientboundSyncTargetingData(target, getSpellType()), serverPlayer);
-            if(target instanceof ServerPlayer serverPlayer)
-                Utils.sendTargetedNotification(serverPlayer, entity, this.getSpellType());
-        }
+        Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 32, .35f, false);
         return true;
-
     }
 
     @Override
