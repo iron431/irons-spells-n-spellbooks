@@ -51,9 +51,11 @@ public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
 
         //float halfWidth = width * .5f;
         //old color: 125, 0, 10
-        float width = 3;
+        float width = 2.5f;
         //drawSlash(pose, bufferSource, light, width, 2);
         poseStack.mulPose(Vector3f.XP.rotationDegrees(45));
+        float scale = entity.getScale();
+        poseStack.scale(scale, scale, scale);
         drawSlash(pose, entity, bufferSource, light, width);
 
         poseStack.popPose();
