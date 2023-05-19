@@ -87,7 +87,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
         super.onHitEntity(entityHitResult);
         boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellType.BlOOD_NEEDLES_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
         if (hit && entityHitResult.getEntity() instanceof LivingEntity target && getOwner() instanceof LivingEntity livingOwner) {
-            livingOwner.heal(getDamage() * DamageSources.getResist(target, SchoolType.BLOOD) * .5f);
+            livingOwner.heal(getDamage() * DamageSources.getResist(target, SchoolType.BLOOD) * .25f);
         }
         entityHitResult.getEntity().invulnerableTime = 0;
 

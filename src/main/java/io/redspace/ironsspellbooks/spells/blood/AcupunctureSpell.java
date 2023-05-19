@@ -67,9 +67,9 @@ public class AcupunctureSpell extends AbstractSpell {
                 int count = getCount(entity);
                 float damage = getDamage(entity);
                 Vec3 center = targetEntity.position().add(0, targetEntity.getEyeHeight() / 2, 0);
-                int degreesPerNeedle = 360 / count;
+                float degreesPerNeedle = 360f / count;
                 for (int i = 0; i < count; i++) {
-                    Vec3 offset = new Vec3(0, Math.random(), .55).normalize().scale(targetEntity.getBbWidth() + 2.75f).yRot(degreesPerNeedle * i);
+                    Vec3 offset = new Vec3(0, Math.random(), .55).normalize().scale(targetEntity.getBbWidth() + 2.75f).yRot(degreesPerNeedle * i * Mth.DEG_TO_RAD);
                     Vec3 spawn = center.add(offset);
                     Vec3 motion = center.subtract(spawn).normalize();
 
@@ -88,7 +88,7 @@ public class AcupunctureSpell extends AbstractSpell {
 
 
     private int getCount(LivingEntity caster) {
-        return (int) ((2 + level) * getSpellPower(caster));
+        return (int) ((4 + level) * getSpellPower(caster));
     }
 
     private float getDamage(LivingEntity caster) {
