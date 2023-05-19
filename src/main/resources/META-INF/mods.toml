@@ -56,19 +56,19 @@ A magic mod for Minecraft returning to the classic RPG spellcasting fantasy.'''
 [[dependencies.irons_spellbooks]]
     modId="geckolib3" #mandatory
     mandatory=true #mandatory
-    versionRange="[3.1.39,)" #mandatory
+    versionRange="[3.0.57,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.irons_spellbooks]]
     modId="curios" #mandatory
     mandatory=true #mandatory
-    versionRange="[1.19.2-5.1.3.0,)" #mandatory
+    versionRange="[1.18.2-5.0.9.0,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.irons_spellbooks]]
     modId="caelus" #mandatory
     mandatory=true #mandatory
-    versionRange="[1.19.2-3.0.0.6,)" #mandatory
+    versionRange="[1.18.1-3.0.0.2,)" #mandatory
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
@@ -76,6 +76,6 @@ A magic mod for Minecraft returning to the classic RPG spellcasting fantasy.'''
     modId="minecraft"
     mandatory=true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
-    versionRange="[1.19.2,1.19.3)"
+    versionRange="[1.18.2,1.18.3)"
     ordering="NONE"
     side="BOTH"
