@@ -312,6 +312,7 @@
   "spell.irons_spellbooks.black_hole": "Black Hole",
   "spell.irons_spellbooks.root": "Root",
   "spell.irons_spellbooks.blood_needles": "Blood Needles",
+  "spell.irons_spellbooks.acupuncture": "Acupuncture",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -371,6 +372,7 @@
   "spell.irons_spellbooks.black_hole.guide": "Around a targeted location, create a fissure into the void, manifesting a black hole that will suck in nearby creatures and slowly crush them to death",
   "spell.irons_spellbooks.root.guide": "Around a targeted creature, sprout magical roots than entangle them and completely prevent non-magical movement",
   "spell.irons_spellbooks.blood_needles.guide": "Create a ring of needles made from blood and fire them forward, skewering targets and healing you for 50% of damage done",
+  "spell.irons_spellbooks.acupuncture.guide": "Around a targeted creature, create a dome of blood needles that strike down, healing you for 50% of damage done",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

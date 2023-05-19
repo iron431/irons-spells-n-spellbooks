@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ import java.util.Optional;
 
 public class BloodNeedle extends AbstractMagicProjectile {
     private static final EntityDataAccessor<Float> DATA_Z_ROT = SynchedEntityData.defineId(BloodNeedle.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> DATA_SCALE = SynchedEntityData.defineId(BloodNeedle.class, EntityDataSerializers.FLOAT);
 
     public BloodNeedle(EntityType<? extends BloodNeedle> entityType, Level level) {
         super(entityType, level);
@@ -44,9 +46,15 @@ public class BloodNeedle extends AbstractMagicProjectile {
             entityData.set(DATA_Z_ROT, zRot);
     }
 
+    public void setScale(float scale) {
+        if (!level.isClientSide)
+            entityData.set(DATA_SCALE, scale);
+    }
+
     @Override
     protected void defineSynchedData() {
         entityData.define(DATA_Z_ROT, 0f);
+        entityData.define(DATA_SCALE, 1f);
         super.defineSynchedData();
     }
 
@@ -54,22 +62,24 @@ public class BloodNeedle extends AbstractMagicProjectile {
         return entityData.get(DATA_Z_ROT);
     }
 
+    public float getScale() {
+        return entityData.get(DATA_SCALE);
+    }
+
     @Override
     protected void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putFloat("zRot", getZRot());
+        if (getScale() != 1)
+            pCompound.putFloat("Scale", getScale());
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
         setZRot(pCompound.getFloat("zRot"));
-    }
-
-    @Override
-    protected void onHitBlock(BlockHitResult blockHitResult) {
-        super.onHitBlock(blockHitResult);
-        kill();
+        if (pCompound.contains("Scale"))
+            setScale(pCompound.getFloat("Scale"));
     }
 
     @Override
@@ -84,9 +94,19 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
+    protected void onHit(HitResult hitresult) {
+        super.onHit(hitresult);
+        discard();
+    }
+
+    private static int soundTimestamp;
+
+    @Override
     protected void doImpactSound(SoundEvent sound) {
-        if (level.getEntitiesOfClass(BloodNeedle.class, getBoundingBox().inflate(2)).size() <= 1)
+        if (soundTimestamp != this.tickCount) {
             super.doImpactSound(sound);
+            soundTimestamp = this.tickCount;
+        }
     }
 
     @Override
