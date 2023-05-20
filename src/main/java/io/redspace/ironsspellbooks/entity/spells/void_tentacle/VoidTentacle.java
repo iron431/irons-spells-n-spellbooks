@@ -62,6 +62,11 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
     }
 
     @Override
+    public boolean isPushedByFluid() {
+        return false;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (!level.isClientSide) {
@@ -245,7 +250,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
     private final AnimationBuilder ANIMATION_FLAIL = new AnimationBuilder().addAnimation("flail", ILoopType.EDefaultLoopTypes.LOOP);
     private final AnimationBuilder ANIMATION_FLAIL2 = new AnimationBuilder().addAnimation("flail2", ILoopType.EDefaultLoopTypes.LOOP);
     private final AnimationBuilder ANIMATION_FLAIL3 = new AnimationBuilder().addAnimation("flail3", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationController controller = new AnimationController(this, "void_tentacle_controller", 10, this::animationPredicate);
+    private final AnimationController controller = new AnimationController(this, "void_tentacle_controller", 20, this::animationPredicate);
     private final AnimationController riseController = new AnimationController(this, "void_tentacle_rise_controller", 0, this::risePredicate);
 
 
