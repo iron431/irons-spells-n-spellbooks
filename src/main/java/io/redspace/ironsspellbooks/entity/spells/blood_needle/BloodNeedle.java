@@ -124,7 +124,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, x, y, z, 15, .1, .1, .1, .3, true);
+        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, x, y, z, 15, .1, .1, .1, .18, true);
     }
 
     @Override
