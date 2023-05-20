@@ -16,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.builder.ILoopType;
 
@@ -59,12 +60,15 @@ public class BlackHoleSpell extends AbstractSpell {
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         float radius = getRadius(entity);
 
-        BlockHitResult raycast = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 16 + radius * 1.5f);
+        HitResult raycast = Utils.raycastForEntity(level, entity, 16 + radius * 1.5f, true);
         Vec3 center = raycast.getLocation();
-        if (raycast.getDirection().getAxis().isHorizontal())
-            center = center.subtract(0, radius, 0);
-        else if (raycast.getDirection() == Direction.DOWN)
-            center = center.subtract(0, radius * 2, 0);
+        if (raycast instanceof BlockHitResult blockHitResult) {
+            if (blockHitResult.getDirection().getAxis().isHorizontal())
+                center = center.subtract(0, radius, 0);
+            else if (blockHitResult.getDirection() == Direction.DOWN)
+                center = center.subtract(0, radius * 2, 0);
+        }
+
 
         level.playSound(null, center.x, center.y, center.z, SoundRegistry.BLACK_HOLE_CAST.get(), SoundSource.AMBIENT, 4, 1);
 
