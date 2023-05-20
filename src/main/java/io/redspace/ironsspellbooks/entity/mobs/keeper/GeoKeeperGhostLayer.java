@@ -20,8 +20,10 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
 
     public GeoKeeperGhostLayer(IGeoRenderer entityRendererIn) {
         super(entityRendererIn);
+        this.model = new KeeperModel();
     }
 
+    private KeeperModel model;
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         float f = (float) (entityLivingBaseIn.tickCount + partialTicks) * .6f;
@@ -29,7 +31,7 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
         //renderType = RenderType.endGateway();
         VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
         matrixStackIn.pushPose();
-        var model = this.getEntityModel().getModel(KeeperModel.modelResource);
+        var model = this.model.getModel(KeeperModel.modelResource);
 //        var bone = model.getBone("head");
 //        bone.ifPresent((b) -> b.setHidden(true));
         float scale = 1 / (1.3f);
@@ -53,7 +55,13 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
                 vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .05f, .06f, 0.1f, 1f
         );
 //        bone.ifPresent((b) -> b.setHidden(false));
+        model.getBone("body").ifPresent((rootBone) -> {
+            rootBone.childBones.forEach(bone -> {
+                //IronsSpellbooks.LOGGER.debug("{}", bone.getName());
 
+                    bone.setScale(1,1,1);
+            });
+        });
         matrixStackIn.popPose();
     }
 
