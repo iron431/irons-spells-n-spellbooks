@@ -147,6 +147,10 @@ public class SyncedSpellData {
         return heartStopAccumulatedDamage;
     }
 
+    public boolean hasDodgeEffect() {
+        return hasEffect(EVASION) || hasEffect(ABYSSAL_SHROUD);
+    }
+
     public void setHeartstopAccumulatedDamage(float damage) {
         heartStopAccumulatedDamage = damage;
         doSync();

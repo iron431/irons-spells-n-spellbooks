@@ -6,11 +6,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 
 import java.util.Optional;
 
@@ -88,6 +91,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     @Override
     protected void onHit(HitResult hitresult) {
+//        if (hitresult instanceof EntityHitResult entityHitResult)
+//            if (entityHitResult.getEntity().getType() == EntityType.ENDERMAN || (entityHitResult.getEntity() instanceof LivingEntity livingEntity && PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().hasDodgeEffect()))
+//                return;
         super.onHit(hitresult);
         double x = xOld;
         double y = yOld;
