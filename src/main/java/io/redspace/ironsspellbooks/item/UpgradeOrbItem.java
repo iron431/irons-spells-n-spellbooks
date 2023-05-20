@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -17,12 +18,12 @@ import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 public class UpgradeOrbItem extends Item {
     private final UpgradeType upgrade;
     private final static net.minecraft.network.chat.Component TOOLTIP_HEADER = Component.translatable("tooltip.irons_spellbooks.upgrade_tooltip").withStyle(ChatFormatting.GRAY);
-    private final net.minecraft.network.chat.Component TOOLTIP_TEXT;
+    private final LazyOptional<net.minecraft.network.chat.Component> TOOLTIP_TEXT;
 
     public UpgradeOrbItem(UpgradeType upgrade, Properties pProperties) {
         super(pProperties);
         this.upgrade = upgrade;
-        TOOLTIP_TEXT = Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.operation.toValue(), ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.amountPerUpgrade * (upgrade.operation == AttributeModifier.Operation.ADDITION ? 1 : 100)), Component.translatable(upgrade.attribute.getDescriptionId())).withStyle(ChatFormatting.BLUE));
+        TOOLTIP_TEXT = LazyOptional.of(() -> (Component.literal(" ").append(Component.translatable("attribute.modifier.plus." + upgrade.operation.toValue(), ATTRIBUTE_MODIFIER_FORMAT.format(upgrade.amountPerUpgrade * (upgrade.operation == AttributeModifier.Operation.ADDITION ? 1 : 100)), Component.translatable(upgrade.attribute.get().getDescriptionId())).withStyle(ChatFormatting.BLUE))));
     }
 
     public UpgradeType getUpgradeType() {
@@ -39,7 +40,7 @@ public class UpgradeOrbItem extends Item {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.empty());
         pTooltipComponents.add(TOOLTIP_HEADER);
-        pTooltipComponents.add(TOOLTIP_TEXT);
+        pTooltipComponents.add(TOOLTIP_TEXT.resolve().get());
 
     }
 }

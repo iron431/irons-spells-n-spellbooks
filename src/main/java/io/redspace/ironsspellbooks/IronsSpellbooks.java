@@ -48,8 +48,8 @@ public class IronsSpellbooks {
 
         modEventBus.addListener(OverlayRegistry::onRegisterOverlays);
 
-        ItemRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
+        ItemRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);
         MenuRegistry.register(modEventBus);
         EntityRegistry.register(modEventBus);

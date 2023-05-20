@@ -6,32 +6,40 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.registries.RegistryObject;
 import top.theillusivec4.curios.api.SlotContext;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class SimpleAttributeCurio extends CurioBaseItem {
 
     private AttributeModifier attributeModifier;
-    private Attribute attribute;
-    Multimap<Attribute, AttributeModifier> attributeMap;
+    private RegistryObject<Attribute> attribute;
+    LazyOptional<Multimap<Attribute, AttributeModifier>> lazyOptional;
 
-    public SimpleAttributeCurio(Item.Properties properties, Attribute attribute, AttributeModifier attributeModifier) {
+    public SimpleAttributeCurio(Item.Properties properties, RegistryObject<Attribute> attribute, AttributeModifier attributeModifier) {
         super(properties);
         this.attribute = attribute;
         this.attributeModifier = attributeModifier;
-        attributeMap = HashMultimap.create();
-        attributeMap.put(this.attribute, this.attributeModifier);
+        lazyOptional = LazyOptional.of(this::buildMap);
+    }
+
+    private Multimap<Attribute, AttributeModifier> buildMap() {
+        Multimap<Attribute, AttributeModifier> attributeMap = HashMultimap.create();
+        attributeMap.put(this.attribute.get(), this.attributeModifier);
+        return attributeMap;
     }
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
+        var attributeMap = lazyOptional.resolve().get();
         if (!uuid.equals(attributeModifier.getId())) {
-            attributeMap.remove(attribute, attributeModifier);
+            attributeMap.remove(attribute.get(), attributeModifier);
             attributeModifier = new AttributeModifier(uuid, attributeModifier.getName(), attributeModifier.getAmount(), attributeModifier.getOperation());
-            attributeMap.put(attribute, attributeModifier);
+            attributeMap.put(attribute.get(), attributeModifier);
         }
         return attributeMap;
     }
-
 }

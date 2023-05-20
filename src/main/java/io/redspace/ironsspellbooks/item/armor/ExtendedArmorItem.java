@@ -13,6 +13,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.LazyOptional;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -28,7 +29,7 @@ import java.util.UUID;
 
 public abstract class ExtendedArmorItem extends GeoArmorItem implements IAnimatable {
     private static final UUID[] ARMOR_MODIFIER_UUID_PER_SLOT = new UUID[]{UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")};
-    private final Multimap<Attribute, AttributeModifier> ARMOR_ATTRIBUTES;
+    private final LazyOptional<Multimap<Attribute, AttributeModifier>> lazyOptional;
     private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     private static final Map<ArmorMaterial, MobEffectInstance> MATERIAL_TO_EFFECT_MAP =
@@ -37,6 +38,19 @@ public abstract class ExtendedArmorItem extends GeoArmorItem implements IAnimata
 
     public ExtendedArmorItem(ExtendedArmorMaterials material, EquipmentSlot slot, Properties settings) {
         super(material, slot, settings);
+        lazyOptional = LazyOptional.of(this::buildMap);
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
+        if (pEquipmentSlot == this.slot) {
+            return lazyOptional.resolve().get();
+        } else {
+            return ImmutableMultimap.of();
+        }
+    }
+
+    private Multimap<Attribute, AttributeModifier> buildMap() {
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         float defense = material.getDefenseForSlot(slot);
         float toughness = material.getToughness();
@@ -47,24 +61,15 @@ public abstract class ExtendedArmorItem extends GeoArmorItem implements IAnimata
         if (knockbackResistance > 0) {
             builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", knockbackResistance, AttributeModifier.Operation.ADDITION));
         }
-        for (Map.Entry<Attribute, AttributeModifier> modifierEntry : material.getAdditionalAttributes().entrySet()) {
-            AttributeModifier atr = modifierEntry.getValue();
-            atr = new AttributeModifier(uuid, atr.getName(), atr.getAmount(), atr.getOperation());
-            builder.put(modifierEntry.getKey(), atr);
-        }
-        //testing for upgrade system
-        //builder.put(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Armor knockback resistance", .1, AttributeModifier.Operation.ADDITION));
-        ARMOR_ATTRIBUTES = builder.build();
 
-    }
-
-    @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
-        if (pEquipmentSlot == this.slot) {
-            return ARMOR_ATTRIBUTES;
-        } else {
-            return ImmutableMultimap.of();
+        if (material instanceof ExtendedArmorMaterials materials) {
+            for (Map.Entry<Attribute, AttributeModifier> modifierEntry : materials.getAdditionalAttributes().entrySet()) {
+                AttributeModifier atr = modifierEntry.getValue();
+                atr = new AttributeModifier(uuid, atr.getName(), atr.getAmount(), atr.getOperation());
+                builder.put(modifierEntry.getKey(), atr);
+            }
         }
+        return builder.build();
     }
 
     @Override
