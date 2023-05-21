@@ -258,16 +258,7 @@ public class WizardAttackGoal extends Goal {
 
         var spellType = getNextSpellType();
 
-        if (spellType == SpellType.TELEPORT_SPELL || spellType == SpellType.FROST_STEP_SPELL) {
-            mob.setTeleportLocationBehindTarget(10);
-        }
-        if (spellType == SpellType.BLOOD_STEP_SPELL) {
-            mob.setTeleportLocationBehindTarget(3);
-        }
 
-        if (spellType == SpellType.BURNING_DASH_SPELL){
-            mob.setBurningDashDirectionData();
-        }
 //        if (spellType == SpellType.WALL_OF_FIRE_SPELL) {
 //            mob.setTeleportLocationBehindTarget(15);
 //        }

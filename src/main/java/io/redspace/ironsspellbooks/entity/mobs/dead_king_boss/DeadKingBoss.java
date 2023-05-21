@@ -99,14 +99,15 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 35, 65, 3.5f).setSpellLevels(3, 5).setSpells(
+        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 3.5f).setSpellLevels(3, 5).setSpells(
                 List.of(
-                        SpellType.RAY_OF_SIPHONING_SPELL, SpellType.RAY_OF_SIPHONING_SPELL,
-                        SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL,
-                        //SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL,
-                        //SpellType.RAISE_DEAD_SPELL,
+                        SpellType.RAY_OF_SIPHONING_SPELL,
+                        SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL,
+                        SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL,
                         SpellType.FANG_STRIKE_SPELL, SpellType.FANG_STRIKE_SPELL,
-                        SpellType.MAGIC_ARROW_SPELL, SpellType.MAGIC_ARROW_SPELL
+                        SpellType.POISON_ARROW_SPELL, SpellType.POISON_ARROW_SPELL,
+                        SpellType.BLIGHT_SPELL,
+                        SpellType.ACID_ORB_SPELL
                 ),
                 List.of(SpellType.FANG_WARD_SPELL, SpellType.BLOOD_STEP_SPELL),
                 List.of(/*SpellType.BLOOD_STEP_SPELL*/),
@@ -298,7 +299,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
-                .add(AttributeRegistry.SPELL_POWER.get(), 1.25)
+                .add(AttributeRegistry.SPELL_POWER.get(), 1.15)
                 .add(Attributes.ARMOR, 15)
                 .add(AttributeRegistry.SPELL_RESIST.get(), 1)
                 .add(Attributes.MAX_HEALTH, 300.0)
