@@ -16,6 +16,7 @@ public class CommandRegistry {
         CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());
         CreateDebugWizardCommand.register(event.getDispatcher());
         ManaCommand.register(event.getDispatcher());
+        GenerateModList.register(event.getDispatcher());
 //        GenerateSiteData.register(event.getDispatcher());
     }
 }
