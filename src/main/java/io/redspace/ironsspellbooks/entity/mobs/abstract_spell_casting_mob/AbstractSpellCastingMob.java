@@ -264,6 +264,15 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             castingSpell = null;
             return;
         }
+
+        if (spellType == SpellType.TELEPORT_SPELL || spellType == SpellType.FROST_STEP_SPELL) {
+            setTeleportLocationBehindTarget(10);
+        } else if (spellType == SpellType.BLOOD_STEP_SPELL) {
+            setTeleportLocationBehindTarget(3);
+        } else if (spellType == SpellType.BURNING_DASH_SPELL) {
+            setBurningDashDirectionData();
+        }
+
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(), castingSpell.getEffectiveCastTime(this), CastSource.MOB);
 
         if (!level.isClientSide) {
