@@ -47,7 +47,7 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> EVOCATION_SPELL_POWER = newPowerAttribute("evocation");
     public static final RegistryObject<Attribute> POISON_SPELL_POWER = newPowerAttribute("poison");
 
-    //@SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(entity -> {
             e.add(entity, MAX_MANA.get());

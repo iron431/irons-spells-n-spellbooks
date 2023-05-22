@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:village",
+  "biomes": "#irons_spellbooks:has_structure/evoker_fort",
+  "adapt_noise": true,
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "piece",
+      "spawns": [
+        {
+          "type": "minecraft:pillager",
+          "weight": 10,
+          "minCount": 2,
+          "maxCount": 3
+        },
+        {
+          "type": "minecraft:vindicator",
+          "weight": 5,
+          "minCount": 4,
+          "maxCount": 4
+        }
+      ]
+    }
+  },
+  "config": {
+    "start_pool": "irons_spellbooks:evoker_fort/start_pool",
+    "size": 7
+  }
+}

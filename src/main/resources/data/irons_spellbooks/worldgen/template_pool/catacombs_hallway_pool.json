@@ -57,15 +57,6 @@
       }
     },
     {
-      "weight": 4,
-      "element": {
-        "location": "irons_spellbooks:catacombs/hallway_spiral_stairs",
-        "processors": "irons_spellbooks:catacombs_randomization",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
       "weight": 3,
       "element": {
         "location": "irons_spellbooks:catacombs/hallway_rope_bridge",

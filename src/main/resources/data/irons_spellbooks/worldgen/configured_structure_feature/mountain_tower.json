@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:village",
+  "biomes": "#irons_spellbooks:has_structure/mountain_tower",
+  "adapt_noise": true,
+  "spawn_overrides": {},
+  "config": {
+    "start_pool": "irons_spellbooks:mountain_tower_pool",
+    "size": 2
+  }
+}

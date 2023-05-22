@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:village",
+  "biomes": "#minecraft:has_structure/bastion_remnant",
+  "adapt_noise": true,
+  "spawn_overrides": {},
+  "config": {
+    "start_pool": "irons_spellbooks:battleground/start_pool",
+    "size": 4
+  }
+}

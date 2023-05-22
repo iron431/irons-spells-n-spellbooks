@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:bastion_remnant",
+  "biomes": "#irons_spellbooks:has_structure/catacombs",
+  "adapt_noise": true,
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "piece",
+      "spawns": [
+        {
+          "type": "irons_spellbooks:catacombs_zombie",
+          "weight": 10,
+          "minCount": 4,
+          "maxCount": 4
+        },
+        {
+          "type": "minecraft:skeleton",
+          "weight": 5,
+          "minCount": 4,
+          "maxCount": 4
+        },
+        {
+          "type": "irons_spellbooks:necromancer",
+          "weight": 2,
+          "minCount": 4,
+          "maxCount": 4
+        }
+      ]
+    }
+  },
+  "config": {
+    "start_pool": "irons_spellbooks:catacombs_start_pool",
+    "size": 7
+  }
+}

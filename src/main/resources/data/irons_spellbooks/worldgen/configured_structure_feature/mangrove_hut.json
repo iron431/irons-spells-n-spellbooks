@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:village",
+  "biomes": "#irons_spellbooks:has_structure/mangrove_hut",
+  "adapt_noise": true,
+  "spawn_overrides": {},
+  "config": {
+    "start_pool": "irons_spellbooks:mangrove_hut_pool",
+    "size": 2
+  }
+}
