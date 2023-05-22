@@ -24,7 +24,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     @Override
     public void tick() {
         super.tick();
-        if (++meleeTime > meleeTimeDelay && !mob.isCasting()) {
+        if (++meleeTime > meleeTimeDelay) {
             meleeTime = 0;
             wantsToMelee = mob.getRandom().nextFloat() <= meleeBias;
             meleeTimeDelay = mob.getRandom().nextIntBetweenInclusive(60, 120);
@@ -65,7 +65,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
-        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange) {
+        if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || mob.isCasting()) {
             super.handleAttackLogic(distanceSquared);
         } else if (--this.attackTime == 0) {
             this.mob.swing(InteractionHand.MAIN_HAND);

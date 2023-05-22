@@ -214,7 +214,7 @@ public class WizardAttackGoal extends Goal {
         }
         if (mob.isCasting()) {
             var pmg = PlayerMagicData.getPlayerMagicData(mob);
-            if (AbstractSpell.getSpell(pmg.getCastingSpellId(), pmg.getCastingSpellLevel()).shouldAIStopCasting(mob, target))
+            if (target.isDeadOrDying() || AbstractSpell.getSpell(pmg.getCastingSpellId(), pmg.getCastingSpellLevel()).shouldAIStopCasting(mob, target))
                 mob.cancelCast();
 
         }

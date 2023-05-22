@@ -231,17 +231,15 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         if (playerMagicData.isCasting()) {
             castingSpell.onServerCastTick(level, this, playerMagicData);
         }
-
+        this.forceLookAtTarget(getTarget());
         if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.CHARGE || castingSpell.getCastType() == CastType.INSTANT) {
-                forceLookAtTarget(getTarget());
                 //irons_spellbooks.LOGGER.debug("ASCM.customServerAiStep: onCast.1 {}", castingSpell.getSpellType());
                 castingSpell.onCast(level, this, playerMagicData);
             }
             castComplete();
         } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
-                forceLookAtTarget(getTarget());
                 //irons_spellbooks.LOGGER.debug("ASCM.customServerAiStep: onCast.2 {}", castingSpell.getSpellType());
                 castingSpell.onCast(level, this, playerMagicData);
             }
@@ -314,9 +312,20 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     private void forceLookAtTarget(LivingEntity target) {
+//        if (target != null) {
+//            lookAt(target, 1, 1);
+//            //setOldPosAndRot();
+//        }
         if (target != null) {
-            lookAt(target, 360, 360);
-            setOldPosAndRot();
+            double d0 = target.getX() - this.getX();
+            double d2 = target.getZ() - this.getZ();
+            double d1 = target.getEyeY() - this.getEyeY();
+
+            double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+            float f = (float) (Mth.atan2(d2, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
+            float f1 = (float) (-(Mth.atan2(d1, d3) * (double) (180F / (float) Math.PI)));
+            this.setXRot(f1 % 360);
+            this.setYRot(f % 360);
         }
     }
 

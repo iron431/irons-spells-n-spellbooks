@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -8,7 +7,6 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundBloodSiphonParticles
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.EntityCastData;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -59,9 +57,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        Vec3 start = entity.getEyePosition().subtract(0, 0.1, 0);
-        Vec3 end = start.add(entity.getForward().normalize().scale(getRange(this.level)));
-        var hitResult = Utils.raycastForEntity(level, entity, start, end, true);
+        var hitResult = Utils.raycastForEntity(level, entity, getRange(this.level), true, .15f);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
@@ -74,8 +70,8 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         super.onCast(level, entity, playerMagicData);
     }
 
-    private static float getRange(int level) {
-        return 6 + level * .8f;
+    public static float getRange(int level) {
+        return 12;
     }
 
     private float getTickDamage(Entity caster) {
