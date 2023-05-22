@@ -82,10 +82,15 @@ public class ClientPlayerEvents {
             if (syncedData.hasEffect(SyncedSpellData.TRUE_INVIS) && livingEntity.isInvisibleTo(player)) {
                 event.setCanceled(true);
             }
-            if (syncedData.getCastingSpellType() == SpellType.RAY_OF_SIPHONING_SPELL) {
-                // player.position().add(0, player.getEyeHeight()/2,0),player.getEyePosition().add(player.getForward().normalize().scale(32))
-                SpellRenderingHelper.renderRay(livingEntity, event.getPoseStack(), event.getMultiBufferSource(), 255, 0, 0, 255, event.getPartialTick());
-            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void afterLivingRender(RenderLivingEvent.Post<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
+        var livingEntity = event.getEntity();
+        if (livingEntity instanceof Player) {
+            var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
+            SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
         }
     }
 
