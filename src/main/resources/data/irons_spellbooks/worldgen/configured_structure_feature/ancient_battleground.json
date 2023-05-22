@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:village",
+  "type": "minecraft:bastion_remnant",
   "biomes": "#minecraft:has_structure/bastion_remnant",
   "adapt_noise": true,
   "spawn_overrides": {},
