@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.entity.spells.visual_spell_rendering.VisualSpellEntity;
 import io.redspace.ironsspellbooks.network.spell.ClientboundBloodSiphonParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -60,10 +59,6 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        if (!(playerMagicData.getAdditionalCastData() instanceof EntityCastData entityCastData && entityCastData.getCastingEntity() instanceof VisualSpellEntity)) {
-            IronsSpellbooks.LOGGER.debug("RayOfSiphoningSpell: first cast, intializing ray");
-            initializeRay(level, entity, playerMagicData);
-        }
         Vec3 start = entity.getEyePosition().subtract(0, 0.1, 0);
         Vec3 end = start.add(entity.getForward().normalize().scale(getRange(this.level)));
         var hitResult = Utils.raycastForEntity(level, entity, start, end, true);
@@ -79,20 +74,9 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         super.onCast(level, entity, playerMagicData);
     }
 
-    private void initializeRay(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-//        VisualSpellEntity ray = new VisualSpellEntity(level, entity);
-//        ray.setSpellType(getSpellType().getValue());
-//        ray.setPos(entity.getEyePosition());
-//        level.addFreshEntity(ray);
-//        playerMagicData.setAdditionalCastData(new EntityCastData(ray));
-//        IronsSpellbooks.LOGGER.debug("RayOfSiphoningSpell: ray initialized {} {}", ray, playerMagicData.getAdditionalCastData());
-
-    }
-
     private static float getRange(int level) {
         return 6 + level * .8f;
     }
-
 
     private float getTickDamage(Entity caster) {
         return getSpellPower(caster) * .25f;
