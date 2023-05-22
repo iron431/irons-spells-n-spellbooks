@@ -148,6 +148,7 @@ public class WizardAttackGoal extends Goal {
         this.target = null;
         this.seeTime = 0;
         this.attackTime = -1;
+        this.mob.setAggressive(false);
     }
 
     public boolean requiresUpdateEveryTick() {
@@ -322,6 +323,13 @@ public class WizardAttackGoal extends Goal {
         }
 
     }
+
+    @Override
+    public void start() {
+        super.start();
+        this.mob.setAggressive(true);
+    }
+
 
     protected int getAttackWeight() {
         //We want attack to be a common action in any circumstance, but the more "confident" we are the more likely we are to attack (we have health or our target is weak)
