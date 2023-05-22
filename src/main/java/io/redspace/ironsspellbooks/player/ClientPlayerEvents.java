@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.entity.spells.visual_spell_rendering.VisualSpellEntityRenderer;
+import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -84,7 +84,7 @@ public class ClientPlayerEvents {
             }
             if (syncedData.getCastingSpellType() == SpellType.RAY_OF_SIPHONING_SPELL) {
                 // player.position().add(0, player.getEyeHeight()/2,0),player.getEyePosition().add(player.getForward().normalize().scale(32))
-                VisualSpellEntityRenderer.renderRay(livingEntity, event.getPoseStack(), event.getMultiBufferSource(), 255, 0, 0, 255, event.getPartialTick());
+                SpellRenderingHelper.renderRay(livingEntity, event.getPoseStack(), event.getMultiBufferSource(), 255, 0, 0, 255, event.getPartialTick());
             }
         }
     }

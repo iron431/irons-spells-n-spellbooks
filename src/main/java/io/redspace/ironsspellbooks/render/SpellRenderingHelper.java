@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spells.visual_spell_rendering;
+package io.redspace.ironsspellbooks.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -8,8 +8,6 @@ import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -19,38 +17,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class VisualSpellEntityRenderer extends EntityRenderer<VisualSpellEntity> {
+public class SpellRenderingHelper {
     private static ResourceLocation SOLID = IronsSpellbooks.id("textures/entity/electric_beams/solid.png");
-
-    public VisualSpellEntityRenderer(Context context) {
-        super(context);
-    }
-
-    @Override
-    public void render(VisualSpellEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        IronsSpellbooks.LOGGER.debug("VisualSpellEntityRenderer: spellid: {}", entity.getSpellType());
-        if (entity.getSpellType() == 0)
-            return;
-
-
-        poseStack.pushPose();
-        PoseStack.Pose pose = poseStack.last();
-
-        poseStack.translate(0, 0, 0);
-
-        float f = Mth.rotlerp(entity.yRotO, entity.getYRot(), partialTicks);
-        float f1 = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
-        IronsSpellbooks.LOGGER.debug("Visual POS: yrot: {} yrotold: {} parital ticks: {} inbetween: {}", entity.getYRot(), entity.yRotO, partialTicks, f);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-f));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(f1));
-//
-//        switch (entity.getSpellType()) {
-//            //Ray of Siphoning
-//            case 29 -> renderRay(entity, pose, bufferSource, 255, 0, 0, 255, partialTicks);
-//        }
-
-        poseStack.popPose();
-    }
 
     public static void renderRay(LivingEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, int r, int g, int b, int a, float partialTicks) {
         poseStack.pushPose();
@@ -95,11 +63,5 @@ public class VisualSpellEntityRenderer extends EntityRenderer<VisualSpellEntity>
         consumer.vertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).color(r, g, b, a).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).color(r, g, b, a).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
 
-    }
-
-    @Override
-    public ResourceLocation getTextureLocation(VisualSpellEntity p_115264_) {
-        //return TEXTURES[(int) (Math.random() * 4)];
-        return SOLID;
     }
 }
