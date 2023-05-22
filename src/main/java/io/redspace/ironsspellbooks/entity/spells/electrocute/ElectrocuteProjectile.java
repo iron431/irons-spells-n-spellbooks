@@ -28,6 +28,16 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
         super(EntityRegistry.ELECTROCUTE_PROJECTILE.get(), level, entity);
     }
 
+    @Override
+    public boolean shouldRenderAtSqrDistance(double pDistance) {
+        return super.shouldRenderAtSqrDistance(pDistance);
+    }
+
+    @Override
+    public boolean shouldRender(double pX, double pY, double pZ) {
+        return super.shouldRender(pX, pY, pZ);
+    }
+
     public void generateLightningBeams() {
         //irons_spellbooks.LOGGER.debug("generatingLightningBeams");
         Random random = new Random();
