@@ -3,8 +3,6 @@ package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -18,7 +16,7 @@ import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
 @OnlyIn(Dist.CLIENT)
 public class VoidTentacleEmissiveLayer extends GeoLayerRenderer<VoidTentacle> {
-    public static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/void_tentacle_emissive.png");
+    public static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/void_tentacle/void_tentacle_emissive.png");
 
     public VoidTentacleEmissiveLayer(IGeoRenderer entityRendererIn) {
         super(entityRendererIn);
