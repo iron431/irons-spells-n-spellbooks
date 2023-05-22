@@ -5,10 +5,10 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.spells.visual_spell_rendering.VisualSpellEntityRenderer;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -61,7 +61,7 @@ public class ClientPlayerEvents {
                      */
                     SpellType currentSpell = SpellType.getTypeFromValue(spellData.getCastingSpellId());
                     if (currentSpell == SpellType.RAY_OF_SIPHONING_SPELL) {
-                        RayOfSiphoningSpell.doRayParticles(livingEntity, spellData.getCastingSpellLevel());
+                        //RayOfSiphoningSpell.doRayParticles(livingEntity, spellData.getCastingSpellLevel());
                     }
                 });
             }
@@ -82,10 +82,12 @@ public class ClientPlayerEvents {
             if (syncedData.hasEffect(SyncedSpellData.TRUE_INVIS) && livingEntity.isInvisibleTo(player)) {
                 event.setCanceled(true);
             }
+            if (syncedData.getCastingSpellType() == SpellType.RAY_OF_SIPHONING_SPELL) {
+                // player.position().add(0, player.getEyeHeight()/2,0),player.getEyePosition().add(player.getForward().normalize().scale(32))
+                VisualSpellEntityRenderer.renderRay(livingEntity, event.getPoseStack(), event.getMultiBufferSource(), 255, 0, 0, 255, event.getPartialTick());
+            }
         }
     }
-
-    private static Integer i = 0;
 
     @SubscribeEvent
     public static void imbuedWeaponTooltips(ItemTooltipEvent event) {

@@ -37,6 +37,7 @@ import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceP
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileProjectile;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
+import io.redspace.ironsspellbooks.entity.spells.visual_spell_rendering.VisualSpellEntity;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
@@ -327,4 +328,10 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "blood_needle").toString()));
+
+    public static final RegistryObject<EntityType<VisualSpellEntity>> VISUAL_SPELLCASTING_ENTITY =
+            ENTITIES.register("visual_spell_entity", () -> EntityType.Builder.<VisualSpellEntity>of(VisualSpellEntity::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "visual_spell_entity").toString()));
 }
