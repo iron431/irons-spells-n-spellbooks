@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
@@ -107,15 +108,12 @@ public final class ClientInputEvents {
         }
     }
 
-//    @SubscribeEvent
-//    public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
-//        if (event.isUseItem()) {
-//            if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
-//                event.setSwingHand(false);
-//                event.setCanceled(true);
-//            }
-//        }
-//    }
+    @SubscribeEvent
+    public static void onUseInput(PlayerInteractEvent.RightClickItem event) {
+        if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
+            event.setCanceled(true);
+        }
+    }
 
     @SubscribeEvent
     public static void onKeyInput(InputEvent.KeyInputEvent event) {
