@@ -21,10 +21,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.UseAnim;
-import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public enum SpellType {
@@ -99,18 +97,12 @@ public enum SpellType {
     ;
 
     private final int value;
-    private final LazyOptional<Boolean> isEnabled;
-    private final LazyOptional<Integer> maxLevel;
-    private final LazyOptional<Integer> minRarity;
     private final int maxRarity;
     private final GetSpellForType getSpellForType;
     private volatile List<Double> rarityWeights;
 
     SpellType(final int newValue, GetSpellForType getter) {
         value = newValue;
-        isEnabled = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).ENABLED));
-        maxLevel = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).MAX_LEVEL));
-        minRarity = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).MIN_RARITY.getValue()));
         maxRarity = SpellRarity.LEGENDARY.getValue();
         getSpellForType = getter;
     }
@@ -120,7 +112,7 @@ public enum SpellType {
     }
 
     public int getMinRarity() {
-        return minRarity.orElse(0);
+        return ServerConfigs.getSpellConfig(this).minRarity().getValue();
     }
 
     public int getMaxRarity() {
@@ -132,7 +124,7 @@ public enum SpellType {
     }
 
     public int getMaxLevel() {
-        return maxLevel.orElse(10);
+        return ServerConfigs.getSpellConfig(this).maxLevel();
     }
 
     public static SpellType getTypeFromValue(int value) {
@@ -344,7 +336,7 @@ public enum SpellType {
     }
 
     public boolean isEnabled() {
-        return isEnabled.orElse(false);
+        return ServerConfigs.getSpellConfig(this).enabled();
     }
 
     public String getId() {

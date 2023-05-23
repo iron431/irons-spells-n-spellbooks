@@ -34,7 +34,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
 import software.bernie.geckolib3.core.builder.ILoopType;
 
 import javax.annotation.Nullable;
@@ -61,17 +60,9 @@ public abstract class AbstractSpell {
     protected int castTime;
     //protected int cooldown;
 
-    private final LazyOptional<Double> manaMultiplier;
-    private final LazyOptional<Double> powerMultiplier;
-    private final LazyOptional<Integer> cooldown;
-
     public AbstractSpell(SpellType spellType) {
         this.spellType = spellType;
         this.castType = spellType.getCastType();
-
-        manaMultiplier = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(spellType).MANA_MULTIPLIER));
-        powerMultiplier = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(spellType).POWER_MULTIPLIER));
-        cooldown = LazyOptional.of(() -> ((int) (ServerConfigs.getSpellConfig(spellType).COOLDOWN_IN_SECONDS * 20)));
     }
 
     public int getID() {
@@ -103,11 +94,11 @@ public abstract class AbstractSpell {
     }
 
     public int getManaCost() {
-        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * manaMultiplier.orElse(1d));
+        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * ServerConfigs.getSpellConfig(spellType).manaMultiplier());
     }
 
     public int getSpellCooldown() {
-        return this.cooldown.orElse(200);
+        return ServerConfigs.getSpellConfig(spellType).cooldownInTicks();
     }
 
     private int getCastTime() {
@@ -149,7 +140,7 @@ public abstract class AbstractSpell {
 
         float entitySpellPowerModifier = 1;
         float entitySchoolPowerModifier = 1;
-        float configPowerModifier = (powerMultiplier.orElse(1d)).floatValue();
+        float configPowerModifier = (float) ServerConfigs.getSpellConfig(spellType).powerMultiplier();
         if (sourceEntity instanceof LivingEntity sourceLivingEntity) {
             //IronsSpellbooks.LOGGER.debug("AbsSpell.getSpellPower: \"use item\": {}", sourceLivingEntity.getUseItem());
             entitySpellPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());

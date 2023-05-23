@@ -67,7 +67,7 @@ public class SummonHorseSpell extends AbstractSpell {
     }
 
     private void setAttributes(AbstractHorse horse, float power) {
-        int maxPower = baseSpellPower + (ServerConfigs.getSpellConfig(SpellType.SUMMON_HORSE_SPELL).MAX_LEVEL - 1) * spellPowerPerLevel;
+        int maxPower = baseSpellPower + (ServerConfigs.getSpellConfig(SpellType.SUMMON_HORSE_SPELL).maxLevel() - 1) * spellPowerPerLevel;
         float quality = power / (float) maxPower;
 
         float minSpeed = .2f;

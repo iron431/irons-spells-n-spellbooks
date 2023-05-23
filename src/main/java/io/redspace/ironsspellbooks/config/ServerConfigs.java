@@ -5,13 +5,14 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ServerConfigs {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
-    public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(true, 10, SpellRarity.COMMON, 1, 1, 10);
+    public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(() -> true, () -> 10, () -> SpellRarity.COMMON, () -> 1d, () -> 1d, () -> 10d);
     public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
     public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
@@ -27,7 +28,6 @@ public class ServerConfigs {
     //https://forge.gemwire.uk/wiki/Configs
 
     private static final Map<SpellType, SpellConfigParameters> SPELL_CONFIGS = new HashMap<>();
-    private static final LinkedList<DelayedConfigConstructor> CONFIG_LIST = new LinkedList<>();
 
     static {
         BUILDER.comment("Other Configuration");
@@ -164,14 +164,13 @@ public class ServerConfigs {
         //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
         BUILDER.push(createSpellConfigTitle(spell.getId()));
 
-        CONFIG_LIST.add(new DelayedConfigConstructor(
+        SPELL_CONFIGS.put(spell, new SpellConfigParameters(
                 BUILDER.define("Enabled", enabledByDefault),
                 BUILDER.define("MaxLevel", defaultMaxLevel),
                 BUILDER.defineEnum("MinRarity", defaultMinRarity),
                 BUILDER.define("ManaCostMultiplier", 1d),
                 BUILDER.define("SpellPowerMultiplier", 1d),
-                BUILDER.define("CooldownInSeconds", cooldownInSeconds),
-                spell
+                BUILDER.define("CooldownInSeconds", cooldownInSeconds)
         ));
 
         BUILDER.pop();
@@ -184,43 +183,61 @@ public class ServerConfigs {
         }
         return Arrays.stream(words).sequential().collect(Collectors.joining("-"));
     }
+//
+//    public static void cacheConfigs() {
+//        //IronsSpellbooks.LOGGER.debug("CFG: cacheConfigs {}", CONFIG_LIST.size());
+//        while (!CONFIG_LIST.isEmpty())
+//            CONFIG_LIST.remove().construct();
+//    }
 
-    public static void cacheConfigs() {
-        //IronsSpellbooks.LOGGER.debug("CFG: cacheConfigs {}", CONFIG_LIST.size());
-        while (!CONFIG_LIST.isEmpty())
-            CONFIG_LIST.remove().construct();
-    }
+    public static class SpellConfigParameters {
 
-    private static class DelayedConfigConstructor {
-        final ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
-        final ForgeConfigSpec.ConfigValue<Integer> MAX_LEVEL;
-        final ForgeConfigSpec.ConfigValue<SpellRarity> MIN_RARITY;
-        final ForgeConfigSpec.ConfigValue<Double> M_MULT;
-        final ForgeConfigSpec.ConfigValue<Double> P_MULT;
-        final ForgeConfigSpec.ConfigValue<Double> CS;
-        SpellType spellType;
+        final Supplier<Boolean> ENABLED;
+        final Supplier<Integer> MAX_LEVEL;
+        final Supplier<SpellRarity> MIN_RARITY;
+        final Supplier<Double> M_MULT;
+        final Supplier<Double> P_MULT;
+        final Supplier<Double> CS;
 
-        DelayedConfigConstructor(
-                ForgeConfigSpec.ConfigValue<Boolean> ENABLED,
-                ForgeConfigSpec.ConfigValue<Integer> MAX_LEVEL,
-                ForgeConfigSpec.ConfigValue<SpellRarity> MIN_RARITY,
-                ForgeConfigSpec.ConfigValue<Double> M_MULT,
-                ForgeConfigSpec.ConfigValue<Double> P_MULT,
-                ForgeConfigSpec.ConfigValue<Double> CS,
-                SpellType spellType) {
+        SpellConfigParameters(
+                Supplier<Boolean> ENABLED,
+                Supplier<Integer> MAX_LEVEL,
+                Supplier<SpellRarity> MIN_RARITY,
+                Supplier<Double> M_MULT,
+                Supplier<Double> P_MULT,
+                Supplier<Double> CS) {
             this.ENABLED = ENABLED;
             this.MAX_LEVEL = MAX_LEVEL;
             this.MIN_RARITY = MIN_RARITY;
             this.M_MULT = M_MULT;
             this.P_MULT = P_MULT;
             this.CS = CS;
-            this.spellType = spellType;
         }
 
-        void construct() {
-            //IronsSpellbooks.LOGGER.debug("CFG: DelayedConfigConstructor {}, {}, {}, {}, {}, {}, {}", spellType, ENABLED, MAX_LEVEL, MIN_RARITY, M_MULT, P_MULT, CS);
-            SPELL_CONFIGS.put(spellType, new SpellConfigParameters(ENABLED.get(), MAX_LEVEL.get(), MIN_RARITY.get(), P_MULT.get(), M_MULT.get(), CS.get()));
+        public boolean enabled() {
+            return ENABLED.get();
         }
+
+        public int maxLevel() {
+            return MAX_LEVEL.get();
+        }
+
+        public SpellRarity minRarity() {
+            return MIN_RARITY.get();
+        }
+
+        public double powerMultiplier() {
+            return P_MULT.get();
+        }
+
+        public double manaMultiplier() {
+            return M_MULT.get();
+        }
+
+        public int cooldownInTicks() {
+            return (int) (CS.get() * 20);
+        }
+
     }
 
 }
