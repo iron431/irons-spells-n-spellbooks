@@ -78,7 +78,7 @@ public class SpellRenderingHelper {
             VertexConsumer inner = bufferSource.getBuffer(RenderType.entityTranslucent(BEACON, true));
             drawHull(start, end, radius, radius, pose, inner, r, g, b, a, min, max);
             //drawHull(start, end, .25f, .25f, pose, outer, r / 2, g / 2, b / 2, a / 2);
-            VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(TWISTING_GLOW));
+            VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucent(TWISTING_GLOW));
             drawQuad(start, end, radius * 4f, 0, pose, outer, r, g, b, a, min, max);
             drawQuad(start, end, 0, radius * 4f, pose, outer, r, g, b, a, min, max);
             start = end;

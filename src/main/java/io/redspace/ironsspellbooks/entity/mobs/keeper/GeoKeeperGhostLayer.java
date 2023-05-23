@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.client.renderer.LightTexture;
@@ -36,7 +37,7 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
 //        bone.ifPresent((b) -> b.setHidden(true));
         float scale = 1 / (1.3f);
         matrixStackIn.scale(scale, scale, scale);
-
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-90));
         model.getBone("body").ifPresent((rootBone) -> {
             rootBone.childBones.forEach(bone -> {
                 //IronsSpellbooks.LOGGER.debug("{}", bone.getName());
