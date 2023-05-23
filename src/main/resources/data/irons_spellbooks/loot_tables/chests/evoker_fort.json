@@ -64,27 +64,6 @@
       ]
     },
     {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:goat_horn",
-          "functions": [
-            {
-              "function": "minecraft:set_instrument",
-              "options": "#minecraft:goat_horns"
-            }
-          ]
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.45
-        }
-      ]
-    },
-    {
       "rolls": {
         "min": 1,
         "max": 2
