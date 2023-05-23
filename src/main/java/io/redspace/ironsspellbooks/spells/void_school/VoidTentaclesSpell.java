@@ -3,8 +3,7 @@ package io.redspace.ironsspellbooks.spells.void_school;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -33,6 +32,13 @@ public class VoidTentaclesSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRings() * 1.3f, 1))
         );
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.LEGENDARY)
+            .setSchool(SchoolType.VOID)
+            .setMaxLevel(3)
+            .setCooldownSeconds(30)
+            .build();
 
     public VoidTentaclesSpell(int level) {
         super(SpellType.VOID_TENTACLES_SPELL);

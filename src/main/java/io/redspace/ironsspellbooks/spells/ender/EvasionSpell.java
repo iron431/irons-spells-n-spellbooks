@@ -2,9 +2,7 @@ package io.redspace.ironsspellbooks.spells.ender;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.AnimationHolder;
+import io.redspace.ironsspellbooks.spells.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
@@ -24,6 +22,13 @@ public class EvasionSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(caster)));
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.EPIC)
+            .setSchool(SchoolType.ENDER)
+            .setMaxLevel(5)
+            .setCooldownSeconds(180)
+            .build();
 
     public EvasionSpell(int level) {
         super(SpellType.EVASION_SPELL);

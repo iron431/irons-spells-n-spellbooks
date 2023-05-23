@@ -2,8 +2,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -33,6 +32,13 @@ public class SpectralHammerSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.distance", distance)
         );
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.EVOCATION)
+            .setMaxLevel(5)
+            .setCooldownSeconds(10)
+            .build();
 
     public SpectralHammerSpell(int level) {
         super(SpellType.SPECTRAL_HAMMER_SPELL);

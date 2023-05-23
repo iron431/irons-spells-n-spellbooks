@@ -29,24 +29,25 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 @Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonSetup {
-//    @SubscribeEvent
-//    public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
-// //Ironsspellbooks.logger.debug("onModConfigLoadingEvent");
-//        if(event.getConfig().getType() == ModConfig.Type.SERVER){
-//            ServerConfigs.cacheConfigs();
-//        }
-//    }
-//
-//    @SubscribeEvent
-//    public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
-// //Ironsspellbooks.logger.debug("onModConfigReloadingEvent");
-//        if(event.getConfig().getType() == ModConfig.Type.SERVER){
-//            ServerConfigs.cacheConfigs();
-//        }
-//    }
+    @SubscribeEvent
+    public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
+        if(event.getConfig().getType() == ModConfig.Type.SERVER){
+//            SpellType.resolveSchools();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
+ //Ironsspellbooks.logger.debug("onModConfigReloadingEvent");
+        if(event.getConfig().getType() == ModConfig.Type.SERVER){
+//            SpellType.resolveSchools();
+        }
+    }
 
     @SubscribeEvent
     public static void onAttributeCreate(EntityAttributeCreationEvent event) {

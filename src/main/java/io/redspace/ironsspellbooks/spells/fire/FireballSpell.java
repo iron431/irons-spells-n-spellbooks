@@ -3,8 +3,7 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLargeFireball;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -29,6 +28,18 @@ public class FireballSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.radius", getRadius(caster))
         );
     }
+
+//    public static DefaultConfig defaultConfig = new DefaultConfig((config) -> {
+//        config.minRarity = SpellRarity.EPIC;
+//        config.maxLevel = 8;
+//    });
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.EPIC)
+            .setSchool(SchoolType.FIRE)
+            .setMaxLevel(3)
+            .setCooldownSeconds(25)
+            .build();
 
     public FireballSpell(int level) {
         super(SpellType.FIREBALL_SPELL);

@@ -3,8 +3,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -30,6 +29,14 @@ public class SummonVexSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.summon_count", this.level)
         );
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.RARE)
+            .setSchool(SchoolType.EVOCATION)
+            .setMaxLevel(5)
+            .setCooldownSeconds(150)
+            .build();
+
     public SummonVexSpell(int level) {
         super(SpellType.SUMMON_VEX_SPELL);
         this.level = level;

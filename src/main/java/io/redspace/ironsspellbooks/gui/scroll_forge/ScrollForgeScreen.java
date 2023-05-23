@@ -152,15 +152,15 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             SchoolType school = SchoolType.getSchoolFromItem(focusStack);
             //irons_spellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.school: {}", school.toString());
             var spells = SpellType.getSpellsFromSchool(school);
-            for (int i = 0; i < spells.length; i++) {
+            for (int i = 0; i < spells.size(); i++) {
                 //int id = spells[i].getValue();
                 int tempIndex = i;
                 //IronsSpellbooks.LOGGER.debug("ScrollForgeScreen.generateSpellList: {} isEnabled: {}", spells[i], spells[i].isEnabled());
-                if (spells[i].isEnabled())
-                    availableSpells.add(new SpellCardInfo(spells[i], i + 1, i, this.addWidget(
+                if (spells.get(i).isEnabled())
+                    availableSpells.add(new SpellCardInfo(spells.get(i), i + 1, i, this.addWidget(
                             new Button(0, 0, 108, 19,
-                                    spells[i].getDisplayName(),
-                                    (b) -> this.setSelectedSpell(spells[tempIndex]))
+                                    spells.get(i).getDisplayName(),
+                                    (b) -> this.setSelectedSpell(spells.get(tempIndex)))
                     )));
             }
         }

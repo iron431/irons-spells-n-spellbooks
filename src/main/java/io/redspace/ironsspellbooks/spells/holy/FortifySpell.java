@@ -5,8 +5,7 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundAborptionParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundFortifyAreaParticles;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -33,6 +32,13 @@ public class FortifySpell extends AbstractSpell {
     }
 
     public static final float radius = 16;
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.HOLY)
+            .setMaxLevel(10)
+            .setCooldownSeconds(35)
+            .build();
 
     public FortifySpell(int level) {
         super(SpellType.FORTIFY_SPELL);
