@@ -3,8 +3,7 @@ package io.redspace.ironsspellbooks.spells.poison;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.spells.ender.MagicArrowSpell;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -25,6 +24,13 @@ public class PoisonArrowSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getArrowDamage(caster), 1)),
                 Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getAOEDamage(caster), 1)));
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.POISON)
+            .setMaxLevel(10)
+            .setCooldownSeconds(15)
+            .build();
 
     public PoisonArrowSpell(int level) {
         super(SpellType.POISON_ARROW_SPELL);

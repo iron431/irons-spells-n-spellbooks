@@ -69,7 +69,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 var scrollData1 = SpellData.getSpellData(baseItemStack);
                 var scrollData2 = SpellData.getSpellData(modifierItemStack);
                 if (scrollData1.getSpellId() == scrollData2.getSpellId() && scrollData1.getLevel() == scrollData2.getLevel()) {
-                    if (scrollData1.getLevel() < ServerConfigs.getSpellConfig(scrollData1.getSpellId()).MAX_LEVEL) {
+                    if (scrollData1.getLevel() < ServerConfigs.getSpellConfig(scrollData1.getSpellId()).maxLevel()) {
                         result = new ItemStack(ItemRegistry.SCROLL.get());
 
                         SpellData.setSpellData(result, scrollData1.getSpellId(), scrollData1.getLevel() + 1);

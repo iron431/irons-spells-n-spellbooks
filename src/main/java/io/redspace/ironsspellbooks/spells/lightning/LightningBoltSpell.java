@@ -2,8 +2,7 @@ package io.redspace.ironsspellbooks.spells.lightning;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLightningBolt;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -27,6 +26,13 @@ public class LightningBoltSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.EPIC)
+            .setSchool(SchoolType.LIGHTNING)
+            .setMaxLevel(10)
+            .setCooldownSeconds(25)
+            .build();
 
     public LightningBoltSpell(int level) {
         super(SpellType.LIGHTNING_BOLT_SPELL);

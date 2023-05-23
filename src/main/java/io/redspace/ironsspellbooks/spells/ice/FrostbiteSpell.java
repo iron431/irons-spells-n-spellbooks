@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.spells.ice;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -27,6 +26,14 @@ public class FrostbiteSpell extends AbstractSpell {
 
         );
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.ICE)
+            .setMaxLevel(0)
+            .setCooldownSeconds(0)
+            .build();
+
     public FrostbiteSpell(int level) {
         super(SpellType.FROSTBITE_SPELL);
         this.level = level;

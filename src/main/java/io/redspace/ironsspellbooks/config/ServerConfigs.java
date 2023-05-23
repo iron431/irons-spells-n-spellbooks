@@ -1,17 +1,31 @@
 package io.redspace.ironsspellbooks.config;
 
+import io.redspace.ironsspellbooks.spells.DefaultConfig;
+import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.blood.*;
+import io.redspace.ironsspellbooks.spells.ender.*;
+import io.redspace.ironsspellbooks.spells.evocation.*;
+import io.redspace.ironsspellbooks.spells.fire.*;
+import io.redspace.ironsspellbooks.spells.holy.*;
+import io.redspace.ironsspellbooks.spells.ice.*;
+import io.redspace.ironsspellbooks.spells.lightning.*;
+import io.redspace.ironsspellbooks.spells.poison.*;
+import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
+import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
+import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ServerConfigs {
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
-    public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(true, 10, SpellRarity.COMMON, 1, 1, 10);
+    public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(() -> true, () -> SchoolType.EVOCATION, () -> 10, () -> SpellRarity.COMMON, () -> 1d, () -> 1d, () -> 10d);
     public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
     public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
@@ -27,7 +41,6 @@ public class ServerConfigs {
     //https://forge.gemwire.uk/wiki/Configs
 
     private static final Map<SpellType, SpellConfigParameters> SPELL_CONFIGS = new HashMap<>();
-    private static final LinkedList<DelayedConfigConstructor> CONFIG_LIST = new LinkedList<>();
 
     static {
         BUILDER.comment("Other Configuration");
@@ -69,84 +82,81 @@ public class ServerConfigs {
 
         //Blood
         BUILDER.comment("Blood Spells");
-        createSpellConfig(SpellType.BLOOD_SLASH_SPELL, true, 5, SpellRarity.RARE, 10);
-        createSpellConfig(SpellType.BLOOD_STEP_SPELL, true, 5, SpellRarity.UNCOMMON, 5);
-        createSpellConfig(SpellType.HEARTSTOP_SPELL, true, 10, SpellRarity.COMMON, 120);
-        createSpellConfig(SpellType.RAISE_DEAD_SPELL, true, 6, SpellRarity.UNCOMMON, 150);
-        createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, true, 10, SpellRarity.COMMON, 15);
-        createSpellConfig(SpellType.WITHER_SKULL_SPELL, true, 10, SpellRarity.UNCOMMON, 1);
-        createSpellConfig(SpellType.BlOOD_NEEDLES_SPELL, true, 10, SpellRarity.UNCOMMON, 10);
-        createSpellConfig(SpellType.ACUPUNCTURE_SPELL, true, 10, SpellRarity.RARE, 16);
+        createSpellConfig(SpellType.BLOOD_SLASH_SPELL, BloodSlashSpell.defaultConfig, true);
+        createSpellConfig(SpellType.BLOOD_STEP_SPELL, BloodStepSpell.defaultConfig, true);
+        createSpellConfig(SpellType.HEARTSTOP_SPELL, HeartstopSpell.defaultConfig, true);
+        createSpellConfig(SpellType.RAISE_DEAD_SPELL, RaiseDeadSpell.defaultConfig, true);
+        createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, RayOfSiphoningSpell.defaultConfig, true);
+        createSpellConfig(SpellType.WITHER_SKULL_SPELL, WitherSkullSpell.defaultConfig, true);
+        createSpellConfig(SpellType.BlOOD_NEEDLES_SPELL, BloodNeedlesSpell.defaultConfig, true);
+        createSpellConfig(SpellType.ACUPUNCTURE_SPELL, AcupunctureSpell.defaultConfig, true);
         //Ender
         BUILDER.comment("Ender Spells");
-        createSpellConfig(SpellType.EVASION_SPELL, true, 5, SpellRarity.EPIC, 180);
-        createSpellConfig(SpellType.MAGIC_ARROW_SPELL, true, 10, SpellRarity.RARE, 8);
-        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.TELEPORT_SPELL, true, 5, SpellRarity.UNCOMMON, 3);
-        createSpellConfig(SpellType.COUNTERSPELL_SPELL, true, 1, SpellRarity.EPIC, 15);
-        createSpellConfig(SpellType.DRAGON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 12);
-        createSpellConfig(SpellType.STARFALL_SPELL, true, 10, SpellRarity.UNCOMMON, 16);
+        createSpellConfig(SpellType.EVASION_SPELL, EvasionSpell.defaultConfig, true);
+        createSpellConfig(SpellType.MAGIC_ARROW_SPELL, MagicArrowSpell.defaultConfig, true);
+        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, MagicMissileSpell.defaultConfig, true);
+        createSpellConfig(SpellType.TELEPORT_SPELL, TeleportSpell.defaultConfig, true);
+        createSpellConfig(SpellType.COUNTERSPELL_SPELL, CounterspellSpell.defaultConfig, true);
+        createSpellConfig(SpellType.DRAGON_BREATH_SPELL, DragonBreathSpell.defaultConfig, true);
 
         //Evocation
         BUILDER.comment("Evocation Spells");
-        createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, true, 6, SpellRarity.UNCOMMON, 15);
-        createSpellConfig(SpellType.FANG_STRIKE_SPELL, true, 10, SpellRarity.COMMON, 5);
-        createSpellConfig(SpellType.FANG_WARD_SPELL, true, 8, SpellRarity.COMMON, 15);
-        createSpellConfig(SpellType.FIRECRACKER_SPELL, true, 10, SpellRarity.COMMON, 1.5);
-        createSpellConfig(SpellType.INVISIBILITY_SPELL, true, 6, SpellRarity.RARE, 45);
-        createSpellConfig(SpellType.LOB_CREEPER_SPELL, true, 10, SpellRarity.UNCOMMON, 2);
-        createSpellConfig(SpellType.SHIELD_SPELL, true, 8, SpellRarity.COMMON, 8);
-        createSpellConfig(SpellType.SUMMON_HORSE_SPELL, true, 5, SpellRarity.COMMON, 20);
-        createSpellConfig(SpellType.SUMMON_VEX_SPELL, true, 5, SpellRarity.RARE, 150);
-        createSpellConfig(SpellType.SPECTRAL_HAMMER_SPELL, true, 5, SpellRarity.UNCOMMON, 10);
+        createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, ChainCreeperSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FANG_STRIKE_SPELL, FangStrikeSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FANG_WARD_SPELL, FangWardSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FIRECRACKER_SPELL, FirecrackerSpell.defaultConfig, true);
+        createSpellConfig(SpellType.INVISIBILITY_SPELL, InvisibilitySpell.defaultConfig, true);
+        createSpellConfig(SpellType.LOB_CREEPER_SPELL, LobCreeperSpell.defaultConfig, true);
+        createSpellConfig(SpellType.SHIELD_SPELL, ShieldSpell.defaultConfig, true);
+        createSpellConfig(SpellType.SUMMON_HORSE_SPELL, SummonHorseSpell.defaultConfig, true);
+        createSpellConfig(SpellType.SUMMON_VEX_SPELL, SummonVexSpell.defaultConfig, true);
+        createSpellConfig(SpellType.SPECTRAL_HAMMER_SPELL, SpectralHammerSpell.defaultConfig, true);
         //Fire
         BUILDER.comment("Fire Spells");
-        createSpellConfig(SpellType.BLAZE_STORM_SPELL, true, 10, SpellRarity.COMMON, 20);
-        createSpellConfig(SpellType.BURNING_DASH_SPELL, true, 10, SpellRarity.COMMON, 10);
-        createSpellConfig(SpellType.FIREBALL_SPELL, true, 3, SpellRarity.EPIC, 25);
-        createSpellConfig(SpellType.FIREBOLT_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.FIRE_BREATH_SPELL, true, 10, SpellRarity.COMMON, 12);
-        createSpellConfig(SpellType.WALL_OF_FIRE_SPELL, true, 5, SpellRarity.COMMON, 20);
-        createSpellConfig(SpellType.FIRE_BOMB_SPELL, true, 8, SpellRarity.UNCOMMON, 12);
+        createSpellConfig(SpellType.BLAZE_STORM_SPELL, BlazeStormSpell.defaultConfig, true);
+        createSpellConfig(SpellType.BURNING_DASH_SPELL, BurningDashSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FIREBALL_SPELL, FireballSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FIREBOLT_SPELL, FireboltSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FIRE_BREATH_SPELL, FireBreathSpell.defaultConfig, true);
+        createSpellConfig(SpellType.WALL_OF_FIRE_SPELL, WallOfFireSpell.defaultConfig, true);
         //Holy
         BUILDER.comment("Holy Spells");
-        createSpellConfig(SpellType.ANGEL_WING_SPELL, true, 5, SpellRarity.EPIC, 120);
-        createSpellConfig(SpellType.CLOUD_OF_REGENERATION_SPELL, true, 5, SpellRarity.COMMON, 35);
-        createSpellConfig(SpellType.GREATER_HEAL_SPELL, true, 1, SpellRarity.RARE, 45);
-        createSpellConfig(SpellType.HEAL_SPELL, true, 10, SpellRarity.COMMON, 25);
-        createSpellConfig(SpellType.WISP_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.FORTIFY_SPELL, true, 10, SpellRarity.COMMON, 35);
-        createSpellConfig(SpellType.BLESSING_OF_LIFE_SPELL, true, 10, SpellRarity.COMMON, 10);
-        createSpellConfig(SpellType.HEALING_CIRCLE_SPELL, true, 10, SpellRarity.COMMON, 25);
+        createSpellConfig(SpellType.ANGEL_WING_SPELL, AngelWingsSpell.defaultConfig, true);
+        createSpellConfig(SpellType.CLOUD_OF_REGENERATION_SPELL, CloudOfRegenerationSpell.defaultConfig, true);
+        createSpellConfig(SpellType.GREATER_HEAL_SPELL, GreaterHealSpell.defaultConfig, true);
+        createSpellConfig(SpellType.HEAL_SPELL, HealSpell.defaultConfig, true);
+        createSpellConfig(SpellType.WISP_SPELL, WispSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FORTIFY_SPELL, FortifySpell.defaultConfig, true);
+        createSpellConfig(SpellType.BLESSING_OF_LIFE_SPELL, BlessingOfLifeSpell.defaultConfig, true);
         //Ice
         BUILDER.comment("Ice Spells");
-        createSpellConfig(SpellType.CONE_OF_COLD_SPELL, true, 10, SpellRarity.COMMON, 12);
-        createSpellConfig(SpellType.FROSTBITE_SPELL, false, 0, SpellRarity.COMMON, 0);
-        createSpellConfig(SpellType.FROST_STEP_SPELL, true, 8, SpellRarity.RARE, 10);
-        createSpellConfig(SpellType.ICICLE_SPELL, true, 10, SpellRarity.COMMON, 1);
-        createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, true, 10, SpellRarity.RARE, 180);
-        createSpellConfig(SpellType.ICE_BLOCK_SPELL, true, 6, SpellRarity.RARE, 15);
+        createSpellConfig(SpellType.CONE_OF_COLD_SPELL, ConeOfColdSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FROST_STEP_SPELL, FrostStepSpell.defaultConfig, true);
+        createSpellConfig(SpellType.ICICLE_SPELL, IcicleSpell.defaultConfig, true);
+        createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, SummonPolarBearSpell.defaultConfig, true);
+        createSpellConfig(SpellType.ICE_BLOCK_SPELL, IceBlockSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FROSTBITE_SPELL, FrostbiteSpell.defaultConfig, false);
         //Lightning
         BUILDER.comment("Lightning Spells");
-        createSpellConfig(SpellType.ELECTROCUTE_SPELL, true, 10, SpellRarity.COMMON, 12);
-        createSpellConfig(SpellType.LIGHTNING_BOLT_SPELL, true, 10, SpellRarity.EPIC, 25);
-        createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, true, 10, SpellRarity.RARE, 8);
-        createSpellConfig(SpellType.CHARGE_SPELL, true, 3, SpellRarity.RARE, 40);
-        createSpellConfig(SpellType.ASCENSION_SPELL, true, 10, SpellRarity.RARE, 15);
+        createSpellConfig(SpellType.ELECTROCUTE_SPELL, ElectrocuteSpell.defaultConfig, true);
+        createSpellConfig(SpellType.LIGHTNING_BOLT_SPELL, LightningBoltSpell.defaultConfig, true);
+        createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, LightningLanceSpell.defaultConfig, true);
+        createSpellConfig(SpellType.CHARGE_SPELL, ChargeSpell.defaultConfig, true);
+        createSpellConfig(SpellType.ASCENSION_SPELL, AscensionSpell.defaultConfig, true);
         //Void
         BUILDER.comment("Void Spells");
-        createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, true, 3, SpellRarity.LEGENDARY, 300);
-        createSpellConfig(SpellType.VOID_TENTACLES_SPELL, true, 3, SpellRarity.LEGENDARY, 30);
-        createSpellConfig(SpellType.BLACK_HOLE_SPELL, true, 6, SpellRarity.LEGENDARY, 120);
+        createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, AbyssalShroudSpell.defaultConfig, true);
+        createSpellConfig(SpellType.VOID_TENTACLES_SPELL, VoidTentaclesSpell.defaultConfig, true);
+        createSpellConfig(SpellType.BLACK_HOLE_SPELL, BlackHoleSpell.defaultConfig, true);
         //Poison
         BUILDER.comment("Poison Spells");
-        createSpellConfig(SpellType.POISON_ARROW_SPELL, true, 10, SpellRarity.COMMON, 15);
-        createSpellConfig(SpellType.POISON_SPLASH_SPELL, true, 10, SpellRarity.UNCOMMON, 20);
-        createSpellConfig(SpellType.POISON_BREATH_SPELL, true, 10, SpellRarity.COMMON, 12);
-        createSpellConfig(SpellType.ACID_ORB_SPELL, true, 10, SpellRarity.COMMON, 15);
-        createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, true, 8, SpellRarity.RARE, 90);
-        createSpellConfig(SpellType.BLIGHT_SPELL, true, 8, SpellRarity.RARE, 35);
-        createSpellConfig(SpellType.ROOT_SPELL, true, 10, SpellRarity.UNCOMMON, 35);
+        createSpellConfig(SpellType.POISON_ARROW_SPELL, PoisonArrowSpell.defaultConfig, true);
+        createSpellConfig(SpellType.POISON_SPLASH_SPELL, PoisonSplashSpell.defaultConfig, true);
+        createSpellConfig(SpellType.POISON_BREATH_SPELL, PoisonBreathSpell.defaultConfig, true);
+        createSpellConfig(SpellType.ACID_ORB_SPELL, AcidOrbSpell.defaultConfig, true);
+        createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, SpiderAspectSpell.defaultConfig, true);
+        createSpellConfig(SpellType.BLIGHT_SPELL, BlightSpell.defaultConfig, true);
+        createSpellConfig(SpellType.ROOT_SPELL, RootSpell.defaultConfig, true);
         BUILDER.pop();
 
 
@@ -163,18 +173,22 @@ public class ServerConfigs {
         return getSpellConfig(SpellType.getTypeFromValue(spellId));
     }
 
-    private static void createSpellConfig(SpellType spell, boolean enabledByDefault, int defaultMaxLevel, SpellRarity defaultMinRarity, double cooldownInSeconds) {
+    public static Map<SpellType, SpellConfigParameters> getSpellConfigs() {
+        return SPELL_CONFIGS;
+    }
+
+    private static void createSpellConfig(SpellType spell, DefaultConfig config, boolean enabledByDefault) {
         //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
         BUILDER.push(createSpellConfigTitle(spell.getId()));
 
-        CONFIG_LIST.add(new DelayedConfigConstructor(
+        SPELL_CONFIGS.put(spell, new SpellConfigParameters(
                 BUILDER.define("Enabled", enabledByDefault),
-                BUILDER.define("MaxLevel", defaultMaxLevel),
-                BUILDER.defineEnum("MinRarity", defaultMinRarity),
+                BUILDER.defineEnum("School", config.school),
+                BUILDER.define("MaxLevel", config.maxLevel),
+                BUILDER.defineEnum("MinRarity", config.minRarity),
                 BUILDER.define("ManaCostMultiplier", 1d),
                 BUILDER.define("SpellPowerMultiplier", 1d),
-                BUILDER.define("CooldownInSeconds", cooldownInSeconds),
-                spell
+                BUILDER.define("CooldownInSeconds", config.cooldownInSeconds)
         ));
 
         BUILDER.pop();
@@ -187,42 +201,66 @@ public class ServerConfigs {
         }
         return Arrays.stream(words).sequential().collect(Collectors.joining("-"));
     }
+//
+//    public static void cacheConfigs() {
+//        //IronsSpellbooks.LOGGER.debug("CFG: cacheConfigs {}", CONFIG_LIST.size());
+//        while (!CONFIG_LIST.isEmpty())
+//            CONFIG_LIST.remove().construct();
+//    }
 
-    public static void cacheConfigs() {
-        //IronsSpellbooks.LOGGER.debug("CFG: cacheConfigs {}", CONFIG_LIST.size());
-        while (!CONFIG_LIST.isEmpty())
-            CONFIG_LIST.remove().construct();
-    }
+    public static class SpellConfigParameters {
 
-    private static class DelayedConfigConstructor {
-        final ForgeConfigSpec.ConfigValue<Boolean> ENABLED;
-        final ForgeConfigSpec.ConfigValue<Integer> MAX_LEVEL;
-        final ForgeConfigSpec.ConfigValue<SpellRarity> MIN_RARITY;
-        final ForgeConfigSpec.ConfigValue<Double> M_MULT;
-        final ForgeConfigSpec.ConfigValue<Double> P_MULT;
-        final ForgeConfigSpec.ConfigValue<Double> CS;
-        SpellType spellType;
-
-        DelayedConfigConstructor(
-                ForgeConfigSpec.ConfigValue<Boolean> ENABLED,
-                ForgeConfigSpec.ConfigValue<Integer> MAX_LEVEL,
-                ForgeConfigSpec.ConfigValue<SpellRarity> MIN_RARITY,
-                ForgeConfigSpec.ConfigValue<Double> M_MULT,
-                ForgeConfigSpec.ConfigValue<Double> P_MULT,
-                ForgeConfigSpec.ConfigValue<Double> CS,
-                SpellType spellType) {
+        final Supplier<Boolean> ENABLED;
+        final Supplier<SchoolType> SCHOOL;
+        final Supplier<Integer> MAX_LEVEL;
+        final Supplier<SpellRarity> MIN_RARITY;
+        final Supplier<Double> M_MULT;
+        final Supplier<Double> P_MULT;
+        final Supplier<Double> CS;
+        private SchoolType resolvedSchool = null;
+        SpellConfigParameters(
+                Supplier<Boolean> ENABLED,
+                Supplier<SchoolType> SCHOOL,
+                Supplier<Integer> MAX_LEVEL,
+                Supplier<SpellRarity> MIN_RARITY,
+                Supplier<Double> M_MULT,
+                Supplier<Double> P_MULT,
+                Supplier<Double> CS) {
             this.ENABLED = ENABLED;
+            this.SCHOOL = SCHOOL;
             this.MAX_LEVEL = MAX_LEVEL;
             this.MIN_RARITY = MIN_RARITY;
             this.M_MULT = M_MULT;
             this.P_MULT = P_MULT;
             this.CS = CS;
-            this.spellType = spellType;
         }
 
-        void construct() {
-            //IronsSpellbooks.LOGGER.debug("CFG: DelayedConfigConstructor {}, {}, {}, {}, {}, {}, {}", spellType, ENABLED, MAX_LEVEL, MIN_RARITY, M_MULT, P_MULT, CS);
-            SPELL_CONFIGS.put(spellType, new SpellConfigParameters(ENABLED.get(), MAX_LEVEL.get(), MIN_RARITY.get(), P_MULT.get(), M_MULT.get(), CS.get()));
+        public boolean enabled() {
+            return ENABLED.get();
+        }
+
+        public int maxLevel() {
+            return MAX_LEVEL.get();
+        }
+
+        public SpellRarity minRarity() {
+            return MIN_RARITY.get();
+        }
+
+        public double powerMultiplier() {
+            return P_MULT.get();
+        }
+
+        public double manaMultiplier() {
+            return M_MULT.get();
+        }
+
+        public int cooldownInTicks() {
+            return (int) (CS.get() * 20);
+        }
+
+        public SchoolType school() {
+            return SCHOOL.get();
         }
     }
 

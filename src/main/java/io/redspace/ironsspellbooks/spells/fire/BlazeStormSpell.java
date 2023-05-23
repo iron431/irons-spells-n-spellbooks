@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,13 @@ public class BlazeStormSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.FIRE)
+            .setMaxLevel(10)
+            .setCooldownSeconds(20)
+            .build();
 
     public BlazeStormSpell(int level) {
         super(SpellType.BLAZE_STORM_SPELL);
@@ -56,7 +64,7 @@ public class BlazeStormSpell extends AbstractSpell {
 
     @Override
     public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
-        if (playerMagicData != null && (playerMagicData.getCastDurationRemaining() + 1) % 5 == 0)
+        if ((playerMagicData.getCastDurationRemaining() + 1) % 5 == 0)
             shootBlazeFireball(level, entity);
     }
 
@@ -65,6 +73,7 @@ public class BlazeStormSpell extends AbstractSpell {
     }
 
     public void shootBlazeFireball(Level world, LivingEntity entity) {
+        float speed = 0.45f;
         Vec3 origin = entity.getEyePosition().add(entity.getForward().normalize().scale(.2f));
         SmallMagicFireball fireball = new SmallMagicFireball(world, entity);
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));

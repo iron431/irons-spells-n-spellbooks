@@ -60,7 +60,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     private void resetList() {
-        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(ServerConfigs.getSpellConfig(selectedSpell).MIN_RARITY) >= 0)))
+        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(ServerConfigs.getSpellConfig(selectedSpell).minRarity()) >= 0)))
             selectedSpell = SpellType.NONE_SPELL;
         //TODO: reorder setting old focus to test if we actually need to reset the spell... or just give ink its own path since we dont even need to regenerate the list anyways
         scrollOffset = 0;
@@ -113,7 +113,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         SpellRarity inkRarity = getRarityFromInk(inkStack.getItem());
 
-        availableSpells.sort((a, b) -> ServerConfigs.getSpellConfig(a.spell).MIN_RARITY.compareRarity(ServerConfigs.getSpellConfig(b.spell).MIN_RARITY));
+        availableSpells.sort((a, b) -> ServerConfigs.getSpellConfig(a.spell).minRarity().compareRarity(ServerConfigs.getSpellConfig(b.spell).minRarity()));
 
         for (int i = 0; i < availableSpells.size(); i++) {
             SpellCardInfo spellCard = availableSpells.get(i);
@@ -152,15 +152,15 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             SchoolType school = SchoolType.getSchoolFromItem(focusStack);
             //irons_spellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.school: {}", school.toString());
             var spells = SpellType.getSpellsFromSchool(school);
-            for (int i = 0; i < spells.length; i++) {
+            for (int i = 0; i < spells.size(); i++) {
                 //int id = spells[i].getValue();
                 int tempIndex = i;
                 //IronsSpellbooks.LOGGER.debug("ScrollForgeScreen.generateSpellList: {} isEnabled: {}", spells[i], spells[i].isEnabled());
-                if (spells[i].isEnabled())
-                    availableSpells.add(new SpellCardInfo(spells[i], i + 1, i, this.addWidget(
+                if (spells.get(i).isEnabled())
+                    availableSpells.add(new SpellCardInfo(spells.get(i), i + 1, i, this.addWidget(
                             new Button(0, 0, 108, 19,
-                                    spells[i].getDisplayName(),
-                                    (b) -> this.setSelectedSpell(spells[tempIndex]))
+                                    spells.get(i).getDisplayName(),
+                                    (b) -> this.setSelectedSpell(spells.get(tempIndex)))
                     )));
             }
         }
