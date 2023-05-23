@@ -34,7 +34,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
 import software.bernie.geckolib3.core.builder.ILoopType;
 
 import javax.annotation.Nullable;
@@ -60,18 +59,11 @@ public abstract class AbstractSpell {
     protected int spellPowerPerLevel;
     //All time values in ticks
     protected int castTime;
+    //protected int cooldown;
 
     public AbstractSpell(SpellType spellType) {
         this.spellType = spellType;
         this.castType = spellType.getCastType();
-    }
-
-    private double getManaMultiplier() {
-        return ServerConfigs.getSpellConfig(spellType).MANA_MULTIPLIER;
-    }
-
-    private float getPowerMultiplier() {
-        return (float) ServerConfigs.getSpellConfig(spellType).POWER_MULTIPLIER;
     }
 
     public int getID() {
@@ -103,11 +95,11 @@ public abstract class AbstractSpell {
     }
 
     public int getManaCost() {
-        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * getManaMultiplier());
+        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * ServerConfigs.getSpellConfig(spellType).manaMultiplier());
     }
 
     public int getSpellCooldown() {
-        return (int) ServerConfigs.getSpellConfig(spellType).COOLDOWN_IN_SECONDS * 20;
+        return ServerConfigs.getSpellConfig(spellType).cooldownInTicks();
     }
 
     private int getCastTime() {
@@ -149,19 +141,27 @@ public abstract class AbstractSpell {
 
         float entitySpellPowerModifier = 1;
         float entitySchoolPowerModifier = 1;
-        float configPowerModifier = getPowerMultiplier();
+        float configPowerModifier = (float) ServerConfigs.getSpellConfig(spellType).powerMultiplier();
         if (sourceEntity instanceof LivingEntity sourceLivingEntity) {
             //IronsSpellbooks.LOGGER.debug("AbsSpell.getSpellPower: \"use item\": {}", sourceLivingEntity.getUseItem());
             entitySpellPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
             switch (this.getSchoolType()) {
-                case FIRE -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER.get());
-                case ICE -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.ICE_SPELL_POWER.get());
-                case LIGHTNING -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.LIGHTNING_SPELL_POWER.get());
-                case HOLY -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.HOLY_SPELL_POWER.get());
-                case ENDER -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.ENDER_SPELL_POWER.get());
-                case BLOOD -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER.get());
-                case EVOCATION -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.EVOCATION_SPELL_POWER.get());
-                case POISON -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.POISON_SPELL_POWER.get());
+                case FIRE ->
+                        entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER.get());
+                case ICE ->
+                        entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.ICE_SPELL_POWER.get());
+                case LIGHTNING ->
+                        entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.LIGHTNING_SPELL_POWER.get());
+                case HOLY ->
+                        entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.HOLY_SPELL_POWER.get());
+                case ENDER ->
+                        entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.ENDER_SPELL_POWER.get());
+                case BLOOD ->
+                        entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER.get());
+                case EVOCATION ->
+                        entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.EVOCATION_SPELL_POWER.get());
+                case POISON ->
+                        entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.POISON_SPELL_POWER.get());
             }
 
         }

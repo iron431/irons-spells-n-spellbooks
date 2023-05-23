@@ -60,7 +60,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     private void resetList() {
-        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(ServerConfigs.getSpellConfig(selectedSpell).MIN_RARITY) >= 0)))
+        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(ServerConfigs.getSpellConfig(selectedSpell).minRarity()) >= 0)))
             selectedSpell = SpellType.NONE_SPELL;
         //TODO: reorder setting old focus to test if we actually need to reset the spell... or just give ink its own path since we dont even need to regenerate the list anyways
         scrollOffset = 0;
@@ -113,7 +113,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         SpellRarity inkRarity = getRarityFromInk(inkStack.getItem());
 
-        availableSpells.sort((a, b) -> ServerConfigs.getSpellConfig(a.spell).MIN_RARITY.compareRarity(ServerConfigs.getSpellConfig(b.spell).MIN_RARITY));
+        availableSpells.sort((a, b) -> ServerConfigs.getSpellConfig(a.spell).minRarity().compareRarity(ServerConfigs.getSpellConfig(b.spell).minRarity()));
 
         for (int i = 0; i < availableSpells.size(); i++) {
             SpellCardInfo spellCard = availableSpells.get(i);

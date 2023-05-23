@@ -1,25 +1,24 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
-import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
+import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.Utils;
-import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Vindicator;
@@ -28,26 +27,24 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 @Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonSetup {
-    @SubscribeEvent
-    public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
- //Ironsspellbooks.logger.debug("onModConfigLoadingEvent");
-        if(event.getConfig().getType() == ModConfig.Type.SERVER){
-            ServerConfigs.cacheConfigs();
-        }
-    }
-
-    @SubscribeEvent
-    public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
- //Ironsspellbooks.logger.debug("onModConfigReloadingEvent");
-        if(event.getConfig().getType() == ModConfig.Type.SERVER){
-            ServerConfigs.cacheConfigs();
-        }
-    }
+//    @SubscribeEvent
+//    public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
+// //Ironsspellbooks.logger.debug("onModConfigLoadingEvent");
+//        if(event.getConfig().getType() == ModConfig.Type.SERVER){
+//            ServerConfigs.cacheConfigs();
+//        }
+//    }
+//
+//    @SubscribeEvent
+//    public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
+// //Ironsspellbooks.logger.debug("onModConfigReloadingEvent");
+//        if(event.getConfig().getType() == ModConfig.Type.SERVER){
+//            ServerConfigs.cacheConfigs();
+//        }
+//    }
 
     @SubscribeEvent
     public static void onAttributeCreate(EntityAttributeCreationEvent event) {
