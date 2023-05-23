@@ -396,4 +396,5 @@ public abstract class AbstractSpell {
             return false;
         return this.spellType == o.spellType && this.level == o.level;
     }
+
 }

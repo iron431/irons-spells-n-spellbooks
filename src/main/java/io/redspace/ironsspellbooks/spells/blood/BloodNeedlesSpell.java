@@ -30,6 +30,13 @@ public class BloodNeedlesSpell extends AbstractSpell {
 
     }
 
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.BLOOD)
+            .setMaxLevel(10)
+            .setCooldownSeconds(10)
+            .build();
+
     public BloodNeedlesSpell(int level) {
         super(SpellType.BlOOD_NEEDLES_SPELL);
         this.level = level;

@@ -28,6 +28,13 @@ public class BlazeStormSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.FIRE)
+            .setMaxLevel(10)
+            .setCooldownSeconds(20)
+            .build();
+
     public BlazeStormSpell(int level) {
         super(SpellType.BLAZE_STORM_SPELL);
         this.level = level;

@@ -30,6 +30,13 @@ public class SummonPolarBearSpell extends AbstractSpell {
         );
     }
 
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.RARE)
+            .setSchool(SchoolType.ICE)
+            .setMaxLevel(10)
+            .setCooldownSeconds(180)
+            .build();
+
     public SummonPolarBearSpell(int level) {
         super(SpellType.SUMMON_POLAR_BEAR_SPELL);
         this.level = level;

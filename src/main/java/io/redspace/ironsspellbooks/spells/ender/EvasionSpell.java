@@ -25,6 +25,13 @@ public class EvasionSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(caster)));
     }
 
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.EPIC)
+            .setSchool(SchoolType.ENDER)
+            .setMaxLevel(5)
+            .setCooldownSeconds(180)
+            .build();
+
     public EvasionSpell(int level) {
         super(SpellType.EVASION_SPELL);
         this.level = level;

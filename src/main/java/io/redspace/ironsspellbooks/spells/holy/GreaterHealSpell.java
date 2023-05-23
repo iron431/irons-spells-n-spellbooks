@@ -26,6 +26,13 @@ public class GreaterHealSpell extends AbstractSpell {
         );
     }
 
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.RARE)
+            .setSchool(SchoolType.HOLY)
+            .setMaxLevel(1)
+            .setCooldownSeconds(45)
+            .build();
+
     public GreaterHealSpell(int level) {
         super(SpellType.GREATER_HEAL_SPELL);
         this.level = level;

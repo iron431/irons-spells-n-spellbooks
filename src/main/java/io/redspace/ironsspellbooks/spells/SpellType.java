@@ -23,6 +23,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.UseAnim;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public enum SpellType {
@@ -156,15 +158,15 @@ public enum SpellType {
         };
     }
 
-    private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, BLAZE_STORM_SPELL, FIRE_BOMB_SPELL};
-    private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL, FROST_STEP_SPELL, FROSTBITE_SPELL, SUMMON_POLAR_BEAR_SPELL, ICE_BLOCK_SPELL};
-    private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL, ASCENSION_SPELL, CHARGE_SPELL};
-    private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL, HEALING_CIRCLE_SPELL};
-    private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL, DRAGON_BREATH_SPELL, COUNTERSPELL_SPELL, ABYSSAL_SHROUD_SPELL, VOID_TENTACLES_SPELL, BLACK_HOLE_SPELL, STARFALL_SPELL};
-    private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL, RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL, BlOOD_NEEDLES_SPELL, ACUPUNCTURE_SPELL};
-    private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SPECTRAL_HAMMER_SPELL};
-    private static final SpellType[] VOID_SPELLS = {};
-    private static final SpellType[] POISON_SPELLS = {POISON_BREATH_SPELL, POISON_ARROW_SPELL, POISON_SPLASH_SPELL, ACID_ORB_SPELL, SPIDER_ASPECT_SPELL, BLIGHT_SPELL, ROOT_SPELL};
+    //private static final SpellType[] FIRE_SPELLS = {FIREBALL_SPELL, BURNING_DASH_SPELL, FIREBOLT_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, BLAZE_STORM_SPELL};
+    //private static final SpellType[] ICE_SPELLS = {CONE_OF_COLD_SPELL, ICICLE_SPELL, FROST_STEP_SPELL, FROSTBITE_SPELL, SUMMON_POLAR_BEAR_SPELL, ICE_BLOCK_SPELL};
+    //private static final SpellType[] LIGHTNING_SPELLS = {ELECTROCUTE_SPELL, LIGHTNING_LANCE_SPELL, LIGHTNING_BOLT_SPELL, ASCENSION_SPELL, CHARGE_SPELL};
+    //private static final SpellType[] HOLY_SPELLS = {HEAL_SPELL, ANGEL_WING_SPELL, WISP_SPELL, GREATER_HEAL_SPELL, CLOUD_OF_REGENERATION_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL};
+    //private static final SpellType[] ENDER_SPELLS = {TELEPORT_SPELL, MAGIC_MISSILE_SPELL, EVASION_SPELL, MAGIC_ARROW_SPELL, DRAGON_BREATH_SPELL, COUNTERSPELL_SPELL};
+    //private static final SpellType[] BLOOD_SPELLS = {BLOOD_SLASH_SPELL, HEARTSTOP_SPELL, RAISE_DEAD_SPELL, WITHER_SKULL_SPELL, RAY_OF_SIPHONING_SPELL, BLOOD_STEP_SPELL, BlOOD_NEEDLES_SPELL, ACUPUNCTURE_SPELL};
+    //private static final SpellType[] EVOCATION_SPELLS = {SUMMON_VEX_SPELL, FIRECRACKER_SPELL, SUMMON_HORSE_SPELL, SHIELD_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, LOB_CREEPER_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SPECTRAL_HAMMER_SPELL};
+    //private static final SpellType[] VOID_SPELLS = {ABYSSAL_SHROUD_SPELL, VOID_TENTACLES_SPELL, BLACK_HOLE_SPELL};
+    //private static final SpellType[] POISON_SPELLS = {POISON_BREATH_SPELL, POISON_ARROW_SPELL, POISON_SPLASH_SPELL, ACID_ORB_SPELL, SPIDER_ASPECT_SPELL, BLIGHT_SPELL, ROOT_SPELL};
 
     public AbstractSpell getSpellForType(int level) {
         return getSpellForType.get(level);
@@ -274,48 +276,39 @@ public enum SpellType {
     }
 
     public SchoolType getSchoolType() {
-        if (quickSearch(FIRE_SPELLS, this))
-            return SchoolType.FIRE;
-        if (quickSearch(ICE_SPELLS, this))
-            return SchoolType.ICE;
-        if (quickSearch(LIGHTNING_SPELLS, this))
-            return SchoolType.LIGHTNING;
-        if (quickSearch(HOLY_SPELLS, this))
-            return SchoolType.HOLY;
-        if (quickSearch(ENDER_SPELLS, this))
-            return SchoolType.ENDER;
-        if (quickSearch(BLOOD_SPELLS, this))
-            return SchoolType.BLOOD;
-        if (quickSearch(VOID_SPELLS, this))
-            return SchoolType.VOID;
-        if (quickSearch(POISON_SPELLS, this))
-            return SchoolType.POISON;
-        else
-            return SchoolType.EVOCATION;
+        return ServerConfigs.getSpellConfig(this).school();
+//        if (quickSearch(FIRE_SPELLS, this))
+//            return SchoolType.FIRE;
+//        if (quickSearch(ICE_SPELLS, this))
+//            return SchoolType.ICE;
+//        if (quickSearch(LIGHTNING_SPELLS, this))
+//            return SchoolType.LIGHTNING;
+//        if (quickSearch(HOLY_SPELLS, this))
+//            return SchoolType.HOLY;
+//        if (quickSearch(ENDER_SPELLS, this))
+//            return SchoolType.ENDER;
+//        if (quickSearch(BLOOD_SPELLS, this))
+//            return SchoolType.BLOOD;
+//        if (quickSearch(VOID_SPELLS, this))
+//            return SchoolType.VOID;
+//        if (quickSearch(POISON_SPELLS, this))
+//            return SchoolType.POISON;
+//        else
+//            return SchoolType.EVOCATION;
     }
 
 
-    public static SpellType[] getSpellsFromSchool(SchoolType school) {
-        if (school.equals(SchoolType.FIRE))
-            return FIRE_SPELLS;
-        else if (school.equals(SchoolType.ICE))
-            return ICE_SPELLS;
-        else if (school.equals(SchoolType.LIGHTNING))
-            return LIGHTNING_SPELLS;
-        else if (school.equals(SchoolType.HOLY))
-            return HOLY_SPELLS;
-        else if (school.equals(SchoolType.ENDER))
-            return ENDER_SPELLS;
-        else if (school.equals(SchoolType.BLOOD))
-            return BLOOD_SPELLS;
-        else if (school.equals(SchoolType.EVOCATION))
-            return EVOCATION_SPELLS;
-        else if (school.equals(SchoolType.VOID))
-            return VOID_SPELLS;
-        else if (school.equals(SchoolType.POISON))
-            return POISON_SPELLS;
-        else
-            return new SpellType[]{SpellType.NONE_SPELL};
+    public static List<SpellType> getSpellsFromSchool(SchoolType school) {
+        return Arrays.stream(SpellType.values()).filter(spellType -> spellType.getSchoolType() == school).toList();
+//        return spellsForSchool.getOrDefault(school, List.of(NONE_SPELL));
+    }
+
+    private static final HashMap<SchoolType, List<SpellType>> spellsForSchool = new HashMap<>();
+
+    public static void assignSpellToSchool(SpellType spellType, SchoolType schoolType) {
+        var spells = spellsForSchool.getOrDefault(schoolType, new ArrayList<>());
+        spells.add(spellType);
+        spellsForSchool.put(schoolType, spells);
     }
 
     public String getComponentId() {
@@ -360,4 +353,5 @@ public enum SpellType {
     private interface GetSpellForType {
         AbstractSpell get(int level);
     }
+
 }

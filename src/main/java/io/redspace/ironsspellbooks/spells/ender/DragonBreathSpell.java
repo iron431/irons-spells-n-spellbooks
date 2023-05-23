@@ -6,9 +6,7 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.EntityCastData;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -29,6 +27,13 @@ public class DragonBreathSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.ENDER)
+            .setMaxLevel(10)
+            .setCooldownSeconds(12)
+            .build();
 
     public DragonBreathSpell(int level) {
         super(SpellType.DRAGON_BREATH_SPELL);

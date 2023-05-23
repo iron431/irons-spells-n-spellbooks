@@ -38,6 +38,13 @@ public class FortifySpell extends AbstractSpell {
 
     public static final float radius = 16;
 
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.HOLY)
+            .setMaxLevel(10)
+            .setCooldownSeconds(35)
+            .build();
+
     public FortifySpell(int level) {
         super(SpellType.FORTIFY_SPELL);
         this.level = level;

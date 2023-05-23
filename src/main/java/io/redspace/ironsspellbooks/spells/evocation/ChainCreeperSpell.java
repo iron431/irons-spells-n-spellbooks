@@ -3,15 +3,11 @@ package io.redspace.ironsspellbooks.spells.evocation;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
-import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
-import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -34,6 +30,13 @@ public class ChainCreeperSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)),
                 Component.translatable("ui.irons_spellbooks.projectile_count", getCount()));
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.EVOCATION)
+            .setMaxLevel(6)
+            .setCooldownSeconds(15)
+            .build();
 
     public ChainCreeperSpell(int level) {
         super(SpellType.CHAIN_CREEPER_SPELL);

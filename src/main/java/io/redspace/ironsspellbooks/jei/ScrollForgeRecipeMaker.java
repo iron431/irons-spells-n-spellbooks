@@ -14,7 +14,6 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,7 +46,7 @@ public final class ScrollForgeRecipeMaker {
                     var inkOutputs = new ArrayList<ItemStack>();
 
                     inkItems.forEach(ink -> {
-                        Arrays.stream(spells).forEach(spell -> {
+                        spells.forEach(spell -> {
                             var spellToUse = spell.getSpellForRarity(ink.getRarity());
                             if (spellToUse.getSpellType() != SpellType.NONE_SPELL) {
                                 inkOutputs.add(new ItemStack(ink));

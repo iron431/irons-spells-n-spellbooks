@@ -5,9 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.CastSource;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -39,6 +37,13 @@ public class WallOfFireSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getWallLength(), 1))
         );
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.FIRE)
+            .setMaxLevel(5)
+            .setCooldownSeconds(20)
+            .build();
 
     public WallOfFireSpell(int level) {
         super(SpellType.WALL_OF_FIRE_SPELL);

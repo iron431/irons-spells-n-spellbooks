@@ -12,7 +12,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -31,6 +30,13 @@ public class AcupunctureSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.projectile_count", getCount(caster)));
 
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.RARE)
+            .setSchool(SchoolType.BLOOD)
+            .setMaxLevel(10)
+            .setCooldownSeconds(20)
+            .build();
 
     public AcupunctureSpell(int level) {
         super(SpellType.ACUPUNCTURE_SPELL);

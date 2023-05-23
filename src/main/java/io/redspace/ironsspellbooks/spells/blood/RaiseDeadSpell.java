@@ -43,6 +43,13 @@ public class RaiseDeadSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.summon_count", this.level));
     }
 
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.BLOOD)
+            .setMaxLevel(6)
+            .setCooldownSeconds(150)
+            .build();
+
     public RaiseDeadSpell(int level) {
         super(SpellType.RAISE_DEAD_SPELL);
         this.level = level;

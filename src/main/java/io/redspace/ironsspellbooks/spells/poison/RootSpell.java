@@ -3,16 +3,12 @@ package io.redspace.ironsspellbooks.spells.poison;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
-import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
-import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,6 +32,13 @@ public class RootSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(caster), 1))
         );
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.POISON)
+            .setMaxLevel(10)
+            .setCooldownSeconds(35)
+            .build();
 
     public RootSpell(int level) {
         super(SpellType.ROOT_SPELL);
