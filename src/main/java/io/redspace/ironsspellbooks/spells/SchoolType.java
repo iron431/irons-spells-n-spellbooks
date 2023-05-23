@@ -46,8 +46,6 @@ public enum SchoolType {
             return BLOOD;
         } else if (stack.is(ModTags.EVOCATION_FOCUS)) {
             return EVOCATION;
-        }else if (stack.is(ModTags.VOID_FOCUS)) {
-            return VOID;
         }else if (stack.is(ModTags.POISON_FOCUS)) {
             return POISON;
         } else return null;
