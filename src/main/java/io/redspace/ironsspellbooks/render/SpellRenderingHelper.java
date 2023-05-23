@@ -34,6 +34,7 @@ public class SpellRenderingHelper {
     }
 
     public static void renderRayOfSiphoning(LivingEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
+
         poseStack.pushPose();
         poseStack.translate(0, entity.getEyeHeight() * .8f, 0);
         if (entity instanceof AbstractSpellCastingMob mob/* && mob.getTarget() != null*/) {
@@ -57,7 +58,8 @@ public class SpellRenderingHelper {
         Vec3 start = Vec3.ZERO;//caster.getEyePosition(partialTicks);
         Vec3 end;
         //TODO: too expensive?
-        float distance = 1 + (float) entity.getEyePosition().distanceTo(Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation());
+        Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
+        float distance = (float) entity.getEyePosition().distanceTo(impact);
         float radius = .12f;
         int r = (int) (255 * .7f);
         int g = (int) (255 * 0f);
@@ -78,7 +80,7 @@ public class SpellRenderingHelper {
             VertexConsumer inner = bufferSource.getBuffer(RenderType.entityTranslucent(BEACON, true));
             drawHull(start, end, radius, radius, pose, inner, r, g, b, a, min, max);
             //drawHull(start, end, .25f, .25f, pose, outer, r / 2, g / 2, b / 2, a / 2);
-            VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(TWISTING_GLOW));
+            VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucent(TWISTING_GLOW));
             drawQuad(start, end, radius * 4f, 0, pose, outer, r, g, b, a, min, max);
             drawQuad(start, end, 0, radius * 4f, pose, outer, r, g, b, a, min, max);
             start = end;
@@ -86,11 +88,6 @@ public class SpellRenderingHelper {
         }
 
         poseStack.popPose();
-    }
-
-    private static void renderRay(LivingEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, int r, int g, int b, int a, float partialTicks, float delta, float distance, float radius) {
-
-
     }
 
     private static void drawHull(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a, float uvMin, float uvMax) {

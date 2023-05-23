@@ -6,21 +6,22 @@
   "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
     "AbstractClientPlayerMixin",
-    "ParticleMixin",
     "CauldronMixin",
+    "EntityMixin",
     "GlassBottleMixin",
+    "GuiMixin",
+    "ItemMixin",
     "ItemRendererMixin",
     "LivingEntityMixin",
     "LocalPlayerMixin",
+    "ParticleMixin",
+    "SmithingMenuMixin",
     "SpinAttackEffectLayerMixin",
     "TetraBladedItemMixin",
-    "TridentItemMixin",
-    "ItemMixin",
-    "EntityMixin",
-    "GuiMixin",
-    "SmithingMenuMixin"
+    "TridentItemMixin"
   ],
   "client": [
+    "EntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -9,7 +9,6 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,7 +18,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
@@ -76,17 +74,6 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     private float getTickDamage(Entity caster) {
         return getSpellPower(caster) * .25f;
-    }
-
-    public static void doRayParticles(LivingEntity livingEntity, int level) {
-        int range = (int) (getRange(level) + .85f);
-        Vec3 origin = livingEntity.getEyePosition().subtract(0, .25, 0);
-        float scalar = 1.25f;
-        Vec3 forward = livingEntity.getForward().normalize().scale(1 / scalar);
-        for (int i = 1; i < range * scalar; i++) {
-            Vec3 pos = origin.add(forward.scale(i).scale(livingEntity.getRandom().nextInt(5, 10) * .1f)).subtract(forward.scale(.25f));
-            livingEntity.getLevel().addParticle(ParticleHelper.SIPHON, pos.x, pos.y, pos.z, 0, 0, 0);
-        }
     }
 
     @Override
