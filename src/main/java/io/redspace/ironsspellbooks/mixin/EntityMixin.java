@@ -10,6 +10,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public class EntityMixin {
 
+    /*
+    Necessary to integrate summons into ally checks
+    */
     @Inject(method = "isAlliedTo(Lnet/minecraft/world/entity/Entity;)Z", at = @At(value = "HEAD"), cancellable = true)
     public void isAlliedTo(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         Entity self = ((Entity) (Object) this);
@@ -18,4 +21,6 @@ public class EntityMixin {
             cir.setReturnValue(self.isAlliedTo(summon.getSummoner()) || self.equals(summon.getSummoner()));
 
     }
+
+
 }

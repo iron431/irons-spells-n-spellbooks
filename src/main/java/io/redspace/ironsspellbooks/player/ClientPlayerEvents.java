@@ -5,11 +5,14 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -18,6 +21,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.TickEvent;
@@ -61,7 +65,15 @@ public class ClientPlayerEvents {
                      */
                     SpellType currentSpell = SpellType.getTypeFromValue(spellData.getCastingSpellId());
                     if (currentSpell == SpellType.RAY_OF_SIPHONING_SPELL) {
-                        //RayOfSiphoningSpell.doRayParticles(livingEntity, spellData.getCastingSpellLevel());
+                        Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);
+                        for (int i = 0; i < 8; i++) {
+                            Vec3 motion = new Vec3(
+                                    Utils.getRandomScaled(.2f),
+                                    Utils.getRandomScaled(.2f),
+                                    Utils.getRandomScaled(.2f)
+                            );
+                            entity.level.addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
+                        }
                     }
                 });
             }
