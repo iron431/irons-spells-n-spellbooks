@@ -90,25 +90,19 @@ public enum SpellType {
     POISON_ARROW_SPELL(50, PoisonArrowSpell::new),
     POISON_SPLASH_SPELL(51, PoisonSplashSpell::new),
     ACID_ORB_SPELL(52, AcidOrbSpell::new),
-    SPIDER_ASPECT_SPELL(53,SpiderAspectSpell::new),
-    BLIGHT_SPELL(54,BlightSpell::new),
+    SPIDER_ASPECT_SPELL(53, SpiderAspectSpell::new),
+    BLIGHT_SPELL(54, BlightSpell::new),
     ROOT_SPELL(55, RootSpell::new),
     BLACK_HOLE_SPELL(56, BlackHoleSpell::new),
     ;
 
     private final int value;
-    private final LazyOptional<Boolean> isEnabled;
-    private final LazyOptional<Integer> maxLevel;
-    private final LazyOptional<Integer> minRarity;
     private final int maxRarity;
     private final GetSpellForType getSpellForType;
     private volatile List<Double> rarityWeights;
 
     SpellType(final int newValue, GetSpellForType getter) {
         value = newValue;
-        isEnabled = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).ENABLED));
-        maxLevel = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).MAX_LEVEL));
-        minRarity = LazyOptional.of(() -> (ServerConfigs.getSpellConfig(this).MIN_RARITY.getValue()));
         maxRarity = SpellRarity.LEGENDARY.getValue();
         getSpellForType = getter;
     }
@@ -117,8 +111,12 @@ public enum SpellType {
         return value;
     }
 
+    public boolean isEnabled() {
+        return ServerConfigs.getSpellConfig(this).ENABLED;
+    }
+
     public int getMinRarity() {
-        return minRarity.orElse(0);
+        return ServerConfigs.getSpellConfig(this).MIN_RARITY.getValue();
     }
 
     public int getMaxRarity() {
@@ -130,7 +128,7 @@ public enum SpellType {
     }
 
     public int getMaxLevel() {
-        return maxLevel.orElse(10);
+        return ServerConfigs.getSpellConfig(this).MAX_LEVEL;
     }
 
     public static SpellType getTypeFromValue(int value) {
@@ -339,10 +337,6 @@ public enum SpellType {
 
     public DamageSource getDamageSource(Entity projectile, Entity attacker) {
         return DamageSources.indirectDamageSource(getDamageSource(), projectile, attacker);
-    }
-
-    public boolean isEnabled() {
-        return isEnabled.orElse(false);
     }
 
     public String getId() {
