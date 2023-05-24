@@ -378,6 +378,14 @@ public class Utils {
         return (2.0D * Math.random() - 1.0D) * scale;
     }
 
+    public static Vec3 getRandomVec3(double scale) {
+        return new Vec3(
+                getRandomScaled(scale),
+                getRandomScaled(scale),
+                getRandomScaled(scale)
+        );
+    }
+
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
         if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer.getMobType() == MobType.UNDEAD || healer.getMobType() == MobType.ILLAGER)) {
             //This tag is for things like iron golems, villagers, farm animals, etc
