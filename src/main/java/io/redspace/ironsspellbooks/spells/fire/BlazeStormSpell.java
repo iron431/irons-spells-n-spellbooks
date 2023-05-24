@@ -2,18 +2,16 @@ package io.redspace.ironsspellbooks.spells.fire;
 
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.entity.spells.ExtendedSmallFireball;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
+import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
-import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +27,14 @@ public class BlazeStormSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
+
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.FIRE)
+            .setMaxLevel(10)
+            .setCooldownSeconds(20)
+            .build();
+
     public BlazeStormSpell(int level) {
         super(SpellType.BLAZE_STORM_SPELL);
         this.level = level;
@@ -66,11 +72,12 @@ public class BlazeStormSpell extends AbstractSpell {
     }
 
     public void shootBlazeFireball(Level world, LivingEntity entity) {
-        float speed = 0.45f;
         Vec3 origin = entity.getEyePosition().add(entity.getForward().normalize().scale(.2f));
-        SmallFireball fireball = new ExtendedSmallFireball(entity, world, speed, getDamage(entity), .05f);
+        SmallMagicFireball fireball = new SmallMagicFireball(world, entity);
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
-        world.playSound(null, origin.x, origin.y, origin.z, SoundEvents.BLAZE_SHOOT, SoundSource.AMBIENT, 1.0f, 1.0f);
+        fireball.shoot(entity.getLookAngle(), .05f);
+        fireball.setDamage(getDamage(entity));
+        world.playSound(null, origin.x, origin.y, origin.z, SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 2.0f, 1.0f);
         world.addFreshEntity(fireball);
     }
 

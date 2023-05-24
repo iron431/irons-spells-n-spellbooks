@@ -21,10 +21,8 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
 
     public GeoKeeperGhostLayer(IGeoRenderer entityRendererIn) {
         super(entityRendererIn);
-        this.model = new KeeperModel();
     }
 
-    private KeeperModel model;
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         float f = (float) (entityLivingBaseIn.tickCount + partialTicks) * .6f;
@@ -32,7 +30,8 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
         //renderType = RenderType.endGateway();
         VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
         matrixStackIn.pushPose();
-        var model = this.model.getModel(KeeperModel.modelResource);
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-90));
+        var model = getEntityModel().getModel(KeeperModel.modelResource);
 //        var bone = model.getBone("head");
 //        bone.ifPresent((b) -> b.setHidden(true));
         float scale = 1 / (1.3f);

@@ -1,10 +1,7 @@
-package io.redspace.ironsspellbooks.entity.spells;
+package io.redspace.ironsspellbooks.entity.spells.fireball;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -27,8 +24,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class FireballRenderer extends EntityRenderer<Projectile> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "acid_orb_model"), "main");
-    private static ResourceLocation ORB_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/fireball.png");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "fireball_model"), "main");
+    private static ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/magma.png");
     private static ResourceLocation FIRE_TEXTURES[] = {
             IronsSpellbooks.id("textures/entity/fireball/fire_0.png"),
             IronsSpellbooks.id("textures/entity/fireball/fire_1.png"),
@@ -41,40 +38,39 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
     };
 
 
-    private final ModelPart orb;
-    private final ModelPart swirl;
+    private final ModelPart body;
+    private final ModelPart outline;
 
-    public FireballRenderer(Context context) {
+    private final float scale;
+
+    public FireballRenderer(Context context, float scale) {
         super(context);
         ModelPart modelpart = context.bakeLayer(MODEL_LAYER_LOCATION);
-        this.orb = modelpart.getChild("orb");
-        this.swirl = modelpart.getChild("swirl");
+        this.body = modelpart.getChild("body");
+        this.outline = modelpart.getChild("outline");
+        this.scale = scale;
     }
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
-        partdefinition.addOrReplaceChild("orb", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F), PartPose.ZERO);
-        partdefinition.addOrReplaceChild("swirl", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F), PartPose.ZERO);
-        return LayerDefinition.create(meshdefinition, 32, 16);
+        partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F), PartPose.ZERO);
+        partdefinition.addOrReplaceChild("outline", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 16.0F), PartPose.ZERO);
+        return LayerDefinition.create(meshdefinition, 48, 24);
     }
 
     @Override
     public void render(Projectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
-        float size = (float) entity.getBoundingBox().getXsize();
-        poseStack.scale(size, size, size);
-        Pose pose = poseStack.last();
-        Matrix4f poseMatrix = pose.pose();
-        Matrix3f normalMatrix = pose.normal();
+        poseStack.scale(scale, scale, scale);
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.orb.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
         float f = entity.tickCount + partialTicks;
 //        float swirlX = Mth.cos(.08f * f) * 180;
@@ -88,7 +84,7 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
 //        int frame = (int) ((f) % frameCount);
         consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getFireTextureLocation(entity)));
         poseStack.scale(1.15f, 1.15f, 1.15f);
-        this.swirl.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        this.outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
 
         poseStack.popPose();
@@ -98,10 +94,10 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
 
     @Override
     public ResourceLocation getTextureLocation(Projectile entity) {
-        return ORB_TEXTURE;
+        return BASE_TEXTURE;
     }
 
-    private ResourceLocation getFireTextureLocation(Projectile entity) {
+    public ResourceLocation getFireTextureLocation(Projectile entity) {
         int frame = (entity.tickCount) % FIRE_TEXTURES.length;
         return FIRE_TEXTURES[frame];
     }
