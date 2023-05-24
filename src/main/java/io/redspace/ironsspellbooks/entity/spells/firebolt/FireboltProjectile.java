@@ -6,9 +6,12 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,7 +49,13 @@ public class FireboltProjectile extends AbstractMagicProjectile {
 
     @Override
     public Optional<SoundEvent> getImpactSound() {
-        return Optional.of(SoundEvents.GENERIC_EXTINGUISH_FIRE);
+        return Optional.of(SoundEvents.FIREWORK_ROCKET_BLAST);
+    }
+
+    @Override
+    protected void doImpactSound(SoundEvent sound) {
+        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + level.random.nextFloat() * .2f);
+
     }
 
     @Override
@@ -76,8 +85,8 @@ public class FireboltProjectile extends AbstractMagicProjectile {
         for (int i = 0; i < 1; i++) {
             float yHeading = -((float) (Mth.atan2(getDeltaMovement().z, getDeltaMovement().x) * (double) (180F / (float) Math.PI)) + 90.0F);
             //float xHeading = -((float) (Mth.atan2(getDeltaMovement().horizontalDistance(), getDeltaMovement().y) * (double) (180F / (float) Math.PI)) - 90.0F);
-            float radius = .3f;
-            int steps = 4;
+            float radius = .25f;
+            int steps = 6;
             for (int j = 0; j < steps; j++) {
                 float offset = (1f / steps) * i;
                 double radians = ((age + offset) / 7.5f) * 360 * Mth.DEG_TO_RAD;
@@ -85,9 +94,10 @@ public class FireboltProjectile extends AbstractMagicProjectile {
                 double x = getX() + swirl.x;
                 double y = getY() + swirl.y + getBbHeight() / 2;
                 double z = getZ() + swirl.z;
-                level.addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
+                Vec3 jitter = Utils.getRandomVec3(.05f);
+                level.addParticle(ParticleHelper.EMBERS, x, y, z, jitter.x, jitter.y, jitter.z);
             }
-            level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), 0, 0, 0);
+            //level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), 0, 0, 0);
 
         }
     }

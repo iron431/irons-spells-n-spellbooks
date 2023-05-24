@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.client.renderer.LightTexture;
@@ -20,10 +21,8 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
 
     public GeoKeeperGhostLayer(IGeoRenderer entityRendererIn) {
         super(entityRendererIn);
-        this.model = new KeeperModel();
     }
 
-    private KeeperModel model;
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         float f = (float) (entityLivingBaseIn.tickCount + partialTicks) * .6f;
@@ -31,7 +30,8 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
         //renderType = RenderType.endGateway();
         VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
         matrixStackIn.pushPose();
-        var model = this.model.getModel(KeeperModel.modelResource);
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-90));
+        var model = getEntityModel().getModel(KeeperModel.modelResource);
 //        var bone = model.getBone("head");
 //        bone.ifPresent((b) -> b.setHidden(true));
         float scale = 1 / (1.3f);

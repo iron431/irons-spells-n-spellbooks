@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity;
+package io.redspace.ironsspellbooks.entity.spells.fireball;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -54,7 +54,7 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
 
     @Override
     public float getSpeed() {
-        return 1.05f;
+        return 1.15f;
     }
 
     @Override

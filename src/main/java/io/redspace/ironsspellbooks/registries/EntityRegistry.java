@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.MagicFireball;
+import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.entity.mobs.*;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
@@ -13,7 +13,6 @@ import io.redspace.ironsspellbooks.entity.mobs.summoned_frog.SummonedFrog;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
-import io.redspace.ironsspellbooks.entity.spells.ExtendedSmallFireball;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
@@ -25,6 +24,7 @@ import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
+import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockProjectile;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
@@ -207,8 +207,8 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "frozen_humanoid").toString()));
 
-    public static final RegistryObject<EntityType<ExtendedSmallFireball>> SMALL_FIREBALL_PROJECTILE =
-            ENTITIES.register("small_fireball", () -> EntityType.Builder.<ExtendedSmallFireball>of(ExtendedSmallFireball::new, MobCategory.MISC)
+    public static final RegistryObject<EntityType<SmallMagicFireball>> SMALL_FIREBALL_PROJECTILE =
+            ENTITIES.register("small_fireball", () -> EntityType.Builder.<SmallMagicFireball>of(SmallMagicFireball::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "small_fireball").toString()));
