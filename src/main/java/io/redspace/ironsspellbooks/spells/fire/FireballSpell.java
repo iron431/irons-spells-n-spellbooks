@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.entity.spells.ExtendedLargeFireball;
+import io.redspace.ironsspellbooks.entity.MagicFireball;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -52,12 +52,16 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        float speed = 2.5f;
-        Vec3 direction = entity.getLookAngle().scale(speed);
         Vec3 origin = entity.getEyePosition();
-        ExtendedLargeFireball fireball = new ExtendedLargeFireball(world, entity, direction.x(), direction.y(), direction.z(), getRadius(entity));
+
+        MagicFireball fireball = new MagicFireball(world, entity);
+
         fireball.setDamage(getDamage(entity));
-        fireball.setPos(origin.add(direction.scale(.25)));
+        fireball.setExplosionRadius(getRadius(entity));
+
+        fireball.setPos(origin.add(entity.getForward()).subtract(0, fireball.getBbHeight() / 2, 0));
+        fireball.shoot(entity.getLookAngle());
+
         world.addFreshEntity(fireball);
         super.onCast(world, entity, playerMagicData);
     }
