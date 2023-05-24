@@ -14,7 +14,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -22,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
-public class MagicFireball extends AbstractMagicProjectile {
+public class MagicFireball extends AbstractMagicProjectile implements ItemSupplier {
     public MagicFireball(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -46,7 +49,7 @@ public class MagicFireball extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleTypes.LAVA, x, y, z, 30, .1, .1, .1, 0.2 * getExplosionRadius(), false);
+        MagicManager.spawnParticles(level, ParticleTypes.LAVA, x, y, z, 50, .1, .1, .1, 0.5 * getExplosionRadius(), false);
     }
 
     @Override
@@ -77,5 +80,10 @@ public class MagicFireball extends AbstractMagicProjectile {
             this.level.explode(null, SpellType.FIREBALL_SPELL.getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float) this.getExplosionRadius(), flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
             this.discard();
         }
+    }
+
+    @Override
+    public ItemStack getItem() {
+        return new ItemStack(Items.FIRE_CHARGE);
     }
 }

@@ -63,7 +63,7 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
     public void render(Projectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
-        float size = (float) entity.getBoundingBox().getXsize() * 2;
+        float size = (float) entity.getBoundingBox().getXsize();
         poseStack.scale(size, size, size);
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
