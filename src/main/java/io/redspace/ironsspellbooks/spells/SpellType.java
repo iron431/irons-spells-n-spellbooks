@@ -95,7 +95,8 @@ public enum SpellType {
     ROOT_SPELL(55, RootSpell::new),
     BLACK_HOLE_SPELL(56, BlackHoleSpell::new),
     BlOOD_NEEDLES_SPELL(57, BloodNeedlesSpell::new),
-    ACUPUNCTURE_SPELL(58, AcupunctureSpell::new)
+    ACUPUNCTURE_SPELL(58, AcupunctureSpell::new),
+    MAGMA_BALL_SPELL(59, MagmaBallSpell::new)
     ;
 
     private final int value;
@@ -139,7 +140,7 @@ public enum SpellType {
                     CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL, POISON_BREATH_SPELL ->
                     CastType.CONTINUOUS;
-            case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL, POISON_ARROW_SPELL, ACID_ORB_SPELL, BLACK_HOLE_SPELL -> CastType.CHARGE;
+            case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL, POISON_ARROW_SPELL, ACID_ORB_SPELL, BLACK_HOLE_SPELL, MAGMA_BALL_SPELL -> CastType.CHARGE;
             default -> CastType.INSTANT;
         };
     }

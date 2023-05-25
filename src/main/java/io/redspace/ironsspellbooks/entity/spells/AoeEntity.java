@@ -11,6 +11,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.List;
 
@@ -29,6 +30,10 @@ public abstract class AoeEntity extends Projectile {
     public AoeEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.noPhysics = true;
+    }
+
+    protected float particleYOffset(){
+        return 0f;
     }
 
     public void setDamage(float damage) {
@@ -106,14 +111,14 @@ public abstract class AoeEntity extends Projectile {
             return;
 
         float f = getParticleCount();
-        f = Mth.clamp(f * getRadius(), f / 4, f * 3);
+        f = Mth.clamp(f * getRadius(), f / 4, f * 10);
         for (int i = 0; i < f; i++) {
             if (f - i < 1 && random.nextFloat() > f - i)
                 return;
             var r = getRadius();
             Vec3 pos;
             if (isCircular()) {
-                float distance = this.random.nextFloat() * r;
+                float distance = (1 - this.random.nextFloat() * this.random.nextFloat()) * r;
                 pos = new Vec3(0, 0, distance).yRot(this.random.nextFloat() * 360);
             } else {
                 pos = new Vec3(
@@ -126,10 +131,24 @@ public abstract class AoeEntity extends Projectile {
                     Utils.getRandomScaled(.03f),
                     this.random.nextDouble() * .01f,
                     Utils.getRandomScaled(.03f)
-            );
+            ).scale(this.getParticleSpeedModifier());
 
-            level.addParticle(getParticle(), getX() + pos.x, getY() + pos.y, getZ() + pos.z, motion.x, motion.y, motion.z);
+            level.addParticle(getParticle(), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, motion.x, motion.y, motion.z);
         }
+    }
+
+    protected float getParticleSpeedModifier() {
+        return 1f;
+    }
+
+    @Override
+    public boolean isPushedByFluid(FluidType type) {
+        return false;
+    }
+
+    @Override
+    public boolean isOnFire() {
+        return false;
     }
 
     protected void defineSynchedData() {

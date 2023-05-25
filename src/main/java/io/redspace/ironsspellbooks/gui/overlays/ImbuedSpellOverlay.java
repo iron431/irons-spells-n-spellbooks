@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
@@ -25,12 +24,7 @@ public class ImbuedSpellOverlay extends GuiComponent {
         if (player == null)
             return;
         //This might be expensive
-        ItemStack stack = player.getItemBySlot(EquipmentSlot.MAINHAND);
-
-        if(stack.isEmpty()){
-            return;
-        }
-
+        ItemStack stack = player.getMainHandItem();
         SpellData spellData = null;
 
         if (SpellData.hasSpellData(stack)) {
@@ -42,6 +36,10 @@ public class ImbuedSpellOverlay extends GuiComponent {
             }else{
                 return;
             }
+        }
+
+        if(stack.isEmpty()){
+            return;
         }
 
         if (spellData.getSpellId() == 0) {
