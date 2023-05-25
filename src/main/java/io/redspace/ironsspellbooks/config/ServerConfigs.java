@@ -98,6 +98,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.TELEPORT_SPELL, TeleportSpell.defaultConfig, true);
         createSpellConfig(SpellType.COUNTERSPELL_SPELL, CounterspellSpell.defaultConfig, true);
         createSpellConfig(SpellType.DRAGON_BREATH_SPELL, DragonBreathSpell.defaultConfig, true);
+        createSpellConfig(SpellType.STARFALL_SPELL, StarfallSpell.defaultConfig, true);
 
         //Evocation
         BUILDER.comment("Evocation Spells");

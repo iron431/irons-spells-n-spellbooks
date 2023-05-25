@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.entity.mobs.*;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingCorpseEntity;
@@ -14,16 +13,19 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEnti
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
+import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
+import io.redspace.ironsspellbooks.entity.spells.comet.Comet;
 import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdProjectile;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
+import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockProjectile;
@@ -347,5 +349,17 @@ public class EntityRegistry {
                     .sized(0.75F, 0.75F)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "magma_ball").toString()));
+
+    public static final RegistryObject<EntityType<Comet>> COMET =
+            ENTITIES.register("comet", () -> EntityType.Builder.<Comet>of(Comet::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "comet").toString()));
+
+    public static final RegistryObject<EntityType<TargetedAreaEntity>> TARGET_AREA_ENTITY =
+            ENTITIES.register("target_area", () -> EntityType.Builder.<TargetedAreaEntity>of(TargetedAreaEntity::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "target_area").toString()));
 
 }

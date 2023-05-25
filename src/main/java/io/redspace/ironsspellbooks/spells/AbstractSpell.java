@@ -181,7 +181,7 @@ public abstract class AbstractSpell {
         }
 
 
-        return (baseSpellPower + spellPowerPerLevel * level) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier;
+        return (baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier;
     }
 
     public int getEffectiveCastTime(@Nullable LivingEntity entity) {
@@ -320,17 +320,11 @@ public abstract class AbstractSpell {
     }
 
     protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
-        //IronsSpellbooks.LOGGER.debug("playSound spell:{} isClientSide:{}", this.getSpellType(), entity.level.isClientSide);
-        // sound.ifPresent((soundEvent) -> entity.playSound(soundEvent, 1.0f, 1.0f));
-
         if (sound.isPresent()) {
- //Ironsspellbooks.logger.debug("playSound spell:{} isClientSide:{}, resourceLocation:{}", this.getSpellType(), entity.level.isClientSide, sound.get().getLocation().toString());
             entity.playSound(sound.get(), 2.0f, 1.0f);
         } else if (playDefaultSound) {
             entity.playSound(defaultCastSound(), 2.0f, 1.0f);
         }
-
-        //entity.playSound(sound.orElse(this:def), 1.0f, 1.0f));
     }
 
     /**

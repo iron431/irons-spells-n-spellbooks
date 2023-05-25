@@ -7,10 +7,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.entity.spells.ConePart;
-import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
-import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
@@ -38,7 +35,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -306,7 +302,7 @@ public class Utils {
 
     private static boolean canHitWithRaycast(Entity entity) {
         //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
-        return !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart || entity instanceof ItemEntity || entity instanceof VoidTentacle || entity instanceof RootEntity);
+        return entity.isPickable();
     }
 
     public static Vec2 rotationFromDirection(Vec3 vector) {
@@ -469,7 +465,7 @@ public class Utils {
         }
         //Vec3 upper = level.clip(new ClipContext(start, start.add(0, maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
         Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
-        return (int) lower.y;
+        return (int) (lower.y + .76f);
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {

@@ -25,8 +25,8 @@ import net.minecraft.world.phys.Vec3;
 public class FireballRenderer extends EntityRenderer<Projectile> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(IronsSpellbooks.MODID, "fireball_model"), "main");
-    private static ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/magma.png");
-    private static ResourceLocation FIRE_TEXTURES[] = {
+    private static final ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/magma.png");
+    private static final ResourceLocation[] FIRE_TEXTURES = {
             IronsSpellbooks.id("textures/entity/fireball/fire_0.png"),
             IronsSpellbooks.id("textures/entity/fireball/fire_1.png"),
             IronsSpellbooks.id("textures/entity/fireball/fire_2.png"),
@@ -38,10 +38,10 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
     };
 
 
-    private final ModelPart body;
-    private final ModelPart outline;
+    protected final ModelPart body;
+    protected final ModelPart outline;
 
-    private final float scale;
+    protected final float scale;
 
     public FireballRenderer(Context context, float scale) {
         super(context);
