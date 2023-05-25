@@ -27,9 +27,9 @@ public class ChargeSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster) * 20, 1)),
-                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentSpeed(), 0), Component.translatable("attribute.name.generic.movement_speed")),
-                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentAttackDamage(), 0), Component.translatable("attribute.name.generic.attack_damage")),
-                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentSpellPower(), 0), Component.translatable("attribute.irons_spellbooks.spell_power"))
+                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentSpeed(caster), 0), Component.translatable("attribute.name.generic.movement_speed")),
+                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentAttackDamage(caster), 0), Component.translatable("attribute.name.generic.attack_damage")),
+                Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentSpellPower(caster), 0), Component.translatable("attribute.irons_spellbooks.spell_power"))
         );
     }
 
@@ -42,7 +42,7 @@ public class ChargeSpell extends AbstractSpell {
 
     public ChargeSpell(int level) {
         super(SpellType.CHARGE_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 25;
         this.baseSpellPower = 30;
         this.spellPowerPerLevel = 8;
@@ -64,21 +64,21 @@ public class ChargeSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
 
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.CHARGED.get(), (int) (getSpellPower(entity) * 20), this.level - 1, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.CHARGED.get(), (int) (getSpellPower(entity) * 20), this.getLevel(entity) - 1, false, false, true));
 
         super.onCast(level, entity, playerMagicData);
     }
 
-    private float getPercentAttackDamage() {
-        return level * ChargeEffect.ATTACK_DAMAGE_PER_LEVEL * 100;
+    private float getPercentAttackDamage(LivingEntity entity) {
+        return getLevel(entity) * ChargeEffect.ATTACK_DAMAGE_PER_LEVEL * 100;
     }
 
-    private float getPercentSpeed() {
-        return level * ChargeEffect.SPEED_PER_LEVEL * 100;
+    private float getPercentSpeed(LivingEntity entity) {
+        return getLevel(entity) * ChargeEffect.SPEED_PER_LEVEL * 100;
     }
 
-    private float getPercentSpellPower() {
-        return level * ChargeEffect.SPELL_POWER_PER_LEVEL * 100;
+    private float getPercentSpellPower(LivingEntity entity) {
+        return getLevel(entity) * ChargeEffect.SPELL_POWER_PER_LEVEL * 100;
     }
 
     @Override

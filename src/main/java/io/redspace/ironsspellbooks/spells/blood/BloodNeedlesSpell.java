@@ -36,7 +36,7 @@ public class BloodNeedlesSpell extends AbstractSpell {
 
     public BloodNeedlesSpell(int level) {
         super(SpellType.BlOOD_NEEDLES_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;

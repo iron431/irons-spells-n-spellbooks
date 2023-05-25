@@ -39,7 +39,7 @@ public class BurningDashSpell extends AbstractSpell {
 
     public BurningDashSpell(int level) {
         super(SpellType.BURNING_DASH_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
@@ -95,7 +95,7 @@ public class BurningDashSpell extends AbstractSpell {
         //Start Spin Attack
         if (entity.isOnGround())
             entity.setPos(entity.position().add(0, 1.2, 0));
-        startSpinAttack(entity, 5 + 2 * level);
+        startSpinAttack(entity, 10);
 
         //Deal Shockwave Damage and particles
         world.getEntities(entity, entity.getBoundingBox().inflate(4)).forEach((target) -> {

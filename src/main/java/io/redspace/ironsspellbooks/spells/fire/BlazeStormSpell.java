@@ -37,7 +37,7 @@ public class BlazeStormSpell extends AbstractSpell {
 
     public BlazeStormSpell(int level) {
         super(SpellType.BLAZE_STORM_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;

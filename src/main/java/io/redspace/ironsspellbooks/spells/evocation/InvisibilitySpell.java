@@ -34,7 +34,7 @@ public class InvisibilitySpell extends AbstractSpell {
 
     public InvisibilitySpell(int level) {
         super(SpellType.INVISIBILITY_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 8;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 5;

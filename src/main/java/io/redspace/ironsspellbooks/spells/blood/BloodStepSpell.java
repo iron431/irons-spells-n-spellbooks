@@ -17,7 +17,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -47,7 +46,7 @@ public class BloodStepSpell extends AbstractSpell {
 
     public BloodStepSpell(int level) {
         super(SpellType.BLOOD_STEP_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 4;
         this.baseManaCost = 30;
@@ -117,7 +116,7 @@ public class BloodStepSpell extends AbstractSpell {
         super.onCast(level, entity, playerMagicData);
     }
 
-    private float getDistance(Entity sourceEntity) {
+    private float getDistance(LivingEntity sourceEntity) {
         return getSpellPower(sourceEntity);
     }
 

@@ -11,7 +11,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -40,7 +39,7 @@ public class WispSpell extends AbstractSpell {
 
     public WispSpell(int level) {
         super(SpellType.WISP_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
@@ -93,11 +92,11 @@ public class WispSpell extends AbstractSpell {
         }
     }
 
-    private float getDistance(Entity sourceEntity) {
+    private float getDistance(LivingEntity sourceEntity) {
         return getSpellPower(sourceEntity) * 5;
     }
 
-    private float getDuration(Entity sourceEntity) {
+    private float getDuration(LivingEntity sourceEntity) {
         return ((getSpellPower(sourceEntity)) * 10);
     }
 }

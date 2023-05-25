@@ -42,7 +42,7 @@ public class BlightSpell extends AbstractSpell {
 
     public BlightSpell(int level) {
         super(SpellType.BLIGHT_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
@@ -80,7 +80,7 @@ public class BlightSpell extends AbstractSpell {
     }
 
     public int getAmplifier(LivingEntity caster) {
-        return (int) (getSpellPower(caster) * this.level - 1);
+        return (int) (getSpellPower(caster) * this.getLevel(caster) - 1);
     }
 
     public int getDuration(LivingEntity caster) {

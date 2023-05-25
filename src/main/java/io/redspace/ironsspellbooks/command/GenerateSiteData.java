@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
@@ -11,7 +10,6 @@ import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -19,7 +17,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.*;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.BufferedWriter;
@@ -219,7 +216,7 @@ public class GenerateSiteData {
     private static String getSpells(ItemStack itemStack) {
         if (itemStack.getItem() instanceof SpellBook) {
             return SpellBookData.getSpellBookData(itemStack).getActiveInscribedSpells().stream().map(spell -> {
-                return spell.getSpellType().getDisplayName().getString() + " (" + spell.getLevel() + ")";
+                return spell.getSpellType().getDisplayName().getString() + " (" + spell.getLevel(null) + ")";
             }).collect(Collectors.joining(", "));
         }
         return "";

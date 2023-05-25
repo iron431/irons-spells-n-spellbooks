@@ -50,7 +50,7 @@ public final class ScrollForgeRecipeMaker {
                             var spellToUse = spell.getSpellForRarity(ink.getRarity());
                             if (spellToUse.getSpellType() != SpellType.NONE_SPELL) {
                                 inkOutputs.add(new ItemStack(ink));
-                                scrollOutputs.add(getScrollStack(spellToUse.getSpellType(), spellToUse.getLevel()));
+                                scrollOutputs.add(getScrollStack(spellToUse.getSpellType(), spellToUse.getLevel(null)));
                             }
                         });
                     });

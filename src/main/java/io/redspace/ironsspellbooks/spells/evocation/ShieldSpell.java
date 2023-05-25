@@ -36,7 +36,7 @@ public class ShieldSpell extends AbstractSpell {
 
     public ShieldSpell(int level) {
         super(SpellType.SHIELD_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 10;

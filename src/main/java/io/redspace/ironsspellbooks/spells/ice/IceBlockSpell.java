@@ -39,7 +39,7 @@ public class IceBlockSpell extends AbstractSpell {
 
     public IceBlockSpell(int level) {
         super(SpellType.ICE_BLOCK_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 2;

@@ -36,7 +36,7 @@ public class FrostbiteSpell extends AbstractSpell {
 
     public FrostbiteSpell(int level) {
         super(SpellType.FROSTBITE_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 50;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 3;

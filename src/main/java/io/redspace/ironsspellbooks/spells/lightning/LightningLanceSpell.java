@@ -31,7 +31,7 @@ public class LightningLanceSpell extends AbstractSpell {
 
     public LightningLanceSpell(int level) {
         super(SpellType.LIGHTNING_LANCE_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 2;

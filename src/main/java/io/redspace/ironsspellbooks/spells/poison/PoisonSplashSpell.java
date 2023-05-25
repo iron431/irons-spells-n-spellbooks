@@ -41,7 +41,7 @@ public class PoisonSplashSpell extends AbstractSpell {
 
     public PoisonSplashSpell(int level) {
         super(SpellType.POISON_SPLASH_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
@@ -96,6 +96,6 @@ public class PoisonSplashSpell extends AbstractSpell {
     }
 
     private int getDuration(LivingEntity entity) {
-        return 100 + level * 40;
+        return 100 + getLevel(entity) * 40;
     }
 }

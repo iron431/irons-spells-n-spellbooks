@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -38,7 +37,7 @@ public class TeleportSpell extends AbstractSpell {
 
     public TeleportSpell(int level) {
         super(SpellType.TELEPORT_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 10;
         this.baseManaCost = 20;
@@ -124,7 +123,7 @@ public class TeleportSpell extends AbstractSpell {
         }
     }
 
-    private float getDistance(Entity sourceEntity) {
+    private float getDistance(LivingEntity sourceEntity) {
         return getSpellPower(sourceEntity);
     }
 

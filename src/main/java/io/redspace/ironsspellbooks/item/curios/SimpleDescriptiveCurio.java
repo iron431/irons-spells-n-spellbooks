@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SimpleDescriptiveCurio extends CurioBaseItem {
-    final static Component whenWornAsRing = Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD);
+    protected final static Component whenWornAsRing = Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD);
     final Component description;
 
     public SimpleDescriptiveCurio(Properties properties, Component description) {

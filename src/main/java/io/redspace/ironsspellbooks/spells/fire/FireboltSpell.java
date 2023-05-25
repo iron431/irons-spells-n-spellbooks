@@ -32,7 +32,7 @@ public class FireboltSpell extends AbstractSpell {
 
     public FireboltSpell(int level) {
         super(SpellType.FIREBOLT_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;

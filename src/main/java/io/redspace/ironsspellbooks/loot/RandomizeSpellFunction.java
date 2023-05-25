@@ -1,13 +1,11 @@
 package io.redspace.ironsspellbooks.loot;
 
 import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.util.GsonHelper;
@@ -19,30 +17,31 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
-import java.util.*;
+import java.util.List;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 public class RandomizeSpellFunction extends LootItemConditionalFunction {
     final NumberProvider qualityRange;
-    final List<SpellType> applicableSpells;
+    final SpellFilter applicableSpells;
 
-    protected RandomizeSpellFunction(LootItemCondition[] lootConditions, NumberProvider qualityRange, List<SpellType> applicableSpells) {
+    protected RandomizeSpellFunction(LootItemCondition[] lootConditions, NumberProvider qualityRange, SpellFilter spellFilter) {
         super(lootConditions);
         this.qualityRange = qualityRange;
-        this.applicableSpells = applicableSpells;
+        this.applicableSpells = spellFilter;
     }
+
 
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SwordItem) {
 
-            var spellList = getWeightedSpellList(applicableSpells);
+            var spellList = getWeightedSpellList(applicableSpells.getApplicableSpells());
             int total = spellList.floorKey(Integer.MAX_VALUE);
             SpellType spellType = SpellType.NONE_SPELL;
-            for (int i = 0; i < 16; i++) {
+            if(!spellList.isEmpty()){
                 spellType = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
-                if (spellType.isEnabled())
-                    break;
             }
 
             var spellId = spellType.getValue();
@@ -61,7 +60,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         NavigableMap<Integer, SpellType> weightedSpells = new TreeMap<>();
 
         for (SpellType entry : entries) {
-            if (entry != SpellType.NONE_SPELL) {
+            if (entry != SpellType.NONE_SPELL && entry.isEnabled()) {
                 total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
                 weightedSpells.put(total, entry);
             }
@@ -102,48 +101,10 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             NumberProvider numberProvider = GsonHelper.getAsObject(json, "quality", jsonDeserializationContext, NumberProvider.class);
 
             //Spell Selection
-            var applicableSpells = getApplicableSpells(json);
-
+            var applicableSpells = SpellFilter.deserializeSpellFilter(json);
 
             return new RandomizeSpellFunction(lootConditions, numberProvider, applicableSpells);
         }
 
-        private List<SpellType > getApplicableSpells(JsonObject json) {
-            if (GsonHelper.isValidNode(json, "school")) {
-                var schoolType = GsonHelper.getAsString(json, "school");
-                return switch (schoolType.toLowerCase()) {
-                    case "fire" -> SpellType.getSpellsFromSchool(SchoolType.FIRE);
-                    case "ice" -> SpellType.getSpellsFromSchool(SchoolType.ICE);
-                    case "lightning" -> SpellType.getSpellsFromSchool(SchoolType.LIGHTNING);
-                    case "ender" -> SpellType.getSpellsFromSchool(SchoolType.ENDER);
-                    case "evocation" -> SpellType.getSpellsFromSchool(SchoolType.EVOCATION);
-                    case "holy" -> SpellType.getSpellsFromSchool(SchoolType.HOLY);
-                    case "blood" -> SpellType.getSpellsFromSchool(SchoolType.BLOOD);
-                    case "void" -> SpellType.getSpellsFromSchool(SchoolType.VOID);
-                    default -> List.of(SpellType.NONE_SPELL);
-                };
-            } else if (GsonHelper.isArrayNode(json, "spells")) {
-                var spellsFromJson = GsonHelper.getAsJsonArray(json, "spells");
-                List<SpellType> applicableSpellList = new ArrayList<>();
-                for (JsonElement element : spellsFromJson) {
-                    String spell = element.getAsString();
-                    for (SpellType spellType : SpellType.values()) {
-                        if (spellType.getId().equalsIgnoreCase(spell))
-                            applicableSpellList.add(spellType);
-                    }
-                }
-                return applicableSpellList;
-            } else {
-                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID).toList();
-//                var nonVoidSpells = new SpellType[SpellType.values().length - SpellType.getSpellsFromSchool(SchoolType.VOID).length];
-//                int j = 0;
-//                for (int i = 0; i < nonVoidSpells.length; i++) {
-//                    if (SpellType.values()[i].getSchoolType() != SchoolType.VOID) {
-//                        nonVoidSpells[j++] = SpellType.values()[i];
-//                    }
-//                }
-//                return nonVoidSpells;
-            }
-        }
     }
 }

@@ -29,7 +29,7 @@ public class PoisonBreathSpell extends AbstractSpell {
 
     public PoisonBreathSpell(int level) {
         super(SpellType.POISON_BREATH_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;

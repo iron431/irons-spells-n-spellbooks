@@ -39,7 +39,7 @@ public class BlessingOfLifeSpell extends AbstractSpell {
 
     public BlessingOfLifeSpell(int level) {
         super(SpellType.BLESSING_OF_LIFE_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;

@@ -60,7 +60,7 @@ public class SpellData {
     }
 
     public static void setSpellData(ItemStack stack, AbstractSpell spell) {
-        setSpellData(stack, spell.getSpellType().getValue(), spell.getLevel());
+        setSpellData(stack, spell.getSpellType().getValue(), spell.getLevel(null));
     }
 
     public AbstractSpell getSpell() {

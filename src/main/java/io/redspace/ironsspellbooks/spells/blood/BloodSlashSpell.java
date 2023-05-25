@@ -34,7 +34,7 @@ public class BloodSlashSpell extends AbstractSpell {
 
     public BloodSlashSpell(int level) {
         super(SpellType.BLOOD_SLASH_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 1;

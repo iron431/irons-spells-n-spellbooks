@@ -34,7 +34,7 @@ public class WallOfFireSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getWallLength(), 1))
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getWallLength(caster), 1))
         );
     }
 
@@ -47,7 +47,7 @@ public class WallOfFireSpell extends AbstractSpell {
 
     public WallOfFireSpell(int level) {
         super(SpellType.WALL_OF_FIRE_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
@@ -70,7 +70,7 @@ public class WallOfFireSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.getAdditionalCastData() == null) {
             //IronsSpellbooks.LOGGER.debug("WallOfFireSpell: creating new data");
-            var fireWallData = new FireWallData(getWallLength());
+            var fireWallData = new FireWallData(getWallLength(entity));
             playerMagicData.setAdditionalCastData(fireWallData);
 
         }
@@ -117,11 +117,11 @@ public class WallOfFireSpell extends AbstractSpell {
         super.onServerCastComplete(level, entity, playerMagicData, false);
     }
 
-    private float getWallLength() {
-        return 10 + level * 2;
+    private float getWallLength(LivingEntity entity) {
+        return 10 + getLevel(entity) * 2;
     }
 
-    private float getDamage(Entity sourceEntity) {
+    private float getDamage(LivingEntity sourceEntity) {
         return getSpellPower(sourceEntity);
     }
 

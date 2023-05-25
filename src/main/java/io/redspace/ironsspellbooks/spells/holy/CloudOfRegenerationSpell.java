@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +42,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
 
     public CloudOfRegenerationSpell(int level) {
         super(SpellType.CLOUD_OF_REGENERATION_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 2;
         this.spellPowerPerLevel = 1;
@@ -52,7 +51,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
 
     }
 
-    private float getHealing(Entity caster) {
+    private float getHealing(LivingEntity caster) {
         return getSpellPower(caster) * .5f;
     }
 

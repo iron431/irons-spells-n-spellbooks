@@ -1,0 +1,21 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:caster_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "spells": [
+                "none"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -27,7 +27,7 @@ public class SpiderAspectSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.additional_poisoned_damage", Utils.stringTruncation(getPercentDamage(), 0)),
+                Component.translatable("ui.irons_spellbooks.additional_poisoned_damage", Utils.stringTruncation(getPercentDamage(caster), 0)),
                 Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster) * 20, 1))
         );
     }
@@ -41,7 +41,7 @@ public class SpiderAspectSpell extends AbstractSpell {
 
     public SpiderAspectSpell(int level) {
         super(SpellType.SPIDER_ASPECT_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 20;
         this.spellPowerPerLevel = 5;
@@ -63,13 +63,13 @@ public class SpiderAspectSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
 
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.SPIDER_ASPECT.get(), (int) (getSpellPower(entity) * 20), this.level - 1, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.SPIDER_ASPECT.get(), (int) (getSpellPower(entity) * 20), this.getLevel(entity) - 1, false, false, true));
 
         super.onCast(level, entity, playerMagicData);
     }
 
-    private float getPercentDamage() {
-        return level * SpiderAspectEffect.DAMAGE_PER_LEVEL * 100;
+    private float getPercentDamage(LivingEntity entity) {
+        return getLevel(entity) * SpiderAspectEffect.DAMAGE_PER_LEVEL * 100;
     }
 
     @Override

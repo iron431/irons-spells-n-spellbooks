@@ -185,7 +185,7 @@ public class SpellBookData {
             if (spell != null) {
                 CompoundTag ct = new CompoundTag();
                 ct.putInt(ID, spell.getID());
-                ct.putInt(LEVEL, spell.getLevel());
+                ct.putInt(LEVEL, spell.getLevel(null));
                 ct.putInt(SLOT, i);
                 listTagSpells.add(ct);
             }

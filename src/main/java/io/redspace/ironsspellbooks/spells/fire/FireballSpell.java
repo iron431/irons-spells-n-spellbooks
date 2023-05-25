@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -43,7 +42,7 @@ public class FireballSpell extends AbstractSpell {
 
     public FireballSpell(int level) {
         super(SpellType.FIREBALL_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
@@ -77,11 +76,11 @@ public class FireballSpell extends AbstractSpell {
         super.onCast(world, entity, playerMagicData);
     }
 
-    public float getDamage(Entity caster) {
+    public float getDamage(LivingEntity caster) {
         return 10 * getSpellPower(caster);
     }
 
-    public int getRadius(Entity caster) {
+    public int getRadius(LivingEntity caster) {
         return (int) getSpellPower(caster);
     }
 }
