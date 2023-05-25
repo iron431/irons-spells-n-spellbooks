@@ -77,7 +77,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         return 12;
     }
 
-    private float getTickDamage(Entity caster) {
+    private float getTickDamage(LivingEntity caster) {
         return getSpellPower(caster) * .25f;
     }
 

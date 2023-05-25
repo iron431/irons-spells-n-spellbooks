@@ -121,7 +121,7 @@ public class WallOfFireSpell extends AbstractSpell {
         return 10 + getLevel(entity) * 2;
     }
 
-    private float getDamage(Entity sourceEntity) {
+    private float getDamage(LivingEntity sourceEntity) {
         return getSpellPower(sourceEntity);
     }
 
