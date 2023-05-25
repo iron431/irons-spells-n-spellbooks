@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.curios.CasterRing;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
@@ -22,7 +23,7 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
-import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -34,8 +35,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
 import software.bernie.geckolib3.core.builder.ILoopType;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -52,25 +53,18 @@ public abstract class AbstractSpell {
 
     private final SpellType spellType;
     private final CastType castType;
-    protected int level;
+    private int level;
     protected int baseManaCost;
     protected int manaCostPerLevel;
     protected int baseSpellPower;
     protected int spellPowerPerLevel;
     //All time values in ticks
     protected int castTime;
+    //protected int cooldown;
 
     public AbstractSpell(SpellType spellType) {
         this.spellType = spellType;
         this.castType = spellType.getCastType();
-    }
-
-    private double getManaMultiplier() {
-        return ServerConfigs.getSpellConfig(spellType).MANA_MULTIPLIER;
-    }
-
-    private float getPowerMultiplier() {
-        return (float) ServerConfigs.getSpellConfig(spellType).POWER_MULTIPLIER;
     }
 
     public int getID() {
@@ -82,7 +76,7 @@ public abstract class AbstractSpell {
     }
 
     public SpellRarity getRarity() {
-        return spellType.getRarity(level);
+        return spellType.getRarity(getLevel(null));
     }
 
     public CastType getCastType() {
@@ -93,8 +87,20 @@ public abstract class AbstractSpell {
         return spellType.getSchoolType();
     }
 
-    public int getLevel() {
+    public int getLevel(@Nullable LivingEntity caster) {
+        int addition = 0;
+        if (caster != null) {
+            addition = CuriosApi.getCuriosHelper().findCurios(caster, this::filterCurios).size();
+        }
+        return this.level + addition;
+    }
+
+    public int getRawLevel() {
         return this.level;
+    }
+
+    private boolean filterCurios(ItemStack itemStack) {
+        return itemStack.getOrCreateTag().contains(CasterRing.nbtKey) && itemStack.getOrCreateTag().getInt(CasterRing.nbtKey) == this.spellType.getValue();
     }
 
     public void setLevel(int level) {
@@ -102,11 +108,11 @@ public abstract class AbstractSpell {
     }
 
     public int getManaCost() {
-        return (int) ((baseManaCost + manaCostPerLevel * (level - 1)) * getManaMultiplier());
+        return (int) ((baseManaCost + manaCostPerLevel * (getLevel(null) - 1)) * ServerConfigs.getSpellConfig(spellType).manaMultiplier());
     }
 
     public int getSpellCooldown() {
-        return (int) ServerConfigs.getSpellConfig(spellType).COOLDOWN_IN_SECONDS * 20;
+        return ServerConfigs.getSpellConfig(spellType).cooldownInTicks();
     }
 
     private int getCastTime() {
@@ -148,29 +154,39 @@ public abstract class AbstractSpell {
 
         float entitySpellPowerModifier = 1;
         float entitySchoolPowerModifier = 1;
-        float configPowerModifier = getPowerMultiplier();
-        if (sourceEntity instanceof LivingEntity sourceLivingEntity) {
-            //IronsSpellbooks.LOGGER.debug("AbsSpell.getSpellPower: \"use item\": {}", sourceLivingEntity.getUseItem());
-            entitySpellPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
-            switch (this.getSchoolType()) {
-                case FIRE -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER.get());
-                case ICE -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.ICE_SPELL_POWER.get());
-                case LIGHTNING -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.LIGHTNING_SPELL_POWER.get());
-                case HOLY -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.HOLY_SPELL_POWER.get());
-                case ENDER -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.ENDER_SPELL_POWER.get());
-                case BLOOD -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER.get());
-                case EVOCATION -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.EVOCATION_SPELL_POWER.get());
-                case POISON -> entitySchoolPowerModifier = (float) sourceLivingEntity.getAttributeValue(AttributeRegistry.POISON_SPELL_POWER.get());
-            }
 
+        float configPowerModifier = (float) ServerConfigs.getSpellConfig(spellType).powerMultiplier();
+        int level = getLevel(null);
+        if(sourceEntity instanceof LivingEntity livingEntity){
+            level = getLevel(livingEntity);
+            entitySpellPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
+            switch (this.getSchoolType()) {
+                case FIRE ->
+                        entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER.get());
+                case ICE ->
+                        entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.ICE_SPELL_POWER.get());
+                case LIGHTNING ->
+                        entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.LIGHTNING_SPELL_POWER.get());
+                case HOLY ->
+                        entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.HOLY_SPELL_POWER.get());
+                case ENDER ->
+                        entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.ENDER_SPELL_POWER.get());
+                case BLOOD ->
+                        entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER.get());
+                case EVOCATION ->
+                        entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.EVOCATION_SPELL_POWER.get());
+                case POISON ->
+                        entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.POISON_SPELL_POWER.get());
+            }
         }
+
 
         return (baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier;
     }
 
     public int getEffectiveCastTime(@Nullable LivingEntity entity) {
         double entityCastTimeModifier = 1;
-        if (entity != null) {
+        if(entity !=null){
             /*
         Long/Charge casts trigger faster while continuous casts last longer.
         */
@@ -195,7 +211,7 @@ public abstract class AbstractSpell {
      * returns true/false for success/failure to cast
      */
     public boolean attemptInitiateCast(ItemStack stack, Level level, Player player, CastSource castSource, boolean triggerCooldown) {
-        //Ironsspellbooks.logger.debug("attemptInitiateCast spell:{} **********************************************************************************", this.getSpellType());
+ //Ironsspellbooks.logger.debug("attemptInitiateCast spell:{} **********************************************************************************", this.getSpellType());
         if (level.isClientSide) {
             return false;
         }
@@ -232,9 +248,9 @@ public abstract class AbstractSpell {
                  * Prepare to cast spell (magic manager will pick it up by itself)
                  */
                 int effectiveCastTime = getEffectiveCastTime(player);
-                playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, castSource);
+                playerMagicData.initiateCast(getID(), getLevel(player), effectiveCastTime, castSource);
                 onServerPreCast(player.level, player, playerMagicData);
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(), effectiveCastTime, castSource), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(player), effectiveCastTime, castSource), serverPlayer);
             }
 
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), spellType), serverPlayer, true);
@@ -261,10 +277,10 @@ public abstract class AbstractSpell {
         }
 
         onCast(world, serverPlayer, playerMagicData);
-        Messages.sendToPlayer(new ClientboundOnClientCast(this.getID(), this.level, castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
+        Messages.sendToPlayer(new ClientboundOnClientCast(this.getID(), this.getLevel(serverPlayer), castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
 
         if (this.castType == CastType.INSTANT) {
-            //Ironsspellbooks.logger.debug("AbstractSpell.castSpell -> onServerCastComplete (not continuous)");
+ //Ironsspellbooks.logger.debug("AbstractSpell.castSpell -> onServerCastComplete (not continuous)");
             onServerCastComplete(world, serverPlayer, playerMagicData, false);
         }
 
@@ -284,13 +300,13 @@ public abstract class AbstractSpell {
      * The primary spell effect sound and particle handling goes here. Called Client Side only
      */
     public void onClientCast(Level level, LivingEntity entity, CastData castData) {
-        //Ironsspellbooks.logger.debug("AbstractSpell.onClientCastComplete.1");
+ //Ironsspellbooks.logger.debug("AbstractSpell.onClientCastComplete.1");
         playSound(getCastFinishSound(), entity, true);
         if (ClientInputEvents.isUseKeyDown) {
-            //Ironsspellbooks.logger.debug("AbstractSpell.onClientCastComplete.2");
+ //Ironsspellbooks.logger.debug("AbstractSpell.onClientCastComplete.2");
             if (this.spellType.getCastType().holdToCast()) {
                 ClientSpellCastHelper.setSuppressRightClicks(true);
-                //Ironsspellbooks.logger.debug("AbstractSpell.onClientCastComplete.3");
+ //Ironsspellbooks.logger.debug("AbstractSpell.onClientCastComplete.3");
             }
             ClientInputEvents.hasReleasedSinceCasting = false;
         }
@@ -304,17 +320,11 @@ public abstract class AbstractSpell {
     }
 
     protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
-        //IronsSpellbooks.LOGGER.debug("playSound spell:{} isClientSide:{}", this.getSpellType(), entity.level.isClientSide);
-        // sound.ifPresent((soundEvent) -> entity.playSound(soundEvent, 1.0f, 1.0f));
-
         if (sound.isPresent()) {
-            //Ironsspellbooks.logger.debug("playSound spell:{} isClientSide:{}, resourceLocation:{}", this.getSpellType(), entity.level.isClientSide, sound.get().getLocation().toString());
             entity.playSound(sound.get(), 2.0f, 1.0f);
         } else if (playDefaultSound) {
             entity.playSound(defaultCastSound(), 2.0f, 1.0f);
         }
-
-        //entity.playSound(sound.orElse(this:def), 1.0f, 1.0f));
     }
 
     /**
@@ -347,7 +357,7 @@ public abstract class AbstractSpell {
      * Called on the server when a spell finishes casting or is cancelled, used for any cleanup or extra functionality
      */
     public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData, boolean cancelled) {
-        //Ironsspellbooks.logger.debug("AbstractSpell.onServerCastComplete");
+ //Ironsspellbooks.logger.debug("AbstractSpell.onServerCastComplete");
         playerMagicData.resetCastingState();
         if (entity instanceof ServerPlayer serverPlayer) {
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType, cancelled), serverPlayer, true);
@@ -395,4 +405,5 @@ public abstract class AbstractSpell {
             return false;
         return this.spellType == o.spellType && this.level == o.level;
     }
+
 }

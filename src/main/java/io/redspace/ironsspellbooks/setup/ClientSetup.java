@@ -26,6 +26,7 @@ import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHoleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashRenderer;
+import io.redspace.ironsspellbooks.entity.spells.comet.CometRenderer;
 import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdRenderer;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadRenderer;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer;
@@ -43,6 +44,7 @@ import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerRenderer;
+import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
@@ -195,6 +197,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.CREEPER_HEAD_PROJECTILE.get(), CreeperHeadRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoidRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SMALL_FIREBALL_PROJECTILE.get(), (context) -> new FireballRenderer(context, 0.75f));
+        event.registerEntityRenderer(EntityRegistry.COMET.get(), (context) -> new CometRenderer(context, 0.75f));
         event.registerEntityRenderer(EntityRegistry.MAGIC_FIREBALL.get(), (context) -> new FireballRenderer(context, 1.5f));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_POLAR_BEAR.get(), PolarBearRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEAD_KING.get(), DeadKingRenderer::new);
@@ -214,6 +217,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.BLOOD_NEEDLE.get(), BloodNeedleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_FIELD.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.MAGMA_BALL.get(), MagmaBallRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.TARGET_AREA_ENTITY.get(), TargetAreaRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
