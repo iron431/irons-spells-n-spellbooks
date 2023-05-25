@@ -122,6 +122,7 @@
   "item.irons_spellbooks.frostward_ring.desc": "Grants freezing immunity.",
   "item.irons_spellbooks.heavy_chain_necklace": "Heavy Chain",
   "item.irons_spellbooks.conjurers_talisman": "Conjurer's Talisman",
+  "item.irons_spellbooks.caster_ring": "Ring of %s Affinity",
 
   "item.irons_spellbooks.keeper_spawn_egg": "Ancient Knight Spawn Egg",
   "item.irons_spellbooks.necromancer_spawn_egg": "Necromancer Spawn Egg",
@@ -156,6 +157,7 @@
   "tooltip.irons_spellbooks.cast_charge": "%s Charge Time",
   "tooltip.irons_spellbooks.ink_tooltip": "Can Craft %s Scrolls",
   "tooltip.irons_spellbooks.upgrade_plus_format": "%s +%d",
+  "tooltip.irons_spellbooks.enhance_spell_level": " +1 level to %s",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",
   "ui.irons_spellbooks.inscription_table_rarity_error": "This scroll is too rare for this spell book.",

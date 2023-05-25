@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
@@ -154,8 +153,8 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         //IronsSpellbooks.LOGGER.debug("onLivingDeathEvent: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
-        event.getEntity().clearFire();
-        event.getEntity().setTicksFrozen(0);
+//        event.getEntity().clearFire();
+//        event.getEntity().setTicksFrozen(0);
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             //IronsSpellbooks.LOGGER.debug("onLivingDeathEvent: {}", serverPlayer.getName().getString());
             Utils.serverSideCancelCast(serverPlayer);
