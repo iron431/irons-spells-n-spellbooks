@@ -412,6 +412,8 @@
   "commands.irons_spellbooks.create_spell_book.failed": "Не удалось создать книгу заклинаний",
   "commands.irons_spellbooks.create_debug_wizard.failed": "Ошибка создания мастера отладки(?)",
   "commands.irons_spellbooks.create_spell.failed_max_level": "Не удалось создать. Максимальный уровень %s - %d",
+  "commands.irons_spellbooks.generate_mod_list.failed": "Failed to generate mod list",
+  "commands.irons_spellbooks.generate_mod_list.success": "Saved mod list as %s",
 
   "entity.irons_spellbooks.wisp": "Висп",
   "entity.irons_spellbooks.spectral_hammer": "Спектральный молот",

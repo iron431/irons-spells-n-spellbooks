@@ -36,6 +36,7 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 public class CommonSetup {
     @SubscribeEvent
     public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
+        IronsSpellbooks.LOGGER.debug("onModConfigLoadingEvent");
         if(event.getConfig().getType() == ModConfig.Type.SERVER){
 //            SpellType.resolveSchools();
         }
@@ -43,7 +44,7 @@ public class CommonSetup {
 
     @SubscribeEvent
     public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
- //Ironsspellbooks.logger.debug("onModConfigReloadingEvent");
+        IronsSpellbooks.LOGGER.debug("onModConfigReloadingEvent");
         if(event.getConfig().getType() == ModConfig.Type.SERVER){
 //            SpellType.resolveSchools();
         }

@@ -491,6 +491,9 @@
   "commands.mana.set.success.single": "将 %s 设置为 %s 的法力值",
   "commands.mana.add.success.multiple": "增加 %s 法力值给 %s",
   "commands.mana.add.success.single": "增加 %s 法力值给 %s",
+  "commands.irons_spellbooks.generate_mod_list.failed": "Failed to generate mod list",
+  "commands.irons_spellbooks.generate_mod_list.success": "Saved mod list as %s",
+
   "entity.irons_spellbooks.wisp": "圣灵",
 
   "entity.irons_spellbooks.spectral_hammer": "光谱锤",

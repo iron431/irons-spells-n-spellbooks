@@ -11,9 +11,11 @@ import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
@@ -22,6 +24,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,14 +56,21 @@ public class GenerateModList {
         });
 
         try {
-            var file = new BufferedWriter(new FileWriter("modlist.txt"));
-            file.write(sb.toString());
-            file.close();
+            var file = new File("modlist.txt");
+            var writer = new BufferedWriter(new FileWriter(file));
+            writer.write(sb.toString());
+            writer.close();
+
+            Component component = Component.literal(file.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> {
+                return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+            });
+
+            source.sendSuccess(Component.translatable("commands.irons_spellbooks.generate_mod_list.success", component), true);
+
         } catch (Exception e) {
             IronsSpellbooks.LOGGER.info(e.getMessage());
             throw ERROR_FAILED.create();
         }
-
         return 1;
     }
 }
