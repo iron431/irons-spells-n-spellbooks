@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -72,7 +73,7 @@ public class SpellWheelOverlay extends GuiComponent {
         var minecraft = Minecraft.getInstance();
 
         if ((minecraft.player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed() || !Utils.isPlayerHoldingSpellBook(minecraft.player))) {
-            active = false;
+            close();
             return;
         }
 
@@ -179,7 +180,7 @@ public class SpellWheelOverlay extends GuiComponent {
 
             var font = gui.getFont();
             var title = currentSpell.getSpellType().getDisplayName().withStyle(Style.EMPTY.withUnderlined(true));
-            var level = Component.translatable("ui.irons_spellbooks.level", selectedSpell.getLevel(player)).withStyle(selectedSpell.getSpellType().getRarity(selectedSpell.getLevel(null)).getDisplayName().getStyle());
+            var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player)).withStyle(selectedSpell.getSpellType().getRarity(selectedSpell.getLevel(null)).getDisplayName().getStyle());
             var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getManaCost()).withStyle(ChatFormatting.AQUA);
 //            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));
             int height = 2 * font.lineHeight + 5;

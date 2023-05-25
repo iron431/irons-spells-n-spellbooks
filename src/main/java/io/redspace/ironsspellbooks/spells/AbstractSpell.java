@@ -95,6 +95,10 @@ public abstract class AbstractSpell {
         return this.level + addition;
     }
 
+    public int getRawLevel() {
+        return this.level;
+    }
+
     private boolean filterCurios(ItemStack itemStack) {
         return itemStack.getOrCreateTag().contains(CasterRing.nbtKey) && itemStack.getOrCreateTag().getInt(CasterRing.nbtKey) == this.spellType.getValue();
     }
