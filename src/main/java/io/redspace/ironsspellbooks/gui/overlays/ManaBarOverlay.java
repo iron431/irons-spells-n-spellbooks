@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 
 
+import static io.redspace.ironsspellbooks.config.ClientConfigs.MANA_BAR_TEXT_VISIBLE;
 import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
 
 public class ManaBarOverlay {
@@ -82,10 +83,10 @@ public class ManaBarOverlay {
         textX = barX + imageWidth / 2 - (int) ((("" + mana).length() + 0.5) * CHAR_WIDTH);
         textY = barY + (anchor == Anchor.XP ? ICON_ROW_HEIGHT / 3 : ICON_ROW_HEIGHT);
 
-        gui.getFont().drawShadow(poseStack, manaFraction, textX, textY, TEXT_COLOR);
-        //gui.getFont().draw(poseStack, manaFraction, textX, textY, TEXT_COLOR);
-
-
+        if (ClientConfigs.MANA_BAR_TEXT_VISIBLE.get()) {
+            gui.getFont().drawShadow(poseStack, manaFraction, textX, textY, TEXT_COLOR);
+            //gui.getFont().draw(poseStack, manaFraction, textX, textY, TEXT_COLOR);
+        }
     }
 
     private static int getOffsetCountFromHotbar(Player player) {
