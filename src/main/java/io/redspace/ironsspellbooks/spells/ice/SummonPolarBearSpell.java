@@ -38,7 +38,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
 
     public SummonPolarBearSpell(int level) {
         super(SpellType.SUMMON_POLAR_BEAR_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
@@ -79,7 +79,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
     }
 
     private float getBearHealth(LivingEntity caster) {
-        return 20 + level * 4;
+        return 20 + getLevel(caster) * 4;
     }
 
     private float getBearDamage(LivingEntity caster) {

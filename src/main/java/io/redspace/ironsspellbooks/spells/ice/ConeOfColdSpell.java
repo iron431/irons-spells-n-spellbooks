@@ -36,7 +36,7 @@ public class ConeOfColdSpell extends AbstractSpell {
 
     public ConeOfColdSpell(int level) {
         super(SpellType.CONE_OF_COLD_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;

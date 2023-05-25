@@ -32,7 +32,7 @@ public class EvasionSpell extends AbstractSpell {
 
     public EvasionSpell(int level) {
         super(SpellType.EVASION_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 20;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;

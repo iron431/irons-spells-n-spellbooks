@@ -51,7 +51,7 @@ public abstract class AbstractSpell {
 
     private final SpellType spellType;
     private final CastType castType;
-    protected int level;
+    private int level;
     protected int baseManaCost;
     protected int manaCostPerLevel;
     protected int baseSpellPower;
@@ -85,7 +85,7 @@ public abstract class AbstractSpell {
         return spellType.getSchoolType();
     }
 
-    public int getLevel() {
+    public int getLevel(@Nullable LivingEntity caster) {
         return this.level;
     }
 
@@ -234,7 +234,7 @@ public abstract class AbstractSpell {
                 int effectiveCastTime = getEffectiveCastTime(player);
                 playerMagicData.initiateCast(getID(), this.level, effectiveCastTime, castSource);
                 onServerPreCast(player.level, player, playerMagicData);
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(), effectiveCastTime, castSource), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(player), effectiveCastTime, castSource), serverPlayer);
             }
 
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), spellType), serverPlayer, true);

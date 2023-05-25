@@ -34,7 +34,7 @@ public class HeartstopSpell extends AbstractSpell {
 
     public HeartstopSpell(int level) {
         super(SpellType.HEARTSTOP_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 300;
         this.spellPowerPerLevel = 30;

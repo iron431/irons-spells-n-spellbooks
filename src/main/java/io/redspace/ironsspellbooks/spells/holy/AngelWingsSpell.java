@@ -33,7 +33,7 @@ public class AngelWingsSpell extends AbstractSpell {
 
     public AngelWingsSpell(int level) {
         super(SpellType.ANGEL_WING_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 20;
         this.baseSpellPower = 30;
         this.spellPowerPerLevel = 30;

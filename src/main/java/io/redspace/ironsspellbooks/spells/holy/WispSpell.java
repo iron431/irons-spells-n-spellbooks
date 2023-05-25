@@ -40,7 +40,7 @@ public class WispSpell extends AbstractSpell {
 
     public WispSpell(int level) {
         super(SpellType.WISP_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;

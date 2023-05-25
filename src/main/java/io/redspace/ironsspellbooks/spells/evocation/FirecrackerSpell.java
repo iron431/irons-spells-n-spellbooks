@@ -38,7 +38,7 @@ public class FirecrackerSpell extends AbstractSpell {
 
     public FirecrackerSpell(int level) {
         super(SpellType.FIRECRACKER_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;

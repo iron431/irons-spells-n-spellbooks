@@ -43,7 +43,7 @@ public class BlackHoleSpell extends AbstractSpell {
 
     public BlackHoleSpell(int level) {
         super(SpellType.BLACK_HOLE_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 100;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
@@ -90,7 +90,7 @@ public class BlackHoleSpell extends AbstractSpell {
     }
 
     private float getRadius(LivingEntity entity) {
-        return (2 * level + 4) * getSpellPower(entity);
+        return (2 * getLevel(entity) + 4) * getSpellPower(entity);
     }
 
     public static final AnimationHolder CHARGE_ANIMATION = new AnimationHolder("charge_black_hole", ILoopType.EDefaultLoopTypes.PLAY_ONCE);

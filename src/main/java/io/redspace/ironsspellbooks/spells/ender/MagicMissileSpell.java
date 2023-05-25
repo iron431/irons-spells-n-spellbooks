@@ -32,7 +32,7 @@ public class MagicMissileSpell extends AbstractSpell {
 
     public MagicMissileSpell(int level) {
         super(SpellType.MAGIC_MISSILE_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;

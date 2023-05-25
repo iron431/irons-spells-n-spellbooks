@@ -44,7 +44,7 @@ public class AscensionSpell extends AbstractSpell {
 
     public AscensionSpell(int level) {
         super(SpellType.ASCENSION_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;

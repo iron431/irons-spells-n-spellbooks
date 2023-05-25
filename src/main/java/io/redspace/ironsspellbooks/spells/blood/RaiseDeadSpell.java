@@ -36,7 +36,7 @@ public class RaiseDeadSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.summon_count", this.level));
+        return List.of(Component.translatable("ui.irons_spellbooks.summon_count", getLevel(caster)));
     }
 
     public static DefaultConfig defaultConfig = new DefaultConfig()
@@ -48,7 +48,7 @@ public class RaiseDeadSpell extends AbstractSpell {
 
     public RaiseDeadSpell(int level) {
         super(SpellType.RAISE_DEAD_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 3;
@@ -70,7 +70,8 @@ public class RaiseDeadSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
-        for (int i = 0; i < this.level; i++) {
+        int level = getLevel(entity);
+        for (int i = 0; i < level; i++) {
             boolean isSkeleton = world.random.nextDouble() < .3;
             var equipment = getEquipment(getSpellPower(entity), world.getRandom());
 
@@ -83,7 +84,7 @@ public class RaiseDeadSpell extends AbstractSpell {
                 //Going to try to spawn 3 times
                 float distance = level / 4f + 1;
                 distance *= (3 - j) / 3f;
-                spawn = entity.getEyePosition().add(new Vec3(0, 0, distance).yRot(((6.281f / this.level) * i)));
+                spawn = entity.getEyePosition().add(new Vec3(0, 0, distance).yRot(((6.281f / level) * i)));
                 spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevel(world, spawn, 5), spawn.z);
                 if (!world.getBlockState(new BlockPos(spawn).below()).isAir())
                     break;

@@ -42,7 +42,7 @@ public class RootSpell extends AbstractSpell {
 
     public RootSpell(int level) {
         super(SpellType.ROOT_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
@@ -108,10 +108,6 @@ public class RootSpell extends AbstractSpell {
         } else {
             return null;
         }
-    }
-
-    public int getAmplifier(LivingEntity caster) {
-        return (int) (getSpellPower(caster) * this.level - 1);
     }
 
     public int getDuration(LivingEntity caster) {

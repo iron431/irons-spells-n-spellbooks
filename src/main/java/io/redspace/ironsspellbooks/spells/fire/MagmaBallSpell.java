@@ -33,7 +33,7 @@ public class MagmaBallSpell extends AbstractSpell {
 
     public MagmaBallSpell(int level) {
         super(SpellType.MAGMA_BALL_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
@@ -65,7 +65,7 @@ public class MagmaBallSpell extends AbstractSpell {
     }
 
     public float getRadius(LivingEntity caster) {
-        return getSpellPower(caster) * level * .5f + 2;
+        return getSpellPower(caster) * getLevel(caster) * .5f + 2;
     }
 
     public float getDamage(LivingEntity caster) {

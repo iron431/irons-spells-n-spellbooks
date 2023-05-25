@@ -32,7 +32,7 @@ public class IcicleSpell extends AbstractSpell {
 
     public IcicleSpell(int level) {
         super(SpellType.ICICLE_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;

@@ -25,7 +25,7 @@ public class FangWardSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.ring_count", getRings()),
+        return List.of(Component.translatable("ui.irons_spellbooks.ring_count", getRings(caster)),
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
@@ -38,7 +38,7 @@ public class FangWardSpell extends AbstractSpell {
 
     public FangWardSpell(int level) {
         super(SpellType.FANG_WARD_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
@@ -61,7 +61,7 @@ public class FangWardSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
-        int rings = getRings();
+        int rings = getRings(entity);
         int count = 5;
         Vec3 center = entity.getEyePosition();
 
@@ -100,7 +100,7 @@ public class FangWardSpell extends AbstractSpell {
         return getSpellPower(entity);
     }
 
-    private int getRings() {
-        return 2 + (level - 1) / 3;
+    private int getRings(LivingEntity entity) {
+        return 2 + (getLevel(entity) - 1) / 3;
     }
 }

@@ -29,7 +29,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRings() * 1.3f, 1))
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRings(caster) * 1.3f, 1))
         );
     }
 
@@ -42,7 +42,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
 
     public VoidTentaclesSpell(int level) {
         super(SpellType.VOID_TENTACLES_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 50;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 2;
@@ -62,7 +62,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        int rings = getRings();
+        int rings = getRings(entity);
         int count = 2;
         Vec3 center = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 48).getLocation();
         level.playSound(entity instanceof Player player ? player : null, center.x, center.y, center.z, SoundRegistry.VOID_TENTACLES_FINISH.get(), SoundSource.AMBIENT, 1, 1);
@@ -91,7 +91,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
         return getSpellPower(entity);
     }
 
-    private int getRings() {
-        return 1 + level;
+    private int getRings(LivingEntity entity) {
+        return 1 + getLevel(entity);
     }
 }

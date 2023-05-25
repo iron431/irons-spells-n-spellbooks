@@ -28,7 +28,7 @@ public class ChainCreeperSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.projectile_count", getCount()));
+                Component.translatable("ui.irons_spellbooks.projectile_count", getCount(caster)));
     }
 
     public static DefaultConfig defaultConfig = new DefaultConfig()
@@ -40,7 +40,7 @@ public class ChainCreeperSpell extends AbstractSpell {
 
     public ChainCreeperSpell(int level) {
         super(SpellType.CHAIN_CREEPER_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 0;
@@ -79,7 +79,7 @@ public class ChainCreeperSpell extends AbstractSpell {
                 spawn = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 5);
             }
         }
-        summonCreeperRing(level, entity, spawn.add(0, 0.5, 0), getDamage(entity), getCount());
+        summonCreeperRing(level, entity, spawn.add(0, 0.5, 0), getDamage(entity), getCount(entity));
 
         super.onCast(level, entity, playerMagicData);
     }
@@ -104,8 +104,8 @@ public class ChainCreeperSpell extends AbstractSpell {
         }
     }
 
-    private int getCount() {
-        return 3 + level - 1;
+    private int getCount(LivingEntity entity) {
+        return 3 + getLevel(entity) - 1;
     }
 
     private float getDamage(LivingEntity entity) {

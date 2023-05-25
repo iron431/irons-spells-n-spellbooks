@@ -28,7 +28,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getTickDamage(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(level), 1)));
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(0), 1)));
     }
 
     public static DefaultConfig defaultConfig = new DefaultConfig()
@@ -40,7 +40,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     public RayOfSiphoningSpell(int level) {
         super(SpellType.RAY_OF_SIPHONING_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
@@ -60,7 +60,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        var hitResult = Utils.raycastForEntity(level, entity, getRange(this.level), true, .15f);
+        var hitResult = Utils.raycastForEntity(level, entity, getRange(0), true, .15f);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
@@ -83,6 +83,6 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
-        return mob.distanceToSqr(target) > (getRange(level) * getRange(level)) * 1.2;
+        return mob.distanceToSqr(target) > (getRange(getLevel(mob)) * getRange(getLevel(mob))) * 1.2;
     }
 }

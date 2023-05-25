@@ -26,7 +26,7 @@ public class SummonVexSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.summon_count", this.level)
+                Component.translatable("ui.irons_spellbooks.summon_count", getLevel(caster))
         );
     }
 
@@ -39,7 +39,7 @@ public class SummonVexSpell extends AbstractSpell {
 
     public SummonVexSpell(int level) {
         super(SpellType.SUMMON_VEX_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
@@ -60,7 +60,9 @@ public class SummonVexSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
-        for (int i = 0; i < this.level; i++) {
+
+        int level = getLevel(entity);
+        for (int i = 0; i < this.getLevel(entity); i++) {
             SummonedVex vex = new SummonedVex(world, entity);
             vex.moveTo(entity.getEyePosition().add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));
             vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);

@@ -34,7 +34,7 @@ public class WitherSkullSpell extends AbstractSpell {
 
     public WitherSkullSpell(int level) {
         super(SpellType.WITHER_SKULL_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;
@@ -54,7 +54,7 @@ public class WitherSkullSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        float speed = (8 + this.level) * .01f;
+        float speed = (8 + getLevel(entity) ) * .01f;
         float damage = getDamage(entity);
         ExtendedWitherSkull skull = new ExtendedWitherSkull(entity, level, speed, damage);
         Vec3 spawn = entity.getEyePosition().add(entity.getForward());

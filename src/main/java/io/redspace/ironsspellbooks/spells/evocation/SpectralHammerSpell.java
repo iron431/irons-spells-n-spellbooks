@@ -42,7 +42,7 @@ public class SpectralHammerSpell extends AbstractSpell {
 
     public SpectralHammerSpell(int level) {
         super(SpellType.SPECTRAL_HAMMER_SPELL);
-        this.level = level;
+        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
