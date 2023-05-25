@@ -11,6 +11,7 @@ import net.minecraft.util.RandomSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class SpellFilter {
     SchoolType schoolType = null;
@@ -42,8 +43,9 @@ public class SpellFilter {
 
     }
 
-    public SpellType getRandomSpell(RandomSource random) {
-        var spells = getApplicableSpells();
+    public SpellType getRandomSpell(RandomSource random, Predicate<SpellType> filter) {
+        //Will throw a non fatal error if the filter empties the list
+        var spells = getApplicableSpells().stream().filter(filter).toList();
         return spells.get(random.nextInt(spells.size()));
     }
 

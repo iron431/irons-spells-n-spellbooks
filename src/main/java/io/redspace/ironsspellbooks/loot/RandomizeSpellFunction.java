@@ -40,10 +40,8 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             var spellList = getWeightedSpellList(applicableSpells.getApplicableSpells());
             int total = spellList.floorKey(Integer.MAX_VALUE);
             SpellType spellType = SpellType.NONE_SPELL;
-            for (int i = 0; i < 16; i++) {
+            if(!spellList.isEmpty()){
                 spellType = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
-                if (spellType.isEnabled())
-                    break;
             }
 
             var spellId = spellType.getValue();
@@ -62,7 +60,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         NavigableMap<Integer, SpellType> weightedSpells = new TreeMap<>();
 
         for (SpellType entry : entries) {
-            if (entry != SpellType.NONE_SPELL) {
+            if (entry != SpellType.NONE_SPELL && entry.isEnabled()) {
                 total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
                 weightedSpells.put(total, entry);
             }

@@ -6,6 +6,7 @@ import com.google.gson.JsonSerializationContext;
 import io.redspace.ironsspellbooks.item.curios.CasterRing;
 import io.redspace.ironsspellbooks.item.curios.RingData;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -24,7 +25,7 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof CasterRing) {
-            RingData.setRingData(itemStack, spellFilter.getRandomSpell(lootContext.getRandom()));
+            RingData.setRingData(itemStack, spellFilter.getRandomSpell(lootContext.getRandom(), (spellType -> spellType.isEnabled() && spellType != SpellType.NONE_SPELL)));
         }
         return itemStack;
     }
