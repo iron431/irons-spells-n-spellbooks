@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
-public class MagmaBallRenderer extends EntityRenderer<MagmaBall> {
+public class MagmaBallRenderer extends EntityRenderer<FireBomb> {
 
     private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/fireball/magma.png");
     private static ResourceLocation SWIRL_TEXTURES[] = {
@@ -44,7 +44,7 @@ public class MagmaBallRenderer extends EntityRenderer<MagmaBall> {
     }
 
     @Override
-    public void render(MagmaBall entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    public void render(FireBomb entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
 
@@ -78,11 +78,11 @@ public class MagmaBallRenderer extends EntityRenderer<MagmaBall> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(MagmaBall entity) {
+    public ResourceLocation getTextureLocation(FireBomb entity) {
         return TEXTURE;
     }
 
-    private ResourceLocation getSwirlTextureLocation(MagmaBall entity) {
+    private ResourceLocation getSwirlTextureLocation(FireBomb entity) {
         int frame = (entity.tickCount) % SWIRL_TEXTURES.length;
         return SWIRL_TEXTURES[frame];
     }

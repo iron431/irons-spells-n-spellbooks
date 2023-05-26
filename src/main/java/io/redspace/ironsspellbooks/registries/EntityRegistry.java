@@ -33,7 +33,7 @@ import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceP
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileProjectile;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireField;
-import io.redspace.ironsspellbooks.entity.spells.magma_ball.MagmaBall;
+import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.entity.spells.poison_breath.PoisonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
@@ -337,8 +337,8 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_field").toString()));
 
-    public static final RegistryObject<EntityType<MagmaBall>> MAGMA_BALL =
-            ENTITIES.register("magma_ball", () -> EntityType.Builder.<MagmaBall>of(MagmaBall::new, MobCategory.MISC)
+    public static final RegistryObject<EntityType<FireBomb>> FIRE_BOMB =
+            ENTITIES.register("magma_ball", () -> EntityType.Builder.<FireBomb>of(FireBomb::new, MobCategory.MISC)
                     .sized(0.75F, 0.75F)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "magma_ball").toString()));

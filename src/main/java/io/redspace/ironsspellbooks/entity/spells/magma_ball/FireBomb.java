@@ -21,13 +21,13 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
-public class MagmaBall extends AbstractMagicProjectile {
-    public MagmaBall(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+public class FireBomb extends AbstractMagicProjectile {
+    public FireBomb(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
-    public MagmaBall(Level level, LivingEntity shooter) {
-        this(EntityRegistry.MAGMA_BALL.get(), level);
+    public FireBomb(Level level, LivingEntity shooter) {
+        this(EntityRegistry.FIRE_BOMB.get(), level);
         setOwner(shooter);
     }
 
@@ -45,7 +45,7 @@ public class MagmaBall extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleTypes.LAVA, x, y, z, 30, .5, .1, .5, 0.8, false);
+        MagicManager.spawnParticles(level, ParticleTypes.LAVA, x, y, z, 30, 1.5, .1, 1.5, 1, false);
     }
 
     @Override
@@ -67,9 +67,11 @@ public class MagmaBall extends AbstractMagicProjectile {
         for (Entity entity : entities) {
             double distance = entity.distanceToSqr(hitresult.getLocation());
             if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
-                double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
-                float damage = (float) (this.damage * p);
-                DamageSources.applyDamage(entity, damage, SpellType.MAGMA_BALL_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE);
+                if (Utils.hasLineOfSight(level, hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
+                    double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
+                    float damage = (float) (this.damage * p);
+                    DamageSources.applyDamage(entity, damage, SpellType.FIRE_BOMB_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE);
+                }
             }
         }
         discard();

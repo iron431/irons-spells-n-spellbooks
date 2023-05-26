@@ -216,7 +216,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.BLACK_HOLE.get(), BlackHoleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.BLOOD_NEEDLE.get(), BloodNeedleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_FIELD.get(), NoopRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.MAGMA_BALL.get(), MagmaBallRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.FIRE_BOMB.get(), MagmaBallRenderer::new);
         event.registerEntityRenderer(EntityRegistry.TARGET_AREA_ENTITY.get(), TargetAreaRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);

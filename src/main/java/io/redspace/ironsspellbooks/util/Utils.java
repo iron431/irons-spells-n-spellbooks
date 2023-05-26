@@ -159,9 +159,9 @@ public class Utils {
     public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForShields){
         if(checkForShields){
             List<ShieldEntity> shieldEntities = level.getEntitiesOfClass(ShieldEntity.class,new AABB(start,end));
-            if(shieldEntities.size()>0){
-                var shieldImpact = checkEntityIntersecting(shieldEntities.get(0),start,end,0);
-                if(shieldImpact.getType()!= HitResult.Type.MISS)
+            if (shieldEntities.size() > 0) {
+                var shieldImpact = checkEntityIntersecting(shieldEntities.get(0), start, end, 0);
+                if (shieldImpact.getType() != HitResult.Type.MISS)
                     end = shieldImpact.getLocation();
             }
         }

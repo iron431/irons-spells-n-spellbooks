@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.entity.spells.magma_ball.MagmaBall;
+import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
-public class MagmaBallSpell extends AbstractSpell {
+public class FireBombSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
@@ -32,8 +32,8 @@ public class MagmaBallSpell extends AbstractSpell {
             .setCooldownSeconds(15)
             .build();
 
-    public MagmaBallSpell(int level) {
-        super(SpellType.MAGMA_BALL_SPELL);
+    public FireBombSpell(int level) {
+        super(SpellType.FIRE_BOMB_SPELL);
         this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 8;
@@ -55,7 +55,7 @@ public class MagmaBallSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        MagmaBall orb = new MagmaBall(level, entity);
+        FireBomb orb = new FireBomb(level, entity);
         orb.setPos(entity.position().add(0, entity.getEyeHeight() - orb.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
         orb.shoot(entity.getLookAngle());
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
