@@ -1,13 +1,17 @@
 package io.redspace.ironsspellbooks.entity.spells.magma_ball;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.spells.SchoolType;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -58,6 +62,16 @@ public class MagmaBall extends AbstractMagicProjectile {
     protected void onHit(HitResult hitresult) {
         super.onHit(hitresult);
         createFireField(hitresult.getLocation());
+        float explosionRadius = getExplosionRadius();
+        var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+        for (Entity entity : entities) {
+            double distance = entity.distanceToSqr(hitresult.getLocation());
+            if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
+                double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
+                float damage = (float) (this.damage * p);
+                DamageSources.applyDamage(entity, damage, SpellType.MAGMA_BALL_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE);
+            }
+        }
         discard();
     }
 
@@ -66,7 +80,7 @@ public class MagmaBall extends AbstractMagicProjectile {
             FireField fire = new FireField(level);
             fire.setOwner(getOwner());
             fire.setDuration(200);
-            fire.setDamage(damage);
+            fire.setDamage(damage / 5);
             fire.setRadius(getExplosionRadius());
             fire.setCircular();
             fire.moveTo(location);

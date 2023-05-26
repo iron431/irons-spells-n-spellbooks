@@ -19,7 +19,8 @@ public class MagmaBallSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(caster), 1)),
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(caster) / 5f, 1)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(caster), 1))
         );
     }
@@ -28,15 +29,15 @@ public class MagmaBallSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchool(SchoolType.FIRE)
             .setMaxLevel(8)
-            .setCooldownSeconds(15)
+            .setCooldownSeconds(12)
             .build();
 
     public MagmaBallSpell(int level) {
         super(SpellType.MAGMA_BALL_SPELL);
         this.setLevel(level);
         this.manaCostPerLevel = 5;
-        this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 0;
+        this.baseSpellPower = 8;
+        this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 30;
 
@@ -65,11 +66,11 @@ public class MagmaBallSpell extends AbstractSpell {
     }
 
     public float getRadius(LivingEntity caster) {
-        return getSpellPower(caster) * getLevel(caster) * .5f + 2;
+        return 5;
     }
 
     public float getDamage(LivingEntity caster) {
-        return getSpellPower(caster) * 2.5f;
+        return getSpellPower(caster);
     }
 
 }
