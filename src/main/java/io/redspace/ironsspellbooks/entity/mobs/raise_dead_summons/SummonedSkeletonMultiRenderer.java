@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.GeoHumanoidRenderer;
+import io.redspace.ironsspellbooks.render.SpellTargetingLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -25,6 +26,7 @@ public class SummonedSkeletonMultiRenderer extends GeoHumanoidRenderer<SummonedS
                 return TEXTURE_ALT;
             }
         };
+        vanillaRenderer.addLayer(new SpellTargetingLayer.Vanilla<>(vanillaRenderer));
     }
 
     @Override
