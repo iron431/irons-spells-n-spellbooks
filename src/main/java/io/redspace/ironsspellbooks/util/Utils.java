@@ -379,6 +379,8 @@ public class Utils {
     }
 
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
+        if(healer == target)
+            return true;
         if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer.getMobType() == MobType.UNDEAD || healer.getMobType() == MobType.ILLAGER)) {
             //This tag is for things like iron golems, villagers, farm animals, etc
             return true;

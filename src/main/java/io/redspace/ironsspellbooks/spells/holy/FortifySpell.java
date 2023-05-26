@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.network.spell.ClientboundAborptionParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundFortifyAreaParticles;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -48,7 +49,7 @@ public class FortifySpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.CLOUD_OF_REGEN_LOOP.get());
     }
 
     @Override

@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEnti
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
+import io.redspace.ironsspellbooks.entity.spells.HealingAoe;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
@@ -354,5 +355,11 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "target_area").toString()));
+
+    public static final RegistryObject<EntityType<HealingAoe>> HEALING_AOE =
+            ENTITIES.register("healing_aoe", () -> EntityType.Builder.<HealingAoe>of(HealingAoe::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "healing_aoe").toString()));
 
 }
