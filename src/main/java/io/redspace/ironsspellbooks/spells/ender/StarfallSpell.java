@@ -69,10 +69,7 @@ public class StarfallSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (!(playerMagicData.getAdditionalCastData() instanceof TargetAreaCastData)) {
             Vec3 targetArea = Utils.moveToRelativeGroundLevel(world, Utils.raycastForEntity(world, entity, 40, true).getLocation(), 12);
-            TargetedAreaEntity areaEntity = new TargetedAreaEntity(world, getRadius(entity), 0x76387f);
-            areaEntity.setPos(targetArea);
-            world.addFreshEntity(areaEntity);
-            playerMagicData.setAdditionalCastData(new TargetAreaCastData(targetArea, areaEntity));
+            playerMagicData.setAdditionalCastData(new TargetAreaCastData(targetArea, TargetedAreaEntity.createTargetAreaEntity(world, targetArea, getRadius(entity), 0x76387f)));
         }
         super.onCast(world, entity, playerMagicData);
     }
@@ -130,18 +127,5 @@ public class StarfallSpell extends AbstractSpell {
 
     }
 
-    public class TargetAreaCastData extends EntityCastData {
 
-        Vec3 center;
-
-        TargetAreaCastData(Vec3 center, TargetedAreaEntity entity) {
-            super(entity);
-            this.center = center;
-        }
-
-        public Vec3 getCenter() {
-            return center;
-        }
-
-    }
 }

@@ -55,7 +55,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private @Nullable AbstractSpell castingSpell;
     private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
     private int drinkTime;
-    public boolean hasUsedSpecialAttack;
+    public boolean hasUsedSingleAttack;
 
     protected AbstractSpellCastingMob(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -138,7 +138,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
         playerMagicData.getSyncedData().saveNBTData(pCompound);
-        pCompound.putBoolean("usedSpecial", hasUsedSpecialAttack);
+        pCompound.putBoolean("usedSpecial", hasUsedSingleAttack);
     }
 
     @Override
@@ -147,7 +147,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         var syncedSpellData = new SyncedSpellData(this);
         syncedSpellData.loadNBTData(pCompound);
         playerMagicData.setSyncedData(syncedSpellData);
-        hasUsedSpecialAttack = pCompound.getBoolean("usedSpecial");
+        IronsSpellbooks.LOGGER.debug("ACM.readAdditionalSaveData.usedSpecial: {}", pCompound.getBoolean("usedSpecial"));
+        hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
     }
 
     public void doSyncSpellData() {

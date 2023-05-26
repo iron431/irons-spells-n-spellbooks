@@ -34,7 +34,6 @@ public class WizardAttackGoal extends Goal {
     protected SpellType singleUseSpell = SpellType.NONE_SPELL;
     protected int singleUseDelay;
     protected int singleUseLevel;
-    protected int singleUseCooldown;
 
     protected boolean isFlying;
 
@@ -103,7 +102,6 @@ public class WizardAttackGoal extends Goal {
     public WizardAttackGoal setSingleUseSpell(SpellType spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         this.singleUseSpell = spellType;
         this.singleUseDelay = Mth.randomBetweenInclusive(mob.level.random, minDelay, maxDelay);
-        this.singleUseCooldown = singleUseDelay;
         this.singleUseLevel = Mth.randomBetweenInclusive(mob.level.random, minLevel, maxLevel);
 
         return this;
@@ -163,7 +161,6 @@ public class WizardAttackGoal extends Goal {
             return;
         }
 
-
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         hasLineOfSight = this.mob.getSensing().hasLineOfSight(this.target);
         if (hasLineOfSight) {
@@ -185,7 +182,7 @@ public class WizardAttackGoal extends Goal {
         //irons_spellbooks.LOGGER.debug("{},{}", mob.getLastHurtByMobTimestamp(), mob.tickCount);
         if (mob.getLastHurtByMobTimestamp() == mob.tickCount - 1) {
             int t = (int) (Mth.lerp(.6f, attackTime, 0) + 1);
- //Ironsspellbooks.logger.debug("Ouch! {}->{}", attackTime, t);
+            //Ironsspellbooks.logger.debug("Ouch! {}->{}", attackTime, t);
             attackTime = t;
             //attackTime = (int) (Mth.lerp(.25f, attackTime, 0) + 1);
         }
@@ -194,9 +191,6 @@ public class WizardAttackGoal extends Goal {
         if (!mob.isDrinkingPotion())
             handleAttackLogic(distanceSquared);
 
-        //handle single use spell
-        if (this.singleUseCooldown > 0)
-            singleUseCooldown--;
     }
 
     protected void handleAttackLogic(double distanceSquared) {
@@ -255,25 +249,23 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
-        int spellLevel = singleUseCooldown <= 0 ? singleUseLevel : Mth.randomBetweenInclusive(mob.getRandom(), minSpellLevel, maxSpellLevel);
+        if (!mob.hasUsedSingleAttack && singleUseSpell != SpellType.NONE_SPELL && --singleUseDelay <= 0) {
+            mob.hasUsedSingleAttack = true;
+            mob.initiateCastSpell(singleUseSpell, singleUseLevel);
+        } else {
 
-        var spellType = getNextSpellType();
+            int spellLevel = mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel);
+            var spellType = getNextSpellType();
 
+            //Make sure cast is valid
+            if (!AbstractSpell.getSpell(spellType, spellLevel).shouldAIStopCasting(mob, target))
+                mob.initiateCastSpell(spellType, spellLevel);
+        }
 
-//        if (spellType == SpellType.WALL_OF_FIRE_SPELL) {
-//            mob.setTeleportLocationBehindTarget(15);
-//        }
-        //Make sure cast is valid
-        if (!AbstractSpell.getSpell(spellType, spellLevel).shouldAIStopCasting(mob, target))
-            mob.initiateCastSpell(spellType, spellLevel);
     }
 
     protected SpellType getNextSpellType() {
 
-        if (this.singleUseCooldown <= 0) {
-            singleUseCooldown = 12000 + singleUseDelay;
-            return singleUseSpell;
-        }
 
         NavigableMap<Integer, ArrayList> weightedSpells = new TreeMap<>();
         int attackWeight = getAttackWeight();

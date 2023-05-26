@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.target_area;
 
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -9,16 +10,36 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidType;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 public class TargetedAreaEntity extends Entity {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(TargetedAreaEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> DATA_COLOR = SynchedEntityData.defineId(TargetedAreaEntity.class, EntityDataSerializers.INT);
+
+
+    @Nullable
+    private UUID ownerUUID;
+    @Nullable
+    private LivingEntity cachedOwner;
+
+    public void setOwner(@Nullable LivingEntity pOwner) {
+        if (pOwner != null) {
+            this.ownerUUID = pOwner.getUUID();
+            this.cachedOwner = pOwner;
+        }
+
+    }
+
+    @Nullable
+    public Entity getOwner() {
+        return OwnerHelper.getAndCacheOwner(level, cachedOwner, ownerUUID);
+    }
 
     public TargetedAreaEntity(EntityType<TargetedAreaEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -27,8 +48,22 @@ public class TargetedAreaEntity extends Entity {
         this.setNoGravity(true);
     }
 
+    public static TargetedAreaEntity createTargetAreaEntity(Level level, Vec3 center, float radius, int color) {
+        TargetedAreaEntity targetedAreaEntity = new TargetedAreaEntity(level, radius, color);
+        targetedAreaEntity.setPos(center);
+        level.addFreshEntity(targetedAreaEntity);
+        return targetedAreaEntity;
+    }
+
     @Override
     public void tick() {
+        var owner = getOwner();
+        if (owner != null) {
+            setPos(getOwner().position());
+            xOld = owner.xOld;
+            yOld = owner.yOld;
+            zOld = owner.zOld;
+        }
         if (tickCount > 600)
             discard();
     }
@@ -110,6 +145,7 @@ public class TargetedAreaEntity extends Entity {
 
     protected void addAdditionalSaveData(CompoundTag pCompound) {
         pCompound.putFloat("Radius", this.getRadius());
+        pCompound.putInt("Color", this.getColorRaw());
         pCompound.putInt("Color", this.getColorRaw());
     }
 
