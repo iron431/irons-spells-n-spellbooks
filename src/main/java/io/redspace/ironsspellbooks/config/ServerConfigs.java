@@ -120,7 +120,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.FIREBOLT_SPELL, FireboltSpell.defaultConfig, true);
         createSpellConfig(SpellType.FIRE_BREATH_SPELL, FireBreathSpell.defaultConfig, true);
         createSpellConfig(SpellType.WALL_OF_FIRE_SPELL, WallOfFireSpell.defaultConfig, true);
-        createSpellConfig(SpellType.MAGMA_BALL_SPELL, MagmaBallSpell.defaultConfig, true);
+        createSpellConfig(SpellType.FIRE_BOMB_SPELL, FireBombSpell.defaultConfig, true);
         //Holy
         BUILDER.comment("Holy Spells");
         createSpellConfig(SpellType.ANGEL_WING_SPELL, AngelWingsSpell.defaultConfig, true);
