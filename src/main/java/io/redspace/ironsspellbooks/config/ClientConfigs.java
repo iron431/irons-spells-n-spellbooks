@@ -8,6 +8,8 @@ public class ClientConfigs {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ARMS;
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ITEMS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> REPLACE_GHAST_FIREBALL;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> REPLACE_BLAZE_FIREBALL;
     public static final ForgeConfigSpec.ConfigValue<ManaBarOverlay.Display> MANA_BAR_DISPLAY;
     public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_Y_OFFSET;
     public static final ForgeConfigSpec.ConfigValue<Integer> MANA_BAR_X_OFFSET;
@@ -30,6 +32,12 @@ public class ClientConfigs {
         MANA_BAR_X_OFFSET = BUILDER.define("manaBarXOffset", 0);
         MANA_BAR_TEXT_VISIBLE = BUILDER.define("manaBarTextVisible", true);
         MANA_BAR_ANCHOR = BUILDER.defineEnum("manaBarAnchor", ManaBarOverlay.Anchor.Hunger);
+        BUILDER.pop();
+
+        BUILDER.push("Renderers");
+        BUILDER.comment("By default, both fireballs are replaced with an enhanced model used by fire spells.");
+        REPLACE_GHAST_FIREBALL = BUILDER.define("replaceGhastFireballs", true);
+        REPLACE_BLAZE_FIREBALL = BUILDER.define("replaceBlazeFireballs", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();
