@@ -28,6 +28,8 @@ public class TargetedAreaEntity extends Entity {
     @Nullable
     private LivingEntity cachedOwner;
 
+    private int duration;
+
     public void setOwner(@Nullable LivingEntity pOwner) {
         if (pOwner != null) {
             this.ownerUUID = pOwner.getUUID();
@@ -64,7 +66,7 @@ public class TargetedAreaEntity extends Entity {
             yOld = owner.yOld;
             zOld = owner.zOld;
         }
-        if (tickCount > 600)
+        if (!level.isClientSide && duration > 0 && tickCount > duration)
             discard();
     }
 
@@ -98,6 +100,10 @@ public class TargetedAreaEntity extends Entity {
         if (!this.level.isClientSide) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(pRadius, 0.0F, 32.0F));
         }
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public float getRadius() {
@@ -143,15 +149,20 @@ public class TargetedAreaEntity extends Entity {
         this.setPos(d0, d1, d2);
     }
 
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
-        pCompound.putFloat("Radius", this.getRadius());
-        pCompound.putInt("Color", this.getColorRaw());
-        pCompound.putInt("Color", this.getColorRaw());
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        tag.putFloat("Radius", this.getRadius());
+        tag.putInt("Color", this.getColorRaw());
+        tag.putInt("Age", this.tickCount);
+        if (duration > 0)
+            tag.putInt("Duration", duration);
     }
 
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-        this.setRadius(pCompound.getFloat("Radius"));
-        this.setColor(pCompound.getInt("Color"));
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        this.setRadius(tag.getFloat("Radius"));
+        this.setColor(tag.getInt("Color"));
+        this.tickCount = (tag.getInt("Age"));
+        if (tag.contains("Duration"))
+            this.duration = tag.getInt("Duration");
 
     }
 

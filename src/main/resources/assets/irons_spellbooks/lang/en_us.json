@@ -178,6 +178,7 @@
   "ui.irons_spellbooks.greater_healing": "Max Healing",
   "ui.irons_spellbooks.damage": "%d Damage",
   "ui.irons_spellbooks.aoe_damage": "%d AOE Damage",
+  "ui.irons_spellbooks.aoe_healing": "%d AOE Healing",
   "ui.irons_spellbooks.additional_poisoned_damage": "%d%% Additional Poisoned Damage",
   "ui.irons_spellbooks.distance": "%d Block Range",
   "ui.irons_spellbooks.dimensions": "%dx%dx%d",
@@ -192,6 +193,7 @@
   "ui.irons_spellbooks.ring_count": "%d Rings",
   "ui.irons_spellbooks.hp": "%d HP",
   "ui.irons_spellbooks.effect_length": "%d Effect Length",
+  "ui.irons_spellbooks.duration": "%d Duration",
   "ui.irons_spellbooks.projectile_count": "%d Projectiles",
   "ui.irons_spellbooks.frostbite_success_chance": "Auto-Success Threshold: %d% Chance",
   "ui.irons_spellbooks.charge_ready": "Charged",
@@ -318,6 +320,7 @@
   "spell.irons_spellbooks.acupuncture": "Acupuncture",
   "spell.irons_spellbooks.fire_bomb": "Fire Bomb",
   "spell.irons_spellbooks.starfall": "Starfall",
+  "spell.irons_spellbooks.healing_circle": "Healing Circle",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -380,6 +383,7 @@
   "spell.irons_spellbooks.acupuncture.guide": "Around a targeted creature, create a field of blood needles in every direction, shooting down and healing you for 25% of damage done",
   "spell.irons_spellbooks.fire_bomb.guide": "Launch a bomb made from magma, exploding on impact and leaving a field of fire where it lands",
   "spell.irons_spellbooks.starfall.guide": "Target a single area and continuously rain down arcane comets from above for the duration of the spell",
+  "spell.irons_spellbooks.healing_circle.guide": "Around a targeted creature or block, place a stationary circle of holy magic that heals allies within",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -560,6 +564,7 @@
   "entity.irons_spellbooks.fire_bomb": "Fire Bomb",
   "entity.irons_spellbooks.fire_field": "Fiery Field",
   "entity.irons_spellbooks.target_area": "Target Area",
+  "entity.irons_spellbooks.healing_aoe": "Healing Aoe",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",

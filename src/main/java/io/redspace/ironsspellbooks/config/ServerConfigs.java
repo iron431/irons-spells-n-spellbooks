@@ -124,12 +124,13 @@ public class ServerConfigs {
         //Holy
         BUILDER.comment("Holy Spells");
         createSpellConfig(SpellType.ANGEL_WING_SPELL, AngelWingsSpell.defaultConfig, true);
-        createSpellConfig(SpellType.CLOUD_OF_REGENERATION_SPELL, CloudOfRegenerationSpell.defaultConfig, true);
+        createSpellConfig(SpellType.CLOUD_OF_REGENERATION_SPELL, CloudOfRegenerationSpell.defaultConfig, false);
         createSpellConfig(SpellType.GREATER_HEAL_SPELL, GreaterHealSpell.defaultConfig, true);
         createSpellConfig(SpellType.HEAL_SPELL, HealSpell.defaultConfig, true);
         createSpellConfig(SpellType.WISP_SPELL, WispSpell.defaultConfig, true);
         createSpellConfig(SpellType.FORTIFY_SPELL, FortifySpell.defaultConfig, true);
         createSpellConfig(SpellType.BLESSING_OF_LIFE_SPELL, BlessingOfLifeSpell.defaultConfig, true);
+        createSpellConfig(SpellType.HEALING_CIRCLE_SPELL, HealingCircleSpell.defaultConfig, true);
         //Ice
         BUILDER.comment("Ice Spells");
         createSpellConfig(SpellType.CONE_OF_COLD_SPELL, ConeOfColdSpell.defaultConfig, true);

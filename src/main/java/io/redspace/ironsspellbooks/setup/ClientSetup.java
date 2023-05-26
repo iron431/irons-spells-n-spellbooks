@@ -225,6 +225,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FIRE_FIELD.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIRE_BOMB.get(), MagmaBallRenderer::new);
         event.registerEntityRenderer(EntityRegistry.TARGET_AREA_ENTITY.get(), TargetAreaRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.HEALING_AOE.get(), NoopRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

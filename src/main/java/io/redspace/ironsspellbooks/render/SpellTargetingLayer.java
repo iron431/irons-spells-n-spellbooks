@@ -23,6 +23,7 @@ import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
 import static io.redspace.ironsspellbooks.spells.SpellType.BLESSING_OF_LIFE_SPELL;
+import static io.redspace.ironsspellbooks.spells.SpellType.HEALING_CIRCLE_SPELL;
 
 public class SpellTargetingLayer {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/target/heal.png");
@@ -64,7 +65,7 @@ public class SpellTargetingLayer {
 
     private static Vector3f getColor(int spellId) {
         //Specific Spells
-        if(spellId == BLESSING_OF_LIFE_SPELL.getValue())
+        if(spellId == BLESSING_OF_LIFE_SPELL.getValue() || spellId == HEALING_CIRCLE_SPELL.getValue())
             return new Vector3f(.85f, 0, 0);
         //By School Otherwise
         return switch (SpellType.getTypeFromValue(spellId).getSchoolType()) {

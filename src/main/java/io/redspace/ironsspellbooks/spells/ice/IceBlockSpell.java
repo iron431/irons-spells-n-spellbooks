@@ -60,9 +60,7 @@ public class IceBlockSpell extends AbstractSpell {
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
         Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 48, .35f, false);
-
         return true;
-
     }
 
     @Override
