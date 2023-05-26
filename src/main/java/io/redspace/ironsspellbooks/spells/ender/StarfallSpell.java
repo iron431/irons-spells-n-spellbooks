@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.entity.spells.comet.Comet;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -69,7 +70,7 @@ public class StarfallSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         if (!(playerMagicData.getAdditionalCastData() instanceof TargetAreaCastData)) {
             Vec3 targetArea = Utils.moveToRelativeGroundLevel(world, Utils.raycastForEntity(world, entity, 40, true).getLocation(), 12);
-            playerMagicData.setAdditionalCastData(new TargetAreaCastData(targetArea, TargetedAreaEntity.createTargetAreaEntity(world, targetArea, getRadius(entity), 0x76387f)));
+            playerMagicData.setAdditionalCastData(new TargetAreaCastData(targetArea, TargetedAreaEntity.createTargetAreaEntity(world, targetArea, getRadius(entity), 0x60008c)));
         }
         super.onCast(world, entity, playerMagicData);
     }
@@ -127,5 +128,9 @@ public class StarfallSpell extends AbstractSpell {
 
     }
 
+    @Override
+    public AnimationHolder getCastStartAnimation() {
+        return ANIMATION_CONTINUOUS_OVERHEAD;
+    }
 
 }

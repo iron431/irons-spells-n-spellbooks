@@ -51,7 +51,7 @@ A magic mod for Minecraft returning to the classic RPG spellcasting fantasy.'''
     modId="playeranimator" #mandatory
     mandatory=true #mandatory
     versionRange="[1.0.2,)" #mandatory
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 [[dependencies.irons_spellbooks]]
     modId="geckolib3" #mandatory

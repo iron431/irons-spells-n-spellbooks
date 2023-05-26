@@ -51,7 +51,7 @@ public class AbstractClientPlayerMixin{
     private void postInit(ClientLevel world, GameProfile profile, ProfilePublicKey publicKey, CallbackInfo ci) {
         var player = (Player) (Object)this;
         var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(AbstractSpell.ANIMATION_RESOURCE);
-        if (animation != null) {
+        if (animation != null ) {
             animation.addModifierLast(new AdjustmentModifier((partName) -> {
                 float rotationX = 0;
                 float rotationY = 0;
@@ -64,16 +64,9 @@ public class AbstractClientPlayerMixin{
                 pitch = (float) Math.toRadians(pitch);
                 yaw = (float) Math.toRadians(yaw);
                 switch (partName) {
-//                        case "body" -> {
-//                            rotationX = (-1F) * pitch;
-//                        }
                     case "rightArm", "leftArm" -> {
                         rotationX = pitch;
                         rotationY = yaw;
-                    }
-                    case "head" -> {
-                        //rotationX = pitch / 8;
-                        //rotationY = (float) Math.toRadians(player.yHeadRot - player.yBodyRot);
                     }
                     default -> {
                         return Optional.empty();
