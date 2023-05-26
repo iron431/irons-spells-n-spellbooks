@@ -10,15 +10,21 @@ import java.util.Optional;
 public class AnimationHolder {
     private final AnimationBuilder geckoAnimation;
     private final ResourceLocation playerAnimation;
+    public final boolean adjustLeftArm;
+    public final boolean adjustRightArm;
 
     public AnimationHolder(String path, ILoopType loopType) {
         this.playerAnimation = IronsSpellbooks.id(path);
         this.geckoAnimation = new AnimationBuilder().addAnimation(playerAnimation.getPath(), loopType);
+        this.adjustLeftArm = true;
+        this.adjustRightArm = true;
     }
 
     private AnimationHolder() {
         this.playerAnimation = null;
         this.geckoAnimation = null;
+        this.adjustLeftArm = false;
+        this.adjustRightArm = false;
     }
     private static final AnimationHolder empty = new AnimationHolder();
     public static AnimationHolder none() {
