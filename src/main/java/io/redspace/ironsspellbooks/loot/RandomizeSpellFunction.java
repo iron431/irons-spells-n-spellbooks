@@ -8,9 +8,9 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
@@ -35,12 +35,12 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
-        if (itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SwordItem) {
+        if (itemStack.getItem() instanceof Scroll || Utils.canImbue(itemStack)) {
 
             var spellList = getWeightedSpellList(applicableSpells.getApplicableSpells());
             int total = spellList.floorKey(Integer.MAX_VALUE);
             SpellType spellType = SpellType.NONE_SPELL;
-            if(!spellList.isEmpty()){
+            if (!spellList.isEmpty()) {
                 spellType = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
             }
 

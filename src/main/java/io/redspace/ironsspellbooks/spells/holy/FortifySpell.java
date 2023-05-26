@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.network.spell.ClientboundAborptionParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundFortifyAreaParticles;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -14,6 +15,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +60,16 @@ public class FortifySpell extends AbstractSpell {
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
         return Optional.empty();
+    }
+
+    @Override
+    public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+        super.onServerPreCast(level, entity, playerMagicData);
+        if (playerMagicData == null)
+            return;
+        TargetedAreaEntity targetedAreaEntity = TargetedAreaEntity.createTargetAreaEntity(level, entity.position(), radius, 16239960);
+        targetedAreaEntity.setOwner(entity);
+        playerMagicData.setAdditionalCastData(new TargetAreaCastData(entity.position(), targetedAreaEntity));
     }
 
     @Override
