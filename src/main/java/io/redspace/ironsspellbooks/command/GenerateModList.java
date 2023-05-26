@@ -26,6 +26,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,15 +35,34 @@ public class GenerateModList {
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_mod_list.failed"));
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
-        pDispatcher.register(Commands.literal("generateModList").requires((p_138819_) -> {
-            return p_138819_.hasPermission(2);
-        }).executes((commandContext) -> {
-            return generateModList(commandContext.getSource());
-        }));
+        if (pDispatcher.getRoot().getChild("modlist") == null) {
+            pDispatcher.register(Commands.literal("modlist").requires((p_138819_) -> {
+                return p_138819_.hasPermission(2);
+            }).executes((commandContext) -> {
+                return generateModList(commandContext.getSource());
+            }));
+        }else{
+            IronsSpellbooks.LOGGER.debug("modlist already loaded.. skipping");
+        }
     }
 
     private static int generateModList(CommandSourceStack source) throws CommandSyntaxException {
         var sb = new StringBuilder();
+
+        sb.append("mod_id");
+        sb.append(",");
+        sb.append("mod_name");
+        sb.append(",");
+        sb.append("mod_version");
+        sb.append(",");
+        sb.append("mod_file");
+        sb.append(",");
+        sb.append("mod_url");
+        sb.append(",");
+        sb.append("display_url");
+        sb.append(",");
+        sb.append("issue_tracker_url");
+        sb.append("\n");
 
         ModList.get().getMods().forEach(iModInfo -> {
             sb.append(iModInfo.getModId());
@@ -52,6 +72,12 @@ public class GenerateModList {
             sb.append(iModInfo.getVersion());
             sb.append(",");
             sb.append(iModInfo.getOwningFile().getFile().getFileName());
+            sb.append(",");
+            iModInfo.getModURL().ifPresent(sb::append);
+            sb.append(",");
+            iModInfo.getConfig().getConfigElement("displayURL").ifPresent(sb::append);
+            sb.append(",");
+            iModInfo.getOwningFile().getConfig().getConfigElement("issueTrackerURL").ifPresent(sb::append);
             sb.append("\n");
         });
 
