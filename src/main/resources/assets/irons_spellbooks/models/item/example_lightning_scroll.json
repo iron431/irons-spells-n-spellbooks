@@ -1,7 +1,7 @@
 {
-  "parent": "irons_spellbooks:item/ring",
+  "parent": "item/generated",
   "textures": {
-    "layer0": "irons_spellbooks:item/cast_time_ring"
+    "layer0": "irons_spellbooks:item/example_lightning_scroll"
   },
   "overrides": [
     {
