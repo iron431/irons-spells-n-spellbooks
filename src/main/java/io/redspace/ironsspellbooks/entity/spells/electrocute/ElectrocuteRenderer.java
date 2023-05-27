@@ -1,13 +1,17 @@
 package io.redspace.ironsspellbooks.entity.spells.electrocute;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
@@ -18,6 +22,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 @OnlyIn(Dist.CLIENT)
 public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
@@ -57,7 +62,7 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         //irons_spellbooks.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
 
         //was entityEmissive. Doesnt exist in 1.18?
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.lightning());
+        VertexConsumer consumer = bufferSource.getBuffer(EntityEmissive.entityTranslucentEmissive(SOLID));
         float width = .25f;
         float height = width;
         Vec3 start = Vec3.ZERO;//entity.getOwner().getEyePosition().add(entity.getForward().normalize().scale(.15f));
@@ -114,5 +119,21 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
     public ResourceLocation getTextureLocation(ElectrocuteProjectile p_115264_) {
         //return TEXTURES[(int) (Math.random() * 4)];
         return SOLID;
+    }
+
+    private class EntityEmissive extends RenderType{
+
+        public EntityEmissive(String pName, VertexFormat pFormat, VertexFormat.Mode pMode, int pBufferSize, boolean pAffectsCrumbling, boolean pSortOnUpload, Runnable pSetupState, Runnable pClearState) {
+            super(pName, pFormat, pMode, pBufferSize, pAffectsCrumbling, pSortOnUpload, pSetupState, pClearState);
+        }
+
+        private static final BiFunction<ResourceLocation, Boolean, RenderType> ENTITY_TRANSLUCENT_EMISSIVE = Util.memoize((p_234333_, p_234334_) -> {
+            RenderType.CompositeState rendertype$compositestate = RenderType.CompositeState.builder().setShaderState(RENDERTYPE_LIGHTNING_SHADER).setTextureState(new RenderStateShard.TextureStateShard(p_234333_, false, false)).setTransparencyState(LIGHTNING_TRANSPARENCY).setCullState(NO_CULL).setWriteMaskState(COLOR_WRITE).setOverlayState(OVERLAY).createCompositeState(p_234334_);
+            return create("entity_translucent_emissive", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, rendertype$compositestate);
+        });
+
+        public static RenderType entityTranslucentEmissive(ResourceLocation pLocation) {
+            return ENTITY_TRANSLUCENT_EMISSIVE.apply(pLocation, true);
+        }
     }
 }

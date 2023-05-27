@@ -29,6 +29,11 @@
       "irons_spellbooks:heartstop_cast"
     ]
   },
+  "spell.heartstop.heartbeat": {
+    "sounds": [
+      "irons_spellbooks:heartstop_heartbeat"
+    ]
+  },
   "lightning_lance_cast": {
     "sounds": [
       "irons_spellbooks:lightning_lance_cast"
