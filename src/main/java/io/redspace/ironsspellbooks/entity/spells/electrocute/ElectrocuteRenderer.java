@@ -57,7 +57,7 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         //irons_spellbooks.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
 
         //was entityEmissive. Doesnt exist in 1.18?
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.lightning());
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(SOLID,0,0));
         float width = .25f;
         float height = width;
         Vec3 start = Vec3.ZERO;//entity.getOwner().getEyePosition().add(entity.getForward().normalize().scale(.15f));

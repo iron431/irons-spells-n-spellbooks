@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -63,7 +64,7 @@ public class HeartstopEffect extends MobEffect {
                 int i = (int) (10 + (40 - 10) * f);
  //Ironsspellbooks.logger.debug("{} ({}/{} = {})", i, damage, player.getHealth(), f);
                 if (this.duration % Math.max(i, 1) == 0) {
-                    player.playSound(SoundEvents.NOTE_BLOCK_BASS, 1, 0.5f);
+                    player.playSound(SoundRegistry.HEARTSTOP_HEARTBEAT.get(), 1, 1f);
                 }
             }
         }
