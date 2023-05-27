@@ -254,7 +254,7 @@ public class WizardAttackGoal extends Goal {
             mob.initiateCastSpell(singleUseSpell, singleUseLevel);
         } else {
 
-            int spellLevel = mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel);
+            int spellLevel = Mth.randomBetweenInclusive(mob.getRandom(), minSpellLevel, maxSpellLevel);
             var spellType = getNextSpellType();
 
             //Make sure cast is valid
