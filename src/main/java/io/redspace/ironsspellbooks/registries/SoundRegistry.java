@@ -60,6 +60,8 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> BLIGHT_BEGIN = registerSoundEvent("spell.blight.begin");
     public static RegistryObject<SoundEvent> SPIDER_ASPECT_CAST = registerSoundEvent("spell.spider_aspect.cast");
     public static RegistryObject<SoundEvent> BLOOD_NEEDLE_IMPACT = registerSoundEvent("entity.blood_needle.impact");
+    public static RegistryObject<SoundEvent> FIRE_BOMB_CHARGE = registerSoundEvent("spell.fire_bomb.charge");
+    public static RegistryObject<SoundEvent> FIRE_BOMB_CAST = registerSoundEvent("spell.fire_bomb.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

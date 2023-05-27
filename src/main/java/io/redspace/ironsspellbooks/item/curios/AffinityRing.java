@@ -10,10 +10,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class CasterRing extends SimpleDescriptiveCurio {
+public class AffinityRing extends SimpleDescriptiveCurio {
     public static final String nbtKey = "ISBEnhance";
 
-    public CasterRing(Properties properties) {
+    public AffinityRing(Properties properties) {
         super(properties);
     }
 

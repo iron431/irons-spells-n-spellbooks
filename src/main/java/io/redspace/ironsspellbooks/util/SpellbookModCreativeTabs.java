@@ -154,7 +154,7 @@ public class SpellbookModCreativeTabs {
                             entries.accept(ItemRegistry.FROSTWARD_RING.get());
                             entries.accept(ItemRegistry.POISONWARD_RING.get());
                             entries.accept(ItemRegistry.CONJURERS_TALISMAN.get());
-                            entries.accept(ItemRegistry.CASTER_RING.get());
+                            entries.accept(ItemRegistry.AFFINITY_RING.get());
 
                             entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
                             

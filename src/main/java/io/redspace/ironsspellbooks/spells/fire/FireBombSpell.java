@@ -45,12 +45,12 @@ public class FireBombSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.ACID_ORB_CHARGE.get());
+        return Optional.of(SoundRegistry.FIRE_BOMB_CHARGE.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.FIRE_BOMB_CAST.get());
     }
 
     @Override

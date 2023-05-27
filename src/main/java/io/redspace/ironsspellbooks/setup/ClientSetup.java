@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.entity.armor.*;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorRenderer;
@@ -48,6 +49,7 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRende
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
+import io.redspace.ironsspellbooks.item.curios.RingData;
 import io.redspace.ironsspellbooks.particle.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -250,6 +252,19 @@ public class ClientSetup {
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
         e.enqueueWork(() -> ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag()))));
+        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
+                (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue())
+        );
+        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("spell"),
+                (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getValue())
+        );
+        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("school"),
+                (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue())
+        );
+        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("spell"),
+                (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpellId())
+        );
+
 
         TetraProxy.PROXY.initClient();
 

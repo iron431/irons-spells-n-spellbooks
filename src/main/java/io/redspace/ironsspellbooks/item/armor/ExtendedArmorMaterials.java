@@ -35,35 +35,35 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
     )),
     PYROMANCER("pyromancer", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     ARCHEVOKER("archevoker", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.EVOCATION_SPELL_POWER.get(), new AttributeModifier("Evocation Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.EVOCATION_SPELL_POWER.get(), new AttributeModifier("Evocation Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     CULTIST("cultist", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.BLOOD_SPELL_POWER.get(), new AttributeModifier("Blood Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.BLOOD_SPELL_POWER.get(), new AttributeModifier("Blood Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     PRIEST("priest", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.HOLY_SPELL_POWER.get(), new AttributeModifier("Holy Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.HOLY_SPELL_POWER.get(), new AttributeModifier("Holy Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     CRYOMANCER("cryomancer", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.ICE_SPELL_POWER.get(), new AttributeModifier("Ice Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.ICE_SPELL_POWER.get(), new AttributeModifier("Ice Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     SHADOWWALKER("shadowwalker", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.ENDER_SPELL_POWER.get(), new AttributeModifier("Ender Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.ENDER_SPELL_POWER.get(), new AttributeModifier("Ender Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     PLAGUED("plagued", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.POISON_SPELL_POWER.get(), new AttributeModifier("Poison Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.POISON_SPELL_POWER.get(), new AttributeModifier("Poison Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     ELECTROMANCER("electromancer", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     ));
 
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
