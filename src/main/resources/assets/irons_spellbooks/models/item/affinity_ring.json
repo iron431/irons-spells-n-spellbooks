@@ -1,0 +1,55 @@
+{
+  "parent": "irons_spellbooks:item/ring",
+  "textures": {
+    "layer0": "irons_spellbooks:item/affinity_ring_fire"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "school": 0
+      },
+      "model": "irons_spellbooks:item/affinity_ring_fire"
+    },
+    {
+      "predicate": {
+        "school": 1
+      },
+      "model": "irons_spellbooks:item/affinity_ring_ice"
+    },
+    {
+      "predicate": {
+        "school": 2
+      },
+      "model": "irons_spellbooks:item/affinity_ring_lightning"
+    },
+    {
+      "predicate": {
+        "school": 3
+      },
+      "model": "irons_spellbooks:item/affinity_ring_holy"
+    },
+    {
+      "predicate": {
+        "school": 4
+      },
+      "model": "irons_spellbooks:item/affinity_ring_ender"
+    },
+    {
+      "predicate": {
+        "school": 5
+      },
+      "model": "irons_spellbooks:item/affinity_ring_blood"
+    },    {
+      "predicate": {
+        "school": 6
+      },
+      "model": "irons_spellbooks:item/affinity_ring_evocation"
+    },
+    {
+      "predicate": {
+        "school": 8
+      },
+      "model": "irons_spellbooks:item/affinity_ring_poison"
+    }
+  ]
+}

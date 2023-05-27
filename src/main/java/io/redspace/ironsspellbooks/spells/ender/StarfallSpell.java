@@ -38,6 +38,7 @@ public class StarfallSpell extends AbstractSpell {
         );
     }
 
+
     public StarfallSpell(int level) {
         super(SpellType.STARFALL_SPELL);
         this.setLevel(level);
