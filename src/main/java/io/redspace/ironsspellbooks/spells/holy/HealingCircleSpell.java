@@ -8,8 +8,8 @@ import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
+import io.redspace.ironsspellbooks.util.Component;
 import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -33,13 +33,6 @@ public class HealingCircleSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.duration", Utils.timeFromTicks(getDuration(caster), 1))
         );
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.HOLY)
-            .setMaxLevel(10)
-            .setCooldownSeconds(25)
-            .build();
 
     public HealingCircleSpell(int level) {
         super(SpellType.HEALING_CIRCLE_SPELL);

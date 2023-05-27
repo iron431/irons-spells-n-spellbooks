@@ -11,7 +11,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidType;
 
 import java.util.List;
 
@@ -142,7 +141,7 @@ public abstract class AoeEntity extends Projectile {
     }
 
     @Override
-    public boolean isPushedByFluid(FluidType type) {
+    public boolean isPushedByFluid() {
         return false;
     }
 

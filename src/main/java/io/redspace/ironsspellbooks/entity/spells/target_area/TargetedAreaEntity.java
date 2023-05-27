@@ -13,7 +13,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -82,7 +81,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     @Override
-    public boolean isPushedByFluid(FluidType type) {
+    public boolean isPushedByFluid() {
         return false;
     }
 

@@ -4,8 +4,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.util.Component;
 import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,13 +24,6 @@ public class FireBombSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(caster), 1))
         );
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.FIRE)
-            .setMaxLevel(8)
-            .setCooldownSeconds(15)
-            .build();
 
     public FireBombSpell(int level) {
         super(SpellType.FIRE_BOMB_SPELL);

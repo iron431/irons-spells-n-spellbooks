@@ -8,10 +8,10 @@ import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
+import io.redspace.ironsspellbooks.util.Component;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -37,13 +37,6 @@ public class StarfallSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(caster), 1))
         );
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.ENDER)
-            .setMaxLevel(10)
-            .setCooldownSeconds(16)
-            .build();
 
     public StarfallSpell(int level) {
         super(SpellType.STARFALL_SPELL);

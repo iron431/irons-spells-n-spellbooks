@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.spells.TargetAreaCastData;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
