@@ -254,10 +254,10 @@ public class ClientSetup {
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
         e.enqueueWork(() -> ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag()))));
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.CASTER_RING.get(), new ResourceLocation("school"),
+        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
                 (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue())
         );
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.CASTER_RING.get(), new ResourceLocation("spell"),
+        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("spell"),
                 (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getValue())
         );
         e.enqueueWork(() -> ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("school"),

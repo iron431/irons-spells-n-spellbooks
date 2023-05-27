@@ -39,7 +39,7 @@ public class StarfallSpell extends AbstractSpell {
     }
 
     public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
+            .setMinRarity(SpellRarity.UNCOMMON)
             .setSchool(SchoolType.ENDER)
             .setMaxLevel(10)
             .setCooldownSeconds(16)

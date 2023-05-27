@@ -122,7 +122,7 @@
   "item.irons_spellbooks.frostward_ring.desc": "Grants freezing immunity.",
   "item.irons_spellbooks.heavy_chain_necklace": "Heavy Chain",
   "item.irons_spellbooks.conjurers_talisman": "Conjurer's Talisman",
-  "item.irons_spellbooks.caster_ring": "Ring of %s Affinity",
+  "item.irons_spellbooks.affinity_ring": "Ring of %s Affinity",
 
   "item.irons_spellbooks.keeper_spawn_egg": "Ancient Knight Spawn Egg",
   "item.irons_spellbooks.necromancer_spawn_egg": "Necromancer Spawn Egg",

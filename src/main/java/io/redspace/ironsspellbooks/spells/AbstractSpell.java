@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.item.curios.CasterRing;
+import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
@@ -101,7 +101,7 @@ public abstract class AbstractSpell {
     }
 
     private boolean filterCurios(ItemStack itemStack) {
-        return itemStack.getOrCreateTag().contains(CasterRing.nbtKey) && itemStack.getOrCreateTag().getInt(CasterRing.nbtKey) == this.spellType.getValue();
+        return itemStack.getOrCreateTag().contains(AffinityRing.nbtKey) && itemStack.getOrCreateTag().getInt(AffinityRing.nbtKey) == this.spellType.getValue();
     }
 
     public void setLevel(int level) {

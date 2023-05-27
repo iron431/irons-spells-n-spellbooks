@@ -202,7 +202,7 @@ public class ItemRegistry {
     public static final RegistryObject<CurioBaseItem> FROSTWARD_RING = ITEMS.register("frostward_ring", FrostwardRing::new);
     public static final RegistryObject<CurioBaseItem> POISONWARD_RING = ITEMS.register("poisonward_ring", PoisonwardRing::new);
     public static final RegistryObject<CurioBaseItem> CONJURERS_TALISMAN = ITEMS.register("conjurers_talisman", () -> new SimpleAttributeCurio(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), AttributeRegistry.SUMMON_DAMAGE.get(), new AttributeModifier("summon", 0.10, AttributeModifier.Operation.MULTIPLY_BASE)));
-    public static final RegistryObject<CurioBaseItem> CASTER_RING = ITEMS.register("caster_ring", () -> new CasterRing(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1)));
+    public static final RegistryObject<CurioBaseItem> AFFINITY_RING = ITEMS.register("affinity_ring", () -> new AffinityRing(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1)));
 
     /**
      * Spawn eggs
