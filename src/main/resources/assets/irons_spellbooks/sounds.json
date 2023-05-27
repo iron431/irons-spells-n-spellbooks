@@ -307,5 +307,15 @@
     "sounds": [
       "irons_spellbooks:blood_needle_impact"
     ]
+  },
+  "spell.fire_bomb.cast": {
+    "sounds": [
+      "irons_spellbooks:fire_bomb_cast"
+    ]
+  },
+  "spell.fire_bomb.charge": {
+    "sounds": [
+      "irons_spellbooks:fire_bomb_start"
+    ]
   }
 }
