@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.mixin;
+package io.redspace.ironsspellbooks.util;
 
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
@@ -6,6 +6,7 @@ import dev.kosmx.playerAnim.api.layered.modifier.AdjustmentModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
@@ -15,8 +16,9 @@ import java.util.Optional;
 
 public class AbstractClientPlayerMixinHelper {
 
-    public static void playerMixinInit(Player player) {
-        var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(AbstractSpell.ANIMATION_RESOURCE);
+    public static ModifierLayer<IAnimation> playerMixinInit(Player player) {
+        var animation = new ModifierLayer<>();
+
         if (animation != null) {
             animation.addModifierLast(new AdjustmentModifier((partName) -> {
                 float rotationX = 0;
@@ -47,5 +49,7 @@ public class AbstractClientPlayerMixinHelper {
                 }
             });
         }
+
+        return animation;
     }
 }

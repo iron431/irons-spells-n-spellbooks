@@ -57,7 +57,9 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.render.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.tetra.TetraProxy;
+import io.redspace.ironsspellbooks.util.AbstractClientPlayerMixinHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
@@ -133,7 +135,7 @@ public class ClientSetup {
         GeoArmorRenderer.registerArmorRenderer(PumpkinArmorItem.class, () -> new PumpkinArmorRenderer(new PumpkinArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(PlaguedArmorItem.class, () -> new GenericCustomArmorRenderer(new PlaguedArmorModel()));
 
- //Ironsspellbooks.logger.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
+        //Ironsspellbooks.logger.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
 
         addLayerToPlayerSkin(event, "default");
         addLayerToPlayerSkin(event, "slim");
@@ -277,18 +279,10 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        //Set the player construct callback. It can be a lambda function.
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
-                new ResourceLocation(IronsSpellbooks.MODID, "animation"),
+                AbstractSpell.ANIMATION_RESOURCE,
                 42,
-                ClientSetup::registerPlayerAnimation);
+                AbstractClientPlayerMixinHelper::playerMixinInit);
     }
-
-    //This method will set your mods animation into the library.
-    private static IAnimation registerPlayerAnimation(AbstractClientPlayer player) {
-        //This will be invoked for every new player
-        return new ModifierLayer<>();
-    }
-
 }
 
