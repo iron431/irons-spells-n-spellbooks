@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
@@ -119,8 +120,9 @@ public class SpellBook extends Item {
         }
         lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", this.spellSlots).withStyle(ChatFormatting.GRAY));
 
-        if (SpellBookData.getSpellBookData(itemStack).getActiveSpell().getID() > 0) {
-            lines.addAll(TooltipsUtils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK));
+        var player = Minecraft.getInstance().player;
+        if (player != null && SpellBookData.getSpellBookData(itemStack).getActiveSpell().getID() > 0) {
+            lines.addAll(TooltipsUtils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK, player));
         }
 
         super.appendHoverText(itemStack, level, lines, flag);

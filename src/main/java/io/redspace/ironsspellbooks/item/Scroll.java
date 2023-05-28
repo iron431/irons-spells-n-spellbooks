@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -122,8 +123,9 @@ public class Scroll extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, List<Component> lines, @NotNull TooltipFlag flag) {
-        //if (level != null && level.isClientSide)
-            lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack/*, Minecraft.getInstance().player*/));
+        var player = Minecraft.getInstance().player;
+        if (player != null)
+            lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, player));
         super.appendHoverText(itemStack, level, lines, flag);
     }
 }
