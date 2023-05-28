@@ -41,7 +41,7 @@ public class AbstractClientPlayerMixin {
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void postInit(ClientLevel world, GameProfile profile, ProfilePublicKey publicKey, CallbackInfo ci) {
+    private void postInit(ClientLevel world, GameProfile profile, CallbackInfo ci) {
         var player = (Player) (Object) this;
         AbstractClientPlayerMixinHelper.playerMixinInit(player);
     }
