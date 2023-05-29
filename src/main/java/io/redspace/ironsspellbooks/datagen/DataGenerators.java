@@ -12,6 +12,6 @@ public class DataGenerators {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
-        generator.addProvider(event.includeServer(), new CustomBiomeTags(generator, event.getExistingFileHelper()));
+        generator.addProvider(event.includeServer(), new CustomBiomeTags(generator, event.getLookupProvider(), event.getExistingFileHelper()));
     }
 }

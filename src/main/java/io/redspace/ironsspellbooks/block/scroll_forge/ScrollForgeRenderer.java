@@ -1,26 +1,26 @@
 package io.redspace.ironsspellbooks.block.scroll_forge;
 
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.util.ModTags;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 
 public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile> {
@@ -53,8 +53,8 @@ public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile
             poseStack.pushPose();
             rotatePoseWithBlock(poseStack, scrollForgeTile);
             poseStack.translate(PAPER_POS.x, PAPER_POS.y, PAPER_POS.z);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(85));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
+            poseStack.mulPose(Axis.YP.rotationDegrees(85));
+            poseStack.mulPose(Axis.XP.rotationDegrees(180));
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(PAPER_TEXTURE));
             var light = LevelRenderer.getLightColor(scrollForgeTile.getLevel(), scrollForgeTile.getBlockPos());
 
@@ -89,14 +89,14 @@ public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile
         rotatePoseWithBlock(poseStack, scrollForgeTile);
 
         poseStack.translate(offset.x, offset.y, offset.z);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-yRot));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-yRot));
 
         //poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
         poseStack.scale(0.45f, 0.45f, 0.45f);
 
-        itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.FIXED, LevelRenderer.getLightColor(scrollForgeTile.getLevel(), scrollForgeTile.getBlockPos()), packedOverlay, poseStack, bufferSource, renderId);
+        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, LevelRenderer.getLightColor(scrollForgeTile.getLevel(), scrollForgeTile.getBlockPos()), packedOverlay, poseStack, bufferSource, scrollForgeTile.getLevel(), renderId);
         poseStack.popPose();
     }
 
@@ -114,7 +114,7 @@ public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile
     private void rotatePoseWithBlock(PoseStack poseStack, ScrollForgeTile scrollForgeTile) {
         Vec3 center = new Vec3(0.5, 0.5, 0.5);
         poseStack.translate(center.x, center.y, center.z);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(getBlockFacingDegrees(scrollForgeTile)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(getBlockFacingDegrees(scrollForgeTile)));
         poseStack.translate(-center.x, -center.y, -center.z);
     }
 

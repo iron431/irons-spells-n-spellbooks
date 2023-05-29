@@ -8,7 +8,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 //Default priority is 1000
 @Mixin(SmithingMenu.class)
 public abstract class SmithingMenuMixin {
-    private static final UpgradeRecipe fakeRecipe = new UpgradeRecipe(new ResourceLocation(""), Ingredient.of(), Ingredient.of(), ItemStack.EMPTY) {
+    private static final SmithingRecipe fakeRecipe = new SmithingRecipe(new ResourceLocation(""), Ingredient.of(), Ingredient.of(), ItemStack.EMPTY) {
         @Override
         public boolean matches(Container pInv, Level pLevel) {
             return true;
@@ -28,7 +28,7 @@ public abstract class SmithingMenuMixin {
 
     @Shadow
     private
-    UpgradeRecipe selectedRecipe;
+    SmithingRecipe selectedRecipe;
 
     /*
     Necessary to wipe nbt when using shriving stone

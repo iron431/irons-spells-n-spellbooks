@@ -3,16 +3,17 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
+import org.joml.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.block.state.BlockState;
@@ -166,11 +167,11 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
     }
 
     @Override
-    protected ItemTransforms.TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
+    protected ItemDisplayContext getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
         return switch (boneName) {
             case DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT, DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT ->
-                    ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND; // Do Defaults
-            default -> ItemTransforms.TransformType.NONE;
+                    ItemDisplayContext.THIRD_PERSON_RIGHT_HAND; // Do Defaults
+            default -> ItemDisplayContext.NONE;
         };
     }
 
@@ -185,16 +186,16 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
         var mainHandItem = animatable.getMainHandItem();
         var offHandItem = animatable.getOffhandItem();
         if (itemStack == mainHandItem) {
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(-90f));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
 
             if (itemStack.getItem() instanceof ShieldItem)
                 poseStack.translate(0, 0.125, -0.25);
         } else if (itemStack == offHandItem) {
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(-90f));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
 
             if (itemStack.getItem() instanceof ShieldItem) {
                 poseStack.translate(0, 0.125, 0.25);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+                poseStack.mulPose(Axis.YP.rotationDegrees(180));
             }
         }
     }

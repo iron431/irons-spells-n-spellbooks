@@ -1,16 +1,16 @@
 package io.redspace.ironsspellbooks.block.pedestal;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.phys.Vec3;
@@ -42,20 +42,16 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalTile> {
         poseStack.pushPose();
         //renderId seems to be some kind of uuid/salt
         int renderId = (int) pedestalTile.getBlockPos().asLong();
-        //BakedModel model = itemRenderer.getModel(itemStack, null, null, renderId);
 
         poseStack.translate(offset.x, offset.y, offset.z);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
-        if(itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof DiggerItem){
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(-45));
-
+        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        if (itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof DiggerItem) {
+            poseStack.mulPose(Axis.ZP.rotationDegrees(-45));
         }
-        //poseStack.mulPose(Vector3f.ZP.rotationDegrees(yRot));
 
-        //poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
         poseStack.scale(0.65f, 0.65f, 0.65f);
 
-        itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.FIXED, LevelRenderer.getLightColor(pedestalTile.getLevel(), pedestalTile.getBlockPos()), packedOverlay, poseStack, bufferSource, renderId);
+        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, LevelRenderer.getLightColor(pedestalTile.getLevel(), pedestalTile.getBlockPos()), packedOverlay, poseStack, bufferSource, pedestalTile.getLevel(), renderId);
         poseStack.popPose();
     }
 

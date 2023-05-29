@@ -27,22 +27,20 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.UUID;
 
-public abstract class AbstractSpellCastingMob extends Monster implements IAnimatable {
+public abstract class AbstractSpellCastingMob extends Monster implements GeoEntity {
     public static final ResourceLocation modelResource = new ResourceLocation(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
     public static final ResourceLocation animationInstantCast = new ResourceLocation(IronsSpellbooks.MODID, "animations/casting_animations.json");
@@ -157,7 +155,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     public void cancelCast() {
-        if(isCasting()){
+        if (isCasting()) {
             if (level.isClientSide) {
                 cancelCastAnimation = true;
             } else {
@@ -174,7 +172,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         //irons_spellbooks.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
         if (!level.isClientSide) {
             castingSpell.onServerCastComplete(level, this, playerMagicData, false);
-        }else{
+        } else {
             playerMagicData.resetCastingState();
         }
 
@@ -347,52 +345,58 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     /**
      * GeckoLib Animations
      **/
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private SpellType lastCastSpellType = SpellType.NONE_SPELL;
     private boolean cancelCastAnimation = false;
-    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
+    private final RawAnimation idle = RawAnimation.begin().thenLoop("blank");
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
     private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
     private final AnimationController animationControllerLongCast = new AnimationController(this, "long_casting", 0, this::longCastingPredicate);
 
     @Override
-    public AnimationFactory getFactory() {
-        return factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
+    }
+
+
+    @Override
+    public void triggerAnim(@org.jetbrains.annotations.Nullable String controllerName, String animName) {
+        GeoEntity.super.triggerAnim(controllerName, animName);
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(animationControllerOtherCast);
-        data.addAnimationController(animationControllerInstantCast);
-        data.addAnimationController(animationControllerLongCast);
-        data.addAnimationController(new AnimationController(this, "idle", 0, this::idlePredicate));
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(animationControllerOtherCast);
+        controllerRegistrar.add(animationControllerInstantCast);
+        controllerRegistrar.add(animationControllerLongCast);
+        controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
     }
 
-    private PlayState idlePredicate(AnimationEvent event) {
+    private PlayState idlePredicate(AnimationState event) {
         event.getController().setAnimation(idle);
         return PlayState.STOP;
     }
 
-    private PlayState instantCastingPredicate(AnimationEvent event) {
+    private PlayState instantCastingPredicate(AnimationState event) {
         if (cancelCastAnimation) {
             return PlayState.STOP;
         }
 
         var controller = event.getController();
-        if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.INSTANT && controller.getAnimationState() == AnimationState.Stopped) {
+        if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.INSTANT && controller.getAnimationState() == AnimationController.State.STOPPED) {
             setStartAnimationFromSpell(controller, castingSpell);
         }
         return PlayState.CONTINUE;
     }
 
-    private PlayState longCastingPredicate(AnimationEvent event) {
+    private PlayState longCastingPredicate(AnimationState event) {
         if (cancelCastAnimation) {
             return PlayState.STOP;
         }
 
         var controller = event.getController();
-        if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.LONG && controller.getAnimationState() == AnimationState.Stopped) {
+        if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.LONG && controller.getAnimationState() == AnimationController.State.STOPPED) {
             setStartAnimationFromSpell(controller, castingSpell);
         }
 
@@ -403,13 +407,13 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         return PlayState.CONTINUE;
     }
 
-    private PlayState otherCastingPredicate(AnimationEvent event) {
+    private PlayState otherCastingPredicate(AnimationState event) {
         if (cancelCastAnimation) {
             return PlayState.STOP;
         }
 
         var controller = event.getController();
-        if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationState.Stopped) {
+        if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationController.State.STOPPED) {
             if (castingSpell.getCastType() == CastType.CONTINUOUS || castingSpell.getCastType() == CastType.CHARGE) {
                 setStartAnimationFromSpell(controller, castingSpell);
             }
@@ -425,7 +429,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
         spell.getCastStartAnimation().getForMob().ifPresent(animationBuilder -> {
-            controller.markNeedsReload();
+            //controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
             lastCastSpellType = spell.getSpellType();
             cancelCastAnimation = false;
@@ -435,7 +439,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private void setFinishAnimationFromSpell(AnimationController controller, SpellType spellType) {
         var spell = AbstractSpell.getSpell(spellType, 1);
         spell.getCastFinishAnimation().getForMob().ifPresent(animationBuilder -> {
-            controller.markNeedsReload();
+            //controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
             lastCastSpellType = SpellType.NONE_SPELL;
             cancelCastAnimation = false;
@@ -444,8 +448,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     public boolean isAnimating() {
         return isCasting()
-                || (animationControllerOtherCast.getAnimationState() != AnimationState.Stopped)
-                || (animationControllerInstantCast.getAnimationState() != AnimationState.Stopped);
+                || (animationControllerOtherCast.getAnimationState() != AnimationController.State.STOPPED)
+                || (animationControllerInstantCast.getAnimationState() != AnimationController.State.STOPPED);
     }
 
     public boolean shouldBeExtraAnimated() {
