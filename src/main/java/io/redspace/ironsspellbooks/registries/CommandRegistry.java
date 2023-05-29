@@ -10,13 +10,12 @@ public class CommandRegistry {
 
     @SubscribeEvent
     public static void onCommandsRegister(RegisterCommandsEvent event) {
- //Ironsspellbooks.logger.debug("onCommandsRegister");
         CreateScrollCommand.register(event.getDispatcher());
         CreateSpellBookCommand.register(event.getDispatcher());
         CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());
         CreateDebugWizardCommand.register(event.getDispatcher());
         ManaCommand.register(event.getDispatcher());
         GenerateModList.register(event.getDispatcher());
-//        GenerateSiteData.register(event.getDispatcher());
+        //GenerateSiteData.register(event.getDispatcher());
     }
 }

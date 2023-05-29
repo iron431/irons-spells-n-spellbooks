@@ -10,11 +10,11 @@ import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.*;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -92,13 +92,13 @@ public class GenerateSiteData {
     }
 
     private static int generateSiteData(CommandSourceStack source) {
-        generateRecipeData();
+        generateRecipeData(source);
         generateSpellData();
 
         return 1;
     }
 
-    private static void generateRecipeData() {
+    private static void generateRecipeData(CommandSourceStack source) {
         try {
             var itemBuilder = new StringBuilder();
             var armorBuilder = new StringBuilder();
@@ -112,7 +112,7 @@ public class GenerateSiteData {
             itemsTracked.add(ItemRegistry.LEGENDARY_SPELL_BOOK.get());
             itemsTracked.add(Items.POISONOUS_POTATO);
 
-            Minecraft.getInstance().level.getRecipeManager().getRecipes()
+            source.getLevel().getRecipeManager().getRecipes()
                     .stream()
                     .filter(r -> r.getId().getNamespace().equals("irons_spellbooks") && !r.getId().toString().contains("poisonous_potato"))
                     .forEach(recipe -> {
@@ -140,7 +140,7 @@ public class GenerateSiteData {
                         }
 
                         var name = getRecipeDataAtIndex(recipeData, 0).name;
-                        var tooltip = getTooltip(recipe.getResultItem());
+                        var tooltip = getTooltip(source.getPlayer(), recipe.getResultItem());
 
                         if (getRecipeDataAtIndex(recipeData, 0).item instanceof SpellBook || getRecipeDataAtIndex(recipeData, 0).item instanceof ExtendedSwordItem) {
                             appendToBuilder(spellbookBuilder, recipe, recipeData, "", tooltip);
@@ -157,7 +157,7 @@ public class GenerateSiteData {
 
             ForgeRegistries.ITEMS.forEach(item -> {
                 var itemResource = ForgeRegistries.ITEMS.getKey(item);
-                var tooltip = getTooltip(new ItemStack(item));
+                var tooltip = getTooltip(source.getPlayer(), new ItemStack(item));
 
                 if (itemResource.toString().contains("irons_spellbooks") && !itemsTracked.contains(item)) {
                     //Non craftable items
@@ -222,8 +222,8 @@ public class GenerateSiteData {
         return "";
     }
 
-    private static String getTooltip(ItemStack itemStack) {
-        return Arrays.stream(itemStack.getTooltipLines(Minecraft.getInstance().player, TooltipFlag.Default.NORMAL)
+    private static String getTooltip(ServerPlayer player, ItemStack itemStack) {
+        return Arrays.stream(itemStack.getTooltipLines(player, TooltipFlag.Default.NORMAL)
                         .stream()
                         .skip(1) //First component is always the name. Ignore it
                         .map(Component::getString)

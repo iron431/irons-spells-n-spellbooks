@@ -44,7 +44,7 @@ public class ClientSpellCastHelper {
     }
 
     public static void setSuppressRightClicks(boolean suppressRightClicks) {
- //Ironsspellbooks.logger.debug("ClientSpellCastHelper.setSuppressRightClicks {}", suppressRightClicks);
+        //Ironsspellbooks.logger.debug("ClientSpellCastHelper.setSuppressRightClicks {}", suppressRightClicks);
         ClientSpellCastHelper.suppressRightClicks = suppressRightClicks;
     }
 
@@ -139,6 +139,7 @@ public class ClientSpellCastHelper {
      */
 
     private static boolean didModify = false;
+
     private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         //IronsSpellbooks.LOGGER.debug("animatePlayerStart {} {}", player, resourceLocation);
         var keyframeAnimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
@@ -148,10 +149,13 @@ public class ClientSpellCastHelper {
             if (animation != null) {
                 var castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
                 ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), castingAnimationPlayer);
-                castingAnimationPlayer.setFirstPersonMode(/*resourceLocation.getPath().equals("charge_arrow") ? FirstPersonMode.VANILLA : */FirstPersonMode.THIRD_PERSON_MODEL);
                 var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
                 var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
-                castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
+
+                if (armsFlag || itemsFlag) {
+                    castingAnimationPlayer.setFirstPersonMode(/*resourceLocation.getPath().equals("charge_arrow") ? FirstPersonMode.VANILLA : */FirstPersonMode.THIRD_PERSON_MODEL);
+                    castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
+                }
 
                 //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
                 animation.setAnimation(castingAnimationPlayer);
@@ -201,7 +205,7 @@ public class ClientSpellCastHelper {
     }
 
     public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType, boolean cancelled) {
- //Ironsspellbooks.logger.debug("ClientSpellCastHelper.handleClientBoundOnCastFinished.1 -> ClientMagicData.resetClientCastState: {}", castingEntityId);
+        //Ironsspellbooks.logger.debug("ClientSpellCastHelper.handleClientBoundOnCastFinished.1 -> ClientMagicData.resetClientCastState: {}", castingEntityId);
         ClientMagicData.resetClientCastState(castingEntityId);
 
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
