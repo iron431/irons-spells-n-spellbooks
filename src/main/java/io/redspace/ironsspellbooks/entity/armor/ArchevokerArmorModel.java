@@ -3,14 +3,15 @@ package io.redspace.ironsspellbooks.entity.armor;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.ArchevokerArmorItem;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.DefaultedItemGeoModel;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class ArchevokerArmorModel extends GeoArmorRenderer<ArchevokerArmorItem> {
+public class ArchevokerArmorModel extends DefaultedItemGeoModel<ArchevokerArmorItem> {
 
-    public ArchevokerArmorModel(){
-        super();
-
+    public ArchevokerArmorModel() {
+        super(new ResourceLocation(IronsSpellbooks.MODID, ""));
     }
+
     @Override
     public ResourceLocation getModelResource(ArchevokerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/archevoker_armor.geo.json");

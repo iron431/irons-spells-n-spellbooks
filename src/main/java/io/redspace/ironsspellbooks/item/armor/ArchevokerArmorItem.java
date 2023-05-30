@@ -1,9 +1,8 @@
 package io.redspace.ironsspellbooks.item.armor;
 
-import net.minecraft.world.entity.EquipmentSlot;
 
-public class ArchevokerArmorItem extends ExtendedArmorItem{
-    public ArchevokerArmorItem(EquipmentSlot slot, Properties settings) {
-        super(ExtendedArmorMaterials.ARCHEVOKER, slot, settings);
+public class ArchevokerArmorItem extends ExtendedArmorItem {
+    public ArchevokerArmorItem(Type type, Properties settings) {
+        super(ExtendedArmorMaterials.ARCHEVOKER, type, settings);
     }
 }

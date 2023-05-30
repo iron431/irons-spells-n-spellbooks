@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -96,6 +97,16 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
 
     public int getDefenseForSlot(EquipmentSlot pSlot) {
         return this.slotProtections[pSlot.getIndex()];
+    }
+
+    @Override
+    public int m_266425_(ArmorItem.Type p_266807_) {
+        return 0;
+    }
+
+    @Override
+    public int getDurabilityForSlot(ArmorItem.Type p_267168_) {
+        return 0;
     }
 
     public int getEnchantmentValue() {

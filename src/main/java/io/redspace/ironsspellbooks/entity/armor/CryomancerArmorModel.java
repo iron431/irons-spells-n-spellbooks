@@ -3,14 +3,14 @@ package io.redspace.ironsspellbooks.entity.armor;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.CryomancerArmorItem;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.DefaultedItemGeoModel;
 
-public class CryomancerArmorModel extends AnimatedGeoModel<CryomancerArmorItem> {
+public class CryomancerArmorModel extends DefaultedItemGeoModel<CryomancerArmorItem> {
 
-    public CryomancerArmorModel(){
-        super();
-
+    public CryomancerArmorModel() {
+        super(new ResourceLocation(IronsSpellbooks.MODID, ""));
     }
+
     @Override
     public ResourceLocation getModelResource(CryomancerArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/cryomancer_armor.geo.json");
@@ -25,10 +25,4 @@ public class CryomancerArmorModel extends AnimatedGeoModel<CryomancerArmorItem> 
     public ResourceLocation getAnimationResource(CryomancerArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
-//    public static String listOfBonesToString(List<IBone> list){
-//        String s = "";
-//        for (IBone o:list)
-//            s += o.getName()+", ";
-//        return s;
-//    }
 }
