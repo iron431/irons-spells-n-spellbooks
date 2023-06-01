@@ -39,22 +39,14 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
     protected void registerGoals() {
         this.goalSelector.addGoal(2, new RestrictSunGoal(this));
         this.goalSelector.addGoal(3, new FleeSunGoal(this, 1.0D));
-//        this.goalSelector.addGoal(4, new WizardAttackGoal(this, 1.25f, 35, 80)
-//                .setSpells(
-//                        List.of(SpellType.FANG_STRIKE_SPELL, SpellType.ICICLE_SPELL, SpellType.MAGIC_MISSILE_SPELL),
-//                        List.of(SpellType.FANG_WARD_SPELL, SpellType.FORTIFY_SPELL),
-//                        List.of(),
-//                        List.of(SpellType.BLIGHT_SPELL)
-//                )
-//                .setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 80, 350, 4, 5)
-//                .setDrinksPotions());
         this.goalSelector.addGoal(4, new WizardAttackGoal(this, 1.25f, 35, 80)
                 .setSpells(
-                        List.of(SpellType.RAY_OF_SIPHONING_SPELL),
+                        List.of(SpellType.FANG_STRIKE_SPELL, SpellType.ICICLE_SPELL, SpellType.MAGIC_MISSILE_SPELL),
+                        List.of(SpellType.FANG_WARD_SPELL, SpellType.FORTIFY_SPELL),
                         List.of(),
-                        List.of(),
-                        List.of()
+                        List.of(SpellType.BLIGHT_SPELL)
                 )
+                .setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 80, 350, 4, 5)
                 .setDrinksPotions());
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
