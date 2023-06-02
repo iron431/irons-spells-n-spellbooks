@@ -295,7 +295,7 @@ public enum SpellType {
 
 
     public static List<SpellType> getSpellsFromSchool(SchoolType school) {
-        return Arrays.stream(SpellType.values()).filter(spellType -> spellType.getSchoolType() == school).toList();
+        return Arrays.stream(SpellType.values()).filter(spellType -> spellType.getSchoolType() == school && spellType.isEnabled() && spellType != NONE_SPELL).toList();
 //        return spellsForSchool.getOrDefault(school, List.of(NONE_SPELL));
     }
 
