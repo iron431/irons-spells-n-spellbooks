@@ -66,7 +66,10 @@ public class TargetedAreaEntity extends Entity {
             yOld = owner.yOld;
             zOld = owner.zOld;
         }
-        if (!level.isClientSide && duration > 0 && tickCount > duration)
+        if (!level.isClientSide
+                && (duration > 0 && tickCount > duration
+                || duration == 0 && tickCount > 20 * 20
+                || (owner != null && owner.isRemoved())))
             discard();
     }
 
