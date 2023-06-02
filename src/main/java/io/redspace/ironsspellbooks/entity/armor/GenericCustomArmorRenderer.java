@@ -1,84 +1,82 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import software.bernie.geckolib.util.RenderUtils;
 
-public class GenericCustomArmorRenderer<T extends GeoArmorItem & IAnimatable> extends GeoArmorRenderer<T> {
-    public static final String leggingTorsoLayerBone = "armorLeggingTorsoLayer";
+import javax.annotation.Nullable;
 
-    public GenericCustomArmorRenderer(AnimatedGeoModel model) {
+public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArmorRenderer<T> {
+    public GeoBone leggingTorsoLayerBone = null;
+
+    public GenericCustomArmorRenderer(GeoModel<T> model) {
         super(model);
+//
+//        this.headBone = "armorHead";
+//        this.bodyBone = "armorBody";
+//        this.rightArmBone = "armorRightArm";
+//        this.leftArmBone = "armorLeftArm";
+//        this.rightLegBone = "armorRightLeg";
+//        this.leftLegBone = "armorLeftLeg";
+//        this.rightBootBone = "armorRightBoot";
+//        this.leftBootBone = "armorLeftBoot";
 
-        this.headBone = "armorHead";
-        this.bodyBone = "armorBody";
-        this.rightArmBone = "armorRightArm";
-        this.leftArmBone = "armorLeftArm";
-        this.rightLegBone = "armorRightLeg";
-        this.leftLegBone = "armorLeftLeg";
-        this.rightBootBone = "armorRightBoot";
-        this.leftBootBone = "armorLeftBoot";
-
-        var m = getGeoModelProvider();
-        m.registerBone(customBone(leggingTorsoLayerBone));
-
-    }
-
-    @Override
-    protected void fitToBiped() {
-        super.fitToBiped();
-
-        IBone torsoLayerBone = this.getGeoModelProvider().getBone(leggingTorsoLayerBone);
-        GeoUtils.copyRotations(this.body, torsoLayerBone);
-        torsoLayerBone.setPositionX(this.body.x);
-        torsoLayerBone.setPositionY(-this.body.y);
-        torsoLayerBone.setPositionZ(this.body.z);
+//        var m = getGeoModelProvider();
+//        m.registerBone(customBone(leggingTorsoLayerBone));
 
     }
 
+    @Nullable
+    public GeoBone getLeggingTorsoLayerBone() {
+        return this.model.getBone("armorLeggingTorsoLayer").orElse(null);
+    }
+
     @Override
-    public GeoArmorRenderer applySlot(EquipmentSlot slot) {
-        //What is this for?
-        this.getGeoModelProvider().getModel(this.getGeoModelProvider().getModelResource(this.currentArmorItem));
+    protected void grabRelevantBones(BakedGeoModel bakedModel) {
+        super.grabRelevantBones(bakedModel);
+        if (this.lastModel == bakedModel)
+            return;
+        this.leggingTorsoLayerBone = getLeggingTorsoLayerBone();
+    }
 
-        setBoneVisibility(this.headBone, false);
-        setBoneVisibility(this.bodyBone, false);
-        setBoneVisibility(this.rightArmBone, false);
-        setBoneVisibility(this.leftArmBone, false);
-        setBoneVisibility(this.rightLegBone, false);
-        setBoneVisibility(this.leftLegBone, false);
-        setBoneVisibility(this.rightBootBone, false);
-        setBoneVisibility(this.rightBootBone, false);
-        setBoneVisibility(this.leftBootBone, false);
-        setBoneVisibility(leggingTorsoLayerBone, false);
 
-        switch (slot) {
-            case HEAD -> setBoneVisibility(this.headBone, true);
-            case CHEST -> {
-                setBoneVisibility(this.bodyBone, true);
-                setBoneVisibility(this.rightArmBone, true);
-                setBoneVisibility(this.leftArmBone, true);
-            }
-            case LEGS -> {
-                setBoneVisibility(this.rightLegBone, true);
-                setBoneVisibility(this.leftLegBone, true);
-                setBoneVisibility(leggingTorsoLayerBone, true);
-
-            }
-            case FEET -> {
-                setBoneVisibility(this.rightBootBone, true);
-                setBoneVisibility(this.leftBootBone, true);
-            }
-            default -> {
-            }
+    @Override
+    protected void applyBoneVisibilityBySlot(EquipmentSlot currentSlot) {
+        super.applyBoneVisibilityBySlot(currentSlot);
+        if (currentSlot == EquipmentSlot.LEGS) {
+            setBoneVisible(this.leggingTorsoLayerBone, true);
         }
-//        if (this.entityLiving instanceof IAnimatable)
-//            setBoneVisibility(leggingTorsoLayerBone, false);
-
-        return this;
     }
 
-    protected GeoBone customBone(String name) {
-        GeoBone bone = new GeoBone();
-        bone.name = name;
-        return bone;
+    @Override
+    public void applyBoneVisibilityByPart(EquipmentSlot currentSlot, ModelPart currentPart, HumanoidModel<?> model) {
+        super.applyBoneVisibilityByPart(currentSlot, currentPart, model);
+        if (currentPart == model.body && currentSlot == EquipmentSlot.LEGS) {
+            setBoneVisible(this.leggingTorsoLayerBone, true);
+        }
+    }
+
+    @Override
+    protected void applyBaseTransformations(HumanoidModel<?> baseModel) {
+        super.applyBaseTransformations(baseModel);
+        if (this.leggingTorsoLayerBone != null) {
+            ModelPart bodyPart = baseModel.body;
+            RenderUtils.matchModelPartRot(bodyPart, this.leggingTorsoLayerBone);
+            this.leggingTorsoLayerBone.updatePosition(bodyPart.x, -bodyPart.y, bodyPart.z);
+        }
+    }
+
+    @Override
+    public void setAllVisible(boolean pVisible) {
+        super.setAllVisible(pVisible);
+        setBoneVisible(this.leggingTorsoLayerBone, pVisible);
+
     }
 }
