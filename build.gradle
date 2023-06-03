@@ -274,26 +274,32 @@ jar.finalizedBy('reobfJar')
 // However if you are in a multi-project ], dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId project.group
             artifactId project.archivesBaseName
             version project.version
-            artifact jar
+            from components.java
         }
     }
+
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/iron431/Irons-Spells-n-Spellbooks"
+            name = "redspace"
+            url uri("https://code.redspace.io/releases")
             credentials {
-                username = System.getenv("USERNAME")
-                password = System.getenv("TOKEN")
+                username = System.getenv("MAVEN_USER")
+                password = System.getenv("MAVEN_PASS")
             }
-        }
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
 }
