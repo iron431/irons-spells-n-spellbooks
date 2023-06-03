@@ -177,48 +177,35 @@ dependencies {
     //implementation both
 
     // FORGE ******************************************************************************************************
-    minecraft 'net.minecraftforge:forge:1.19.2-43.2.3'
-
-    // MIXINS *****************************************************************************************************
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // GECKOLIB ***************************************************************************************************
-    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.39')
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_version}")
 
     // CAELUS *****************************************************************************************************
-    //implementation fg.deobf('top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api')
-    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
-    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6")
-    // runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.19.2-3.0.0.6:api")
+    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${minecraft_version}-${caelus_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${minecraft_version}-${caelus_version}")
 
     // PLAYER ANIMATOR ********************************************************************************************
-    // https://github.com/KosmX/minecraftPlayerAnimator
-    implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.2")
+    implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
 
     // TETRA ******************************************************************************************************
-    // https://www.cursemaven.com/test/curse.maven:tetra-289712/4414851
-    // If you want to run without tetra in dev
-    // compileOnly fg.deobf("curse.maven:tetra-289712:4414851")
-
-    // If you want to use tetra on a dev instance
-    implementation fg.deobf("se.mickelus.mutil:mutil:1.19.2-5.1.0")
-    implementation fg.deobf("curse.maven:tetra-289712:4414851")
+    implementation fg.deobf("se.mickelus.mutil:mutil:${minecraft_version}-${mutil_version}")
+    implementation fg.deobf("curse.maven:tetra-${tetra_version}")
+    // If you want to run without tetra in dev comment the above 2 lines and uncomment the following line
+    // compileOnly fg.deobf("curse.maven:tetra-${tetra_version}")
 
     // JEI ********************************************************************************************************
-    // https://maven.blamejared.com/mezz/jei/jei-1.19.2-forge/
-    // compile against the JEI API but do not include it at runtime
-    compileOnly(fg.deobf("mezz.jei:jei-${forge_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${forge_version}-forge-api:${jei_version}"))
-
-    //at runtime, use the full JEI jar for Forge. Good for dev
-    runtimeOnly(fg.deobf("mezz.jei:jei-${forge_version}-forge:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
 
     // CURIOS *****************************************************************************************************
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
     // JSON ******************************************************************************************************
-    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation "com.google.code.gson:gson:${gson_version}"
 
     // LOCAL LIBS FOR TESTING (put the jar in /libs/ folder
     //Dimensional-Threading-Reforged-1.19.2-1.2.7.jar
@@ -276,7 +263,7 @@ jar.finalizedBy('reobfJar')
 
 java {
     withSourcesJar()
-    withJavadocJar()
+    //withJavadocJar()
 }
 
 publishing {
