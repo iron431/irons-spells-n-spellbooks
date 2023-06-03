@@ -2,52 +2,66 @@ package io.redspace.ironsspellbooks.entity.armor.pumpkin;
 
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.item.armor.PumpkinArmorItem;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
-import software.bernie.geckolib3.util.GeoUtils;
-
-import java.util.Objects;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.util.RenderUtils;
+import javax.annotation.Nullable;
 
 public class PumpkinArmorRenderer extends GenericCustomArmorRenderer<PumpkinArmorItem> {
-    public static final String bodyHeadLayerBone = "armorBodyHeadLayer";
+    public GeoBone bodyHeadLayerBone = null;
 
-    public PumpkinArmorRenderer(AnimatedGeoModel model) {
+    public PumpkinArmorRenderer(GeoModel<PumpkinArmorItem> model) {
         super(model);
+    }
 
-        var m = getGeoModelProvider();
-        m.registerBone(customBone(bodyHeadLayerBone));
-
+    @Nullable
+    public GeoBone getBodyHeadLayerBone() {
+        return this.model.getBone("armorBodyHeadLayer").orElse(null);
     }
 
     @Override
-    protected void fitToBiped() {
-        super.fitToBiped();
-
-        IBone torsoLayerBone = this.getGeoModelProvider().getBone(bodyHeadLayerBone);
-        GeoUtils.copyRotations(this.head, torsoLayerBone);
-        torsoLayerBone.setPositionX(this.head.x);
-        torsoLayerBone.setPositionY(-this.head.y);
-        torsoLayerBone.setPositionZ(this.head.z);
+    protected void grabRelevantBones(BakedGeoModel bakedModel) {
+        super.grabRelevantBones(bakedModel);
+        if (this.lastModel == bakedModel)
+            return;
+        this.bodyHeadLayerBone = getBodyHeadLayerBone();
     }
 
 
     @Override
-    public GeoArmorRenderer applySlot(EquipmentSlot slot) {
-        super.applySlot(slot);
-
-        setBoneVisibility(bodyHeadLayerBone, false);
-
-        if (Objects.requireNonNull(slot) == EquipmentSlot.CHEST) {
-            setBoneVisibility(bodyHeadLayerBone, true);
+    protected void applyBoneVisibilityBySlot(EquipmentSlot currentSlot) {
+        super.applyBoneVisibilityBySlot(currentSlot);
+        if (currentSlot == EquipmentSlot.LEGS) {
+            setBoneVisible(this.bodyHeadLayerBone, true);
         }
-
-        if (this.entityLiving instanceof IAnimatable)
-            setBoneVisibility(bodyHeadLayerBone, false);
-
-        return this;
     }
 
+    @Override
+    public void applyBoneVisibilityByPart(EquipmentSlot currentSlot, ModelPart currentPart, HumanoidModel<?> model) {
+        super.applyBoneVisibilityByPart(currentSlot, currentPart, model);
+        if (currentPart == model.body && currentSlot == EquipmentSlot.LEGS) {
+            setBoneVisible(this.bodyHeadLayerBone, true);
+        }
+    }
+
+    @Override
+    protected void applyBaseTransformations(HumanoidModel<?> baseModel) {
+        super.applyBaseTransformations(baseModel);
+        if (this.bodyHeadLayerBone != null) {
+            ModelPart bodyPart = baseModel.head;
+            RenderUtils.matchModelPartRot(bodyPart, this.bodyHeadLayerBone);
+            this.bodyHeadLayerBone.updatePosition(bodyPart.x, -bodyPart.y, bodyPart.z);
+        }
+    }
+
+    @Override
+    public void setAllVisible(boolean pVisible) {
+        super.setAllVisible(pVisible);
+        setBoneVisible(this.bodyHeadLayerBone, pVisible);
+
+    }
 }

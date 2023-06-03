@@ -3,9 +3,9 @@ package io.redspace.ironsspellbooks.entity.armor;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PlaguedArmorItem;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class PlaguedArmorModel extends AnimatedGeoModel<PlaguedArmorItem> {
+public class PlaguedArmorModel extends GeoModel<PlaguedArmorItem> {
 
     public PlaguedArmorModel(){
         super();

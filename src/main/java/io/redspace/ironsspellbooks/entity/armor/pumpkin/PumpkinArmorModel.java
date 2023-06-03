@@ -3,9 +3,9 @@ package io.redspace.ironsspellbooks.entity.armor.pumpkin;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PumpkinArmorItem;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class PumpkinArmorModel extends AnimatedGeoModel<PumpkinArmorItem> {
+public class PumpkinArmorModel extends GeoModel<PumpkinArmorItem> {
 
     public PumpkinArmorModel(){
         super();
