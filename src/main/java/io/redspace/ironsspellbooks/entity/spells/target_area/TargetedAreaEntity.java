@@ -60,11 +60,12 @@ public class TargetedAreaEntity extends Entity {
     @Override
     public void tick() {
         var owner = getOwner();
+        xOld = getX();
+        yOld = getY();
+        zOld = getZ();
         if (owner != null) {
-            setPos(getOwner().position());
-            xOld = owner.xOld;
-            yOld = owner.yOld;
-            zOld = owner.zOld;
+            setPos(owner.position());
+            this.setDeltaMovement(owner.getDeltaMovement());
         }
         if (!level.isClientSide
                 && (duration > 0 && tickCount > duration
@@ -158,6 +159,8 @@ public class TargetedAreaEntity extends Entity {
         tag.putInt("Age", this.tickCount);
         if (duration > 0)
             tag.putInt("Duration", duration);
+        if (ownerUUID != null)
+            tag.putUUID("Owner", ownerUUID);
     }
 
     protected void readAdditionalSaveData(CompoundTag tag) {
@@ -166,6 +169,8 @@ public class TargetedAreaEntity extends Entity {
         this.tickCount = (tag.getInt("Age"));
         if (tag.contains("Duration"))
             this.duration = tag.getInt("Duration");
+        if (tag.contains("Owner"))
+            this.ownerUUID = tag.getUUID("Owner");
 
     }
 

@@ -191,6 +191,8 @@ public class WizardAttackGoal extends Goal {
         if (!mob.isDrinkingPotion())
             handleAttackLogic(distanceSquared);
 
+        singleUseDelay--;
+
     }
 
     protected void handleAttackLogic(double distanceSquared) {
@@ -249,7 +251,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
-        if (!mob.hasUsedSingleAttack && singleUseSpell != SpellType.NONE_SPELL && --singleUseDelay <= 0) {
+        if (!mob.hasUsedSingleAttack && singleUseSpell != SpellType.NONE_SPELL && singleUseDelay <= 0) {
             mob.hasUsedSingleAttack = true;
             mob.initiateCastSpell(singleUseSpell, singleUseLevel);
         } else {
