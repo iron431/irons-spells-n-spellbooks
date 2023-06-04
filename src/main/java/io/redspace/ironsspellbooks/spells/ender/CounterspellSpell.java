@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -17,12 +18,27 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.List;
 import java.util.Optional;
 
 public class CounterspellSpell extends AbstractSpell {
-    public static final List<MobEffect> MAGICAL_EFFECTS = List.of(/*MobEffectRegistry.ABYSSAL_SHROUD.get(), MobEffectRegistry.ASCENSION.get(), MobEffectRegistry.ANGEL_WINGS.get(), MobEffectRegistry.CHARGED.get(), MobEffectRegistry.EVASION.get(), MobEffectRegistry.HEARTSTOP.get(), MobEffectRegistry.FORTIFY.get(), MobEffectRegistry.TRUE_INVISIBILITY.get()*/);
+    public static final LazyOptional<List<MobEffect>> LAZY_MAGICAL_EFFECTS = LazyOptional.of(() ->
+            List.of(MobEffectRegistry.ABYSSAL_SHROUD.get(),
+                    MobEffectRegistry.ASCENSION.get(),
+                    MobEffectRegistry.ANGEL_WINGS.get(),
+                    MobEffectRegistry.CHARGED.get(),
+                    MobEffectRegistry.EVASION.get(),
+                    MobEffectRegistry.HEARTSTOP.get(),
+                    MobEffectRegistry.FORTIFY.get(),
+                    MobEffectRegistry.TRUE_INVISIBILITY.get(),
+                    MobEffectRegistry.FORTIFY.get(),
+                    MobEffectRegistry.REND.get(),
+                    MobEffectRegistry.SPIDER_ASPECT.get(),
+                    MobEffectRegistry.BLIGHT.get()
+            ));
+
     public CounterspellSpell() {
         this(1);
     }
@@ -75,7 +91,7 @@ public class CounterspellSpell extends AbstractSpell {
                 abstractSpellCastingMob.cancelCast();
 
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity)
-                for (MobEffect mobEffect : MAGICAL_EFFECTS)
+                for (MobEffect mobEffect : LAZY_MAGICAL_EFFECTS.resolve().get())
                     livingEntity.removeEffect(mobEffect);
         }else{
             for (float i = 1; i < 40; i += .5f) {
