@@ -37,10 +37,7 @@ public class DebugWizardAttackGoal extends Goal {
 
     public void tick() {
         if (tickCount++ % 200 == 0) {
-            if (spellType == SpellType.TELEPORT_SPELL) {
-                mob.setTeleportLocationBehindTarget(15);
-            }
-
+            IronsSpellbooks.LOGGER.debug("DebugWizardAttackGoal:  mob.initiateCastSpell:{}({}), pos:{}, isCasting:{}, isClient:{}", spellType, spellLevel, mob.position(), mob.isCasting(), mob.level.isClientSide());
             mob.initiateCastSpell(spellType, spellLevel);
             castingTicks = 0;
         }
@@ -50,7 +47,6 @@ public class DebugWizardAttackGoal extends Goal {
 
             if (cancelCastAfterTicks == castingTicks) {
                 mob.cancelCast();
- //Ironsspellbooks.logger.debug("DebugWizardAttackGoal cancelling spell cast.");
             }
         }
     }

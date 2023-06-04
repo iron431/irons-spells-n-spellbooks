@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
+import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -72,7 +73,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         this.entityData.define(DATA_SPELL, new SyncedSpellData(-1));
         this.entityData.define(DATA_CANCEL_CAST, false);
         this.entityData.define(DATA_DRINKING_POTION, false);
-        //irons_spellbooks.LOGGER.debug("ASCM.defineSynchedData DATA_SPELL:{}", DATA_SPELL);
     }
 
     public boolean isDrinkingPotion() {
@@ -106,7 +106,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-        //irons_spellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level.isClientSide:{} {}", level.isClientSide, pKey);
         super.onSyncedDataUpdated(pKey);
 
         if (!level.isClientSide) {
@@ -114,15 +113,19 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
 
         if (pKey.getId() == DATA_CANCEL_CAST.getId()) {
-            //IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_CANCEL_CAST");
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.1 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level.isClientSide());
+            }
             cancelCast();
         }
 
         if (pKey.getId() == DATA_SPELL.getId()) {
-            //IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_SPELL");
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.2 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level.isClientSide());
+            }
+
             var isCasting = playerMagicData.isCasting();
             var syncedSpellData = entityData.get(DATA_SPELL);
-            //irons_spellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated(DATA_SPELL) {} {}", level.isClientSide, syncedSpellData);
             playerMagicData.setSyncedData(syncedSpellData);
 
             if (!syncedSpellData.isCasting() && isCasting) {
@@ -147,7 +150,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         var syncedSpellData = new SyncedSpellData(this);
         syncedSpellData.loadNBTData(pCompound);
         playerMagicData.setSyncedData(syncedSpellData);
-        IronsSpellbooks.LOGGER.debug("ACM.readAdditionalSaveData.usedSpecial: {}", pCompound.getBoolean("usedSpecial"));
+        //IronsSpellbooks.LOGGER.debug("ACM.readAdditionalSaveData.usedSpecial: {}", pCompound.getBoolean("usedSpecial"));
         hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
     }
 
@@ -157,7 +160,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     public void cancelCast() {
-        if(isCasting()){
+        if (isCasting()) {
             if (level.isClientSide) {
                 cancelCastAnimation = true;
             } else {
@@ -171,10 +174,9 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     private void castComplete() {
-        //irons_spellbooks.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
         if (!level.isClientSide) {
             castingSpell.onServerCastComplete(level, this, playerMagicData, false);
-        }else{
+        } else {
             playerMagicData.resetCastingState();
         }
 
@@ -193,10 +195,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     @Override
     public void aiStep() {
         super.aiStep();
-        //irons_spellbooks.LOGGER.debug("AbstractSpellCastingMob.aiStep");
-
         //Should basically be only used for client stuff
-
         if (!level.isClientSide || castingSpell == null) {
             return;
         }
@@ -208,15 +207,13 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             }
         } else {
             //Actively casting a long cast or continuous cast
-
         }
-
     }
 
     @Override
     protected void customServerAiStep() {
+        IronsSpellbooks.LOGGER.debug("customServerAiStep.0");
         super.customServerAiStep();
-        //irons_spellbooks.LOGGER.debug("AbstractSpellCastingMob.customServerAiStep");
         if (isDrinkingPotion()) {
             if (drinkTime-- <= 0) {
                 finishDrinkingPotion();
@@ -226,7 +223,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
         }
 
-        if (castingSpell == null || entityData.isDirty()) {
+        if (castingSpell == null) {
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("customServerAiStep.1 spell:{} isDirty:{}", castingSpell, entityData.isDirty());
+            }
             return;
         }
 
@@ -235,16 +235,27 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         if (playerMagicData.isCasting()) {
             castingSpell.onServerCastTick(level, this, playerMagicData);
         }
+
+        if (Log.SPELL_DEBUG) {
+            IronsSpellbooks.LOGGER.debug("customServerAiStep.2");
+        }
+
         this.forceLookAtTarget(getTarget());
+
         if (playerMagicData.getCastDurationRemaining() <= 0) {
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("customServerAiStep.3");
+            }
+
             if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.CHARGE || castingSpell.getCastType() == CastType.INSTANT) {
-                //irons_spellbooks.LOGGER.debug("ASCM.customServerAiStep: onCast.1 {}", castingSpell.getSpellType());
+                if (Log.SPELL_DEBUG) {
+                    IronsSpellbooks.LOGGER.debug("customServerAiStep.4");
+                }
                 castingSpell.onCast(level, this, playerMagicData);
             }
             castComplete();
         } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
-                //irons_spellbooks.LOGGER.debug("ASCM.customServerAiStep: onCast.2 {}", castingSpell.getSpellType());
                 castingSpell.onCast(level, this, playerMagicData);
             }
         }
@@ -260,7 +271,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             cancelCastAnimation = false;
         }
 
-        //irons_spellbooks.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level.isClientSide);
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
         if (!castingSpell.checkPreCastConditions(level, this, playerMagicData)) {
             castingSpell = null;
@@ -306,8 +316,20 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
                 }
 
             }
-            if (valid)
+            if (valid) {
+                if (Log.SPELL_DEBUG) {
+                    IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget: valid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
+                }
                 playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
+            } else {
+                if (Log.SPELL_DEBUG) {
+                    IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
+                }
+            }
+        } else {
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget: no target, isClient:{}", level.isClientSide());
+            }
         }
     }
 
@@ -316,10 +338,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     private void forceLookAtTarget(LivingEntity target) {
-//        if (target != null) {
-//            lookAt(target, 1, 1);
-//            //setOldPosAndRot();
-//        }
         if (target != null) {
             double d0 = target.getX() - this.getX();
             double d2 = target.getZ() - this.getZ();

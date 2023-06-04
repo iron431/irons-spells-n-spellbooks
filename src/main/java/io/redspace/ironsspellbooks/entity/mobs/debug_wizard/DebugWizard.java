@@ -16,11 +16,6 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.Level;
 
 public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
-
-    public class SpellInfo {
-
-    }
-
     private SpellType spellType;
     private int spellLevel;
     private boolean targetsPlayer;
@@ -68,8 +63,6 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
 
     private void initGoals() {
         this.goalSelector.addGoal(1, new DebugWizardAttackGoal(this, spellType, spellLevel, cancelCastAfterTicks));
-        //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.35D));
 
         if (this.targetsPlayer) {
             this.targetSelector.addGoal(1, new DebugTargetClosestEntityGoal(this));
@@ -94,11 +87,6 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         targetsPlayer = pCompound.getBoolean("targetsPlayer");
         cancelCastAfterTicks = pCompound.getInt("cancelCastAfterTicks");
         initGoals();
-    }
-
-    @Override
-    protected void registerGoals() {
-
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
