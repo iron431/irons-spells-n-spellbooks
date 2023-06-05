@@ -115,7 +115,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
             }
             for (Entity entity : level.getEntities(this, this.getBoundingBox()).stream().filter(target -> canHitEntity(target) && !victims.contains(target)).collect(Collectors.toSet())) {
                 damageEntity(entity);
-                IronsSpellbooks.LOGGER.info(entity.getName().getString());
+                //IronsSpellbooks.LOGGER.info(entity.getName().getString());
                 MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY(), entity.getZ(), 50, 0, 0, 0, .5, true);
                 if (entity instanceof ShieldPart || entity instanceof AbstractShieldEntity) {
                     discard();
