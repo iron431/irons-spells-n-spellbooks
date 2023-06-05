@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.spells.poison;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
@@ -85,7 +87,15 @@ public class RootSpell extends AbstractSpell {
 
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
             LivingEntity target = castTargetingData.getTarget((ServerLevel) level);
-            if (target != null && !target.getType().is(ModTags.CANT_ROOT)){
+
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("RootSpell.onCast.1 targetEntity:{}", target);
+            }
+
+            if (target != null && !target.getType().is(ModTags.CANT_ROOT)) {
+                if (Log.SPELL_DEBUG) {
+                    IronsSpellbooks.LOGGER.debug("RootSpell.onCast.2 targetEntity:{}", target);
+                }
                 Vec3 spawn = target.position();
                 RootEntity rootEntity = new RootEntity(level, entity);
                 rootEntity.setDuration(getDuration(entity));

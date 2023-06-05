@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.debug_wizard;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.DebugTargetClosestEntityGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.DebugWizardAttackGoal;
@@ -8,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -65,6 +67,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         this.goalSelector.addGoal(1, new DebugWizardAttackGoal(this, spellType, spellLevel, cancelCastAfterTicks));
 
         if (this.targetsPlayer) {
+            IronsSpellbooks.LOGGER.debug("DebugWizard: Adding DebugTargetClosestEntityGoal");
             this.targetSelector.addGoal(1, new DebugTargetClosestEntityGoal(this));
         }
         entityData.set(DEBUG_SPELL_INFO, String.format("%s (L%s)", spellType.name(), spellLevel));
