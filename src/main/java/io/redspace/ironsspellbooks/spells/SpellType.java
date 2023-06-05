@@ -116,10 +116,6 @@ public enum SpellType {
         return value;
     }
 
-    public boolean isEnabled() {
-        return ServerConfigs.getSpellConfig(this).ENABLED;
-    }
-
     public int getMinRarity() {
         return ServerConfigs.getSpellConfig(this).minRarity().getValue();
     }
