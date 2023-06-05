@@ -49,7 +49,6 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRende
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
-import io.redspace.ironsspellbooks.item.curios.RingData;
 import io.redspace.ironsspellbooks.particle.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -57,6 +56,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.render.*;
 import io.redspace.ironsspellbooks.tetra.TetraProxy;
+import io.redspace.ironsspellbooks.util.CompassItemPropertyFunctionBackport;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
@@ -64,14 +64,13 @@ import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.*;
-import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -226,22 +225,21 @@ public class ClientSetup {
     }
 
     @SubscribeEvent
-    public static void registerParticles(RegisterParticleProvidersEvent event) {
-        event.register(ParticleRegistry.WISP_PARTICLE.get(), WispParticle.Provider::new);
-        event.register(ParticleRegistry.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
-        event.register(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), BloodGroundParticle.Provider::new);
-        event.register(ParticleRegistry.SNOWFLAKE_PARTICLE.get(), SnowflakeParticle.Provider::new);
-        event.register(ParticleRegistry.ELECTRICITY_PARTICLE.get(), ElectricityParticle.Provider::new);
-        event.register(ParticleRegistry.UNSTABLE_ENDER_PARTICLE.get(), UnstableEnderParticle.Provider::new);
-        event.register(ParticleRegistry.DRAGON_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
-        event.register(ParticleRegistry.FIRE_PARTICLE.get(), FireParticle.Provider::new);
-        event.register(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
-        event.register(ParticleRegistry.SIPHON_PARTICLE.get(), SiphonParticle.Provider::new);
-        event.register(ParticleRegistry.FOG_PARTICLE.get(), FogParticle.Provider::new);
-        event.register(ParticleRegistry.ACID_PARTICLE.get(), AcidParticle.Provider::new);
-        event.register(ParticleRegistry.ACID_BUBBLE_PARTICLE.get(), AcidBubbleParticle.Provider::new);
+    public static void registerParticles(ParticleFactoryRegisterEvent event) {
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.WISP_PARTICLE.get(), WispParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), BloodGroundParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.SNOWFLAKE_PARTICLE.get(), SnowflakeParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.ELECTRICITY_PARTICLE.get(), ElectricityParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.UNSTABLE_ENDER_PARTICLE.get(), UnstableEnderParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.DRAGON_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.FIRE_PARTICLE.get(), FireParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.SIPHON_PARTICLE.get(), SiphonParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.FOG_PARTICLE.get(), FogParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.ACID_PARTICLE.get(), AcidParticle.Provider::new);
+        Minecraft.getInstance().particleEngine.register(ParticleRegistry.ACID_BUBBLE_PARTICLE.get(), AcidBubbleParticle.Provider::new);
     }
-
     @SubscribeEvent
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
