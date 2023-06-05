@@ -24,6 +24,12 @@ public class FireBombSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(caster), 1))
         );
     }
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.FIRE)
+            .setMaxLevel(8)
+            .setCooldownSeconds(12)
+            .build();
 
     public FireBombSpell(int level) {
         super(SpellType.FIRE_BOMB_SPELL);

@@ -38,6 +38,12 @@ public class StarfallSpell extends AbstractSpell {
         );
     }
 
+    public static DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.ENDER)
+            .setMaxLevel(10)
+            .setCooldownSeconds(16)
+            .build();
 
     public StarfallSpell(int level) {
         super(SpellType.STARFALL_SPELL);
