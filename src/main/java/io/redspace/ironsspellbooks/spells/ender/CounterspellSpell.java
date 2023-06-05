@@ -5,7 +5,9 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CounterspellSpell extends AbstractSpell {
-    public static final List<MobEffect> MAGICAL_EFFECTS = List.of(/*MobEffectRegistry.ABYSSAL_SHROUD.get(), MobEffectRegistry.ASCENSION.get(), MobEffectRegistry.ANGEL_WINGS.get(), MobEffectRegistry.CHARGED.get(), MobEffectRegistry.EVASION.get(), MobEffectRegistry.HEARTSTOP.get(), MobEffectRegistry.FORTIFY.get(), MobEffectRegistry.TRUE_INVISIBILITY.get()*/);
+    public static final List<MobEffect> MAGICAL_EFFECTS = List.of(MobEffectRegistry.ABYSSAL_SHROUD.get(), MobEffectRegistry.ASCENSION.get(), MobEffectRegistry.ANGEL_WINGS.get(), MobEffectRegistry.CHARGED.get(), MobEffectRegistry.EVASION.get(), MobEffectRegistry.HEARTSTOP.get(), MobEffectRegistry.FORTIFY.get(), MobEffectRegistry.TRUE_INVISIBILITY.get());
     public CounterspellSpell() {
         this(1);
     }
@@ -37,13 +39,6 @@ public class CounterspellSpell extends AbstractSpell {
         this.baseManaCost = 50;
 
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.ENDER)
-            .setMaxLevel(1)
-            .setCooldownSeconds(15)
-            .build();
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {

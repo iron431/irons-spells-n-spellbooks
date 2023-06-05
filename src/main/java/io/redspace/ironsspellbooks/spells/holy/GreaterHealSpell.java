@@ -3,8 +3,9 @@ package io.redspace.ironsspellbooks.spells.holy;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.*;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,13 +25,6 @@ public class GreaterHealSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.greater_healing")
         );
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.HOLY)
-            .setMaxLevel(1)
-            .setCooldownSeconds(45)
-            .build();
 
     public GreaterHealSpell(int level) {
         super(SpellType.GREATER_HEAL_SPELL);

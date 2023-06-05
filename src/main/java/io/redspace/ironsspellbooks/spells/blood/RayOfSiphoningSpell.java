@@ -6,7 +6,9 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.network.spell.ClientboundBloodSiphonParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SchoolType;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -30,13 +32,6 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getTickDamage(caster), 1)),
                 Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(level), 1)));
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(10)
-            .setCooldownSeconds(15)
-            .build();
 
     public RayOfSiphoningSpell(int level) {
         super(SpellType.RAY_OF_SIPHONING_SPELL);

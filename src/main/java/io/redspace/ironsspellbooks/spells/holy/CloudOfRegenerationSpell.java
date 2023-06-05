@@ -5,7 +5,8 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundRegenCloudParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -33,13 +34,6 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
     }
 
     public static final float radius = 5;
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.HOLY)
-            .setMaxLevel(5)
-            .setCooldownSeconds(35)
-            .build();
 
     public CloudOfRegenerationSpell(int level) {
         super(SpellType.CLOUD_OF_REGENERATION_SPELL);

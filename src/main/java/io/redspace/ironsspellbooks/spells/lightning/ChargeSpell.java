@@ -3,7 +3,8 @@ package io.redspace.ironsspellbooks.spells.lightning;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.effect.ChargeEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.holy.HealSpell;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -32,13 +33,6 @@ public class ChargeSpell extends AbstractSpell {
                 Component.translatable("attribute.modifier.plus.1", Utils.stringTruncation(getPercentSpellPower(), 0), Component.translatable("attribute.irons_spellbooks.spell_power"))
         );
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.LIGHTNING)
-            .setMaxLevel(3)
-            .setCooldownSeconds(40)
-            .build();
 
     public ChargeSpell(int level) {
         super(SpellType.CHARGE_SPELL);

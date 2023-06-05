@@ -23,9 +23,9 @@ import java.util.*;
 
 public class RandomizeSpellFunction extends LootItemConditionalFunction {
     final NumberProvider qualityRange;
-    final List<SpellType> applicableSpells;
+    final SpellType[] applicableSpells;
 
-    protected RandomizeSpellFunction(LootItemCondition[] lootConditions, NumberProvider qualityRange, List<SpellType> applicableSpells) {
+    protected RandomizeSpellFunction(LootItemCondition[] lootConditions, NumberProvider qualityRange, SpellType[] applicableSpells) {
         super(lootConditions);
         this.qualityRange = qualityRange;
         this.applicableSpells = applicableSpells;
@@ -56,7 +56,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         return itemStack;
     }
 
-    private NavigableMap<Integer, SpellType> getWeightedSpellList(List<SpellType> entries) {
+    private NavigableMap<Integer, SpellType> getWeightedSpellList(SpellType[] entries) {
         int total = 0;
         NavigableMap<Integer, SpellType> weightedSpells = new TreeMap<>();
 
@@ -102,13 +102,13 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             NumberProvider numberProvider = GsonHelper.getAsObject(json, "quality", jsonDeserializationContext, NumberProvider.class);
 
             //Spell Selection
-            var applicableSpells = getApplicableSpells(json);
+            SpellType[] applicableSpells = getApplicableSpells(json);
 
 
             return new RandomizeSpellFunction(lootConditions, numberProvider, applicableSpells);
         }
 
-        private List<SpellType > getApplicableSpells(JsonObject json) {
+        private SpellType[] getApplicableSpells(JsonObject json) {
             if (GsonHelper.isValidNode(json, "school")) {
                 var schoolType = GsonHelper.getAsString(json, "school");
                 return switch (schoolType.toLowerCase()) {
@@ -120,7 +120,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
                     case "holy" -> SpellType.getSpellsFromSchool(SchoolType.HOLY);
                     case "blood" -> SpellType.getSpellsFromSchool(SchoolType.BLOOD);
                     case "void" -> SpellType.getSpellsFromSchool(SchoolType.VOID);
-                    default -> List.of(SpellType.NONE_SPELL);
+                    default -> new SpellType[]{SpellType.NONE_SPELL};
                 };
             } else if (GsonHelper.isArrayNode(json, "spells")) {
                 var spellsFromJson = GsonHelper.getAsJsonArray(json, "spells");
@@ -132,9 +132,9 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
                             applicableSpellList.add(spellType);
                     }
                 }
-                return applicableSpellList;
+                return applicableSpellList.toArray(new SpellType[]{});
             } else {
-                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID).toList();
+                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID).toList().toArray(new SpellType[0]);
 //                var nonVoidSpells = new SpellType[SpellType.values().length - SpellType.getSpellsFromSchool(SchoolType.VOID).length];
 //                int j = 0;
 //                for (int i = 0; i < nonVoidSpells.length; i++) {

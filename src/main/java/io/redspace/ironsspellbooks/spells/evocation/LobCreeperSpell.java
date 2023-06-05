@@ -2,7 +2,8 @@ package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -26,13 +27,6 @@ public class LobCreeperSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1))
         );
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.EVOCATION)
-            .setMaxLevel(10)
-            .setCooldownSeconds(2)
-            .build();
 
     public LobCreeperSpell(int level) {
         super(SpellType.LOB_CREEPER_SPELL);

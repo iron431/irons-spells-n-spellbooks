@@ -4,7 +4,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -32,13 +33,6 @@ public class SummonHorseSpell extends AbstractSpell {
         this.baseManaCost = 50;
 
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.EVOCATION)
-            .setMaxLevel(5)
-            .setCooldownSeconds(20)
-            .build();
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
@@ -73,7 +67,7 @@ public class SummonHorseSpell extends AbstractSpell {
     }
 
     private void setAttributes(AbstractHorse horse, float power) {
-        int maxPower = baseSpellPower + (ServerConfigs.getSpellConfig(SpellType.SUMMON_HORSE_SPELL).maxLevel() - 1) * spellPowerPerLevel;
+        int maxPower = baseSpellPower + (ServerConfigs.getSpellConfig(SpellType.SUMMON_HORSE_SPELL).MAX_LEVEL - 1) * spellPowerPerLevel;
         float quality = power / (float) maxPower;
 
         float minSpeed = .2f;

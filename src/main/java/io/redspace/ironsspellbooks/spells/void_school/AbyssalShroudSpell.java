@@ -3,7 +3,8 @@ package io.redspace.ironsspellbooks.spells.void_school;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.holy.HealSpell;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -26,13 +27,6 @@ public class AbyssalShroudSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster) * 20, 1)));
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.LEGENDARY)
-            .setSchool(SchoolType.VOID)
-            .setMaxLevel(3)
-            .setCooldownSeconds(300)
-            .build();
 
     public AbyssalShroudSpell(int level) {
         super(SpellType.ABYSSAL_SHROUD_SPELL);

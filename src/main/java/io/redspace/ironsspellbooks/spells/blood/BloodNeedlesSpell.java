@@ -2,7 +2,10 @@ package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Component;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.MutableComponent;
@@ -26,13 +29,6 @@ public class BloodNeedlesSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.projectile_count", getCount()));
 
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(10)
-            .setCooldownSeconds(10)
-            .build();
 
     public BloodNeedlesSpell(int level) {
         super(SpellType.BlOOD_NEEDLES_SPELL);

@@ -5,9 +5,12 @@ import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Component;
 import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.util.Component;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -39,13 +42,6 @@ public class RaiseDeadSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.summon_count", this.level));
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(6)
-            .setCooldownSeconds(150)
-            .build();
 
     public RaiseDeadSpell(int level) {
         super(SpellType.RAISE_DEAD_SPELL);
@@ -122,7 +118,7 @@ public class RaiseDeadSpell extends AbstractSpell {
 
         ItemStack[] result = new ItemStack[4];
         for (int i = 0; i < 4; i++) {
-            float quality = Mth.clamp((power + (Mth.randomBetweenInclusive(random, -3, 8) ) - minQuality) / (maxQuality - minQuality), 0, .95f);
+            float quality = Mth.clamp((power + (Mth.randomBetweenInclusive(random, -3, 8)) - minQuality) / (maxQuality - minQuality), 0, .95f);
             if (random.nextDouble() < quality * quality) {
                 if (quality > .85) {
                     result[i] = new ItemStack(iron[i]);

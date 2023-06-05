@@ -6,7 +6,9 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.poison_breath.PoisonBreathProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.EntityCastData;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -37,13 +39,6 @@ public class PoisonBreathSpell extends AbstractSpell {
         this.baseManaCost = 5;
 
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.POISON)
-            .setMaxLevel(10)
-            .setCooldownSeconds(12)
-            .build();
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {

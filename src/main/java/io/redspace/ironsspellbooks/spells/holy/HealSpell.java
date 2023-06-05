@@ -2,7 +2,8 @@ package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,13 +30,6 @@ public class HealSpell extends AbstractSpell {
     }
 
     final float twoPi = 6.283f;
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.HOLY)
-            .setMaxLevel(10)
-            .setCooldownSeconds(25)
-            .build();
 
     public HealSpell(int level) {
         super(SpellType.HEAL_SPELL);

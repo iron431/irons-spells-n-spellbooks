@@ -5,7 +5,8 @@ import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.network.spell.ClientboundFrostStepParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -36,13 +37,6 @@ public class FrostStepSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.shatter_damage", Utils.stringTruncation(getDamage(caster), 1))
         );
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.ICE)
-            .setMaxLevel(8)
-            .setCooldownSeconds(10)
-            .build();
 
     public FrostStepSpell(int level) {
         super(SpellType.FROST_STEP_SPELL);

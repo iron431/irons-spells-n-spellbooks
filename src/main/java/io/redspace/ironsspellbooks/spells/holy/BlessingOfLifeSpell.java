@@ -3,12 +3,15 @@ package io.redspace.ironsspellbooks.spells.holy;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
+import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -29,14 +32,6 @@ public class BlessingOfLifeSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(caster), 1))
         );
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.HOLY)
-            .setMaxLevel(10)
-            .setCooldownSeconds(10)
-            .build();
-
     public BlessingOfLifeSpell(int level) {
         super(SpellType.BLESSING_OF_LIFE_SPELL);
         this.level = level;

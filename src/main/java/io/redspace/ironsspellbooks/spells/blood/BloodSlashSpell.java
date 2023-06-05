@@ -2,7 +2,8 @@ package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
-import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import io.redspace.ironsspellbooks.util.Component;
@@ -24,13 +25,6 @@ public class BloodSlashSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(5)
-            .setCooldownSeconds(10)
-            .build();
 
     public BloodSlashSpell(int level) {
         super(SpellType.BLOOD_SLASH_SPELL);
