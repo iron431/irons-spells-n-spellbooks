@@ -16,8 +16,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 public class GlowingEyesLayer {
     public static final ResourceLocation EYE_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/purple_eyes.png");
@@ -48,25 +49,21 @@ public class GlowingEyesLayer {
         }
     }
 
-    public static class Geo extends GeoLayerRenderer<AbstractSpellCastingMob> {
-        public Geo(IGeoRenderer entityRendererIn) {
+    public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob> {
+        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn) {
             super(entityRendererIn);
         }
 
         @Override
-        public RenderType getRenderType(ResourceLocation textureLocation) {
-            return EYES;
-        }
-
-        @Override
-        public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, AbstractSpellCastingMob abstractSpellCastingMob, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            var eye = getEyeType(abstractSpellCastingMob);
+        public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            var eye = getEyeType(animatable);
             if (eye != EyeType.None) {
-                var model = entityRenderer.getGeoModelProvider().getModel(entityRenderer.getGeoModelProvider().getModelResource(abstractSpellCastingMob));
-                model.getBone("head").ifPresent((headBone) -> {
-                    var scale = getEyeScale(abstractSpellCastingMob);
-                    headBone.setScale(scale, scale, scale);
-                    this.renderModel(this.getEntityModel(), EYE_TEXTURE, poseStack, multiBufferSource, packedLightIn, abstractSpellCastingMob, partialTicks, eye.r, eye.g, eye.b);
+                bakedModel.getBone("head").ifPresent((headBone) -> {
+                    var scale = getEyeScale(animatable);
+                    headBone.updateScale(scale, scale, scale);
+
+                    //TODO: does only rendering head work?
+                    this.getRenderer().renderChildBones(poseStack, animatable, headBone, EYES, bufferSource, buffer, true, partialTick, packedLight, packedOverlay, eye.r, eye.g, eye.b, 1f);
                 });
             }
         }

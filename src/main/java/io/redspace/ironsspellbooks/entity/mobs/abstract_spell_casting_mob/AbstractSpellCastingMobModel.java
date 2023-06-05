@@ -4,9 +4,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.WalkAnimationState;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
+
+    public AbstractSpellCastingMobModel(ResourceLocation assetSubpath) {
+        //TODO: what is this resourcelocation supposed to point to?
+        super(assetSubpath);
+    }
 
     @Override
     public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
@@ -22,40 +31,43 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
     }
 
     @Override
-    public void setCustomAnimations(AbstractSpellCastingMob entity, int instanceId, AnimationEvent animationEvent) {
-        super.setCustomAnimations(entity, instanceId, animationEvent);
+    public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
+        super.setCustomAnimations(entity, instanceId, animationState);
+
         if (Minecraft.getInstance().isPaused() || !entity.shouldBeExtraAnimated())
             return;
 
-        float partialTick = animationEvent.getPartialTick();
+        float partialTick = animationState.getPartialTick();
         /*
                 This overrides all other animation
          */
-        IBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-        IBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
-        IBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        IBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-        IBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-        IBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+        CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
+        CoreGeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+        CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+        CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+        CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+        CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
 
         /*
             Head Controls
          */
         //Make the head look forward, whatever forward is (influenced externally, such as a lootAt target)
         if (!entity.isAnimating() || entity.shouldAlwaysAnimateHead()) {
-            head.setRotationY(Mth.lerp(partialTick,
+            head.setRotX(Mth.lerp(partialTick,
                     Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
                     Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD));
-            head.setRotationX(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD);
+            head.setRotY(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD);
         }
         /*
             Crazy Vanilla Magic Calculations (LivingEntityRenderer:116 & HumanoidModel#setupAnim
          */
+        //Parchment not finished yet
+        WalkAnimationState walkAnimationState = entity.f_267362_;
         float pLimbSwingAmount = 0.0F;
         float pLimbSwing = 0.0F;
         if (entity.isAlive()) {
-            pLimbSwingAmount = Mth.lerp(partialTick, entity.animationSpeedOld, entity.animationSpeed);
-            pLimbSwing = entity.animationPosition - entity.animationSpeed * (1.0F - partialTick);
+            pLimbSwingAmount = walkAnimationState.m_267711_(partialTick);
+            pLimbSwing = walkAnimationState.m_267590_(partialTick);
             if (entity.isBaby()) {
                 pLimbSwing *= 3.0F;
             }
@@ -79,12 +91,12 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
          */
         if (entity.isPassenger() && entity.getVehicle().shouldRiderSit()) {
             //If we are riding something, pose ourselves sitting
-            rightLeg.setRotationX(1.4137167F);
-            rightLeg.setRotationY(-(float) Math.PI / 10F);
-            rightLeg.setRotationZ(-0.07853982F);
-            leftLeg.setRotationX(1.4137167F);
-            leftLeg.setRotationY((float) Math.PI / 10F);
-            leftLeg.setRotationZ(0.07853982F);
+            rightLeg.setRotX(1.4137167F);
+            rightLeg.setRotY(-(float) Math.PI / 10F);
+            rightLeg.setRotZ(-0.07853982F);
+            leftLeg.setRotX(1.4137167F);
+            leftLeg.setRotY((float) Math.PI / 10F);
+            leftLeg.setRotZ(0.07853982F);
         } else if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
             //rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
             //leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
@@ -120,7 +132,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
 
     }
 
-    private void bobBone(IBone bone, int offset, float multiplier) {
+    private void bobBone(CoreGeoBone bone, int offset, float multiplier) {
         //Copied from AnimationUtils#bobLimb
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
@@ -131,16 +143,16 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
 
     }
 
-    private void addRotationX(IBone bone, float rotation) {
-        bone.setRotationX(wrapRadians(bone.getRotationX() + rotation));
+    private void addRotationX(CoreGeoBone bone, float rotation) {
+        bone.setRotX(wrapRadians(bone.getRotX() + rotation));
     }
 
-    private void addRotationZ(IBone bone, float rotation) {
-        bone.setRotationZ(wrapRadians(bone.getRotationZ() + rotation));
+    private void addRotationZ(CoreGeoBone bone, float rotation) {
+        bone.setRotZ(wrapRadians(bone.getRotZ() + rotation));
     }
 
-    private void addRotationY(IBone bone, float rotation) {
-        bone.setRotationY(wrapRadians(bone.getRotationY() + rotation));
+    private void addRotationY(CoreGeoBone bone, float rotation) {
+        bone.setRotY(wrapRadians(bone.getRotY() + rotation));
     }
 
     public static float wrapRadians(float pValue) {

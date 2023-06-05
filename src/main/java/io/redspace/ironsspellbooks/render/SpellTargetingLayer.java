@@ -2,9 +2,7 @@ package io.redspace.ironsspellbooks.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
@@ -19,8 +17,12 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 import static io.redspace.ironsspellbooks.spells.SpellType.BLESSING_OF_LIFE_SPELL;
 import static io.redspace.ironsspellbooks.spells.SpellType.HEALING_CIRCLE_SPELL;
@@ -43,21 +45,21 @@ public class SpellTargetingLayer {
 
     }
 
-    public static class Geo extends GeoLayerRenderer<AbstractSpellCastingMob> {
-        public Geo(IGeoRenderer entityRendererIn) {
+    public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob> {
+        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn) {
             super(entityRendererIn);
         }
 
         @Override
-        public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightIn, AbstractSpellCastingMob abstractSpellCastingMob, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (shouldRender(abstractSpellCastingMob)) {
+        public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            if (shouldRender(animatable)) {
 //                //It's upside down???
 //                poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
 //                poseStack.translate(0, -(abstractSpellCastingMob.getBbWidth() + abstractSpellCastingMob.getBbHeight()) / 2, 0);
                 poseStack.pushPose();
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
-                poseStack.translate(0, -abstractSpellCastingMob.getBoundingBox().getYsize() / 2, 0);
-                renderTargetLayer(poseStack, multiBufferSource, abstractSpellCastingMob);
+                poseStack.mulPose(Axis.XP.rotationDegrees(180));
+                poseStack.translate(0, -animatable.getBoundingBox().getYsize() / 2, 0);
+                renderTargetLayer(poseStack, bufferSource, animatable);
                 poseStack.popPose();
             }
         }
@@ -107,7 +109,7 @@ public class SpellTargetingLayer {
             consumer.vertex(poseMatrix, halfWidth, 0, halfWidth).color(color.x(), color.y(), color.z(), 1).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
             consumer.vertex(poseMatrix, -halfWidth, 0, halfWidth).color(color.x(), color.y(), color.z(), 1).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
             consumer.vertex(poseMatrix, -halfWidth, height, halfWidth).color(color.x(), color.y(), color.z(), 1).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 
         }
 

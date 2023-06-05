@@ -18,9 +18,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 @OnlyIn(Dist.CLIENT)
 public class EnergySwirlLayer {
@@ -61,35 +63,60 @@ public class EnergySwirlLayer {
         }
     }
 
-    public static class Geo extends GeoLayerRenderer<AbstractSpellCastingMob> {
+    public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob> {
         private final ResourceLocation TEXTURE/* = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/evasion.png")*/;
         private final Long shouldRenderFlag;
 
-        public Geo(IGeoRenderer entityRendererIn, ResourceLocation texture, Long shouldRenderFlag) {
+        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn, ResourceLocation texture, Long shouldRenderFlag) {
             super(entityRendererIn);
             this.TEXTURE = texture;
             this.shouldRenderFlag = shouldRenderFlag;
 
         }
 
+        //todo: delete this
+//        @Override
+//        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+//            if (EnergySwirlLayer.shouldRender(entityLivingBaseIn, shouldRenderFlag)) {
+//                float f = (float) entityLivingBaseIn.tickCount + partialTicks;
+//                var renderType = EnergySwirlLayer.getRenderType(TEXTURE, f);
+//                VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
+//                matrixStackIn.pushPose();
+////            this.getRenderer().setCurrentRTB(bufferIn);
+//                var model = ((GeoModel) this.getDefaultBakedModel()).getModel(AbstractSpellCastingMob.modelResource);
+//                model.getBone("body").ifPresent((rootBone) -> {
+//                    rootBone.childBones.forEach(bone -> {
+//                        bone.setScale(1.1f, 1.1f, 1.1f);
+//                    });
+//                });
+//                this.getRenderer().render(model, entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
+//                        vertexconsumer, packedLightIn, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
+//                matrixStackIn.popPose();
+//            }
+//        }
+
         @Override
-        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (EnergySwirlLayer.shouldRender(entityLivingBaseIn, shouldRenderFlag)) {
-                float f = (float) entityLivingBaseIn.tickCount + partialTicks;
+        public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType2, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            if (EnergySwirlLayer.shouldRender(animatable, shouldRenderFlag)) {
+                float f = (float) animatable.tickCount + partialTick;
                 var renderType = EnergySwirlLayer.getRenderType(TEXTURE, f);
-                VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
-                matrixStackIn.pushPose();
+                VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
+                poseStack.pushPose();
 //            this.getRenderer().setCurrentRTB(bufferIn);
-                var model = ((AnimatedGeoModel) this.getEntityModel()).getModel(AbstractSpellCastingMob.modelResource);
-                model.getBone("body").ifPresent((rootBone) -> {
-                    rootBone.childBones.forEach(bone -> {
-                        bone.setScale(1.1f, 1.1f, 1.1f);
+                bakedModel.getBone("body").ifPresent((rootBone) -> {
+                    rootBone.getChildBones().forEach(bone -> {
+                        bone.updateScale(1.1f, 1.1f, 1.1f);
                     });
                 });
-                this.getRenderer().render(model, entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
-                        vertexconsumer, packedLightIn, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
-                matrixStackIn.popPose();
+                this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
+                        packedLight, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
+                poseStack.popPose();
             }
+        }
+
+        @Override
+        public void renderForBone(PoseStack poseStack, AbstractSpellCastingMob animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            super.renderForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
         }
     }
 

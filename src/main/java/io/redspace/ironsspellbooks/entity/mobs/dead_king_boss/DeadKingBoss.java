@@ -28,7 +28,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -46,13 +45,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -116,7 +114,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     protected void setFirstPhaseGoals() {
-        this.goalSelector.removeAllGoals();
+        this.goalSelector.removeAllGoals((x) -> true);
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellType.WITHER_SKULL_SPELL, 3, 4, 70, 140, 3));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.RAISE_DEAD_SPELL, 3, 5, 600, 900, 1));
@@ -126,7 +124,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     protected void setFinalPhaseGoals() {
-        this.goalSelector.removeAllGoals();
+        this.goalSelector.removeAllGoals((x) -> true);
         this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellType.WITHER_SKULL_SPELL, 5, 5, 60, 140, 4));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.SUMMON_VEX_SPELL, 3, 5, 400, 600, 1));
         this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellType.BLOOD_STEP_SPELL, 1, 1, 100, 180, 1));
@@ -273,7 +271,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         //reduces damage of projectiles and summons
-        if (pSource instanceof IndirectEntityDamageSource)
+        if (pSource.m_269014_())
             pAmount *= .75f;
         return super.hurt(pSource, pAmount);
     }
@@ -361,16 +359,16 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         this.entityData.define(NEXT_SLAM, false);
     }
 
-    private final AnimationBuilder phase_transition_animation = new AnimationBuilder().addAnimation("dead_king_die", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("dead_king_idle", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder melee = new AnimationBuilder().addAnimation("dead_king_melee", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder slam = new AnimationBuilder().addAnimation("dead_king_slam", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final RawAnimation phase_transition_animation = RawAnimation.begin().thenPlay("dead_king_die");
+    private final RawAnimation idle = RawAnimation.begin().thenPlay("dead_king_idle");
+    private final RawAnimation melee = RawAnimation.begin().thenPlay("dead_king_melee");
+    private final RawAnimation slam = RawAnimation.begin().thenPlay("dead_king_slam");
 
     private final AnimationController transitionController = new AnimationController(this, "dead_king_transition", 0, this::transitionPredicate);
     private final AnimationController meleeController = new AnimationController(this, "dead_king_animations", 0, this::predicate);
     private final AnimationController idleController = new AnimationController(this, "dead_king_idle", 0, this::idlePredicate);
 
-    private PlayState predicate(AnimationEvent animationEvent) {
+    private PlayState predicate(AnimationState animationEvent) {
         var controller = animationEvent.getController();
 //        if (isPhaseTransitioning() && controller.getAnimationState() == AnimationState.Stopped) {
 //            controller.markNeedsReload();
@@ -378,7 +376,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 //            return PlayState.CONTINUE;
 //        }
         if (this.swinging) {
-            controller.markNeedsReload();
+            controller.forceAnimationReset();
             if (isNextSlam()) {
                 controller.setAnimation(slam);
             } else {
@@ -390,7 +388,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         return PlayState.CONTINUE;
     }
 
-    private PlayState transitionPredicate(AnimationEvent animationEvent) {
+    private PlayState transitionPredicate(AnimationState animationEvent) {
         var controller = animationEvent.getController();
         if (isPhaseTransitioning()) {
             controller.setAnimation(phase_transition_animation);
@@ -400,20 +398,20 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         return PlayState.STOP;
     }
 
-    private PlayState idlePredicate(AnimationEvent animationEvent) {
+    private PlayState idlePredicate(AnimationState animationEvent) {
         if (isAnimating())
             return PlayState.STOP;
-        if (animationEvent.getController().getAnimationState() == AnimationState.Stopped)
+        if (animationEvent.getController().getAnimationState() == AnimationController.State.STOPPED)
             animationEvent.getController().setAnimation(idle);
         return PlayState.CONTINUE;
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(transitionController);
-        data.addAnimationController(meleeController);
-        data.addAnimationController(idleController);
-        super.registerControllers(data);
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(transitionController);
+        controllerRegistrar.add(meleeController);
+        controllerRegistrar.add(idleController);
+        super.registerControllers(controllerRegistrar);
     }
 
     @Override
@@ -423,7 +421,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationState.Stopped || super.isAnimating();
+        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
     }
 
     @Override
