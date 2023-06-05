@@ -26,7 +26,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -133,11 +135,10 @@ public class ServerPlayerEvents {
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         //IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
         if (event.isWasDeath()) {
-            //Clear potentially broken spell effects
-            event.getEntity().clearFire();
-            event.getEntity().setTicksFrozen(0);
-
             if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
+                //newServerPlayer.clearFire();
+                //newServerPlayer.setTicksFrozen(0);
+
                 //IronsSpellbooks.LOGGER.debug("onPlayerCloned: original player effects:\n ------------------------");
                 //Persist summon timers across death
                 event.getOriginal().getActiveEffects().forEach((effect -> {
@@ -172,11 +173,11 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        //Ironsspellbooks.logger.debug("onPlayerRespawn: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
-        event.getEntity().clearFire();
-        event.getEntity().setTicksFrozen(0);
-
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            //serverPlayer.clearFire();
+            //serverPlayer.setTicksFrozen(0);
+
+
             Utils.serverSideCancelCast(serverPlayer);
 
             serverPlayer.getActiveEffects().forEach((effect -> {
@@ -230,6 +231,14 @@ public class ServerPlayerEvents {
 //            }
 //        }
 //    }
+
+    @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event){
+        if(event.getEntity() instanceof ServerPlayer serverPlayer){
+            serverPlayer.clearFire();
+            serverPlayer.setTicksFrozen(0);
+        }
+    }
 
     @SubscribeEvent
     public static void onLivingTakeDamage(LivingDamageEvent event) {
