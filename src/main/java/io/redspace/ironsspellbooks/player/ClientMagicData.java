@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -104,22 +105,22 @@ public class ClientMagicData {
     }
 
     public static void resetClientCastState(UUID playerUUID) {
- //Ironsspellbooks.logger.debug("resetClientCastState.1: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
+        //Ironsspellbooks.logger.debug("resetClientCastState.1: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
 
         if (Minecraft.getInstance().player.getUUID().equals(playerUUID)) {
- //Ironsspellbooks.logger.debug("resetClientCastState.1.1");
+            //Ironsspellbooks.logger.debug("resetClientCastState.1.1");
             playerMagicData.resetCastingState();
             resetTargetingData();
         }
 
         var animationPlayer = castingAnimationPlayerLookup.getOrDefault(playerUUID, null);
         if (animationPlayer != null) {
- //Ironsspellbooks.logger.debug("resetClientCastState.1.2");
+            //Ironsspellbooks.logger.debug("resetClientCastState.1.2");
             animationPlayer.stop();
         }
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUUID().equals(playerUUID)) {
- //Ironsspellbooks.logger.debug("resetClientCastState.2: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
+            //Ironsspellbooks.logger.debug("resetClientCastState.2: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
             Minecraft.getInstance().player.stopUsingItem();
         }
     }
@@ -137,5 +138,22 @@ public class ClientMagicData {
 
     public static void handlePlayerSyncedData(SyncedSpellData playerSyncedData) {
         playerSyncedDataLookup.put(playerSyncedData.getServerPlayerId(), playerSyncedData);
+    }
+
+    public static void handleAbstractCastingMobSyncedData(int entityId, SyncedSpellData syncedSpellData) {
+        var level = Minecraft.getInstance().level;
+
+        if (Log.SPELL_DEBUG) {
+            IronsSpellbooks.LOGGER.debug("handleAbstractCastingMobSyncedData {}, {}, {}", level, entityId, syncedSpellData);
+        }
+
+        if (level == null) {
+            return;
+        }
+
+        var entity = level.getEntity(entityId);
+        if (entity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+            abstractSpellCastingMob.setSyncedSpellData(syncedSpellData);
+        }
     }
 }

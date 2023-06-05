@@ -47,7 +47,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     public static final ResourceLocation modelResource = new ResourceLocation(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
     public static final ResourceLocation animationInstantCast = new ResourceLocation(IronsSpellbooks.MODID, "animations/casting_animations.json");
-    private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SyncedSpellData.SYNCED_SPELL_DATA);
+    //private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SyncedSpellData.SYNCED_SPELL_DATA);
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private final PlayerMagicData playerMagicData = new PlayerMagicData(true);
@@ -70,7 +70,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(DATA_SPELL, new SyncedSpellData(-1));
+        //this.entityData.define(DATA_SPELL, new SyncedSpellData(-1));
         this.entityData.define(DATA_CANCEL_CAST, false);
         this.entityData.define(DATA_DRINKING_POTION, false);
     }
@@ -87,8 +87,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         if (!level.isClientSide) {
             setDrinkingPotion(true);
             drinkTime = 35;
-
-
             AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
             attributeinstance.removeModifier(SPEED_MODIFIER_DRINKING);
             attributeinstance.addTransientModifier(SPEED_MODIFIER_DRINKING);
@@ -118,23 +116,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             }
             cancelCast();
         }
-
-        if (pKey.getId() == DATA_SPELL.getId()) {
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.2 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level.isClientSide());
-            }
-
-            var isCasting = playerMagicData.isCasting();
-            var syncedSpellData = entityData.get(DATA_SPELL);
-            playerMagicData.setSyncedData(syncedSpellData);
-
-            if (!syncedSpellData.isCasting() && isCasting) {
-                castComplete();
-            } else if (syncedSpellData.isCasting() && !isCasting)/* if (syncedSpellData.getCastingSpellType().getCastType() == CastType.CONTINUOUS)*/ {
-                var spellType = SpellType.getTypeFromValue(syncedSpellData.getCastingSpellId());
-                initiateCastSpell(spellType, syncedSpellData.getCastingSpellLevel());
-            }
-        }
     }
 
     @Override
@@ -150,13 +131,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         var syncedSpellData = new SyncedSpellData(this);
         syncedSpellData.loadNBTData(pCompound);
         playerMagicData.setSyncedData(syncedSpellData);
-        //IronsSpellbooks.LOGGER.debug("ACM.readAdditionalSaveData.usedSpecial: {}", pCompound.getBoolean("usedSpecial"));
         hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
-    }
-
-    public void doSyncSpellData() {
-        //Need a deep clone of the object because set does a basic object ref compare to trigger the update. Do not remove the deepClone
-        entityData.set(DATA_SPELL, playerMagicData.getSyncedData().deepClone());
     }
 
     public void cancelCast() {
@@ -192,27 +167,40 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         this.setYRot((float) (Math.atan2(getDeltaMovement().x, getDeltaMovement().z) * Mth.RAD_TO_DEG));
     }
 
-    @Override
-    public void aiStep() {
-        super.aiStep();
-        //Should basically be only used for client stuff
-        if (!level.isClientSide || castingSpell == null) {
+    public void setSyncedSpellData(SyncedSpellData syncedSpellData) {
+        if (!level.isClientSide) {
             return;
         }
 
-        if (playerMagicData.getCastDurationRemaining() <= 0) {
+        var isCasting = playerMagicData.isCasting();
+        playerMagicData.setSyncedData(syncedSpellData);
+        castingSpell = playerMagicData.getCastingSpell();
+
+        if (Log.SPELL_DEBUG) {
+            IronsSpellbooks.LOGGER.debug("ASCM.setSyncedSpellData playerMagicData:{}, priorIsCastingState:{}, spell:{}", playerMagicData, isCasting, castingSpell);
+        }
+
+        if (castingSpell == null) {
+            return;
+        }
+
+        if (!playerMagicData.isCasting() && isCasting) {
+            castComplete();
+        } else if (playerMagicData.isCasting() && !isCasting)/* if (syncedSpellData.getCastingSpellType().getCastType() == CastType.CONTINUOUS)*/ {
+            var spellType = SpellType.getTypeFromValue(playerMagicData.getCastingSpellId());
+
+            initiateCastSpell(spellType, playerMagicData.getCastingSpellLevel());
+
             if (castingSpell.getCastType() == CastType.INSTANT) {
+                instantCastSpellType = castingSpell.getSpellType();
                 castingSpell.onClientPreCast(level, this, InteractionHand.MAIN_HAND, playerMagicData);
                 castComplete();
             }
-        } else {
-            //Actively casting a long cast or continuous cast
         }
     }
 
     @Override
     protected void customServerAiStep() {
-        IronsSpellbooks.LOGGER.debug("customServerAiStep.0");
         super.customServerAiStep();
         if (isDrinkingPotion()) {
             if (drinkTime-- <= 0) {
@@ -224,9 +212,6 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
 
         if (castingSpell == null) {
-            if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("customServerAiStep.1 spell:{} isDirty:{}", castingSpell, entityData.isDirty());
-            }
             return;
         }
 
@@ -237,19 +222,19 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
 
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("customServerAiStep.2");
+            IronsSpellbooks.LOGGER.debug("customServerAiStep.1");
         }
 
         this.forceLookAtTarget(getTarget());
 
         if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("customServerAiStep.3");
+                IronsSpellbooks.LOGGER.debug("customServerAiStep.2");
             }
 
             if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.CHARGE || castingSpell.getCastType() == CastType.INSTANT) {
                 if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("customServerAiStep.4");
+                    IronsSpellbooks.LOGGER.debug("customServerAiStep.3");
                 }
                 castingSpell.onCast(level, this, playerMagicData);
             }
@@ -262,6 +247,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     public void initiateCastSpell(SpellType spellType, int spellLevel) {
+        if (Log.SPELL_DEBUG) {
+            IronsSpellbooks.LOGGER.debug("initiateCastSpell: spellType:{} spellLevel:{}", spellType, spellLevel);
+        }
+
         if (spellType == SpellType.NONE_SPELL) {
             castingSpell = null;
             return;
@@ -293,7 +282,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     }
 
     public boolean isCasting() {
-        return entityData.get(DATA_SPELL).isCasting();
+        return playerMagicData.isCasting();
     }
 
     public void setTeleportLocationBehindTarget(int distance) {
@@ -368,6 +357,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private SpellType lastCastSpellType = SpellType.NONE_SPELL;
+    private SpellType instantCastSpellType = SpellType.NONE_SPELL;
     private boolean cancelCastAnimation = false;
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
@@ -398,8 +388,9 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
 
         var controller = event.getController();
-        if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.INSTANT && controller.getAnimationState() == AnimationState.Stopped) {
-            setStartAnimationFromSpell(controller, castingSpell);
+        if (instantCastSpellType != SpellType.NONE_SPELL && controller.getAnimationState() == AnimationState.Stopped) {
+            setStartAnimationFromSpell(controller, AbstractSpell.getSpell(instantCastSpellType, 1));
+            instantCastSpellType = SpellType.NONE_SPELL;
         }
         return PlayState.CONTINUE;
     }
@@ -443,6 +434,11 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
         spell.getCastStartAnimation().getForMob().ifPresent(animationBuilder -> {
+
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell {}", animationBuilder);
+            }
+
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
             lastCastSpellType = spell.getSpellType();
