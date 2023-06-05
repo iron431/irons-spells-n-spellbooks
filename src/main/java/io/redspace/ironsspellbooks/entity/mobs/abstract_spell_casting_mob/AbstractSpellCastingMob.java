@@ -306,9 +306,10 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
                 teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
                 int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 5);
                 teleportPos = new Vec3(teleportPos.x, y, teleportPos.z);
-                var bb = this.getBoundingBox();
-                var reposBB = bb.move(teleportPos.subtract(target.position()));
+                var bb = this.getBoundingBox().inflate(.5f);
+                var reposBB = bb.move(teleportPos.subtract(this.position()));
                 if (!level.collidesWithSuffocatingBlock(this, reposBB)) {
+                    IronsSpellbooks.LOGGER.debug("\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\nsetTeleportLocationBehindTarget: {} {} {} empty. teleporting\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n",reposBB.minX,reposBB.minY,reposBB.minZ);
                     valid = true;
                     break;
                 }
@@ -323,11 +324,14 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
                 if (Log.SPELL_DEBUG) {
                     IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
                 }
+                playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
+
             }
         } else {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: no target, isClient:{}", level.isClientSide());
             }
+            playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
         }
     }
 
