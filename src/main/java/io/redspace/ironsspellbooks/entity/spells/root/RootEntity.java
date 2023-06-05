@@ -214,6 +214,11 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
     }
 
     @Override
+    public boolean hasIndirectPassenger(Entity pEntity) {
+        return true;
+    }
+
+    @Override
     public void onAntiMagic(PlayerMagicData playerMagicData) {
         this.removeRoot();
     }

@@ -222,19 +222,19 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
 
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("customServerAiStep.1");
+            IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.1");
         }
 
         this.forceLookAtTarget(getTarget());
 
         if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("customServerAiStep.2");
+                IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.2");
             }
 
             if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.CHARGE || castingSpell.getCastType() == CastType.INSTANT) {
                 if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("customServerAiStep.3");
+                    IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.3");
                 }
                 castingSpell.onCast(level, this, playerMagicData);
             }
@@ -248,7 +248,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     public void initiateCastSpell(SpellType spellType, int spellLevel) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("initiateCastSpell: spellType:{} spellLevel:{}", spellType, spellLevel);
+            IronsSpellbooks.LOGGER.debug("ASCM.initiateCastSpell: spellType:{} spellLevel:{}, isClient:{}", spellType, spellLevel, level.isClientSide);
         }
 
         if (spellType == SpellType.NONE_SPELL) {
@@ -261,7 +261,16 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
         }
 
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
+
+        if(getTarget() != null){
+            forceLookAtTarget(getTarget());
+        }
+
         if (!castingSpell.checkPreCastConditions(level, this, playerMagicData)) {
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spellType, spellLevel, level.isClientSide);
+            }
+
             castingSpell = null;
             return;
         }
@@ -307,17 +316,17 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
             }
             if (valid) {
                 if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget: valid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
+                    IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: valid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
                 }
                 playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
             } else {
                 if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
+                    IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
                 }
             }
         } else {
             if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget: no target, isClient:{}", level.isClientSide());
+                IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: no target, isClient:{}", level.isClientSide());
             }
         }
     }
