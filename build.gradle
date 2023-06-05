@@ -179,6 +179,9 @@ dependencies {
     // FORGE ******************************************************************************************************
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
+    // MIXINS *****************************************************************************************************
+    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+
     // GECKOLIB ***************************************************************************************************
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_version}")
 
