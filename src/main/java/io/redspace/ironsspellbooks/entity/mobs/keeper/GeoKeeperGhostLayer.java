@@ -12,14 +12,16 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
 @OnlyIn(Dist.CLIENT)
-public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMob> {
+public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/keeper/keeper_ghost.png");
 
-    public GeoKeeperGhostLayer(IGeoRenderer entityRendererIn) {
+    public GeoKeeperGhostLayer(GeoEntityRenderer entityRendererIn) {
         super(entityRendererIn);
     }
 

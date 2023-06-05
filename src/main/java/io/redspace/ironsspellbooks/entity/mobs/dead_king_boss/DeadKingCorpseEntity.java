@@ -23,7 +23,10 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 
 public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
@@ -109,7 +112,8 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (pSource.isBypassInvul()) {
+        //TODO: parchment update required
+        if (/*pSource.isBypassInvul()*/false) {
             kill();
             return true;
         } else {
@@ -151,15 +155,15 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
      * GeckoLib
      **/
 
-    private final AnimationBuilder idle = new AnimationBuilder().addAnimation("dead_king_rest", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder rise = new AnimationBuilder().addAnimation("dead_king_rise", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final RawAnimation idle = RawAnimation.begin().thenPlay("dead_king_rest");
+    private final RawAnimation rise = RawAnimation.begin().thenPlay("dead_king_rise");
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "idle", 0, this::idlePredicate));
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
     }
 
-    private PlayState idlePredicate(AnimationEvent event) {
+    private PlayState idlePredicate(AnimationState event) {
         if (triggered()) {
             event.getController().setAnimation(rise);
         } else {

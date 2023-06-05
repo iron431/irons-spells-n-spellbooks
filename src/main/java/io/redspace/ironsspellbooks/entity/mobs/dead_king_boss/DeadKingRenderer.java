@@ -10,7 +10,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
 public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
 
@@ -19,25 +20,22 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
     }
 
     @Override
-    public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        if (animatable instanceof DeadKingBoss king && king.isPhase(DeadKingBoss.Phases.FinalPhase)) {
-            model.getBone(PartNames.LEFT_LEG).ifPresent((bone) -> bone.setHidden(true));
-            model.getBone(PartNames.RIGHT_LEG).ifPresent((bone) -> bone.setHidden(true));
-        } else {
-            model.getBone(PartNames.LEFT_LEG).ifPresent((bone) -> bone.setHidden(false));
-            model.getBone(PartNames.RIGHT_LEG).ifPresent((bone) -> bone.setHidden(false));
+    public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        if (entity instanceof DeadKingBoss king) {
+            getGeoModel().getBone(PartNames.LEFT_LEG).ifPresent((bone) -> bone.setHidden(king.isPhase(DeadKingBoss.Phases.FinalPhase)));
+            getGeoModel().getBone(PartNames.RIGHT_LEG).ifPresent((bone) -> bone.setHidden(king.isPhase(DeadKingBoss.Phases.FinalPhase)));
         }
-        super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
     @Override
-    public void renderEarly(AbstractSpellCastingMob animatable, PoseStack poseStack, float partialTick, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float partialTicks) {
+    public void preRender(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.scale(1.3f, 1.3f, 1.3f);
-        super.renderEarly(animatable, poseStack, partialTick, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, partialTicks);
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override
-    public RenderType getRenderType(AbstractSpellCastingMob animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
+    public RenderType getRenderType(AbstractSpellCastingMob animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
         return RenderType.entityCutoutNoCull(texture);
     }
 }
