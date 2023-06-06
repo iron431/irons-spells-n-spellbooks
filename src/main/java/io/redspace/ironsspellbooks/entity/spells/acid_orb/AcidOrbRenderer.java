@@ -3,9 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.acid_orb;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -22,6 +20,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class AcidOrbRenderer extends EntityRenderer<AcidOrb> {
 
@@ -70,8 +70,8 @@ public class AcidOrbRenderer extends EntityRenderer<AcidOrb> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         this.orb.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY);
 
@@ -79,9 +79,9 @@ public class AcidOrbRenderer extends EntityRenderer<AcidOrb> {
         float swirlX = Mth.cos(.08f * f) * 180;
         float swirlY = Mth.sin(.08f * f) * 180;
         float swirlZ = Mth.cos(.08f * f + 5464) * 180;
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(swirlX));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(swirlY));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(swirlZ));
+        poseStack.mulPose(Axis.XP.rotationDegrees(swirlX));
+        poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
         consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getSwirlTextureLocation(entity)));
         poseStack.scale(1.15f, 1.15f, 1.15f);
         this.swirl.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY);

@@ -33,8 +33,8 @@ public class MagicArrowRenderer extends EntityRenderer<MagicArrowProjectile> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
         renderModel(poseStack, bufferSource);
         poseStack.popPose();
 
@@ -45,7 +45,7 @@ public class MagicArrowRenderer extends EntityRenderer<MagicArrowProjectile> {
         poseStack.scale(0.0625f, 0.0625f, 0.0625f);
 
         //poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
-        //poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+        //poseStack.mulPose(Axis.YP.rotationDegrees(180f));
 
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
@@ -58,36 +58,36 @@ public class MagicArrowRenderer extends EntityRenderer<MagicArrowProjectile> {
         float angleCorrection = 180 + 45;
         Vector3f color = new Vector3f(1,1,1);
         //Vertical plane
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(angleCorrection));
+        poseStack.mulPose(Axis.XP.rotationDegrees(angleCorrection));
         consumer.vertex(poseMatrix, 0, -halfWidth, -halfHeight).color(color.x(), color.y(), color.z(), 1).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, 0, halfWidth, -halfHeight).color(color.x(), color.y(), color.z(), 1).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, 0, halfWidth, halfHeight).color(color.x(), color.y(), color.z(), 1).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, 0, -halfWidth, halfHeight).color(color.x(), color.y(), color.z(), 1).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-angleCorrection));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-angleCorrection));
         //Vertical Backface (because of the render type)
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(angleCorrection));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        poseStack.mulPose(Axis.XP.rotationDegrees(angleCorrection));
         consumer.vertex(poseMatrix, 0, -halfWidth, -halfHeight).color(color.x(), color.y(), color.z(), 1).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, 0, halfWidth, -halfHeight).color(color.x(), color.y(), color.z(), 1).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, 0, halfWidth, halfHeight).color(color.x(), color.y(), color.z(), 1).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, 0, -halfWidth, halfHeight).color(color.x(), color.y(), color.z(), 1).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-angleCorrection));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-angleCorrection));
 
         //Horizontal plane
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-angleCorrection));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-angleCorrection));
         consumer.vertex(poseMatrix, -halfWidth, 0, -halfHeight).color(color.x(), color.y(), color.z(), 1).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, halfWidth, 0, -halfHeight).color(color.x(), color.y(), color.z(), 1).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, halfWidth, 0, halfHeight).color(color.x(), color.y(), color.z(), 1).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, -halfWidth, 0, halfHeight).color(color.x(), color.y(), color.z(), 1).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(angleCorrection));
+        poseStack.mulPose(Axis.YP.rotationDegrees(angleCorrection));
         //Horizontal Backface (because of the render type)
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-angleCorrection));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-angleCorrection));
         consumer.vertex(poseMatrix, -halfWidth, 0, -halfHeight).color(color.x(), color.y(), color.z(), 1).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, halfWidth, 0, -halfHeight).color(color.x(), color.y(), color.z(), 1).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, halfWidth, 0, halfHeight).color(color.x(), color.y(), color.z(), 1).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, -halfWidth, 0, halfHeight).color(color.x(), color.y(), color.z(), 1).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(angleCorrection));
+        poseStack.mulPose(Axis.YP.rotationDegrees(angleCorrection));
     }
 
     @Override

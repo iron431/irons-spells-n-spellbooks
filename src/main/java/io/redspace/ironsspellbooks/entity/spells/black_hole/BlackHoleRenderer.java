@@ -37,7 +37,7 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         Matrix3f normalMatrix = pose.normal();
         poseStack.scale(.5f * entityScale, .5f * entityScale, .5f * entityScale);
         poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(90f));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90f));
         poseStack.translate(1, 0, 0);
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(CENTER_TEXTURE));
@@ -64,12 +64,12 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
 
         float segments = Math.min(animationProgress, .8f);
         for (int i = 0; (float) i < (segments + segments * segments) / 2.0F * 60.0F; ++i) {
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F + animationProgress * 90.0F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F + animationProgress * 90.0F));
             float size1 = (randomSource.nextFloat() * 10.0F + 5.0F + fadeProgress * 5.0F) * entityScale * .4f;
             //float size2 = randomSource.nextFloat() * 2.0F + 1.0F + fadeProgress * 2.0F;
             Matrix4f matrix = poseStack.last().pose();

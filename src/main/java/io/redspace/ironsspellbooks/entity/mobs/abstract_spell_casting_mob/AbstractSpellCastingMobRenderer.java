@@ -43,7 +43,7 @@ public abstract class AbstractSpellCastingMobRenderer extends GeoEntityRenderer<
     @Override
     public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-        //TODO: this used to be rotated by 90 degrees.
+        //TODO: this used to be rotated by 90 degrees.(1.19.4 port)
         SpellRenderingHelper.renderSpellHelper( ClientMagicData.getSyncedSpellData(animatable), animatable, poseStack, bufferSource, partialTick);
 
     }

@@ -43,8 +43,8 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements Rend
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getYRot()));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot()));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
+        poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
 
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         var offset = getEnergySwirlOffset(entity, partialTicks);

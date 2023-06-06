@@ -67,8 +67,8 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
@@ -76,9 +76,9 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
 //        float swirlX = Mth.cos(.08f * f) * 180;
 //        float swirlY = Mth.sin(.08f * f) * 180;
 //        float swirlZ = Mth.cos(.08f * f + 5464) * 180;
-//        poseStack.mulPose(Vector3f.XP.rotationDegrees(swirlX));
-//        poseStack.mulPose(Vector3f.YP.rotationDegrees(swirlY));
-//        poseStack.mulPose(Vector3f.ZP.rotationDegrees(swirlZ));
+//        poseStack.mulPose(Axis.XP.rotationDegrees(swirlX));
+//        poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
+//        poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
 //        int frameCount = 32;
 //        float uv = 1f / frameCount;
 //        int frame = (int) ((f) % frameCount);

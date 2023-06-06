@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -31,21 +33,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
+public class SummonedZombie extends Zombie implements MagicSummon, GeoAnimatable {
     private static final EntityDataAccessor<Boolean> DATA_IS_ANIMATING_RISE = SynchedEntityData.defineId(SummonedZombie.class, EntityDataSerializers.BOOLEAN);
 
     public SummonedZombie(EntityType<? extends Zombie> pEntityType, Level pLevel) {
@@ -147,7 +146,7 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!pSource.isBypassInvul() && (isAnimatingRise() || shouldIgnoreDamage(pSource))) {
+        if (!pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && (isAnimatingRise() || shouldIgnoreDamage(pSource))) {
             return false;
         }
         return super.hurt(pSource, pAmount);
@@ -230,31 +229,35 @@ public class SummonedZombie extends Zombie implements MagicSummon, IAnimatable {
         return super.isImmobile() || isAnimatingRise();
     }
 
+
     /*
     Geckolib
      */
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     @Override
-    public AnimationFactory getFactory() {
-        return factory;
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(new AnimationController(this, "rise", 0, this::risePredicate));
     }
 
-    //private final AnimationBuilder rise_animation = new AnimationBuilder().addAnimation("rise_from_ground", ILoopType.EDefaultLoopTypes.LOOP);
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "rise", 0, this::risePredicate));
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
 
-    private PlayState risePredicate(AnimationEvent event) {
+    @Override
+    public double getTick(Object o) {
+        return this.tickCount;
+    }
+
+    private PlayState risePredicate(software.bernie.geckolib.core.animation.AnimationState event) {
         if (!isAnimatingRise())
             return PlayState.STOP;
-        if (event.getController().getAnimationState() == AnimationState.Stopped) {
+        if (event.getController().getAnimationState() == AnimationController.State.STOPPED) {
             String animation = new String[]{"rise_from_ground_01", "rise_from_ground_02", "rise_from_ground_03", "rise_from_ground_04"}[random.nextIntBetweenInclusive(0, 3)];
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(animation, ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(RawAnimation.begin().thenPlay(animation));
         }
         return PlayState.CONTINUE;
     }
-
 }

@@ -43,7 +43,7 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
 
         for (int i = 0; i < segments; i++) {
             drawPlane(consumer, color, poseMatrix, normalMatrix, light, segmentWidth, radius);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(angle));
+            poseStack.mulPose(Axis.YP.rotationDegrees(angle));
         }
         poseStack.popPose();
     }

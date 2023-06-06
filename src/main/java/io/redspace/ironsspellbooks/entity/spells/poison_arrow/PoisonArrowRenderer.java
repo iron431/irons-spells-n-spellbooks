@@ -31,13 +31,13 @@ public class PoisonArrowRenderer extends EntityRenderer<PoisonArrow> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
 
         float f9 = entity.shakeTime - partialTicks;
         if (f9 > 0.0F) {
             float f10 = -Mth.sin(f9 * 3.0F) * f9;
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(f10));
+            poseStack.mulPose(Axis.XP.rotationDegrees(f10));
         }
 
         renderModel(poseStack, bufferSource, light);
@@ -50,18 +50,18 @@ public class PoisonArrowRenderer extends EntityRenderer<PoisonArrow> {
         poseStack.scale(0.125f, 0.125f, 0.125f);
 
         //poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
-        //poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+        //poseStack.mulPose(Axis.YP.rotationDegrees(180f));
 
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(getTextureLocation()));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
         poseStack.translate(-2, 0, 0);
 
         for (int j = 0; j < 4; ++j) {
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
             vertex(poseMatrix, normalMatrix, consumer, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, light);
             vertex(poseMatrix, normalMatrix, consumer, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, light);
             vertex(poseMatrix, normalMatrix, consumer, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, light);

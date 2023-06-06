@@ -48,8 +48,8 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
 
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.lightning());
         poseStack.translate(0, entity.getEyeHeight() * .5f, 0);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getOwner().getYRot()));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getOwner().getXRot()));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getOwner().getYRot()));
+        poseStack.mulPose(Axis.XP.rotationDegrees(entity.getOwner().getXRot()));
 
         if (entity.getAge() % 2 == 0 && !Minecraft.getInstance().isPaused())
             entity.generateLightningBeams();

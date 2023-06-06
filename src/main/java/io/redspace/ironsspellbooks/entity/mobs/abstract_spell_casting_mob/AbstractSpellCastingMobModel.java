@@ -13,7 +13,7 @@ import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
 
     public AbstractSpellCastingMobModel(ResourceLocation assetSubpath) {
-        //TODO: what is this resourcelocation supposed to point to?
+        //TODO: (1.19.4 port) what is this resourcelocation supposed to point to?
         super(assetSubpath);
     }
 
@@ -62,12 +62,12 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             Crazy Vanilla Magic Calculations (LivingEntityRenderer:116 & HumanoidModel#setupAnim
          */
         //Parchment not finished yet
-        WalkAnimationState walkAnimationState = entity.f_267362_;
+        WalkAnimationState walkAnimationState = entity.walkAnimation;
         float pLimbSwingAmount = 0.0F;
         float pLimbSwing = 0.0F;
         if (entity.isAlive()) {
-            pLimbSwingAmount = walkAnimationState.m_267711_(partialTick);
-            pLimbSwing = walkAnimationState.m_267590_(partialTick);
+            pLimbSwingAmount = walkAnimationState.speed(partialTick);
+            pLimbSwing = walkAnimationState.position(partialTick);
             if (entity.isBaby()) {
                 pLimbSwing *= 3.0F;
             }

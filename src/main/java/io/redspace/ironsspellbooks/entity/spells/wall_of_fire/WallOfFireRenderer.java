@@ -46,7 +46,7 @@ public class WallOfFireRenderer extends EntityRenderer<WallOfFireEntity> {
             consumer.vertex(poseMatrix, (float) start.x, (float) start.y + height, (float) start.z).color(255, 255, 255, 255).uv(0f, uvY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
             consumer.vertex(poseMatrix, (float) end.x, (float) end.y + height, (float) end.z).color(255, 255, 255, 255).uv(1f, uvY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
             consumer.vertex(poseMatrix, (float) end.x, (float) end.y, (float) end.z).color(255, 255, 255, 255).uv(1f, uvY + uvPerFrame).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180));
             consumer.vertex(poseMatrix, (float) start.x, (float) start.y, (float) start.z).color(255, 255, 255, 255).uv(0f, uvY + uvPerFrame).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
             consumer.vertex(poseMatrix, (float) start.x, (float) start.y + height, (float) start.z).color(255, 255, 255, 255).uv(0f, uvY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
             consumer.vertex(poseMatrix, (float) end.x, (float) end.y + height, (float) end.z).color(255, 255, 255, 255).uv(1f, uvY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();

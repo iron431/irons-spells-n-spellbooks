@@ -6,8 +6,8 @@ import io.redspace.ironsspellbooks.effect.SummonTimer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,8 +27,8 @@ public interface MagicSummon extends AntiMagicSusceptible {
     }
 
     default boolean shouldIgnoreDamage(DamageSource damageSource) {
-        if (!damageSource.isBypassInvul()) {
-            if (damageSource instanceof EntityDamageSource && !ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get())
+        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            if (damageSource.getEntity() != null && !ServerConfigs.CAN_ATTACK_OWN_SUMMONS.get())
                 return !(getSummoner() == null || damageSource.getEntity() == null || (!damageSource.getEntity().equals(getSummoner()) && !getSummoner().isAlliedTo(damageSource.getEntity())));
         }
         return false;

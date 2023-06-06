@@ -43,14 +43,14 @@ public class SpellRenderingHelper {
             var pitch = Math.asin(dir.y);
             var yaw = Math.atan2(dir.x, dir.z);
 
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees((float) -pitch * Mth.RAD_TO_DEG));
+            poseStack.mulPose(Axis.YP.rotationDegrees(90));
+            poseStack.mulPose(Axis.XP.rotationDegrees((float) -pitch * Mth.RAD_TO_DEG));
 
         } else {
             float f = Mth.rotlerp(entity.yRotO, entity.getYRot(), partialTicks);
             float f1 = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(-f));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(f1));
+            poseStack.mulPose(Axis.YP.rotationDegrees(-f));
+            poseStack.mulPose(Axis.XP.rotationDegrees(f1));
         }
 
 

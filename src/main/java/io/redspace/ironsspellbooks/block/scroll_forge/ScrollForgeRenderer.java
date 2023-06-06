@@ -69,8 +69,8 @@ public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile
         poseStack.pushPose();
         rotatePoseWithBlock(poseStack, scrollForgeTile);
         poseStack.translate(INK_POS.x, INK_POS.y, INK_POS.z);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(angle));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
+        poseStack.mulPose(Axis.YP.rotationDegrees(angle));
+        poseStack.mulPose(Axis.XP.rotationDegrees(180));
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(SIGIL_TEXTURE));
         drawQuad(.5f, poseStack.last(), consumer, LightTexture.FULL_BRIGHT);
         poseStack.popPose();
@@ -93,7 +93,7 @@ public class  ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile
         poseStack.mulPose(Axis.YP.rotationDegrees(180));
         poseStack.mulPose(Axis.ZP.rotationDegrees(-yRot));
 
-        //poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+        //poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
         poseStack.scale(0.45f, 0.45f, 0.45f);
 
         itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, LevelRenderer.getLightColor(scrollForgeTile.getLevel(), scrollForgeTile.getBlockPos()), packedOverlay, poseStack, bufferSource, scrollForgeTile.getLevel(), renderId);

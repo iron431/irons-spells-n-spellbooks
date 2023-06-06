@@ -8,6 +8,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -26,13 +27,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 
 import javax.annotation.Nullable;
 
@@ -136,26 +134,26 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
         return true;
     }
 
-    private final AnimationBuilder doubleSlash = new AnimationBuilder().addAnimation("sword_double_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder lunge = new AnimationBuilder().addAnimation("sword_lunge", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder slashStab = new AnimationBuilder().addAnimation("sword_slash_stab", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder tripleSlash = new AnimationBuilder().addAnimation("sword_triple_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    private final RawAnimation doubleSlash = RawAnimation.begin().thenPlay("sword_double_slash");
+    private final RawAnimation lunge = RawAnimation.begin().thenPlay("sword_lunge");
+    private final RawAnimation slashStab = RawAnimation.begin().thenPlay("sword_slash_stab");
+    private final RawAnimation tripleSlash = RawAnimation.begin().thenPlay("sword_triple_slash");
 
     private final AnimationController meleeController = new AnimationController(this, "keeper_animations", 2, this::predicate);
 
 
     @Override
     public boolean isInvulnerableTo(DamageSource pSource) {
-        return super.isInvulnerableTo(pSource) || pSource.isFall();
+        return super.isInvulnerableTo(pSource) || pSource.is(DamageTypeTags.IS_FALL);
     }
 
-    private PlayState predicate(AnimationEvent animationEvent) {
+    private PlayState predicate(software.bernie.geckolib.core.animation.AnimationState animationEvent) {
 //        if(true)
 //            return PlayState.STOP;
 
         var controller = animationEvent.getController();
         if (this.swinging) {
-            controller.markNeedsReload();
+            controller.forceAnimationReset();
             switch (getNextAttackType()) {
                 case Double_Slash -> controller.setAnimation(doubleSlash);
                 case Lunge -> controller.setAnimation(lunge);
@@ -169,15 +167,15 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(meleeController);
-        super.registerControllers(data);
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(meleeController);
+        super.registerControllers(controllerRegistrar);
     }
 
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationState.Stopped || super.isAnimating();
+        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
     }
 
     @Override

@@ -43,9 +43,9 @@ public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(entity.getZRot() + (entity.tickCount + partialTicks) * 40));
+        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getZRot() + (entity.tickCount + partialTicks) * 40));
 
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
 
@@ -53,7 +53,7 @@ public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
         //old color: 125, 0, 10
         float width = 2.5f;
         //drawSlash(pose, bufferSource, light, width, 2);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(45));
+        poseStack.mulPose(Axis.XP.rotationDegrees(45));
         float scale = entity.getScale();
         poseStack.scale(scale, scale, scale);
         drawSlash(pose, entity, bufferSource, light, width);

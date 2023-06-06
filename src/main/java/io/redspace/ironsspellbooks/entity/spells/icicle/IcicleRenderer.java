@@ -31,7 +31,7 @@ public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
         poseStack.scale(0.0625f, 0.0625f, 0.0625f);
 
         //poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
-        //poseStack.mulPose(Vector3f.YP.rotationDegrees(180f));
+        //poseStack.mulPose(Axis.YP.rotationDegrees(180f));
 
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
@@ -40,8 +40,8 @@ public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
 
         //Vertical plane
         consumer.vertex(poseMatrix, 0, -8, -8).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();

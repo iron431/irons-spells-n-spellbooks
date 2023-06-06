@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.GeoHumanoidRenderer;
 import io.redspace.ironsspellbooks.render.SpellTargetingLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -13,8 +12,10 @@ import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
-public class SummonedSkeletonMultiRenderer extends GeoHumanoidRenderer<SummonedSkeleton> {
+//TODO: (1.19.4 port) remake GeoHumanoidRenderer and replace all GeoEntityRenderers
+public class SummonedSkeletonMultiRenderer extends GeoEntityRenderer<SummonedSkeleton> {
     SkeletonRenderer vanillaRenderer;
     public static final ResourceLocation TEXTURE_ALT = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/summoned_skeleton_alt.png");
 
@@ -36,8 +37,9 @@ public class SummonedSkeletonMultiRenderer extends GeoHumanoidRenderer<SummonedS
         else
             vanillaRenderer.render(entity, pEntityYaw, pPartialTick, pPoseStack, pBuffer, pPackedLight);
     }
-    @Override
-    public RenderType getRenderType(SummonedSkeleton animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-        return RenderType.entityCutoutNoCull(texture);
-    }
+    //TODO: (1.19.4 port) no rendertype?
+//    @Override
+//    public RenderType getRenderType(SummonedSkeleton animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
+//        return RenderType.entityCutoutNoCull(texture);
+//    }
 }

@@ -47,10 +47,10 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
         entity.animationTime++;
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(((entity.animationSeed % 30) - 15) * (float) Math.sin(entity.animationTime * .015)));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(((entity.animationSeed % 30) - 15) * (float) Math.sin(entity.animationTime * .015)));
 
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
 
@@ -62,12 +62,12 @@ public class BloodSlashRenderer extends EntityRenderer<BloodSlashProjectile> {
 
         //drawSlash(pose, bufferSource, light, width, 2);
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-15));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-10));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-15));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-10));
         drawSlash(pose,entity, bufferSource, light, width, 4);
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(30));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(20));
+        poseStack.mulPose(Axis.YP.rotationDegrees(30));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(20));
         drawSlash(pose,entity, bufferSource, light, width, 0);
 
         poseStack.popPose();

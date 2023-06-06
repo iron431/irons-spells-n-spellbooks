@@ -74,27 +74,6 @@ public class EnergySwirlLayer {
 
         }
 
-        //todo: delete this
-//        @Override
-//        public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-//            if (EnergySwirlLayer.shouldRender(entityLivingBaseIn, shouldRenderFlag)) {
-//                float f = (float) entityLivingBaseIn.tickCount + partialTicks;
-//                var renderType = EnergySwirlLayer.getRenderType(TEXTURE, f);
-//                VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
-//                matrixStackIn.pushPose();
-////            this.getRenderer().setCurrentRTB(bufferIn);
-//                var model = ((GeoModel) this.getDefaultBakedModel()).getModel(AbstractSpellCastingMob.modelResource);
-//                model.getBone("body").ifPresent((rootBone) -> {
-//                    rootBone.childBones.forEach(bone -> {
-//                        bone.setScale(1.1f, 1.1f, 1.1f);
-//                    });
-//                });
-//                this.getRenderer().render(model, entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
-//                        vertexconsumer, packedLightIn, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
-//                matrixStackIn.popPose();
-//            }
-//        }
-
         @Override
         public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType2, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
             if (EnergySwirlLayer.shouldRender(animatable, shouldRenderFlag)) {
@@ -110,12 +89,19 @@ public class EnergySwirlLayer {
                 });
                 this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
                         packedLight, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
+
+                bakedModel.getBone("body").ifPresent((rootBone) -> {
+                    rootBone.getChildBones().forEach(bone -> {
+                        bone.updateScale(1f, 1f, 1f);
+                    });
+                });
                 poseStack.popPose();
             }
         }
 
         @Override
         public void renderForBone(PoseStack poseStack, AbstractSpellCastingMob animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+            //todo: render for bone instead? (1.19.4 port)
             super.renderForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
         }
     }

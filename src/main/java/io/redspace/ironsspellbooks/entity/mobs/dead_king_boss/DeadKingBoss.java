@@ -271,7 +271,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         //reduces damage of projectiles and summons
-        if (pSource.m_269014_())
+        if (pSource.isIndirect())
             pAmount *= .75f;
         return super.hurt(pSource, pAmount);
     }

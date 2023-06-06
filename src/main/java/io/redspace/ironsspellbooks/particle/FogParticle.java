@@ -91,13 +91,13 @@ public class FogParticle extends TextureSheetParticle {
 
 //        this.renderBillboard(buffer, camera, partialticks);
         this.renderRotatedParticle(buffer, camera, partialticks, (p_234005_) -> {
-            p_234005_.mul(Vector3f.YP.rotation(0));
-            p_234005_.mul(Vector3f.XP.rotation(-DEGREES_90));
+            p_234005_.mul(Axis.YP.rotation(0));
+            p_234005_.mul(Axis.XP.rotation(-DEGREES_90));
         });
         //back face?
         this.renderRotatedParticle(buffer, camera, partialticks, (p_234000_) -> {
-            p_234000_.mul(Vector3f.YP.rotation(-(float) Math.PI));
-            p_234000_.mul(Vector3f.XP.rotation(DEGREES_90));
+            p_234000_.mul(Axis.YP.rotation(-(float) Math.PI));
+            p_234000_.mul(Axis.XP.rotation(DEGREES_90));
         });
     }
 
@@ -112,7 +112,7 @@ public class FogParticle extends TextureSheetParticle {
 //        } else {
 //            quaternion = new Quaternion(pRenderInfo.rotation());
 //            float f3 = Mth.lerp(pPartialTicks, this.oRoll, this.roll);
-//            quaternion.mul(Vector3f.ZP.rotation(f3));
+//            quaternion.mul(Axis.ZP.rotation(f3));
 //        }
 //
 //        Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);

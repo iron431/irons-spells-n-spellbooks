@@ -16,7 +16,7 @@ public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
         super(entityRendererIn);
     }
 
-    //TODO: i have no clue how to port this. complete geckolib overhaul here.
+    //TODO: (1.19.4 port) i have no clue how to port this. complete geckolib overhaul here.
 //    //private static final ResourceLocation EVASION_TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/evasion.png");
 //    private final GeoModel<AbstractSpellCastingMob> modelProvider;
 //

@@ -54,7 +54,7 @@ public class SpellTargetingLayer {
         public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
             if (shouldRender(animatable)) {
 //                //It's upside down???
-//                poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
+//                poseStack.mulPose(Axis.XP.rotationDegrees(180));
 //                poseStack.translate(0, -(abstractSpellCastingMob.getBbWidth() + abstractSpellCastingMob.getBbHeight()) / 2, 0);
                 poseStack.pushPose();
                 poseStack.mulPose(Axis.XP.rotationDegrees(180));

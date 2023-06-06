@@ -11,6 +11,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -112,8 +113,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        //TODO: parchment update required
-        if (/*pSource.isBypassInvul()*/false) {
+        if (pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             kill();
             return true;
         } else {

@@ -51,22 +51,22 @@ public class MagmaBallRenderer extends EntityRenderer<FireBomb> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
+        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
 
         float f = entity.tickCount + partialTicks;
         float swirlX = Mth.cos(.08f * f) * 130;
         float swirlY = Mth.sin(.08f * f) * 130;
         float swirlZ = Mth.cos(.08f * f + 5464) * 130;
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(swirlX));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(swirlY));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(swirlZ));
+        poseStack.mulPose(Axis.XP.rotationDegrees(swirlX));
+        poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         this.orb.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(swirlX));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(swirlY));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(swirlZ));
+        poseStack.mulPose(Axis.XP.rotationDegrees(swirlX));
+        poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
         consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getSwirlTextureLocation(entity)));
         poseStack.scale(1.15f, 1.15f, 1.15f);
         this.swirl.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY);

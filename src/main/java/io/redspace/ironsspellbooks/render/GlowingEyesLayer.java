@@ -62,7 +62,7 @@ public class GlowingEyesLayer {
                     var scale = getEyeScale(animatable);
                     headBone.updateScale(scale, scale, scale);
 
-                    //TODO: does only rendering head work?
+                    //TODO: (1.19.4 port) does only rendering head work?
                     this.getRenderer().renderChildBones(poseStack, animatable, headBone, EYES, bufferSource, buffer, true, partialTick, packedLight, packedOverlay, eye.r, eye.g, eye.b, 1f);
                 });
             }
