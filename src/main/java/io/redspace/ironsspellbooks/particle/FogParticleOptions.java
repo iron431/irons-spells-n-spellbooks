@@ -2,13 +2,14 @@ package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.particles.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 public class FogParticleOptions extends DustParticleOptionsBase {
     public FogParticleOptions(Vector3f color, float scale) {
@@ -17,7 +18,7 @@ public class FogParticleOptions extends DustParticleOptionsBase {
     /*
     Copied From Dust Particle Options
      */
-    public static final Codec<FogParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) -> p_175793_.group(Vector3f.CODEC.fieldOf("color").forGetter((p_175797_) -> p_175797_.color), Codec.FLOAT.fieldOf("scale").forGetter((p_175795_) -> p_175795_.scale)).apply(p_175793_, FogParticleOptions::new));
+    public static final Codec<FogParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) -> p_175793_.group(ExtraCodecs.VECTOR3F.fieldOf("color").forGetter((p_175797_) -> p_175797_.color), Codec.FLOAT.fieldOf("scale").forGetter((p_175795_) -> p_175795_.scale)).apply(p_175793_, FogParticleOptions::new));
     @SuppressWarnings("deprecation")
     public static final ParticleOptions.Deserializer<FogParticleOptions> DESERIALIZER = new ParticleOptions.Deserializer<FogParticleOptions>() {
         public @NotNull FogParticleOptions fromCommand(@NotNull ParticleType<FogParticleOptions> p_123689_, @NotNull StringReader p_123690_) throws CommandSyntaxException {

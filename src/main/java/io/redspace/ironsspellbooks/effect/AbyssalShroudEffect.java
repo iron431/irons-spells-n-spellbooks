@@ -3,12 +3,14 @@ package io.redspace.ironsspellbooks.effect;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -37,7 +39,7 @@ public class AbyssalShroudEffect extends MobEffect {
 
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (livingEntity.level.isClientSide || EvasionEffect.excludeDamageSources.contains(damageSource) || damageSource.isFall() || damageSource.isBypassMagic() || damageSource.isBypassInvul()) {
+        if (livingEntity.level.isClientSide || EvasionEffect.excludeDamageSources.contains(damageSource) || damageSource.is(DamageTypeTags.IS_FALL)  || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
         var random = livingEntity.getRandom();
@@ -55,7 +57,7 @@ public class AbyssalShroudEffect extends MobEffect {
         if (livingEntity.isPassenger()) {
             livingEntity.stopRiding();
         }
-        if (!level.getBlockState(new BlockPos(ground).below()).isAir()) {
+        if (!level.getBlockState(BlockPos.containing(ground).below()).isAir()) {
             livingEntity.teleportTo(ground.x, ground.y, ground.z);
             particleCloud(livingEntity);
         }

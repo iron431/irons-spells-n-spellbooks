@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -126,7 +127,7 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         //TODO: fill this out with real info
         return new ClientboundAddEntityPacket(this);
     }

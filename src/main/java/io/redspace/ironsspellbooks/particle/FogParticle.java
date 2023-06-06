@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -14,6 +13,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.function.Consumer;
 
@@ -139,7 +140,7 @@ public class FogParticle extends TextureSheetParticle {
 //        pBuffer.vertex((double) avector3f[3].x(), (double) avector3f[3].y() + scuff, (double) avector3f[3].z()).uv(f7, f6).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(j).endVertex();
 //    }
 
-    private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, Consumer<Quaternion> pQuaternion) {
+    private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, Consumer<Quaternionf> pQuaternion) {
         /*
         Copied from Shriek Particle
          */
@@ -150,16 +151,17 @@ public class FogParticle extends TextureSheetParticle {
         float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
-        Quaternion quaternion = new Quaternion(ROTATION_VECTOR, 0.0F, true);
+        Quaternionf quaternion = (new Quaternionf()).setAngleAxis(0.0F, ROTATION_VECTOR.x(), ROTATION_VECTOR.y(), ROTATION_VECTOR.z());
 
         pQuaternion.accept(quaternion);
-        TRANSFORM_VECTOR.transform(quaternion);
+        quaternion.transform(TRANSFORM_VECTOR);
+
         Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
         float f3 = this.getQuadSize(partialTick);
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            vector3f.transform(quaternion);
+            vector3f.rotate(quaternion);
             vector3f.mul(f3);
             vector3f.add(f, f1, f2);
         }
@@ -180,12 +182,6 @@ public class FogParticle extends TextureSheetParticle {
     @Override
     public ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
-    }
-
-    @Override
-    protected int getLightColor(float pPartialTick) {
-        BlockPos blockpos = new BlockPos(this.x, this.y, this.z).above();
-        return this.level.hasChunkAt(blockpos) ? LevelRenderer.getLightColor(this.level, blockpos) : 0;
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.util;
 
-import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.particle.FogParticleOptions;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
+import org.joml.Vector3f;
 
 public class ParticleHelper {
     //public static final ParticleOptions DRAGON_FIRE = ParticleRegistry.DRAGON_FIRE_PARTICLE.get();

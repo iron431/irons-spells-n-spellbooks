@@ -193,7 +193,7 @@ public class Utils {
         if (hitPos != null)
             return new EntityHitResult(entity, hitPos);
         else
-            return BlockHitResult.miss(end, Direction.UP, new BlockPos(end));
+            return BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end));
 
     }
 
@@ -282,7 +282,7 @@ public class Utils {
             hits.sort((o1, o2) -> (int) (o1.getLocation().distanceToSqr(start) - o2.getLocation().distanceToSqr(start)));
             return hits.get(0);
         } else {
-            return BlockHitResult.miss(end, Direction.UP, new BlockPos(end));
+            return BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end));
         }
     }
 
@@ -458,10 +458,10 @@ public class Utils {
      * From the given start position, this finds the first air block within +/- maxSteps
      */
     public static int findRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
-        if (!level.getBlockState(new BlockPos(start)).isAir()) {
+        if (!level.getBlockState(BlockPos.containing(start)).isAir()) {
             for (int i = 0; i < maxSteps; i++) {
                 start = start.add(0, 1, 0);
-                if (level.getBlockState(new BlockPos(start)).isAir())
+                if (level.getBlockState(BlockPos.containing(start)).isAir())
                     break;
             }
         }

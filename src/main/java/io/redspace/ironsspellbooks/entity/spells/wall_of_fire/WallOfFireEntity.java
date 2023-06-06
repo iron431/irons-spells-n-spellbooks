@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.wall_of_fire;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
@@ -13,6 +12,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -229,7 +229,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

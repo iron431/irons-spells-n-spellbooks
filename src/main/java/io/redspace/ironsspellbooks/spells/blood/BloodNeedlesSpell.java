@@ -75,7 +75,7 @@ public class BloodNeedlesSpell extends AbstractSpell {
         super.onCast(world, entity, playerMagicData);
     }
 
-//    public static final AnimationHolder SLASH_ANIMATION = new AnimationHolder("instant_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+//    public static final AnimationHolder SLASH_ANIMATION = new AnimationHolder("instant_slash", Animation.LoopType.PLAY_ONCE);
 //
 //    @Override
 //    public AnimationHolder getCastStartAnimation() {

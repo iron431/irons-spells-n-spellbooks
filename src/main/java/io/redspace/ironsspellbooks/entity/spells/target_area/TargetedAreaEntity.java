@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.target_area;
 
-import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -14,6 +14,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidType;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -167,7 +168,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return new ClientboundAddEntityPacket(this);
     }
 }

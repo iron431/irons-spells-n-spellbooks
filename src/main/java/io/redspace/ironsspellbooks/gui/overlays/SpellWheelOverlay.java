@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.gui.overlays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Vector4f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
@@ -25,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import org.apache.commons.lang3.ArrayUtils;
+import org.joml.Vector4f;
 
 import java.util.List;
 
@@ -111,7 +111,7 @@ public class SpellWheelOverlay extends GuiComponent {
 //        double mouseRadians = Math.atan2(mouseYCenter, mouseXCenter);
 
         fill(poseStack, 0, 0, screenWidth, screenHeight, 0);
-        RenderSystem.disableTexture();
+        //RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         final Tesselator tesselator = Tesselator.getInstance();

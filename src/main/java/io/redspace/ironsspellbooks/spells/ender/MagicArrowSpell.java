@@ -11,7 +11,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib.core.animation.Animation;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +61,7 @@ public class MagicArrowSpell extends AbstractSpell {
         super.onCast(level, entity, playerMagicData);
     }
 
-    public static final AnimationHolder BOW_CHARGE_ANIMATION = new AnimationHolder("charge_arrow", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final AnimationHolder BOW_CHARGE_ANIMATION = new AnimationHolder("charge_arrow", Animation.LoopType.PLAY_ONCE);
 
     @Override
     public AnimationHolder getCastStartAnimation() {

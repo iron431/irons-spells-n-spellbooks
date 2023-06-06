@@ -8,8 +8,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class WispRenderer extends GeoEntityRenderer<WispEntity> {
     public static final ResourceLocation textureLocation = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/wisp/wisp.png");
@@ -24,13 +23,10 @@ public class WispRenderer extends GeoEntityRenderer<WispEntity> {
         return textureLocation;
     }
 
-    @Override
-    public RenderType getRenderType(WispEntity animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-        return RenderType.energySwirl(texture, 0, 0);
-    }
+    //TODO: (1.19.4 port) render type note
+//    @Override
+//    public RenderType getRenderType(WispEntity animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
+//        return RenderType.energySwirl(texture, 0, 0);
+//    }
 
-    @Override
-    public void render(GeoModel model, WispEntity animatable, float partialTick, RenderType type, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
 }

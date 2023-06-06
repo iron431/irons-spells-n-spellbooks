@@ -28,14 +28,14 @@ public class DamageSources {
     public static DamageSource HEARTSTOP = new DamageSource("heartstop").bypassArmor().bypassMagic();
 
     public static DamageSource BLEED_DAMAGE = new DamageSource("bleed_effect");
-
-    public static DamageSource FIRE_MAGIC = new DamageSource("fire_magic_damage");
-    public static DamageSource ICE_MAGIC = new DamageSource("ice_magic_damage");
-    public static DamageSource LIGHTNING_MAGIC = new DamageSource("lightning_magic_damage");
-    public static DamageSource HOLY_MAGIC = new DamageSource("holy_magic_damage");
-    public static DamageSource BLOOD_MAGIC = new DamageSource("blood_magic_damage");
-    public static DamageSource ENDER_MAGIC = new DamageSource("ender_magic_damage");
-    public static DamageSource EVOCATION_MAGIC = new DamageSource("evocation_magic_damage");
+//
+//    public static DamageSource FIRE_MAGIC = new DamageSource("fire_magic_damage");
+//    public static DamageSource ICE_MAGIC = new DamageSource("ice_magic_damage");
+//    public static DamageSource LIGHTNING_MAGIC = new DamageSource("lightning_magic_damage");
+//    public static DamageSource HOLY_MAGIC = new DamageSource("holy_magic_damage");
+//    public static DamageSource BLOOD_MAGIC = new DamageSource("blood_magic_damage");
+//    public static DamageSource ENDER_MAGIC = new DamageSource("ender_magic_damage");
+//    public static DamageSource EVOCATION_MAGIC = new DamageSource("evocation_magic_damage");
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource, @Nullable SchoolType damageSchool) {
         if (target instanceof LivingEntity livingTarget) {

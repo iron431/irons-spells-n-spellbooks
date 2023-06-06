@@ -106,7 +106,7 @@ public class PedestalBlock extends BaseEntityBlock {
             ItemEntity itementity = serverplayer.drop(itemstack, false);
             if (itementity != null) {
                 itementity.setNoPickUpDelay();
-                itementity.setOwner(serverplayer.getUUID());
+                itementity.setThrower(serverplayer.getUUID());
             }
         }
     }

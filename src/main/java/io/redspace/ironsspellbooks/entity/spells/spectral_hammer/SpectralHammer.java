@@ -16,21 +16,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SpectralHammer extends LivingEntity implements IAnimatable {
+public class SpectralHammer extends LivingEntity implements GeoEntity {
 
     private final int ticksToLive = 30;
     private final int doDamageTick = 13;
@@ -270,21 +269,13 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
         return HumanoidArm.LEFT;
     }
 
-    @SuppressWarnings("removal")
-    private final AnimationFactory factory = new AnimationFactory(this);
 
-    @SuppressWarnings("removal")
-    private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("hammer_swing", false);
+    private final RawAnimation animationBuilder = RawAnimation.begin().thenPlay("hammer_swing");
     private final AnimationController animationController = new AnimationController(this, "controller", 0, this::predicate);
 
-    @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(animationController);
-    }
+    private PlayState predicate(software.bernie.geckolib.core.animation.AnimationState event) {
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-
-        if (event.getController().getAnimationState() == AnimationState.Stopped) {
+        if (event.getController().getAnimationState() == AnimationController.State.STOPPED) {
             if (playSwingAnimation) {
                 event.getController().setAnimation(animationBuilder);
                 playSwingAnimation = false;
@@ -295,7 +286,14 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
     }
 
     @Override
-    public AnimationFactory getFactory() {
-        return factory;
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(animationController);
     }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
+    }
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 }

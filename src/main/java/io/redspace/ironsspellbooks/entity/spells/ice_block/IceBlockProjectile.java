@@ -22,10 +22,11 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class IceBlockProjectile extends AbstractMagicProjectile implements IAnimatable {
+public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEntity {
 
     private UUID targetUUID;
     private Entity cachedTarget;
@@ -242,7 +243,8 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
         return Optional.empty();
     }
 
-//    private final AnimationBuilder form = new AnimationBuilder().addAnimation("form", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    //TODO: (1.19.4 port) revisit projectile animations with new (and hopefully improved) geckolib?
+//    private final AnimationBuilder form = new AnimationBuilder().addAnimation("form", Animation.LoopType.PLAY_ONCE);
 //
 //    private PlayState predicate(AnimationEvent animationEvent) {
 //        //IronsSpellbooks.LOGGER.debug("hello?");
@@ -251,14 +253,14 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
 //        return PlayState.CONTINUE;
 //    }
 
-    public void registerControllers(AnimationData data) {
-//        data.addAnimationController(new AnimationController(this, "ice_block_animations", 0, this::predicate));
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
     }
-
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     @Override
-    public AnimationFactory getFactory() {
-        return factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 }

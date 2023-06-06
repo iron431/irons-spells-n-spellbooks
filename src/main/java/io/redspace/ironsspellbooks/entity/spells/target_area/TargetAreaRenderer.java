@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.joml.Vector3f;
 
 public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
     public TargetAreaRenderer(EntityRendererProvider.Context pContext) {

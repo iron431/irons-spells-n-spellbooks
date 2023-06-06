@@ -8,7 +8,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class RootRenderer extends GeoEntityRenderer<RootEntity> {
     public RootRenderer(EntityRendererProvider.Context context) {
@@ -16,19 +17,19 @@ public class RootRenderer extends GeoEntityRenderer<RootEntity> {
     }
 
     @Override
-    public void renderEarly(RootEntity animatable, PoseStack poseStack, float partialTick, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float partialTicks) {
+    public void preRender(PoseStack poseStack, RootEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         var rooted = animatable.getFirstPassenger();
 
         if (rooted != null) {
             float scale = rooted.getBbWidth() / 0.6f; //.6 is the default player bb width
             poseStack.scale(scale, scale, scale);
         }
-
-        super.renderEarly(animatable, poseStack, partialTick, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, partialTicks);
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    @Override
-    public RenderType getRenderType(RootEntity animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-        return RenderType.entityCutoutNoCull(texture);
-    }
+    //TODO: (1.19.4 port) no rendertype?
+//    @Override
+//    public RenderType getRenderType(RootEntity animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
+//        return RenderType.entityCutoutNoCull(texture);
+//    }
 }

@@ -13,30 +13,30 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.UUID;
 
-public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagicSusceptible {
+public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSusceptible {
     //private static final EntityDataAccessor<Integer> DATA_DELAY = SynchedEntityData.defineId(VoidTentacle.class, EntityDataSerializers.INT);
 
     @Nullable
@@ -124,7 +124,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!pSource.isBypassInvul())
+        if (!pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
             return false;
         return super.hurt(pSource, pAmount);
     }
@@ -181,7 +181,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return new ClientboundAddEntityPacket(this);
     }
 
@@ -203,7 +203,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
 //        return entityData.get(DATA_DELAY);
 //    }
 
-    private PlayState animationPredicate(AnimationEvent event) {
+    private PlayState animationPredicate(software.bernie.geckolib.core.animation.AnimationState event) {
         //if (age >= getDelay()) {
         var controller = event.getController();
         //if (controller.getAnimationState() == AnimationState.Stopped) {
@@ -211,7 +211,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
         //IronsSpellbooks.LOGGER.debug("TentacleAnimOffset: {}", controller.tickOffset);
         if (age > 250 && level.random.nextFloat() < .04f) {
             controller.setAnimation(ANIMATION_RETREAT);
-        } else if (controller.getAnimationState() == AnimationState.Stopped) {
+        } else if (controller.getAnimationState() == AnimationController.State.STOPPED) {
             controller.setAnimationSpeed((2 + this.level.random.nextFloat()) / 2f);
             int animation = random.nextInt(3);
             //IronsSpellbooks.LOGGER.debug("Choosing new animation ({})", animation);
@@ -228,7 +228,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
         //return PlayState.STOP;
     }
 
-    private PlayState risePredicate(AnimationEvent event) {
+    private PlayState risePredicate(software.bernie.geckolib.core.animation.AnimationState event) {
         //if (age >= getDelay()) {
         var controller = event.getController();
         //if (controller.getAnimationState() == AnimationState.Stopped) {
@@ -245,25 +245,26 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
     }
 
 
-    private final AnimationBuilder ANIMATION_RISE = new AnimationBuilder().addAnimation("rise", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder ANIMATION_RETREAT = new AnimationBuilder().addAnimation("retreat", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
-    private final AnimationBuilder ANIMATION_FLAIL = new AnimationBuilder().addAnimation("flail", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder ANIMATION_FLAIL2 = new AnimationBuilder().addAnimation("flail2", ILoopType.EDefaultLoopTypes.LOOP);
-    private final AnimationBuilder ANIMATION_FLAIL3 = new AnimationBuilder().addAnimation("flail3", ILoopType.EDefaultLoopTypes.LOOP);
+    private final RawAnimation ANIMATION_RISE = RawAnimation.begin().thenPlay("rise");
+    private final RawAnimation ANIMATION_RETREAT = RawAnimation.begin().thenPlay("retreat");
+    private final RawAnimation ANIMATION_FLAIL = RawAnimation.begin().thenPlay("flail");
+    private final RawAnimation ANIMATION_FLAIL2 = RawAnimation.begin().thenPlay("flail2");
+    private final RawAnimation ANIMATION_FLAIL3 = RawAnimation.begin().thenPlay("flail3");
     private final AnimationController controller = new AnimationController(this, "void_tentacle_controller", 20, this::animationPredicate);
     private final AnimationController riseController = new AnimationController(this, "void_tentacle_rise_controller", 0, this::risePredicate);
 
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(riseController);
-        data.addAnimationController(controller);
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(riseController);
+        controllerRegistrar.add(controller);
     }
-
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     @Override
-    public AnimationFactory getFactory() {
-        return factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
 }

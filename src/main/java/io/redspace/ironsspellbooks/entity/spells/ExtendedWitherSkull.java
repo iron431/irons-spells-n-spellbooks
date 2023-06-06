@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,13 +59,13 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
                 }
             }
 
-            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Explosion.BlockInteraction.NONE);
+            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Explosion.BlockInteraction.KEEP);
             this.discard();
         }
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

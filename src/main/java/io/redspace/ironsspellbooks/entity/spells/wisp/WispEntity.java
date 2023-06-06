@@ -24,19 +24,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.UUID;
 
-public class WispEntity extends PathfinderMob implements IAnimatable {
+public class WispEntity extends PathfinderMob implements GeoEntity {
 
     @Nullable
     private UUID ownerUUID;
@@ -44,11 +45,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     @Nullable
     private Entity cachedOwner;
 
-    @SuppressWarnings("removal")
-    private final AnimationFactory factory = new AnimationFactory(this);
-
-    @SuppressWarnings("removal")
-    private final AnimationBuilder animationBuilder = new AnimationBuilder().addAnimation("animation.wisp.flying", true);
+    private final RawAnimation animation = RawAnimation.begin().thenPlay("animation.wisp.flying") ;
 
     private Vec3 targetSearchStart;
     private Vec3 lastTickPos;
@@ -178,17 +175,12 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
             }
         }
 
-        this.calculateEntityAnimation(this, false);
+        this.calculateEntityAnimation(false);
     }
 
     @Override
     public boolean isNoGravity() {
         return true;
-    }
-
-    @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
     }
 
     @Override
@@ -205,15 +197,22 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
         }
     }
 
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        event.getController().setAnimation(animationBuilder);
+    private PlayState predicate(AnimationState event) {
+        event.getController().setAnimation(animation);
         return PlayState.CONTINUE;
     }
 
     @Override
-    public AnimationFactory getFactory() {
-        return factory;
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(new AnimationController(this, "controller", 0, this::predicate));
     }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
+    }
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()

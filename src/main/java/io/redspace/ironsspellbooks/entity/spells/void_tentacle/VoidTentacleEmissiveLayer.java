@@ -11,32 +11,29 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 @OnlyIn(Dist.CLIENT)
-public class VoidTentacleEmissiveLayer extends GeoLayerRenderer<VoidTentacle> {
+public class VoidTentacleEmissiveLayer extends GeoRenderLayer<VoidTentacle> {
     public static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/void_tentacle/void_tentacle_emissive.png");
 
-    public VoidTentacleEmissiveLayer(IGeoRenderer entityRendererIn) {
+    public VoidTentacleEmissiveLayer(GeoEntityRenderer entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, VoidTentacle entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        var renderType = RenderType.eyes(TEXTURE);
+    public void render(PoseStack poseStack, VoidTentacle animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        renderType = RenderType.eyes(TEXTURE);
         //renderType = RenderType.endGateway();
-        VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
-        matrixStackIn.pushPose();
-        float f = Mth.sin((float) ((entityLivingBaseIn.tickCount + partialTicks + ((entityLivingBaseIn.getX() + entityLivingBaseIn.getZ()) * 500)) * .15f)) * .5f + .5f;
+        VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
+        poseStack.pushPose();
+        float f = Mth.sin((float) ((animatable.tickCount + partialTick + ((animatable.getX() + animatable.getZ()) * 500)) * .15f)) * .5f + .5f;
         //IronsSpellbooks.LOGGER.debug("{}", f);
-        var model = this.getEntityModel().getModel(VoidTentacleModel.modelResource);
-        this.getRenderer().render(
-                model,
-                entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
-                vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, f, f, f, 1f
-        );
-        matrixStackIn.popPose();
-    }
+        this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, f,f,f, 1f);
+        poseStack.popPose();
 
+    }
 }

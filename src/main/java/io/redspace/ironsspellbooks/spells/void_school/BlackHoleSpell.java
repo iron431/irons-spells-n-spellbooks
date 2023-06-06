@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib.core.animation.Animation;
 
 import java.util.List;
 import java.util.Optional;
@@ -93,8 +93,8 @@ public class BlackHoleSpell extends AbstractSpell {
         return (2 * getLevel(entity) + 4) * getSpellPower(entity);
     }
 
-    public static final AnimationHolder CHARGE_ANIMATION = new AnimationHolder("charge_black_hole", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    public static final AnimationHolder FINISH_ANIMATION = new AnimationHolder("long_cast_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final AnimationHolder CHARGE_ANIMATION = new AnimationHolder("charge_black_hole", Animation.LoopType.PLAY_ONCE);
+    public static final AnimationHolder FINISH_ANIMATION = new AnimationHolder("long_cast_finish", Animation.LoopType.PLAY_ONCE);
 
     @Override
     public AnimationHolder getCastStartAnimation() {

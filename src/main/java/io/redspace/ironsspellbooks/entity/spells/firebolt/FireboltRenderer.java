@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.firebolt;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;

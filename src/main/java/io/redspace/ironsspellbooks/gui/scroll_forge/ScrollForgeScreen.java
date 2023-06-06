@@ -122,8 +122,8 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 spellCard.button.active = inkRarity != null && spellCard.spell.getMinRarity() <= inkRarity.getValue();
                 int x = leftPos + SPELL_LIST_X;
                 int y = topPos + SPELL_LIST_Y + (i - scrollOffset) * 19;
-                spellCard.button.x = x;
-                spellCard.button.y = y;
+                spellCard.button.setX(x);
+                spellCard.button.setY(y);
                 spellCard.draw(this, poseStack, x, y, mouseX, mouseY);
             } else {
                 spellCard.button.active = false;
@@ -158,9 +158,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 //IronsSpellbooks.LOGGER.debug("ScrollForgeScreen.generateSpellList: {} isEnabled: {}", spells[i], spells[i].isEnabled());
                 if (spells.get(i).isEnabled())
                     availableSpells.add(new SpellCardInfo(spells.get(i), i + 1, i, this.addWidget(
-                            new Button(0, 0, 108, 19,
-                                    spells.get(i).getDisplayName(),
-                                    (b) -> this.setSelectedSpell(spells.get(tempIndex)))
+                            new Button.Builder(spells.get(i).getDisplayName(), (b) -> this.setSelectedSpell(spells.get(tempIndex))).pos(0, 0).size(108, 19).build()
                     )));
             }
         }
@@ -226,7 +224,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
             int textX = x + 2;
             int textY = y + 3;
-            font.drawWordWrap(text, textX, textY, maxWidth, 0xFFFFFF);
+            font.drawWordWrap(poseStack, text, textX, textY, maxWidth, 0xFFFFFF);
 
             if (mouseX >= textX && mouseY >= textY && mouseX < textX + font.width(text) && mouseY < textY + font.lineHeight) {
                 screen.renderTooltip(poseStack, getHoverText(), mouseX, mouseY);

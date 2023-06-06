@@ -11,7 +11,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib.core.animation.Animation;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +72,7 @@ public class HealSpell extends AbstractSpell {
         super.onCast(world, entity, playerMagicData);
     }
 
-    public static final AnimationHolder SELF_CAST_ANIMATION = new AnimationHolder("instant_self", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final AnimationHolder SELF_CAST_ANIMATION = new AnimationHolder("instant_self", Animation.LoopType.PLAY_ONCE);
 
     @Override
     public AnimationHolder getCastStartAnimation() {

@@ -2,9 +2,9 @@ package io.redspace.ironsspellbooks.entity.spells.root;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class RootModel extends AnimatedGeoModel<RootEntity> {
+public class RootModel extends GeoModel<RootEntity> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/root.png");
     private static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/root.geo.json");
     public static final ResourceLocation ANIMS = new ResourceLocation(IronsSpellbooks.MODID, "animations/root_animations.json");

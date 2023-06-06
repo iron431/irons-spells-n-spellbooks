@@ -43,7 +43,7 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
 
     public ExtendedArmorItem(ExtendedArmorMaterials material, Type type, Properties settings) {
         super(material, type, settings);
-        var slot = type.m_266308_();
+        var slot = type.getSlot();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         float defense = material.getDefenseForSlot(slot);
         float toughness = material.getToughness();
@@ -67,7 +67,7 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
 
     @Override
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
-        if (pEquipmentSlot == this.getSlot()) {
+        if (pEquipmentSlot == this.type.getSlot()) {
             return ARMOR_ATTRIBUTES;
         } else {
             return ImmutableMultimap.of();

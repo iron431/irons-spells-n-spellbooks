@@ -15,10 +15,13 @@ import io.redspace.ironsspellbooks.spells.poison.*;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.UseAnim;
 
@@ -320,7 +323,8 @@ public enum SpellType {
     }
 
     public DamageSource getDamageSource() {
-        return new DamageSource(this.getId() + "_spell");
+        //TODO: 1.19.4 port gives potentially more stuff to play around with
+        return new DamageSource(Holder.direct(new DamageType(this.getId() + "_spell", DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f)));
     }
 
     public DamageSource getDamageSource(Entity attacker) {

@@ -27,8 +27,7 @@ import javax.annotation.Nullable;
 
 @Mixin(ItemRenderer.class)
 public class ItemRendererMixin {
-    //This used to be: renderGuiItemDecorations
-    @Inject(method = "m_274364_", at = @At(value = "TAIL"))
+    @Inject(method = "renderGuiItemDecorations", at = @At(value = "TAIL"))
     public void renderSpellbookCooldown(PoseStack p_275269_, Font font, ItemStack stack, int one, int two, String p_275302_, CallbackInfo ci) {
         Item item = stack.getItem();
         if (item instanceof SpellBook) {

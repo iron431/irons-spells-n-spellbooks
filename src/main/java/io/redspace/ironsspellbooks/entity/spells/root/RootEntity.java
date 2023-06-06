@@ -11,8 +11,10 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,21 +26,19 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.UUID;
 
-public class RootEntity extends LivingEntity implements IAnimatable, PreventDismount, AntiMagicSusceptible {
+public class RootEntity extends LivingEntity implements GeoEntity, PreventDismount, AntiMagicSusceptible {
     @Nullable
     private LivingEntity owner;
 
@@ -96,8 +96,8 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
     }
 
     @Override
-    public boolean rideableUnderWater() {
-        return true;
+    public boolean dismountsUnderwater() {
+        return false;
     }
 
     @Override
@@ -282,7 +282,7 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (pSource.isBypassInvul()) {
+        if (pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             this.removeRoot();
             return true;
         }
@@ -306,17 +306,17 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return new ClientboundAddEntityPacket(this);
     }
 
     private boolean played = false;
 
-    private PlayState animationPredicate(AnimationEvent event) {
+    private PlayState animationPredicate(software.bernie.geckolib.core.animation.AnimationState event) {
         var controller = event.getController();
 
-        if (!played && controller.getAnimationState() == AnimationState.Stopped) {
-            controller.markNeedsReload();
+        if (!played && controller.getAnimationState() == AnimationController.State.STOPPED) {
+            controller.forceAnimationReset();
             controller.setAnimation(ANIMATION);
             played = true;
         }
@@ -324,19 +324,19 @@ public class RootEntity extends LivingEntity implements IAnimatable, PreventDism
         return PlayState.CONTINUE;
     }
 
-    private final AnimationBuilder ANIMATION = new AnimationBuilder().playAndHold("emerge");
+    private final RawAnimation ANIMATION = RawAnimation.begin().thenPlay("emerge");
 
     private final AnimationController controller = new AnimationController(this, "root_controller", 0, this::animationPredicate);
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(controller);
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(controller);
     }
-
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     @Override
-    public AnimationFactory getFactory() {
-        return factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.cache;
     }
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 }

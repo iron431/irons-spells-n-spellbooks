@@ -35,6 +35,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import software.bernie.geckolib.core.animation.Animation;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
@@ -44,12 +45,12 @@ import java.util.Optional;
 public abstract class AbstractSpell {
     public static ResourceLocation ANIMATION_RESOURCE = new ResourceLocation(IronsSpellbooks.MODID, "animation");
 
-    private static final AnimationHolder ANIMATION_INSTANT_CAST = new AnimationHolder("instant_projectile", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private static final AnimationHolder ANIMATION_CONTINUOUS_CAST = new AnimationHolder("continuous_thrust", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
-    private static final AnimationHolder ANIMATION_CHARGED_CAST = new AnimationHolder("charged_throw", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private static final AnimationHolder ANIMATION_LONG_CAST = new AnimationHolder("long_cast", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private static final AnimationHolder ANIMATION_LONG_CAST_FINISH = new AnimationHolder("long_cast_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    public static final AnimationHolder ANIMATION_CONTINUOUS_OVERHEAD = new AnimationHolder("continuous_overhead", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
+    private static final AnimationHolder ANIMATION_INSTANT_CAST = new AnimationHolder("instant_projectile", Animation.LoopType.PLAY_ONCE);
+    private static final AnimationHolder ANIMATION_CONTINUOUS_CAST = new AnimationHolder("continuous_thrust", Animation.LoopType.HOLD_ON_LAST_FRAME);
+    private static final AnimationHolder ANIMATION_CHARGED_CAST = new AnimationHolder("charged_throw", Animation.LoopType.PLAY_ONCE);
+    private static final AnimationHolder ANIMATION_LONG_CAST = new AnimationHolder("long_cast", Animation.LoopType.PLAY_ONCE);
+    private static final AnimationHolder ANIMATION_LONG_CAST_FINISH = new AnimationHolder("long_cast_finish", Animation.LoopType.PLAY_ONCE);
+    public static final AnimationHolder ANIMATION_CONTINUOUS_OVERHEAD = new AnimationHolder("continuous_overhead", Animation.LoopType.HOLD_ON_LAST_FRAME);
 
     private final SpellType spellType;
     private final CastType castType;

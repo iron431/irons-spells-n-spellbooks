@@ -11,7 +11,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib3.core.builder.ILoopType;
+import software.bernie.geckolib.core.animation.Animation;
 
 import java.util.List;
 import java.util.Optional;
@@ -79,8 +79,8 @@ public class AcidOrbSpell extends AbstractSpell {
         return (int) (getSpellPower(caster) * 20 * 15);
     }
 
-    public static final AnimationHolder CHARGE_SPIT_ANIMATION = new AnimationHolder("charge_spit", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    public static final AnimationHolder SPIT_FINISH_ANIMATION = new AnimationHolder("charge_spit_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final AnimationHolder CHARGE_SPIT_ANIMATION = new AnimationHolder("charge_spit", Animation.LoopType.PLAY_ONCE);
+    public static final AnimationHolder SPIT_FINISH_ANIMATION = new AnimationHolder("charge_spit_finish", Animation.LoopType.PLAY_ONCE);
 
     @Override
     public AnimationHolder getCastStartAnimation() {
