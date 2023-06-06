@@ -13,6 +13,7 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
     private static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/dead_king.geo.json");
 
     public DeadKingModel() {
+        super();
     }
 
     @Override

@@ -69,10 +69,12 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     @Override
     protected void init() {
         super.init();
-        inscribeButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()));
+        inscribeButton = this.addWidget(
+                Button.builder(CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()).bounds(0, 0, 14, 14).build()
+        );
         //extractButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.removeSpell()));
         spellSlots = new ArrayList<>();
- //Ironsspellbooks.logger.debug("InscriptionTableScreen: init");
+        //Ironsspellbooks.logger.debug("InscriptionTableScreen: init");
         generateSpellSlots();
     }
 
@@ -151,8 +153,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         for (int i = 0; i < spellSlots.size(); i++) {
             var spellSlot = spellSlots.get(i).button;
             var pos = spellSlots.get(i).relativePosition.add(center);
-            spellSlot.x = (int) pos.x;
-            spellSlot.y = (int) pos.y;
+            spellSlot.setX((int) pos.x);
+            spellSlot.setY((int) pos.y);
             renderSpellSlot(poseStack, pos, mouseX, mouseY, i, spellSlots.get(i));
             //spellSlot.render(poseStack,mouseX,mouseY,1f);
         }
@@ -163,19 +165,19 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         //  Rendering inscription Button
         //
-        inscribeButton.x = leftPos + INSCRIBE_BUTTON_X;
-        inscribeButton.y = topPos + INSCRIBE_BUTTON_Y;
+        inscribeButton.setX(leftPos + INSCRIBE_BUTTON_X);
+        inscribeButton.setY(topPos + INSCRIBE_BUTTON_Y);
         if (inscribeButton.active) {
-            if (isHovering(inscribeButton.x, inscribeButton.y, 14, 14, mouseX, mouseY)) {
+            if (isHovering(inscribeButton.getX(), inscribeButton.getY(), 14, 14, mouseX, mouseY)) {
                 //highlighted
-                this.blit(poseStack, inscribeButton.x, inscribeButton.y, 28, 185, 14, 14);
+                this.blit(poseStack, inscribeButton.getX(), inscribeButton.getY(), 28, 185, 14, 14);
             } else {
                 //regular
-                this.blit(poseStack, inscribeButton.x, inscribeButton.y, 14, 185, 14, 14);
+                this.blit(poseStack, inscribeButton.getX(), inscribeButton.getY(), 14, 185, 14, 14);
             }
         } else {
             //disabled
-            this.blit(poseStack, inscribeButton.x, inscribeButton.y, 0, 185, 14, 14);
+            this.blit(poseStack, inscribeButton.getX(), inscribeButton.getY(), 0, 185, 14, 14);
         }
 
     }
@@ -299,7 +301,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         x /= scale;
         y /= scale;
         //font.draw(poseStack, text, x, y, color);
-        font.drawWordWrap(text, x, y, LORE_PAGE_WIDTH, color);
+        font.drawWordWrap(poseStack, text, x, y, LORE_PAGE_WIDTH, color);
         return font.wordWrapHeight(text, LORE_PAGE_WIDTH);
 
     }
@@ -366,7 +368,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 int temp_index = index;
                 spellSlots.add(new SpellSlotInfo(storedSpells[index],
                         location,
-                        this.addWidget(new Button((int) location.x, (int) location.y, boxSize, boxSize, Component.translatable(temp_index + ""), (p_169820_) -> this.setSelectedIndex(temp_index)))));
+                        this.addWidget(
+                                Button.builder(Component.translatable(temp_index + ""), (p_169820_) -> this.setSelectedIndex(temp_index)).pos((int) location.x, (int) location.y).size(boxSize, boxSize).build()
+                        )
+                ));
                 index++;
             }
         }
