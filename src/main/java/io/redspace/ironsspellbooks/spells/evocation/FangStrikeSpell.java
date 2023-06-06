@@ -64,7 +64,7 @@ public class FangStrikeSpell extends AbstractSpell {
         for (int i = 0; i < getCount(entity); i++) {
             Vec3 spawn = start.add(forward.scale(i));
             spawn = new Vec3(spawn.x, getGroundLevel(world, spawn, 8), spawn.z);
-            if (!world.getBlockState(new BlockPos(spawn).below()).isAir()) {
+            if (!world.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
                 ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, (entity.getYRot() - 90) * Mth.DEG_TO_RAD, i, entity, getDamage(entity));
                 world.addFreshEntity(fang);
             }
@@ -74,10 +74,10 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     private int getGroundLevel(Level level, Vec3 start, int maxSteps) {
-        if (!level.getBlockState(new BlockPos(start)).isAir()) {
+        if (!level.getBlockState(BlockPos.containing(start)).isAir()) {
             for (int i = 0; i < maxSteps; i++) {
                 start = start.add(0, 1, 0);
-                if (level.getBlockState(new BlockPos(start)).isAir())
+                if (level.getBlockState(BlockPos.containing(start)).isAir())
                     break;
             }
         }

@@ -61,7 +61,7 @@ public class PatrolNearLocationGoal extends Goal {
         }
 
         Vec3 pos = patrolLocationCenter.add(getRandomPosInRadius());
-        this.targeBlock = this.mob.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(pos));
+        this.targeBlock = this.mob.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(pos));
         //irons_spellbooks.LOGGER.debug("PNLG.getNextTargetBlock: center:{} target:{}", patrolLocationCenter, targeBlock);
     }
 

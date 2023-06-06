@@ -74,7 +74,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
                 Vec3 spawn = center.add(new Vec3(0, 0, 1.3 * (r + 1)).yRot(((6.281f / tentacles) * i))).add(random);
 
                 spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevel(level, spawn, 8), spawn.z);
-                if (!level.getBlockState(new BlockPos(spawn).below()).isAir()) {
+                if (!level.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
                     VoidTentacle tentacle = new VoidTentacle(level, entity, getDamage(entity));
                     tentacle.moveTo(spawn);
                     tentacle.setYRot(level.getRandom().nextInt(360));

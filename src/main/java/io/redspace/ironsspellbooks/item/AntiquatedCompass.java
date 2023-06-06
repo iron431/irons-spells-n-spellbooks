@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.util.ModTags;
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;

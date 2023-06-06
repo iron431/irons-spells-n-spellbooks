@@ -85,7 +85,7 @@ public class AscensionSpell extends AbstractSpell {
 
         Vec3 vec = entity.position();
         for (int i = 0; i < 32; i++) {
-            if (!level.getBlockState(new BlockPos(vec).below()).isAir())
+            if (!level.getBlockState(BlockPos.containing(vec).below()).isAir())
                 break;
             vec = vec.subtract(0, 1, 0);
         }

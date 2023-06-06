@@ -93,7 +93,7 @@ public class BloodStepSpell extends AbstractSpell {
                 //dest = target.position().subtract(new Vec3(0, 0, 1.5).yRot(target.getYRot()));
                 for (int i = 0; i < 8; i++) {
                     dest = target.position().subtract(new Vec3(0, 0, 1.5).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
-                    if (level.getBlockState(new BlockPos(dest).above()).isAir())
+                    if (level.getBlockState(BlockPos.containing(dest).above()).isAir())
                         break;
 
                 }

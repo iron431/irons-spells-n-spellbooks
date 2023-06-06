@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
+
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -22,7 +22,7 @@ import java.util.List;
 public class WaywardCompass extends Item {
     private static final Component description = Component.translatable("item.irons_spellbooks.wayward_compass_desc").withStyle(ChatFormatting.DARK_AQUA);
     public WaywardCompass() {
-        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
+        super(new Properties());
     }
 
     public static GlobalPos getCatacombsLocation(Entity entity, CompoundTag compoundTag) {

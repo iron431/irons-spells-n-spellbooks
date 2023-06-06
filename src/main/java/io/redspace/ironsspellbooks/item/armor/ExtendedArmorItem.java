@@ -43,12 +43,11 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
 
     public ExtendedArmorItem(ExtendedArmorMaterials material, Type type, Properties settings) {
         super(material, type, settings);
-        var slot = type.getSlot();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        float defense = material.getDefenseForSlot(slot);
+        float defense = material.getDefenseForType(type);
         float toughness = material.getToughness();
         float knockbackResistance = material.getKnockbackResistance();
-        UUID uuid = ARMOR_MODIFIER_UUID_PER_SLOT[slot.getIndex()];
+        UUID uuid = ARMOR_MODIFIER_UUID_PER_SLOT[type.getSlot().getIndex()];
         builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", defense, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", toughness, AttributeModifier.Operation.ADDITION));
         if (knockbackResistance > 0) {

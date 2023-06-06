@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.item.curios;
 
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -9,7 +8,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 public class FrostwardRing extends SimpleDescriptiveCurio {
     public FrostwardRing() {
-        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), Component.translatable("item.irons_spellbooks.frostward_ring.desc").withStyle(ChatFormatting.YELLOW));
+        super(new Properties().stacksTo(1), Component.translatable("item.irons_spellbooks.frostward_ring.desc").withStyle(ChatFormatting.YELLOW));
     }
 
     @Override

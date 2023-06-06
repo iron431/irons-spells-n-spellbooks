@@ -86,7 +86,7 @@ public class RaiseDeadSpell extends AbstractSpell {
                 distance *= (3 - j) / 3f;
                 spawn = entity.getEyePosition().add(new Vec3(0, 0, distance).yRot(((6.281f / level) * i)));
                 spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevel(world, spawn, 5), spawn.z);
-                if (!world.getBlockState(new BlockPos(spawn).below()).isAir())
+                if (!world.getBlockState(BlockPos.containing(spawn).below()).isAir())
                     break;
             }
             undead.moveTo(spawn.x, spawn.y, spawn.z, entity.getYRot(), 0);

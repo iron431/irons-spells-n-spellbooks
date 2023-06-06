@@ -95,7 +95,7 @@ public class IceBlockSpell extends AbstractSpell {
     private Vec3 raiseWithCollision(Vec3 start, int blocks, Level level) {
         for (int i = 0; i < blocks; i++) {
             Vec3 raised = start.add(0, 1, 0);
-            if (level.getBlockState(new BlockPos(raised)).isAir())
+            if (level.getBlockState(BlockPos.containing(raised)).isAir())
                 start = raised;
             else
                 break;

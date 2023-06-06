@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
+
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
@@ -31,7 +31,7 @@ public class SpellBook extends Item {
     }
 
     public SpellBook(int spellSlots, SpellRarity rarity) {
-        this(spellSlots, rarity, new Item.Properties().stacksTo(1).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).rarity(Rarity.UNCOMMON));
+        this(spellSlots, rarity, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     public SpellBook(int spellSlots, SpellRarity rarity, Item.Properties pProperties) {

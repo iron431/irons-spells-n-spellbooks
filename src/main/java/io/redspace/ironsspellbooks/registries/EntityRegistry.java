@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.entity.mobs.keeper.KeeperEntity;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
-import io.redspace.ironsspellbooks.entity.mobs.summoned_frog.SummonedFrog;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
@@ -308,12 +307,6 @@ public class EntityRegistry {
                     .sized(3.5f, 4f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_splash").toString()));
-
-    public static final RegistryObject<EntityType<SummonedFrog>> SUMMONED_FROG =
-            ENTITIES.register("summoned_frog", () -> EntityType.Builder.<SummonedFrog>of(SummonedFrog::new, MobCategory.MISC)
-                    .sized(0.5F, 0.5F)
-                    .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "summoned_frog").toString()));
 
     public static final RegistryObject<EntityType<AcidOrb>> ACID_ORB =
             ENTITIES.register("acid_orb", () -> EntityType.Builder.<AcidOrb>of(AcidOrb::new, MobCategory.MISC)
