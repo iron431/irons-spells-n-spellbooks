@@ -12,10 +12,6 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
     private static final ResourceLocation TEXTURE3 = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged.png");
     private static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/dead_king.geo.json");
 
-    public DeadKingModel() {
-        super();
-    }
-
     @Override
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
         if (object instanceof DeadKingBoss boss) {

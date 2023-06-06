@@ -4,8 +4,11 @@ import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.core.Holder;
+import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;
 
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -24,10 +27,9 @@ public class DamageSources {
 //        return new EntityDamageSource(BLOOD_MAGIC_ID, player);
 //    }
 
-    public static DamageSource CAULDRON = new DamageSource("blood_cauldron");
-    public static DamageSource HEARTSTOP = new DamageSource("heartstop").bypassArmor().bypassMagic();
-
-    public static DamageSource BLEED_DAMAGE = new DamageSource("bleed_effect");
+    public static DamageSource CAULDRON = new DamageSource(Holder.direct(new DamageType("blood_cauldron", DamageScaling.NEVER, 0f)));
+    //TODO: (1.19.4 port) tag with bypass invul and armor
+    public static DamageSource HEARTSTOP = new DamageSource(Holder.direct(new DamageType("heartstop", DamageScaling.NEVER, 0f)));
 //
 //    public static DamageSource FIRE_MAGIC = new DamageSource("fire_magic_damage");
 //    public static DamageSource ICE_MAGIC = new DamageSource("ice_magic_damage");
@@ -74,11 +76,12 @@ public class DamageSources {
     }
 
     public static DamageSource directDamageSource(DamageSource source, Entity attacker) {
-        return new EntityDamageSource(source.getMsgId(), attacker);
+        return new DamageSource(source.typeHolder(), attacker);
+        //return new EntityDamageSource(source.getMsgId(), attacker);
     }
 
     public static DamageSource indirectDamageSource(DamageSource source, Entity projectile, @Nullable Entity attacker) {
-        return new IndirectEntityDamageSource(source.msgId, projectile, attacker);
+        return new DamageSource(source.typeHolder(), attacker, projectile);
     }
 
     /**

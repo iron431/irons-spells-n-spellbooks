@@ -10,6 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -23,16 +24,18 @@ import java.util.Set;
 
 public class EvasionEffect extends MobEffect {
 
+    //TODO: 1.19.4 port damage sources
     public static Set<DamageSource> excludeDamageSources = Set.of(
-            DamageSource.ON_FIRE,
-            DamageSource.WITHER,
-            DamageSource.FREEZE,
+//            DamageSources.ON_FIRE,
+//            DamageSource.WITHER,
+//            DamageSource.FREEZE,
             DamageSources.CAULDRON,
-            DamageSources.BLEED_DAMAGE,
-            DamageSource.STARVE,
-            DamageSource.DROWN,
-            DamageSource.STALAGMITE,
-            DamageSource.OUT_OF_WORLD);
+            DamageSources.BLEED_DAMAGE
+//            DamageSource.STARVE,
+//            DamageSource.DROWN,
+//            DamageSource.STALAGMITE,
+//            DamageSource.OUT_OF_WORLD
+    );
 
     public EvasionEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
@@ -53,7 +56,7 @@ public class EvasionEffect extends MobEffect {
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (livingEntity.level.isClientSide || excludeDamageSources.contains(damageSource) || damageSource.isFall() || damageSource.isBypassMagic() || damageSource.isBypassInvul()) {
+        if (livingEntity.level.isClientSide || excludeDamageSources.contains(damageSource) || damageSource.is(DamageTypeTags.IS_FALL) || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
 

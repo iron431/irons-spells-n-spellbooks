@@ -4,11 +4,13 @@ import com.google.common.base.Suppliers;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.OreFeatures;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -30,7 +32,7 @@ public class FeatureRegistry {
      */
     //What blocks the ore can generate in
     public static final Supplier<List<OreConfiguration.TargetBlockState>> ARCANE_DEBRIS_ORE_TARGET = Suppliers.memoize(() -> List.of(
-            OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, BlockRegistry.ARCANE_DEBRIS.get().defaultBlockState())
+            OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), BlockRegistry.ARCANE_DEBRIS.get().defaultBlockState())
     ));
     //Vein size/conditions (this ore cannot spawn exposed to air)
     public static final RegistryObject<ConfiguredFeature<?, ?>> ORE_ARCANE_DEBRIS = CONFIGURED_FEATURES.register("ore_arcane_debris",

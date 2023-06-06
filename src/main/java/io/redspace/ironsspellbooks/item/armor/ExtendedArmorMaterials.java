@@ -21,54 +21,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static net.minecraft.world.item.ArmorMaterials.HEALTH_FUNCTION_FOR_TYPE;
-
 public enum ExtendedArmorMaterials implements ArmorMaterial {
-    //DIAMOND FOR REFERENCE
-    DIAMOND("diamond", 33, new int[]{3, 6, 8, 3}, 10, SoundEvents.ARMOR_EQUIP_DIAMOND, 2.0F, 0.0F, () -> {
-        return Ingredient.of(Items.DIAMOND);
-    }, new HashMap<>()),
-    /////////////////////////////////////////////////////////
 
-    TARNISHED("tarnished", 25, new int[]{0, 0, 0, 0}, 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.0F, 0.0F, () -> Ingredient.of(Items.IRON_INGOT), Map.of(
+    TARNISHED("tarnished", 25, makeArmorMap(0, 0, 0, 0), 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.0F, 0.0F, () -> Ingredient.of(Items.IRON_INGOT), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 150, AttributeModifier.Operation.ADDITION),
             Attributes.ATTACK_DAMAGE, new AttributeModifier("minus damage", -.15, AttributeModifier.Operation.MULTIPLY_TOTAL)
     )),
-    WANDERING_MAGICIAN("wandering_magician", 10, new int[]{2, 5, 6, 2}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Items.LEATHER), Map.of(
+    WANDERING_MAGICIAN("wandering_magician", 10, makeArmorMap(2, 5, 6, 2), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Items.LEATHER), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 25, AttributeModifier.Operation.ADDITION)
     )),
-    PUMPKIN("pumpkin", 33, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_TURTLE, 0.0F, 0.0F, () -> Ingredient.of(Items.HAY_BLOCK), Map.of(
+    PUMPKIN("pumpkin", 33, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_TURTLE, 0.0F, 0.0F, () -> Ingredient.of(Items.HAY_BLOCK), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 50, AttributeModifier.Operation.ADDITION)
     )),
-    PYROMANCER("pyromancer", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+    PYROMANCER("pyromancer", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier("Fire Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
-    ARCHEVOKER("archevoker", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+    ARCHEVOKER("archevoker", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.EVOCATION_SPELL_POWER.get(), new AttributeModifier("Evocation Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
-    CULTIST("cultist", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+    CULTIST("cultist", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.BLOOD_SPELL_POWER.get(), new AttributeModifier("Blood Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
-    PRIEST("priest", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+    PRIEST("priest", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.HOLY_SPELL_POWER.get(), new AttributeModifier("Holy Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
-    CRYOMANCER("cryomancer", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+    CRYOMANCER("cryomancer", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.ICE_SPELL_POWER.get(), new AttributeModifier("Ice Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
-    SHADOWWALKER("shadowwalker", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+    SHADOWWALKER("shadowwalker", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.ENDER_SPELL_POWER.get(), new AttributeModifier("Ender Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
-    PLAGUED("plagued", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+    PLAGUED("plagued", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.POISON_SPELL_POWER.get(), new AttributeModifier("Poison Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
-    ELECTROMANCER("electromancer", 38, new int[]{3, 6, 8, 3}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+    ELECTROMANCER("electromancer", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.LIGHTNING_SPELL_POWER.get(), new AttributeModifier("Lightning Power", .075, AttributeModifier.Operation.MULTIPLY_BASE)
     ));
@@ -76,7 +69,7 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
     private final String name;
     private final int durabilityMultiplier;
-    private final int[] slotProtections;
+    private final EnumMap<ArmorItem.Type, Integer> protectionFunctionForType;
     private final int enchantmentValue;
     private final SoundEvent sound;
     private final float toughness;
@@ -84,10 +77,10 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
     private final LazyLoadedValue<Ingredient> repairIngredient;
     private final Map<Attribute, AttributeModifier> additionalAttributes;
 
-    private ExtendedArmorMaterials(String pName, int pDurabilityMultiplier, int[] pSlotProtections, int pEnchantmentValue, SoundEvent pSound, float pToughness, float pKnockbackResistance, Supplier<Ingredient> pRepairIngredient, Map<Attribute, AttributeModifier> additionalAttributes) {
+    private ExtendedArmorMaterials(String pName, int pDurabilityMultiplier, EnumMap<ArmorItem.Type, Integer> protectionMap, int pEnchantmentValue, SoundEvent pSound, float pToughness, float pKnockbackResistance, Supplier<Ingredient> pRepairIngredient, Map<Attribute, AttributeModifier> additionalAttributes) {
         this.name = pName;
         this.durabilityMultiplier = pDurabilityMultiplier;
-        this.slotProtections = pSlotProtections;
+        this.protectionFunctionForType = protectionMap;
         this.enchantmentValue = pEnchantmentValue;
         this.sound = pSound;
         this.toughness = pToughness;
@@ -96,12 +89,21 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
         this.additionalAttributes = additionalAttributes;
     }
 
-    public int getDurabilityForSlot(EquipmentSlot pSlot) {
-        return HEALTH_PER_SLOT[pSlot.getIndex()] * this.durabilityMultiplier;
+    static public EnumMap<ArmorItem.Type, Integer> makeArmorMap(int helmet, int chestplate, int leggings, int boots) {
+        return Util.make(new EnumMap<>(ArmorItem.Type.class), (p_266655_) -> {
+            p_266655_.put(ArmorItem.Type.BOOTS, boots);
+            p_266655_.put(ArmorItem.Type.LEGGINGS, leggings);
+            p_266655_.put(ArmorItem.Type.CHESTPLATE, chestplate);
+            p_266655_.put(ArmorItem.Type.HELMET, helmet);
+        });
     }
 
-    public int getDefenseForSlot(EquipmentSlot pSlot) {
-        return this.slotProtections[pSlot.getIndex()];
+    static public EnumMap<ArmorItem.Type, Integer> schoolArmorMap() {
+        return makeArmorMap(3, 8, 6, 3);
+    }
+
+    public int getDurabilityForSlot(EquipmentSlot pSlot) {
+        return HEALTH_PER_SLOT[pSlot.getIndex()] * this.durabilityMultiplier;
     }
 
     private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util.make(new EnumMap<>(ArmorItem.Type.class), (p_266653_) -> {
@@ -116,8 +118,7 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
     }
 
     public int getDefenseForType(ArmorItem.Type p_266752_) {
-        //TODO: (1.19.4 port) mixin transform? seems to be a lot a wierd shit now in the vanilla armor materials. may need to remake this class later
-        return ArmorMaterials.protectionFunctionForType.get(p_266752_);
+        return this.protectionFunctionForType.get(p_266752_);
     }
 
     public int getEnchantmentValue() {

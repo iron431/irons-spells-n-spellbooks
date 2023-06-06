@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -86,8 +87,8 @@ public class FrozenHumanoid extends LivingEntity {
 
         //this.animationPosition = entityToCopy.animationPosition;
         //this.animationSpeed = 0;
-        float limbSwing = entityToCopy.animationPosition;
-        float limbSwingAmount = entityToCopy.animationSpeed;
+        float limbSwing = entityToCopy.walkAnimation.speed();
+        float limbSwingAmount = entityToCopy.walkAnimation.position();
 
  //Ironsspellbooks.logger.debug("Entity limbSwing: {}", entityToCopy.animationPosition);
  //Ironsspellbooks.logger.debug("Entity limbSwingAmount: {}", entityToCopy.animationSpeed);
@@ -165,7 +166,7 @@ public class FrozenHumanoid extends LivingEntity {
 
         }
         if (deathTimer == 0)
-            this.hurt(DamageSource.OUT_OF_WORLD, 100);
+            this.hurt(level.damageSources().outOfWorld(), 100);
     }
 
     public void setDeathTimer(int timeInTicks) {

@@ -21,6 +21,6 @@ public class DebugWizardRenderer extends AbstractSpellCastingMobRenderer {
                 return AbstractSpellCastingMob.textureResource;
             }
         });
-        this.addLayer(new DebugWizardSpellName(this));
+        addRenderLayer(new DebugWizardSpellName(this));
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 public class AntiquatedCompass extends Item {
     private static final Component description = Component.translatable("item.irons_spellbooks.antiquated_compass_desc").withStyle(Style.EMPTY.withColor(0x873200));
     public AntiquatedCompass() {
-        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
+        super(new Properties().stacksTo(1));
     }
 
     public static GlobalPos getCitadelLocation(Entity entity, CompoundTag compoundTag) {

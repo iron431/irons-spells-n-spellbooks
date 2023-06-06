@@ -81,7 +81,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
         penetration++;
         if (!level.isClientSide) {
             if (result.getType() == HitResult.Type.ENTITY) {
-                level.playSound(null, new BlockPos(position()), SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2, .65f);
+                level.playSound(null, BlockPos.containing(this.position()), SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2, .65f);
                 //IronsSpellbooks.LOGGER.debug("Playing Sound");
             }
         }

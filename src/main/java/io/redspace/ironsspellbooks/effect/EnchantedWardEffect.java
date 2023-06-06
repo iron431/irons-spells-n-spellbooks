@@ -17,6 +17,7 @@ public class EnchantedWardEffect extends MobEffect {
 
     @Override
     public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
-        pLivingEntity.hurt(DamageSource.MAGIC.bypassEnchantments(), 5);
+        //TODO 1.19.4 port damage sources
+        //pLivingEntity.hurt(DamageSource.MAGIC.bypassEnchantments(), 5);
     }
 }

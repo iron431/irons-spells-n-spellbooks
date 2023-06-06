@@ -133,7 +133,7 @@ public class SpellWheelOverlay extends GuiComponent {
         //var locations = drawRadialBackgrounds(buffer, centerX, centerY, mouseXCenter, mouseYCenter, mouseRadians, quarterCircle, spells);
         tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
+        //RenderSystem.enableTexture();
 
 
         //Spell Icons
@@ -255,10 +255,10 @@ public class SpellWheelOverlay extends GuiComponent {
             if (isHighlighted) color = highlightColor;
             //if (isSelected && isHighlighted) color = highlightSelectedColor;
 
-            buffer.vertex(centerX + x1m1, centerY + y1m1, getBlitOffset()).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m1, centerY + y2m1, getBlitOffset()).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m2, centerY + y2m2, getBlitOffset()).color(color.x(), color.y(), color.z(), 0).endVertex();
-            buffer.vertex(centerX + x1m2, centerY + y1m2, getBlitOffset()).color(color.x(), color.y(), color.z(), 0).endVertex();
+            buffer.vertex(centerX + x1m1, centerY + y1m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+            buffer.vertex(centerX + x2m1, centerY + y2m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+            buffer.vertex(centerX + x2m2, centerY + y2m2, 0).color(color.x(), color.y(), color.z(), 0).endVertex();
+            buffer.vertex(centerX + x1m2, centerY + y1m2, 0).color(color.x(), color.y(), color.z(), 0).endVertex();
 
             //Category line
             color = /*new Vector4f(0.12f, 0.03f, 0.47f, .5f)*/lineColor;
@@ -269,10 +269,10 @@ public class SpellWheelOverlay extends GuiComponent {
             final double y1m3 = Math.sin(beginRadians + fragment) * categoryLineOuterEdge;
             final double y2m3 = Math.sin(endRadians - fragment) * categoryLineOuterEdge;
 
-            buffer.vertex(centerX + x1m1, centerY + y1m1, getBlitOffset()).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m1, centerY + y2m1, getBlitOffset()).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m3, centerY + y2m3, getBlitOffset()).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x1m3, centerY + y1m3, getBlitOffset()).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+            buffer.vertex(centerX + x1m1, centerY + y1m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+            buffer.vertex(centerX + x2m1, centerY + y2m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+            buffer.vertex(centerX + x2m3, centerY + y2m3, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+            buffer.vertex(centerX + x1m3, centerY + y1m3, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
 
 
 //            if (spell != null) {
@@ -314,10 +314,10 @@ public class SpellWheelOverlay extends GuiComponent {
             final double y2m2 = Math.sin(endFarRadians) * ringOuterEdge * 1.4;
 
             Vector4f color = lineColor;
-            buffer.vertex(centerX + x1m1, centerY + y1m1, getBlitOffset()).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m1, centerY + y2m1, getBlitOffset()).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-            buffer.vertex(centerX + x2m2, centerY + y2m2, getBlitOffset()).color(color.x(), color.y(), color.z(), 0).endVertex();
-            buffer.vertex(centerX + x1m2, centerY + y1m2, getBlitOffset()).color(color.x(), color.y(), color.z(), 0).endVertex();
+            buffer.vertex(centerX + x1m1, centerY + y1m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+            buffer.vertex(centerX + x2m1, centerY + y2m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+            buffer.vertex(centerX + x2m2, centerY + y2m2, 0).color(color.x(), color.y(), color.z(), 0).endVertex();
+            buffer.vertex(centerX + x1m2, centerY + y1m2, 0).color(color.x(), color.y(), color.z(), 0).endVertex();
         }
 
     }

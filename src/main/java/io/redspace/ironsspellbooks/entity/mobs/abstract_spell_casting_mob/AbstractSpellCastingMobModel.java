@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
@@ -12,9 +13,10 @@ import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
 
-    public AbstractSpellCastingMobModel(ResourceLocation assetSubpath) {
+    public AbstractSpellCastingMobModel(/*ResourceLocation assetSubpath*/) {
         //TODO: (1.19.4 port) what is this resourcelocation supposed to point to?
-        super(assetSubpath);
+        // i think it may be auto-boilerplating, but we already did it
+        super(IronsSpellbooks.id("abstractSpellCastingMob"));
     }
 
     @Override

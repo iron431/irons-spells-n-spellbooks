@@ -35,4 +35,9 @@ public class ArcaneAnvilScreen extends ItemCombinerScreen<ArcaneAnvilMenu> {
         }
 
     }
+
+    @Override
+    protected void renderErrorIcon(PoseStack p_266902_, int p_266822_, int p_267045_) {
+        //TODO: (1.19.4 port) test if this is necessary since we are using legacy anvil logic.
+    }
 }

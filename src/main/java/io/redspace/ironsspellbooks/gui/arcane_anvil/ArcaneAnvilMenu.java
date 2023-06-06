@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.ItemCombinerMenu;
+import net.minecraft.world.inventory.ItemCombinerMenuSlotDefinition;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -93,6 +94,16 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         }
 
         resultSlots.setItem(0, result);
+    }
+
+    @Override
+    protected ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
+        //copied from anvil for 1.19.4
+        return ItemCombinerMenuSlotDefinition.create().withSlot(0, 27, 47, (p_266635_) -> {
+            return true;
+        }).withSlot(1, 76, 47, (p_266634_) -> {
+            return true;
+        }).withResultSlot(2, 134, 47).build();
     }
 
     @Override

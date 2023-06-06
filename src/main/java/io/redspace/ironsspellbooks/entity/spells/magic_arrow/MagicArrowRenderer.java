@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class MagicArrowRenderer extends EntityRenderer<MagicArrowProjectile> {
     //private static final ResourceLocation TEXTURE = irons_spellbooks.id("textures/entity/icicle_projectile.png");
