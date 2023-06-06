@@ -108,7 +108,7 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
                 }
             }
 
-            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Explosion.BlockInteraction.KEEP);
+            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
             this.discard();
         }
     }

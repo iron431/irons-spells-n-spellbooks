@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.item.armor;
 
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.Util;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.LazyLoadedValue;
@@ -11,12 +12,16 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static net.minecraft.world.item.ArmorMaterials.HEALTH_FUNCTION_FOR_TYPE;
 
 public enum ExtendedArmorMaterials implements ArmorMaterial {
     //DIAMOND FOR REFERENCE
@@ -99,14 +104,20 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
         return this.slotProtections[pSlot.getIndex()];
     }
 
-    @Override
-    public int m_266425_(ArmorItem.Type p_266807_) {
-        return 0;
+    private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util.make(new EnumMap<>(ArmorItem.Type.class), (p_266653_) -> {
+        p_266653_.put(ArmorItem.Type.BOOTS, 13);
+        p_266653_.put(ArmorItem.Type.LEGGINGS, 15);
+        p_266653_.put(ArmorItem.Type.CHESTPLATE, 16);
+        p_266653_.put(ArmorItem.Type.HELMET, 11);
+    });
+
+    public int getDurabilityForType(ArmorItem.Type p_266745_) {
+        return HEALTH_FUNCTION_FOR_TYPE.get(p_266745_) * this.durabilityMultiplier;
     }
 
-    @Override
-    public int getDurabilityForSlot(ArmorItem.Type p_267168_) {
-        return 0;
+    public int getDefenseForType(ArmorItem.Type p_266752_) {
+        //TODO: (1.19.4 port) mixin transform? seems to be a lot a wierd shit now in the vanilla armor materials. may need to remake this class later
+        return ArmorMaterials.protectionFunctionForType.get(p_266752_);
     }
 
     public int getEnchantmentValue() {

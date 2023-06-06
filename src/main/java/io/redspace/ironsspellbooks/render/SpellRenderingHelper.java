@@ -47,7 +47,7 @@ public class SpellRenderingHelper {
             poseStack.mulPose(Axis.XP.rotationDegrees((float) -pitch * Mth.RAD_TO_DEG));
 
         } else {
-            float f = Mth.rotlerp(entity.yRotO, entity.getYRot(), partialTicks);
+            float f = Mth.rotLerp(entity.yRotO, entity.getYRot(), partialTicks);
             float f1 = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
             poseStack.mulPose(Axis.YP.rotationDegrees(-f));
             poseStack.mulPose(Axis.XP.rotationDegrees(f1));

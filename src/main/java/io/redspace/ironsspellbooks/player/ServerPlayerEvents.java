@@ -264,11 +264,12 @@ public class ServerPlayerEvents {
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             if (playerMagicData.isCasting() &&
-                    SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
+                    //TODO: 1.19.4 port: make a "dot" damage tag for our own uses
+                    SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG/* &&
                     event.getSource() != DamageSource.FREEZE &&
                     event.getSource() != DamageSource.STARVE &&
                     event.getSource() != DamageSource.ON_FIRE &&
-                    event.getSource() != DamageSource.WITHER) {
+                    event.getSource() != DamageSource.WITHER*/) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
         }
