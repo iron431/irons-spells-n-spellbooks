@@ -33,7 +33,7 @@ public class TooltipsUtils {
 //                Component.literal("" + spell.getLevel())).withStyle(spellType.getRarity(spell.getLevel()).getDisplayName().getStyle());
         var title = Component.translatable("tooltip.irons_spellbooks.selected_spell",
                 spellType.getDisplayName(),
-                Component.literal("" + spell.getLevel())).withStyle(spellType.getSchoolType().getDisplayName().getStyle());
+                Component.literal("" + spell.getLevel(null))).withStyle(spellType.getSchoolType().getDisplayName().getStyle());
         var uniqueInfo = spell.getUniqueInfo(player);
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost()).withStyle(ChatFormatting.BLUE);
         var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spellType, player, castSource), 1)).withStyle(ChatFormatting.BLUE);
@@ -57,7 +57,7 @@ public class TooltipsUtils {
         SpellType spellType = spell.getSpellType();
         if (spellType == SpellType.NONE_SPELL)
             return List.of();
-        var title = Component.translatable("tooltip.irons_spellbooks.level", spell.getLevel()).append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity().getDisplayName().getString())).withStyle(spell.getRarity().getDisplayName().getStyle());
+        var title = Component.translatable("tooltip.irons_spellbooks.level", spell.getLevel(null)).append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity().getDisplayName().getString())).withStyle(spell.getRarity().getDisplayName().getStyle());
         var uniqueInfo = spell.getUniqueInfo(player);
         var whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost()).withStyle(ChatFormatting.BLUE);
