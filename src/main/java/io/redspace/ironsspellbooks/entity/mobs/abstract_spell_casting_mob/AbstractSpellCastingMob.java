@@ -262,11 +262,11 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
 
-        if(getTarget() != null){
+        if (getTarget() != null) {
             forceLookAtTarget(getTarget());
         }
 
-        if (!castingSpell.checkPreCastConditions(level, this, playerMagicData)) {
+        if (!level.isClientSide && !castingSpell.checkPreCastConditions(level, this, playerMagicData)) {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spellType, spellLevel, level.isClientSide);
             }
@@ -309,7 +309,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
                 var bb = this.getBoundingBox().inflate(.5f);
                 var reposBB = bb.move(teleportPos.subtract(this.position()));
                 if (!level.collidesWithSuffocatingBlock(this, reposBB)) {
-                    IronsSpellbooks.LOGGER.debug("\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\nsetTeleportLocationBehindTarget: {} {} {} empty. teleporting\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n",reposBB.minX,reposBB.minY,reposBB.minZ);
+                    IronsSpellbooks.LOGGER.debug("\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\nsetTeleportLocationBehindTarget: {} {} {} empty. teleporting\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n", reposBB.minX, reposBB.minY, reposBB.minZ);
                     valid = true;
                     break;
                 }
