@@ -162,9 +162,9 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     private Vec3 setOnGround(Vec3 in, Level level) {
-        if (level.getBlockState(new BlockPos(in.x, in.y + .5f, in.z)).isAir()) {
+        if (level.getBlockState(BlockPos.containing(in.x, in.y + .5f, in.z)).isAir()) {
             for (int i = 0; i < 15; i++) {
-                if (!level.getBlockState(new BlockPos(in.x, in.y - i, in.z)).isAir()) {
+                if (!level.getBlockState(BlockPos.containing(in.x, in.y - i, in.z)).isAir()) {
                     return new Vec3(in.x, in.y - i + 1, in.z);
                 }
             }
