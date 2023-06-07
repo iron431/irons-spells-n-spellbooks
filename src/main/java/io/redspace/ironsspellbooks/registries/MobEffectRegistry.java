@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.registries;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.effect.*;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -14,7 +15,7 @@ import net.minecraftforge.registries.RegistryObject;
 import top.theillusivec4.caelus.api.CaelusApi;
 
 public class MobEffectRegistry {
-    public static final DeferredRegister<MobEffect> MOB_EFFECT_DEFERRED_REGISTER = DeferredRegister.create(Registry.MOB_EFFECT_REGISTRY, IronsSpellbooks.MODID);
+    public static final DeferredRegister<MobEffect> MOB_EFFECT_DEFERRED_REGISTER = DeferredRegister.create(Registries.MOB_EFFECT, IronsSpellbooks.MODID);
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECT_DEFERRED_REGISTER.register(eventBus);

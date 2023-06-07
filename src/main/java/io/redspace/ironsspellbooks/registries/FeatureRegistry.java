@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.registries;
 import com.google.common.base.Suppliers;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -19,8 +20,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class FeatureRegistry {
-    private static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, IronsSpellbooks.MODID);
-    private static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, IronsSpellbooks.MODID);
+    private static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(Registries.CONFIGURED_FEATURE, IronsSpellbooks.MODID);
+    private static final DeferredRegister<PlacedFeature> PLACED_FEATURES = DeferredRegister.create(Registries.PLACED_FEATURE, IronsSpellbooks.MODID);
 
     public static void register(IEventBus eventBus) {
         CONFIGURED_FEATURES.register(eventBus);

@@ -73,11 +73,6 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
         return InteractionResult.sidedSuccess(this.level.isClientSide);
     }
 
-    @Nullable
-    public Entity getControllingPassenger() {
-        return this.getFirstPassenger();
-    }
-
     protected void doPlayerRide(Player pPlayer) {
         this.setStanding(false);
         if (!this.level.isClientSide) {

@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,6 +47,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -77,9 +79,10 @@ public class Utils {
     }
 
     public static boolean canBeUpgraded(ItemStack stack) {
-        return !ServerConfigs.UPGRADE_BLACKLIST.get().contains(Registry.ITEM.getKey(stack.getItem()).toString())
+        //TODO: (1.19.4 port) nullable matter here? test with bad config entries
+        return !ServerConfigs.UPGRADE_BLACKLIST.get().contains(ForgeRegistries.ITEMS.getKey(stack.getItem()).toString())
                 && (stack.getItem() instanceof SpellBook || stack.is(ModTags.CAN_BE_UPGRADED)
-                || ServerConfigs.UPGRADE_WHITELIST.get().contains(Registry.ITEM.getKey(stack.getItem()).toString())
+                || ServerConfigs.UPGRADE_WHITELIST.get().contains(ForgeRegistries.ITEMS.getKey(stack.getItem()).toString())
         );
     }
 
@@ -403,7 +406,8 @@ public class Utils {
     }
 
     public static boolean canImbue(ItemStack itemStack) {
-        String id = Registry.ITEM.getKey(itemStack.getItem()).toString();
+        //TODO: (1.19.4 port) nullable matter here? test with bad config entries
+        String id = ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString();
         if (ServerConfigs.IMBUE_BLACKLIST.get().contains(id))
             return false;
         if (ServerConfigs.IMBUE_WHITELIST.get().contains(id))

@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -40,7 +41,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     Vec3 bbHalf = new Vec3(meleeRange, meleeRange, meleeRange).scale(.4);
                     mob.level.getEntitiesOfClass(target.getClass(), new AABB(slamPos.subtract(bbHalf), slamPos.add(bbHalf))).forEach((entity) -> {
                         float damage = (float) mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5f;
-                        entity.hurt(DamageSource.mobAttack(mob), damage);
+                        entity.hurt(mob.level.damageSources().mobAttack(mob), damage);
                         Utils.throwTarget(mob, entity, 7f, true);
                         //mob.doHurtTarget(entity);
                         //entity.push(0, 1, 0);
