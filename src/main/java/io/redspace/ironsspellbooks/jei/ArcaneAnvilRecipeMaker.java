@@ -8,6 +8,7 @@ import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +54,7 @@ public final class ArcaneAnvilRecipeMaker {
                 .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
                 .sorted(Comparator.comparing(Enum::name))
                 .forEach((spellType) -> {
-                    Registry.ITEM.stream().filter((k) -> k instanceof SwordItem).forEach((swordItem) -> {
+                    ForgeRegistries.ITEMS.getValues().stream().filter((k) -> k instanceof SwordItem).forEach((swordItem) -> {
                         var inputSwordStack = new ItemStack(swordItem);
                         IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
                                 .forEach((spellLevel) -> {
