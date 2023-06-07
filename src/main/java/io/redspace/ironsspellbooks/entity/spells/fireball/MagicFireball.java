@@ -77,7 +77,7 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
                 }
             }
             boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-            this.level.explode(null, SpellType.FIREBALL_SPELL.getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float) this.getExplosionRadius(), flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
+            this.level.explode(null, SpellType.FIREBALL_SPELL.getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float) this.getExplosionRadius(), flag, flag ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE);
             this.discard();
         }
     }

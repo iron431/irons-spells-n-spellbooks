@@ -27,17 +27,18 @@ import javax.annotation.Nullable;
 
 @Mixin(ItemRenderer.class)
 public class ItemRendererMixin {
-    @Inject(method = "renderGuiItemDecorations", at = @At(value = "TAIL"))
-    public void renderSpellbookCooldown(PoseStack p_275269_, Font font, ItemStack stack, int one, int two, String p_275302_, CallbackInfo ci) {
-        Item item = stack.getItem();
-        if (item instanceof SpellBook) {
-            AbstractSpell spell = SpellBookData.getSpellBookData(stack).getActiveSpell();
-            renderSpellCooldown(p_275269_, one, two, spell);
-        } else if (SpellData.hasSpellData(stack) && !stack.getItem().equals(ItemRegistry.SCROLL.get())) {
-            AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
-            renderSpellCooldown(p_275269_, one, two, spell);
-        }
-    }
+    //TODO: 1.19.4 port
+//    @Inject(method = "renderGuiItemDecorations", at = @At(value = "TAIL"))
+//    public void renderSpellbookCooldown(PoseStack p_275269_, Font font, ItemStack stack, int one, int two, String p_275302_, CallbackInfo ci) {
+//        Item item = stack.getItem();
+//        if (item instanceof SpellBook) {
+//            AbstractSpell spell = SpellBookData.getSpellBookData(stack).getActiveSpell();
+//            renderSpellCooldown(p_275269_, one, two, spell);
+//        } else if (SpellData.hasSpellData(stack) && !stack.getItem().equals(ItemRegistry.SCROLL.get())) {
+//            AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
+//            renderSpellCooldown(p_275269_, one, two, spell);
+//        }
+//    }
 
     private void renderSpellCooldown(PoseStack poseStack, int one, int two, AbstractSpell spell) {
         if (spell.getSpellType().getValue() > 0) {

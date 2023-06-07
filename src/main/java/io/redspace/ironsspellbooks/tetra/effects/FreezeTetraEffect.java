@@ -26,11 +26,14 @@ public class FreezeTetraEffect {
 
     @OnlyIn(Dist.CLIENT)
     public static void addGuiBars() {
-        final IStatGetter effectStatGetter = new StatGetterEffectLevel(freezeOnHit, 1);
-        final GuiStatBar effectBar = new GuiStatBar(0, 0, StatsHelper.barLength, freezeName, 0, 30, false, effectStatGetter, LabelGetterBasic.decimalLabel,
-                new TooltipGetterDecimal(freezeTooltip, effectStatGetter));
-        WorkbenchStatsGui.addBar(effectBar);
-        HoloStatsGui.addBar(effectBar);
+//        TODO: tetra reimplementation
+
+//
+//        final IStatGetter effectStatGetter = new StatGetterEffectLevel(freezeOnHit, 1);
+//        final GuiStatBar effectBar = new GuiStatBar(0, 0, StatsHelper.barLength, freezeName, 0, 30, false, effectStatGetter, LabelGetterBasic.decimalLabel,
+//                new TooltipGetterDecimal(freezeTooltip, effectStatGetter));
+//        WorkbenchStatsGui.addBar(effectBar);
+//        HoloStatsGui.addBar(effectBar);
     }
 
     public static void handleLivingAttackEvent(LivingAttackEvent event) {

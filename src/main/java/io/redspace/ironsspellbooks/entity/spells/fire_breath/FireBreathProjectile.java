@@ -44,7 +44,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
                             HitResult shieldResult = Utils.raycastForEntityOfClass(level, this, getOwner().getEyePosition(), hitResult.getLocation(), false, AbstractShieldEntity.class);
                             if (shieldResult.getType() == HitResult.Type.MISS) {
                                 Vec3 pos = hitResult.getLocation().subtract(cast.scale(.5));
-                                BlockPos blockPos = new BlockPos(pos.x, pos.y, pos.z);
+                                BlockPos blockPos =  BlockPos.containing(pos.x, pos.y, pos.z) ;
                                 if (level.getBlockState(blockPos).isAir())
                                     level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level, blockPos));
                             }

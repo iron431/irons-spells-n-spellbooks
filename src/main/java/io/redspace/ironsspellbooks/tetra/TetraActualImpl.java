@@ -46,8 +46,10 @@ public class TetraActualImpl implements ITetraProxy {
                 manaStat,
                 LabelGetterBasic.integerLabel,
                 new TooltipGetterInteger(IronsSpellbooks.MODID + ".tetra_bar.max_mana.tooltip", manaStat));
-        WorkbenchStatsGui.addBar(manaStatBar);
-        HoloStatsGui.addBar(manaStatBar);
+        //TODO: tetra reimplementation
+
+//        WorkbenchStatsGui.addBar(manaStatBar);
+//        HoloStatsGui.addBar(manaStatBar);
 
 
     }
@@ -72,7 +74,9 @@ public class TetraActualImpl implements ITetraProxy {
                 statGetter,
                 LabelGetterBasic.percentageLabel,
                 new TooltipGetterPercentage(IronsSpellbooks.MODID + ".tetra_bar." + languageKey + ".tooltip", statGetter));
-        WorkbenchStatsGui.addBar(statBar);
-        HoloStatsGui.addBar(statBar);
+        //TODO: tetra reimplementation
+
+//        WorkbenchStatsGui.addBar(statBar);
+//        HoloStatsGui.addBar(statBar);
     }
 }

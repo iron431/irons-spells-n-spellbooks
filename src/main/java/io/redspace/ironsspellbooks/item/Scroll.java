@@ -31,22 +31,22 @@ public class Scroll extends Item {
         super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
-    @Override
-    public void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {
-        if (/*category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ||*/ category == CreativeModeTab.TAB_SEARCH) {
-            Arrays.stream(SpellType.values())
-                    .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
-                    .forEach(spellType -> {
-                        int min = category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ? spellType.getMaxLevel() : spellType.getMinLevel();
-
-                        for (int i = min; i <= spellType.getMaxLevel(); i++) {
-                            var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                            SpellData.setSpellData(itemstack, spellType, i);
-                            items.add(itemstack);
-                        }
-                    });
-        }
-    }
+//    @Override
+//    public void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {
+//        if (/*category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ||*/ category == CreativeModeTab.TAB_SEARCH) {
+//            Arrays.stream(SpellType.values())
+//                    .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
+//                    .forEach(spellType -> {
+//                        int min = category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ? spellType.getMaxLevel() : spellType.getMinLevel();
+//
+//                        for (int i = min; i <= spellType.getMaxLevel(); i++) {
+//                            var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
+//                            SpellData.setSpellData(itemstack, spellType, i);
+//                            items.add(itemstack);
+//                        }
+//                    });
+//        }
+//    }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
         //irons_spellbooks.LOGGER.debug("removeScrollAfterCast {}", serverPlayer.getName().getString());

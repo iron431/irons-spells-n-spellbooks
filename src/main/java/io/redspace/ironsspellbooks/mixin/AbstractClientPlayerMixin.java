@@ -48,7 +48,8 @@ public class AbstractClientPlayerMixin{
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void postInit(ClientLevel world, GameProfile profile, ProfilePublicKey publicKey, CallbackInfo ci) {
+    private void postInit(ClientLevel pClientLevel, GameProfile pGameProfile, CallbackInfo ci) {
+        //TODO: (1.19.4 port) forward port from 1.19.2
         var player = (Player) (Object)this;
         var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(AbstractSpell.ANIMATION_RESOURCE);
         if (animation != null ) {

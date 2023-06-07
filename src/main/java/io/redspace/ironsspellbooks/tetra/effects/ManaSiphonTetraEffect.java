@@ -31,11 +31,13 @@ public class ManaSiphonTetraEffect {
 
     @OnlyIn(Dist.CLIENT)
     public static void addGuiBars() {
-        final IStatGetter effectStatGetter = new StatGetterEffectLevel(manaSiphon, 1);
-        final GuiStatBar effectBar = new GuiStatBar(0, 0, StatsHelper.barLength, siphonName, 0, 30, false, effectStatGetter, LabelGetterBasic.percentageLabel,
-                new TooltipGetterPercentage(siphonTooltip, effectStatGetter));
-        WorkbenchStatsGui.addBar(effectBar);
-        HoloStatsGui.addBar(effectBar);
+//TODO: tetra reimplementation
+
+//        final IStatGetter effectStatGetter = new StatGetterEffectLevel(manaSiphon, 1);
+//        final GuiStatBar effectBar = new GuiStatBar(0, 0, StatsHelper.barLength, siphonName, 0, 30, false, effectStatGetter, LabelGetterBasic.percentageLabel,
+//                new TooltipGetterPercentage(siphonTooltip, effectStatGetter));
+//        WorkbenchStatsGui.addBar(effectBar);
+//        HoloStatsGui.addBar(effectBar);
     }
 
     public static void handleLivingAttackEvent(LivingAttackEvent event) {

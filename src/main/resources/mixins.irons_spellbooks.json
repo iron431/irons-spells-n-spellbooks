@@ -15,7 +15,6 @@
     "LivingEntityMixin",
     "LocalPlayerMixin",
     "ParticleMixin",
-    "SmithingMenuMixin",
     "SpinAttackEffectLayerMixin",
     "TetraBladedItemMixin",
     "TridentItemMixin"
