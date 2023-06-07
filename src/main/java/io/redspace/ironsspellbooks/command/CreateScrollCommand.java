@@ -17,12 +17,6 @@ public class CreateScrollCommand {
 
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_scroll.failed"));
 
-//    public static final SuggestionProvider<CommandSourceStack> SPELL_SUGGESTIONS = SuggestionProviders.register(new ResourceLocation(irons_spellbooks.MODID, "spell_suggestions"), (p_212438_, p_212439_) -> {
-//        return SharedSuggestionProvider.suggestResource(Registry.ENTITY_TYPE.stream().filter(EntityType::canSummon), p_212439_, EntityType::getKey, (p_212436_) -> {
-//            return Component.translatable(Util.makeDescriptionId("entity", EntityType.getKey(p_212436_)));
-//        });
-//    });
-
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("createScroll").requires((p_138819_) -> {
             return p_138819_.hasPermission(2);

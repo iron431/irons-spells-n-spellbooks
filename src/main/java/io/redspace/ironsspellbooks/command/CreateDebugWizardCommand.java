@@ -16,7 +16,6 @@ import net.minecraftforge.server.command.EnumArgument;
 public class CreateDebugWizardCommand {
 
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_debug_wizard.failed"));
-    private static final SimpleCommandExceptionType ERROR_FAILED_MAX_LEVEL = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_debug_wizard.failed_max_level"));
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("createDebugWizard").requires((commandSourceStack) -> {

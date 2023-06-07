@@ -25,9 +25,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GenerateSiteData {
-
-    private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_recipe_data.failed"));
-
     private static final String RECIPE_DATA_TEMPLATE = """
             - id: "%s"
               name: "%s"
@@ -92,13 +89,13 @@ public class GenerateSiteData {
     }
 
     private static int generateSiteData(CommandSourceStack source) {
-        generateRecipeData();
+        generateRecipeData(source);
         generateSpellData();
 
         return 1;
     }
 
-    private static void generateRecipeData() {
+    private static void generateRecipeData(CommandSourceStack source) {
         try {
             var itemBuilder = new StringBuilder();
             var armorBuilder = new StringBuilder();
@@ -112,35 +109,35 @@ public class GenerateSiteData {
             itemsTracked.add(ItemRegistry.LEGENDARY_SPELL_BOOK.get());
             itemsTracked.add(Items.POISONOUS_POTATO);
 
-            Minecraft.getInstance().level.getRecipeManager().getRecipes()
+            source.getLevel().getRecipeManager().getRecipes()
                     .stream()
                     .filter(r -> r.getId().getNamespace().equals("irons_spellbooks") && !r.getId().toString().contains("poisonous_potato"))
                     .forEach(recipe -> {
                         //IronsSpellbooks.LOGGER.debug("recipe: {}, {}, {}", recipe.getId(), recipe.getClass(), recipe.getType());
                         //IronsSpellbooks.LOGGER.debug("recipe: resultItem: {}", ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem()));
 
-                        var resultItemResourceLocation = ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem());
+                        var resultItemResourceLocation = ForgeRegistries.ITEMS.getKey(recipe.getResultItem(source.getLevel().registryAccess()).getItem());
                         var recipeData = new ArrayList<RecipeData>(10);
                         recipeData.add(new RecipeData(
                                 resultItemResourceLocation.toString(),
-                                recipe.getResultItem().getItem().getName(ItemStack.EMPTY).getString(),
+                                recipe.getResultItem(source.getLevel().registryAccess()).getItem().getName(ItemStack.EMPTY).getString(),
                                 String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
-                                recipe.getResultItem().getItem())
+                                recipe.getResultItem(source.getLevel().registryAccess()).getItem())
                         );
 
-                        itemsTracked.add(recipe.getResultItem().getItem());
+                        itemsTracked.add(recipe.getResultItem(source.getLevel().registryAccess()).getItem());
 
                         if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
                             recipe.getIngredients().forEach(ingredient -> {
-                                handleIngeredient(ingredient, recipeData, recipe);
+                                handleIngredient(source, ingredient, recipeData, recipe);
                             });
-                        } else if (recipe instanceof UpgradeRecipe upgradeRecipe) {
-                            handleIngeredient(upgradeRecipe.base, recipeData, recipe);
-                            handleIngeredient(upgradeRecipe.addition, recipeData, recipe);
+                        } else if (recipe instanceof SmithingRecipe smithingRecipe) {
+                            handleIngredient(source, smithingRecipe.getIngredients().get(0), recipeData, recipe);
+                            handleIngredient(source, smithingRecipe.getIngredients().get(1), recipeData, recipe);
                         }
 
                         var name = getRecipeDataAtIndex(recipeData, 0).name;
-                        var tooltip = getTooltip(recipe.getResultItem());
+                        var tooltip = getTooltip(recipe.getResultItem(source.getLevel().registryAccess()));
 
                         if (getRecipeDataAtIndex(recipeData, 0).item instanceof SpellBook || getRecipeDataAtIndex(recipeData, 0).item instanceof ExtendedSwordItem) {
                             appendToBuilder(spellbookBuilder, recipe, recipeData, "", tooltip);
@@ -148,7 +145,7 @@ public class GenerateSiteData {
                             var words = name.split(" ");
                             var group = Arrays.stream(words).limit(words.length - 1).collect(Collectors.joining(" "));
                             appendToBuilder(armorBuilder, recipe, recipeData, group, tooltip);
-                        } else if (recipe.getResultItem().getItem() instanceof BlockItem) {
+                        } else if (recipe.getResultItem(source.getLevel().registryAccess()).getItem() instanceof BlockItem) {
                             appendToBuilder(blockBuilder, recipe, recipeData, "", tooltip);
                         } else {
                             appendToBuilder(itemBuilder, recipe, recipeData, "", tooltip);
@@ -287,7 +284,7 @@ public class GenerateSiteData {
         ));
     }
 
-    private static void handleIngeredient(Ingredient ingredient, ArrayList<RecipeData> recipeData, Recipe recipe) {
+    private static void handleIngredient(CommandSourceStack source, Ingredient ingredient, ArrayList<RecipeData> recipeData, Recipe recipe) {
         Arrays.stream(ingredient.getItems())
                 .findFirst()
                 .ifPresentOrElse(itemStack -> {
@@ -304,7 +301,7 @@ public class GenerateSiteData {
                             itemResource.toString(),
                             itemStack.getItem().getName(ItemStack.EMPTY).getString(),
                             path,
-                            recipe.getResultItem().getItem()));
+                            recipe.getResultItem(source.getLevel().registryAccess()).getItem()));
 
                 }, () -> {
                     recipeData.add(RecipeData.EMPTY);

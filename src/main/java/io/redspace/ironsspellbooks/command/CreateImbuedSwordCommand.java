@@ -14,9 +14,13 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SwordItem;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.command.EnumArgument;
 
 import java.util.stream.Collectors;
@@ -24,10 +28,12 @@ import java.util.stream.Collectors;
 public class CreateImbuedSwordCommand {
 
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_imbued_sword.failed"));
-    private static final SimpleCommandExceptionType ERROR_FAILED_MAX_LEVEL = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_imbued_sword.failed_max_level"));
 
     private static final SuggestionProvider<CommandSourceStack> SWORD_SUGGESTIONS = (p_180253_, p_180254_) -> {
-        var resources = Registry.ITEM.stream().filter((k) -> k instanceof SwordItem).map(Registry.ITEM::getKey).collect(Collectors.toSet());
+        var resources = ForgeRegistries.ITEMS.getEntries().stream()
+                .filter((k) -> k instanceof SwordItem)
+                .map(x -> Registries.ITEM.location())
+                .collect(Collectors.toSet());
         return SharedSuggestionProvider.suggestResource(resources, p_180254_);
     };
 

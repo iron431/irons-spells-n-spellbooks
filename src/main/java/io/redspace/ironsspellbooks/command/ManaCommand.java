@@ -46,6 +46,4 @@ public class ManaCommand {
 
         return targets.size();
     }
-
-
 }
