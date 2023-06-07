@@ -31,7 +31,7 @@ public class PlayerAnimationTrigger {
 
 
             //Get the player from Minecraft, using the chat profile ID. From network packets, you'll receive entity IDs instead of UUIDs
-            var player = Minecraft.getInstance().level.getPlayerByUUID(event.getMessageSigner().profileId());
+            var player = Minecraft.getInstance().level.getPlayerByUUID(event.getSender());
 
             if (player == null) return; //The player can be null because it was a system message or because it is not loaded by this player.
 

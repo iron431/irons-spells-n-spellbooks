@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -95,16 +96,15 @@ public class TeleportSpell extends AbstractSpell {
         Vec3 bbImpact = blockHitResult.getLocation().subtract(bbOffset);
         //        Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
         int ledgeY = (int) level.clip(new ClipContext(Vec3.atBottomCenterOf(pos).add(0, 3, 0), Vec3.atBottomCenterOf(pos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation().y;
-        Vec3 correctedPos = new Vec3(pos.getX(), ledgeY, pos.getZ());
-        boolean isAir = level.getBlockState(new BlockPos(correctedPos)).isAir();
+        boolean isAir = level.getBlockState(new BlockPos(new Vec3i(pos.getX(), ledgeY, pos.getZ()))).isAir();
         boolean los = level.clip(new ClipContext(bbImpact, bbImpact.add(0, ledgeY - pos.getY(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
 
         if (isAir && los && Math.abs(ledgeY - pos.getY()) <= 3) {
+            Vec3 correctedPos = new Vec3(pos.getX(), ledgeY, pos.getZ());
             return correctedPos.add(0.5, 0.076, 0.5);
         } else {
             return level.clip(new ClipContext(bbImpact, bbImpact.add(0, -entity.getEyeHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getLocation().add(0, 0.076, 0);
         }
-
     }
 
     public static void particleCloud(Level level, Vec3 pos) {
