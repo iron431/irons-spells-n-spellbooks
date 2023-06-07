@@ -27,6 +27,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
@@ -424,6 +425,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                     }
                 }
             }
+
+            //sanitize
+            setSelectedIndex(Mth.clamp(selectedSpellIndex, 0, spellSlots.size() - 1));
+
             //  Is this slot already taken?
             if (spellSlots.get(selectedSpellIndex).hasSpell()) {
                 return;
