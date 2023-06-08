@@ -45,5 +45,5 @@ jobs:
       with:
         arguments: publish
       env:
-        USERNAME: ${{ github.actor }}
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        MAVEN_USER: ${{ secrets.MAVEN_USER }}
+        MAVEN_PASS: ${{ secrets.MAVEN_PASS }}
