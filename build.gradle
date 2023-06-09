@@ -1,25 +1,16 @@
-buildscript {
-    repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://maven.parchmentmc.org' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7.+'
-        classpath 'org.parchmentmc:librarian:1.+'
-    }
+plugins {
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'maven-publish'
+    id 'idea'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'maven-publish'
+version = mod_version
+group = mod_group_id
 
-version = '1.19.4-1.1.1'
-group = 'io.redspace.ironsspellbooks'
-archivesBaseName = 'irons_spellbooks'
+base {
+    archivesName = mod_id
+}
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -44,13 +35,13 @@ minecraft {
     //mappings channel: 'official', version: '1.18.2'
     //mappings channel: 'official', version: '1.19.4'
     //https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/
-    mappings channel: 'parchment', version: "${parchment_mappings}"
+    mappings channel: mapping_channel, version: mapping_version
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
-
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
+    // This property allows configuring Gradle's ProcessResources task(s) to run on IDE output locations before launching the game.
+    // It is REQUIRED to be set to true for this template to function.
+    // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
+    copyIdeResources = true
 
     runs {
         client {
@@ -69,10 +60,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'irons_spellbooks'
+            property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                irons_spellbooks {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -86,10 +77,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'irons_spellbooks'
+            property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                irons_spellbooks {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -114,10 +105,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'irons_spellbooks'
+            property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                irons_spellbooks {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -131,10 +122,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'irons_spellbooks', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                irons_spellbooks {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
@@ -146,10 +137,6 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-
-    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
     flatDir {
         dir 'libs'
     }
@@ -160,23 +147,9 @@ repositories {
     maven { url = "https://cursemaven.com" }
     maven { url = "https://maven.blamejared.com" }
     maven { url = "https://maven.kosmx.dev/" }
-
-    //    maven {
-    //        name "REI"
-    //        url "https://maven.shedaniel.me"
-    //    }
-
-    //    maven {
-    //        name "Modding Legacy Maven (Structure Gel)"
-    //        url "https://maven.moddinglegacy.com/maven"
-    //    }
 }
 
 dependencies {
-    //compileOnly will not load mod when running from IntelliJ
-    //runtimeOnly will load the mod but can't link to it in code
-    //implementation both
-
     // FORGE ******************************************************************************************************
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -184,11 +157,11 @@ dependencies {
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
 
     // GECKOLIB ***************************************************************************************************
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${geckolib_version}")
 
     // CAELUS *****************************************************************************************************
-    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${minecraft_version}-${caelus_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${minecraft_version}-${caelus_version}")
+    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_version}")
 
     // PLAYER ANIMATOR ********************************************************************************************
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
@@ -197,16 +170,16 @@ dependencies {
     //implementation fg.deobf("se.mickelus.mutil:mutil:${minecraft_version}-${mutil_version}")
     //implementation fg.deobf("curse.maven:tetra-${tetra_version}")
     // If you want to run without tetra in dev comment the above 2 lines and uncomment the following line
-     compileOnly fg.deobf("curse.maven:tetra-${tetra_version}")
+    compileOnly fg.deobf("curse.maven:tetra-${tetra_version}")
 
     // JEI ********************************************************************************************************
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}"))
+    runtimeOnly(fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}"))
 
     // CURIOS *****************************************************************************************************
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"
@@ -241,18 +214,36 @@ dependencies {
     //    }
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
+def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
+def replaceProperties = [
+        minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+        forge_version       : forge_version, forge_version_range: forge_version_range,
+        loader_version_range: loader_version_range,
+        mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+        mod_authors         : mod_authors, mod_description: mod_description, mod_credits: mod_credits,
+        mod_issue_tracker   : mod_issue_tracker, mod_display_url: mod_display_url,
+        mod_logo_file       : mod_logo_file
+]
+processResources {
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
+
+    filesMatching(resourceTargets) {
+        expand replaceProperties
+    }
+}
+
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "Iron's Spells N Spellbooks",
-                "Specification-Vendor"    : "Iron431",
+                "Specification-Title"     : mod_name,
+                "Specification-Vendor"    : mod_authors,
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "Iron431",
+                "Implementation-Vendor"   : mod_authors,
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs"            : "mixins.irons_spellbooks.json"
+                "MixinConfigs"            : "mixins.${mod_id}.json"
         ])
     }
     exclude('**/*.psd')
@@ -300,7 +291,6 @@ tasks.register('copyAnimations', Copy) {
 }
 
 tasks.classes.dependsOn(tasks.copyAnimations)
-
 
 mixin {
     add sourceSets.main, 'irons_spellbooks.refmap.json'

@@ -1,6 +1,8 @@
 {
     "pack": {
-        "description": "Iron's Spells N Spellbooks Resources",
-        "pack_format": 8
+        "description": {
+            "text": "${mod_id} resources"
+        },
+        "pack_format": 15
     }
 }
