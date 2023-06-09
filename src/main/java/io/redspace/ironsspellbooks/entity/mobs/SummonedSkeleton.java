@@ -79,7 +79,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, GeoAnimat
 
     @Override
     public LivingEntity getSummoner() {
-        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
+        return OwnerHelper.getAndCacheOwner(level(), cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -129,7 +129,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, GeoAnimat
     @Override
     public void tick() {
         if (isAnimatingRise()) {
-            if (level.isClientSide)
+            if (level().isClientSide)
                 clientDiggingParticles(this);
             if (--riseAnimTime < 0) {
                 entityData.set(DATA_IS_ANIMATING_RISE, false);
@@ -144,8 +144,8 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, GeoAnimat
 
     @Override
     public void onUnSummon() {
-        if (!level.isClientSide) {
-            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
+        if (!level().isClientSide) {
+            MagicManager.spawnParticles(level(), ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             discard();
         }
     }
@@ -190,7 +190,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, GeoAnimat
                 double d0 = livingEntity.getX() + (double) Mth.randomBetween(randomsource, -0.5F, 0.5F);
                 double d1 = livingEntity.getY();
                 double d2 = livingEntity.getZ() + (double) Mth.randomBetween(randomsource, -0.5F, 0.5F);
-                livingEntity.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), d0, d1, d2, 0.0D, 0.0D, 0.0D);
+                livingEntity.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), d0, d1, d2, 0.0D, 0.0D, 0.0D);
             }
         }
     }

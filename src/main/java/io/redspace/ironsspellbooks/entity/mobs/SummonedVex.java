@@ -75,7 +75,7 @@ public class SummonedVex extends Vex implements MagicSummon {
 
     @Override
     public LivingEntity getSummoner() {
-        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
+        return OwnerHelper.getAndCacheOwner(level(), cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -115,8 +115,8 @@ public class SummonedVex extends Vex implements MagicSummon {
     }
 
     public void onUnSummon() {
-        if (!level.isClientSide) {
-            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
+        if (!level().isClientSide) {
+            MagicManager.spawnParticles(level(), ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             discard();
         }
     }
@@ -231,7 +231,7 @@ public class SummonedVex extends Vex implements MagicSummon {
 
             for (int i = 0; i < 3; ++i) {
                 BlockPos blockpos1 = blockpos.offset(SummonedVex.this.random.nextInt(15) - 7, SummonedVex.this.random.nextInt(11) - 5, SummonedVex.this.random.nextInt(15) - 7);
-                if (SummonedVex.this.level.isEmptyBlock(blockpos1)) {
+                if (SummonedVex.this.level().isEmptyBlock(blockpos1)) {
                     SummonedVex.this.moveControl.setWantedPosition((double) blockpos1.getX() + 0.5D, (double) blockpos1.getY() + 0.5D, (double) blockpos1.getZ() + 0.5D, 0.25D);
                     if (SummonedVex.this.getTarget() == null) {
                         SummonedVex.this.getLookControl().setLookAt((double) blockpos1.getX() + 0.5D, (double) blockpos1.getY() + 0.5D, (double) blockpos1.getZ() + 0.5D, 180.0F, 20.0F);

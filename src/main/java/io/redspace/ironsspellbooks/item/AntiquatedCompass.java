@@ -25,10 +25,10 @@ public class AntiquatedCompass extends Item {
     }
 
     public static GlobalPos getCitadelLocation(Entity entity, CompoundTag compoundTag) {
-        if (!(entity.level.dimension() == Level.NETHER && compoundTag.contains("CitadelPos")))
+        if (!(entity.level().dimension() == Level.NETHER && compoundTag.contains("CitadelPos")))
             return null;
 
-        return GlobalPos.of(entity.level.dimension(), NbtUtils.readBlockPos(compoundTag.getCompound("CitadelPos")));
+        return GlobalPos.of(entity.level().dimension(), NbtUtils.readBlockPos(compoundTag.getCompound("CitadelPos")));
     }
 
     @Override

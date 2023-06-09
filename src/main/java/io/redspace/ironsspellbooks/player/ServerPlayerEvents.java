@@ -44,7 +44,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent()
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
 
-        if (event.getEntity().level.isClientSide) {
+        if (event.getEntity().level().isClientSide) {
             return;
         }
 
@@ -60,7 +60,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerOpenContainer(PlayerContainerEvent.Open event) {
-        if (event.getEntity().level.isClientSide) {
+        if (event.getEntity().level().isClientSide) {
             return;
         }
         //Ironsspellbooks.logger.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
@@ -278,7 +278,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onEntityMountEvent(EntityMountEvent event) {
-        if (event.getEntity().level.isClientSide) {
+        if (event.getEntity().level().isClientSide) {
             return;
         }
 
@@ -292,7 +292,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void preventDismount(EntityMountEvent event) {
-        if (!event.getEntity().level.isClientSide && event.getEntityBeingMounted() instanceof PreventDismount && event.isDismounting() && !event.getEntityBeingMounted().isRemoved()) {
+        if (!event.getEntity().level().isClientSide && event.getEntityBeingMounted() instanceof PreventDismount && event.isDismounting() && !event.getEntityBeingMounted().isRemoved()) {
             event.setCanceled(true);
         }
     }

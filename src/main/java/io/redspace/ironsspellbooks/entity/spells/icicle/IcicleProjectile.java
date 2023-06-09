@@ -48,7 +48,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
         super.onHitEntity(entityHitResult);
         boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellType.ICICLE_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
  //Ironsspellbooks.logger.debug("IcilePorjectile: Hit: {}",hit);
-        if (hit && entityHitResult.getEntity() instanceof LivingEntity target && !level.isClientSide && target.canFreeze()) {
+        if (hit && entityHitResult.getEntity() instanceof LivingEntity target && !level().isClientSide && target.canFreeze()) {
             target.setTicksFrozen(target.getTicksFrozen() + 165);
         }
 
@@ -59,17 +59,17 @@ public class IcicleProjectile extends AbstractMagicProjectile {
 
         for (int i = 0; i < 1; i++) {
             double speed = .05;
-            double dx = level.random.nextDouble() * 2 * speed - speed;
-            double dy = level.random.nextDouble() * 2 * speed - speed;
-            double dz = level.random.nextDouble() * 2 * speed - speed;
-            level.addParticle(level.random.nextDouble() < .3 ? ParticleHelper.SNOWFLAKE : ParticleTypes.SNOWFLAKE, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
+            double dx = level().random.nextDouble() * 2 * speed - speed;
+            double dy = level().random.nextDouble() * 2 * speed - speed;
+            double dz = level().random.nextDouble() * 2 * speed - speed;
+            level().addParticle(level().random.nextDouble() < .3 ? ParticleHelper.SNOWFLAKE : ParticleTypes.SNOWFLAKE, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
 
         }
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 15, .1, .1, .1, .1, true);
+        MagicManager.spawnParticles(level(), ParticleHelper.SNOWFLAKE, x, y, z, 15, .1, .1, .1, .1, true);
     }
 
     @Override

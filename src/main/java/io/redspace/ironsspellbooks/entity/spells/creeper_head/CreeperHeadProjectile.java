@@ -69,13 +69,13 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
 //            Vec3 vec34 = this.getDeltaMovement();
 //            this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
 //        }
-        if (!level.isClientSide) {
-            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
+        if (!level().isClientSide) {
+            HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
             if (hitresult.getType() != HitResult.Type.MISS) {
                 onHit(hitresult);
             }
         } else {
-            this.level.addParticle(this.getTrailParticle(), position().x, position().y + 0.25D, position().z, 0.0D, 0.0D, 0.0D);
+            this.level().addParticle(this.getTrailParticle(), position().x, position().y + 0.25D, position().z, 0.0D, 0.0D, 0.0D);
         }
         ProjectileUtil.rotateTowardsMovement(this, 1);
         setPos(position().add(getDeltaMovement()));
@@ -91,9 +91,9 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
 
     @Override
     protected void onHit(HitResult hitResult) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             float explosionRadius = 3.5f;
-            var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+            var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.position().distanceTo(hitResult.getLocation());
                 if (distance < explosionRadius) {
@@ -104,11 +104,11 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
                     DamageSources.applyDamage(entity, damage, SpellType.LOB_CREEPER_SPELL.getDamageSource(this, getOwner()), SchoolType.EVOCATION);
                     entity.invulnerableTime = 0;
                     if (chainOnKill && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying())
-                        ChainCreeperSpell.summonCreeperRing(this.level, this.getOwner() instanceof LivingEntity livingOwner ? livingOwner : null, livingEntity.getEyePosition(), this.damage * .85f, 3);
+                        ChainCreeperSpell.summonCreeperRing(this.level(), this.getOwner() instanceof LivingEntity livingOwner ? livingOwner : null, livingEntity.getEyePosition(), this.damage * .85f, 3);
                 }
             }
 
-            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
+            this.level().explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
             this.discard();
         }
     }

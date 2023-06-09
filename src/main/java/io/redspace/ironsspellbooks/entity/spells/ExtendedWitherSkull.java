@@ -48,9 +48,9 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
     @Override
     protected void onHit(HitResult hitResult) {
 
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             float explosionRadius = 2;
-            var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+            var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
                 if (distance < explosionRadius * explosionRadius  && canHitEntity(entity)) {
@@ -59,7 +59,7 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
                 }
             }
 
-            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
+            this.level().explode(this, this.getX(), this.getY(), this.getZ(), 0.0F, false, Level.ExplosionInteraction.NONE);
             this.discard();
         }
     }

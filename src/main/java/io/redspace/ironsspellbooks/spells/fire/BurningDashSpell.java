@@ -93,7 +93,7 @@ public class BurningDashSpell extends AbstractSpell {
         entity.setDeltaMovement(entity.getDeltaMovement().add(vec));
 
         //Start Spin Attack
-        if (entity.isOnGround())
+        if (entity.onGround())
             entity.setPos(entity.position().add(0, 1.2, 0));
         startSpinAttack(entity, 10);
 

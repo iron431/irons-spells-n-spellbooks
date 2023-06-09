@@ -41,9 +41,9 @@ public class CreateDebugWizardCommand {
 
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
-            var debugWizard = new DebugWizard(EntityRegistry.DEBUG_WIZARD.get(), serverPlayer.level, spellType, spellLevel, targetsPlayer, cancelAfterTicks);
+            var debugWizard = new DebugWizard(EntityRegistry.DEBUG_WIZARD.get(), serverPlayer.level(), spellType, spellLevel, targetsPlayer, cancelAfterTicks);
             debugWizard.setPos(serverPlayer.position());
-            if (serverPlayer.level.addFreshEntity(debugWizard)) {
+            if (serverPlayer.level().addFreshEntity(debugWizard)) {
                 return 1;
             }
         }

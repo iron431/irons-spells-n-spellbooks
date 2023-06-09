@@ -54,7 +54,7 @@ public class ClientSpellCastHelper {
     public static void handleClientboundBloodSiphonParticles(Vec3 pos1, Vec3 pos2) {
         if (Minecraft.getInstance().player == null)
             return;
-        var level = Minecraft.getInstance().player.level;
+        var level = Minecraft.getInstance().player.level();
         Vec3 direction = pos2.subtract(pos1).scale(.1f);
         for (int i = 0; i < 40; i++) {
             Vec3 scaledDirection = direction.scale(1 + Utils.getRandomScaled(.35));
@@ -68,7 +68,7 @@ public class ClientSpellCastHelper {
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
-            var level = Minecraft.getInstance().player.level;
+            var level = Minecraft.getInstance().player.level();
             int i = PotionUtils.getColor(Potion.byName("healing"));
             double d0 = (double) (i >> 16 & 255) / 255.0D;
             double d1 = (double) (i >> 8 & 255) / 255.0D;
@@ -85,7 +85,7 @@ public class ClientSpellCastHelper {
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
-            var level = Minecraft.getInstance().player.level;
+            var level = Minecraft.getInstance().player.level();
             int i = 16239960;//Copied from fortify's MobEffect registration (this is the color)
             double d0 = (double) (i >> 16 & 255) / 255.0D;
             double d1 = (double) (i >> 8 & 255) / 255.0D;
@@ -101,7 +101,7 @@ public class ClientSpellCastHelper {
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
-            var level = player.level;
+            var level = player.level();
             int ySteps = 16;
             int xSteps = 48;
             float yDeg = 180f / ySteps * Mth.DEG_TO_RAD;
@@ -119,7 +119,7 @@ public class ClientSpellCastHelper {
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
-            var level = player.level;
+            var level = player.level();
             int ySteps = 128;
             float yDeg = 180f / ySteps * Mth.DEG_TO_RAD;
             for (int y = 0; y < ySteps; y++) {
@@ -166,14 +166,14 @@ public class ClientSpellCastHelper {
         var spell = AbstractSpell.getSpell(spellId, level);
         //IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
 
-        spell.onClientCast(Minecraft.getInstance().player.level, Minecraft.getInstance().player, castData);
+        spell.onClientCast(Minecraft.getInstance().player.level(), Minecraft.getInstance().player, castData);
     }
 
     public static void handleClientboundTeleport(Vec3 pos1, Vec3 pos2) {
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
-            var level = Minecraft.getInstance().player.level;
+            var level = Minecraft.getInstance().player.level();
             TeleportSpell.particleCloud(level, pos1);
             TeleportSpell.particleCloud(level, pos2);
         }
@@ -184,19 +184,19 @@ public class ClientSpellCastHelper {
         var player = Minecraft.getInstance().player;
 
         if (player != null) {
-            var level = Minecraft.getInstance().player.level;
+            var level = Minecraft.getInstance().player.level();
             FrostStepSpell.particleCloud(level, pos1);
             FrostStepSpell.particleCloud(level, pos2);
         }
     }
 
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
-        var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
+        var player = Minecraft.getInstance().player.level().getPlayerByUUID(castingEntityId);
         var spell = AbstractSpell.getSpell(spellType, 1);
         //IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
 
         spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
-        spell.onClientPreCast(player.level, player, player.getUsedItemHand(), null);
+        spell.onClientPreCast(player.level(), player, player.getUsedItemHand(), null);
 
     }
 
@@ -204,7 +204,7 @@ public class ClientSpellCastHelper {
  //Ironsspellbooks.logger.debug("ClientSpellCastHelper.handleClientBoundOnCastFinished.1 -> ClientMagicData.resetClientCastState: {}", castingEntityId);
         ClientMagicData.resetClientCastState(castingEntityId);
 
-        var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
+        var player = Minecraft.getInstance().player.level().getPlayerByUUID(castingEntityId);
         AbstractSpell.getSpell(spellType, 1)
                 .getCastFinishAnimation()
                 .getForPlayer()

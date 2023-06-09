@@ -196,7 +196,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
             setNoGravity(true);
             //this.noPhysics = true;
             if (tickCount % 10 == 0) {
-                isCloseToGround = Utils.raycastForBlock(level, position(), position().subtract(0, 2.5, 0), ClipContext.Fluid.ANY).getType() == HitResult.Type.BLOCK;
+                isCloseToGround = Utils.raycastForBlock(level(), position(), position().subtract(0, 2.5, 0), ClipContext.Fluid.ANY).getType() == HitResult.Type.BLOCK;
             }
             Vec3 woosh = new Vec3(
                     Mth.sin((tickCount * 5) * Mth.DEG_TO_RAD),
@@ -209,7 +209,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         }
         super.tick();
 
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             if (isPhase(Phases.FinalPhase)) {
                 if (!this.isInvisible()) {
                     float radius = .35f;
@@ -219,7 +219,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                                 1 + (this.random.nextFloat() * 2 - 1) * radius,
                                 (this.random.nextFloat() * 2 - 1) * radius
                         ));
-                        level.addParticle(ParticleTypes.SMOKE, random.x, random.y, random.z, 0, -.1, 0);
+                        level().addParticle(ParticleTypes.SMOKE, random.x, random.y, random.z, 0, -.1, 0);
 
                     }
 
@@ -233,7 +233,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 this.bossEvent.setProgress((this.getHealth() - halfHealth) / (this.getMaxHealth() - halfHealth));
                 if (this.getHealth() <= halfHealth) {
                     setPhase(Phases.Transitioning);
-                    var player = level.getNearestPlayer(this, 16);
+                    var player = level().getNearestPlayer(this, 16);
                     if (player != null)
                         lookAt(player, 360, 360);
                     setHealth(halfHealth);
@@ -244,11 +244,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
             } else if (isPhase(Phases.Transitioning)) {
                 if (--transitionAnimationTime <= 0) {
                     setPhase(Phases.FinalPhase);
-                    MagicManager.spawnParticles(level, ParticleHelper.FIRE, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
+                    MagicManager.spawnParticles(level(), ParticleHelper.FIRE, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
                     setFinalPhaseGoals();
                     setNoGravity(true);
                     playSound(SoundRegistry.DEAD_KING_EXPLODE.get());
-                    level.getEntities(this, this.getBoundingBox().inflate(5), (entity) -> entity.distanceToSqr(position()) < 5 * 5).forEach(super::doHurtTarget);
+                    level().getEntities(this, this.getBoundingBox().inflate(5), (entity) -> entity.distanceToSqr(position()) < 5 * 5).forEach(super::doHurtTarget);
                     setInvulnerable(false);
                 }
             } else if (isPhase(Phases.FinalPhase)) {
@@ -426,7 +426,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
-        level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.get(), SoundSource.HOSTILE, 1, 1);
+        level().playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.get(), SoundSource.HOSTILE, 1, 1);
         return super.doHurtTarget(pEntity);
     }
 

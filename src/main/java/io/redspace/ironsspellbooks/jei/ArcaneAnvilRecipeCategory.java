@@ -123,16 +123,17 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
 
         int y = (getHeight() / 2) + (paddingBottom / 2) + (minecraft.font.lineHeight / 2) - 4;
 
-        //Left Item
-        int x = 3;
-        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
-
-        //Right Item
-        x += 50;
-        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
-
-        //Output Item
-        int outputWidth = minecraft.font.width(outputText);
-        minecraft.font.drawShadow(poseStack, outputText, getWidth() - (outputWidth + 3), y, outputColor);
+        //TODO: 1.20 port changed drawing text. need to wait for jei here
+//        //Left Item
+//        int x = 3;
+//        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
+//
+//        //Right Item
+//        x += 50;
+//        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
+//
+//        //Output Item
+//        int outputWidth = minecraft.font.width(outputText);
+//        minecraft.font.drawShadow(poseStack, outputText, getWidth() - (outputWidth + 3), y, outputColor);
     }
 }

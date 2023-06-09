@@ -56,7 +56,7 @@ public class HeartstopEffect extends MobEffect {
         //irons_spellbooks.LOGGER.debug("{} ticks existed: {}", pLivingEntity.getName().getString(), pLivingEntity.tickCount);
 
         //Heart beats once every 2 seconds at 0% damage, and 2 times per second at 100% damage (relative to health)
-        if (pLivingEntity.level.isClientSide) {
+        if (pLivingEntity.level().isClientSide) {
             if (pLivingEntity instanceof Player player) {
                 float damage = ClientMagicData.getSyncedSpellData(player).getHeartstopAccumulatedDamage();
                 float f = 1 - Mth.clamp(damage / player.getHealth(), 0, 1);

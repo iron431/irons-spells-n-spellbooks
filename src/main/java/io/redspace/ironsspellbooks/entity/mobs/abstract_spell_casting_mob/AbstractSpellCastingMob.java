@@ -82,7 +82,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
     }
 
     public void startDrinkingPotion() {
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             setDrinkingPotion(true);
             drinkTime = 35;
 
@@ -98,16 +98,16 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
         this.heal(Math.min(10, getMaxHealth() / 4));
         this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_MODIFIER_DRINKING);
         if (!this.isSilent()) {
-            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_DRINK, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_DRINK, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
         }
     }
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
-        //irons_spellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level.isClientSide:{} {}", level.isClientSide, pKey);
+        //irons_spellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated ENTER level().isClientSide:{} {}", level().isClientSide, pKey);
         super.onSyncedDataUpdated(pKey);
 
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             return;
         }
 
@@ -120,7 +120,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
             //IronsSpellbooks.LOGGER.debug("onSyncedDataUpdated DATA_SPELL");
             var isCasting = playerMagicData.isCasting();
             var syncedSpellData = entityData.get(DATA_SPELL);
-            //irons_spellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated(DATA_SPELL) {} {}", level.isClientSide, syncedSpellData);
+            //irons_spellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated(DATA_SPELL) {} {}", level().isClientSide, syncedSpellData);
             playerMagicData.setSyncedData(syncedSpellData);
 
             if (!syncedSpellData.isCasting() && isCasting) {
@@ -156,7 +156,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
 
     public void cancelCast() {
         if (isCasting()) {
-            if (level.isClientSide) {
+            if (level().isClientSide) {
                 cancelCastAnimation = true;
             } else {
                 //Need to ensure we pass a different value if we want the data to sync
@@ -169,9 +169,9 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
     }
 
     private void castComplete() {
-        //irons_spellbooks.LOGGER.debug("ASCM.castComplete isClientSide:{}", level.isClientSide);
-        if (!level.isClientSide) {
-            castingSpell.onServerCastComplete(level, this, playerMagicData, false);
+        //irons_spellbooks.LOGGER.debug("ASCM.castComplete isClientSide:{}", level().isClientSide);
+        if (!level().isClientSide) {
+            castingSpell.onServerCastComplete(level(), this, playerMagicData, false);
         } else {
             playerMagicData.resetCastingState();
         }
@@ -181,7 +181,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
 
     public void startAutoSpinAttack(int pAttackTicks) {
         this.autoSpinAttackTicks = pAttackTicks;
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.setLivingEntityFlag(4, true);
         }
         //Lil trick
@@ -195,13 +195,13 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
 
         //Should basically be only used for client stuff
 
-        if (!level.isClientSide || castingSpell == null) {
+        if (!level().isClientSide || castingSpell == null) {
             return;
         }
 
         if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (castingSpell.getCastType() == CastType.INSTANT) {
-                castingSpell.onClientPreCast(level, this, InteractionHand.MAIN_HAND, playerMagicData);
+                castingSpell.onClientPreCast(level(), this, InteractionHand.MAIN_HAND, playerMagicData);
                 castComplete();
             }
         } else {
@@ -220,7 +220,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
                 finishDrinkingPotion();
             } else if (drinkTime % 4 == 0)
                 if (!this.isSilent())
-                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, this.level.random.nextFloat() * 0.1F + 0.9F);
+                    this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, this.level().random.nextFloat() * 0.1F + 0.9F);
 
         }
 
@@ -231,19 +231,19 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
         playerMagicData.handleCastDuration();
 
         if (playerMagicData.isCasting()) {
-            castingSpell.onServerCastTick(level, this, playerMagicData);
+            castingSpell.onServerCastTick(level(), this, playerMagicData);
         }
         this.forceLookAtTarget(getTarget());
         if (playerMagicData.getCastDurationRemaining() <= 0) {
             if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.CHARGE || castingSpell.getCastType() == CastType.INSTANT) {
                 //irons_spellbooks.LOGGER.debug("ASCM.customServerAiStep: onCast.1 {}", castingSpell.getSpellType());
-                castingSpell.onCast(level, this, playerMagicData);
+                castingSpell.onCast(level(), this, playerMagicData);
             }
             castComplete();
         } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
                 //irons_spellbooks.LOGGER.debug("ASCM.customServerAiStep: onCast.2 {}", castingSpell.getSpellType());
-                castingSpell.onCast(level, this, playerMagicData);
+                castingSpell.onCast(level(), this, playerMagicData);
             }
         }
     }
@@ -254,13 +254,13 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
             return;
         }
 
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             cancelCastAnimation = false;
         }
 
-        //irons_spellbooks.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level.isClientSide);
+        //irons_spellbooks.LOGGER.debug("ASCM.initiateCastSpell: {} {} isClientSide:{}", spellType, spellLevel, level().isClientSide);
         castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
-        if (!castingSpell.checkPreCastConditions(level, this, playerMagicData)) {
+        if (!castingSpell.checkPreCastConditions(level(), this, playerMagicData)) {
             castingSpell = null;
             return;
         }
@@ -275,8 +275,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
 
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(this), castingSpell.getEffectiveCastTime(this), CastSource.MOB);
 
-        if (!level.isClientSide) {
-            castingSpell.onServerPreCast(level, this, playerMagicData);
+        if (!level().isClientSide) {
+            castingSpell.onServerPreCast(level(), this, playerMagicData);
         }
     }
 
@@ -294,11 +294,11 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
             boolean valid = false;
             for (int i = 0; i < 24; i++) {
                 teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
-                int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 5);
+                int y = Utils.findRelativeGroundLevel(target.level(), teleportPos, 5);
                 teleportPos = new Vec3(teleportPos.x, y, teleportPos.z);
                 var bb = this.getBoundingBox();
                 var reposBB = bb.move(teleportPos.subtract(target.position()));
-                if (!level.collidesWithSuffocatingBlock(this, reposBB)) {
+                if (!level().collidesWithSuffocatingBlock(this, reposBB)) {
                     valid = true;
                     break;
                 }
@@ -338,8 +338,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements GeoEnti
         float f = this.yBodyRot * ((float) Math.PI / 180F) + Mth.cos((float) this.tickCount * 0.6662F) * 0.25F;
         float f1 = Mth.cos(f);
         float f2 = Mth.sin(f);
-        this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() + (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() + (double) f2 * 0.6D, d0, d1, d2);
-        this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() - (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() - (double) f2 * 0.6D, d0, d1, d2);
+        this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() + (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() + (double) f2 * 0.6D, d0, d1, d2);
+        this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() - (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() - (double) f2 * 0.6D, d0, d1, d2);
     }
 
     /**

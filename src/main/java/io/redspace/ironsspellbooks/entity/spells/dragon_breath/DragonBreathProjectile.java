@@ -24,7 +24,7 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
     @Override
     public void spawnParticles() {
         var owner = getOwner();
-        if (!level.isClientSide || owner == null) {
+        if (!level().isClientSide || owner == null) {
             return;
         }
         Vec3 rotation = owner.getLookAngle().normalize();
@@ -44,7 +44,7 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
             double angularness = .3;
             Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(ParticleTypes.DRAGON_BREATH, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level().addParticle(ParticleTypes.DRAGON_BREATH, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }
     }
 
@@ -59,7 +59,7 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
     }
 
     private void createDragonBreathPuddle(Vec3 pos) {
-//        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level, this.getX(), this.getY(), this.getZ());
+//        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
 //        Entity entity = this.getOwner();
 //        if (entity instanceof LivingEntity) {
 //            areaeffectcloud.setOwner((LivingEntity) entity);
@@ -70,11 +70,11 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
 //        areaeffectcloud.setDuration(80);
 //        areaeffectcloud.setRadiusPerTick(-.2f * ((7.0F - areaeffectcloud.getRadius()) / (float) areaeffectcloud.getDuration()));
 //        areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.HARM, 1, (int) (damage / 5)));
-        DragonBreathPool pool = new DragonBreathPool(level);
+        DragonBreathPool pool = new DragonBreathPool(level());
         pool.setOwner(getOwner());
         pool.setDamage(this.damage);
         pool.moveTo(pos);
-        this.level.addFreshEntity(pool);
+        this.level().addFreshEntity(pool);
 
     }
 }

@@ -26,10 +26,10 @@ public class WaywardCompass extends Item {
     }
 
     public static GlobalPos getCatacombsLocation(Entity entity, CompoundTag compoundTag) {
-        if (!(entity.level.dimensionType().natural() && compoundTag.contains("CatacombsPos")))
+        if (!(entity.level().dimensionType().natural() && compoundTag.contains("CatacombsPos")))
             return null;
 
-        return GlobalPos.of(entity.level.dimension(), NbtUtils.readBlockPos(compoundTag.getCompound("CatacombsPos")));
+        return GlobalPos.of(entity.level().dimension(), NbtUtils.readBlockPos(compoundTag.getCompound("CatacombsPos")));
     }
 
     @Override

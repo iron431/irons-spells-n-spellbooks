@@ -34,7 +34,7 @@ public class GenericFollowOwnerGoal extends Goal {
     public GenericFollowOwnerGoal(PathfinderMob entity, OwnerGetter ownerGetter, double pSpeedModifier, float pStartDistance, float pStopDistance, boolean pCanFly, float teleportDistance) {
         this.entity = entity;
         this.ownerGetter = ownerGetter;
-        this.level = entity.level;
+        this.level = entity.level();
         this.speedModifier = pSpeedModifier;
         this.navigation = entity.getNavigation();
         this.startDistance = pStartDistance;
@@ -105,7 +105,7 @@ public class GenericFollowOwnerGoal extends Goal {
                 if (this.entity.distanceToSqr(this.owner) >= teleportDistance) {
                     this.teleportToOwner();
                 } else {
-                    if(canFly && !entity.isOnGround()){
+                    if(canFly && !entity.onGround()){
                         Vec3 vec3 = owner.position();
                         this.entity.getMoveControl().setWantedPosition(vec3.x, vec3.y + 2, vec3.z, this.speedModifier);
 
@@ -140,7 +140,7 @@ public class GenericFollowOwnerGoal extends Goal {
         } else if (!this.canTeleportTo(new BlockPos(pX, pY, pZ))) {
             return false;
         } else {
-            this.entity.moveTo((double) pX + 0.5D, (double) pY + (canFly && !entity.isOnGround() ? 3 : 0), (double) pZ + 0.5D, this.entity.getYRot(), this.entity.getXRot());
+            this.entity.moveTo((double) pX + 0.5D, (double) pY + (canFly && !entity.onGround() ? 3 : 0), (double) pZ + 0.5D, this.entity.getYRot(), this.entity.getXRot());
             this.navigation.stop();
             return true;
         }

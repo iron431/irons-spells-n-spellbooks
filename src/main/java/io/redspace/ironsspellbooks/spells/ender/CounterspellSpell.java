@@ -59,7 +59,7 @@ public class CounterspellSpell extends AbstractSpell {
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
         Vec3 start = entity.getEyePosition();
         Vec3 end = start.add(entity.getForward().normalize().scale(80));
-        HitResult hitResult = Utils.raycastForEntity(entity.level, entity, start, end, true, 0.35f, Utils::validAntiMagicTarget);
+        HitResult hitResult = Utils.raycastForEntity(entity.level(), entity, start, end, true, 0.35f, Utils::validAntiMagicTarget);
         Vec3 forward = entity.getForward().normalize();
         if (hitResult instanceof EntityHitResult entityHitResult) {
             double distance = entity.distanceTo(entityHitResult.getEntity());

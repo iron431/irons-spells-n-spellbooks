@@ -86,22 +86,22 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
 
         if (ticksAlive >= doAnimateTick && !didAnimate) {
             missedBlocks.forEach(pos -> {
-                FallingBlockEntity.fall(level, pos, level.getBlockState(pos));
+                FallingBlockEntity.fall(level(), pos, level().getBlockState(pos));
             });
             didAnimate = true;
         }
 
         if (ticksAlive == doDamageTick - 2 && !didDamage) {
             var location = this.position();
-            level.playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2f, random.nextIntBetweenInclusive(6, 8) * .1f);
-            level.playSound(null, location.x, location.y, location.z, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1f, random.nextIntBetweenInclusive(6, 8) * .1f);
+            level().playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2f, random.nextIntBetweenInclusive(6, 8) * .1f);
+            level().playSound(null, location.x, location.y, location.z, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1f, random.nextIntBetweenInclusive(6, 8) * .1f);
 
         }
 
         if (ticksAlive >= doDamageTick && !didDamage) {
             if (blockHitResult != null && blockHitResult.getType() != HitResult.Type.MISS) {
                 var blockPos = blockHitResult.getBlockPos();
-                var blockState = level.getBlockState(blockPos);
+                var blockState = level().getBlockState(blockPos);
 
                 if (blockState.is(ModTags.SPECTRAL_HAMMER_MINEABLE)) {
                     var blockCollector = getBlockCollector(blockPos, blockHitResult.getDirection(), radius, depth, new HashSet<>(), new HashSet<>());
@@ -109,7 +109,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
 
                     if (!blockCollector.blocksToRemove.isEmpty()) {
                         //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: origin:{}", blockCollector.origin);
-                        var random = level.getRandom();
+                        var random = level().getRandom();
                         AtomicInteger count = new AtomicInteger();
                         blockCollector.blocksToRemove.forEach(pos -> {
                             var distance = blockCollector.origin.distManhattan(pos);
@@ -122,12 +122,12 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
                             } else {
                                 if (count.incrementAndGet() % 5 == 0) {
                                     //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.1 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
-                                    level.destroyBlock(pos, true);
+                                    level().destroyBlock(pos, true);
                                 } else {
                                     //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
-                                    var bState = level.getBlockState(pos);
-                                    Block.dropResources(bState, level, pos);
-                                    level.removeBlock(pos, false);
+                                    var bState = level().getBlockState(pos);
+                                    Block.dropResources(bState, level(), pos);
+                                    level().removeBlock(pos, false);
                                 }
                             }
                         });
@@ -148,7 +148,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
             return;
         }
 
-        if (bch.isValidBlockToCollect(level, blockPos)) {
+        if (bch.isValidBlockToCollect(level(), blockPos)) {
             //IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is valid", blockPos);
             bch.blocksToRemove.add(blockPos);
             collectBlocks(blockPos.above(), bch);

@@ -55,7 +55,7 @@ public class EvasionEffect extends MobEffect {
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (livingEntity.level.isClientSide || excludeDamageSources.contains(damageSource) || damageSource.is(DamageTypeTags.IS_FALL) || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (livingEntity.level().isClientSide || excludeDamageSources.contains(damageSource) || damageSource.is(DamageTypeTags.IS_FALL) || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
 
@@ -68,7 +68,7 @@ public class EvasionEffect extends MobEffect {
         double d1 = livingEntity.getY();
         double d2 = livingEntity.getZ();
         double maxRadius = 18d;
-        var level = livingEntity.level;
+        var level = livingEntity.level();
         var random = livingEntity.getRandom();
 
         for (int i = 0; i < 16; ++i) {
@@ -105,7 +105,7 @@ public class EvasionEffect extends MobEffect {
 
     private static void particleCloud(LivingEntity entity) {
         Vec3 pos = entity.position().add(0, entity.getBbHeight() / 2, 0);
-        MagicManager.spawnParticles(entity.level, ParticleTypes.PORTAL, pos.x, pos.y, pos.z, 70, entity.getBbWidth() / 4, entity.getBbHeight() / 5, entity.getBbWidth() / 4, .035, false);
+        MagicManager.spawnParticles(entity.level(), ParticleTypes.PORTAL, pos.x, pos.y, pos.z, 70, entity.getBbWidth() / 4, entity.getBbHeight() / 5, entity.getBbWidth() / 4, .035, false);
     }
 
 }

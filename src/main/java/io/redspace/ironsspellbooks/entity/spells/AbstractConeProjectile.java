@@ -141,7 +141,7 @@ public abstract class AbstractConeProjectile extends Projectile{
         }
 
         /* Hit Detection */
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (dealDamageActive) {
                 for (Entity entity : getSubEntityCollisions()) {
                     //irons_spellbooks.LOGGER.debug("ConeOfColdHit : {}", entity.getName().getString());
@@ -162,7 +162,7 @@ public abstract class AbstractConeProjectile extends Projectile{
     protected Set<Entity> getSubEntityCollisions() {
         List<Entity> collisions = new ArrayList<>();
         for (Entity conepart : subEntities) {
-            collisions.addAll(level.getEntities(conepart, conepart.getBoundingBox()));
+            collisions.addAll(level().getEntities(conepart, conepart.getBoundingBox()));
         }
 
         return collisions.stream().filter(target ->
@@ -174,8 +174,8 @@ public abstract class AbstractConeProjectile extends Projectile{
         Vec3 vec3 = new Vec3(start.getX(), start.getEyeY(), start.getZ());
         Vec3 vec31 = new Vec3(target.getX(), target.getEyeY(), target.getZ());
 
-        boolean isShieldBlockingLOS = Utils.raycastForEntity(start.level, start, vec3, vec31, false, 0, (entity) -> entity instanceof ShieldEntity).getType() == HitResult.Type.ENTITY;
-        return !isShieldBlockingLOS && start.level.clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
+        boolean isShieldBlockingLOS = Utils.raycastForEntity(start.level(), start, vec3, vec31, false, 0, (entity) -> entity instanceof ShieldEntity).getType() == HitResult.Type.ENTITY;
+        return !isShieldBlockingLOS && start.level().clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
     }
 
 }

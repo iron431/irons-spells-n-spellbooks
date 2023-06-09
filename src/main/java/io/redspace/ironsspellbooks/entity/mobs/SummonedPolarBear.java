@@ -70,12 +70,12 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
         if (pPlayer == getSummoner()) {
             this.doPlayerRide(pPlayer);
         }
-        return InteractionResult.sidedSuccess(this.level.isClientSide);
+        return InteractionResult.sidedSuccess(this.level().isClientSide);
     }
 
     protected void doPlayerRide(Player pPlayer) {
         this.setStanding(false);
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             pPlayer.setYRot(this.getYRot());
             pPlayer.setXRot(this.getXRot());
             pPlayer.startRiding(this);
@@ -85,7 +85,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public LivingEntity getSummoner() {
-        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
+        return OwnerHelper.getAndCacheOwner(level(), cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -131,8 +131,8 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public void onUnSummon() {
-        if (!level.isClientSide) {
-            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
+        if (!level().isClientSide) {
+            MagicManager.spawnParticles(level(), ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             discard();
         }
     }

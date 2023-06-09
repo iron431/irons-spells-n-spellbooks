@@ -78,7 +78,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     }
 
     public void setRadius(float pRadius) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.getEntityData().set(DATA_RADIUS, Math.min(pRadius, 48));
         }
     }
@@ -129,11 +129,11 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
             }
 
         }
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (tickCount > 20 * 16 * 2) {
                 this.discard();
                 this.playSound(SoundRegistry.BLACK_HOLE_CAST.get(), getRadius() / 2f, 1);
-                MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, getX(), getY() + getRadius(), getZ(), 200, 1, 1, 1, 1, true);
+                MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, getX(), getY() + getRadius(), getZ(), 200, 1, 1, 1, 1, true);
             } else if ((tickCount - 1) % loopSoundDurationInTicks == 0) {
                 //TODO: stop sound
                 this.playSound(SoundRegistry.BLACK_HOLE_LOOP.get(), getRadius() / 3f, 1);
@@ -143,7 +143,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     }
 
     private void updateTrackingEntities() {
-        trackingEntities = level.getEntities(this, this.getBoundingBox().inflate(1));
+        trackingEntities = level().getEntities(this, this.getBoundingBox().inflate(1));
     }
 
     private static final int loopSoundDurationInTicks = 320;

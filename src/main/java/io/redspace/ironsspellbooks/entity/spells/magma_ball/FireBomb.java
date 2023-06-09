@@ -39,13 +39,13 @@ public class FireBomb extends AbstractMagicProjectile {
         double d2 = this.getZ() - vec3.z;
         for (int i = 0; i < 4; i++) {
             Vec3 random = Utils.getRandomVec3(.2);
-            this.level.addParticle(ParticleTypes.SMOKE, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            this.level().addParticle(ParticleTypes.SMOKE, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
         }
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleTypes.LAVA, x, y, z, 30, 1.5, .1, 1.5, 1, false);
+        MagicManager.spawnParticles(level(), ParticleTypes.LAVA, x, y, z, 30, 1.5, .1, 1.5, 1, false);
     }
 
     @Override
@@ -63,11 +63,11 @@ public class FireBomb extends AbstractMagicProjectile {
         super.onHit(hitresult);
         createFireField(hitresult.getLocation());
         float explosionRadius = getExplosionRadius();
-        var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+        var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
         for (Entity entity : entities) {
             double distance = entity.distanceToSqr(hitresult.getLocation());
             if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
-                if (Utils.hasLineOfSight(level, hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
+                if (Utils.hasLineOfSight(level(), hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
                     DamageSources.applyDamage(entity, damage, SpellType.FIRE_BOMB_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE);
@@ -78,21 +78,21 @@ public class FireBomb extends AbstractMagicProjectile {
     }
 
     public void createFireField(Vec3 location) {
-        if (!level.isClientSide) {
-            FireField fire = new FireField(level);
+        if (!level().isClientSide) {
+            FireField fire = new FireField(level());
             fire.setOwner(getOwner());
             fire.setDuration(200);
             fire.setDamage(damage / 5);
             fire.setRadius(getExplosionRadius());
             fire.setCircular();
             fire.moveTo(location);
-            level.addFreshEntity(fire);
+            level().addFreshEntity(fire);
         }
     }
 
     @Override
     protected void doImpactSound(SoundEvent sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + level.random.nextFloat() * .2f);
+        level().playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + level().random.nextFloat() * .2f);
     }
 
     @Override

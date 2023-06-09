@@ -76,9 +76,9 @@ public class MagicManager {
                     if (spell.getCastType() == CastType.LONG || (spell.getCastType() == CastType.CHARGE && !serverPlayer.isUsingItem())) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
                             //Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
-                            spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
+                            spell.castSpell(serverPlayer.level(), serverPlayer, playerMagicData.getCastSource(), true);
                             //Ironsspellbooks.logger.debug("MagicManager.tick.1");
-                            spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, false);
+                            spell.onServerCastComplete(serverPlayer.level(), serverPlayer, playerMagicData, false);
                             Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
@@ -86,23 +86,23 @@ public class MagicManager {
                             if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost() * 2 < 0)) {
                                 //irons_spellbooks.LOGGER.debug("MagicManager.tick: handle spell casting complete");
                                 //Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
-                                spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
+                                spell.castSpell(serverPlayer.level(), serverPlayer, playerMagicData.getCastSource(), true);
 
                                 //IronsSpellbooks.LOGGER.debug("MagicManager.tick.2 {}", playerMagicData.getCastSource());
                                 if (playerMagicData.getCastSource() == CastSource.SCROLL) {
                                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                                 }
 
-                                spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, false);
+                                spell.onServerCastComplete(serverPlayer.level(), serverPlayer, playerMagicData, false);
 
                             } else {
-                                spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), false);
+                                spell.castSpell(serverPlayer.level(), serverPlayer, playerMagicData.getCastSource(), false);
                             }
                         }
                     }
 
                     if (playerMagicData.isCasting()) {
-                        spell.onServerCastTick(serverPlayer.level, serverPlayer, playerMagicData);
+                        spell.onServerCastTick(serverPlayer.level(), serverPlayer, playerMagicData);
                     }
                 }
 

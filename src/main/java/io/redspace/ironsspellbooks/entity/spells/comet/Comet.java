@@ -44,14 +44,14 @@ public class Comet extends AbstractMagicProjectile {
         double d2 = this.getZ() - vec3.z;
         for (int i = 0; i < 2; i++) {
             Vec3 random = Utils.getRandomVec3(.1);
-            this.level.addParticle(ParticleHelper.UNSTABLE_ENDER, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            this.level().addParticle(ParticleHelper.UNSTABLE_ENDER, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
         }
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
         //TODO: shockwave particle?
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 25, 0, 0, 0, .18, true);
+        MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, x, y, z, 25, 0, 0, 0, .18, true);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class Comet extends AbstractMagicProjectile {
 
     @Override
     protected void doImpactSound(SoundEvent sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, .8f, 1.2f + level.random.nextFloat() * .3f);
+        level().playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, .8f, 1.2f + level().random.nextFloat() * .3f);
     }
 
     @Override
@@ -71,11 +71,11 @@ public class Comet extends AbstractMagicProjectile {
 
     @Override
     protected void onHit(HitResult hitResult) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             impactParticles(xOld, yOld, zOld);
             getImpactSound().ifPresent(this::doImpactSound);
             float explosionRadius = getExplosionRadius();
-            var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+            var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
                 if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {

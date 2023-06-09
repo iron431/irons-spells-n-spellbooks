@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui.arcane_anvil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -19,25 +20,27 @@ public class ArcaneAnvilScreen extends ItemCombinerScreen<ArcaneAnvilMenu> {
     }
 
     @Override
-    protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pX, int pY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, ANVIL_LOCATION);
+    protected void renderBg(GuiGraphics guiHelper, float pPartialTick, int pX, int pY) {
+//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.setShaderTexture(0, ANVIL_LOCATION);
 
         int leftPos = (this.width - this.imageWidth) / 2;
         int topPos = (this.height - this.imageHeight) / 2;
 
-        this.blit(pPoseStack, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight);
+        guiHelper.blit(ANVIL_LOCATION, leftPos, topPos, 0, 0, this.imageWidth, this.imageHeight);
 
         // X over arrow
         if (((this.menu.getSlot(0).hasItem() && this.menu.getSlot(1).hasItem()) && !this.menu.getSlot(2).hasItem())) {
-            this.blit(pPoseStack, leftPos + 99, topPos + 45, this.imageWidth, 0, 28, 21);
+            guiHelper.blit(ANVIL_LOCATION, leftPos + 99, topPos + 45, this.imageWidth, 0, 28, 21);
         }
 
     }
 
     @Override
-    protected void renderErrorIcon(PoseStack p_266902_, int p_266822_, int p_267045_) {
-        //TODO: (1.19.4 port) test if this is necessary since we are using legacy anvil logic.
+    protected void renderErrorIcon(GuiGraphics p_281990_, int p_266822_, int p_267045_) {
+        //TODO: 1.20 port: is this necessary since we are doing legacy anvil rendering?
     }
+
+
 }

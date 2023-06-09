@@ -11,7 +11,6 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -40,21 +39,22 @@ public class ItemRendererMixin {
 //        }
 //    }
 
-    private void renderSpellCooldown(PoseStack poseStack, int one, int two, AbstractSpell spell) {
-        if (spell.getSpellType().getValue() > 0) {
-            float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
-
-            if (f > 0.0F) {
-                RenderSystem.disableDepthTest();
-                //RenderSystem.disableTexture();
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-                Tesselator tesselator = Tesselator.getInstance();
-                BufferBuilder bufferbuilder = tesselator.getBuilder();
-                GuiComponent.fill(poseStack, one, two + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), Color.ofRGBA(1f, 1f, 1f, .5f).getColor());
-                //RenderSystem.enableTexture();
-                RenderSystem.enableDepthTest();
-            }
-        }
-    }
+    //TODO: 1.20 port :(
+//    private void renderSpellCooldown(PoseStack poseStack, int one, int two, AbstractSpell spell) {
+//        if (spell.getSpellType().getValue() > 0) {
+//            float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
+//
+//            if (f > 0.0F) {
+//                RenderSystem.disableDepthTest();
+//                //RenderSystem.disableTexture();
+//                RenderSystem.enableBlend();
+//                RenderSystem.defaultBlendFunc();
+//                Tesselator tesselator = Tesselator.getInstance();
+//                BufferBuilder bufferbuilder = tesselator.getBuilder();
+//                GuiComponent.fill(poseStack, one, two + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), Color.ofRGBA(1f, 1f, 1f, .5f).getColor());
+//                //RenderSystem.enableTexture();
+//                RenderSystem.enableDepthTest();
+//            }
+//        }
+//    }
 }

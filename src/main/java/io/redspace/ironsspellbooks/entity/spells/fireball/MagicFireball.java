@@ -43,13 +43,13 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
         double d2 = this.getZ() - vec3.z;
         for (int i = 0; i < 4; i++) {
             Vec3 random = Utils.getRandomVec3(.2);
-            this.level.addParticle(ParticleHelper.EMBERS, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+            this.level().addParticle(ParticleHelper.EMBERS, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
         }
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleTypes.LAVA, x, y, z, 50, .1, .1, .1, 0.5 * getExplosionRadius(), false);
+        MagicManager.spawnParticles(level(), ParticleTypes.LAVA, x, y, z, 50, .1, .1, .1, 0.5 * getExplosionRadius(), false);
     }
 
     @Override
@@ -64,10 +64,10 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
 
     @Override
     protected void onHit(HitResult hitResult) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             impactParticles(xOld, yOld, zOld);
             float explosionRadius = getExplosionRadius();
-            var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
+            var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
                 if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
@@ -76,8 +76,8 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
                     DamageSources.applyDamage(entity, damage, SpellType.FIREBALL_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE);
                 }
             }
-            boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-            this.level.explode(null, SpellType.FIREBALL_SPELL.getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float) this.getExplosionRadius(), flag, flag ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE);
+            boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), this.getOwner());
+            this.level().explode(null, SpellType.FIREBALL_SPELL.getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float) this.getExplosionRadius(), flag, flag ? Level.ExplosionInteraction.MOB : Level.ExplosionInteraction.NONE);
             this.discard();
         }
     }

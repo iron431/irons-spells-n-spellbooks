@@ -39,11 +39,11 @@ public class AbyssalShroudEffect extends MobEffect {
 
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (livingEntity.level.isClientSide || EvasionEffect.excludeDamageSources.contains(damageSource) || damageSource.is(DamageTypeTags.IS_FALL)  || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (livingEntity.level().isClientSide || EvasionEffect.excludeDamageSources.contains(damageSource) || damageSource.is(DamageTypeTags.IS_FALL)  || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
         var random = livingEntity.getRandom();
-        var level = livingEntity.level;
+        var level = livingEntity.level();
 
 
         Vec3 sideStep = new Vec3(random.nextBoolean() ? 1 : -1, 0, -.25);
@@ -70,7 +70,7 @@ public class AbyssalShroudEffect extends MobEffect {
 
     private static void particleCloud(LivingEntity entity) {
         Vec3 pos = entity.position().add(0, entity.getBbHeight() / 2, 0);
-        MagicManager.spawnParticles(entity.level, ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 70, entity.getBbWidth() / 4, entity.getBbHeight() / 5, entity.getBbWidth() / 4, .035, false);
+        MagicManager.spawnParticles(entity.level(), ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 70, entity.getBbWidth() / 4, entity.getBbHeight() / 5, entity.getBbWidth() / 4, .035, false);
     }
 
     public static void ambientParticles(ClientLevel level, LivingEntity entity) {

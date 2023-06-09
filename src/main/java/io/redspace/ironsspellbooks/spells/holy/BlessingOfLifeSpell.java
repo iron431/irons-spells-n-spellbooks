@@ -79,7 +79,7 @@ public class BlessingOfLifeSpell extends AbstractSpell {
 
     @Nullable
     private LivingEntity findTarget(LivingEntity caster) {
-        var target = Utils.raycastForEntity(caster.level, caster, 32, true, 0.35f);
+        var target = Utils.raycastForEntity(caster.level(), caster, 32, true, 0.35f);
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             return livingTarget;
         } else {

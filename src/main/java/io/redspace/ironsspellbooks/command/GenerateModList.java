@@ -91,7 +91,7 @@ public class GenerateModList {
                 return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
             });
 
-            source.sendSuccess(Component.translatable("commands.irons_spellbooks.generate_mod_list.success", component), true);
+            source.sendSuccess(() -> Component.translatable("commands.irons_spellbooks.generate_mod_list.success", component), true);
 
         } catch (Exception e) {
             IronsSpellbooks.LOGGER.info(e.getMessage());

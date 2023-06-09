@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -73,17 +74,17 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta) {
-        renderBackground(pPoseStack);
-        super.render(pPoseStack, mouseX, mouseY, delta);
-        renderTooltip(pPoseStack, mouseX, mouseY);
+    public void render(GuiGraphics guiHelper, int mouseX, int mouseY, float delta) {
+        renderBackground(guiHelper);
+        super.render(guiHelper, mouseX, mouseY, delta);
+        renderTooltip(guiHelper, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        setTexture(TEXTURE);
+    protected void renderBg(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
+        //setTexture(TEXTURE);
 
-        this.blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 //        if (lastFocusItem != menu.getFocusSlot().getItem()) {
 //            generateSpellList();
@@ -91,7 +92,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 //        }
         if (menuSlotsChanged())
             generateSpellList();
-        renderSpellList(poseStack, partialTick, mouseX, mouseY);
+        renderSpellList(guiHelper, partialTick, mouseX, mouseY);
         //irons_spellbooks.LOGGER.debug("{}", this.menu.getFocusSlot().getItem().getItem().toString());
 
     }
@@ -108,7 +109,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             return false;
     }
 
-    private void renderSpellList(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
+    private void renderSpellList(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
         ItemStack inkStack = menu.getInkSlot().getItem();
 
         SpellRarity inkRarity = getRarityFromInk(inkStack.getItem());
@@ -124,7 +125,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 int y = topPos + SPELL_LIST_Y + (i - scrollOffset) * 19;
                 spellCard.button.setX(x);
                 spellCard.button.setY(y);
-                spellCard.draw(this, poseStack, x, y, mouseX, mouseY);
+                spellCard.draw(this, guiHelper, x, y, mouseX, mouseY);
             } else {
                 spellCard.button.active = false;
             }
@@ -183,11 +184,11 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         return selectedSpell;
     }
 
-    private void setTexture(ResourceLocation texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, texture);
-    }
+//    private void setTexture(ResourceLocation texture) {
+//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.setShaderTexture(0, texture);
+//    }
 
     private class SpellCardInfo {
         SpellType spell;
@@ -204,30 +205,30 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             this.rarity = spell.getRarity(spellLevel);
         }
 
-        void draw(ScrollForgeScreen screen, PoseStack poseStack, int x, int y, int mouseX, int mouseY) {
-            setTexture(TEXTURE);
+        void draw(ScrollForgeScreen screen, GuiGraphics guiHelper, int x, int y, int mouseX, int mouseY) {
+            //setTexture(TEXTURE);
             int maxWidth = 108 - 20;
             //var hoverText = new HoverEvent(HoverEvent.Action.SHOW_TEXT, getHoverText());
             var text = trimText(font, getDisplayName().withStyle(this.button.active ? Style.EMPTY : Style.EMPTY.withFont(RUNIC_FONT)), maxWidth);
             if (this.button.active) {
                 if (spell == screen.getSelectedSpell())//mouseX >= x && mouseY >= y && mouseX < x + 108 && mouseY < y + 19)
-                    screen.blit(poseStack, x, y, 0, 204, 108, 19);
+                    guiHelper.blit(TEXTURE, x, y, 0, 204, 108, 19);
                 else
-                    screen.blit(poseStack, x, y, 0, 166, 108, 19);
+                    guiHelper.blit(TEXTURE, x, y, 0, 166, 108, 19);
 
             } else {
-                screen.blit(poseStack, x, y, 0, 185, 108, 19);
+                guiHelper.blit(TEXTURE, x, y, 0, 185, 108, 19);
                 //font.drawWordWrap(, x + 2, y + 2, maxWidth, 0xFFFFFF);
             }
-            setTexture(this.button.active ? spell.getResourceLocation() : SpellType.NONE_SPELL.getResourceLocation());
-            screen.blit(poseStack, x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
+            //setTexture(this.button.active ? spell.getResourceLocation() : SpellType.NONE_SPELL.getResourceLocation());
+            guiHelper.blit(this.button.active ? spell.getResourceLocation() : SpellType.NONE_SPELL.getResourceLocation(), x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
 
             int textX = x + 2;
             int textY = y + 3;
-            font.drawWordWrap(poseStack, text, textX, textY, maxWidth, 0xFFFFFF);
+            guiHelper.drawWordWrap(font, text, textX, textY, maxWidth, 0xFFFFFF);
 
             if (mouseX >= textX && mouseY >= textY && mouseX < textX + font.width(text) && mouseY < textY + font.lineHeight) {
-                screen.renderTooltip(poseStack, getHoverText(), mouseX, mouseY);
+                guiHelper.renderTooltip(font, getHoverText(), mouseX, mouseY);
             }
             //button.render(poseStack,mouseX,mouseY,1);
         }

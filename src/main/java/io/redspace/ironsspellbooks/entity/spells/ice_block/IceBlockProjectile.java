@@ -70,8 +70,8 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     public Entity getTarget() {
         if (this.cachedTarget != null && !this.cachedTarget.isRemoved()) {
             return this.cachedTarget;
-        } else if (this.targetUUID != null && this.level instanceof ServerLevel) {
-            this.cachedTarget = ((ServerLevel) this.level).getEntity(this.targetUUID);
+        } else if (this.targetUUID != null && this.level() instanceof ServerLevel) {
+            this.cachedTarget = ((ServerLevel) this.level()).getEntity(this.targetUUID);
             return this.cachedTarget;
         } else {
             return null;
@@ -100,12 +100,12 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
                     0,
                     Utils.getRandomScaled(this.getBbWidth() * .5f)
             );
-            level.addParticle(ParticleTypes.SNOWFLAKE, getX() + random.x, getY(), getZ() + random.z, 0, -.05, 0);
+            level().addParticle(ParticleTypes.SNOWFLAKE, getX() + random.x, getY(), getZ() + random.z, 0, -.05, 0);
         }
     }
 
     private void doFallingDamage(Entity target) {
-        if (level.isClientSide)
+        if (level().isClientSide)
             return;
         if (!canHitEntity(target) || victims.contains(target))
             return;
@@ -122,7 +122,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
 
     private void doImpactDamage() {
         float explosionRadius = 3.5f;
-        level.getEntities(this, this.getBoundingBox().inflate(explosionRadius)).forEach((entity) -> {
+        level().getEntities(this, this.getBoundingBox().inflate(explosionRadius)).forEach((entity) -> {
             if (canHitEntity(entity)) {
                 double distance = entity.distanceToSqr(position());
                 if (distance < explosionRadius * explosionRadius) {
@@ -151,16 +151,16 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         zOld = getZ();
         yRotO = getYRot();
         xRotO = getXRot();
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (airTime <= 0) {
                 //Falling
-                if (isOnGround()) {
+                if (onGround()) {
                     doImpactDamage();
                     playSound(SoundRegistry.ICE_BLOCK_IMPACT.get(), 2.5f, .8f + random.nextFloat() * .4f);
                     impactParticles(getX(), getY(), getZ());
                     discard();
                 } else {
-                    level.getEntities(this, getBoundingBox().inflate(0.35)).forEach(this::doFallingDamage);
+                    level().getEntities(this, getBoundingBox().inflate(0.35)).forEach(this::doFallingDamage);
                 }
             }
             if (airTime-- > 0) {
@@ -178,7 +178,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
 
                 } else {
                     if (airTime % 3 == 0) {
-                        HitResult ground = Utils.raycastForBlock(level, position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
+                        HitResult ground = Utils.raycastForBlock(level(), position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
                         if (ground.getType() == HitResult.Type.MISS) {
                             tooHigh = true;
                         } else if (Math.abs(position().y - ground.getLocation().y) < 4) {
@@ -229,8 +229,8 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleTypes.SNOWFLAKE, x, y, z, 50, .8, .1, .8, 0.2, false);
-        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 25, .5, .1, .5, 0.3, false);
+        MagicManager.spawnParticles(level(), ParticleTypes.SNOWFLAKE, x, y, z, 50, .8, .1, .8, 0.2, false);
+        MagicManager.spawnParticles(level(), ParticleHelper.SNOWFLAKE, x, y, z, 25, .5, .1, .5, 0.3, false);
     }
 
     @Override

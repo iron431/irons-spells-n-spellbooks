@@ -57,14 +57,14 @@ public class AcquireTargetNearLocationGoal<T extends LivingEntity> extends Targe
         if (this.targetType != Player.class && this.targetType != ServerPlayer.class) {
             var targetSearchArea = this.getTargetSearchArea(this.getFollowDistance());
             //irons_spellbooks.LOGGER.debug("AcquireTargetNearLocationGoal.findTarget.1 {}", targetSearchArea);
-            var entitiesOfClass = this.mob.level.getEntitiesOfClass(this.targetType, targetSearchArea, (potentialTarget) -> {
+            var entitiesOfClass = this.mob.level().getEntitiesOfClass(this.targetType, targetSearchArea, (potentialTarget) -> {
                 //irons_spellbooks.LOGGER.debug("AcquireTargetNearLocationGoal.findTarget.2 {}", potentialTarget.getName().getString());
                 return true;
             });
-            this.target = this.mob.level.getNearestEntity(entitiesOfClass, this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+            this.target = this.mob.level().getNearestEntity(entitiesOfClass, this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         } else {
             //irons_spellbooks.LOGGER.debug("AcquireTargetNearLocationGoal.findTarget.6");
-            this.target = this.mob.level.getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+            this.target = this.mob.level().getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         }
     }
 

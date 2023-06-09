@@ -44,7 +44,7 @@ public class ServerboundQuickCast {
                     if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() != spell.getID()) {
                         ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                     }
-                    spell.attemptInitiateCast(itemStack, serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
+                    spell.attemptInitiateCast(itemStack, serverPlayer.level(), serverPlayer, CastSource.SPELLBOOK, true);
                 }
             }
         });

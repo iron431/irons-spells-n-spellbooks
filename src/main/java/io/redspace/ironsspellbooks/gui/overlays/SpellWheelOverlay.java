@@ -13,7 +13,7 @@ import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -23,12 +23,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector4f;
 
 import java.util.List;
 
-public class SpellWheelOverlay extends GuiComponent {
+public class SpellWheelOverlay implements IGuiOverlay {
     public static SpellWheelOverlay instance = new SpellWheelOverlay();
 
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -66,7 +67,7 @@ public class SpellWheelOverlay extends GuiComponent {
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
-    public void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+    public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
         if (!active)
             return;
 
@@ -77,6 +78,7 @@ public class SpellWheelOverlay extends GuiComponent {
             return;
         }
 
+        PoseStack poseStack = guiHelper.pose();
         poseStack.pushPose();
 
         Player player = minecraft.player;
@@ -110,7 +112,7 @@ public class SpellWheelOverlay extends GuiComponent {
 //        final double mouseYCenter = mouseYY - centerY;
 //        double mouseRadians = Math.atan2(mouseYCenter, mouseXCenter);
 
-        fill(poseStack, 0, 0, screenWidth, screenHeight, 0);
+        guiHelper.fill(0, 0, screenWidth, screenHeight, 0);
         //RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -140,7 +142,8 @@ public class SpellWheelOverlay extends GuiComponent {
         for (int i = 0; i < locations.length; i++) {
             var spell = spells.get(i);
             if (spell != null) {
-                setOpaqueTexture(spells.get(i).getSpellType().getResourceLocation());
+                var texture = spells.get(i).getSpellType().getResourceLocation();
+               // setOpaqueTexture();
                 poseStack.pushPose();
                 poseStack.translate(centerX, centerY, 0);
 
@@ -154,12 +157,12 @@ public class SpellWheelOverlay extends GuiComponent {
                 int borderWidth = 32 / 2;
                 int cdWidth = 16 / 2;
                 //blit(poseStack, centerX + (int) locations[i].x + 3, centerY + (int) locations[i].y + 3, 0, 0, 16, 16, 16, 16);
-                blit(poseStack, (int) locations[i].x - iconWidth, (int) locations[i].y - iconWidth, 0, 0, 16, 16, 16, 16);
+                guiHelper.blit(texture, (int) locations[i].x - iconWidth, (int) locations[i].y - iconWidth, 0, 0, 16, 16, 16, 16);
                 /*
                 Border
                  */
                 setTranslucentTexture(TEXTURE);
-                blit(poseStack, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, selection == i ? 32 : 0, 106, 32, 32);
+                guiHelper.blit(TEXTURE, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, selection == i ? 32 : 0, 106, 32, 32);
                 /*
                 Cooldown
                  */
@@ -167,7 +170,7 @@ public class SpellWheelOverlay extends GuiComponent {
                 if (f > 0) {
                     int pixels = (int) (16 * f + 1f);
 //                    gui.blit(poseStack, centerX + (int) locations[i].x + 3, centerY + (int) locations[i].y + 19 - pixels, 47, 87, 16, pixels);
-                    gui.blit(poseStack, (int) locations[i].x - cdWidth, (int) locations[i].y + cdWidth - pixels, 47, 87, 16, pixels);
+                    guiHelper.blit(TEXTURE, (int) locations[i].x - cdWidth, (int) locations[i].y + cdWidth - pixels, 47, 87, 16, pixels);
                 }
                 poseStack.popPose();
 
@@ -185,14 +188,14 @@ public class SpellWheelOverlay extends GuiComponent {
 //            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));
             int height = 2 * font.lineHeight + 5;
 
-            font.drawShadow(poseStack, title, (float) (centerX - font.width(title) / 2), (float) (centerY - (ringOuterEdge + height)), 0xFFFFFF);
-            font.drawShadow(poseStack, level, (float) (centerX - font.width(level) - 5), (float) (centerY - (ringOuterEdge + height) + font.lineHeight + 5), 0xFFFFFF);
-            font.drawShadow(poseStack, mana, (float) (centerX + 5), (float) (centerY - (ringOuterEdge + height) + font.lineHeight + 5), 0xFFFFFF);
+            guiHelper.drawString(font, title, (int) (centerX - font.width(title) / 2), (int) (centerY - (ringOuterEdge + height)), 0xFFFFFF);
+            guiHelper.drawString(font, level, (int) (centerX - font.width(level) - 5), (int) (centerY - (ringOuterEdge + height) + font.lineHeight + 5), 0xFFFFFF);
+            guiHelper.drawString(font, mana, (centerX + 5), (int)(centerY - (ringOuterEdge + height) + font.lineHeight + 5), 0xFFFFFF);
 
             var info = selectedSpell.getUniqueInfo(minecraft.player);
             for (int i = 0; i < info.size(); i++) {
                 var line = info.get(i);
-                font.drawShadow(poseStack, line.withStyle(ChatFormatting.GREEN), centerX - font.width(line) / 2f, (float) (centerY + ringOuterEdgeMax + font.lineHeight * i), 0xFFFFFF);
+                guiHelper.drawString(font, line.withStyle(ChatFormatting.GREEN), (int) (centerX - font.width(line) / 2f), (int) (centerY + ringOuterEdgeMax + font.lineHeight * i), 0xFFFFFF);
 
             }
 

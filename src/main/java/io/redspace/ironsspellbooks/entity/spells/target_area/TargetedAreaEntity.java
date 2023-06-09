@@ -41,7 +41,7 @@ public class TargetedAreaEntity extends Entity {
 
     @Nullable
     public Entity getOwner() {
-        return OwnerHelper.getAndCacheOwner(level, cachedOwner, ownerUUID);
+        return OwnerHelper.getAndCacheOwner(level(), cachedOwner, ownerUUID);
     }
 
     public TargetedAreaEntity(EntityType<TargetedAreaEntity> pEntityType, Level pLevel) {
@@ -67,7 +67,7 @@ public class TargetedAreaEntity extends Entity {
             yOld = owner.yOld;
             zOld = owner.zOld;
         }
-        if (!level.isClientSide && duration > 0 && tickCount > duration)
+        if (!level().isClientSide && duration > 0 && tickCount > duration)
             discard();
     }
 
@@ -98,7 +98,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     public void setRadius(float pRadius) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(pRadius, 0.0F, 32.0F));
         }
     }
@@ -112,7 +112,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     public void setColor(int color) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.getEntityData().set(DATA_COLOR, color);
         }
     }

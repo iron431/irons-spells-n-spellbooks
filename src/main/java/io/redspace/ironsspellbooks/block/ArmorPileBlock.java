@@ -17,8 +17,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -29,7 +28,7 @@ public class ArmorPileBlock extends Block {
     private static final VoxelShape BASE = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 4.0D, 14.0D);
 
     public ArmorPileBlock() {
-        super(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.NONE).strength(5.0F, 8.0F).sound(SoundType.CHAIN).noOcclusion().requiresCorrectToolForDrops());
+        super(BlockBehaviour.Properties.of().strength(5f,8f).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.CHAIN).mapColor(MapColor.COLOR_BLACK));
     }
 
     @Override

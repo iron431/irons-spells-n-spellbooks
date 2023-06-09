@@ -51,7 +51,7 @@ public class HealingAoe extends AoeEntity {
         double d1 = (double) (color >> 8 & 255) / 255.0D;
         double d2 = (double) (color >> 0 & 255) / 255.0D;
 
-        if (!level.isClientSide)
+        if (!level().isClientSide)
             return;
 
         float f = getParticleCount();
@@ -71,7 +71,7 @@ public class HealingAoe extends AoeEntity {
                         Utils.getRandomScaled(r * .85f)
                 );
             }
-            level.addParticle(getParticle(), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, d0, d1, d2);
+            level().addParticle(getParticle(), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, d0, d1, d2);
         }
     }
 

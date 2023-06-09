@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -85,22 +86,22 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float delta) {
-        renderBackground(pPoseStack);
-        super.render(pPoseStack, mouseX, mouseY, delta);
-        renderTooltip(pPoseStack, mouseX, mouseY);
+    public void render(GuiGraphics guiHelper, int mouseX, int mouseY, float delta) {
+        renderBackground(guiHelper);
+        super.render(guiHelper, mouseX, mouseY, delta);
+        renderTooltip(guiHelper, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        setTexture(TEXTURE);
+    protected void renderBg(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
+        //setTexture(TEXTURE);
 
-        this.blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 
         inscribeButton.active = isValidInscription() && inscriptionErrorCode == 0;
         //extractButton.active = isValidExtraction();
-        renderButtons(poseStack, mouseX, mouseY);
+        renderButtons(guiHelper, mouseX, mouseY);
 
         if (menu.slots.get(SPELLBOOK_SLOT).getItem() != lastSpellBookItem) {
             onSpellBookSlotChanged();
@@ -108,8 +109,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         }
 
 
-        renderSpells(poseStack, mouseX, mouseY);
-        renderLorePage(poseStack, partialTick, mouseX, mouseY);
+        renderSpells(guiHelper, mouseX, mouseY);
+        renderLorePage(guiHelper, partialTick, mouseX, mouseY);
 
         //Error Message
         if (menu.slots.get(SPELLBOOK_SLOT).hasItem())
@@ -119,10 +120,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         if (inscriptionErrorCode > 0) {
             //X over arrow
-            setTexture(TEXTURE);
-            this.blit(poseStack, leftPos + 35, topPos + 51, 0, 213, 28, 22);
+           // setTexture(TEXTURE);
+            guiHelper.blit(TEXTURE, leftPos + 35, topPos + 51, 0, 213, 28, 22);
             if (isHovering(leftPos + 35, topPos + 51, 28, 22, mouseX, mouseY)) {
-                renderTooltip(poseStack, getErrorMessage(inscriptionErrorCode), mouseX, mouseY);
+                guiHelper.renderTooltip(font, getErrorMessage(inscriptionErrorCode), mouseX, mouseY);
             }
         }
     }
@@ -144,7 +145,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             return Component.empty();
     }
 
-    private void renderSpells(PoseStack poseStack, int mouseX, int mouseY) {
+    private void renderSpells(GuiGraphics guiHelper, int mouseX, int mouseY) {
         if (isDirty) {
             generateSpellSlots();
         }
@@ -155,13 +156,13 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             var pos = spellSlots.get(i).relativePosition.add(center);
             spellSlot.setX((int) pos.x);
             spellSlot.setY((int) pos.y);
-            renderSpellSlot(poseStack, pos, mouseX, mouseY, i, spellSlots.get(i));
+            renderSpellSlot(guiHelper, pos, mouseX, mouseY, i, spellSlots.get(i));
             //spellSlot.render(poseStack,mouseX,mouseY,1f);
         }
 
     }
 
-    private void renderButtons(PoseStack poseStack, int mouseX, int mouseY) {
+    private void renderButtons(GuiGraphics guiHelper, int mouseX, int mouseY) {
         //
         //  Rendering inscription Button
         //
@@ -170,43 +171,43 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         if (inscribeButton.active) {
             if (isHovering(inscribeButton.getX(), inscribeButton.getY(), 14, 14, mouseX, mouseY)) {
                 //highlighted
-                this.blit(poseStack, inscribeButton.getX(), inscribeButton.getY(), 28, 185, 14, 14);
+                guiHelper.blit(TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 28, 185, 14, 14);
             } else {
                 //regular
-                this.blit(poseStack, inscribeButton.getX(), inscribeButton.getY(), 14, 185, 14, 14);
+                guiHelper.blit(TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 14, 185, 14, 14);
             }
         } else {
             //disabled
-            this.blit(poseStack, inscribeButton.getX(), inscribeButton.getY(), 0, 185, 14, 14);
+            guiHelper.blit(TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 0, 185, 14, 14);
         }
 
     }
 
-    private void renderSpellSlot(PoseStack poseStack, Vec2 pos, int mouseX, int mouseY, int index, SpellSlotInfo slot) {
+    private void renderSpellSlot(GuiGraphics guiHelper, Vec2 pos, int mouseX, int mouseY, int index, SpellSlotInfo slot) {
         //setTexture(TEXTURE);
         boolean hovering = isHovering((int) pos.x, (int) pos.y, 19, 19, mouseX, mouseY);
         int iconToDraw = hovering ? 38 : slot.hasSpell() ? 19 : 0;
-        this.blit(poseStack, (int) pos.x, (int) pos.y, iconToDraw, 166, 19, 19);
+        guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, iconToDraw, 166, 19, 19);
         if (slot.hasSpell()) {
-            drawSpellIcon(poseStack, pos, slot);
-            setTexture(TEXTURE);
+            drawSpellIcon(guiHelper, pos, slot);
             if (hovering && menu.getSpellBookSlot().getItem().getItem() instanceof UniqueSpellBook)
-                this.blit(poseStack, (int) pos.x, (int) pos.y, 76, 166, 19, 19);
+                guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, 76, 166, 19, 19);
         }
         if (index == selectedSpellIndex)
-            this.blit(poseStack, (int) pos.x, (int) pos.y, 57, 166, 19, 19);
+            guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, 57, 166, 19, 19);
     }
 
-    private void drawSpellIcon(PoseStack poseStack, Vec2 pos, SpellSlotInfo slot) {
-        setTexture(slot.containedSpell.getSpellType().getResourceLocation());
-        this.blit(poseStack, (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
+    private void drawSpellIcon(GuiGraphics guiHelper, Vec2 pos, SpellSlotInfo slot) {
+        //setTexture(slot.containedSpell.getSpellType().getResourceLocation());
+        guiHelper.blit(slot.containedSpell.getSpellType().getResourceLocation(), (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
     }
 
-    private void renderLorePage(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
+    private void renderLorePage(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
         int x = leftPos + LORE_PAGE_X;
         int y = topPos;
         int margin = 5;
         var textColor = Style.EMPTY.withColor(0x322c2a);
+        var poseStack = guiHelper.pose();
         //
         // Title
         //
@@ -219,7 +220,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         for (FormattedCharSequence line : titleLines) {
             int titleWidth = font.width(line);
             int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
-            font.draw(poseStack, line, titleX, titleY, 0xFFFFFF);
+            guiHelper.drawString(font, line, titleX, titleY, 0xFFFFFF) ;
             titleY += font.lineHeight;
         }
         var titleHeight = font.wordWrapHeight(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
@@ -252,66 +253,66 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         //  School
         //
-        drawTextWithShadow(font, poseStack, school, x + (LORE_PAGE_WIDTH - font.width(school.getString())) / 2, descLine, 0xFFFFFF, 1);
+        drawTextWithShadow(font, guiHelper, school, x + (LORE_PAGE_WIDTH - font.width(school.getString())) / 2, descLine, 0xFFFFFF, 1);
         descLine += font.lineHeight * textScale;
 
         //
         // Level
         //
         var levelText = Component.translatable("ui.irons_spellbooks.level", spell.getLevel(null)).withStyle(textColor);
-        font.draw(poseStack, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF);
+        guiHelper.drawString(font, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF);
         descLine += font.lineHeight * textScale * 2;
 
         //
         // Mana
         //
-        descLine += drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost() + ""), colorMana, textScale);
+        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost() + ""), colorMana, textScale);
 
         //
         // Cast Time
         //
 
-        descLine += drawText(font, poseStack, TooltipsUtils.getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(null), 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
+        descLine += drawText(font, guiHelper, TooltipsUtils.getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(null), 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
 
         //
         // Cooldown
         //
-        descLine += drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.cooldown", textColor, Component.translatable(Utils.timeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
+        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.cooldown", textColor, Component.translatable(Utils.timeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
 
 
         //
         //  Unique Info
         //
         for (MutableComponent component : spell.getUniqueInfo(null)) {
-            descLine += drawText(font, poseStack, component, x + margin, descLine, textColor.getColor().getValue(), 1);
+            descLine += drawText(font, guiHelper, component, x + margin, descLine, textColor.getColor().getValue(), 1);
         }
 
 
         poseStack.scale(reverseScale, reverseScale, reverseScale);
     }
 
-    private void drawTextWithShadow(Font font, PoseStack poseStack, Component text, int x, int y, int color, float scale) {
+    private void drawTextWithShadow(Font font, GuiGraphics guiHelper, Component text, int x, int y, int color, float scale) {
         x /= scale;
         y /= scale;
-        font.draw(poseStack, text, x, y, color);
-        font.drawShadow(poseStack, text, x, y, color);
+        guiHelper.drawString(font, text, x, y, color);
+        //font.drawShadow(poseStack, text, x, y, color);
     }
 
-    private int drawText(Font font, PoseStack poseStack, Component text, int x, int y, int color, float scale) {
+    private int drawText(Font font, GuiGraphics guiHelper, Component text, int x, int y, int color, float scale) {
         x /= scale;
         y /= scale;
-        //font.draw(poseStack, text, x, y, color);
-        font.drawWordWrap(poseStack, text, x, y, LORE_PAGE_WIDTH, color);
+        //guiHelper.drawString(font, text, x, y, color);
+        guiHelper.drawWordWrap(font, text, x, y, LORE_PAGE_WIDTH, color);
         return font.wordWrapHeight(text, LORE_PAGE_WIDTH);
 
     }
 
-    private int drawStatText(Font font, PoseStack poseStack, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
+    private int drawStatText(Font font, GuiGraphics guiHelper, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
 //        x /= scale;
 //        y /= scale;
 //        font.drawWordWrap(Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, LORE_PAGE_WIDTH, 0xFFFFFF);
-        return drawText(font, poseStack, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF, scale);
-        //font.draw(poseStack, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF);
+        return drawText(font, guiHelper, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF, scale);
+        //guiHelper.drawString(font, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF);
     }
 
     private void generateSpellSlots() {
@@ -472,12 +473,12 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private boolean isHovering(int x, int y, int width, int height, int mouseX, int mouseY) {
         return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
     }
-
-    private void setTexture(ResourceLocation texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, texture);
-    }
+//
+//    private void setTexture(ResourceLocation texture) {
+//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.setShaderTexture(0, texture);
+//    }
 
     private final int[][] LAYOUT = ClientRenderCache.SPELL_LAYOUT;
 

@@ -250,7 +250,7 @@ public abstract class AbstractSpell {
                  */
                 int effectiveCastTime = getEffectiveCastTime(player);
                 playerMagicData.initiateCast(getID(), getLevel(player), effectiveCastTime, castSource);
-                onServerPreCast(player.level, player, playerMagicData);
+                onServerPreCast(player.level(), player, playerMagicData);
                 Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(player), effectiveCastTime, castSource), serverPlayer);
             }
 
@@ -264,7 +264,7 @@ public abstract class AbstractSpell {
     }
 
     public void castSpell(Level world, ServerPlayer serverPlayer, CastSource castSource, boolean triggerCooldown) {
-        MagicManager magicManager = MagicManager.get(serverPlayer.level);
+        MagicManager magicManager = MagicManager.get(serverPlayer.level());
         PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
 
         if (castSource.consumesMana()) {
@@ -274,7 +274,7 @@ public abstract class AbstractSpell {
         }
 
         if (triggerCooldown) {
-            MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, spellType, castSource);
+            MagicManager.get(serverPlayer.level()).addCooldown(serverPlayer, spellType, castSource);
         }
 
         onCast(world, serverPlayer, playerMagicData);

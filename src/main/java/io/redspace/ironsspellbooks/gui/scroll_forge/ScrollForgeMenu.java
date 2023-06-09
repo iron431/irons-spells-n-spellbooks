@@ -31,7 +31,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     private final Level level;
 
     public ScrollForgeMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(containerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(containerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
     private final Slot inkSlot;
@@ -48,7 +48,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         super(MenuRegistry.SCROLL_FORGE_MENU.get(), containerId);
         checkContainerSize(inv, 4);
         blockEntity = (ScrollForgeTile) entity;
-        this.level = inv.player.level;
+        this.level = inv.player.level();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);

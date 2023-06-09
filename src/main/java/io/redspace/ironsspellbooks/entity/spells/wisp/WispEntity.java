@@ -111,7 +111,7 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
     public void tick() {
         super.tick();
 
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             spawnParticles();
         } else {
             var target = this.getTarget();
@@ -121,7 +121,7 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
                     DamageSources.applyDamage(target, damageAmount, SpellType.WISP_SPELL.getDamageSource(this,cachedOwner), SchoolType.HOLY);
                     this.playSound(WispSpell.getImpactSound(), 1.0f, 1.0f);
                     var p = target.getEyePosition();
-                    MagicManager.spawnParticles(level, ParticleHelper.WISP, p.x, p.y, p.z, 25, 0, 0, 0, .18, true);
+                    MagicManager.spawnParticles(level(), ParticleHelper.WISP, p.x, p.y, p.z, 25, 0, 0, 0, .18, true);
                     discard();
                 }
             }
@@ -240,9 +240,9 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
     }
 
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.playSound(SoundEvents.SHULKER_BULLET_HURT, 1.0F, 1.0F);
-            ((ServerLevel)this.level).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 15, 0.2D, 0.2D, 0.2D, 0.0D);
+            ((ServerLevel)this.level()).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 15, 0.2D, 0.2D, 0.2D, 0.0D);
             this.discard();
         }
 

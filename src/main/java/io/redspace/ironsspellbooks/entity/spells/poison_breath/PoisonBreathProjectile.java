@@ -27,7 +27,7 @@ public class PoisonBreathProjectile extends AbstractConeProjectile {
     @Override
     public void spawnParticles() {
         var owner = getOwner();
-        if (!level.isClientSide || owner == null) {
+        if (!level().isClientSide || owner == null) {
             return;
         }
         Vec3 rotation = owner.getLookAngle().normalize();
@@ -47,7 +47,7 @@ public class PoisonBreathProjectile extends AbstractConeProjectile {
             double angularness = .8;
             Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level.addParticle(random.nextFloat() < .25f ? ParticleHelper.ACID_BUBBLE : ParticleHelper.ACID, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level().addParticle(random.nextFloat() < .25f ? ParticleHelper.ACID_BUBBLE : ParticleHelper.ACID, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }
 
 

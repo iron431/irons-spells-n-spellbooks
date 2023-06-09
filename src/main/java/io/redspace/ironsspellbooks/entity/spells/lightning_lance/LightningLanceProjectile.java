@@ -27,13 +27,13 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
     @Override
     public void trailParticles() {
         Vec3 vec3 = this.position().subtract(getDeltaMovement());
-        level.addParticle(ParticleHelper.ELECTRICITY, vec3.x, vec3.y, vec3.z, 0, 0, 0);
+        level().addParticle(ParticleHelper.ELECTRICITY, vec3.x, vec3.y, vec3.z, 0, 0, 0);
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, 2, true);
-        MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, .5, false);
+        MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, 2, true);
+        MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, .5, false);
     }
 
     @Override
@@ -71,18 +71,18 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
     protected void onHit(HitResult pResult) {
         //irons_spellbooks.LOGGER.debug("Boom");
 
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             this.playSound(SoundEvents.TRIDENT_THUNDER, 6, .65f);
 //            irons_spellbooks.LOGGER.debug("{}",pos);
 //            //Beam
 //            for (int i = 0; i < 40; i++) {
 //                Vec3 randomVec = new Vec3(
-//                        level.random.nextDouble() * .25 - .125,
-//                        level.random.nextDouble() * .25 - .125,
-//                        level.random.nextDouble() * .25 - .125
+//                        level().random.nextDouble() * .25 - .125,
+//                        level().random.nextDouble() * .25 - .125,
+//                        level().random.nextDouble() * .25 - .125
 //                );
-//                //level.addParticle(ParticleHelper.ELECTRICITY, pos.x + randomVec.x, pos.y + randomVec.y + i * .25, pos.z + randomVec.z, randomVec.x * .2, randomVec.y * .2, randomVec.z * .2);
-//                level.addParticle(ParticleHelper.ELECTRICITY, pos.x, pos.y, pos.z, 0,0,0);
+//                //level().addParticle(ParticleHelper.ELECTRICITY, pos.x + randomVec.x, pos.y + randomVec.y + i * .25, pos.z + randomVec.z, randomVec.x * .2, randomVec.y * .2, randomVec.z * .2);
+//                level().addParticle(ParticleHelper.ELECTRICITY, pos.x, pos.y, pos.z, 0,0,0);
 //            }
         }
         super.onHit(pResult);

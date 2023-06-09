@@ -101,8 +101,8 @@ public class WizardAttackGoal extends Goal {
 
     public WizardAttackGoal setSingleUseSpell(SpellType spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         this.singleUseSpell = spellType;
-        this.singleUseDelay = mob.level.random.nextIntBetweenInclusive(minDelay, maxDelay);
-        this.singleUseLevel = mob.level.random.nextIntBetweenInclusive(minLevel, maxLevel);
+        this.singleUseDelay = mob.level().random.nextIntBetweenInclusive(minDelay, maxDelay);
+        this.singleUseLevel = mob.level().random.nextIntBetweenInclusive(minLevel, maxLevel);
 
         return this;
     }
@@ -171,7 +171,7 @@ public class WizardAttackGoal extends Goal {
 
 //        //search for projectiles around the mob
 //        if (mob.tickCount % 3 == 0) {
-//            projectileCount = mob.level.getEntitiesOfClass(Projectile.class, mob.getBoundingBox().inflate(24), (projectile) -> projectile.getOwner() != mob && !projectile.isOnGround()).size();
+//            projectileCount = mob.level().getEntitiesOfClass(Projectile.class, mob.getBoundingBox().inflate(24), (projectile) -> projectile.getOwner() != mob && !projectile.onGround()).size();
 //        }
 
         //default mage movement

@@ -80,17 +80,17 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             subEntity.xOld = pos.x;
             subEntity.yOld = pos.y;
             subEntity.zOld = pos.z;
-            if (level.isClientSide) {
+            if (level().isClientSide) {
                 for (int j = 0; j < 3; j++) {
                     double offset = .5;
                     double ox = (Math.random() * 2 * offset - offset);
                     double oy = Math.random() * 2 * offset - offset;
                     double oz = Math.random() * 2 * offset - offset;
-                    level.addParticle(ParticleTypes.FLAME, pos.x + ox, pos.y + oy - .25, pos.z + oz, 0, Math.random() * .3, 0);
+                    level().addParticle(ParticleTypes.FLAME, pos.x + ox, pos.y + oy - .25, pos.z + oz, 0, Math.random() * .3, 0);
                 }
 
             } else {
-                for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
+                for (LivingEntity livingentity : this.level().getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
                     if (livingentity != getOwner()) {
                         DamageSources.applyDamage(livingentity, damage, SpellType.WALL_OF_FIRE_SPELL.getDamageSource(this,getOwner()), SchoolType.FIRE);
                         livingentity.setSecondsOnFire(3);
@@ -98,7 +98,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
                 }
             }
         }
-        if (!level.isClientSide && --lifetime < 0)
+        if (!level().isClientSide && --lifetime < 0)
             discard();
     }
 
@@ -115,12 +115,12 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             Vec3 dirVec = end.subtract(start).normalize().scale(step);
             int steps = (int) ((start.distanceTo(end) + .5) / step);
             for (int currentStep = 0; currentStep < steps; currentStep++) {
-                //MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, start.x + dirVec.x * x, start.y + dirVec.y * x, start.z + dirVec.z * x, 1, 0, 0, 0, 0, true);
+                //MagicManager.spawnParticles(level(), ParticleTypes.DRAGON_BREATH, start.x + dirVec.x * x, start.y + dirVec.y * x, start.z + dirVec.z * x, 1, 0, 0, 0, 0, true);
                 ShieldPart part = new ShieldPart(this, "part" + i * steps + currentStep, .55f, height);
                 double x = start.x + dirVec.x * currentStep;
                 double y = start.y + dirVec.y * currentStep;
                 double z = start.z + dirVec.z * currentStep;
-                double groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) x, (int) z);
+                double groundY = level().getHeight(Heightmap.Types.MOTION_BLOCKING, (int) x, (int) z);
                 //y += Math.min(5, Math.abs(y - groundY)) * y < groundY ? 1 : -1;
 
                 if (Math.abs(y - groundY) < 2)
@@ -154,8 +154,8 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
     public Entity getOwner() {
         if (this.cachedOwner != null && !this.cachedOwner.isRemoved()) {
             return this.cachedOwner;
-        } else if (this.ownerUUID != null && this.level instanceof ServerLevel) {
-            this.cachedOwner = ((ServerLevel) this.level).getEntity(this.ownerUUID);
+        } else if (this.ownerUUID != null && this.level() instanceof ServerLevel) {
+            this.cachedOwner = ((ServerLevel) this.level()).getEntity(this.ownerUUID);
             return this.cachedOwner;
         } else {
             return null;

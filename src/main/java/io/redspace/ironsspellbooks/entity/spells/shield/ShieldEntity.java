@@ -67,9 +67,9 @@ public class ShieldEntity extends AbstractShieldEntity {
     public void takeDamage(DamageSource source, float amount, @Nullable Vec3 location) {
         if (!this.isInvulnerableTo(source)) {
             this.setHealth(this.getHealth() - amount);
-            if (!level.isClientSide && location != null) {
-                MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, location.x, location.y, location.z, 30, .1, .1, .1, .5, false);
-                level.playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, .8f, 1f);
+            if (!level().isClientSide && location != null) {
+                MagicManager.spawnParticles(level(), ParticleTypes.ELECTRIC_SPARK, location.x, location.y, location.z, 30, .1, .1, .1, .5, false);
+                level().playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, .8f, 1f);
             }
         }
     }
@@ -79,8 +79,8 @@ public class ShieldEntity extends AbstractShieldEntity {
         if (getHealth() <= 0) {
             destroy();
         } else if (++age > LIFETIME) {
-            if (!this.level.isClientSide) {
-                level.playSound(null, getX(), getY(), getZ(), SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.NEUTRAL, 1, 1.4f);
+            if (!this.level().isClientSide) {
+                level().playSound(null, getX(), getY(), getZ(), SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.NEUTRAL, 1, 1.4f);
             }
             discard();
         } else {
@@ -108,8 +108,8 @@ public class ShieldEntity extends AbstractShieldEntity {
 
     @Override
     protected void destroy() {
-        if (!this.level.isClientSide) {
-            level.playSound(null, getX(), getY(), getZ(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 2, .65f);
+        if (!this.level().isClientSide) {
+            level().playSound(null, getX(), getY(), getZ(), SoundEvents.GLASS_BREAK, SoundSource.NEUTRAL, 2, .65f);
         }
         super.destroy();
     }

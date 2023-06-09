@@ -69,20 +69,20 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         super.tick();
         if (triggered()) {
             ++currentAnimTime;
-            if (!level.isClientSide) {
+            if (!level().isClientSide) {
                 if (currentAnimTime > animLength) {
-                    DeadKingBoss boss = new DeadKingBoss(level);
+                    DeadKingBoss boss = new DeadKingBoss(level());
                     boss.moveTo(this.position().add(0, 1, 0));
-                    boss.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null, null);
-                    int playerCount = Math.max(level.getEntitiesOfClass(Player.class, boss.getBoundingBox().inflate(32)).size(), 1);
+                    boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null, null);
+                    int playerCount = Math.max(level().getEntitiesOfClass(Player.class, boss.getBoundingBox().inflate(32)).size(), 1);
                     boss.getAttributes().getInstance(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier("Gank Health Bonus", (playerCount - 1) * .5, AttributeModifier.Operation.MULTIPLY_BASE));
                     boss.setHealth(boss.getMaxHealth());
                     boss.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).addPermanentModifier(new AttributeModifier("Gank Damage Bonus", (playerCount - 1) * .25, AttributeModifier.Operation.MULTIPLY_BASE));
                     boss.getAttributes().getInstance(AttributeRegistry.SPELL_RESIST.get()).addPermanentModifier(new AttributeModifier("Gank Spell Resist Bonus", (playerCount - 1) * .1, AttributeModifier.Operation.MULTIPLY_BASE));
                     boss.setPersistenceRequired();
-                    level.addFreshEntity(boss);
-                    MagicManager.spawnParticles(level, ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
-                    level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.get(), SoundSource.MASTER, 20, 1);
+                    level().addFreshEntity(boss);
+                    MagicManager.spawnParticles(level(), ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
+                    level().playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.get(), SoundSource.MASTER, 20, 1);
                     discard();
                 }
             } else {
@@ -98,7 +98,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         float distance = Mth.clamp(Utils.smoothstep(0, 1.15f, f * 3), 0, 1.15f);
         Vec3 pos = new Vec3(0, 0, distance).yRot(rot * Mth.DEG_TO_RAD).add(0, height, 0).add(position());
 
-        level.addParticle(ParticleTypes.SCULK_SOUL, pos.x, pos.y, pos.z, 0, 0, 0);
+        level().addParticle(ParticleTypes.SCULK_SOUL, pos.x, pos.y, pos.z, 0, 0, 0);
         float radius = 4;
         if (random.nextFloat() < f * 1.5f) {
             Vec3 random = position().add(new Vec3(
@@ -107,7 +107,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                     (this.random.nextFloat() * 2 - 1) * radius
             ));
             Vec3 motion = position().subtract(random).scale(.04f);
-            level.addParticle(ParticleTypes.SCULK_SOUL, random.x, random.y, random.z, motion.x, motion.y, motion.z);
+            level().addParticle(ParticleTypes.SCULK_SOUL, random.x, random.y, random.z, motion.x, motion.y, motion.z);
         }
     }
 
@@ -117,7 +117,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
             kill();
             return true;
         } else {
-            Player player = level.getNearestPlayer(this, 8);
+            Player player = level().getNearestPlayer(this, 8);
             if (player != null) {
                 trigger();
             }
@@ -129,14 +129,14 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
         if (!triggered()) {
             trigger();
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level().isClientSide);
         }
         return super.mobInteract(pPlayer, pHand);
     }
 
     private void trigger() {
         if (!triggered()) {
-            level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.get(), SoundSource.AMBIENT, 2, 1);
+            level().playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.get(), SoundSource.AMBIENT, 2, 1);
             this.entityData.set(TRIGGERED, true);
         }
     }

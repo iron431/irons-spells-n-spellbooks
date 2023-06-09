@@ -38,7 +38,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z){
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 25, 0, 0, 0, .18, true);
+        MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, x, y, z, 25, 0, 0, 0, .18, true);
     }
 
     @Override
@@ -73,12 +73,12 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
     public void trailParticles() {
         for (int i = 0; i < 2; i++) {
             double speed = .02;
-            double dx = level.random.nextDouble() * 2 * speed - speed;
-            double dy = level.random.nextDouble() * 2 * speed - speed;
-            double dz = level.random.nextDouble() * 2 * speed - speed;
-            level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
+            double dx = level().random.nextDouble() * 2 * speed - speed;
+            double dy = level().random.nextDouble() * 2 * speed - speed;
+            double dz = level().random.nextDouble() * 2 * speed - speed;
+            level().addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
             if (age > 1)
-                level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx - getDeltaMovement().x / 2, this.getY() + dy - getDeltaMovement().y / 2, this.getZ() + dz - getDeltaMovement().z / 2, dx, dy, dz);
+                level().addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx - getDeltaMovement().x / 2, this.getY() + dy - getDeltaMovement().y / 2, this.getZ() + dz - getDeltaMovement().z / 2, dx, dy, dz);
 
         }
     }

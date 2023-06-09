@@ -58,7 +58,7 @@ public class SpellRenderingHelper {
         Vec3 start = Vec3.ZERO;//caster.getEyePosition(partialTicks);
         Vec3 end;
         //TODO: too expensive?
-        Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
+        Vec3 impact = Utils.raycastForEntity(entity.level(), entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
         float distance = (float) entity.getEyePosition().distanceTo(impact);
         float radius = .12f;
         int r = (int) (255 * .7f);

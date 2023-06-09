@@ -46,11 +46,11 @@ public class ServerboundCancelCast {
                 int spellId = playerMagicData.getCastingSpellId();
 
                 if (triggerCooldown) {
-                    MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
+                    MagicManager.get(serverPlayer.level()).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
                 }
 
  //Ironsspellbooks.logger.debug("ServerBoundCancelCast.cancelCast");
-                playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, true);
+                playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level(), serverPlayer, playerMagicData, true);
 
                 if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);

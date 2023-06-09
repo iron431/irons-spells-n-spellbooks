@@ -38,7 +38,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     };
 
     public InscriptionTableMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(containerId, inv, ContainerLevelAccess.NULL/* inv.player.level.getBlockEntity(extraData.readBlockPos())*/);
+        this(containerId, inv, ContainerLevelAccess.NULL/* inv.player.level().getBlockEntity(extraData.readBlockPos())*/);
     }
 
     protected final ContainerLevelAccess access;
@@ -50,7 +50,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         //exists on server and render
         checkContainerSize(inv, 3);
 //        blockEntity = (InscriptionTableTile) entity;
-        this.level = inv.player.level;
+        this.level = inv.player.level();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);

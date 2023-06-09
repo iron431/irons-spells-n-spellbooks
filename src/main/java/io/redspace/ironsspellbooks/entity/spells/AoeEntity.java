@@ -60,7 +60,7 @@ public abstract class AoeEntity extends Projectile {
             discard();
             return;
         }
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (tickCount % reapplicationDelay == 0) {
                 checkHits();
             }
@@ -73,13 +73,13 @@ public abstract class AoeEntity extends Projectile {
     }
 
     protected void checkHits() {
-        if (level.isClientSide)
+        if (level().isClientSide)
             return;
-        List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox());
+        List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox());
         boolean hit = false;
         for (LivingEntity target : targets) {
             if (canHitEntity(target) && (!isCircular() || target.distanceTo(this) < getRadius())) {
-                if (target.isOnGround() || target.getY() - getY() < .5) {
+                if (target.onGround() || target.getY() - getY() < .5) {
                     applyEffect(target);
                     hit = true;
                 }
@@ -107,7 +107,7 @@ public abstract class AoeEntity extends Projectile {
     public abstract void applyEffect(LivingEntity target);
 
     public void ambientParticles() {
-        if (!level.isClientSide)
+        if (!level().isClientSide)
             return;
 
         float f = getParticleCount();
@@ -133,7 +133,7 @@ public abstract class AoeEntity extends Projectile {
                     Utils.getRandomScaled(.03f)
             ).scale(this.getParticleSpeedModifier());
 
-            level.addParticle(getParticle(), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, motion.x, motion.y, motion.z);
+            level().addParticle(getParticle(), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, motion.x, motion.y, motion.z);
         }
     }
 
@@ -168,13 +168,13 @@ public abstract class AoeEntity extends Projectile {
     }
 
     public void setRadius(float pRadius) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(pRadius, 0.0F, 32.0F));
         }
     }
 
     public void setDuration(int duration){
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.duration = duration;
         }
     }

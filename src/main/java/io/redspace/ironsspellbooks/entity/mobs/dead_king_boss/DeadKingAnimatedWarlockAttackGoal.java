@@ -39,9 +39,9 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                 if (meleeAnimTimer == slamTimestamp) {
                     Vec3 slamPos = mob.position().add(mob.getForward().multiply(1, 0, 1).normalize());
                     Vec3 bbHalf = new Vec3(meleeRange, meleeRange, meleeRange).scale(.4);
-                    mob.level.getEntitiesOfClass(target.getClass(), new AABB(slamPos.subtract(bbHalf), slamPos.add(bbHalf))).forEach((entity) -> {
+                    mob.level().getEntitiesOfClass(target.getClass(), new AABB(slamPos.subtract(bbHalf), slamPos.add(bbHalf))).forEach((entity) -> {
                         float damage = (float) mob.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5f;
-                        entity.hurt(mob.level.damageSources().mobAttack(mob), damage);
+                        entity.hurt(mob.level().damageSources().mobAttack(mob), damage);
                         Utils.throwTarget(mob, entity, 7f, true);
                         //mob.doHurtTarget(entity);
                         //entity.push(0, 1, 0);

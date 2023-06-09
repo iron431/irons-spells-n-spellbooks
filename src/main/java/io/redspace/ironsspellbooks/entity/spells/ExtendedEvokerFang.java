@@ -34,11 +34,11 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
         baseTick();
         if (warmupDelayTicks == 0) {
             attackStarted = true;
-            this.level.broadcastEntityEvent(this, (byte) 4);
+            this.level().broadcastEntityEvent(this, (byte) 4);
         }
         if (attackStarted) {
             if (warmupDelayTicks == -8) {
-                if (this.level.isClientSide) {
+                if (this.level().isClientSide) {
                     for (int i = 0; i < 12; ++i) {
                         double d0 = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
                         double d1 = this.getY() + 0.05D + this.random.nextDouble();
@@ -46,10 +46,10 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
                         double d3 = (this.random.nextDouble() * 2.0D - 1.0D) * 0.3D;
                         double d4 = 0.3D + this.random.nextDouble() * 0.3D;
                         double d5 = (this.random.nextDouble() * 2.0D - 1.0D) * 0.3D;
-                        this.level.addParticle(ParticleTypes.CRIT, d0, d1 + 1.0D, d2, d3, d4, d5);
+                        this.level().addParticle(ParticleTypes.CRIT, d0, d1 + 1.0D, d2, d3, d4, d5);
                     }
                 } else {
-                    for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.4D, 0.0D, 0.4D))) {
+                    for (LivingEntity livingentity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.4D, 0.0D, 0.4D))) {
                         this.dealDamageTo(livingentity);
                     }
                 }

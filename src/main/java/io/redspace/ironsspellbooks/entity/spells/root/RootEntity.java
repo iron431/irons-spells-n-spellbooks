@@ -137,7 +137,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
             playSound = false;
         }
 
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (tickCount > duration || (target != null && target.isDeadOrDying()) || !isVehicle()) {
                 this.removeRoot();
             }
@@ -156,7 +156,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
                 double d0 = livingEntity.getX() + (double) Mth.randomBetween(randomsource, -0.5F, 0.5F);
                 double d1 = livingEntity.getY();
                 double d2 = livingEntity.getZ() + (double) Mth.randomBetween(randomsource, -0.5F, 0.5F);
-                livingEntity.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), d0, d1, d2, 0.0D, 0.0D, 0.0D);
+                livingEntity.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate), d0, d1, d2, 0.0D, 0.0D, 0.0D);
             }
         }
     }
@@ -172,8 +172,8 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
 
     @Nullable
     public LivingEntity getOwner() {
-        if (this.owner == null && this.ownerUUID != null && this.level instanceof ServerLevel) {
-            Entity entity = ((ServerLevel) this.level).getEntity(this.ownerUUID);
+        if (this.owner == null && this.ownerUUID != null && this.level() instanceof ServerLevel) {
+            Entity entity = ((ServerLevel) this.level()).getEntity(this.ownerUUID);
             if (entity instanceof LivingEntity) {
                 this.owner = (LivingEntity) entity;
             }
@@ -183,9 +183,9 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     public void removeRoot() {
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             for (int i = 0; i < 5; i++) {
-                level.addParticle(ParticleHelper.ROOT_FOG, getX() + Utils.getRandomScaled(.1f), getY() + Utils.getRandomScaled(.1f), getZ() + Utils.getRandomScaled(.1f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
+                level().addParticle(ParticleHelper.ROOT_FOG, getX() + Utils.getRandomScaled(.1f), getY() + Utils.getRandomScaled(.1f), getZ() + Utils.getRandomScaled(.1f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
             }
         }
         this.ejectPassengers();
@@ -249,7 +249,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     @Override
-    public void positionRider(Entity passenger) {
+    public void positionRider(Entity passenger, Entity.MoveFunction p_19958_) {
         //super.positionRider(pPassenger);
         int x = (int) (this.getX() - passenger.getX());
         int y = (int) (this.getY() - passenger.getY());

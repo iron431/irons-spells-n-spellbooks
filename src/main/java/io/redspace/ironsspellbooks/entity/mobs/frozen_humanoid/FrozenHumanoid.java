@@ -128,8 +128,8 @@ public class FrozenHumanoid extends LivingEntity {
     public LivingEntity getSummoner() {
         if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
             return this.cachedSummoner;
-        } else if (this.summonerUUID != null && this.level instanceof ServerLevel) {
-            if (((ServerLevel) this.level).getEntity(this.summonerUUID) instanceof LivingEntity livingEntity)
+        } else if (this.summonerUUID != null && this.level() instanceof ServerLevel) {
+            if (((ServerLevel) this.level()).getEntity(this.summonerUUID) instanceof LivingEntity livingEntity)
                 this.cachedSummoner = livingEntity;
             return this.cachedSummoner;
         } else {
@@ -166,7 +166,7 @@ public class FrozenHumanoid extends LivingEntity {
 
         }
         if (deathTimer == 0)
-            this.hurt(level.damageSources().outOfWorld(), 100);
+            this.hurt(level().damageSources().generic(), 100);
     }
 
     public void setDeathTimer(int timeInTicks) {
@@ -206,7 +206,7 @@ public class FrozenHumanoid extends LivingEntity {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (level.isClientSide || this.isInvulnerableTo(pSource))
+        if (level().isClientSide || this.isInvulnerableTo(pSource))
             return false;
 
         spawnIcicleShards(this.getEyePosition(), this.shatterProjectileDamage);
@@ -225,7 +225,7 @@ public class FrozenHumanoid extends LivingEntity {
             motion = motion.yRot(offset * i * Mth.DEG_TO_RAD);
 
 
-            IcicleProjectile shard = new IcicleProjectile(level, getSummoner());
+            IcicleProjectile shard = new IcicleProjectile(level(), getSummoner());
             shard.setDamage(damage);
             shard.setDeltaMovement(motion);
 
@@ -233,7 +233,7 @@ public class FrozenHumanoid extends LivingEntity {
             var angle = Utils.rotationFromDirection(motion);
 
             shard.moveTo(spawn.x, spawn.y - shard.getBoundingBox().getYsize() / 2, spawn.z, angle.y, angle.x);
-            level.addFreshEntity(shard);
+            level().addFreshEntity(shard);
         }
     }
 

@@ -32,8 +32,8 @@ public class PatrolNearLocationGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        boolean isOnCooldown = this.mob.level.getGameTime() < this.cooldownUntil;
-        //irons_spellbooks.LOGGER.debug("PNLG.canUse: {}, {}, {}", this.mob.level.getGameTime(), cooldownUntil, (this.mob.getTarget() == null && !isOnCooldown));
+        boolean isOnCooldown = this.mob.level().getGameTime() < this.cooldownUntil;
+        //irons_spellbooks.LOGGER.debug("PNLG.canUse: {}, {}, {}", this.mob.level().getGameTime(), cooldownUntil, (this.mob.getTarget() == null && !isOnCooldown));
         return this.mob.getTarget() == null && !isOnCooldown;
     }
 
@@ -50,7 +50,7 @@ public class PatrolNearLocationGoal extends Goal {
             getNextTargetBlock();
             if (!pathnavigation.moveTo(targeBlock.getX(), targeBlock.getY(), targeBlock.getZ(), speedModifier)) {
                 getNextTargetBlock();
-                this.cooldownUntil = this.mob.level.getGameTime() + 200L;
+                this.cooldownUntil = this.mob.level().getGameTime() + 200L;
             }
         }
     }
@@ -61,7 +61,7 @@ public class PatrolNearLocationGoal extends Goal {
         }
 
         Vec3 pos = patrolLocationCenter.add(getRandomPosInRadius());
-        this.targeBlock = this.mob.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(pos));
+        this.targeBlock = this.mob.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(pos));
         //irons_spellbooks.LOGGER.debug("PNLG.getNextTargetBlock: center:{} target:{}", patrolLocationCenter, targeBlock);
     }
 

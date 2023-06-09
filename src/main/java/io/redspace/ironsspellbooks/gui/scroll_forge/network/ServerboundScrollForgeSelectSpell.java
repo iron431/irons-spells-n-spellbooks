@@ -38,7 +38,7 @@ public class ServerboundScrollForgeSelectSpell {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             // Here we are server side
-            ScrollForgeTile scrollForgeTile = (ScrollForgeTile) ctx.getSender().level.getBlockEntity(pos);
+            ScrollForgeTile scrollForgeTile = (ScrollForgeTile) ctx.getSender().level().getBlockEntity(pos);
             if (scrollForgeTile != null) {
                 scrollForgeTile.setRecipeSpell(spellId);
             }
