@@ -16,6 +16,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -90,7 +91,7 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
     }
 
     @Override
-    public void draw(@NotNull ArcaneAnvilRecipe recipe, IRecipeSlotsView recipeSlotsView, @NotNull PoseStack poseStack, double mouseX, double mouseY) {
+    public void draw(ArcaneAnvilRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         Optional<ItemStack> leftStack = recipeSlotsView.findSlotByName(leftSlotName)
                 .flatMap(IRecipeSlotView::getDisplayedItemStack);
 
@@ -108,11 +109,11 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
                 && rightStack.get().getItem() instanceof Scroll
                 && outputStack.get().getItem() instanceof Scroll) {
             var minecraft = Minecraft.getInstance();
-            drawScrollInfo(minecraft, poseStack, leftStack.get(), outputStack.get());
+            drawScrollInfo(minecraft, leftStack.get(), outputStack.get());
         }
     }
 
-    private void drawScrollInfo(Minecraft minecraft, PoseStack poseStack, ItemStack leftStack, ItemStack outputStack) {
+    private void drawScrollInfo(Minecraft minecraft, ItemStack leftStack, ItemStack outputStack) {
         var inputSpellData = SpellData.getSpellData(leftStack);
         var inputText = String.format("L%d", inputSpellData.getLevel());
         var inputColor = inputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();

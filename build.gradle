@@ -167,19 +167,20 @@ dependencies {
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
 
     // TETRA ******************************************************************************************************
-    //implementation fg.deobf("se.mickelus.mutil:mutil:${minecraft_version}-${mutil_version}")
-    //implementation fg.deobf("curse.maven:tetra-${tetra_version}")
-    // If you want to run without tetra in dev comment the above 2 lines and uncomment the following line
     compileOnly fg.deobf("curse.maven:tetra-${tetra_version}")
+    // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
+    //runtimeOnly fg.deobf("curse.maven:tetra-${tetra_version}")
+    //implementation fg.deobf("se.mickelus.mutil:mutil:${minecraft_version}-${mutil_version}")
 
     // JEI ********************************************************************************************************
-    compileOnly(fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"))
-    compileOnly(fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}"))
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     // CURIOS *****************************************************************************************************
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    //Uncomment the following line to run with Curios in dev
+    //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"

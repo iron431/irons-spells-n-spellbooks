@@ -60,7 +60,7 @@ description='''${mod_description}'''
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="curios" #mandatory
-    mandatory=true #mandatory
+    mandatory=false #mandatory
     versionRange="[1.19.4-5.1.5.3,)" #mandatory
     ordering="NONE"
     side="BOTH"
