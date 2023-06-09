@@ -221,9 +221,9 @@ def replaceProperties = [
         loader_version_range: loader_version_range,
         mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
         mod_authors         : mod_authors, mod_description: mod_description, mod_credits: mod_credits,
-        mod_issue_tracker   : mod_issue_tracker, mod_display_url: mod_display_url,
-        mod_logo_file       : mod_logo_file
+        mod_issue_tracker   : mod_issue_tracker, mod_display_url: mod_display_url, mod_logo_file : mod_logo_file
 ]
+
 processResources {
     inputs.properties replaceProperties
     replaceProperties.put 'project', project
@@ -290,7 +290,7 @@ tasks.register('copyAnimations', Copy) {
     into 'src/main/resources/assets/irons_spellbooks/animations'
 }
 
-tasks.classes.dependsOn(tasks.copyAnimations)
+processResources.dependsOn(tasks.copyAnimations)
 
 mixin {
     add sourceSets.main, 'irons_spellbooks.refmap.json'
