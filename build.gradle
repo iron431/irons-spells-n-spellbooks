@@ -147,6 +147,7 @@ repositories {
     maven { url = "https://cursemaven.com" }
     maven { url = "https://maven.blamejared.com" }
     maven { url = "https://maven.kosmx.dev/" }
+    maven { url = "https://code.redspace.io/releases" }
 }
 
 dependencies {
