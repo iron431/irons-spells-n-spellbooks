@@ -345,7 +345,7 @@ public class Utils {
                     float f2 = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(attacker) * 0.05F;
                     if (attacker.getRandom().nextFloat() < f2) {
                         player.getCooldowns().addCooldown(Items.SHIELD, 100);
-                        attacker.level.broadcastEntityEvent(player, (byte) 30);
+                        attacker.level().broadcastEntityEvent(player, (byte) 30);
                     }
                 }
             }
@@ -364,10 +364,10 @@ public class Utils {
         if (!(d2 <= 0.0D)) {
             double d3 = target.getX() - attacker.getX();
             double d4 = target.getZ() - attacker.getZ();
-            float f = (float) (attacker.level.random.nextInt(21) - 10);
-            double d5 = d2 * (double) (attacker.level.random.nextFloat() * 0.5F + 0.2F);
+            float f = (float) (attacker.level().random.nextInt(21) - 10);
+            double d5 = d2 * (double) (attacker.level().random.nextFloat() * 0.5F + 0.2F);
             Vec3 vec3 = (new Vec3(d3, 0.0D, d4)).normalize().scale(d5).yRot(f);
-            double d6 = d2 * (double) attacker.level.random.nextFloat() * 0.5D;
+            double d6 = d2 * (double) attacker.level().random.nextFloat() * 0.5D;
             target.push(vec3.x, d6, vec3.z);
             target.hurtMarked = true;
         }
@@ -492,7 +492,7 @@ public class Utils {
     }
 
     public static boolean preCastTargetHelper(Level level, LivingEntity caster, PlayerMagicData playerMagicData, SpellType spellType, int range, float aimAssist, boolean sendFailureMessage) {
-        var target = Utils.raycastForEntity(caster.level, caster, range, true, aimAssist);
+        var target = Utils.raycastForEntity(caster.level(), caster, range, true, aimAssist);
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
             if (caster instanceof ServerPlayer serverPlayer)

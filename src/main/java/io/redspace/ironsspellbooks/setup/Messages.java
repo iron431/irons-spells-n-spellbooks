@@ -38,140 +38,140 @@ public class Messages {
         net.messageBuilder(ClientboundUpdateCastingState.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundUpdateCastingState::new)
                 .encoder(ClientboundUpdateCastingState::toBytes)
-                .consumer(ClientboundUpdateCastingState::handle)
+                .consumerMainThread(ClientboundUpdateCastingState::handle)
                 .add();
 
         net.messageBuilder(ClientboundAddMotionToPlayer.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundAddMotionToPlayer::new)
                 .encoder(ClientboundAddMotionToPlayer::toBytes)
-                .consumer(ClientboundAddMotionToPlayer::handle)
+                .consumerMainThread(ClientboundAddMotionToPlayer::handle)
                 .add();
 
         net.messageBuilder(ClientboundSyncMana.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundSyncMana::new)
                 .encoder(ClientboundSyncMana::toBytes)
-                .consumer(ClientboundSyncMana::handle)
+                .consumerMainThread(ClientboundSyncMana::handle)
                 .add();
 
         net.messageBuilder(ClientboundOnClientCast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundOnClientCast::new)
                 .encoder(ClientboundOnClientCast::toBytes)
-                .consumer(ClientboundOnClientCast::handle)
+                .consumerMainThread(ClientboundOnClientCast::handle)
                 .add();
 
         net.messageBuilder(ClientboundSyncPlayerData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundSyncPlayerData::new)
                 .encoder(ClientboundSyncPlayerData::toBytes)
-                .consumer(ClientboundSyncPlayerData::handle)
+                .consumerMainThread(ClientboundSyncPlayerData::handle)
                 .add();
 
         net.messageBuilder(ServerboundInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundInscribeSpell::new)
                 .encoder(ServerboundInscribeSpell::toBytes)
-                .consumer(ServerboundInscribeSpell::handle)
+                .consumerMainThread(ServerboundInscribeSpell::handle)
                 .add();
 
         net.messageBuilder(ClientboundSyncCooldown.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundSyncCooldown::new)
                 .encoder(ClientboundSyncCooldown::toBytes)
-                .consumer(ClientboundSyncCooldown::handle)
+                .consumerMainThread(ClientboundSyncCooldown::handle)
                 .add();
 
         net.messageBuilder(ClientboundSyncCooldowns.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundSyncCooldowns::new)
                 .encoder(ClientboundSyncCooldowns::toBytes)
-                .consumer(ClientboundSyncCooldowns::handle)
+                .consumerMainThread(ClientboundSyncCooldowns::handle)
                 .add();
 
         net.messageBuilder(ClientboundTeleportParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundTeleportParticles::new)
                 .encoder(ClientboundTeleportParticles::toBytes)
-                .consumer(ClientboundTeleportParticles::handle)
+                .consumerMainThread(ClientboundTeleportParticles::handle)
                 .add();
 
         net.messageBuilder(ClientboundFrostStepParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundFrostStepParticles::new)
                 .encoder(ClientboundFrostStepParticles::toBytes)
-                .consumer(ClientboundFrostStepParticles::handle)
+                .consumerMainThread(ClientboundFrostStepParticles::handle)
                 .add();
 
 
         net.messageBuilder(ServerboundSetSpellBookActiveIndex.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundSetSpellBookActiveIndex::new)
                 .encoder(ServerboundSetSpellBookActiveIndex::toBytes)
-                .consumer(ServerboundSetSpellBookActiveIndex::handle)
+                .consumerMainThread(ServerboundSetSpellBookActiveIndex::handle)
                 .add();
 
         net.messageBuilder(ServerboundScrollForgeSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundScrollForgeSelectSpell::new)
                 .encoder(ServerboundScrollForgeSelectSpell::toBytes)
-                .consumer(ServerboundScrollForgeSelectSpell::handle)
+                .consumerMainThread(ServerboundScrollForgeSelectSpell::handle)
                 .add();
 
         net.messageBuilder(ServerboundInscriptionTableSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundInscriptionTableSelectSpell::new)
                 .encoder(ServerboundInscriptionTableSelectSpell::toBytes)
-                .consumer(ServerboundInscriptionTableSelectSpell::handle)
+                .consumerMainThread(ServerboundInscriptionTableSelectSpell::handle)
                 .add();
 
         net.messageBuilder(ServerboundCancelCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundCancelCast::new)
                 .encoder(ServerboundCancelCast::toBytes)
-                .consumer(ServerboundCancelCast::handle)
+                .consumerMainThread(ServerboundCancelCast::handle)
                 .add();
 
         net.messageBuilder(ServerboundQuickCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundQuickCast::new)
                 .encoder(ServerboundQuickCast::toBytes)
-                .consumerNetworkThread(ServerboundQuickCast::handle)
+                .consumerMainThread(ServerboundQuickCast::handle)
                 .add();
 
         net.messageBuilder(ClientboundHealParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundHealParticles::new)
                 .encoder(ClientboundHealParticles::toBytes)
-                .consumer(ClientboundHealParticles::handle)
+                .consumerMainThread(ClientboundHealParticles::handle)
                 .add();
 
         net.messageBuilder(ClientboundBloodSiphonParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundBloodSiphonParticles::new)
                 .encoder(ClientboundBloodSiphonParticles::toBytes)
-                .consumer(ClientboundBloodSiphonParticles::handle)
+                .consumerMainThread(ClientboundBloodSiphonParticles::handle)
                 .add();
 
         net.messageBuilder(ClientboundRegenCloudParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundRegenCloudParticles::new)
                 .encoder(ClientboundRegenCloudParticles::toBytes)
-                .consumer(ClientboundRegenCloudParticles::handle)
+                .consumerMainThread(ClientboundRegenCloudParticles::handle)
                 .add();
 
         net.messageBuilder(ClientboundOnCastStarted.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundOnCastStarted::new)
                 .encoder(ClientboundOnCastStarted::toBytes)
-                .consumer(ClientboundOnCastStarted::handle)
+                .consumerMainThread(ClientboundOnCastStarted::handle)
                 .add();
 
         net.messageBuilder(ClientboundOnCastFinished.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundOnCastFinished::new)
                 .encoder(ClientboundOnCastFinished::toBytes)
-                .consumer(ClientboundOnCastFinished::handle)
+                .consumerMainThread(ClientboundOnCastFinished::handle)
                 .add();
 
         net.messageBuilder(ClientboundAborptionParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundAborptionParticles::new)
                 .encoder(ClientboundAborptionParticles::toBytes)
-                .consumer(ClientboundAborptionParticles::handle)
+                .consumerMainThread(ClientboundAborptionParticles::handle)
                 .add();
 
         net.messageBuilder(ClientboundFortifyAreaParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundFortifyAreaParticles::new)
                 .encoder(ClientboundFortifyAreaParticles::toBytes)
-                .consumer(ClientboundFortifyAreaParticles::handle)
+                .consumerMainThread(ClientboundFortifyAreaParticles::handle)
                 .add();
 
         net.messageBuilder(ClientboundSyncTargetingData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundSyncTargetingData::new)
                 .encoder(ClientboundSyncTargetingData::toBytes)
-                .consumer(ClientboundSyncTargetingData::handle)
+                .consumerMainThread(ClientboundSyncTargetingData::handle)
                 .add();
 
     }
