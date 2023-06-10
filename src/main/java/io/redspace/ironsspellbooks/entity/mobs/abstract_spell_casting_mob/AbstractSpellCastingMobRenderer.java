@@ -65,7 +65,9 @@ public abstract class AbstractSpellCastingMobRenderer extends GeoHumanoidRendere
     public void render(GeoModel model, AbstractSpellCastingMob animatable, float partialTick, RenderType type, PoseStack poseStack, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         super.render(model, animatable, partialTick, type, poseStack, bufferSource, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 
+        poseStack.pushPose();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
         SpellRenderingHelper.renderSpellHelper( ClientMagicData.getSyncedSpellData(animatable), animatable, poseStack, bufferSource, partialTick);
+        poseStack.popPose();
     }
 }
