@@ -49,16 +49,20 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
         CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
         CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
-
+        head.updateRotation(0,0,0);
+        rightArm.updateRotation(0,0,0);
+        leftArm.updateRotation(0,0,0);
+        rightLeg.updateRotation(0,0,0);
+        leftLeg.updateRotation(0,0,0);
         /*
             Head Controls
          */
         //Make the head look forward, whatever forward is (influenced externally, such as a lootAt target)
         if (!entity.isAnimating() || entity.shouldAlwaysAnimateHead()) {
-            head.setRotX(Mth.lerp(partialTick,
+            head.setRotY(Mth.lerp(partialTick,
                     Mth.wrapDegrees(-entity.yHeadRotO + entity.yBodyRotO) * Mth.DEG_TO_RAD,
                     Mth.wrapDegrees(-entity.yHeadRot + entity.yBodyRot) * Mth.DEG_TO_RAD));
-            head.setRotY(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD);
+            head.setRotX(Mth.lerp(partialTick, -entity.xRotO, -entity.getXRot()) * Mth.DEG_TO_RAD);
         }
         /*
             Crazy Vanilla Magic Calculations (LivingEntityRenderer:116 & HumanoidModel#setupAnim
@@ -102,7 +106,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         } else if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
             //rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
             //leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
-            addRotationX(rightLeg, Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
+            addRotationX(rightLeg, (Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f) * Mth.DEG_TO_RAD);
             addRotationX(leftLeg, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
 
         }
