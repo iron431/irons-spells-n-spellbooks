@@ -58,6 +58,7 @@ public class IronsSpellbooks {
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
         FeatureRegistry.register(modEventBus);
+        CreativeTabRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(SpellbookModCreativeTabs::addCreativeTabs);
