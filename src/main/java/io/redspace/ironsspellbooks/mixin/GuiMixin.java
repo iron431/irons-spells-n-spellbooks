@@ -16,8 +16,7 @@ public class GuiMixin {
 
     @Inject(method = "renderExperienceBar", at = @At(value = "HEAD"), cancellable = true)
     public void renderExperienceBar(GuiGraphics guiGraphics, int pXPos, CallbackInfo ci) {
-        //TODO: 1.20 port mana bar implementation
-        if (ClientConfigs.MANA_BAR_ANCHOR.get() == ManaBarOverlay.Anchor.XP && Minecraft.getInstance().player != null && /*ManaBarOverlay.shouldShowManaBar(Minecraft.getInstance().player)*/false)
+        if (ClientConfigs.MANA_BAR_ANCHOR.get() == ManaBarOverlay.Anchor.XP && Minecraft.getInstance().player != null && ManaBarOverlay.shouldShowManaBar(Minecraft.getInstance().player))
             ci.cancel();
     }
 }

@@ -96,7 +96,8 @@ public class ServerPlayerEvents {
     public static void onExperienceDroppedEvent(LivingExperienceDropEvent event) {
         var player = event.getAttackingPlayer();
         if (player != null) {
-            var ringCount = CuriosApi.getCuriosHelper().findCurios(player, ItemRegistry.EMERALD_STONEPLATE_RING.get()).size();
+            //TODO: 1.20 port: redo curios
+            var ringCount = 0;//CuriosApi.getCuriosHelper().findCurios(player, ItemRegistry.EMERALD_STONEPLATE_RING.get()).size();
             for (int i = 0; i < ringCount; i++) {
                 event.setDroppedExperience((int) (event.getDroppedExperience() * 1.25));
             }

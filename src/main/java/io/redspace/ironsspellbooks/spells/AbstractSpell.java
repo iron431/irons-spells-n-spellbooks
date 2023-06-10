@@ -91,7 +91,8 @@ public abstract class AbstractSpell {
     public int getLevel(@Nullable LivingEntity caster) {
         int addition = 0;
         if (caster != null) {
-            addition = CuriosApi.getCuriosHelper().findCurios(caster, this::filterCurios).size();
+            //TODO: 1.20 port: redo curios
+            //addition = CuriosApi.getCuriosHelper().findCurios(caster, this::filterCurios).size();
         }
         return this.level + addition;
     }

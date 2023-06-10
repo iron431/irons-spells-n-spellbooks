@@ -179,7 +179,7 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     // CURIOS *****************************************************************************************************
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     //Uncomment the following line to run with Curios in dev
     //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 

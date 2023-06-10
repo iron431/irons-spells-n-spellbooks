@@ -112,19 +112,20 @@ public class IronsSpellbooks {
     }
 
     public static void registerCurioSlot(final String identifier, final int slots, final boolean isHidden, @Nullable final ResourceLocation icon) {
-        final SlotTypeMessage.Builder message = new SlotTypeMessage.Builder(identifier);
-
-        message.size(slots);
-
-        if (isHidden) {
-            message.hide();
-        }
-
-        if (icon != null) {
-            message.icon(icon);
-        }
-
-        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> message.build());
+        //TODO: 1.20 port redo curio
+//        final SlotTypeMessage.Builder message = new SlotTypeMessage.Builder(identifier);
+//
+//        message.size(slots);
+//
+//        if (isHidden) {
+//            message.hide();
+//        }
+//
+//        if (icon != null) {
+//            message.icon(icon);
+//        }
+//
+//        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> message.build());
 
     }
 

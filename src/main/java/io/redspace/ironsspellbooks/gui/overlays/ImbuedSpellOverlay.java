@@ -60,32 +60,32 @@ public class ImbuedSpellOverlay implements IGuiOverlay {
         AbstractSpell spell = spellData.getSpell();
 
         //Slot Border
-        setTranslucentTexture(WIDGETS_LOCATION);
+        //setTranslucentTexture(WIDGETS_LOCATION);
         guiHelper.blit(WIDGETS_LOCATION, centerX, centerY, 24, 22, 29, 24);
         //Spell Icon
-        setOpaqueTexture(spell.getSpellType().getResourceLocation());
-        guiHelper.blit(WIDGETS_LOCATION, centerX + 3, centerY + 4, 0, 0, 16, 16, 16, 16);
+        //setOpaqueTexture(spell.getSpellType().getResourceLocation());
+        guiHelper.blit(spell.getSpellType().getResourceLocation(), centerX + 3, centerY + 4, 0, 0, 16, 16, 16, 16);
         //Border + Cooldowns
         float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
         if (f > 0 && !stack.getItem().equals(ItemRegistry.SCROLL.get())) {
-            setTranslucentTexture(TEXTURE);
+            //setTranslucentTexture(TEXTURE);
             int pixels = (int) (16 * f + 1f);
             guiHelper.blit(TEXTURE, centerX + 3, centerY + 20 - pixels, 47, 87, 16, pixels);
         }
     }
 
-    private static void setOpaqueTexture(ResourceLocation texture) {
-//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-//        RenderSystem.setShaderTexture(0, texture);
-    }
-
-    private static void setTranslucentTexture(ResourceLocation texture) {
-//        RenderSystem.enableBlend();
-//        RenderSystem.defaultBlendFunc();
-//        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-//        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-//        RenderSystem.setShaderTexture(0, texture);
-    }
+//    private static void setOpaqueTexture(ResourceLocation texture) {
+////        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+////        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+////        RenderSystem.setShaderTexture(0, texture);
+//    }
+//
+//    private static void setTranslucentTexture(ResourceLocation texture) {
+////        RenderSystem.enableBlend();
+////        RenderSystem.defaultBlendFunc();
+////        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
+////        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+////        RenderSystem.setShaderTexture(0, texture);
+//    }
 
 }
