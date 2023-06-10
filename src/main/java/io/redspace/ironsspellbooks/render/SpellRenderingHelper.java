@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.world.phys.Vec2;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import com.mojang.math.Axis;
@@ -19,6 +20,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class SpellRenderingHelper {
@@ -37,21 +40,22 @@ public class SpellRenderingHelper {
 
         poseStack.pushPose();
         poseStack.translate(0, entity.getEyeHeight() * .8f, 0);
-        if (entity instanceof AbstractSpellCastingMob mob/* && mob.getTarget() != null*/) {
-            //Vec3 dir = mob.getEyePosition().subtract(mob.getTarget().position().add(0, mob.getTarget().getEyeHeight() * .7f, 0));
-            Vec3 dir = entity.getLookAngle().normalize();
-            var pitch = Math.asin(dir.y);
-            var yaw = Math.atan2(dir.x, dir.z);
-
-            poseStack.mulPose(Axis.YP.rotationDegrees(90));
-            poseStack.mulPose(Axis.XP.rotationDegrees((float) -pitch * Mth.RAD_TO_DEG));
-
-        } else {
-            float f = Mth.rotLerp(entity.yRotO, entity.getYRot(), partialTicks);
-            float f1 = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
-            poseStack.mulPose(Axis.YP.rotationDegrees(-f));
-            poseStack.mulPose(Axis.XP.rotationDegrees(f1));
-        }
+//        if (entity instanceof AbstractSpellCastingMob mob) {
+//            //Vec3 dir = mob.getEyePosition().subtract(mob.getTarget().position().add(0, mob.getTarget().getEyeHeight() * .7f, 0));
+//            Vector3f dir = mob.getOldTargetDir().lerp(mob.getTargetDir(), partialTicks);
+//            IronsSpellbooks.LOGGER.debug("SpellRenderingHelper.renderRayOfSiphoning: {}", dir);
+//            var pitch = Math.asin(dir.y);
+//            var yaw = Math.atan2(dir.x, dir.z);
+//
+//            //poseStack.mulPose(Axis.YP.rotationDegrees(90));
+//            poseStack.mulPose(Axis.XP.rotationDegrees((float) -pitch * Mth.RAD_TO_DEG));
+//
+//        } else {
+//            float f = Mth.rotLerp(entity.yRotO, entity.getYRot(), partialTicks);
+//            float f1 = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
+//            poseStack.mulPose(Axis.YP.rotationDegrees(-f));
+//            poseStack.mulPose(Axis.XP.rotationDegrees(f1));
+//        }
 
 
         var pose = poseStack.last();
@@ -70,12 +74,30 @@ public class SpellRenderingHelper {
         float deltaUV = -deltaTicks % 10;
         float max = Mth.frac(deltaUV * 0.2F - (float) Mth.floor(deltaUV * 0.1F));
         float min = -1.0F + max;
-        for (int j = 1; j <= distance; j++) {
+
+        var dir = entity.getLookAngle().normalize();
+
+        //y rotation is a triangle of x and z axis
+        float dx = (float) dir.x;
+        float dz = (float) dir.z;
+        //angle = atan o/a
+        float yRot = (float) Mth.atan2(dz, dx) - 1.5707f; // for some reason, we are rotated 90 degrees the wrong way. subtracting 2 pi here.
+        //IronsSpellbooks.LOGGER.debug("yRot: {}", yRot);
+        //x rotation is a triangle of xz and y axis
+        float dxz = Mth.sqrt(dx * dx + dz * dz);
+        float dy = (float) dir.y;
+        //angle = atan o/a
+        float xRot = (float) Mth.atan2(dy, dxz);
+        //IronsSpellbooks.LOGGER.debug("xRot: {}", xRot);
+        poseStack.mulPose(Axis.YP.rotation(-yRot));
+        poseStack.mulPose(Axis.XP.rotation(-xRot));
+        for (float j = 1; j <= distance; j += .5f) {
             Vec3 wiggle = new Vec3(
                     Mth.sin(deltaTicks * .8f) * .02f,
                     Mth.sin(deltaTicks * .8f + 100) * .02f,
                     Mth.cos(deltaTicks * .8f) * .02f
             );
+            //end = dir.scale(Math.min(j, distance)).add(wiggle);
             end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
             VertexConsumer inner = bufferSource.getBuffer(RenderType.entityTranslucent(BEACON, true));
             drawHull(start, end, radius, radius, pose, inner, r, g, b, a, min, max);
@@ -86,7 +108,6 @@ public class SpellRenderingHelper {
             start = end;
 
         }
-
         poseStack.popPose();
     }
 

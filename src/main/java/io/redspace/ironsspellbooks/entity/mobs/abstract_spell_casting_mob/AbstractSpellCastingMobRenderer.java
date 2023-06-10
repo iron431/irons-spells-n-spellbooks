@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.render.*;
@@ -43,8 +44,11 @@ public abstract class AbstractSpellCastingMobRenderer extends GeoEntityRenderer<
     @Override
     public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-        //TODO: this used to be rotated by 90 degrees.(1.19.4 port)
-        SpellRenderingHelper.renderSpellHelper( ClientMagicData.getSyncedSpellData(animatable), animatable, poseStack, bufferSource, partialTick);
+
+        //poseStack.pushPose();
+        //poseStack.mulPose(Axis.YP.rotationDegrees(90));
+        SpellRenderingHelper.renderSpellHelper(ClientMagicData.getSyncedSpellData(animatable), animatable, poseStack, bufferSource, partialTick);
+        //poseStack.popPose();
 
     }
 
