@@ -24,12 +24,12 @@ import java.util.Set;
 
 public class EvasionEffect extends MobEffect {
 
-    //TODO: 1.19.4 port damage sources
+    //TODO: 1.19.4, 1.20 port damage sources
     public static Set<DamageSource> excludeDamageSources = Set.of(
 //            DamageSources.ON_FIRE,
 //            DamageSource.WITHER,
 //            DamageSource.FREEZE,
-            DamageSources.CAULDRON
+//            DamageSources.CAULDRON
 //            DamageSource.STARVE,
 //            DamageSource.DROWN,
 //            DamageSource.STALAGMITE,

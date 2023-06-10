@@ -4,6 +4,10 @@
 - Trello: https://trello.com/b/yzpLtJpQ/spell-book-mod
 - Github: https://github.com/iron431/irons_spellbooks
 
+### Gradle
+- https://github.com/BluSunrize/ImmersiveEngineering/blob/7d49b2aa24b5759931db0220ecffec447dc854b9/build.gradle
+- https://github.com/MightyPirates/OpenComputers/blob/de8f207f3bc4ed5fc14c8e163263f3541bf30c2a/build.gradle#L30
+
 ### Good 1.18 tutorials
 - https://www.mcjty.eu/docs/1.18/
 - https://github.com/McJty/TutorialV3/tree/98b824b6adfb318c19fe96ae41f504ade7d40dcf/src/main/java/com/example/tutorialv3/manasystem

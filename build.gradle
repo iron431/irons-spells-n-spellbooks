@@ -1,6 +1,7 @@
 plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'maven-publish'
     id 'idea'
 }
@@ -141,13 +142,13 @@ repositories {
         dir 'libs'
     }
 
+    maven { url = "https://code.redspace.io/releases" }
     maven { url = "https://maven.enginehub.org/repo/" }
     maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
     maven { url = "https://maven.theillusivec4.top" }
     maven { url = "https://cursemaven.com" }
     maven { url = "https://maven.blamejared.com" }
     maven { url = "https://maven.kosmx.dev/" }
-    maven { url = "https://code.redspace.io/releases" }
 }
 
 dependencies {
@@ -187,6 +188,11 @@ dependencies {
     implementation "com.google.code.gson:gson:${gson_version}"
 
     // LOCAL LIBS FOR TESTING (put the jar in /libs/ folder
+
+    //jarJar(implementation(fg.deobf("ignored:defaultresources-forge:1.19.2-0.3.0"))) {
+    //    jarJar.ranged(it, "[0.3.0,)")
+    //}
+
     //Dimensional-Threading-Reforged-1.19.2-1.2.7.jar
     //runtimeOnly fg.deobf('wearblackallday.dimthread:Dimensional-Threading-Reforged:1.19.2-1.2.7')
 
@@ -258,26 +264,32 @@ jar.finalizedBy('reobfJar')
 // However if you are in a multi-project ], dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
 
+java {
+    withSourcesJar()
+    //withJavadocJar()
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId project.group
             artifactId project.archivesBaseName
             version project.version
-            artifact jar
+            from components.java
         }
     }
+
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/iron431/Irons-Spells-n-Spellbooks"
+            name = "redspace"
+            url uri("https://code.redspace.io/releases")
             credentials {
-                username = System.getenv("USERNAME")
-                password = System.getenv("TOKEN")
+                username = System.getenv("MAVEN_USER")
+                password = System.getenv("MAVEN_PASS")
             }
-        }
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
 }

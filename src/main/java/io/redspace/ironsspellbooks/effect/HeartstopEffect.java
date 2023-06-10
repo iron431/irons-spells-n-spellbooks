@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -36,7 +37,7 @@ public class HeartstopEffect extends MobEffect {
 
         //Whether or not player has spawn immunity (we want to damage them regardless)
         if (pLivingEntity.tickCount > 60) {
-            pLivingEntity.hurt(DamageSources.HEARTSTOP, playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+            pLivingEntity.hurt(DamageSources.get(pLivingEntity.level(), DamageTypeRegistry.HEARTSTOP), playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
             //irons_spellbooks.LOGGER.debug("{} had no spawn immunity", pLivingEntity.getName().getString());
 
         } else {
@@ -61,7 +62,7 @@ public class HeartstopEffect extends MobEffect {
                 float damage = ClientMagicData.getSyncedSpellData(player).getHeartstopAccumulatedDamage();
                 float f = 1 - Mth.clamp(damage / player.getHealth(), 0, 1);
                 int i = (int) (10 + (40 - 10) * f);
- //Ironsspellbooks.logger.debug("{} ({}/{} = {})", i, damage, player.getHealth(), f);
+                //Ironsspellbooks.logger.debug("{} ({}/{} = {})", i, damage, player.getHealth(), f);
                 if (this.duration % Math.max(i, 1) == 0) {
                     player.playSound(SoundEvents.WARDEN_HEARTBEAT, 1, 0.85f);
                 }

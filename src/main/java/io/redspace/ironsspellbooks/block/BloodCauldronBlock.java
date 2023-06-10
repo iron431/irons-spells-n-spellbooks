@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.block;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.core.BlockPos;
@@ -64,8 +65,8 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
-        if(++timer>=20){
-            timer =0;
+        if (++timer >= 20) {
+            timer = 0;
             cookEntity(blockState, level, pos, entity, () -> {
                 level.setBlockAndUpdate(pos, blockState.cycle(LayeredCauldronBlock.LEVEL));
                 level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
@@ -81,7 +82,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
             if (CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
                 if (level.getBlockState(pos).getBlock() instanceof AbstractCauldronBlock cauldron) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity.getBoundingBox().intersects(cauldron.getInteractionShape(blockState, level, pos).bounds().move(pos))) {
-                        if (livingEntity.hurt(DamageSources.CAULDRON, 2)) {
+                        if (livingEntity.hurt(DamageSources.get(level, DamageTypeRegistry.CAULDRON), 2)) {
                             MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
                             if (level.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
                                 execution.execute();
@@ -93,11 +94,13 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
             }
         }
     }
-    private static boolean isCauldronFull(BlockState blockState){
-        if(!blockState.hasProperty(LEVEL))
+
+    private static boolean isCauldronFull(BlockState blockState) {
+        if (!blockState.hasProperty(LEVEL))
             return false;
         else return blockState.getValue(LayeredCauldronBlock.LEVEL) == 3;
     }
+
     public static Map<Item, CauldronInteraction> getInteractionMap() {
         Map<Item, CauldronInteraction> BLOOD_CAULDRON_INTERACTIONS;
         BLOOD_CAULDRON_INTERACTIONS = CauldronInteraction.newInteractionMap();

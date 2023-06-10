@@ -5,12 +5,14 @@ import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;
 
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -21,23 +23,9 @@ import javax.annotation.Nullable;
 //MobEffect: https://forge.gemwire.uk/wiki/Mob_Effects/1.18
 
 public class DamageSources {
-
-
-//    public static EntityDamageSource bloodSlash(Player player) {
-//        return new EntityDamageSource(BLOOD_MAGIC_ID, player);
-//    }
-
-    public static DamageSource CAULDRON = new DamageSource(Holder.direct(new DamageType("blood_cauldron", DamageScaling.NEVER, 0f)));
-    //TODO: (1.19.4 port) tag with bypass invul and armor
-    public static DamageSource HEARTSTOP = new DamageSource(Holder.direct(new DamageType("heartstop", DamageScaling.NEVER, 0f)));
-//
-//    public static DamageSource FIRE_MAGIC = new DamageSource("fire_magic_damage");
-//    public static DamageSource ICE_MAGIC = new DamageSource("ice_magic_damage");
-//    public static DamageSource LIGHTNING_MAGIC = new DamageSource("lightning_magic_damage");
-//    public static DamageSource HOLY_MAGIC = new DamageSource("holy_magic_damage");
-//    public static DamageSource BLOOD_MAGIC = new DamageSource("blood_magic_damage");
-//    public static DamageSource ENDER_MAGIC = new DamageSource("ender_magic_damage");
-//    public static DamageSource EVOCATION_MAGIC = new DamageSource("evocation_magic_damage");
+    public static DamageSource get(Level level, ResourceKey<DamageType> damageType){
+        return level.damageSources().source(damageType);
+    }
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource, @Nullable SchoolType damageSchool) {
         if (target instanceof LivingEntity livingTarget) {
