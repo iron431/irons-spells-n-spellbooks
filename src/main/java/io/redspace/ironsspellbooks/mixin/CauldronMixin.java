@@ -16,8 +16,6 @@ import java.util.Map;
 
 @Mixin(CauldronBlock.class)
 public abstract class CauldronMixin extends AbstractCauldronBlock {
-    private int timer;
-
     public CauldronMixin(Properties pProperties, Map<Item, CauldronInteraction> pInteractions) {
         super(pProperties, pInteractions);
     }
@@ -25,8 +23,7 @@ public abstract class CauldronMixin extends AbstractCauldronBlock {
     //@Inject(method = "tick", at = @At(value = "HEAD"))
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
-        if (++timer >= 20) {
-            timer = 0;
+        if (entity.tickCount % 20 == 0) {
             BloodCauldronBlock.cookEntity(blockState, level, pos, entity, () -> {
                 level.setBlockAndUpdate(pos, BlockRegistry.BLOOD_CAULDRON_BLOCK.get().defaultBlockState());
                 level.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);
