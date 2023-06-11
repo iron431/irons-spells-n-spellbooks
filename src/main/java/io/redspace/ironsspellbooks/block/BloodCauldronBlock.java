@@ -36,8 +36,6 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         super(Properties.copy(Blocks.CAULDRON), NO_WEATHER, getInteractionMap());
     }
 
-    private int timer;
-
 //    @Override
 //    public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
 //        if (!level.isClientSide) {
@@ -65,8 +63,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
-        if (++timer >= 20) {
-            timer = 0;
+        if (entity.tickCount % 20 == 0) {
             cookEntity(blockState, level, pos, entity, () -> {
                 level.setBlockAndUpdate(pos, blockState.cycle(LayeredCauldronBlock.LEVEL));
                 level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
