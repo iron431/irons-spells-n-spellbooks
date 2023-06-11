@@ -88,18 +88,17 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.PLAGUED_BOOTS.get());
                 entries.accept(ItemRegistry.TARNISHED_CROWN.get());
 
-                //TODO: 1.20 port: redo curios
-//                entries.accept(ItemRegistry.MANA_RING.get());
-//                entries.accept(ItemRegistry.SILVER_RING.get());
-//                entries.accept(ItemRegistry.COOLDOWN_RING.get());
-//                entries.accept(ItemRegistry.CAST_TIME_RING.get());
-//                entries.accept(ItemRegistry.HEAVY_CHAIN.get());
+                entries.accept(ItemRegistry.MANA_RING.get());
+                entries.accept(ItemRegistry.SILVER_RING.get());
+                entries.accept(ItemRegistry.COOLDOWN_RING.get());
+                entries.accept(ItemRegistry.CAST_TIME_RING.get());
+                entries.accept(ItemRegistry.HEAVY_CHAIN.get());
                 entries.accept(ItemRegistry.EMERALD_STONEPLATE_RING.get());
-//                entries.accept(ItemRegistry.FIREWARD_RING.get());
-//                entries.accept(ItemRegistry.FROSTWARD_RING.get());
-//                entries.accept(ItemRegistry.POISONWARD_RING.get());
-//                entries.accept(ItemRegistry.CONJURERS_TALISMAN.get());
-//                entries.accept(ItemRegistry.CASTER_RING.get());
+                entries.accept(ItemRegistry.FIREWARD_RING.get());
+                entries.accept(ItemRegistry.FROSTWARD_RING.get());
+                entries.accept(ItemRegistry.POISONWARD_RING.get());
+                entries.accept(ItemRegistry.CONJURERS_TALISMAN.get());
+                entries.accept(ItemRegistry.AFFINITY_RING.get());
 
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
             })

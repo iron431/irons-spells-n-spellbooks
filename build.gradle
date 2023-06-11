@@ -182,7 +182,7 @@ dependencies {
     // CURIOS *****************************************************************************************************
     implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     //Uncomment the following line to run with Curios in dev
-    //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"
