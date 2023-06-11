@@ -63,4 +63,6 @@ public class FireboltSpell extends AbstractSpell {
         return getSpellPower(entity) * .5f;
     }
 
+
+
 }

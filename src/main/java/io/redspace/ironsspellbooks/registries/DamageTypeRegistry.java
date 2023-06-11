@@ -32,10 +32,12 @@ public class DamageTypeRegistry {
 
     public static final ResourceKey<DamageType> CAULDRON = register("blood_cauldron");
     public static final ResourceKey<DamageType> HEARTSTOP = register("heartstop");
+    public static final ResourceKey<DamageType> FIRE_MAGIC = register("fire_magic");
 
     public static void bootstrap(BootstapContext<DamageType> context) {
         context.register(CAULDRON, new DamageType(CAULDRON.location().getPath(), DamageScaling.NEVER, 0f));
         context.register(HEARTSTOP, new DamageType(HEARTSTOP.location().getPath(), DamageScaling.NEVER, 0f));
+        context.register(HEARTSTOP, new DamageType(FIRE_MAGIC.location().getPath(), DamageScaling.NEVER, 0f));
     }
 }
 

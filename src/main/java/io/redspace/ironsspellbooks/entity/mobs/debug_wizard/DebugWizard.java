@@ -24,13 +24,12 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     private SpellType spellType;
     private int spellLevel;
     private boolean targetsPlayer;
-    private String spellInfo;
+    private String spellInfo = "No Spell Found";
     private int cancelCastAfterTicks;
     private static final EntityDataAccessor<String> DEBUG_SPELL_INFO = SynchedEntityData.defineId(DebugWizard.class, EntityDataSerializers.STRING);
 
     public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        spellInfo = "No Spell Found";
     }
 
     public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel, SpellType spellType, int spellLevel, boolean targetsPlayer, int cancelCastAfterTicks) {
@@ -50,7 +49,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(DEBUG_SPELL_INFO, spellInfo);
+        this.entityData.define(DEBUG_SPELL_INFO, "DEFAULT");
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.damage.SpellMagicDamageSource;
+import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
 import io.redspace.ironsspellbooks.spells.blood.*;
 import io.redspace.ironsspellbooks.spells.ender.*;
 import io.redspace.ironsspellbooks.spells.evocation.*;
@@ -24,6 +26,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,8 +104,7 @@ public enum SpellType {
     ACUPUNCTURE_SPELL(58, AcupunctureSpell::new),
     FIRE_BOMB_SPELL(59, FireBombSpell::new),
     STARFALL_SPELL(60, StarfallSpell::new),
-    HEALING_CIRCLE_SPELL(61, HealingCircleSpell::new)
-    ;
+    HEALING_CIRCLE_SPELL(61, HealingCircleSpell::new);
 
     private final int value;
     private final int maxRarity;
@@ -322,21 +324,37 @@ public enum SpellType {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
     }
 
-    public DamageSource getDamageSource() {
+    public DamageSource getDamageSource(Level level) {
         //TODO: 1.19.4 port gives potentially more stuff to play around with
+        if (this.getSchoolType() == SchoolType.FIRE) {
+            return SpellMagicDamageSource.source(level, DamageTypeRegistry.FIRE_MAGIC, this);
+        }
+
         return new DamageSource(Holder.direct(new DamageType(this.getId() + "_spell", DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f)));
     }
 
     public DamageSource getDamageSource(Entity attacker) {
-        return DamageSources.directDamageSource(getDamageSource(), attacker);
+        if (this.getSchoolType() == SchoolType.FIRE) {
+            return SpellMagicDamageSource.source(attacker.level(), DamageTypeRegistry.FIRE_MAGIC, attacker, this);
+        }
+
+        return DamageSources.directDamageSource(getDamageSource(attacker.level()), attacker);
     }
 
     public DamageSource getDamageSource(Entity projectile, Entity attacker) {
-        return DamageSources.indirectDamageSource(getDamageSource(), projectile, attacker);
+        if (this.getSchoolType() == SchoolType.FIRE) {
+            return SpellMagicDamageSource.source(attacker.level(), DamageTypeRegistry.FIRE_MAGIC, projectile, attacker, this);
+        }
+
+        return DamageSources.indirectDamageSource(getDamageSource(attacker.level()), projectile, attacker);
     }
 
     public boolean isEnabled() {
         return ServerConfigs.getSpellConfig(this).enabled();
+    }
+
+    public String getFullId() {
+        return this.toString().toLowerCase();
     }
 
     public String getId() {
