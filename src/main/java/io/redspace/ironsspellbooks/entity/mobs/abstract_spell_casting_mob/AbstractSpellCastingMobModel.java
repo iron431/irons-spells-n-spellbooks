@@ -49,11 +49,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
         CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
         CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
-        head.updateRotation(0,0,0);
-        rightArm.updateRotation(0,0,0);
-        leftArm.updateRotation(0,0,0);
-        rightLeg.updateRotation(0,0,0);
-        leftLeg.updateRotation(0,0,0);
+
         /*
             Head Controls
          */
@@ -106,27 +102,36 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         } else if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
             //rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
             //leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
-            addRotationX(rightLeg, (Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f) * Mth.DEG_TO_RAD);
-            addRotationX(leftLeg, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
+            //addRotationX(rightLeg, (Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f));
+            //addRotationX(leftLeg, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
+            rightLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
+            leftLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
 
         }
         /*
             Arm Controls
          */
         if (!entity.isAnimating()) {
-            addRotationX(rightArm, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
-            addRotationX(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
-            bobBone(rightArm, entity.tickCount, 1);
-            bobBone(leftArm, entity.tickCount, -1);
+            //addRotationX(rightArm, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
+            //addRotationX(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
+            rightArm.setRotX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
+            leftArm.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
+            //bobBone(rightArm, entity.tickCount, 1);
+            //bobBone(leftArm, entity.tickCount, -1);
             if (entity.isDrinkingPotion()) {
-                addRotationX(entity.isLeftHanded() ? leftArm : rightArm, 35 * Mth.DEG_TO_RAD);
-                addRotationZ(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? 15 : -15) * Mth.DEG_TO_RAD);
-                addRotationY(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? -25 : 25) * Mth.DEG_TO_RAD);
+                var arm = (entity.isLeftHanded() ? leftArm : rightArm);
+                arm.updateRotation(arm.getRotX(), 0, 0);
+                addRotationX(arm, 35 * Mth.DEG_TO_RAD);
+                addRotationZ(arm, (entity.isLeftHanded() ? 15 : -15) * Mth.DEG_TO_RAD);
+                addRotationY(arm, (entity.isLeftHanded() ? -25 : 25) * Mth.DEG_TO_RAD);
             }
         } else if (entity.shouldPointArmsWhileCasting()) {
             addRotationX(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD);
             addRotationX(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD);
         }
+        //TODO: (1.20 port) geckolib is doing some very different and weird stuff. bones seem to remember their prevous rotation and additive modifiers compound tick after tick. we'll have to deal with this later
+        leftArm.updateRotation(leftArm.getRotX(),leftArm.getRotY(),leftArm.getRotZ());
+        rightArm.updateRotation(rightArm.getRotX(),rightArm.getRotY(),rightArm.getRotZ());
 
 //        rightArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
 //        leftArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
