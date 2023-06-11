@@ -15,6 +15,8 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.example.client.renderer.armor.WolfArmorRenderer;
@@ -164,5 +166,6 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
         });
     }
 
+    @OnlyIn(Dist.CLIENT)
     public abstract GeoArmorRenderer<?> supplyRenderer();
 }
