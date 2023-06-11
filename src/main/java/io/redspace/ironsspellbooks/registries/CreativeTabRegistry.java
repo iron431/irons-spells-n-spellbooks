@@ -1,12 +1,15 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -161,4 +164,20 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.PYROMANCER_SPAWN_EGG.get());
             })
             .build());
+
+    @SubscribeEvent
+    public static void fillCreativeTabs(final BuildCreativeModeTabContentsEvent event) {
+        if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
+            event.accept(ItemRegistry.INSCRIPTION_TABLE_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.SCROLL_FORGE_BLOCK.get());
+            event.accept(ItemRegistry.ACANE_ANVIL_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.PEDESTAL_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.ARMOR_PILE_BLOCK_ITEM.get());
+        }
+
+        if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.NATURAL_BLOCKS)) {
+            event.accept(ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM.get());
+        }
+
+    }
 }

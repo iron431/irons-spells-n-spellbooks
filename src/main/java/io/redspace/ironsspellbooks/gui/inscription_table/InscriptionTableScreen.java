@@ -221,7 +221,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         for (FormattedCharSequence line : titleLines) {
             int titleWidth = font.width(line);
             int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
-            guiHelper.drawString(font, line, titleX, titleY, 0xFFFFFF) ;
+            guiHelper.drawString(font, line, titleX, titleY, 0xFFFFFF, false) ;
             titleY += font.lineHeight;
         }
         var titleHeight = font.wordWrapHeight(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
@@ -261,7 +261,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         // Level
         //
         var levelText = Component.translatable("ui.irons_spellbooks.level", spell.getLevel(null)).withStyle(textColor);
-        guiHelper.drawString(font, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF);
+        guiHelper.drawString(font, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF, false);
         descLine += font.lineHeight * textScale * 2;
 
         //

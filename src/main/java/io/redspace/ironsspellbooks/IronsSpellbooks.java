@@ -61,7 +61,6 @@ public class IronsSpellbooks {
         CreativeTabRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
-        modEventBus.addListener(SpellbookModCreativeTabs::addCreativeTabs);
 
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"irons_spellbooks-client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s-client.toml", IronsSpellbooks.MODID));
