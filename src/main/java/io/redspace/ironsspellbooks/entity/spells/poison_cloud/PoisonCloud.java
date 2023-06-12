@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.poison_cloud;
 
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
+import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.Holder;
@@ -17,7 +18,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 
 public class PoisonCloud extends AoeEntity {
-    public static final DamageSource DAMAGE_SOURCE = new DamageSource(Holder.direct(new DamageType("poison_cloud", DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f)));
+    private DamageSource damageSource;
 
     public PoisonCloud(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -30,7 +31,9 @@ public class PoisonCloud extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        var damageSource = DamageSources.indirectDamageSource(DAMAGE_SOURCE, this, getOwner());
+        if (damageSource == null) {
+            damageSource = new DamageSource(DamageSources.getHolderFromResource(target, DamageTypeRegistry.DRAGON_BREATH_POOL), this, getOwner());
+        }
         target.hurt(damageSource, getDamage());
         target.addEffect(new MobEffectInstance(MobEffects.POISON, 120, (int) getDamage()));
     }

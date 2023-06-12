@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.dragon_breath;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
+import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.core.Holder;
@@ -18,8 +19,7 @@ import net.minecraft.world.level.Level;
 
 public class DragonBreathPool extends AoeEntity {
 
-    //TODO: 1.19.4 port: add to magic damage tag
-    public static final DamageSource DAMAGE_SOURCE = new DamageSource(Holder.direct(new DamageType(SpellType.DRAGON_BREATH_SPELL.getId() + "_pool", DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f)));
+    private DamageSource damageSource;
 
     public DragonBreathPool(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -27,7 +27,6 @@ public class DragonBreathPool extends AoeEntity {
         setRadius(1.8f);
         this.radiusOnUse = -.15f;
         this.radiusPerTick = -.02f;
-        IronsSpellbooks.LOGGER.debug("Creating DragonBreathPool");
     }
 
     public DragonBreathPool(Level level) {
@@ -36,8 +35,9 @@ public class DragonBreathPool extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        var damageSource = DamageSources.indirectDamageSource(DAMAGE_SOURCE, this, getOwner());
-
+        if (damageSource == null) {
+            damageSource = new DamageSource(DamageSources.getHolderFromResource(target, DamageTypeRegistry.DRAGON_BREATH_POOL), this, getOwner());
+        }
         target.hurt(damageSource, getDamage());
     }
 

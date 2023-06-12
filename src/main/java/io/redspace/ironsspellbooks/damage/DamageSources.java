@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;
@@ -23,8 +24,17 @@ import javax.annotation.Nullable;
 //MobEffect: https://forge.gemwire.uk/wiki/Mob_Effects/1.18
 
 public class DamageSources {
-    public static DamageSource get(Level level, ResourceKey<DamageType> damageType){
+    public static DamageSource get(Level level, ResourceKey<DamageType> damageType) {
         return level.damageSources().source(damageType);
+    }
+
+    public static Holder<DamageType> getHolderFromResource(Entity entity, ResourceKey<DamageType> damageTypeResourceKey) {
+        var option = entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(damageTypeResourceKey);
+        if (option.isPresent()) {
+            return option.get();
+        } else {
+            return entity.level().damageSources().genericKill().typeHolder();
+        }
     }
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource, @Nullable SchoolType damageSchool) {
@@ -63,11 +73,13 @@ public class DamageSources {
         return false;
     }
 
+    @Deprecated(since = "MC_1.20", forRemoval = true)
     public static DamageSource directDamageSource(DamageSource source, Entity attacker) {
         return new DamageSource(source.typeHolder(), attacker);
         //return new EntityDamageSource(source.getMsgId(), attacker);
     }
 
+    @Deprecated(since = "MC_1.20", forRemoval = true)
     public static DamageSource indirectDamageSource(DamageSource source, Entity projectile, @Nullable Entity attacker) {
         return new DamageSource(source.typeHolder(), attacker, projectile);
     }

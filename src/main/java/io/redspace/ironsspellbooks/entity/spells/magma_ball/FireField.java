@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.magma_ball;
 
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
+import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -17,12 +18,10 @@ import net.minecraft.world.level.Level;
 
 public class FireField extends AoeEntity {
 
-    //TODO: 1.19.4 port: add to fire damage tag
-    public static final DamageSource DAMAGE_SOURCE = new DamageSource(Holder.direct(new DamageType("fire_field", DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f)));
+    private DamageSource damageSource;
 
     public FireField(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-
     }
 
     public FireField(Level level) {
@@ -31,7 +30,9 @@ public class FireField extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        var damageSource = DamageSources.indirectDamageSource(DAMAGE_SOURCE, this, getOwner());
+        if (damageSource == null) {
+            damageSource = new DamageSource(DamageSources.getHolderFromResource(target, DamageTypeRegistry.DRAGON_BREATH_POOL), this, getOwner());
+        }
         target.hurt(damageSource, getDamage());
         target.setSecondsOnFire(3);
     }
