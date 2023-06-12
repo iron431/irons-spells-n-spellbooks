@@ -385,10 +385,6 @@
   "spell.irons_spellbooks.starfall.guide": "Target a single area and continuously rain down arcane comets from above for the duration of the spell",
   "spell.irons_spellbooks.healing_circle.guide": "Around a targeted creature or block, place a stationary circle of holy magic that heals allies within",
 
-
-  "death.attack.fire_magic": "%1$s was burnt by fire magic..",
-  "death.attack.fire_magic.player": "%1$s burnt by fire magic while fighting %2$s",
-
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
   "death.attack.blood_magic.player": "%1$s blood magic 3",

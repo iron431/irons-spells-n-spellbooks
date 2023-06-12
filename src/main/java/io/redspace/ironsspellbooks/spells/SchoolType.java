@@ -1,9 +1,13 @@
 package io.redspace.ironsspellbooks.spells;
 
+import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.ItemStack;
 
 public enum SchoolType {
@@ -31,6 +35,31 @@ public enum SchoolType {
         return DISPLAYS[getValue()];
     }
 
+    public ResourceKey<DamageType> getDamageType() {
+        switch (this) {
+            case FIRE:
+                return DamageTypeRegistry.FIRE_MAGIC;
+            case ICE:
+                return DamageTypeRegistry.ICE_MAGIC;
+            case LIGHTNING:
+                return DamageTypeRegistry.LIGHTNING_MAGIC;
+            case HOLY:
+                return DamageTypeRegistry.HOLY_MAGIC;
+            case ENDER:
+                return DamageTypeRegistry.ENDER_MAGIC;
+            case BLOOD:
+                return DamageTypeRegistry.BLOOD_MAGIC;
+            case EVOCATION:
+                return DamageTypeRegistry.EVOCATION_MAGIC;
+            case VOID:
+                return DamageTypeRegistry.VOID_MAGIC;
+            case POISON:
+                return DamageTypeRegistry.POISON_MAGIC;
+        }
+
+        return DamageTypes.GENERIC_KILL;
+    }
+
     public static SchoolType getSchoolFromItem(ItemStack stack) {
         if (stack.is(ModTags.FIRE_FOCUS)) {
             return FIRE;
@@ -46,9 +75,9 @@ public enum SchoolType {
             return BLOOD;
         } else if (stack.is(ModTags.EVOCATION_FOCUS)) {
             return EVOCATION;
-        }else if (stack.is(ModTags.VOID_FOCUS)) {
+        } else if (stack.is(ModTags.VOID_FOCUS)) {
             return VOID;
-        }else if (stack.is(ModTags.POISON_FOCUS)) {
+        } else if (stack.is(ModTags.POISON_FOCUS)) {
             return POISON;
         } else return null;
     }

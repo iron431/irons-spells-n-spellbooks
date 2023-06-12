@@ -324,29 +324,12 @@ public enum SpellType {
         return new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
     }
 
-    public DamageSource getDamageSource(Level level) {
-        //TODO: 1.19.4 port gives potentially more stuff to play around with
-        if (this.getSchoolType() == SchoolType.FIRE) {
-            return SpellMagicDamageSource.source(level, DamageTypeRegistry.FIRE_MAGIC, this);
-        }
-
-        return new DamageSource(Holder.direct(new DamageType(this.getId() + "_spell", DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f)));
-    }
-
     public DamageSource getDamageSource(Entity attacker) {
-        if (this.getSchoolType() == SchoolType.FIRE) {
-            return SpellMagicDamageSource.source(attacker.level(), DamageTypeRegistry.FIRE_MAGIC, attacker, this);
-        }
-
-        return DamageSources.directDamageSource(getDamageSource(attacker.level()), attacker);
+        return SpellMagicDamageSource.source(attacker, this);
     }
 
     public DamageSource getDamageSource(Entity projectile, Entity attacker) {
-        if (this.getSchoolType() == SchoolType.FIRE) {
-            return SpellMagicDamageSource.source(attacker.level(), DamageTypeRegistry.FIRE_MAGIC, projectile, attacker, this);
-        }
-
-        return DamageSources.indirectDamageSource(getDamageSource(attacker.level()), projectile, attacker);
+        return SpellMagicDamageSource.source(projectile, attacker, this);
     }
 
     public boolean isEnabled() {
