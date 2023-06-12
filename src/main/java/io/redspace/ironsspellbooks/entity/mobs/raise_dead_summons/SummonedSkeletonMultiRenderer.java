@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.mobs.HumanoidRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.render.SpellTargetingLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 //TODO: (1.19.4 port) remake GeoHumanoidRenderer and replace all GeoEntityRenderers
-public class SummonedSkeletonMultiRenderer extends GeoEntityRenderer<SummonedSkeleton> {
+public class SummonedSkeletonMultiRenderer extends HumanoidRenderer<SummonedSkeleton> {
     SkeletonRenderer vanillaRenderer;
     public static final ResourceLocation TEXTURE_ALT = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/summoned_skeleton_alt.png");
 
