@@ -8,13 +8,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 public class ModTags {
-    public static final TagKey<Item> SCHOOL_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID,"school_focus"));
+    public static final TagKey<Item> SCHOOL_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "school_focus"));
     public static final TagKey<Item> FIRE_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "fire_focus"));
     public static final TagKey<Item> ICE_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "ice_focus"));
     public static final TagKey<Item> LIGHTNING_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "lightning_focus"));
@@ -34,4 +35,17 @@ public class ModTags {
     public static final TagKey<EntityType<?>> ALWAYS_HEAL = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "always_heal"));
     public static final TagKey<EntityType<?>> CANT_ROOT = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "cant_root"));
 
+    public static final TagKey<DamageType> FIRE_MAGIC = create("fire_magic");
+    public static final TagKey<DamageType> ICE_MAGIC = create("ice_magic");
+    public static final TagKey<DamageType> LIGHTNING_MAGIC = create("lightning_magic");
+    public static final TagKey<DamageType> HOLY_MAGIC = create("holy_magic");
+    public static final TagKey<DamageType> ENDER_MAGIC = create("ender_magic");
+    public static final TagKey<DamageType> BLOOD_MAGIC = create("blood_magic");
+    public static final TagKey<DamageType> EVOCATION_MAGIC = create("evocation_magic");
+    public static final TagKey<DamageType> VOID_MAGIC = create("void_magic");
+    public static final TagKey<DamageType> POISON_MAGIC = create("poison_magic");
+
+    private static TagKey<DamageType> create(String tag) {
+        return TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(IronsSpellbooks.MODID, tag));
+    }
 }
