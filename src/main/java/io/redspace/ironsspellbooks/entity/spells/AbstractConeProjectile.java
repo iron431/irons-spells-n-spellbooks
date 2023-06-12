@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -178,4 +179,15 @@ public abstract class AbstractConeProjectile extends Projectile{
         return !isShieldBlockingLOS && start.level().clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, start)).getType() == HitResult.Type.MISS;
     }
 
+    @Override
+    protected void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.putFloat("Damage", this.damage);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.damage = pCompound.getFloat("Damage");
+    }
 }

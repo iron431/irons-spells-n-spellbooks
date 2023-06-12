@@ -48,14 +48,14 @@ public class GenericOwnerHurtTargetGoal extends TargetGoal {
      */
     public void start() {
         this.mob.setTarget(this.ownerLastHurt);
-        IronsSpellbooks.LOGGER.debug("GenericOwnerHurtTargetGoal.start");
-        IronsSpellbooks.LOGGER.debug("Brain before: {}",this.mob.getBrain().getMemories().keySet().stream()
-                .map(key -> key + "=" + this.mob.getBrain().getMemories().get(key))
-                .collect(Collectors.joining(", ", "{", "}")));
-        this.mob.getBrain().setMemoryWithExpiry(MemoryModuleType.NEAREST_ATTACKABLE, this.ownerLastHurt, 200L);
-        IronsSpellbooks.LOGGER.debug("Brain After: {}",this.mob.getBrain().getMemories().keySet().stream()
-                .map(key -> key + "=" + this.mob.getBrain().getMemories().get(key))
-                .collect(Collectors.joining(", ", "{", "}")));
+//        IronsSpellbooks.LOGGER.debug("GenericOwnerHurtTargetGoal.start");
+//        IronsSpellbooks.LOGGER.debug("Brain before: {}",this.mob.getBrain().getMemories().keySet().stream()
+//                .map(key -> key + "=" + this.mob.getBrain().getMemories().get(key))
+//                .collect(Collectors.joining(", ", "{", "}")));
+//        this.mob.getBrain().setMemoryWithExpiry(MemoryModuleType.NEAREST_ATTACKABLE, this.ownerLastHurt, 200L);
+//        IronsSpellbooks.LOGGER.debug("Brain After: {}",this.mob.getBrain().getMemories().keySet().stream()
+//                .map(key -> key + "=" + this.mob.getBrain().getMemories().get(key))
+//                .collect(Collectors.joining(", ", "{", "}")));
 
         LivingEntity owner = this.owner.get();
         if (owner != null) {

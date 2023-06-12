@@ -65,6 +65,12 @@ public class Messages {
                 .consumerMainThread(ClientboundSyncPlayerData::handle)
                 .add();
 
+        net.messageBuilder(ClientboundSyncEntityData.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncEntityData::new)
+                .encoder(ClientboundSyncEntityData::toBytes)
+                .consumer(ClientboundSyncEntityData::handle)
+                .add();
+
         net.messageBuilder(ServerboundInscribeSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundInscribeSpell::new)
                 .encoder(ServerboundInscribeSpell::toBytes)

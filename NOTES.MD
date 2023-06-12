@@ -112,22 +112,28 @@ You can get the SRG names using one of the following methods
     - https://github.com/ZsoltMolnarrr/BetterCombat/blob/74ccd5f7092b932b26462f27e0ea383acc1a92ae/common/src/main/java/net/bettercombat/client/collision/TargetFinder.java
 
 ### Helpful commands
-- ```setblock ~ ~ ~ irons_spellbooks:inscription_table```
-- ```data get entity @s SelectedItem```
-- ```data get entity @s ForgeCaps```
-- ```data get entity @s Pos```
-- ```effect give @s resistance 10000 4 true```
-- ```summon minecraft:creeper ~1 ~ ~1 {NoAI:1b}```
-- ```attribute Dev minecraft:generic.movement_speed get```
-- ```effect give Dev irons_spellbooks:root```
-- ```summon irons_spellbooks:summoned_polar_bear ~ ~ ~ {Passengers:[{id:"irons_spellbooks:citadel_keeper"}]}``` 
-- ```fill ~-15 ~-1 ~-15 ~15 ~-7 ~15 quartz_block```
+```shell
+/attribute @p irons_spellbooks:max_mana base set 10000
+/attribute @p irons_spellbooks:cooldown_reduction base set 10
+/attribute @p irons_spellbooks:cast_time_reduction base set 10
+/setblock ~ ~ ~ irons_spellbooks:inscription_table
+/data get entity @s SelectedItem
+/data get entity @s ForgeCaps
+/data get entity @s Pos
+/effect give @s resistance 10000 4 true
+/summon minecraft:creeper ~1 ~ ~1 {NoAI:1b}
+/attribute Dev minecraft:generic.movement_speed get
+/effect give Dev irons_spellbooks:root
+/summon irons_spellbooks:summoned_polar_bear ~ ~ ~ {Passengers:[{id:"irons_spellbooks:citadel_keeper"}]}
+/fill ~-15 ~-1 ~-15 ~15 ~-7 ~15 quartz_block
+
+/give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"irons_spellbooks:blood_slash_resist",Slot:"chest",Amount:.5,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1
+/give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"irons_spellbooks:cooldown_reduction",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1
+/give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"irons_spellbooks:max_mana",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1
+```
 
 ### Give Generator
 - https://mapmaking.fr/give1.16/
-- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"irons_spellbooks:blood_slash_resist",Slot:"chest",Amount:.5,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
-- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"irons_spellbooks:cooldown_reduction",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
-- ```give @s minecraft:iron_chestplate{AttributeModifiers:[{AttributeName:"irons_spellbooks:max_mana",Slot:"chest",Amount:.2,Operation:1,UUID:[I;109,10810,109635,18212]}]} 1```
 
 ### Offline Server/Client
 - Running the dedicated server in intellj

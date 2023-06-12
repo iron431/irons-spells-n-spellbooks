@@ -36,7 +36,7 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
         Matrix3f normalMatrix = pose.normal();
 
         float radius = entity.getRadius();
-        float correction = .05f/radius;
+        float correction = .05f / radius;
         float circumference = (2.0f + correction) * radius * Mth.PI;
         int segments = (int) (3 * radius + 9);
         float angle = 360f / segments;

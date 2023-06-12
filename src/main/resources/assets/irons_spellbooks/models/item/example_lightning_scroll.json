@@ -1,0 +1,26 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "irons_spellbooks:item/example_lightning_scroll"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ring_enhancement": 0
+      },
+      "model": "irons_spellbooks:item/fireward_ring"
+    },
+    {
+      "predicate": {
+        "ring_enhancement": 1
+      },
+      "model": "irons_spellbooks:item/frostward_ring"
+    },
+    {
+      "predicate": {
+        "ring_enhancement": 8
+      },
+      "model": "irons_spellbooks:item/poisonward_ring"
+    }
+  ]
+}

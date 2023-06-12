@@ -33,7 +33,7 @@ public class AscensionEffect extends MobEffect {
     @Override
     public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         pLivingEntity.resetFallDistance();
-        IronsSpellbooks.LOGGER.debug("Ascension Tick");
+        //IronsSpellbooks.LOGGER.debug("Ascension Tick");
     }
 
     public static void ambientParticles(ClientLevel level, LivingEntity entity) {

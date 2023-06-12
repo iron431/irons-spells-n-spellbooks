@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.network.ClientboundSyncEntityData;
 import io.redspace.ironsspellbooks.network.ClientboundSyncPlayerData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -189,14 +190,11 @@ public class SyncedSpellData {
     }
 
     public void doSync() {
-        //this.player will only be null on the client side
-        //irons_spellbooks.LOGGER.debug("SyncedSpellData.doSync livingEntity:{} {}", livingEntity == null ? "null" : livingEntity.getDisplayName().getString(), this);
-
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);
             Messages.sendToPlayersTrackingEntity(new ClientboundSyncPlayerData(this), serverPlayer);
         } else if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
-            abstractSpellCastingMob.doSyncSpellData();
+            Messages.sendToPlayersTrackingEntity(new ClientboundSyncEntityData(this, abstractSpellCastingMob), abstractSpellCastingMob);
         }
     }
 

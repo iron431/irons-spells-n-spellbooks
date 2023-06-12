@@ -41,9 +41,10 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
         double d0 = this.getX() - vec3.x;
         double d1 = this.getY() - vec3.y;
         double d2 = this.getZ() - vec3.z;
-        for (int i = 0; i < 4; i++) {
-            Vec3 random = Utils.getRandomVec3(.2);
-            this.level().addParticle(ParticleHelper.EMBERS, d0 - random.x, d1 + 0.5D - random.y, d2 - random.z, random.x * .5f, random.y * .5f, random.z * .5f);
+        for (int i = 0; i < 8; i++) {
+            Vec3 motion = Utils.getRandomVec3(.1).subtract(getDeltaMovement().scale(.1f));
+            Vec3 pos = Utils.getRandomVec3(.3);
+            this.level().addParticle(ParticleHelper.EMBERS, d0 + pos.x, d1 + 0.5D + pos.y, d2 + pos.z, motion.x, motion.y, motion.z);
         }
     }
 

@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -81,7 +82,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
     }
 
     public void setRadius(float newRadius) {
-        if (newRadius <= maxRadius && !this.level().isClientSide) {
+        if (newRadius <= maxRadius && !this.level.isClientSide) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(newRadius, 0.0F, maxRadius));
         }
     }
@@ -108,15 +109,15 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
         oldBB = getBoundingBox();
         setRadius(getRadius() + 0.12f);
 
-        if (!level().isClientSide) {
-            HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        if (!level.isClientSide) {
+            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
             if (hitresult.getType() == HitResult.Type.BLOCK) {
                 onHitBlock((BlockHitResult) hitresult);
             }
-            for (Entity entity : level().getEntities(this, this.getBoundingBox()).stream().filter(target -> canHitEntity(target) && !victims.contains(target)).collect(Collectors.toSet())) {
+            for (Entity entity : level.getEntities(this, this.getBoundingBox()).stream().filter(target -> canHitEntity(target) && !victims.contains(target)).collect(Collectors.toSet())) {
                 damageEntity(entity);
-                IronsSpellbooks.LOGGER.info(entity.getName().getString());
-                MagicManager.spawnParticles(level(), ParticleHelper.BLOOD, entity.getX(), entity.getY(), entity.getZ(), 50, 0, 0, 0, .5, true);
+                //IronsSpellbooks.LOGGER.info(entity.getName().getString());
+                MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY(), entity.getZ(), 50, 0, 0, 0, .5, true);
                 if (entity instanceof ShieldPart || entity instanceof AbstractShieldEntity) {
                     discard();
                     return;
@@ -125,7 +126,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
             //spawnParticles();
         }
 //        List<Entity> collisions = new ArrayList<>();
-//        collisions.addAll(level().getEntities(this, this.getBoundingBox()));
+//        collisions.addAll(level.getEntities(this, this.getBoundingBox()));
 //
 //        collisions = collisions.stream().filter(target ->
 //                target != getOwner() && target instanceof LivingEntity && !victims.contains(target)).collect(Collectors.toList());
@@ -171,7 +172,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 //        double y = hitresult.getLocation().y;
 //        double z = hitresult.getLocation().z;
 //
-//        MagicManager.spawnParticles(level(), ParticleHelper.BLOOD, x, y, z, 50, 0, 0, 0, .5, true);
+//        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, x, y, z, 50, 0, 0, 0, .5, true);
 //
 //
 //    }
@@ -203,7 +204,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
-        if (level().isClientSide) {
+        if (level.isClientSide) {
 
             float width = (float) getBoundingBox().getXsize();
             float step = .25f;
@@ -220,7 +221,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
                 double dx = Math.random() * speed * 2 - speed;
                 double dy = Math.random() * speed * 2 - speed;
                 double dz = Math.random() * speed * 2 - speed;
-                level().addParticle(ParticleHelper.BLOOD, false, x + rotX + dx, y + dy, z + rotZ + dz, dx, dy, dz);
+                level.addParticle(ParticleHelper.BLOOD, false, x + rotX + dx, y + dy, z + rotZ + dz, dx, dy, dz);
             }
         }
     }
@@ -235,5 +236,17 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
     @Override
     public void onAntiMagic(PlayerMagicData playerMagicData) {
         this.discard();
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.putFloat("Damage", this.damage);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.damage = pCompound.getFloat("Damage");
     }
 }
