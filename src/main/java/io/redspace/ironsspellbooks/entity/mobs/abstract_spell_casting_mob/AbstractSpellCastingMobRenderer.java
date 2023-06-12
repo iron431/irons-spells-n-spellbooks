@@ -37,7 +37,7 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
     }
 
 
-    private ItemStack makePotion(AbstractSpellCastingMob entity) {
+    public static ItemStack makePotion(AbstractSpellCastingMob entity) {
         ItemStack healthPotion = new ItemStack(Items.POTION);
         return PotionUtils.setPotion(healthPotion, entity.isInvertedHealAndHarm() ? Potions.HARMING : Potions.HEALING);
     }

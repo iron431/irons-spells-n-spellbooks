@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.entity.mobs;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
 import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -10,9 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.*;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.GeoModel;
@@ -38,9 +38,6 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
     private static final String RIGHT_SLEEVE = DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT;
     private static final String LEFT_SLEEVE = DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT;
     private static final String HELMET = DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT;
-
-    protected ItemStack mainHandItem;
-    protected ItemStack offhandItem;
 
     public HumanoidRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {
         super(renderManager, model);
@@ -94,12 +91,18 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
             @Nullable
             @Override
             protected ItemStack getStackForBone(GeoBone bone, T animatable) {
+                if (animatable instanceof AbstractSpellCastingMob castingMob) {
+                    if (castingMob.isDrinkingPotion()) {
+                        if (castingMob.isLeftHanded() && bone.getName().equals(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT) || !castingMob.isLeftHanded() && bone.getName().equals(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT))
+                            return AbstractSpellCastingMobRenderer.makePotion(castingMob);
+                    }
+                }
                 // Retrieve the items in the entity's hands for the relevant bone
                 return switch (bone.getName()) {
                     case LEFT_HAND -> animatable.isLeftHanded() ?
-                            HumanoidRenderer.this.mainHandItem : HumanoidRenderer.this.offhandItem;
+                            animatable.getMainHandItem() : animatable.getOffhandItem();
                     case RIGHT_HAND -> animatable.isLeftHanded() ?
-                            HumanoidRenderer.this.offhandItem : HumanoidRenderer.this.mainHandItem;
+                            animatable.getOffhandItem() : animatable.getMainHandItem();
                     default -> null;
                 };
             }
@@ -117,12 +120,15 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
             @Override
             protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, T animatable,
                                               MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
-                if (stack == HumanoidRenderer.this.mainHandItem) {
+                if (stack.getItem() instanceof PotionItem) {
+                    poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
+                }
+                if (stack == animatable.getMainHandItem()) {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
 
                     if (stack.getItem() instanceof ShieldItem)
                         poseStack.translate(0, 0.125, -0.25);
-                } else if (stack == HumanoidRenderer.this.offhandItem) {
+                } else if (stack == animatable.getOffhandItem()) {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
 
                     if (stack.getItem() instanceof ShieldItem) {
