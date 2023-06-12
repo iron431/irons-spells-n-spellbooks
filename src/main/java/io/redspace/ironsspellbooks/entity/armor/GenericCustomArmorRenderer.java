@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -31,6 +32,11 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
 //        var m = getGeoModelProvider();
 //        m.registerBone(customBone(leggingTorsoLayerBone));
 
+    }
+
+    @Override
+    public void scaleModelForBaby(PoseStack poseStack, T animatable, float partialTick, boolean isReRender) {
+        return;
     }
 
     @Nullable
