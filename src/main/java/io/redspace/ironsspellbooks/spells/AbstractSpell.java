@@ -264,7 +264,7 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell isClient:{}, spell{}({})", world.isClientSide, this.spellType, this.getRawLevel());
         }
 
-        MagicManager magicManager = MagicManager.get(serverPlayer.level);
+        MagicManager magicManager = MagicManager.get(serverPlayer.level());
         PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
 
         if (castSource.consumesMana()) {

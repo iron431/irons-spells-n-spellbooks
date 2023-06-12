@@ -37,7 +37,7 @@ public class DebugWizardAttackGoal extends Goal {
 
     public void tick() {
         if (tickCount++ % 200 == 0) {
-            IronsSpellbooks.LOGGER.debug("DebugWizardAttackGoal:  mob.initiateCastSpell:{}({}), pos:{}, isCasting:{}, isClient:{}", spellType, spellLevel, mob.position(), mob.isCasting(), mob.level.isClientSide());
+            IronsSpellbooks.LOGGER.debug("DebugWizardAttackGoal:  mob.initiateCastSpell:{}({}), pos:{}, isCasting:{}, isClient:{}", spellType, spellLevel, mob.position(), mob.isCasting(), mob.level().isClientSide());
             mob.initiateCastSpell(spellType, spellLevel);
             castingTicks = 0;
         }
