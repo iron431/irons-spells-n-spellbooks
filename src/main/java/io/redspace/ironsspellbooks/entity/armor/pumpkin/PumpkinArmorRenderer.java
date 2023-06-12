@@ -25,17 +25,16 @@ public class PumpkinArmorRenderer extends GenericCustomArmorRenderer<PumpkinArmo
 
     @Override
     protected void grabRelevantBones(BakedGeoModel bakedModel) {
-        super.grabRelevantBones(bakedModel);
         if (this.lastModel == bakedModel)
-            return;
-        this.bodyHeadLayerBone = getBodyHeadLayerBone();
+            this.bodyHeadLayerBone = getBodyHeadLayerBone();
+        super.grabRelevantBones(bakedModel);
     }
 
 
     @Override
     protected void applyBoneVisibilityBySlot(EquipmentSlot currentSlot) {
         super.applyBoneVisibilityBySlot(currentSlot);
-        if (currentSlot == EquipmentSlot.LEGS) {
+        if (currentSlot == EquipmentSlot.CHEST) {
             setBoneVisible(this.bodyHeadLayerBone, true);
         }
     }
@@ -43,7 +42,7 @@ public class PumpkinArmorRenderer extends GenericCustomArmorRenderer<PumpkinArmo
     @Override
     public void applyBoneVisibilityByPart(EquipmentSlot currentSlot, ModelPart currentPart, HumanoidModel<?> model) {
         super.applyBoneVisibilityByPart(currentSlot, currentPart, model);
-        if (currentPart == model.body && currentSlot == EquipmentSlot.LEGS) {
+        if (currentPart == model.body && currentSlot == EquipmentSlot.CHEST) {
             setBoneVisible(this.bodyHeadLayerBone, true);
         }
     }

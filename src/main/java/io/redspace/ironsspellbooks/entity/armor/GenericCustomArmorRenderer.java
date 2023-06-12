@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -46,10 +47,10 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
 
     @Override
     protected void grabRelevantBones(BakedGeoModel bakedModel) {
+        if (this.lastModel != bakedModel)
+            this.leggingTorsoLayerBone = getLeggingTorsoLayerBone();
+
         super.grabRelevantBones(bakedModel);
-        if (this.lastModel == bakedModel)
-            return;
-        this.leggingTorsoLayerBone = getLeggingTorsoLayerBone();
     }
 
 
@@ -73,9 +74,12 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
     protected void applyBaseTransformations(HumanoidModel<?> baseModel) {
         super.applyBaseTransformations(baseModel);
         if (this.leggingTorsoLayerBone != null) {
+            //IronsSpellbooks.LOGGER.debug("GenericCustomArmorRenderer: positioning leggingBone");
             ModelPart bodyPart = baseModel.body;
             RenderUtils.matchModelPartRot(bodyPart, this.leggingTorsoLayerBone);
             this.leggingTorsoLayerBone.updatePosition(bodyPart.x, -bodyPart.y, bodyPart.z);
+        } else {
+            //IronsSpellbooks.LOGGER.debug("GenericCustomArmorRenderer: LEGGING BONE NULL");
         }
     }
 
