@@ -37,9 +37,4 @@ public class SummonedSkeletonMultiRenderer extends GeoEntityRenderer<SummonedSke
         else
             vanillaRenderer.render(entity, pEntityYaw, pPartialTick, pPoseStack, pBuffer, pPackedLight);
     }
-    //TODO: (1.19.4 port) no rendertype?
-//    @Override
-//    public RenderType getRenderType(SummonedSkeleton animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-//        return RenderType.entityCutoutNoCull(texture);
-//    }
 }

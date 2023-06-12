@@ -27,9 +27,8 @@ public class RootRenderer extends GeoEntityRenderer<RootEntity> {
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    //TODO: (1.19.4 port) no rendertype?
-//    @Override
-//    public RenderType getRenderType(RootEntity animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-//        return RenderType.entityCutoutNoCull(texture);
-//    }
+    @Override
+    public RenderType getRenderType(RootEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+        return super.getRenderType(animatable, texture, bufferSource, partialTick);
+    }
 }

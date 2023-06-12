@@ -99,11 +99,6 @@ public class EnergySwirlLayer {
             }
         }
 
-        @Override
-        public void renderForBone(PoseStack poseStack, AbstractSpellCastingMob animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-            //todo: render for bone instead? (1.19.4 port)
-            super.renderForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
-        }
     }
 
     private static RenderType getRenderType(ResourceLocation texture, float f) {

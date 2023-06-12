@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
@@ -31,8 +32,8 @@ public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob>
 
         VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
         poseStack.pushPose();
-        float scale = 1 / (1.3f);
-        poseStack.scale(scale, scale, scale);
+        //float scale = 1 / (1.3f);
+        //poseStack.scale(scale, scale, scale);
 
         bakedModel.getBone("body").ifPresent((rootBone) -> {
             rootBone.getChildBones().forEach(bone -> {
@@ -45,7 +46,7 @@ public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob>
         });
 
         this.getRenderer().actuallyRender(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
-                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .05f, .06f, 0.1f, 1f);
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0.1f, 0.1f, 0.1f,/*.05f, .06f, 0.1f,*/ 1f);
 
         bakedModel.getBone("body").ifPresent((rootBone) -> {
             rootBone.getChildBones().forEach(bone -> {
@@ -54,4 +55,5 @@ public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob>
         });
         poseStack.popPose();
     }
+
 }

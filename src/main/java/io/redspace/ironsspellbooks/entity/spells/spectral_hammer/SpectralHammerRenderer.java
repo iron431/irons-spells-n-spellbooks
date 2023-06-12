@@ -29,12 +29,11 @@ public class SpectralHammerRenderer extends GeoEntityRenderer<SpectralHammer> {
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    //TODO: (1.19.4 port) no rendertype?
-//    @Override
-//    public RenderType getRenderType(SpectralHammer animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-//        Vec2 vec2 = getEnergySwirlOffset(animatable, partialTick);
-//        return RenderType.energySwirl(texture, vec2.x, vec2.y);
-//    }
+    @Override
+    public RenderType getRenderType(SpectralHammer animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+        Vec2 vec2 = getEnergySwirlOffset(animatable, partialTick);
+        return RenderType.energySwirl(texture, vec2.x, vec2.y);
+    }
 
     private static float shittyNoise(float f) {
         return (float) (Math.sin(f / 4) + 2 * Math.sin(f / 3) + 3 * Math.sin(f / 2) + 4 * Math.sin(f)) * .25f;

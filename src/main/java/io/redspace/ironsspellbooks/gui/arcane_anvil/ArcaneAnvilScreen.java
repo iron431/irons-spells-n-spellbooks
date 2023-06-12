@@ -39,8 +39,6 @@ public class ArcaneAnvilScreen extends ItemCombinerScreen<ArcaneAnvilMenu> {
 
     @Override
     protected void renderErrorIcon(GuiGraphics p_281990_, int p_266822_, int p_267045_) {
-        //TODO: 1.20 port: is this necessary since we are doing legacy anvil rendering?
     }
-
 
 }

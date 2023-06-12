@@ -233,7 +233,6 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerParticles(RegisterParticleProvidersEvent event) {
-        //TODO: test for 1.20 port
         event.registerSpriteSet(ParticleRegistry.WISP_PARTICLE.get(), WispParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), BloodGroundParticle.Provider::new);

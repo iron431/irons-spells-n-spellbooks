@@ -23,10 +23,8 @@ public class WispRenderer extends GeoEntityRenderer<WispEntity> {
         return textureLocation;
     }
 
-    //TODO: (1.19.4 port) render type note
-//    @Override
-//    public RenderType getRenderType(WispEntity animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-//        return RenderType.energySwirl(texture, 0, 0);
-//    }
-
+    @Override
+    public RenderType getRenderType(WispEntity animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+        return RenderType.energySwirl(texture, 0, 0);
+    }
 }
