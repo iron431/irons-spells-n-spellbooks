@@ -65,13 +65,13 @@ public class InvisibilitySpell extends AbstractSpell {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), getDuration(entity), 0, false, false, true));
 
         var targetingCondition = TargetingConditions.forCombat().selector(e -> {
-            IronsSpellbooks.LOGGER.debug("InvisibilitySpell TargetingConditions:{}", e);
+            //IronsSpellbooks.LOGGER.debug("InvisibilitySpell TargetingConditions:{}", e);
             return (((Mob) e).getTarget() == entity);
         });
 
         world.getNearbyEntities(Mob.class, targetingCondition, entity, entity.getBoundingBox().inflate(40D))
                 .forEach(entityTargetingCaster -> {
-                    IronsSpellbooks.LOGGER.debug("InvisibilitySpell Clear Target From:{}", entityTargetingCaster);
+                    //IronsSpellbooks.LOGGER.debug("InvisibilitySpell Clear Target From:{}", entityTargetingCaster);
                     entityTargetingCaster.setTarget(null);
                     entityTargetingCaster.setLastHurtMob(null);
                     entityTargetingCaster.setLastHurtByMob(null);
