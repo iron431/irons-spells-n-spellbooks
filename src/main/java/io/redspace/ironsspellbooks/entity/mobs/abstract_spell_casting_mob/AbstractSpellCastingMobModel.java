@@ -6,6 +6,7 @@ import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
+import org.joml.Vector2f;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
@@ -112,26 +113,26 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             Arm Controls
          */
         if (!entity.isAnimating()) {
-            //addRotationX(rightArm, Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
-            //addRotationX(leftArm, Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
+            rightArm.updateRotation(0f, 0f, 0f);
+            leftArm.updateRotation(0f, 0f, 0f);
+
             rightArm.setRotX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
             leftArm.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
-            //bobBone(rightArm, entity.tickCount, 1);
-            //bobBone(leftArm, entity.tickCount, -1);
+            bobBone(rightArm, entity.tickCount, false);
+            bobBone(leftArm, entity.tickCount, true);
             if (entity.isDrinkingPotion()) {
-                var arm = (entity.isLeftHanded() ? leftArm : rightArm);
-                arm.updateRotation(arm.getRotX(), 0, 0);
-                addRotationX(arm, 35 * Mth.DEG_TO_RAD);
-                addRotationZ(arm, (entity.isLeftHanded() ? 15 : -15) * Mth.DEG_TO_RAD);
-                addRotationY(arm, (entity.isLeftHanded() ? -25 : 25) * Mth.DEG_TO_RAD);
+                addRotationX(entity.isLeftHanded() ? leftArm : rightArm, 35 * Mth.DEG_TO_RAD);
+                addRotationZ(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? 15 : -15) * Mth.DEG_TO_RAD);
+                addRotationY(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? -25 : 25) * Mth.DEG_TO_RAD);
             }
+
         } else if (entity.shouldPointArmsWhileCasting()) {
             addRotationX(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD);
             addRotationX(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD);
         }
         //TODO: (1.20 port) geckolib is doing some very different and weird stuff. bones seem to remember their prevous rotation and additive modifiers compound tick after tick. we'll have to deal with this later
-        leftArm.updateRotation(leftArm.getRotX(),leftArm.getRotY(),leftArm.getRotZ());
-        rightArm.updateRotation(rightArm.getRotX(),rightArm.getRotY(),rightArm.getRotZ());
+        //leftArm.updateRotation(leftArm.getRotX(),leftArm.getRotY(),leftArm.getRotZ());
+        //rightArm.updateRotation(rightArm.getRotX(),rightArm.getRotY(),rightArm.getRotZ());
 
 //        rightArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 2.0F * pLimbSwingAmount * 0.5F / f);
 //        leftArm.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 2.0F * pLimbSwingAmount * 0.5F / f);
@@ -143,15 +144,13 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
 
     }
 
-    private void bobBone(CoreGeoBone bone, int offset, float multiplier) {
+    private void bobBone(CoreGeoBone bone, int offset, boolean inverted) {
         //Copied from AnimationUtils#bobLimb
-        float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
-        float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
-        addRotationZ(bone, z);
-        addRotationX(bone, x);
-        //bone.setRotationX(bone.getRotationX() + x);
-        //bone.setRotationZ(bone.getRotationZ() + z);
-
+        float z = (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
+        float x = Mth.sin(offset * 0.067F) * 0.05F;
+        //return new Vector2f(x, z);
+        addRotationX(bone, (inverted ? -1 : 1) * x);
+        addRotationZ(bone, (inverted ? -1 : 1) * z);
     }
 
     private void addRotationX(CoreGeoBone bone, float rotation) {

@@ -15,7 +15,7 @@ public class AnimationHolder {
 
     public AnimationHolder(String path, Animation.LoopType loopType) {
         this.playerAnimation = IronsSpellbooks.id(path);
-        this.geckoAnimation = RawAnimation.begin().thenLoop(playerAnimation.getPath());
+        this.geckoAnimation = RawAnimation.begin().then(playerAnimation.getPath(), loopType);
         this.adjustLeftArm = true;
         this.adjustRightArm = true;
     }
