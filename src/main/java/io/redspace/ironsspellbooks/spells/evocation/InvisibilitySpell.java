@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -10,6 +11,11 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -55,7 +61,23 @@ public class InvisibilitySpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), getDuration(entity), 0, false, false, true));
+
+        var targetingCondition = TargetingConditions.forCombat().selector(e -> {
+            IronsSpellbooks.LOGGER.debug("InvisibilitySpell TargetingConditions:{}", e);
+            return (((Mob) e).getTarget() == entity);
+        });
+
+        world.getNearbyEntities(Mob.class, targetingCondition, entity, entity.getBoundingBox().inflate(40D))
+                .forEach(entityTargetingCaster -> {
+                    IronsSpellbooks.LOGGER.debug("InvisibilitySpell Clear Target From:{}", entityTargetingCaster);
+                    entityTargetingCaster.setTarget(null);
+                    entityTargetingCaster.setLastHurtMob(null);
+                    entityTargetingCaster.setLastHurtByMob(null);
+                    entityTargetingCaster.targetSelector.getAvailableGoals().forEach(WrappedGoal::stop);
+                });
+
         super.onCast(world, entity, playerMagicData);
     }
 
