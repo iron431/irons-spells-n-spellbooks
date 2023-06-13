@@ -245,6 +245,7 @@ public class ClientSetup {
         event.register(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
         event.register(ParticleRegistry.SIPHON_PARTICLE.get(), SiphonParticle.Provider::new);
         event.register(ParticleRegistry.FOG_PARTICLE.get(), FogParticle.Provider::new);
+        event.register(ParticleRegistry.CASTING_PARTICLE.get(), CastingParticle.Provider::new);
         event.register(ParticleRegistry.ACID_PARTICLE.get(), AcidParticle.Provider::new);
         event.register(ParticleRegistry.ACID_BUBBLE_PARTICLE.get(), AcidBubbleParticle.Provider::new);
     }

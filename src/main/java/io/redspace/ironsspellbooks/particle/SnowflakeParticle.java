@@ -13,11 +13,11 @@ public class SnowflakeParticle extends TextureSheetParticle {
 
         super(level, xCoord, yCoord, zCoord, xd, yd, zd);
 
-        this.friction = 0.9f;
+        this.friction = 0.95f;
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
-        this.quadSize *= .45f;
+        this.quadSize *= .65f;
         this.scale(1f);
         this.lifetime = 50 + (int) (Math.random() * 80);
         sprites = spriteSet;

@@ -64,15 +64,20 @@ public class ClientPlayerEvents {
                     Current Casting Spell Visuals
                      */
                     SpellType currentSpell = SpellType.getTypeFromValue(spellData.getCastingSpellId());
-                    if (currentSpell == SpellType.RAY_OF_SIPHONING_SPELL) {
-                        Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);
-                        for (int i = 0; i < 8; i++) {
-                            Vec3 motion = new Vec3(
-                                    Utils.getRandomScaled(.2f),
-                                    Utils.getRandomScaled(.2f),
-                                    Utils.getRandomScaled(.2f)
-                            );
-                            entity.level.addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
+                    if(currentSpell != SpellType.NONE_SPELL) {
+
+                        ClientSpellCastHelper.doAuraCastingParticles(livingEntity, currentSpell.getSchoolType());
+
+                        if (currentSpell == SpellType.RAY_OF_SIPHONING_SPELL) {
+                            Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);
+                            for (int i = 0; i < 8; i++) {
+                                Vec3 motion = new Vec3(
+                                        Utils.getRandomScaled(.2f),
+                                        Utils.getRandomScaled(.2f),
+                                        Utils.getRandomScaled(.2f)
+                                );
+                                entity.level.addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
+                            }
                         }
                     }
                 });

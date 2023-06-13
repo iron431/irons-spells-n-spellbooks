@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.util;
 
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.particle.CastingParticleOptions;
 import io.redspace.ironsspellbooks.particle.FogParticleOptions;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
@@ -20,7 +21,13 @@ public class ParticleHelper {
     public static final ParticleOptions ACID_BUBBLE = ParticleRegistry.ACID_BUBBLE_PARTICLE.get();
     public static final ParticleOptions FOG = new FogParticleOptions(new Vector3f(1, 1, 1), 1);
     public static final ParticleOptions VOID_TENTACLE_FOG = new FogParticleOptions(new Vector3f(.09f, 0.075f, .11f), 2);
-    public static final ParticleOptions ROOT_FOG = new FogParticleOptions(new Vector3f(61/255f, 40/255f, 18/255f), .4f);
+    public static final ParticleOptions ROOT_FOG = new FogParticleOptions(new Vector3f(61 / 255f, 40 / 255f, 18 / 255f), .4f);
     public static final ParticleOptions COMET_FOG = new FogParticleOptions(new Vector3f(.75f, .55f, 1f), 1.5f);
     public static final ParticleOptions POISON_CLOUD = new FogParticleOptions(new Vector3f(.08f, 0.64f, .16f), 1f);
+    public static final ParticleOptions CASTING_POISON = new CastingParticleOptions(new Vector3f(.5f, 1f, .25f), 1f);
+    public static final ParticleOptions CASTING_VOID = new CastingParticleOptions(new Vector3f(.09f, 0.075f, .11f), 1f);
+    public static final ParticleOptions CASTING_EVOCATION = new CastingParticleOptions(new Vector3f(1f, 1f, 1f), 1f);
+    public static final ParticleOptions CASTING_BLOOD = new CastingParticleOptions(new Vector3f(.6f, 0f, 0f), 1f);
+    public static final ParticleOptions CASTING_ENDER = new CastingParticleOptions(new Vector3f(.8f, 0f, 1f), 1f);
+    public static final ParticleOptions CASTING_LIGHTNING = new CastingParticleOptions(new Vector3f(0f, .25f, 1f), 1f);
 }

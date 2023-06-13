@@ -10,6 +10,7 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.CastData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
+import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
@@ -20,9 +21,11 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -217,5 +220,34 @@ public class ClientSpellCastHelper {
                         animatePlayerStart(player, resourceLocation);
                     }
                 }));
+    }
+
+    public static void doAuraCastingParticles(LivingEntity entity, SchoolType school) {
+        float radius = entity.getBbWidth() * .7f;
+        int count = 16;
+        for (int i = 0; i < count; i++) {
+            if (entity.getRandom().nextFloat() < .25f) {
+                double x, z;
+                double theta = Math.toRadians(360 / count) * i/* + entity.tickCount*/;
+                x = Math.cos(theta) * radius;
+                z = Math.sin(theta) * radius;
+                float speed = entity.getRandom().nextFloat() * .05f + .02f;
+                entity.level.addParticle(getParticleFromSchool(school), entity.getX() + x, entity.getY(), entity.getZ() + z, 0, speed, 0);
+            }
+        }
+    }
+
+    public static ParticleOptions getParticleFromSchool(SchoolType school) {
+        return switch (school) {
+            case FIRE -> ParticleHelper.EMBERS;
+            case ICE -> ParticleHelper.SNOWFLAKE;
+            case LIGHTNING -> ParticleHelper.CASTING_LIGHTNING;
+            case HOLY -> ParticleHelper.WISP;
+            case ENDER -> ParticleHelper.CASTING_ENDER;
+            case BLOOD -> ParticleHelper.CASTING_BLOOD;
+            case POISON -> ParticleHelper.CASTING_POISON;
+            case EVOCATION -> ParticleHelper.CASTING_EVOCATION;
+            case VOID -> ParticleHelper.CASTING_VOID;
+        };
     }
 }
