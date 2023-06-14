@@ -151,7 +151,13 @@ public class ClientSpellCastHelper {
                 castingAnimationPlayer.setFirstPersonMode(/*resourceLocation.getPath().equals("charge_arrow") ? FirstPersonMode.VANILLA : */FirstPersonMode.THIRD_PERSON_MODEL);
                 var armsFlag = SHOW_FIRST_PERSON_ARMS.get();
                 var itemsFlag = SHOW_FIRST_PERSON_ITEMS.get();
-                castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
+
+                if (armsFlag || itemsFlag) {
+                    castingAnimationPlayer.setFirstPersonMode(/*resourceLocation.getPath().equals("charge_arrow") ? FirstPersonMode.VANILLA : */FirstPersonMode.THIRD_PERSON_MODEL);
+                    castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
+                }else{
+                    castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.DISABLED);
+                }
 
                 //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
                 animation.setAnimation(castingAnimationPlayer);
