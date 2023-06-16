@@ -43,7 +43,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
 
     @Override
     public float getSpeed() {
-        return 3;
+        return 2.5f;
     }
 
     @Override
