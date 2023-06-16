@@ -677,8 +677,14 @@
   "item.apotheosis.gem.irons_spellbooks:summoning": "Necromancy Gem",
   "item.apotheosis.gem.irons_spellbooks:spell_resist": "Gem of Arcane Protection",
 
+  "text.apotheosis.category.spellbook.plural": "Spellbooks",
+
   "affix.irons_spellbooks:armor/attribute/mana": "Intelligent",
   "affix.irons_spellbooks:armor/attribute/mana.suffix": "of the Artificer",
   "affix.irons_spellbooks:armor/attribute/cooldown": "Quick-Minded",
-  "affix.irons_spellbooks:armor/attribute/cooldown.suffix": "of the Fast-Wit"
+  "affix.irons_spellbooks:armor/attribute/cooldown.suffix": "of the Fast-Wit",
+  "affix.irons_spellbooks:spellbook/attribute/mana": "Intelligent",
+    "affix.irons_spellbooks:spellbook/attribute/mana.suffix": "of the Artificer",
+    "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction": "Fast-Casting",
+    "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction.suffix": "of the Arcane"
 }

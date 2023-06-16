@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.tetra.effects;
+package io.redspace.ironsspellbooks.compat.tetra.effects;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
