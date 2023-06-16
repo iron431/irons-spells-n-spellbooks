@@ -8,11 +8,11 @@
             "type": "apotheosis:attribute",
             "gem_class":
             {
-                "key": "armor",
+                "key": "anything",
                 "types": ["helmet",
                     "chestplate",
                     "leggings",
-                    "boots"]
+                    "boots", "spellbook"]
             },
             "attribute": "irons_spellbooks:ender_spell_power",
             "operation": "MULTIPLY_TOTAL",
