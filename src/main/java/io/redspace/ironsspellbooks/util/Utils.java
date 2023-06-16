@@ -383,18 +383,20 @@ public class Utils {
     }
 
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
-        if(healer == target)
+        if (healer instanceof NeutralMob neutralMob && neutralMob.isAngryAt(target))
+            return false;
+        if (healer == target)
             return true;
-        if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer.getMobType() == MobType.UNDEAD || healer.getMobType() == MobType.ILLAGER)) {
+        if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer.getMobType() == MobType.UNDEAD || healer.getMobType() == MobType.ILLAGER))
             //This tag is for things like iron golems, villagers, farm animals, etc
             return true;
-        } else if (healer.isAlliedTo(target)) {
+        if (healer.isAlliedTo(target))
             //Generic ally-check. Precursory team check plus some mobs override it, such as summons
             return true;
-        } else if (healer.getTeam() != null) {
+        if (healer.getTeam() != null)
             //If we are on a team, only heal teammates
             return target.isAlliedTo(healer.getTeam());
-        } else if (healer instanceof Player) {
+        if (healer instanceof Player) {
             //If we are a player and not on a team, we only want to heal other players
             return target instanceof Player;
         } else {

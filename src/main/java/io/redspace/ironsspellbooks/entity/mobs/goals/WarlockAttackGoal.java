@@ -91,8 +91,8 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     }
 
     @Override
-    public WarlockAttackGoal setSpellLevels(int minLevel, int maxLevel) {
-        return (WarlockAttackGoal)super.setSpellLevels(minLevel, maxLevel);
+    public WarlockAttackGoal setSpellQuality(float minSpellQuality, float maxSpellQuality) {
+        return (WarlockAttackGoal)super.setSpellQuality(minSpellQuality, maxSpellQuality);
     }
 
     @Override

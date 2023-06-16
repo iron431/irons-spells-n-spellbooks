@@ -43,8 +43,8 @@ public class WizardAttackGoal extends Goal {
     protected final ArrayList<SpellType> supportSpells = new ArrayList<>();
     protected ArrayList<SpellType> lastSpellCategory = attackSpells;
 
-    protected int minSpellLevel = 1;
-    protected int maxSpellLevel = 3;
+    protected float minSpellQuality = .1f;
+    protected float maxSpellQuality = .3f;
 
     protected boolean drinksPotions;
 
@@ -93,9 +93,9 @@ public class WizardAttackGoal extends Goal {
         return this;
     }
 
-    public WizardAttackGoal setSpellLevels(int minLevel, int maxLevel) {
-        this.minSpellLevel = minLevel;
-        this.maxSpellLevel = maxLevel;
+    public WizardAttackGoal setSpellQuality(float minSpellQuality, float maxSpellQuality) {
+        this.minSpellQuality = minSpellQuality;
+        this.maxSpellQuality = maxSpellQuality;
         return this;
     }
 
@@ -256,7 +256,8 @@ public class WizardAttackGoal extends Goal {
             mob.initiateCastSpell(singleUseSpell, singleUseLevel);
         } else {
 
-            int spellLevel = mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel);
+            int spellLevel = (int) (getNextSpellType().getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
+            spellLevel = Math.max(spellLevel, 1);
             var spellType = getNextSpellType();
 
             //Make sure cast is valid
@@ -273,7 +274,7 @@ public class WizardAttackGoal extends Goal {
         int attackWeight = getAttackWeight();
         int defenseWeight = getDefenseWeight() - (lastSpellCategory == defenseSpells ? 100 : 0);
         int movementWeight = getMovementWeight() - (lastSpellCategory == movementSpells ? 50 : 0);
-        int supportWeight = getSupportWeight() - (lastSpellCategory == supportSpells ? 35 : 0);
+        int supportWeight = getSupportWeight() - (lastSpellCategory == supportSpells ? 100 : 0);
         int total = 0;
 
         if (!attackSpells.isEmpty() && attackWeight > 0) {

@@ -99,7 +99,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 3.5f).setSpellLevels(3, 5).setSpells(
+        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 3.5f).setSpellQuality(.3f, .5f).setSpells(
                 List.of(
                         SpellType.RAY_OF_SIPHONING_SPELL,
                         SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL,
