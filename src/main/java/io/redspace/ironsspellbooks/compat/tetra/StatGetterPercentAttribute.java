@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.tetra;
+package io.redspace.ironsspellbooks.compat.tetra;
 
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;

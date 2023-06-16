@@ -1,9 +1,9 @@
-package io.redspace.ironsspellbooks.tetra;
+package io.redspace.ironsspellbooks.compat.tetra;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
-import io.redspace.ironsspellbooks.tetra.effects.FreezeTetraEffect;
-import io.redspace.ironsspellbooks.tetra.effects.ManaSiphonTetraEffect;
+import io.redspace.ironsspellbooks.compat.tetra.effects.FreezeTetraEffect;
+import io.redspace.ironsspellbooks.compat.tetra.effects.ManaSiphonTetraEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;

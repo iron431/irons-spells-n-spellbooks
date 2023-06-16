@@ -56,7 +56,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.render.*;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.tetra.TetraProxy;
+import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.util.AbstractClientPlayerMixinHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
