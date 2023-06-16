@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.datagen;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
+import io.redspace.ironsspellbooks.registries.FeatureRegistry;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
@@ -18,9 +19,9 @@ import java.util.Set;
 public class DataGenHandler {
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
 //            .add(Registries.CONFIGURED_CARVER,)
-//            .add(Registries.CONFIGURED_FEATURE, )
-//            .add(Registries.PLACED_FEATURE, )
 //            .add(Registries.BIOME,)
+            .add(Registries.CONFIGURED_FEATURE, FeatureRegistry::bootstrapConfiguredFeature)
+            .add(Registries.PLACED_FEATURE, FeatureRegistry::bootstrapPlacedFeature)
             .add(Registries.DAMAGE_TYPE, DamageTypeRegistry::bootstrap);
 
     @SubscribeEvent

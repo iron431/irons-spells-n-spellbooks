@@ -16,6 +16,8 @@ public class CommandRegistry {
         CreateDebugWizardCommand.register(event.getDispatcher());
         ManaCommand.register(event.getDispatcher());
         GenerateModList.register(event.getDispatcher());
+        LocateArcaneDebris.register(event.getDispatcher());
+        LocateDiamond.register(event.getDispatcher());
         //GenerateSiteData.register(event.getDispatcher());
     }
 }
