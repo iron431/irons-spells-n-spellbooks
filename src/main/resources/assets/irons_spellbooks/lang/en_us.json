@@ -490,6 +490,7 @@
   "effect.irons_spellbooks.rend": "Rend",
   "effect.irons_spellbooks.spider_aspect": "Aspect of the Spider",
   "effect.irons_spellbooks.blight": "Blighted",
+  "effect.irons_spellbooks.guiding_bolt": "Guiding Bolt",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -507,6 +508,7 @@
   "effect.irons_spellbooks.rend.description": "Decreases your armor by 5% per level",
   "effect.irons_spellbooks.spider_aspect.description": "Increases your damage dealt against targets with poison by 5% per level",
   "effect.irons_spellbooks.blight.description": "Decreases your outgoing damage by 5% per level and incoming healing by 10% per level",
+  "effect.irons_spellbooks.guiding_bolt.description": "Nearby projectiles will are attracted towards you.",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",

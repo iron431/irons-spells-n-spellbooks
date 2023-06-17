@@ -131,6 +131,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.FORTIFY_SPELL, FortifySpell.defaultConfig, true);
         createSpellConfig(SpellType.BLESSING_OF_LIFE_SPELL, BlessingOfLifeSpell.defaultConfig, true);
         createSpellConfig(SpellType.HEALING_CIRCLE_SPELL, HealingCircleSpell.defaultConfig, true);
+        createSpellConfig(SpellType.GUIDING_BOLT_SPELL, GuidingBoltSpell.defaultConfig, true);
         //Ice
         BUILDER.comment("Ice Spells");
         createSpellConfig(SpellType.CONE_OF_COLD_SPELL, ConeOfColdSpell.defaultConfig, true);

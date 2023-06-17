@@ -98,7 +98,8 @@ public enum SpellType {
     ACUPUNCTURE_SPELL(58, AcupunctureSpell::new),
     FIRE_BOMB_SPELL(59, FireBombSpell::new),
     STARFALL_SPELL(60, StarfallSpell::new),
-    HEALING_CIRCLE_SPELL(61, HealingCircleSpell::new)
+    HEALING_CIRCLE_SPELL(61, HealingCircleSpell::new),
+    GUIDING_BOLT_SPELL(62, GuidingBoltSpell::new)
     ;
 
     private final int value;

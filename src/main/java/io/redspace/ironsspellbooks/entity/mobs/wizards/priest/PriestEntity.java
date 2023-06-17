@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.priest;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
@@ -59,11 +58,11 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                 ));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 65, 100)
                 .setSpells(
-                        List.of(SpellType.WISP_SPELL),
+                        List.of(SpellType.WISP_SPELL, SpellType.GUIDING_BOLT_SPELL),
                         List.of(SpellType.FORTIFY_SPELL),
                         List.of(),
                         List.of())
-                .setSpellQuality(0.5f, 0.5f)
+                .setSpellQuality(0.3f, 0.5f)
                 .setDrinksPotions());
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -72,17 +71,14 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.targetSelector.addGoal(1, new GenericDefendVillageTargetGoal(this));
         this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (p_28879_) -> {
-            return p_28879_ instanceof Enemy && !(p_28879_ instanceof Creeper);
-        }));
-
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (mob) -> mob instanceof Enemy && !(mob instanceof Creeper)));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
         this.supportTargetSelector = new GoalSelector(this.level.getProfilerSupplier());
         this.supportTargetSelector.addGoal(0, new FindSupportableTargetGoal<>(this, Mob.class, false, (mob) -> {
             //TODO: entity tag
-            IronsSpellbooks.LOGGER.debug("priest mob search predicating");
-            return mob.getHealth() * 1.5f < mob.getMaxHealth() && (mob instanceof Villager || mob instanceof IronGolem || mob instanceof Player);
+            //IronsSpellbooks.LOGGER.debug("priest mob search predicating");
+            return mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob instanceof Villager || mob instanceof IronGolem || mob instanceof Player);
         }));
     }
 
