@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.ArrayList;
@@ -185,11 +186,10 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
     }
 
     protected SpellType getNextSpellType() {
-
-        float bias = target.getHealth() / target.getMaxHealth();
-        if (buffSpells.isEmpty())
-            bias *= 0;
-        return getSpell(mob.getRandom().nextFloat() > bias ? healingSpells : buffSpells);
+        float shouldBuff = 0;
+        if (!buffSpells.isEmpty() && target instanceof Mob mob && mob.isAggressive())
+            shouldBuff = target.getHealth() / target.getMaxHealth();
+        return getSpell(mob.getRandom().nextFloat() > shouldBuff ? healingSpells : buffSpells);
     }
 
     protected SpellType getSpell(List<SpellType> spells) {

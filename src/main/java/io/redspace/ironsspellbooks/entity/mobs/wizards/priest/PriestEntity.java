@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.priest;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
@@ -22,9 +23,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
+import net.minecraft.world.entity.ai.util.GoalUtils;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
@@ -53,17 +56,18 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new WizardSupportGoal<>(this, 1.5f, 100, 120)
                 .setSpells(
-                        List.of(SpellType.BLESSING_OF_LIFE_SPELL, SpellType.HEALING_CIRCLE_SPELL),
-                        List.of()
+                        List.of(SpellType.BLESSING_OF_LIFE_SPELL, SpellType.BLESSING_OF_LIFE_SPELL, SpellType.HEALING_CIRCLE_SPELL),
+                        List.of(SpellType.FORTIFY_SPELL)
                 ));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 65, 100)
                 .setSpells(
                         List.of(SpellType.WISP_SPELL, SpellType.GUIDING_BOLT_SPELL),
-                        List.of(SpellType.FORTIFY_SPELL, SpellType.ROOT_SPELL),
+                        List.of(SpellType.ROOT_SPELL),
                         List.of(),
                         List.of())
                 .setSpellQuality(0.3f, 0.5f)
                 .setDrinksPotions());
+        this.goalSelector.addGoal(2, new OpenDoorGoal(this, true));
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
@@ -75,10 +79,10 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
         this.supportTargetSelector = new GoalSelector(this.level.getProfilerSupplier());
-        this.supportTargetSelector.addGoal(0, new FindSupportableTargetGoal<>(this, Mob.class, false, (mob) -> {
+        this.supportTargetSelector.addGoal(0, new FindSupportableTargetGoal<>(this, Mob.class, true, (mob) -> {
             //TODO: entity tag
             //IronsSpellbooks.LOGGER.debug("priest mob search predicating");
-            return mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob instanceof Villager || mob instanceof IronGolem || mob instanceof Player);
+            return !isAngryAt(mob) && mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob instanceof Villager || mob instanceof IronGolem || mob instanceof Player);
         }));
     }
 
@@ -151,8 +155,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     protected void customServerAiStep() {
         super.customServerAiStep();
         //Vanilla does this seemingly-excessive tick count solution. maybe there's a method to the madness
-        int i = this.level.getServer().getTickCount() + this.getId();
-        if (i % 2 == 0 && this.tickCount > 1) {
+        if (this.tickCount % 2 == 0 && this.tickCount > 1) {
             this.supportTargetSelector.tick();
         }
     }
