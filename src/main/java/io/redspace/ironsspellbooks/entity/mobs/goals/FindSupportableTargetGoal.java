@@ -20,6 +20,6 @@ public class FindSupportableTargetGoal<M extends Mob & SupportMob> extends Neare
         //IronsSpellbooks.LOGGER.debug("FindSupportableTargetGoal starting: {}", this.target.getName().getString());
         super.start();
         this.supportMob.setSupportTarget(this.target);
+        this.mob.setTarget(null);
     }
-
 }
