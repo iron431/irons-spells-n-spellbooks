@@ -1,11 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.priest;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
-import io.redspace.ironsspellbooks.entity.mobs.goals.GenericDefendVillageTargetGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -22,16 +21,15 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.npc.VillagerData;
-import net.minecraft.world.entity.npc.VillagerDataHolder;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.npc.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -41,17 +39,24 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class PriestEntity extends NeutralWizard implements VillagerDataHolder {
+public class PriestEntity extends NeutralWizard implements VillagerDataHolder, SupportMob {
     private static final EntityDataAccessor<VillagerData> DATA_VILLAGER_DATA = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.VILLAGER_DATA);
+    public GoalSelector supportTargetSelector;
 
     public PriestEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 15;
+
     }
 
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new WizardSupportGoal<>(this, 1.5f, 100, 120)
+                .setSpells(
+                        List.of(SpellType.BLESSING_OF_LIFE_SPELL, SpellType.HEALING_CIRCLE_SPELL),
+                        List.of()
+                ));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 65, 100)
                 .setSpells(
                         List.of(SpellType.WISP_SPELL),
@@ -70,7 +75,15 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder {
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (p_28879_) -> {
             return p_28879_ instanceof Enemy && !(p_28879_ instanceof Creeper);
         }));
-        this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
+
+        this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
+
+        this.supportTargetSelector = new GoalSelector(this.level.getProfilerSupplier());
+        this.supportTargetSelector.addGoal(0, new FindSupportableTargetGoal<>(this, Mob.class, false, (mob) -> {
+            //TODO: entity tag
+            IronsSpellbooks.LOGGER.debug("priest mob search predicating");
+            return mob.getHealth() * 1.5f < mob.getMaxHealth() && (mob instanceof Villager || mob instanceof IronGolem || mob instanceof Player);
+        }));
     }
 
     @Override
@@ -91,10 +104,10 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder {
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
-                .add(Attributes.MAX_HEALTH, 50.0)
+                .add(Attributes.MAX_HEALTH, 25.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(AttributeRegistry.CAST_TIME_REDUCTION.get(), 1.5)
-                .add(Attributes.MOVEMENT_SPEED, .3);
+                .add(Attributes.MOVEMENT_SPEED, .23);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -123,5 +136,28 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder {
 
     public @NotNull VillagerData getVillagerData() {
         return this.entityData.get(DATA_VILLAGER_DATA);
+    }
+
+    LivingEntity supportTarget;
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public LivingEntity getSupportTarget() {
+        return supportTarget;
+    }
+
+    @Override
+    public void setSupportTarget(LivingEntity target) {
+        this.supportTarget = target;
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        //Vanilla does this seemingly-excessive tick count solution. maybe there's a method to the madness
+        int i = this.level.getServer().getTickCount() + this.getId();
+        if (i % 2 == 0 && this.tickCount > 1) {
+            this.supportTargetSelector.tick();
+        }
     }
 }
