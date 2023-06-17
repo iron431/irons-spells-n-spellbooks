@@ -5,9 +5,15 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -188,7 +194,6 @@ public class WizardAttackGoal extends Goal {
         }
 
         //default attack timer
-        if (!mob.isDrinkingPotion())
             handleAttackLogic(distanceSquared);
 
         singleUseDelay--;
@@ -198,7 +203,7 @@ public class WizardAttackGoal extends Goal {
     protected void handleAttackLogic(double distanceSquared) {
         if (--this.attackTime == 0) {
 
-            if (!mob.isCasting()) {
+            if (!mob.isCasting() && !mob.isDrinkingPotion()) {
                 doSpellAction();
             }
 
@@ -222,8 +227,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doMovement(double distanceSquared) {
-        float movementDebuff = mob.isCasting() ? .2f : 1f;
-        double effectiveSpeed = /*movementDebuff * */speedModifier;
+        double speed = mob.isCasting() ? .2f : 1f * speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
 
         //move closer to target or strafe around
         if (distanceSquared < attackRadiusSqr && seeTime >= 5) {
@@ -238,15 +242,42 @@ public class WizardAttackGoal extends Goal {
 
             int strafeDir = strafingClockwise ? 1 : -1;
             if (distanceSquared < attackRadiusSqr * .5f)
-                mob.getMoveControl().strafe(-(float) effectiveSpeed, (float) effectiveSpeed * strafeDir);
+                mob.getMoveControl().strafe(-(float) speed, (float) speed * strafeDir);
             else
-                mob.getMoveControl().strafe(0, (float) effectiveSpeed * strafeDir);
+                mob.getMoveControl().strafe(0, (float) speed * strafeDir);
+            if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f)
+                tryJump();
+
             mob.lookAt(target, 30, 30);
         } else {
             if (isFlying)
                 this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
             else
-                this.mob.getNavigation().moveTo(this.target, effectiveSpeed);
+                this.mob.getNavigation().moveTo(this.target, speed);
+        }
+    }
+
+    protected void tryJump() {
+        //mob.getJumpControl().jump();
+        Vec3 nextBlock = new Vec3(mob.xxa, 0, mob.zza).normalize();
+        IronsSpellbooks.LOGGER.debug("{}", nextBlock);
+
+        BlockPos blockpos = new BlockPos(mob.position().add(nextBlock));
+        BlockState blockstate = this.mob.level.getBlockState(blockpos);
+        VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level, blockpos);
+        //IronsSpellbooks.LOGGER.debug("{}", mob.getDeltaMovement());
+        IronsSpellbooks.LOGGER.debug("{}", blockstate.getBlock().getName().getString());
+        if (!voxelshape.isEmpty() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES)) {
+            BlockPos blockposAbove = blockpos.above();
+            BlockState blockstateAbove = this.mob.level.getBlockState(blockposAbove);
+            VoxelShape voxelshapeAbove = blockstateAbove.getCollisionShape(this.mob.level, blockposAbove);
+            if (voxelshapeAbove.isEmpty()) {
+                this.mob.getJumpControl().jump();
+                //boost to get over the edge
+                mob.setXxa(mob.xxa * 5);
+                mob.setZza(mob.zza * 5);
+            }
+
         }
     }
 
@@ -404,4 +435,5 @@ public class WizardAttackGoal extends Goal {
 
         return baseWeight + healthWeight;
     }
+
 }

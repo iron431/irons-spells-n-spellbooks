@@ -22,10 +22,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.AnimationState;
@@ -43,7 +44,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.UUID;
 
-public abstract class AbstractSpellCastingMob extends Monster implements IAnimatable {
+public abstract class AbstractSpellCastingMob extends PathfinderMob implements IAnimatable {
     public static final ResourceLocation modelResource = new ResourceLocation(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
     public static final ResourceLocation animationInstantCast = new ResourceLocation(IronsSpellbooks.MODID, "animations/casting_animations.json");
@@ -58,7 +59,7 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private int drinkTime;
     public boolean hasUsedSingleAttack;
 
-    protected AbstractSpellCastingMob(EntityType<? extends Monster> pEntityType, Level pLevel) {
+    protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         playerMagicData.setSyncedData(new SyncedSpellData(this));
     }
@@ -81,6 +82,11 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
 
     protected void setDrinkingPotion(boolean drinkingPotion) {
         this.entityData.set(DATA_DRINKING_POTION, drinkingPotion);
+    }
+
+    @Override
+    public boolean canBeLeashed(Player pPlayer) {
+        return false;
     }
 
     public void startDrinkingPotion() {

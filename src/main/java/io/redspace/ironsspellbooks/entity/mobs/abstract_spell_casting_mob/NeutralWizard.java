@@ -6,14 +6,14 @@ import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.NeutralMob;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob {
-    protected NeutralWizard(EntityType<? extends Monster> pEntityType, Level pLevel) {
+    protected NeutralWizard(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
