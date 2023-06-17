@@ -22,10 +22,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SpellRenderingHelper {
-    private static ResourceLocation SOLID = IronsSpellbooks.id("textures/entity/ray/solid.png");
-    private static ResourceLocation BEACON = IronsSpellbooks.id("textures/entity/ray/beacon_beam.png");
-    private static ResourceLocation STRAIGHT_GLOW = IronsSpellbooks.id("textures/entity/ray/ribbon_glow.png");
-    private static ResourceLocation TWISTING_GLOW = IronsSpellbooks.id("textures/entity/ray/twisting_glow.png");
+    public static final ResourceLocation SOLID = IronsSpellbooks.id("textures/entity/ray/solid.png");
+    public static final ResourceLocation BEACON = IronsSpellbooks.id("textures/entity/ray/beacon_beam.png");
+    public static final ResourceLocation STRAIGHT_GLOW = IronsSpellbooks.id("textures/entity/ray/ribbon_glow.png");
+    public static final ResourceLocation TWISTING_GLOW = IronsSpellbooks.id("textures/entity/ray/twisting_glow.png");
 
     public static void renderSpellHelper(SyncedSpellData spellData, LivingEntity castingMob, PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
         switch (spellData.getCastingSpellType()) {

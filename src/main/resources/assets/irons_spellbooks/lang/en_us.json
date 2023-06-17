@@ -321,6 +321,7 @@
   "spell.irons_spellbooks.fire_bomb": "Fire Bomb",
   "spell.irons_spellbooks.starfall": "Starfall",
   "spell.irons_spellbooks.healing_circle": "Healing Circle",
+  "spell.irons_spellbooks.guiding_bolt": "Guiding Bolt",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -384,6 +385,7 @@
   "spell.irons_spellbooks.fire_bomb.guide": "Launch a bomb made from magma, exploding on impact and leaving a field of fire where it lands",
   "spell.irons_spellbooks.starfall.guide": "Target a single area and continuously rain down arcane comets from above for the duration of the spell",
   "spell.irons_spellbooks.healing_circle.guide": "Around a targeted creature or block, place a stationary circle of holy magic that heals allies within",
+  "spell.irons_spellbooks.guiding_bolt.guide": "Fire a slow bolt of holy energy. Creatures hit will gain the Guided effect, homing nearby projectiles in towards them.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -490,7 +492,7 @@
   "effect.irons_spellbooks.rend": "Rend",
   "effect.irons_spellbooks.spider_aspect": "Aspect of the Spider",
   "effect.irons_spellbooks.blight": "Blighted",
-  "effect.irons_spellbooks.guiding_bolt": "Guiding Bolt",
+  "effect.irons_spellbooks.guided": "Guided",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -508,7 +510,7 @@
   "effect.irons_spellbooks.rend.description": "Decreases your armor by 5% per level",
   "effect.irons_spellbooks.spider_aspect.description": "Increases your damage dealt against targets with poison by 5% per level",
   "effect.irons_spellbooks.blight.description": "Decreases your outgoing damage by 5% per level and incoming healing by 10% per level",
-  "effect.irons_spellbooks.guiding_bolt.description": "Nearby projectiles will are attracted towards you.",
+  "effect.irons_spellbooks.guided.description": "Nearby projectiles are attracted towards you.",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",

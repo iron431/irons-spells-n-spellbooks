@@ -40,7 +40,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
 
     @Override
     public float getSpeed() {
-        return 1.25f;
+        return 1f;
     }
 
     @Override
