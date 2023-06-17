@@ -59,7 +59,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 65, 100)
                 .setSpells(
                         List.of(SpellType.WISP_SPELL, SpellType.GUIDING_BOLT_SPELL),
-                        List.of(SpellType.FORTIFY_SPELL),
+                        List.of(SpellType.FORTIFY_SPELL, SpellType.ROOT_SPELL),
                         List.of(),
                         List.of())
                 .setSpellQuality(0.3f, 0.5f)
