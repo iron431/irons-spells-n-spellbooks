@@ -155,7 +155,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
      * GeckoLib
      **/
 
-    private final RawAnimation idle = RawAnimation.begin().thenPlay("dead_king_rest");
+    private final RawAnimation idle = RawAnimation.begin().thenLoop("dead_king_rest");
     private final RawAnimation rise = RawAnimation.begin().thenPlay("dead_king_rise");
 
     @Override
