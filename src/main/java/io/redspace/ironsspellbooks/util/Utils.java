@@ -105,10 +105,11 @@ public class Utils {
 //            return 2 - baseValue <= 1.7 ? baseValue : 2 - Math.pow(Math.E, -(baseValue - 0.6) * (baseValue - 0.6));
 //        }
 //    }
+
     /**
      * X should be between 0-2, and has a horizontal asymptote of 2 applied to soft-cap it for reductive attribute calculations
      */
-    public static double softCapFormula(double x){
+    public static double softCapFormula(double x) {
         //Softcap (https://www.desmos.com/calculator/cokngo3opu)
         return x <= 1.7 ? x : 2 - Math.pow(Math.E, -(x - 0.6) * (x - 0.6));
     }
@@ -156,9 +157,9 @@ public class Utils {
 //        return rotation.add(pos);
 //    }
 
-    public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForShields){
-        if(checkForShields){
-            List<ShieldEntity> shieldEntities = level.getEntitiesOfClass(ShieldEntity.class,new AABB(start,end));
+    public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForShields) {
+        if (checkForShields) {
+            List<ShieldEntity> shieldEntities = level.getEntitiesOfClass(ShieldEntity.class, new AABB(start, end));
             if (shieldEntities.size() > 0) {
                 var shieldImpact = checkEntityIntersecting(shieldEntities.get(0), start, end, 0);
                 if (shieldImpact.getType() != HitResult.Type.MISS)
@@ -379,7 +380,7 @@ public class Utils {
     }
 
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
-        if(healer == target)
+        if (healer == target)
             return true;
         if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer.getMobType() == MobType.UNDEAD || healer.getMobType() == MobType.ILLAGER)) {
             //This tag is for things like iron golems, villagers, farm animals, etc
@@ -426,7 +427,7 @@ public class Utils {
                     //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.6");
                     //spell.onClientPreCast(level, player, hand, null);
                     if (spell.getCastType().holdToCast()) {
- //Ironsspellbooks.logger.debug("onUseCastingHelper.1");
+                        //Ironsspellbooks.logger.debug("onUseCastingHelper.1");
                         player.startUsingItem(hand);
                     }
                     return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
@@ -435,7 +436,7 @@ public class Utils {
 
             if (spell.attemptInitiateCast(stack, level, player, CastSource.SWORD, true)) {
                 if (spell.getCastType().holdToCast()) {
- //Ironsspellbooks.logger.debug("onUseCastingHelper.2");
+                    //Ironsspellbooks.logger.debug("onUseCastingHelper.2");
                     player.startUsingItem(hand);
                 }
                 return InteractionResultHolder.success(stack);
@@ -463,7 +464,7 @@ public class Utils {
         }
         //Vec3 upper = level.clip(new ClipContext(start, start.add(0, maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
         Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
-        return (int) (lower.y + .76f);
+        return lower.y < 0 ? (int) (lower.y - .76f) : (int) (lower.y + .76f);
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
