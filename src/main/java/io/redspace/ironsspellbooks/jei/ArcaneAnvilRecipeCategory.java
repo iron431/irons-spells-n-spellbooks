@@ -104,16 +104,15 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
         if (leftStack.isEmpty() || rightStack.isEmpty() || outputStack.isEmpty()) {
             return;
         }
-
         if (leftStack.get().getItem() instanceof Scroll
                 && rightStack.get().getItem() instanceof Scroll
                 && outputStack.get().getItem() instanceof Scroll) {
             var minecraft = Minecraft.getInstance();
-            drawScrollInfo(minecraft, leftStack.get(), outputStack.get());
+            drawScrollInfo(minecraft, guiGraphics, leftStack.get(), outputStack.get());
         }
     }
 
-    private void drawScrollInfo(Minecraft minecraft, ItemStack leftStack, ItemStack outputStack) {
+    private void drawScrollInfo(Minecraft minecraft, GuiGraphics guiGraphics, ItemStack leftStack, ItemStack outputStack) {
         var inputSpellData = SpellData.getSpellData(leftStack);
         var inputText = String.format("L%d", inputSpellData.getLevel());
         var inputColor = inputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();
@@ -123,18 +122,20 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
         var outputColor = outputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();
 
         int y = (getHeight() / 2) + (paddingBottom / 2) + (minecraft.font.lineHeight / 2) - 4;
-
         //TODO: 1.20 port changed drawing text. need to wait for jei here
-//        //Left Item
-//        int x = 3;
-//        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
-//
-//        //Right Item
-//        x += 50;
-//        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
-//
-//        //Output Item
-//        int outputWidth = minecraft.font.width(outputText);
-//        minecraft.font.drawShadow(poseStack, outputText, getWidth() - (outputWidth + 3), y, outputColor);
+        //Left Item
+        int x = 3;
+        guiGraphics.drawString(minecraft.font, inputText, x, y, inputColor);
+        //minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
+
+        //Right Item
+        x += 50;
+        guiGraphics.drawString(minecraft.font, inputText, x, y, inputColor);
+        //minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
+
+        //Output Item
+        int outputWidth = minecraft.font.width(outputText);
+        guiGraphics.drawString(minecraft.font, inputText, x, y, inputColor);
+        //minecraft.font.drawShadow(poseStack, outputText, getWidth() - (outputWidth + 3), y, outputColor);
     }
 }
