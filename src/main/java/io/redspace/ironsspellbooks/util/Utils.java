@@ -79,7 +79,6 @@ public class Utils {
     }
 
     public static boolean canBeUpgraded(ItemStack stack) {
-        //TODO: (1.19.4 port) nullable matter here? test with bad config entries
         return !ServerConfigs.UPGRADE_BLACKLIST.get().contains(ForgeRegistries.ITEMS.getKey(stack.getItem()).toString())
                 && (stack.getItem() instanceof SpellBook || stack.is(ModTags.CAN_BE_UPGRADED)
                 || ServerConfigs.UPGRADE_WHITELIST.get().contains(ForgeRegistries.ITEMS.getKey(stack.getItem()).toString())
@@ -406,7 +405,6 @@ public class Utils {
     }
 
     public static boolean canImbue(ItemStack itemStack) {
-        //TODO: (1.19.4 port) nullable matter here? test with bad config entries
         String id = ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString();
         if (ServerConfigs.IMBUE_BLACKLIST.get().contains(id))
             return false;
