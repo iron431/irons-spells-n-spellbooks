@@ -122,20 +122,17 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
         var outputColor = outputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();
 
         int y = (getHeight() / 2) + (paddingBottom / 2) + (minecraft.font.lineHeight / 2) - 4;
-        //TODO: 1.20 port changed drawing text. need to wait for jei here
+
         //Left Item
         int x = 3;
         guiGraphics.drawString(minecraft.font, inputText, x, y, inputColor);
-        //minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
 
         //Right Item
         x += 50;
         guiGraphics.drawString(minecraft.font, inputText, x, y, inputColor);
-        //minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
 
         //Output Item
         int outputWidth = minecraft.font.width(outputText);
-        guiGraphics.drawString(minecraft.font, inputText, x, y, inputColor);
-        //minecraft.font.drawShadow(poseStack, outputText, getWidth() - (outputWidth + 3), y, outputColor);
+        guiGraphics.drawString(minecraft.font, outputText, getWidth() - (outputWidth + 3), y, outputColor);
     }
 }
