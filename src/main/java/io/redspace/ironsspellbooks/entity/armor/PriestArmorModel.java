@@ -3,14 +3,14 @@ package io.redspace.ironsspellbooks.entity.armor;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PriestArmorItem;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.DefaultedItemGeoModel;
 
-public class PriestArmorModel extends GeoModel<PriestArmorItem> {
+public class PriestArmorModel extends DefaultedItemGeoModel<PriestArmorItem> {
 
     public PriestArmorModel(){
-        super();
-
+        super(new ResourceLocation(IronsSpellbooks.MODID, "armor/priest"));
     }
+
     @Override
     public ResourceLocation getModelResource(PriestArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/priest_armor.geo.json");

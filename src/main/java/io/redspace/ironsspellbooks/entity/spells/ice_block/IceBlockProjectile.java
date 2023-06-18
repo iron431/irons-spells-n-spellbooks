@@ -111,12 +111,12 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
             return;
         boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
         if (flag) {
-            if(target.canFreeze())
+            if (target.canFreeze())
                 target.setTicksFrozen(200);
             victims.add(target);
             target.invulnerableTime = 0;
         }
- //Ironsspellbooks.logger.debug("IceBlockProjectile.doFallingDamage: {}", target.getName().getString());
+        //Ironsspellbooks.logger.debug("IceBlockProjectile.doFallingDamage: {}", target.getName().getString());
 
     }
 
@@ -128,9 +128,9 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
                 if (distance < explosionRadius * explosionRadius) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
- //Ironsspellbooks.logger.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
+                    //Ironsspellbooks.logger.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
 
-                    if (DamageSources.applyDamage(entity, damage, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE)  && entity.canFreeze())
+                    if (DamageSources.applyDamage(entity, damage, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE) && entity.canFreeze())
                         entity.setTicksFrozen(200);
                 }
             }
@@ -184,7 +184,6 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
                         } else if (Math.abs(position().y - ground.getLocation().y) < 4) {
                         }
                     }
-
                 }
                 if (tooHigh)
                     this.setDeltaMovement(getDeltaMovement().add(0, -.005, 0));
@@ -201,9 +200,6 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         }
 
         move(MoverType.SELF, getDeltaMovement());
-
-
-
     }
 
     @Override
@@ -242,16 +238,6 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     public Optional<SoundEvent> getImpactSound() {
         return Optional.empty();
     }
-
-    //TODO: (1.19.4 port) revisit projectile animations with new (and hopefully improved) geckolib?
-//    private final AnimationBuilder form = new AnimationBuilder().addAnimation("form", Animation.LoopType.PLAY_ONCE);
-//
-//    private PlayState predicate(AnimationEvent animationEvent) {
-//        //IronsSpellbooks.LOGGER.debug("hello?");
-//        if (animationEvent.getController().getAnimationState() == AnimationState.Stopped)
-//            animationEvent.getController().setAnimation(form);
-//        return PlayState.CONTINUE;
-//    }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {

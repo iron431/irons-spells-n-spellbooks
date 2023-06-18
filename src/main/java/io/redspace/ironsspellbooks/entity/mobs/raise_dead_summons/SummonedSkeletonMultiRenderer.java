@@ -15,7 +15,6 @@ import net.minecraft.world.entity.monster.AbstractSkeleton;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
-//TODO: (1.19.4 port) remake GeoHumanoidRenderer and replace all GeoEntityRenderers
 public class SummonedSkeletonMultiRenderer extends HumanoidRenderer<SummonedSkeleton> {
     SkeletonRenderer vanillaRenderer;
     public static final ResourceLocation TEXTURE_ALT = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/summoned_skeleton_alt.png");

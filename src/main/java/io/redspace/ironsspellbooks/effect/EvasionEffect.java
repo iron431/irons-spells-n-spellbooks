@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.effect;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.ParticleTypes;
@@ -20,22 +20,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Set;
-
 public class EvasionEffect extends MobEffect {
-
-    //TODO: 1.19.4, 1.20 port damage sources
-    public static Set<DamageSource> excludeDamageSources = Set.of(
-//            DamageSources.ON_FIRE,
-//            DamageSource.WITHER,
-//            DamageSource.FREEZE,
-//            DamageSources.CAULDRON
-//            DamageSource.STARVE,
-//            DamageSource.DROWN,
-//            DamageSource.STALAGMITE,
-//            DamageSource.OUT_OF_WORLD
-    );
-
     public EvasionEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
     }
@@ -55,7 +40,10 @@ public class EvasionEffect extends MobEffect {
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (livingEntity.level().isClientSide || excludeDamageSources.contains(damageSource) || damageSource.is(DamageTypeTags.IS_FALL) || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (livingEntity.level().isClientSide
+                || damageSource.is(DamageTypeTags.IS_FALL)
+                || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)
+                || damageSource.is(DamageTypeTagGenerator.BYPASS_EVASION)) {
             return false;
         }
 

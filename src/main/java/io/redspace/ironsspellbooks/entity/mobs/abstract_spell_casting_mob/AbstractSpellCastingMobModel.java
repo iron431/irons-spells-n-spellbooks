@@ -15,8 +15,6 @@ import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
 
     public AbstractSpellCastingMobModel(/*ResourceLocation assetSubpath*/) {
-        //TODO: (1.19.4 port) what is this resourcelocation supposed to point to?
-        // i think it may be auto-boilerplating, but we already did it for 1.19.2 so hopefully it sill works
         super(IronsSpellbooks.id("spellcastingmob"));
     }
 

@@ -24,7 +24,6 @@ public class ElectromancerArmorItem extends ExtendedArmorItem implements ArmorCa
     @Override
     @OnlyIn(Dist.CLIENT)
     public GeoArmorRenderer<?> supplyRenderer() {
-        //TODO: (1.19.4 port) i think this is not how you're supposed to do it. see WolfArmorItem
         return new GenericCustomArmorRenderer<>(new ElectromancerArmorModel() );
     }
 }

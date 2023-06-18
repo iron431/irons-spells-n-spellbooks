@@ -43,6 +43,8 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
             (new ImmutableMap.Builder<ArmorMaterial, MobEffectInstance>()).build();
     //.put(ModArmorMaterials., new MobEffectInstance(MobEffects.LUCK, 200, 1)).build();
 
+
+
     public ExtendedArmorItem(ExtendedArmorMaterials material, Type type, Properties settings) {
         super(material, type, settings);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();

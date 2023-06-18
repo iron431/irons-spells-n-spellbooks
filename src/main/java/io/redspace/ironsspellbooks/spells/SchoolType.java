@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.spells;
 
-import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
+import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -38,23 +38,23 @@ public enum SchoolType {
     public ResourceKey<DamageType> getDamageType() {
         switch (this) {
             case FIRE:
-                return DamageTypeRegistry.FIRE_MAGIC;
+                return ISSDamageTypes.FIRE_MAGIC;
             case ICE:
-                return DamageTypeRegistry.ICE_MAGIC;
+                return ISSDamageTypes.ICE_MAGIC;
             case LIGHTNING:
-                return DamageTypeRegistry.LIGHTNING_MAGIC;
+                return ISSDamageTypes.LIGHTNING_MAGIC;
             case HOLY:
-                return DamageTypeRegistry.HOLY_MAGIC;
+                return ISSDamageTypes.HOLY_MAGIC;
             case ENDER:
-                return DamageTypeRegistry.ENDER_MAGIC;
+                return ISSDamageTypes.ENDER_MAGIC;
             case BLOOD:
-                return DamageTypeRegistry.BLOOD_MAGIC;
+                return ISSDamageTypes.BLOOD_MAGIC;
             case EVOCATION:
-                return DamageTypeRegistry.EVOCATION_MAGIC;
+                return ISSDamageTypes.EVOCATION_MAGIC;
             case VOID:
-                return DamageTypeRegistry.VOID_MAGIC;
+                return ISSDamageTypes.VOID_MAGIC;
             case POISON:
-                return DamageTypeRegistry.POISON_MAGIC;
+                return ISSDamageTypes.POISON_MAGIC;
         }
 
         return DamageTypes.GENERIC_KILL;

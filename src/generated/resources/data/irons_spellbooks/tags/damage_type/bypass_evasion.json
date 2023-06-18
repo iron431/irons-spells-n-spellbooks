@@ -1,0 +1,14 @@
+{
+  "values": [
+    "minecraft:on_fire",
+    "minecraft:wither",
+    "minecraft:freeze",
+    "minecraft:starve",
+    "minecraft:drown",
+    "minecraft:stalagmite",
+    "minecraft:outside_border",
+    "minecraft:out_of_world",
+    "minecraft:dry_out",
+    "irons_spellbooks:blood_cauldron"
+  ]
+}

@@ -1,11 +1,10 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
+import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -37,7 +36,7 @@ public class HeartstopEffect extends MobEffect {
 
         //Whether or not player has spawn immunity (we want to damage them regardless)
         if (pLivingEntity.tickCount > 60) {
-            pLivingEntity.hurt(DamageSources.get(pLivingEntity.level(), DamageTypeRegistry.HEARTSTOP), playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+            pLivingEntity.hurt(DamageSources.get(pLivingEntity.level(), ISSDamageTypes.HEARTSTOP), playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
             //irons_spellbooks.LOGGER.debug("{} had no spawn immunity", pLivingEntity.getName().getString());
 
         } else {

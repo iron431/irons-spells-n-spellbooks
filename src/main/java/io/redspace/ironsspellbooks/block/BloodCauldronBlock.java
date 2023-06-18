@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.block;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.registries.DamageTypeRegistry;
+import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.core.BlockPos;
@@ -79,7 +79,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
             if (CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
                 if (level.getBlockState(pos).getBlock() instanceof AbstractCauldronBlock cauldron) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity.getBoundingBox().intersects(cauldron.getInteractionShape(blockState, level, pos).bounds().move(pos))) {
-                        if (livingEntity.hurt(DamageSources.get(level, DamageTypeRegistry.CAULDRON), 2)) {
+                        if (livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
                             MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
                             if (level.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
                                 execution.execute();
