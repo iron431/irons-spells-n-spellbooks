@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.render;
 
-import com.mojang.math.Matrix4f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
@@ -9,8 +10,6 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -90,7 +89,7 @@ public class ChargeSpellLayer {
 
 
             if (entity.generateCastingParticles) {
-                ClientSpellCastHelper.doAuraCastingParticles(entity, poseStack, bone, model.getBone("right_arm").get());
+                ClientSpellCastHelper.doAuraCastingParticles(entity, poseStack,model);// bone, model.getBone("right_arm").get());
                 entity.generateCastingParticles = false;
             }
 

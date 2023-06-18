@@ -34,7 +34,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.processor.IBone;
+import software.bernie.example.client.DefaultBipedBoneIdents;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
 
 import java.util.UUID;
 
@@ -227,21 +228,33 @@ public class ClientSpellCastHelper {
                 }));
     }
 
-    public static void doAuraCastingParticles(LivingEntity entity, PoseStack poseStack, IBone rightHand, IBone rightArm) {
+    public static void doAuraCastingParticles(LivingEntity entity, PoseStack poseStack, GeoModel model /*IBone rightHand, IBone rightArm*/) {
 
         var spellData = ClientMagicData.getSyncedSpellData(entity);
 
         if (spellData.getCastingSpellType() == SpellType.NONE_SPELL) {
             return;
         }
-
-        //var m = poseStack.last().pose();
+        var rightHand = model.getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT).get();
+        var rightArm = model.getBone("right_arm").get();
+        var body = model.getBone("torso").get();
+//        poseStack = new PoseStack();
+//        poseStack.pushPose();
+//        RenderUtils.translateToPivotPoint(poseStack, (GeoBone) rightHand);
+//        RenderUtils.rotateMatrixAroundBone(poseStack, (GeoBone) rightArm);
+//        RenderUtils.translateAwayFromPivotPoint(poseStack, (GeoBone) rightHand);
+//        poseStack.translate(-(-1 / 32.0F - .125), .5, 0);
+//        poseStack.translate(0, -rightHand.getPivotY() / 16, 0);
+//        poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+//        var m = poseStack.last().pose();
+//
+//        poseStack.popPose();
+//        var m = poseStack.last().pose();
         var m = Matrix4f.createTranslateMatrix(0f, 0f, 0f);
         //var m = Matrix4f.createTranslateMatrix((float) entity.position().x, (float) entity.position().y, (float) entity.position().z);
-
         m.multiplyWithTranslation(rightHand.getPivotX() / 16f, rightHand.getPivotY() / 16f, rightHand.getPivotZ() / 16f);
         if (rightArm.getRotationZ() != 0.0F) {
-            m.multiply(Vector3f.ZP.rotation(rightArm.getRotationZ()));
+            m.multiply(Vector3f.ZN.rotation(rightArm.getRotationZ()));
         }
 
         if (rightArm.getRotationY() != 0.0F) {
@@ -249,12 +262,14 @@ public class ClientSpellCastHelper {
         }
 
         if (rightArm.getRotationX() != 0.0F) {
-            m.multiply(Vector3f.XP.rotation(rightArm.getRotationX()));
-
+            m.multiply(Vector3f.XN.rotation(rightArm.getRotationX()));
         }
 
         m.multiplyWithTranslation(-rightHand.getPivotX() / 16f, -rightHand.getPivotY() / 16f, -rightHand.getPivotZ() / 16f);
-        //m.multiplyWithTranslation(0, -rightHand.getPivotY() / 16, 0);
+        //m.multiplyWithTranslation(-(-1 / 32.0F - .125f), .5f, 0);
+        m.multiplyWithTranslation(0, -rightHand.getPivotY() / 16, 0);
+
+        //        m.multiplyWithTranslation(-rightHand.getPivotX() / 16f, -rightHand.getPivotY() / 16f, -rightHand.getPivotZ() / 16f);
 //        m.multiply(Vector3f.YP.rotationDegrees(180));
         //m.multiplyWithTranslation((float) entity.position().x, (float) entity.position().y, (float) entity.position().z);
 
@@ -264,11 +279,10 @@ public class ClientSpellCastHelper {
 //                worldPos = worldPos.xRot(leftArm.getRotationX());
 //                worldPos = worldPos.subtract(leftHand.getPivotX() / 16f, leftHand.getPivotY() / 16f, leftHand.getPivotZ() / 16f);
 //                worldPos = worldPos.add(entity.position());
-        Vec3 vec3 = new Vec3(m.m03, m.m13, m.m23).yRot(Mth.PI);
+        Vec3 vec3 = new Vec3(m.m03, m.m13, m.m23)/*.yRot(Mth.PI)*/;
         var _x = /*m.m03*/vec3.x + entity.position().x;
         var _y = /*m.m13*/vec3.y + entity.position().y;
         var _z = /*m.m23*/vec3.z + entity.position().z;
-        IronsSpellbooks.LOGGER.debug("{}", m);
         float radius = entity.getBbWidth() * .7f;
         int count = 16;
         for (int i = 0; i < count; i++) {
