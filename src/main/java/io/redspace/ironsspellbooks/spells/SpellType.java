@@ -32,10 +32,10 @@ public enum SpellType {
      * When adding spell, add:
      * Spell Type
      * SpellType.getCastType
-     * SpellType.getSchoolType
-     * SpellType.getSpellForType
      * Translation
      * Icon
+     * Sounds
+     * Particles
      */
     NONE_SPELL(0, NoneSpell::new),
     FIREBALL_SPELL(1, FireballSpell::new),
@@ -99,8 +99,8 @@ public enum SpellType {
     FIRE_BOMB_SPELL(59, FireBombSpell::new),
     STARFALL_SPELL(60, StarfallSpell::new),
     HEALING_CIRCLE_SPELL(61, HealingCircleSpell::new),
-    GUIDING_BOLT_SPELL(62, GuidingBoltSpell::new)
-    ;
+    GUIDING_BOLT_SPELL(62, GuidingBoltSpell::new),
+    SUNBEAM_SPELL(63, SunbeamSpell::new);
 
     private final int value;
     private final int maxRarity;
@@ -139,7 +139,7 @@ public enum SpellType {
 
     public CastType getCastType() {
         return switch (this) {
-            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SUMMON_POLAR_BEAR_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL, VOID_TENTACLES_SPELL, SUMMON_HORSE_SPELL, ICE_BLOCK_SPELL, POISON_SPLASH_SPELL, BLIGHT_SPELL, ROOT_SPELL, HEALING_CIRCLE_SPELL ->
+            case FIREBALL_SPELL, WISP_SPELL, FANG_STRIKE_SPELL, FANG_WARD_SPELL, SUMMON_VEX_SPELL, RAISE_DEAD_SPELL, GREATER_HEAL_SPELL, CHAIN_CREEPER_SPELL, INVISIBILITY_SPELL, SUMMON_POLAR_BEAR_SPELL, BLESSING_OF_LIFE_SPELL, FORTIFY_SPELL, VOID_TENTACLES_SPELL, SUMMON_HORSE_SPELL, ICE_BLOCK_SPELL, POISON_SPLASH_SPELL, BLIGHT_SPELL, ROOT_SPELL, HEALING_CIRCLE_SPELL, SUNBEAM_SPELL ->
                     CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL, POISON_BREATH_SPELL, STARFALL_SPELL ->
                     CastType.CONTINUOUS;

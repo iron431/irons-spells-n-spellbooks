@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEnti
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
 import io.redspace.ironsspellbooks.entity.spells.HealingAoe;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProjectile;
+import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
@@ -286,6 +287,12 @@ public class EntityRegistry {
                     .sized(4f, .8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_cloud").toString()));
+
+    public static final RegistryObject<EntityType<Sunbeam>> SUNBEAM =
+            ENTITIES.register("sunbeam", () -> EntityType.Builder.<Sunbeam>of(Sunbeam::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "sunbeam").toString()));
 
     public static final RegistryObject<EntityType<DragonBreathPool>> DRAGON_BREATH_POOL =
             ENTITIES.register("dragon_breath_pool", () -> EntityType.Builder.<DragonBreathPool>of(DragonBreathPool::new, MobCategory.MISC)

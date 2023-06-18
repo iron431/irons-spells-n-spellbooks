@@ -219,6 +219,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.ICE_BLOCK_PROJECTILE.get(), IceBlockRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CRYOMANCER.get(), CryomancerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.POISON_CLOUD.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SUNBEAM.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DRAGON_BREATH_POOL.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.POISON_ARROW.get(), PoisonArrowRenderer::new);
         event.registerEntityRenderer(EntityRegistry.POISON_SPLASH.get(), NoopRenderer::new);
