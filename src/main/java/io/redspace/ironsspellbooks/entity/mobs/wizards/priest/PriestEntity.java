@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -27,7 +28,9 @@ import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
-import net.minecraft.world.entity.ai.util.GoalUtils;
+import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
@@ -36,12 +39,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.pathfinder.PathFinder;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class PriestEntity extends NeutralWizard implements VillagerDataHolder, SupportMob {
+public class PriestEntity extends NeutralWizard implements VillagerDataHolder, SupportMob, HomeOwner {
     private static final EntityDataAccessor<VillagerData> DATA_VILLAGER_DATA = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.VILLAGER_DATA);
     public GoalSelector supportTargetSelector;
 
@@ -54,6 +59,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
+        //this.goalSelector.addGoal(0, new OpenAndCloseDoorGoal(this));
+        this.goalSelector.addGoal(0, new OpenDoorGoal(this, true));
+        //this.goalSelector.addGoal(0, new OpenDoorGoal(this, true));
         this.goalSelector.addGoal(1, new WizardSupportGoal<>(this, 1.5f, 100, 120)
                 .setSpells(
                         List.of(SpellType.BLESSING_OF_LIFE_SPELL, SpellType.BLESSING_OF_LIFE_SPELL, SpellType.HEALING_CIRCLE_SPELL),
@@ -67,8 +75,11 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                         List.of())
                 .setSpellQuality(0.3f, 0.5f)
                 .setDrinksPotions());
-        this.goalSelector.addGoal(2, new OpenDoorGoal(this, true));
-        this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
+        //this.goalSelector.addGoal(2, new MoveThroughVillageGoal(this, 1f, false, 10, () -> true));
+        this.goalSelector.addGoal(3, new RoamVillageGoal(this, 30, 1f));
+        this.goalSelector.addGoal(4, new ReturnToHomeAtNightGoal<>(this, 1f));
+
+        this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 30, 1f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
 
@@ -90,6 +101,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         RandomSource randomsource = pLevel.getRandom();
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
+        this.setHome(this.blockPosition());
+        IronsSpellbooks.LOGGER.debug("Priest new home: {}", this.getHome());
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
@@ -108,6 +121,27 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(AttributeRegistry.CAST_TIME_REDUCTION.get(), 1.5)
                 .add(Attributes.MOVEMENT_SPEED, .23);
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level pLevel) {
+        return new GroundPathNavigation(this, pLevel) {
+            @Override
+            protected PathFinder createPathFinder(int pMaxVisitedNodes) {
+                this.nodeEvaluator = new WalkNodeEvaluator();
+                this.nodeEvaluator.setCanPassDoors(true);
+                this.nodeEvaluator.setCanOpenDoors(true);
+                return new PathFinder(this.nodeEvaluator, pMaxVisitedNodes);
+            }
+//
+//            @Override
+//            public NodeEvaluator getNodeEvaluator() {
+//                var nodeEvalutator = super.getNodeEvaluator();
+//                nodeEvalutator.setCanPassDoors(true);
+//                nodeEvalutator.setCanOpenDoors(true);
+//                return nodeEvalutator;
+//            }
+        };
     }
 
     protected SoundEvent getAmbientSound() {
@@ -158,5 +192,38 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         if (this.tickCount % 2 == 0 && this.tickCount > 1) {
             this.supportTargetSelector.tick();
         }
+        if (this.tickCount % 40 == 0) {
+            this.level.getEntities(this, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE)), (entity) -> entity instanceof Enemy).forEach((enemy) -> {
+                if (enemy instanceof Mob mob)
+                    if (mob.getTarget() == null)
+                        if (TargetingConditions.forCombat().test(mob, this))
+                            mob.setTarget(this);
+            });
+        }
+    }
+
+    BlockPos homePos;
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public BlockPos getHome() {
+        return homePos;
+    }
+
+    @Override
+    public void setHome(BlockPos homePos) {
+        this.homePos = homePos;
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        serializeHome(this, pCompound);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        deserializeHome(this, pCompound);
     }
 }
