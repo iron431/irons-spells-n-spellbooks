@@ -2,9 +2,10 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 32],
 	"parent": "block/block",
+	"render_type": "minecraft:cutout",
 	"ambientocclusion": false,
 	"textures": {
-		"0": "models/armor/netherite_layer_1",
+		"0": "irons_spellbooks:block/armor_pile",
 		"particle": "block/netherite_block"
 	},
 	"elements": [
