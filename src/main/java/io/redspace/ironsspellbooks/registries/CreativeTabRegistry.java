@@ -19,6 +19,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import software.bernie.geckolib.GeckoLib;
 
+import java.util.List;
+
 
 @Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CreativeTabRegistry {
@@ -102,6 +104,7 @@ public class CreativeTabRegistry {
 
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
             })
+            .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .build());
 
     public static final RegistryObject<CreativeModeTab> MATERIALS_TAB = TABS.register("spellbook_materials", () -> CreativeModeTab.builder()
@@ -162,6 +165,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.CRYOMANCER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.PYROMANCER_SPAWN_EGG.get());
             })
+            .withTabsBefore(EQUIPMENT_TAB.getKey())
             .build());
 
     @SubscribeEvent
