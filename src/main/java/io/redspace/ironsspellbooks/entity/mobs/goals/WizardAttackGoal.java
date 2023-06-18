@@ -82,7 +82,6 @@ public class WizardAttackGoal extends Goal {
         defenseSpells.add(SpellType.EVASION_SPELL);
         movementSpells.add(SpellType.TELEPORT_SPELL);
         supportSpells.add(SpellType.HEAL_SPELL);
-
     }
 
     public WizardAttackGoal setSpells(List<SpellType> attackSpells, List<SpellType> defenseSpells, List<SpellType> movementSpells, List<SpellType> supportSpells) {
@@ -109,7 +108,6 @@ public class WizardAttackGoal extends Goal {
         this.singleUseSpell = spellType;
         this.singleUseDelay = mob.level.random.nextIntBetweenInclusive(minDelay, maxDelay);
         this.singleUseLevel = mob.level.random.nextIntBetweenInclusive(minLevel, maxLevel);
-
         return this;
     }
 
@@ -194,7 +192,7 @@ public class WizardAttackGoal extends Goal {
         }
 
         //default attack timer
-            handleAttackLogic(distanceSquared);
+        handleAttackLogic(distanceSquared);
 
         singleUseDelay--;
 
@@ -286,21 +284,17 @@ public class WizardAttackGoal extends Goal {
             mob.hasUsedSingleAttack = true;
             mob.initiateCastSpell(singleUseSpell, singleUseLevel);
         } else {
-
-            int spellLevel = (int) (getNextSpellType().getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
-            spellLevel = Math.max(spellLevel, 1);
             var spellType = getNextSpellType();
+            int spellLevel = (int) (spellType.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
+            spellLevel = Math.max(spellLevel, 1);
 
             //Make sure cast is valid
             if (!AbstractSpell.getSpell(spellType, spellLevel).shouldAIStopCasting(mob, target))
                 mob.initiateCastSpell(spellType, spellLevel);
         }
-
     }
 
     protected SpellType getNextSpellType() {
-
-
         NavigableMap<Integer, ArrayList> weightedSpells = new TreeMap<>();
         int attackWeight = getAttackWeight();
         int defenseWeight = getDefenseWeight() - (lastSpellCategory == defenseSpells ? 100 : 0);
@@ -325,11 +319,6 @@ public class WizardAttackGoal extends Goal {
             weightedSpells.put(total, supportSpells);
         }
 
-
-//        if (spellListIndex == spellList.size() - 1) {
-//            spellListIndex = -1;
-//        }
-//        return spellList.get(++spellListIndex);
         if (total > 0) {
             int seed = mob.getRandom().nextInt(total);
             var spellList = weightedSpells.higherEntry(seed).getValue();
@@ -347,7 +336,6 @@ public class WizardAttackGoal extends Goal {
             //IronsSpellbooks.LOGGER.debug("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} (no spell)", attackWeight, defenseWeight, movementWeight, supportWeight);
             return SpellType.NONE_SPELL;
         }
-
     }
 
     @Override
@@ -355,7 +343,6 @@ public class WizardAttackGoal extends Goal {
         super.start();
         this.mob.setAggressive(true);
     }
-
 
     protected int getAttackWeight() {
         //We want attack to be a common action in any circumstance, but the more "confident" we are the more likely we are to attack (we have health or our target is weak)
@@ -419,7 +406,6 @@ public class WizardAttackGoal extends Goal {
         int runWeight = (int) (400 * healthInverted * healthInverted * distanceInverted * distanceInverted);
 
         return distanceWeight + losWeight + runWeight;
-
     }
 
     protected int getSupportWeight() {
