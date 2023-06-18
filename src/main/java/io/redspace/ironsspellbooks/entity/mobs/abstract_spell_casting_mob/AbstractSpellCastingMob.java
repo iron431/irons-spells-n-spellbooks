@@ -58,6 +58,8 @@ public abstract class AbstractSpellCastingMob extends Monster implements IAnimat
     private int drinkTime;
     public boolean hasUsedSingleAttack;
 
+    public boolean generateCastingParticles = false;
+
     protected AbstractSpellCastingMob(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         playerMagicData.setSyncedData(new SyncedSpellData(this));

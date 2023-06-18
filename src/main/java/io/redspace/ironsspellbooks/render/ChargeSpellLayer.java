@@ -1,10 +1,12 @@
 package io.redspace.ironsspellbooks.render;
 
+import com.mojang.math.Matrix4f;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRenderer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -62,6 +64,7 @@ public class ChargeSpellLayer {
             poseStack.popPose();
         }
     }
+
     public static class Geo extends GeoLayerRenderer<AbstractSpellCastingMob> {
         public Geo(IGeoRenderer entityRenderer) {
             super(entityRenderer);
@@ -84,6 +87,12 @@ public class ChargeSpellLayer {
             var arm = getArmFromUseHand(entity);
             //TODO: hold on... were still rotating around the right arm regardless...
             boolean flag = arm == HumanoidArm.LEFT;
+
+
+            if (entity.generateCastingParticles) {
+                ClientSpellCastHelper.doAuraCastingParticles(entity, poseStack, bone, model.getBone("right_arm").get());
+                entity.generateCastingParticles = false;
+            }
 
 
             if (spell == SpellType.LIGHTNING_LANCE_SPELL) {

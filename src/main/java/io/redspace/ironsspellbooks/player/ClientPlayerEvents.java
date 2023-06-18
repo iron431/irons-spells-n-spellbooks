@@ -64,9 +64,12 @@ public class ClientPlayerEvents {
                     Current Casting Spell Visuals
                      */
                     SpellType currentSpell = SpellType.getTypeFromValue(spellData.getCastingSpellId());
-                    if(currentSpell != SpellType.NONE_SPELL) {
+                    if (currentSpell != SpellType.NONE_SPELL) {
 
-                        ClientSpellCastHelper.doAuraCastingParticles(livingEntity, currentSpell.getSchoolType());
+                        if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
+                            abstractSpellCastingMob.generateCastingParticles = true;
+                        }
+                        //ClientSpellCastHelper.doAuraCastingParticles(livingEntity, currentSpell.getSchoolType());
 
                         if (currentSpell == SpellType.RAY_OF_SIPHONING_SPELL) {
                             Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);

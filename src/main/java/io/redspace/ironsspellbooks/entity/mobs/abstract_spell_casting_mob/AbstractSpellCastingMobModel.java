@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
+import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import software.bernie.example.client.DefaultBipedBoneIdents;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -39,6 +41,14 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
         IBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
         IBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
         IBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+
+//        IBone leftHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT);
+//        IBone rightHand = this.getAnimationProcessor().getBone(DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT);
+//
+//        if(entity.generateCastingParticles){
+//            ClientSpellCastHelper.doAuraCastingParticles(entity, leftHand, rightHand, leftArm, rightArm);
+//            entity.generateCastingParticles = false;
+//        }
 
         /*
             Head Controls

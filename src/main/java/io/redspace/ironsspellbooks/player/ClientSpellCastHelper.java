@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.player;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonConfiguration;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
@@ -30,6 +32,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.processor.IBone;
 
 import java.util.UUID;
 
@@ -222,7 +226,43 @@ public class ClientSpellCastHelper {
                 }));
     }
 
-    public static void doAuraCastingParticles(LivingEntity entity, SchoolType school) {
+    public static void doAuraCastingParticles(LivingEntity entity, PoseStack poseStack, IBone rightHand, IBone rightArm) {
+
+        var spellData = ClientMagicData.getSyncedSpellData(entity);
+
+        if (spellData.getCastingSpellType() == SpellType.NONE_SPELL) {
+            return;
+        }
+
+        var m = poseStack.last().pose();
+        //var m = Matrix4f.createTranslateMatrix((float) entity.position().x, (float) entity.position().y, (float) entity.position().z);
+
+        m.multiplyWithTranslation(rightHand.getPivotX() / 16f, rightHand.getPivotY() / 16f, rightHand.getPivotZ() / 16f);
+        if (rightArm.getRotationZ() != 0.0F) {
+            m.multiply(Vector3f.ZP.rotation(rightArm.getRotationZ()));
+        }
+
+        if (rightArm.getRotationY() != 0.0F) {
+            m.multiply(Vector3f.YP.rotation(rightArm.getRotationY()));
+        }
+
+        if (rightArm.getRotationX() != 0.0F) {
+            m.multiply(Vector3f.XP.rotation(rightArm.getRotationX()));
+
+        }
+
+        m.multiplyWithTranslation(-rightHand.getPivotX() / 16f, -rightHand.getPivotY() / 16f, -rightHand.getPivotZ() / 16f);
+        m.multiplyWithTranslation(-((1 / 32.0F) - .125f), .5f, 0);
+        m.multiplyWithTranslation(0, -rightHand.getPivotY() / 16, 0);
+        m.multiply(Vector3f.YP.rotationDegrees(180));
+
+//                Vec3 worldPos = new Vec3(leftHand.getPivotX() / 16f, leftHand.getPivotY() / 16f, leftHand.getPivotZ() / 16f);
+//                worldPos = worldPos.zRot(leftArm.getRotationZ());
+//                worldPos = worldPos.yRot(leftArm.getRotationY());
+//                worldPos = worldPos.xRot(leftArm.getRotationX());
+//                worldPos = worldPos.subtract(leftHand.getPivotX() / 16f, leftHand.getPivotY() / 16f, leftHand.getPivotZ() / 16f);
+//                worldPos = worldPos.add(entity.position());
+
         float radius = entity.getBbWidth() * .7f;
         int count = 16;
         for (int i = 0; i < count; i++) {
@@ -232,7 +272,13 @@ public class ClientSpellCastHelper {
                 x = Math.cos(theta) * radius;
                 z = Math.sin(theta) * radius;
                 float speed = entity.getRandom().nextFloat() * .05f + .02f;
-                entity.level.addParticle(getParticleFromSchool(school), entity.getX() + x, entity.getY(), entity.getZ() + z, 0, speed, 0);
+
+                var _x = m.m03 + entity.position().x;
+                var _y = m.m13 + entity.position().y;
+                var _z = m.m23 + entity.position().z;
+
+                entity.level.addParticle(getParticleFromSchool(spellData.getCastingSpellType().getSchoolType()), _x, _y, _z, 0, speed, 0);
+                //entity.level.addParticle(getParticleFromSchool(spellData.getCastingSpellType().getSchoolType()), _x + x, _y, _z + z, 0, speed, 0);
             }
         }
     }
