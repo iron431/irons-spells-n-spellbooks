@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
@@ -21,6 +22,8 @@ import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,6 +33,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -40,6 +45,7 @@ import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.Map;
+import java.util.Set;
 
 @Mod.EventBusSubscriber()
 public class ServerPlayerEvents {
@@ -325,4 +331,42 @@ public class ServerPlayerEvents {
 //            }
 //        }
 //    }
+@SubscribeEvent
+public static void onAnvilRecipe(AnvilUpdateEvent event) {
+    //IronsSpellbooks.LOGGER.debug("onAnvilRecipe");
+    if (event.getRight().is(ItemRegistry.SHRIVING_STONE.get())) {
+        //IronsSpellbooks.LOGGER.debug("shriving stone");
+
+        ItemStack newResult = event.getLeft().copy();
+        if (newResult.is(ItemRegistry.SCROLL.get()))
+            return;
+        boolean flag = false;
+        if (SpellData.hasSpellData(newResult)) {
+            newResult.removeTagKey(SpellData.ISB_SPELL);
+            //IronsSpellbooks.LOGGER.debug("spell data");
+
+            flag = true;
+        } else if (UpgradeUtils.isUpgraded(newResult)) {
+            newResult.removeTagKey(UpgradeUtils.Upgrades);
+            flag = true;
+            //IronsSpellbooks.LOGGER.debug("upgrade data");
+
+        }
+        if (flag) {
+            var itemName = event.getName();
+            if (itemName != null && !Util.isBlank(itemName)) {
+                if (!itemName.equals(newResult.getHoverName().getString())) {
+                    newResult.setHoverName(Component.literal(itemName));
+                }
+            } else if (newResult.hasCustomHoverName()) {
+                newResult.resetHoverName();
+            }
+            event.setOutput(newResult);
+            event.setCost(1);
+            event.setMaterialCost(1);
+            //IronsSpellbooks.LOGGER.debug("new result: {}", newResult);
+
+        }
+    }
+}
 }
