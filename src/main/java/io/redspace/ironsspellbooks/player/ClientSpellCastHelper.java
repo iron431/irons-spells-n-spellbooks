@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.player;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonConfiguration;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
@@ -9,6 +10,7 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.CastData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.CastSource;
@@ -32,7 +34,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
 
 import java.util.UUID;
@@ -234,7 +235,8 @@ public class ClientSpellCastHelper {
             return;
         }
 
-        var m = poseStack.last().pose();
+        //var m = poseStack.last().pose();
+        var m = Matrix4f.createTranslateMatrix(0f, 0f, 0f);
         //var m = Matrix4f.createTranslateMatrix((float) entity.position().x, (float) entity.position().y, (float) entity.position().z);
 
         m.multiplyWithTranslation(rightHand.getPivotX() / 16f, rightHand.getPivotY() / 16f, rightHand.getPivotZ() / 16f);
@@ -252,9 +254,9 @@ public class ClientSpellCastHelper {
         }
 
         m.multiplyWithTranslation(-rightHand.getPivotX() / 16f, -rightHand.getPivotY() / 16f, -rightHand.getPivotZ() / 16f);
-        m.multiplyWithTranslation(-((1 / 32.0F) - .125f), .5f, 0);
-        m.multiplyWithTranslation(0, -rightHand.getPivotY() / 16, 0);
-        m.multiply(Vector3f.YP.rotationDegrees(180));
+        //m.multiplyWithTranslation(0, -rightHand.getPivotY() / 16, 0);
+//        m.multiply(Vector3f.YP.rotationDegrees(180));
+        //m.multiplyWithTranslation((float) entity.position().x, (float) entity.position().y, (float) entity.position().z);
 
 //                Vec3 worldPos = new Vec3(leftHand.getPivotX() / 16f, leftHand.getPivotY() / 16f, leftHand.getPivotZ() / 16f);
 //                worldPos = worldPos.zRot(leftArm.getRotationZ());
@@ -262,7 +264,11 @@ public class ClientSpellCastHelper {
 //                worldPos = worldPos.xRot(leftArm.getRotationX());
 //                worldPos = worldPos.subtract(leftHand.getPivotX() / 16f, leftHand.getPivotY() / 16f, leftHand.getPivotZ() / 16f);
 //                worldPos = worldPos.add(entity.position());
-
+        Vec3 vec3 = new Vec3(m.m03, m.m13, m.m23).yRot(Mth.PI);
+        var _x = /*m.m03*/vec3.x + entity.position().x;
+        var _y = /*m.m13*/vec3.y + entity.position().y;
+        var _z = /*m.m23*/vec3.z + entity.position().z;
+        IronsSpellbooks.LOGGER.debug("{}", m);
         float radius = entity.getBbWidth() * .7f;
         int count = 16;
         for (int i = 0; i < count; i++) {
@@ -273,9 +279,9 @@ public class ClientSpellCastHelper {
                 z = Math.sin(theta) * radius;
                 float speed = entity.getRandom().nextFloat() * .05f + .02f;
 
-                var _x = m.m03 + entity.position().x;
-                var _y = m.m13 + entity.position().y;
-                var _z = m.m23 + entity.position().z;
+//                var _x = m.m03 + entity.position().x;
+//                var _y = m.m13 + entity.position().y;
+//                var _z = m.m23 + entity.position().z;
 
                 entity.level.addParticle(getParticleFromSchool(spellData.getCastingSpellType().getSchoolType()), _x, _y, _z, 0, speed, 0);
                 //entity.level.addParticle(getParticleFromSchool(spellData.getCastingSpellType().getSchoolType()), _x + x, _y, _z + z, 0, speed, 0);
