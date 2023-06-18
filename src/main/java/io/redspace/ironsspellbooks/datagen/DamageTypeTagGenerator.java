@@ -25,6 +25,7 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
     }
 
     public static final TagKey<DamageType> BYPASS_EVASION = create("bypass_evasion");
+    public static final TagKey<DamageType> LONG_CAST_IGNORE = create("long_cast_ignore");
     public static final TagKey<DamageType> FIRE_MAGIC = create("fire_magic");
     public static final TagKey<DamageType> ICE_MAGIC = create("ice_magic");
     public static final TagKey<DamageType> LIGHTNING_MAGIC = create("lightning_magic");
@@ -57,5 +58,12 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 DamageTypes.FELL_OUT_OF_WORLD,
                 DamageTypes.DRY_OUT,
                 ISSDamageTypes.CAULDRON);
+
+        tag(LONG_CAST_IGNORE).add(
+                DamageTypes.FREEZE,
+                DamageTypes.STARVE,
+                DamageTypes.ON_FIRE,
+                DamageTypes.WITHER
+        );
     }
 }

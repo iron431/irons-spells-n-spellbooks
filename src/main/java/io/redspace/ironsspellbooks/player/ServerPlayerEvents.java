@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
@@ -272,13 +273,9 @@ public class ServerPlayerEvents {
         }
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            if (playerMagicData.isCasting() &&
-                    //TODO: 1.19.4 port: make a "dot" damage tag for our own uses
-                    SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG/* &&
-                    event.getSource() != DamageSource.FREEZE &&
-                    event.getSource() != DamageSource.STARVE &&
-                    event.getSource() != DamageSource.ON_FIRE &&
-                    event.getSource() != DamageSource.WITHER*/) {
+            if (playerMagicData.isCasting()
+                    && SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG
+                    && !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE)) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
         }

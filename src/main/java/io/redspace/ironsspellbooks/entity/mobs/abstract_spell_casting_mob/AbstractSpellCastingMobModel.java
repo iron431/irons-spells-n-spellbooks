@@ -128,7 +128,6 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             addRotationX(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD);
             addRotationX(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD);
         }
-        //TODO: (1.20 port) geckolib is doing some very different and weird stuff. bones seem to remember their prevous rotation and additive modifiers compound tick after tick. we'll have to deal with this later
         //leftArm.updateRotation(leftArm.getRotX(),leftArm.getRotY(),leftArm.getRotZ());
         //rightArm.updateRotation(rightArm.getRotX(),rightArm.getRotY(),rightArm.getRotZ());
 
