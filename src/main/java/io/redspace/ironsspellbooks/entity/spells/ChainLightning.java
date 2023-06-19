@@ -2,16 +2,21 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.particle.ZapParticleOption;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.EntityPositionSource;
+import net.minecraft.world.level.gameevent.PositionSource;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +58,14 @@ public class ChainLightning extends AbstractMagicProjectile {
                 for (int i = 0; i < j; i++) {
                     var entity = lastVictims.get(i);
                     level.getEntities(entity, entity.getBoundingBox().inflate(range), this::canHitEntity).forEach((victim) -> {
-                        if (hits < maxConnections && victim.distanceToSqr(entity) < range * range && Utils.hasLineOfSight(level, entity.getEyePosition(), victim.getEyePosition(), true))
+                        if (hits < maxConnections && victim.distanceToSqr(entity) < range * range && Utils.hasLineOfSight(level, entity.getEyePosition(), victim.getEyePosition(), true)) {
                             doHurt(victim);
+                            Vec3 start = entity.position().add(0, entity.getBbHeight() / 2, 0);
+                            PositionSource dest = new EntityPositionSource(victim, victim.getBbHeight() / 2);
+                            ((ServerLevel) level).sendParticles(new ZapParticleOption(dest), start.x, start.y, start.z, 1, 0, 0, 0, 0);
+
+                        }
+
                     });
                 }
                 lastVictims.removeAll(allVictims);
@@ -77,7 +88,7 @@ public class ChainLightning extends AbstractMagicProjectile {
 
     @Override
     protected boolean canHitEntity(Entity pTarget) {
-        return pTarget != getOwner() && !hasAlreadyZapped(pTarget) && super.canHitEntity(pTarget);
+        return !DamageSources.isFriendlyFireBetween(pTarget, getOwner()) && pTarget != getOwner() && !hasAlreadyZapped(pTarget) && super.canHitEntity(pTarget);
     }
 
     @Override

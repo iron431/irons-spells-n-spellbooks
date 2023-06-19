@@ -65,7 +65,6 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
             var to = segments.get(i + 1).add(start);
             drawHull(from, to, width, height, pose, consumer, 0, 156, 255, 30);
             drawHull(from, to, width * .55f, height * .55f, pose, consumer, 0, 226, 255, 30);
-
         }
 
         consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity),0,0));
@@ -73,7 +72,6 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
             var from = segments.get(i).add(start);
             var to = segments.get(i + 1).add(start);
             drawHull(from, to, width * .2f, height * .2f, pose, consumer, 255, 255, 255, 255);
-
         }
 
 
@@ -83,7 +81,7 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    private void drawHull(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a) {
+    public void drawHull(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a) {
         //Bottom
         drawQuad(from.subtract(0, height * .5f, 0), to.subtract(0, height * .5f, 0), width, 0, pose, consumer, r, g, b, a);
         //Top
@@ -94,7 +92,7 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         drawQuad(from.add(width * .5f, 0, 0), to.add(width * .5f, 0, 0), 0, height, pose, consumer, r, g, b, a);
     }
 
-    private void drawQuad(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a) {
+    public void drawQuad(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a) {
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
 
@@ -106,7 +104,6 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
         consumer.vertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).color(r, g, b, a).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).color(r, g, b, a).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).color(r, g, b, a).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(240).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-
     }
 
     @Override

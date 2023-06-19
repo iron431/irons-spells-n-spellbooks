@@ -55,7 +55,7 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
         }
     }
 
-    private List<Vec3> generateBranch(Vec3 origin, int maxLength, float splitChance, int recursionCount) {
+    public static List<Vec3> generateBranch(Vec3 origin, int maxLength, float splitChance, int recursionCount) {
         List<Vec3> branchSegements = new ArrayList<>();
         Random random = new Random();
         int branches = random.nextInt(maxLength + 1);
@@ -77,7 +77,7 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
         return age;
     }
 
-    private Vec3 randomVector(float radius) {
+    public static Vec3 randomVector(float radius) {
         double x = Math.random() * 2 * radius - radius;
         double y = Math.random() * 2 * radius - radius;
         double z = Math.random() * 2 * radius - radius;
