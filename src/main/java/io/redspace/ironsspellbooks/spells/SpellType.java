@@ -100,7 +100,8 @@ public enum SpellType {
     STARFALL_SPELL(60, StarfallSpell::new),
     HEALING_CIRCLE_SPELL(61, HealingCircleSpell::new),
     GUIDING_BOLT_SPELL(62, GuidingBoltSpell::new),
-    SUNBEAM_SPELL(63, SunbeamSpell::new);
+    SUNBEAM_SPELL(63, SunbeamSpell::new),
+    GUST_SPELL(64, GustSpell::new);
 
     private final int value;
     private final int maxRarity;
@@ -143,7 +144,7 @@ public enum SpellType {
                     CastType.LONG;
             case ELECTROCUTE_SPELL, CONE_OF_COLD_SPELL, FIRE_BREATH_SPELL, WALL_OF_FIRE_SPELL, CLOUD_OF_REGENERATION_SPELL, RAY_OF_SIPHONING_SPELL, BLAZE_STORM_SPELL, DRAGON_BREATH_SPELL, POISON_BREATH_SPELL, STARFALL_SPELL ->
                     CastType.CONTINUOUS;
-            case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL, POISON_ARROW_SPELL, ACID_ORB_SPELL, BLACK_HOLE_SPELL, FIRE_BOMB_SPELL -> CastType.CHARGE;
+            case LIGHTNING_LANCE_SPELL, MAGIC_ARROW_SPELL, POISON_ARROW_SPELL, ACID_ORB_SPELL, BLACK_HOLE_SPELL, FIRE_BOMB_SPELL, GUST_SPELL -> CastType.CHARGE;
             default -> CastType.INSTANT;
         };
     }

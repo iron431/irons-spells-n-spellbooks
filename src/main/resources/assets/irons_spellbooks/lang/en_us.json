@@ -180,6 +180,7 @@
   "ui.irons_spellbooks.aoe_damage": "%d AOE Damage",
   "ui.irons_spellbooks.aoe_healing": "%d AOE Healing",
   "ui.irons_spellbooks.additional_poisoned_damage": "%d%% Additional Poisoned Damage",
+  "ui.irons_spellbooks.strength": "%d Strength",
   "ui.irons_spellbooks.distance": "%d Block Range",
   "ui.irons_spellbooks.dimensions": "%dx%dx%d",
   "ui.irons_spellbooks.radius": "%d Block Radius",
@@ -323,6 +324,7 @@
   "spell.irons_spellbooks.starfall": "Starfall",
   "spell.irons_spellbooks.healing_circle": "Healing Circle",
   "spell.irons_spellbooks.guiding_bolt": "Guiding Bolt",
+  "spell.irons_spellbooks.gust": "Gust",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -388,6 +390,7 @@
   "spell.irons_spellbooks.starfall.guide": "Target a single area and continuously rain down arcane comets from above for the duration of the spell",
   "spell.irons_spellbooks.healing_circle.guide": "Around a targeted creature or block, place a stationary circle of holy magic that heals allies within",
   "spell.irons_spellbooks.guiding_bolt.guide": "Fire a slow bolt of holy energy. Creatures hit will gain the Guided effect, homing nearby projectiles in towards them.",
+  "spell.irons_spellbooks.gust.guide": "Conjure a strong gust of wind, knocking back creatures in a conical shape.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

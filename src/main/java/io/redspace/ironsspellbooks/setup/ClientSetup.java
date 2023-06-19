@@ -33,6 +33,7 @@ import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltRenderer;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltRenderer;
+import io.redspace.ironsspellbooks.entity.spells.gust.GustRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockRenderer;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
@@ -106,6 +107,7 @@ public class ClientSetup {
 
         event.registerLayerDefinition(ShieldModel.LAYER_LOCATION, ShieldModel::createBodyLayer);
         event.registerLayerDefinition(AcidOrbRenderer.MODEL_LAYER_LOCATION, AcidOrbRenderer::createBodyLayer);
+        event.registerLayerDefinition(GustRenderer.MODEL_LAYER_LOCATION, GustRenderer::createBodyLayer);
         event.registerLayerDefinition(FireballRenderer.MODEL_LAYER_LOCATION, FireballRenderer::createBodyLayer);
         event.registerLayerDefinition(FireboltRenderer.MODEL_LAYER_LOCATION, FireboltRenderer::createBodyLayer);
         event.registerLayerDefinition(GuidingBoltRenderer.MODEL_LAYER_LOCATION, GuidingBoltRenderer::createBodyLayer);
@@ -233,6 +235,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.HEALING_AOE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.PRIEST.get(), PriestRenderer::new);
         event.registerEntityRenderer(EntityRegistry.GUIDING_BOLT.get(), GuidingBoltRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.GUST_COLLIDER.get(), GustRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

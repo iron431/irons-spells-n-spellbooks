@@ -112,6 +112,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.SUMMON_HORSE_SPELL, SummonHorseSpell.defaultConfig, true);
         createSpellConfig(SpellType.SUMMON_VEX_SPELL, SummonVexSpell.defaultConfig, true);
         createSpellConfig(SpellType.SPECTRAL_HAMMER_SPELL, SpectralHammerSpell.defaultConfig, true);
+        createSpellConfig(SpellType.GUST_SPELL, GustSpell.defaultConfig, true);
         //Fire
         BUILDER.comment("Fire Spells");
         createSpellConfig(SpellType.BLAZE_STORM_SPELL, BlazeStormSpell.defaultConfig, true);
