@@ -4,8 +4,10 @@ package io.redspace.ironsspellbooks.entity.spells.gust;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -60,6 +62,7 @@ public class GustCollider extends AbstractConeProjectile {
             if (!DamageSources.isFriendlyFireBetween(entity, target)) {
                 target.knockback(strength, entity.getX() - target.getX(), entity.getZ() - target.getZ());
                 target.hurtMarked = true;
+                target.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 100));
             }
 
     }
