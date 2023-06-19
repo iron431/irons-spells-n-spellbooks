@@ -65,9 +65,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                         List.of(SpellType.BLESSING_OF_LIFE_SPELL, SpellType.BLESSING_OF_LIFE_SPELL, SpellType.HEALING_CIRCLE_SPELL),
                         List.of(SpellType.FORTIFY_SPELL)
                 ));
-        this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 45, 70)
+        this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 35, 60)
                 .setSpells(
-                        List.of(SpellType.WISP_SPELL, SpellType.GUIDING_BOLT_SPELL),
+                        List.of(SpellType.WISP_SPELL, SpellType.GUIDING_BOLT_SPELL, SpellType.GUST_SPELL),
                         List.of(SpellType.ROOT_SPELL),
                         List.of(),
                         List.of())
@@ -104,7 +104,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        //this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.PRIEST_HELMET.get()));
+        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.PRIEST_HELMET.get()));
         this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.PRIEST_CHESTPLATE.get()));
         this.setDropChance(EquipmentSlot.HEAD, 0.0F);
         this.setDropChance(EquipmentSlot.CHEST, 0.0F);

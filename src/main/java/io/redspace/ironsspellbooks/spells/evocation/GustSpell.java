@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.effect.AirborneEffect;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -21,7 +23,8 @@ public class GustSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.strength", Utils.stringTruncation(getStrength(caster), 1))
+                Component.translatable("ui.irons_spellbooks.strength", Utils.stringTruncation(getStrength(caster), 1)),
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(AirborneEffect.getDamageFromLevel(getLevel(caster)), 1))
         );
     }
 
@@ -62,6 +65,7 @@ public class GustSpell extends AbstractSpell {
         gust.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0).add(entity.getForward().normalize().scale(2f)));
         gust.range = range;
         gust.strength = strength;
+        gust.amplifier = this.getLevel(entity) - 1;
         level.addFreshEntity(gust);
         gust.setDealDamageActive();
         gust.tick();
@@ -81,7 +85,6 @@ public class GustSpell extends AbstractSpell {
         return getSpellPower(caster);
     }
 
-
     public static final AnimationHolder CHARGE_WAVY_ANIMATION = new AnimationHolder("charge_wavy", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 
     @Override
@@ -94,4 +97,8 @@ public class GustSpell extends AbstractSpell {
         return AbstractSpell.ANIMATION_LONG_CAST_FINISH;
     }
 
+    @Override
+    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
+        return target.distanceToSqr(mob) < getRange(mob) * getRange(mob) * 1.25;
+    }
 }

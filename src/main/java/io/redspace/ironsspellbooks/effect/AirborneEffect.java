@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -20,25 +19,26 @@ public class AirborneEffect extends MobEffect {
 
     int delay = 0;
 
+    public static final int damage_per_amp = 1;
     @Override
     public void applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
         if (!livingEntity.level.isClientSide) {
             if (livingEntity.horizontalCollision) {
-                IronsSpellbooks.LOGGER.debug("{}", livingEntity.getDeltaMovement());
-                double d11 = livingEntity.getDeltaMovement().horizontalDistance();
-                float f1 = (float) (d11 * 10.0D - 3.0D);
-                if (f1 > 0.0F) {
-                    livingEntity.playSound(SoundEvents.HOSTILE_BIG_FALL, 1.0F, 1.0F);
-                    livingEntity.hurt(DamageSource.FLY_INTO_WALL, f1);
-                    livingEntity.removeEffect(MobEffectRegistry.AIRBORNE.get());
-                    return;
-                }
+                //IronsSpellbooks.LOGGER.debug("{}", livingEntity.getDeltaMovement());
+                //double d11 = livingEntity.getDeltaMovement().horizontalDistance();
+                //float f1 = (float) (d11 * 10.0D - 3.0D);
+                //if (f1 > 0.0F) {
+                livingEntity.playSound(SoundEvents.HOSTILE_BIG_FALL, 2.0F, 1.5F);
+                livingEntity.hurt(DamageSource.FLY_INTO_WALL, getDamageFromLevel(pAmplifier + 1));
+                livingEntity.removeEffect(MobEffectRegistry.AIRBORNE.get());
+                //}
             }
-            //if (delay == 0)
-            //    delay = livingEntity.tickCount;
-            //else if (livingEntity.tickCount - delay > 3 && livingEntity.isOnGround())
-            //    livingEntity.removeEffect(MobEffectRegistry.AIRBORNE.get());
+
         }
 
+    }
+
+    public static float getDamageFromLevel(int level) {
+        return 4 + level * damage_per_amp;
     }
 }

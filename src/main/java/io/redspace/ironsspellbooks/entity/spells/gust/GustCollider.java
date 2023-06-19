@@ -62,7 +62,7 @@ public class GustCollider extends AbstractConeProjectile {
             if (!DamageSources.isFriendlyFireBetween(entity, target)) {
                 target.knockback(strength, entity.getX() - target.getX(), entity.getZ() - target.getZ());
                 target.hurtMarked = true;
-                target.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 100));
+                target.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 60, amplifier));
             }
 
     }
@@ -85,7 +85,7 @@ public class GustCollider extends AbstractConeProjectile {
 
     public float strength;
     public float range;
-
+    public int amplifier;
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
