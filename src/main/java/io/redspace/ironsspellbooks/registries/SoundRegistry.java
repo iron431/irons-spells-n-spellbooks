@@ -62,6 +62,10 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> BLOOD_NEEDLE_IMPACT = registerSoundEvent("entity.blood_needle.impact");
     public static RegistryObject<SoundEvent> FIRE_BOMB_CHARGE = registerSoundEvent("spell.fire_bomb.charge");
     public static RegistryObject<SoundEvent> FIRE_BOMB_CAST = registerSoundEvent("spell.fire_bomb.cast");
+    public static RegistryObject<SoundEvent> GUST_CHARGE = registerSoundEvent("spell.gust.charge");
+    public static RegistryObject<SoundEvent> GUST_CAST = registerSoundEvent("spell.gust.cast");
+    public static RegistryObject<SoundEvent> GUIDING_BOLT_IMPACT = registerSoundEvent("entity.guiding_bolt.impact");
+    public static RegistryObject<SoundEvent> GUIDING_BOLT_CAST = registerSoundEvent("spell.guiding_bolt.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

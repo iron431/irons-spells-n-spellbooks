@@ -312,5 +312,28 @@
     "sounds": [
       "irons_spellbooks:fire_bomb_start"
     ]
+  },
+  "spell.gust.charge": {
+    "sounds": [
+      "irons_spellbooks:gust_charge"
+    ]
+  },
+  "spell.gust.cast": {
+    "sounds": [
+      "irons_spellbooks:gust_cast_1",
+      "irons_spellbooks:gust_cast_2",
+      "irons_spellbooks:gust_cast_3",
+      "irons_spellbooks:gust_cast_4"
+    ]
+  },
+  "entity.guiding_bolt.impact": {
+    "sounds": [
+      "irons_spellbooks:guiding_bolt_hit"
+    ]
+  },
+  "spell.guiding_bolt.cast": {
+    "sounds": [
+      "irons_spellbooks:guiding_bolt_cast"
+    ]
   }
 }

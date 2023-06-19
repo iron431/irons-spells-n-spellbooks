@@ -17,9 +17,7 @@ public class AirborneEffect extends MobEffect {
         return true;
     }
 
-    int delay = 0;
-
-    public static final int damage_per_amp = 1;
+    public static final float damage_per_amp = 0.5f;
     @Override
     public void applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
         if (!livingEntity.level.isClientSide) {

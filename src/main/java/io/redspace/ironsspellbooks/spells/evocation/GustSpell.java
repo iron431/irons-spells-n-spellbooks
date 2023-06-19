@@ -48,12 +48,12 @@ public class GustSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.FIRE_BOMB_CHARGE.get());
+        return Optional.of(SoundRegistry.GUST_CHARGE.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.FIRE_BOMB_CAST.get());
+        return Optional.of(SoundRegistry.GUST_CAST.get());
     }
 
     @Override

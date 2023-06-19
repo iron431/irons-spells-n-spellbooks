@@ -67,7 +67,7 @@ public class GuidingBoltRenderer extends EntityRenderer<GuidingBoltProjectile> {
         this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
         consumer = bufferSource.getBuffer(RenderType.energySwirl(getFireTextureLocation(entity), 0, 0));
-        poseStack.scale(0.5f, 0.5f, 0.5f);
+        poseStack.scale(0.4f, 0.4f, 0.4f);
         this.outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
 
