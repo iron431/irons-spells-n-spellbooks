@@ -101,7 +101,8 @@ public enum SpellType {
     HEALING_CIRCLE_SPELL(61, HealingCircleSpell::new),
     GUIDING_BOLT_SPELL(62, GuidingBoltSpell::new),
     SUNBEAM_SPELL(63, SunbeamSpell::new),
-    GUST_SPELL(64, GustSpell::new);
+    GUST_SPELL(64, GustSpell::new),
+    CHAIN_LIGHTNING_SPELL(65, ChainLightningSpell::new);
 
     private final int value;
     private final int maxRarity;

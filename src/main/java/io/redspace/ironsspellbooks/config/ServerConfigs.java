@@ -148,6 +148,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, LightningLanceSpell.defaultConfig, true);
         createSpellConfig(SpellType.CHARGE_SPELL, ChargeSpell.defaultConfig, true);
         createSpellConfig(SpellType.ASCENSION_SPELL, AscensionSpell.defaultConfig, true);
+        createSpellConfig(SpellType.CHAIN_LIGHTNING_SPELL, ChainLightningSpell.defaultConfig, true);
         //Void
         BUILDER.comment("Void Spells");
         createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, AbyssalShroudSpell.defaultConfig, true);
