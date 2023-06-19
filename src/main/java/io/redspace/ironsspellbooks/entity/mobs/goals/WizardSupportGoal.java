@@ -182,6 +182,7 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
         //Make sure cast is valid
         if (!AbstractSpell.getSpell(spellType, spellLevel).shouldAIStopCasting(mob, target))
             mob.initiateCastSpell(spellType, spellLevel);
+        mob.setSupportTarget(null);
 
     }
 
