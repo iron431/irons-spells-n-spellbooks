@@ -1,4 +1,4 @@
-// 1.20	2023-06-17T12:58:55.6478654	Registries
+// 1.20	2023-06-20T16:25:13.0898144	Registries
 98e97fef80c4433bb746da6322c4a94d69fe2a7e data/irons_spellbooks/damage_type/blood_cauldron.json
 06e8e3da773193115e4569bed7f8964ea5b83917 data/irons_spellbooks/damage_type/blood_magic.json
 3ebbe39a8df6dae168eee32a471c5f2bf26a6b25 data/irons_spellbooks/damage_type/dragon_breath_pool.json
@@ -15,4 +15,4 @@ f7314063596d05e3b73e997130bd0948e91cf5f4 data/irons_spellbooks/damage_type/poiso
 66393fecd784ca8c91023a4111a1425b4ccf71d9 data/irons_spellbooks/damage_type/void_magic.json
 02157c07a3835ea158b8b1473d2726c16da6ceb6 data/irons_spellbooks/forge/biome_modifier/add_arcane_debris_ore.json
 ddc62c4f31b90e0946df28a550d3830cec76f78d data/irons_spellbooks/worldgen/configured_feature/ore_arcane_debris.json
-c9741bc3338aa5e520e324962defabda49ccc76a data/irons_spellbooks/worldgen/placed_feature/ore_arcane_debris.json
+a6533644cbeb1572c56bcabff15071d41809c783 data/irons_spellbooks/worldgen/placed_feature/ore_arcane_debris.json
