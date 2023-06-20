@@ -112,7 +112,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
-                .add(Attributes.MAX_HEALTH, 40.0)
+                .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(AttributeRegistry.CAST_TIME_REDUCTION.get(), 1.5)
                 .add(Attributes.MOVEMENT_SPEED, .23);
@@ -184,7 +184,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     protected void customServerAiStep() {
         super.customServerAiStep();
         //Vanilla does this seemingly-excessive tick count solution. maybe there's a method to the madness
-        if (this.tickCount % 2 == 0 && this.tickCount > 1) {
+        if (this.tickCount % 4 == 0 && this.tickCount > 1) {
             this.supportTargetSelector.tick();
         }
         if (this.tickCount % 60 == 0) {
