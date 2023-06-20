@@ -164,6 +164,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.NECROMANCER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.CRYOMANCER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.PYROMANCER_SPAWN_EGG.get());
+                entries.accept(ItemRegistry.PRIEST_SPAWN_EGG.get());
             })
             .withTabsBefore(EQUIPMENT_TAB.getKey())
             .build());
