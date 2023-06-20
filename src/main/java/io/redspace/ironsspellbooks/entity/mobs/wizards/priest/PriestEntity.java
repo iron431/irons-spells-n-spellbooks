@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -87,9 +88,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
         this.supportTargetSelector = new GoalSelector(this.level.getProfilerSupplier());
         this.supportTargetSelector.addGoal(0, new FindSupportableTargetGoal<>(this, Mob.class, true, (mob) -> {
-            //TODO: entity tag
-            //IronsSpellbooks.LOGGER.debug("priest mob search predicating");
-            return !isAngryAt(mob) && mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob instanceof Villager || mob instanceof IronGolem || mob instanceof Player);
+            return !isAngryAt(mob) && mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob.getType().is(ModTags.VILLAGE_ALLIES) || mob instanceof Player);
         }));
     }
 

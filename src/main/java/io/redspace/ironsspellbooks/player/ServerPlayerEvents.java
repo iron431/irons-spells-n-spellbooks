@@ -9,15 +9,18 @@ import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
+import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -28,6 +31,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
@@ -235,10 +239,19 @@ public class ServerPlayerEvents {
 //    }
 
     @SubscribeEvent
-    public static void onLivingDeath(LivingDeathEvent event){
-        if(event.getEntity() instanceof ServerPlayer serverPlayer){
+    public static void onLivingDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             serverPlayer.clearFire();
             serverPlayer.setTicksFrozen(0);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
+        var newTarget = event.getNewTarget();
+        if (newTarget != null && newTarget.getType().is(ModTags.VILLAGE_ALLIES) && event.getEntity().getType().is(ModTags.VILLAGE_ALLIES)
+        ) {
+            event.setCanceled(true);
         }
     }
 
@@ -308,18 +321,18 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onProjectileImpact(ProjectileImpactEvent event){
-        if(event.getRayTraceResult() instanceof EntityHitResult entityHitResult){
+    public static void onProjectileImpact(ProjectileImpactEvent event) {
+        if (event.getRayTraceResult() instanceof EntityHitResult entityHitResult) {
             var victim = entityHitResult.getEntity();
-            if(victim instanceof AbstractSpellCastingMob || victim instanceof Player){
-                var livingEntity = (LivingEntity)victim;
+            if (victim instanceof AbstractSpellCastingMob || victim instanceof Player) {
+                var livingEntity = (LivingEntity) victim;
                 PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(livingEntity);
                 if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
-                    if (EvasionEffect.doEffect(livingEntity, new IndirectEntityDamageSource("noop",event.getProjectile(),event.getProjectile().getOwner()))) {
+                    if (EvasionEffect.doEffect(livingEntity, new IndirectEntityDamageSource("noop", event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
                 } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
-                    if (AbyssalShroudEffect.doEffect(livingEntity, new IndirectEntityDamageSource("noop",event.getProjectile(),event.getProjectile().getOwner()))) {
+                    if (AbyssalShroudEffect.doEffect(livingEntity, new IndirectEntityDamageSource("noop", event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
                 }
