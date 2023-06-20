@@ -1,19 +1,12 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import com.google.common.collect.ImmutableMap;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.tetra.TetraDummyImpl;
-import io.redspace.ironsspellbooks.tetra.TetraProxy;
-import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 public final class MixinPlugin implements IMixinConfigPlugin {
     @Override

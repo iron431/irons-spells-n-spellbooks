@@ -112,6 +112,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.SUMMON_HORSE_SPELL, SummonHorseSpell.defaultConfig, true);
         createSpellConfig(SpellType.SUMMON_VEX_SPELL, SummonVexSpell.defaultConfig, true);
         createSpellConfig(SpellType.SPECTRAL_HAMMER_SPELL, SpectralHammerSpell.defaultConfig, true);
+        createSpellConfig(SpellType.GUST_SPELL, GustSpell.defaultConfig, true);
         //Fire
         BUILDER.comment("Fire Spells");
         createSpellConfig(SpellType.BLAZE_STORM_SPELL, BlazeStormSpell.defaultConfig, true);
@@ -131,6 +132,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.FORTIFY_SPELL, FortifySpell.defaultConfig, true);
         createSpellConfig(SpellType.BLESSING_OF_LIFE_SPELL, BlessingOfLifeSpell.defaultConfig, true);
         createSpellConfig(SpellType.HEALING_CIRCLE_SPELL, HealingCircleSpell.defaultConfig, true);
+        createSpellConfig(SpellType.GUIDING_BOLT_SPELL, GuidingBoltSpell.defaultConfig, true);
         //Ice
         BUILDER.comment("Ice Spells");
         createSpellConfig(SpellType.CONE_OF_COLD_SPELL, ConeOfColdSpell.defaultConfig, true);
@@ -146,6 +148,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, LightningLanceSpell.defaultConfig, true);
         createSpellConfig(SpellType.CHARGE_SPELL, ChargeSpell.defaultConfig, true);
         createSpellConfig(SpellType.ASCENSION_SPELL, AscensionSpell.defaultConfig, true);
+        createSpellConfig(SpellType.CHAIN_LIGHTNING_SPELL, ChainLightningSpell.defaultConfig, true);
         //Void
         BUILDER.comment("Void Spells");
         createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, AbyssalShroudSpell.defaultConfig, true);

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.util;
 
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
@@ -16,7 +17,7 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.tetra.TetraProxy;
+import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -384,20 +385,28 @@ public class Utils {
                 getRandomScaled(scale)
         );
     }
-
+    public static Vector3f getRandomVec3f(double scale) {
+        return new Vector3f(
+                (float) getRandomScaled(scale),
+                (float) getRandomScaled(scale),
+                (float) getRandomScaled(scale)
+        );
+    }
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
+        if (healer instanceof NeutralMob neutralMob && neutralMob.isAngryAt(target))
+            return false;
         if (healer == target)
             return true;
-        if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer.getMobType() == MobType.UNDEAD || healer.getMobType() == MobType.ILLAGER)) {
+        if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer.getMobType() == MobType.UNDEAD || healer.getMobType() == MobType.ILLAGER))
             //This tag is for things like iron golems, villagers, farm animals, etc
             return true;
-        } else if (healer.isAlliedTo(target)) {
+        if (healer.isAlliedTo(target))
             //Generic ally-check. Precursory team check plus some mobs override it, such as summons
             return true;
-        } else if (healer.getTeam() != null) {
+        if (healer.getTeam() != null)
             //If we are on a team, only heal teammates
             return target.isAlliedTo(healer.getTeam());
-        } else if (healer instanceof Player) {
+        if (healer instanceof Player) {
             //If we are a player and not on a team, we only want to heal other players
             return target instanceof Player;
         } else {
@@ -477,9 +486,9 @@ public class Utils {
         return new Vec3(start.x, findRelativeGroundLevel(level, start, maxSteps), start.z);
     }
 
-    public static boolean checkMonsterSpawnRules(EntityType<? extends Monster> pType, ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
+    public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
         //Omits monster from spawn where monsters are not allowed, as well as default monster spawning conditions
-        return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && !pLevel.getBiome(pPos).is(Biomes.MUSHROOM_FIELDS) && Monster.checkMonsterSpawnRules(pType, pLevel, pSpawnType, pPos, pRandom);
+        return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && !pLevel.getBiome(pPos).is(Biomes.MUSHROOM_FIELDS) && Monster.checkMonsterSpawnRules(EntityType.ZOMBIE, pLevel, pSpawnType, pPos, pRandom);
     }
 
     public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, SpellType spell) {

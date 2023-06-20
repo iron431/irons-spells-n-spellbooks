@@ -47,7 +47,7 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
                     List.of(SpellType.FANG_WARD_SPELL, SpellType.SHIELD_SPELL),
                     List.of(),
                     List.of())
-                .setSpellLevels(6, 8)
+                .setSpellQuality(.6f, .8f)
                 .setSingleUseSpell(SpellType.INVISIBILITY_SPELL, 40, 80, 5, 5)
                 .setDrinksPotions());
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
@@ -59,6 +59,7 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
+
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {

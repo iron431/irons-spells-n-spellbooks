@@ -8,13 +8,11 @@
             "type": "apotheosis:attribute",
             "gem_class":
             {
-                "key": "armor",
-                "types": [
-                	"helmet",
-                	"chestplate",
-                	"leggings",
-                    "boots"
-                ]
+                "key": "anything",
+                "types": ["helmet",
+                    "chestplate",
+                    "leggings",
+                    "boots", "spellbook"]
             },
             "attribute": "irons_spellbooks:max_mana",
             "operation": "ADDITION",

@@ -1,14 +1,14 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicEvents;
+import io.redspace.ironsspellbooks.compat.CompatHandler;
 import io.redspace.ironsspellbooks.entity.mobs.MobSyncedCastingData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.player.CommonPlayerEvents;
-import io.redspace.ironsspellbooks.tetra.TetraActualImpl;
-import io.redspace.ironsspellbooks.tetra.TetraProxy;
+import io.redspace.ironsspellbooks.compat.tetra.TetraActualImpl;
+import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
@@ -50,9 +50,7 @@ public class ModSetup {
     public static void init(FMLCommonSetupEvent event) {
         Messages.register();
 
-        if (ModList.get().isLoaded("tetra")) {
-            TetraProxy.PROXY = new TetraActualImpl();
-        }
+        CompatHandler.init();
 
         EntityDataSerializers.registerSerializer(MobSyncedCastingData.MOB_SYNCED_CASTING_DATA);
         EntityDataSerializers.registerSerializer(SyncedSpellData.SYNCED_SPELL_DATA);
