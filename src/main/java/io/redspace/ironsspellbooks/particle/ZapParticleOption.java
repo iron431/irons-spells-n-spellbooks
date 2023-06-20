@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.BlockPositionSource;
@@ -32,7 +33,7 @@ public class ZapParticleOption implements ParticleOptions {
             float f1 = (float)p_175860_.readDouble();
             p_175860_.expect(' ');
             float f2 = (float)p_175860_.readDouble();
-            BlockPos blockpos = new BlockPos((double)f, (double)f1, (double)f2);
+            BlockPos blockpos = new BlockPos((int) f, (int) f1, (int) f2);
             return new ZapParticleOption(new BlockPositionSource(blockpos));
         }
 
@@ -56,7 +57,7 @@ public class ZapParticleOption implements ParticleOptions {
         double d0 = vec3.x();
         double d1 = vec3.y();
         double d2 = vec3.z();
-        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()), d0, d1, d2);
+        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f", BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()), d0, d1, d2);
     }
 
     public ParticleType<ZapParticleOption> getType() {

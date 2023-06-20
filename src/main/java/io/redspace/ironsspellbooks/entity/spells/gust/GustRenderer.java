@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.gust;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -43,8 +43,8 @@ public class GustRenderer extends EntityRenderer<GustCollider> {
     public void render(GustCollider entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getYRot() - 180.0F));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-entity.getXRot() - 90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot() - 180.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-entity.getXRot() - 90));
         poseStack.scale(.25f, .25f, .25f);
 
         float f = entity.tickCount + partialTicks;
@@ -53,7 +53,7 @@ public class GustRenderer extends EntityRenderer<GustCollider> {
         float alpha = 1f - f / 10f;
 
         for (int i = 0; i < 3; i++) {
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(f * 10));
+            poseStack.mulPose(Axis.YP.rotationDegrees(f * 10));
             poseStack.scale(scale, scale, scale);
             poseStack.translate(0, scale - 1, 0);
             this.body.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY, 1, 1, 1, alpha);

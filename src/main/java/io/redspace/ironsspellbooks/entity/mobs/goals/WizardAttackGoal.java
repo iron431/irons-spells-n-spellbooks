@@ -260,15 +260,15 @@ public class WizardAttackGoal extends Goal {
         Vec3 nextBlock = new Vec3(mob.xxa, 0, mob.zza).normalize();
         //IronsSpellbooks.LOGGER.debug("{}", nextBlock);
 
-        BlockPos blockpos = new BlockPos(mob.position().add(nextBlock));
-        BlockState blockstate = this.mob.level.getBlockState(blockpos);
-        VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level, blockpos);
+        BlockPos blockpos = BlockPos.containing(mob.position().add(nextBlock)) ;
+        BlockState blockstate = this.mob.level().getBlockState(blockpos);
+        VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level(), blockpos);
         //IronsSpellbooks.LOGGER.debug("{}", mob.getDeltaMovement());
         //IronsSpellbooks.LOGGER.debug("{}", blockstate.getBlock().getName().getString());
         if (!voxelshape.isEmpty() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES)) {
             BlockPos blockposAbove = blockpos.above();
-            BlockState blockstateAbove = this.mob.level.getBlockState(blockposAbove);
-            VoxelShape voxelshapeAbove = blockstateAbove.getCollisionShape(this.mob.level, blockposAbove);
+            BlockState blockstateAbove = this.mob.level().getBlockState(blockposAbove);
+            VoxelShape voxelshapeAbove = blockstateAbove.getCollisionShape(this.mob.level(), blockposAbove);
             if (voxelshapeAbove.isEmpty()) {
                 this.mob.getJumpControl().jump();
                 //boost to get over the edge

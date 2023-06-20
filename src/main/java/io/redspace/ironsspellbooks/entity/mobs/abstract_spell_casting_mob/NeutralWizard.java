@@ -51,15 +51,15 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
 
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
-        this.readPersistentAngerSaveData(this.level, pCompound);
+        this.readPersistentAngerSaveData(this.level(), pCompound);
         super.readAdditionalSaveData(pCompound);
     }
 
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!this.level.isClientSide) {
-            this.updatePersistentAnger((ServerLevel)this.level, true);
+        if (!this.level().isClientSide) {
+            this.updatePersistentAnger((ServerLevel)this.level(), true);
         }
     }
 }

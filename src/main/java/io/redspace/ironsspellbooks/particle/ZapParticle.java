@@ -3,8 +3,6 @@ package io.redspace.ironsspellbooks.particle;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -19,6 +17,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class ZapParticle extends TextureSheetParticle {
     private static final Vector3f ROTATION_VECTOR = Util.make(new Vector3f(0.5F, 0.5F, 0.5F), Vector3f::normalize);
@@ -69,9 +69,8 @@ public class ZapParticle extends TextureSheetParticle {
         float f1 = (float) (Mth.lerp((double) partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp((double) partialTick, this.zo, this.z) - vec3.z());
 
-        Quaternion quaternion = new Quaternion(ROTATION_VECTOR, 0.0F, true);
-
-        Vector3f start = Vector3f.ZERO;
+        Quaternionf quaternion = (new Quaternionf()).setAngleAxis(0.0F, ROTATION_VECTOR.x(), ROTATION_VECTOR.y(), ROTATION_VECTOR.z());
+        Vector3f start = new Vector3f(0, 0, 0);
         Vector3f end = new Vector3f((float) (destination.x - this.x), (float) (destination.y - this.y), (float) (destination.z - this.z));
         RandomSource randomSource = RandomSource.create((age + lifetime) * 3456798L);
 
@@ -83,7 +82,7 @@ public class ZapParticle extends TextureSheetParticle {
 
             drawLightningBeam(consumer, partialTick, f, f1, f2, quaternion, start, end, .6f, randomSource);
 
-            start = end.copy();
+            start = new Vector3f(end.x, end.y, end.z);
             end.sub(wiggle);
             end.add(end);
         }
@@ -119,7 +118,7 @@ public class ZapParticle extends TextureSheetParticle {
 //        quad(consumer, partialTick, f, f1, f2, quaternion, left);
     }
 
-    private void drawLightningBeam(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Quaternion quaternion, Vector3f start, Vector3f end, float chanceToBranch, RandomSource randomSource) {
+    private void drawLightningBeam(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Quaternionf quaternion, Vector3f start, Vector3f end, float chanceToBranch, RandomSource randomSource) {
 
         setRGBA(1, 1, 1, 1);
         tube(consumer, partialTick, f, f1, f2, quaternion, start, end, .06f);
@@ -136,7 +135,7 @@ public class ZapParticle extends TextureSheetParticle {
         }
     }
 
-    private void tube(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Quaternion quaternion, Vector3f start, Vector3f end, float width) {
+    private void tube(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Quaternionf quaternion, Vector3f start, Vector3f end, float width) {
         float h = width * .5f;
 
 //        Vector3f[] avector3f = new Vector3f[]{
@@ -199,7 +198,7 @@ public class ZapParticle extends TextureSheetParticle {
         pConsumer.vertex((double) pVec3f.x(), (double) pVec3f.y(), (double) pVec3f.z()).uv(p_233996_, p_233997_).color(this.rCol, this.gCol, this.bCol, this.alpha).uv2(p_233998_).endVertex();
     }
 
-    private void quad(VertexConsumer pConsumer, float partialTick, float f, float f1, float f2, Quaternion quaternion, Vector3f[] avector3f) {
+    private void quad(VertexConsumer pConsumer, float partialTick, float f, float f1, float f2, Quaternionf quaternion, Vector3f[] avector3f) {
         float f3 = this.getQuadSize(partialTick);
 
         for (int i = 0; i < 4; ++i) {

@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -69,10 +70,14 @@ public class GustCollider extends AbstractConeProjectile {
 
     @Override
     public void tick() {
+        double x = getX();
+        double y = getY();
+        double z = getZ();
         if (tickCount > 8)
             discard();
         else
             super.tick();
+        setPosRaw(x, y, z);
     }
 
     @Nullable
@@ -86,8 +91,9 @@ public class GustCollider extends AbstractConeProjectile {
     public float strength;
     public float range;
     public int amplifier;
+
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
