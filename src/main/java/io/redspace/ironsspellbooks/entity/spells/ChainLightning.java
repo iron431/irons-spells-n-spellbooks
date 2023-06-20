@@ -55,13 +55,21 @@ public class ChainLightning extends AbstractMagicProjectile {
             if (f == 0 && !allVictims.contains(initialVictim)) {
                 //First time zap
                 doHurt(initialVictim);
+                if (getOwner() != null) {
+                    Vec3 start = getOwner().position().add(0, getOwner().getBbHeight() / 2, 0);
+                    PositionSource dest = new EntityPositionSource(initialVictim, initialVictim.getBbHeight() / 2);
+                    ((ServerLevel) level).sendParticles(new ZapParticleOption(dest), start.x, start.y, start.z, 1, 0, 0, 0, 0);
+                }
+
             } else {
                 int j = lastVictims.size();
                 AtomicInteger zapsThisWave = new AtomicInteger();
                 //cannot be enhanced for
                 for (int i = 0; i < j; i++) {
                     var entity = lastVictims.get(i);
-                    level.getEntities(entity, entity.getBoundingBox().inflate(range), this::canHitEntity).forEach((victim) -> {
+                    var entities = level.getEntities(entity, entity.getBoundingBox().inflate(range), this::canHitEntity);
+                    entities.sort((o1, o2) -> (int) (o1.distanceToSqr(entity) - o2.distanceToSqr(entity)));
+                    entities.forEach((victim) -> {
                         if (zapsThisWave.get() < maxConnectionsPerWave && hits < maxConnections && victim.distanceToSqr(entity) < range * range && Utils.hasLineOfSight(level, entity.getEyePosition(), victim.getEyePosition(), true)) {
                             doHurt(victim);
                             victim.playSound(SoundRegistry.CHAIN_LIGHTNING_CHAIN.get(), 2, 1);
