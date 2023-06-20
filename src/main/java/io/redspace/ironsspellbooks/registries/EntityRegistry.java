@@ -291,7 +291,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<Sunbeam>> SUNBEAM =
             ENTITIES.register("sunbeam", () -> EntityType.Builder.<Sunbeam>of(Sunbeam::new, MobCategory.MISC)
-                    .sized(4f, .8f)
+                    .sized(1.5f, 8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "sunbeam").toString()));
 

@@ -40,11 +40,11 @@ public class ChainLightningSpell extends AbstractSpell {
     public ChainLightningSpell(int level) {
         super(SpellType.CHAIN_LIGHTNING_SPELL);
         this.setLevel(level);
-        this.manaCostPerLevel = 5;
+        this.manaCostPerLevel = 7;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 50;
+        this.baseManaCost = 25;
 
     }
 
