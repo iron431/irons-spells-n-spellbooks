@@ -369,7 +369,7 @@
   "spell.irons_spellbooks.abyssal_shroud.guide": "Cloak yourself with the shadows of the abyss, granting the ability to evade any attack for a short duration of time.",
   "spell.irons_spellbooks.blaze_storm.guide": "Hold to unleash a barrage of blaze fireballs, shooting rapidly but wildly in front of you and igniting any creatures or blocks hit.",
   "spell.irons_spellbooks.ascension.guide": "Cast to strike lightning at your feet and ascend quickly into the air, and gain reduced gravity for the next few seconds.",
-  "spell.irons_spellbooks.invisibility.guide": "Cast to briefly grant yourself true invisibility, which hides armor and held items, but immediately wears off upon dealing damage.",
+  "spell.irons_spellbooks.invisibility.guide": "Cast to briefly grant yourself true invisibility, which hides armor and held items, but immediately wears off upon dealing damage. Mobs also lose aggro.",
   "spell.irons_spellbooks.blood_step.guide": "Instantaneously teleport to where you are looking, or directly behind any targeted creature. Gain a short duration of true invisibility upon reaching your destination.",
   "spell.irons_spellbooks.summon_polar_bear.guide": "Cast to summon a polar bear who will follow, protect, and fight for you, as well as providing a mount.",
   "spell.irons_spellbooks.blessing_of_life.guide": "Cast to target any creature, showing a glowing outline. Completing the cast will heal this creature.",
