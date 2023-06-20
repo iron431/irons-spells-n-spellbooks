@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.spells.lightning;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.ChainLightning;
-import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
@@ -35,7 +34,7 @@ public class ChainLightningSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchool(SchoolType.LIGHTNING)
             .setMaxLevel(10)
-            .setCooldownSeconds(35)
+            .setCooldownSeconds(20)
             .build();
 
     public ChainLightningSpell(int level) {
@@ -45,13 +44,13 @@ public class ChainLightningSpell extends AbstractSpell {
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
-        this.baseManaCost = 10;
+        this.baseManaCost = 50;
 
     }
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.BLIGHT_BEGIN.get());
+        return Optional.empty();
     }
 
     @Override

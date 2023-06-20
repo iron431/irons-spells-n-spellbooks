@@ -335,5 +335,13 @@
     "sounds": [
       "irons_spellbooks:guiding_bolt_cast"
     ]
+  },
+  "entity.chain_lightning.lightning_chain": {
+    "sounds": [
+      "irons_spellbooks:lightning_chain_1",
+      "irons_spellbooks:lightning_chain_2",
+      "irons_spellbooks:lightning_chain_3",
+      "irons_spellbooks:lightning_chain_4"
+    ]
   }
 }
