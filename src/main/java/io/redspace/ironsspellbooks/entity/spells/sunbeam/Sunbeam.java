@@ -7,13 +7,12 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 
 public class Sunbeam extends AoeEntity {
 
@@ -27,33 +26,14 @@ public class Sunbeam extends AoeEntity {
         this(EntityRegistry.SUNBEAM.get(), level);
     }
 
-    boolean playedParticles;
 
     @Override
     public void tick() {
-        if (!playedParticles) {
-            playedParticles = true;
-            if (level.isClientSide) {
-                for (int i = 0; i < 150; i++) {
-                    Vec3 pos = new Vec3(Utils.getRandomScaled(.5f), Utils.getRandomScaled(.2f), this.random.nextFloat() * getRadius()).yRot(this.random.nextFloat() * 360);
-                    Vec3 motion = new Vec3(
-                            Utils.getRandomScaled(.06f),
-                            this.random.nextDouble() * -.8 - .5,
-                            Utils.getRandomScaled(.06f)
-                    );
-
-                    level.addParticle(ParticleHelper.ACID, getX() + pos.x, getY() + pos.y + getBoundingBox().getYsize(), getZ() + pos.z, motion.x, motion.y, motion.z);
-                }
-            } else {
-                MagicManager.spawnParticles(level, ParticleHelper.SUNBEAM, getX(), getY() + getBoundingBox().getYsize(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
-            }
-        }
 
         if (tickCount == 4) {
             checkHits();
             if (!level.isClientSide)
-                MagicManager.spawnParticles(level, ParticleHelper.SUNBEAM, getX(), getY(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
-            createPoisonCloud();
+                MagicManager.spawnParticles(level, ParticleTypes.FIREWORK, getX(), getY(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
         }
 
         if (this.tickCount > 6) {
@@ -61,16 +41,6 @@ public class Sunbeam extends AoeEntity {
         }
     }
 
-    public void createPoisonCloud() {
-        if (!level.isClientSide) {
-            Sunbeam cloud = new Sunbeam(level);
-            cloud.setOwner(getOwner());
-            cloud.setDuration(getEffectDuration());
-            cloud.setDamage(getDamage() * .1f);
-            cloud.moveTo(this.position());
-            level.addFreshEntity(cloud);
-        }
-    }
 
     @Override
     public void applyEffect(LivingEntity target) {
