@@ -30,7 +30,6 @@ public class ZapParticle extends TextureSheetParticle {
     ZapParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, ZapParticleOption options) {
         super(pLevel, pX, pY, pZ, 0, 0, 0);
         this.setSize(1, 1);
-        IronsSpellbooks.LOGGER.debug("quad size: {}", this.quadSize);
         this.quadSize = 1f;
         this.destination = options.getDestination().getPosition(pLevel).orElse(new Vec3(pX, pY, pZ));
         this.lifetime = pLevel.random.nextIntBetweenInclusive(3, 8);

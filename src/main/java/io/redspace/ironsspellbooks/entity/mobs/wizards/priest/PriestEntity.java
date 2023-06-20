@@ -22,20 +22,19 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.GoalSelector;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.npc.*;
+import net.minecraft.world.entity.npc.VillagerData;
+import net.minecraft.world.entity.npc.VillagerDataHolder;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.VillagerType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -61,27 +60,28 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(0, new OpenDoorGoal(this, true));
-        this.goalSelector.addGoal(1, new WizardSupportGoal<>(this, 1.5f, 100, 180)
+        this.goalSelector.addGoal(1, new PriestDefenseGoal(this));
+        this.goalSelector.addGoal(2, new WizardSupportGoal<>(this, 1.5f, 100, 180)
                 .setSpells(
                         List.of(SpellType.BLESSING_OF_LIFE_SPELL, SpellType.BLESSING_OF_LIFE_SPELL, SpellType.HEALING_CIRCLE_SPELL),
                         List.of(SpellType.FORTIFY_SPELL)
                 ));
-        this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 35, 60)
+        this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.5f, 35, 70)
                 .setSpells(
-                        List.of(SpellType.WISP_SPELL, SpellType.GUIDING_BOLT_SPELL, SpellType.GUST_SPELL),
-                        List.of(SpellType.ROOT_SPELL),
+                        List.of(SpellType.WISP_SPELL, SpellType.GUIDING_BOLT_SPELL, SpellType.GUIDING_BOLT_SPELL),
+                        List.of(SpellType.GUST_SPELL),
                         List.of(),
-                        List.of())
+                        List.of(SpellType.HEAL_SPELL))
                 .setSpellQuality(0.3f, 0.5f)
                 .setDrinksPotions());
-        this.goalSelector.addGoal(3, new RoamVillageGoal(this, 30, 1f));
-        this.goalSelector.addGoal(4, new ReturnToHomeAtNightGoal<>(this, 1f));
-        this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 30, 1f));
+        this.goalSelector.addGoal(5, new RoamVillageGoal(this, 30, 1f));
+        this.goalSelector.addGoal(6, new ReturnToHomeAtNightGoal<>(this, 1f));
+        this.goalSelector.addGoal(7, new PatrolNearLocationGoal(this, 30, 1f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
 
-        this.targetSelector.addGoal(1, new GenericDefendVillageTargetGoal(this));
-        this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new GenericDefendVillageTargetGoal(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (mob) -> mob instanceof Enemy && !(mob instanceof Creeper)));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
@@ -187,8 +187,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         if (this.tickCount % 2 == 0 && this.tickCount > 1) {
             this.supportTargetSelector.tick();
         }
-        if (this.tickCount % 40 == 0) {
-            this.level.getEntities(this, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE)), (entity) -> entity instanceof Enemy).forEach((enemy) -> {
+        if (this.tickCount % 60 == 0) {
+            this.level.getEntities(this, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE)), (entity) -> entity instanceof Enemy && !(entity instanceof Creeper)).forEach((enemy) -> {
                 if (enemy instanceof Mob mob)
                     if (mob.getTarget() == null)
                         if (TargetingConditions.forCombat().test(mob, this))
@@ -225,6 +225,65 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
         deserializeHome(this, pCompound);
+    }
+
+    class PriestDefenseGoal extends Goal {
+        protected final PriestEntity mob;
+        protected int attackCooldown = 0;
+
+        public PriestDefenseGoal(PriestEntity abstractSpellCastingMob) {
+            this.mob = abstractSpellCastingMob;
+        }
+
+        public boolean canUse() {
+            LivingEntity livingentity = this.mob.getTarget();
+            //IronsSpellbooks.LOGGER.debug("{} PriestDefenseGoal.canUse:", attackCooldown);
+            if (livingentity != null && --attackCooldown <= 0 && livingentity.isAlive() && shouldAreaAttack(livingentity)) {
+                //IronsSpellbooks.LOGGER.debug("true ({})", livingentity.getName().getString());
+                return false;
+            } else {
+                return false;
+            }
+        }
+
+        public boolean shouldAreaAttack(LivingEntity livingEntity) {
+            if (mob.isCasting()) {
+                //IronsSpellbooks.LOGGER.debug("shouldAreaAttack: already casting");
+                return false;
+            }
+            var d = livingEntity.distanceToSqr(mob);
+            var inRange = d < 5 * 5;
+            if (!inRange)
+                return false;
+            //IronsSpellbooks.LOGGER.debug("shouldAreaAttack: in range");
+
+            if (livingEntity.getType() == EntityType.VINDICATOR) {
+                //IronsSpellbooks.LOGGER.debug("VINDICATOR!");
+                start();
+                return false;
+            }
+
+            //anti-rush
+            if (this.mob.getHealth() / this.mob.getMaxHealth() < .25f && mob.level.getEntities(mob, mob.getBoundingBox().inflate(3f), (entity -> entity instanceof Enemy)).size() > 1) {
+                start();
+                return false;
+            }
+
+            //swarm control
+            int mobCount = livingEntity.level.getEntities(livingEntity, livingEntity.getBoundingBox().inflate(6f), (entity -> entity instanceof Enemy)).size();
+            if (mobCount >= 2)
+                start();
+            return false;
+        }
+
+        @Override
+        public void start() {
+            this.attackCooldown = 40 + mob.random.nextInt(30);
+            int spellLevel = (int) (SpellType.GUST_SPELL.getMaxLevel() * .5f);
+            var spellType = SpellType.GUST_SPELL;
+
+            mob.initiateCastSpell(spellType, spellLevel);
+        }
     }
 
     /*

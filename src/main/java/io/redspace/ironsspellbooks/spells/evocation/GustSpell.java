@@ -99,6 +99,6 @@ public class GustSpell extends AbstractSpell {
 
     @Override
     public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
-        return target.distanceToSqr(mob) < getRange(mob) * getRange(mob) * 1.25;
+        return target.distanceToSqr(mob) > getRange(mob) * getRange(mob) * 1.25;
     }
 }

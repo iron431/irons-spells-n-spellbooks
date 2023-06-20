@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
@@ -258,13 +257,13 @@ public class WizardAttackGoal extends Goal {
     protected void tryJump() {
         //mob.getJumpControl().jump();
         Vec3 nextBlock = new Vec3(mob.xxa, 0, mob.zza).normalize();
-        IronsSpellbooks.LOGGER.debug("{}", nextBlock);
+        //IronsSpellbooks.LOGGER.debug("{}", nextBlock);
 
         BlockPos blockpos = new BlockPos(mob.position().add(nextBlock));
         BlockState blockstate = this.mob.level.getBlockState(blockpos);
         VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level, blockpos);
         //IronsSpellbooks.LOGGER.debug("{}", mob.getDeltaMovement());
-        IronsSpellbooks.LOGGER.debug("{}", blockstate.getBlock().getName().getString());
+        //IronsSpellbooks.LOGGER.debug("{}", blockstate.getBlock().getName().getString());
         if (!voxelshape.isEmpty() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES)) {
             BlockPos blockposAbove = blockpos.above();
             BlockState blockstateAbove = this.mob.level.getBlockState(blockposAbove);
@@ -326,7 +325,7 @@ public class WizardAttackGoal extends Goal {
             //IronsSpellbooks.LOGGER.debug("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} ({}/{})", attackWeight, defenseWeight, movementWeight, supportWeight, seed, total);
             if (drinksPotions && spellList == supportSpells) {
                 if (supportSpells.isEmpty() || mob.getRandom().nextFloat() < .5f) {
-                    IronsSpellbooks.LOGGER.debug("Drinking Potion");
+                    //IronsSpellbooks.LOGGER.debug("Drinking Potion");
                     mob.startDrinkingPotion();
                     return SpellType.NONE_SPELL;
                 }

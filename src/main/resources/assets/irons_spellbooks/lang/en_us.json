@@ -588,6 +588,7 @@
   "entity.irons_spellbooks.guiding_bolt": "Guiding Bolt",
   "entity.irons_spellbooks.chain_lightning": "Chain Lightning",
   "entity.irons_spellbooks.gust": "Gust",
+  "entity.irons_spellbooks.priest": "Priest",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
