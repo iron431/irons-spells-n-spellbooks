@@ -21,12 +21,14 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChainLightning extends AbstractMagicProjectile {
     List<Entity> allVictims;
     List<Entity> lastVictims;
     Entity initialVictim;
     public int maxConnections = 4;
+    public int maxConnectionsPerWave = 3;
     public float range = 3f;
 
     public ChainLightning(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -48,24 +50,24 @@ public class ChainLightning extends AbstractMagicProjectile {
     public void tick() {
         super.tick();
         int f = tickCount - 1;
-        if (!this.level.isClientSide && f % 4 == 0) {
+        if (!this.level.isClientSide && f % 6 == 0) {
             if (f == 0 && !allVictims.contains(initialVictim)) {
                 //First time zap
                 doHurt(initialVictim);
             } else {
                 int j = lastVictims.size();
+                AtomicInteger zapsThisWave = new AtomicInteger();
                 //cannot be enhanced for
                 for (int i = 0; i < j; i++) {
                     var entity = lastVictims.get(i);
                     level.getEntities(entity, entity.getBoundingBox().inflate(range), this::canHitEntity).forEach((victim) -> {
-                        if (hits < maxConnections && victim.distanceToSqr(entity) < range * range && Utils.hasLineOfSight(level, entity.getEyePosition(), victim.getEyePosition(), true)) {
+                        if (zapsThisWave.get() < maxConnectionsPerWave && hits < maxConnections && victim.distanceToSqr(entity) < range * range && Utils.hasLineOfSight(level, entity.getEyePosition(), victim.getEyePosition(), true)) {
                             doHurt(victim);
-                            Vec3 start = entity.position().add(0, entity.getBbHeight() / 2, 0);
+                            zapsThisWave.getAndIncrement();
+                            Vec3 start = new Vec3(entity.xOld, entity.yOld, entity.zOld).add(0, entity.getBbHeight() / 2, 0);
                             PositionSource dest = new EntityPositionSource(victim, victim.getBbHeight() / 2);
                             ((ServerLevel) level).sendParticles(new ZapParticleOption(dest), start.x, start.y, start.z, 1, 0, 0, 0, 0);
-
                         }
-
                     });
                 }
                 lastVictims.removeAll(allVictims);

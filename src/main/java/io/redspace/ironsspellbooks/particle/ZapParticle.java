@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -9,7 +11,10 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +33,7 @@ public class ZapParticle extends TextureSheetParticle {
         IronsSpellbooks.LOGGER.debug("quad size: {}", this.quadSize);
         this.quadSize = 1f;
         this.destination = options.getDestination().getPosition(pLevel).orElse(new Vec3(pX, pY, pZ));
-        this.lifetime = pLevel.random.nextIntBetweenInclusive(60, 120);
+        this.lifetime = pLevel.random.nextIntBetweenInclusive(3, 8);
         this.rCol = 1;
         this.gCol = 1;
         this.bCol = 1;
@@ -41,6 +46,23 @@ public class ZapParticle extends TextureSheetParticle {
         }
     }
 
+    public Vector3f randomVector3f(RandomSource random, float scale) {
+        return new Vector3f(
+                (2f * random.nextFloat() - 1f) * scale,
+                (2f * random.nextFloat() - 1f) * scale,
+                (2f * random.nextFloat() - 1f) * scale
+        );
+    }
+
+    private void setRGBA(float r, float g, float b, float a) {
+        this.rCol = r * a;
+        this.gCol = g * a;
+        this.bCol = b * a;
+        this.alpha = 1;
+    }
+
+
+
     @Override
     public void render(VertexConsumer consumer, Camera camera, float partialTick) {
         Vec3 vec3 = camera.getPosition();
@@ -50,48 +72,22 @@ public class ZapParticle extends TextureSheetParticle {
 
         Quaternion quaternion = new Quaternion(ROTATION_VECTOR, 0.0F, true);
 
-        float width = .15f;
-        float h = width * .5f;
-
         Vector3f start = Vector3f.ZERO;
         Vector3f end = new Vector3f((float) (destination.x - this.x), (float) (destination.y - this.y), (float) (destination.z - this.z));
+        RandomSource randomSource = RandomSource.create((age + lifetime) * 3456798L);
 
-        //normal is Counterclockwise
-        Vector3f[] avector3f = new Vector3f[]{
-                new Vector3f(0, -h, -h),
-                new Vector3f(0, h, -h),
-                new Vector3f(0, h, h),
-                new Vector3f(0, -h, h)
-        };
-        Vector3f[] left = new Vector3f[]{
-                new Vector3f(h + start.x(), -h + start.y(), start.z()),
-                new Vector3f(h + start.x(), h + start.y(), start.z()),
-                new Vector3f(h + end.x(), h + end.y(), end.z()),
-                new Vector3f(h + end.x(), -h + end.y(), end.z())
-        };
-        Vector3f[] right = new Vector3f[]{
-                new Vector3f(-h + end.x(), -h + end.y(), end.z()),
-                new Vector3f(-h + end.x(), h + end.y(), end.z()),
-                new Vector3f(-h + start.x(), h + start.y(), start.z()),
-                new Vector3f(-h + start.x(), -h + start.y(), start.z())
-        };
-        Vector3f[] top = new Vector3f[]{
-                new Vector3f(h + start.x(), h + start.y(), start.z()),
-                new Vector3f(-h + start.x(), h + start.y(), start.z()),
-                new Vector3f(-h + end.x(), h + end.y(), end.z()),
-                new Vector3f(h + end.x(), h + end.y(), end.z())
-        };
-        Vector3f[] bottom = new Vector3f[]{
-                new Vector3f(h + end.x(), -h + end.y(), end.z()),
-                new Vector3f(-h + end.x(), -h + end.y(), end.z()),
-                new Vector3f(-h + start.x(), -h + start.y(), start.z()),
-                new Vector3f(h + start.x(), -h + start.y(), start.z())
-        };
+        int segments = randomSource.nextIntBetweenInclusive(1, 3);
+        end.mul(1f / segments);
+        for (int i = 0; i < segments; i++) {
+            Vector3f wiggle = randomVector3f(randomSource, .2f);
+            end.add(wiggle);
 
-        quad(consumer, partialTick, f, f1, f2, quaternion, left);
-        quad(consumer, partialTick, f, f1, f2, quaternion, right);
-        quad(consumer, partialTick, f, f1, f2, quaternion, top);
-        quad(consumer, partialTick, f, f1, f2, quaternion, bottom);
+            drawLightningBeam(consumer, partialTick, f, f1, f2, quaternion, start, end, .6f, randomSource);
+
+            start = end.copy();
+            end.sub(wiggle);
+            end.add(end);
+        }
         //pQuaternion.accept(quaternion);
         //TRANSFORM_VECTOR.transform(quaternion);
 //        Vector3f[] top = new Vector3f[]{
@@ -124,20 +120,61 @@ public class ZapParticle extends TextureSheetParticle {
 //        quad(consumer, partialTick, f, f1, f2, quaternion, left);
     }
 
-    private void renderRotatedParticle(VertexConsumer consumer, Camera camera, float partialTick, Vector3f start, Vector3f end, float width) {
+    private void drawLightningBeam(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Quaternion quaternion, Vector3f start, Vector3f end, float chanceToBranch, RandomSource randomSource) {
 
+        setRGBA(1, 1, 1, 1);
+        tube(consumer, partialTick, f, f1, f2, quaternion, start, end, .06f);
+
+        setRGBA(0, .3f, 1, .3f);
+        tube(consumer, partialTick, f, f1, f2, quaternion, start, end, .11f);
+
+        setRGBA(0, .6f, 1, .15f);
+        tube(consumer, partialTick, f, f1, f2, quaternion, start, end, .25f);
+
+        if (randomSource.nextFloat() < chanceToBranch) {
+            Vector3f branch = randomVector3f(randomSource, .5f);
+            drawLightningBeam(consumer, partialTick, f, f1, f2, quaternion, start, branch, chanceToBranch * .5f, randomSource);
+        }
     }
 
-    public void drawHull(VertexConsumer consumer, Vec3 from, Vec3 to, float width) {
+    private void tube(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Quaternion quaternion, Vector3f start, Vector3f end, float width) {
+        float h = width * .5f;
 
-        //        //Bottom
-//        drawQuad(consumer, from.subtract(0, height * .5f, 0), to.subtract(0, height * .5f, 0), width, 0, r, g, b, a);
-//        //Top
-//        drawQuad(consumer, from.add(0, height * .5f, 0), to.add(0, height * .5f, 0), width, 0, r, g, b, a);
-//        //Left
-//        drawQuad(consumer, from.subtract(width * .5f, 0, 0), to.subtract(width * .5f, 0, 0), 0, height, r, g, b, a);
-//        //Right
-//        drawQuad(consumer, from.add(width * .5f, 0, 0), to.add(width * .5f, 0, 0), 0, height, r, g, b, a);
+//        Vector3f[] avector3f = new Vector3f[]{
+//                new Vector3f(0, -h, -h),
+//                new Vector3f(0, h, -h),
+//                new Vector3f(0, h, h),
+//                new Vector3f(0, -h, h)
+//        };
+        Vector3f[] left = new Vector3f[]{
+                new Vector3f(-h + start.x(), -h + start.y(), start.z()),
+                new Vector3f(-h + start.x(), h + start.y(), start.z()),
+                new Vector3f(-h + end.x(), h + end.y(), end.z()),
+                new Vector3f(-h + end.x(), -h + end.y(), end.z())
+        };
+        Vector3f[] right = new Vector3f[]{
+                new Vector3f(h + end.x(), -h + end.y(), end.z()),
+                new Vector3f(h + end.x(), h + end.y(), end.z()),
+                new Vector3f(h + start.x(), h + start.y(), start.z()),
+                new Vector3f(h + start.x(), -h + start.y(), start.z())
+        };
+        Vector3f[] top = new Vector3f[]{
+                new Vector3f(h + start.x(), -h + start.y(), start.z()),
+                new Vector3f(-h + start.x(), -h + start.y(), start.z()),
+                new Vector3f(-h + end.x(), -h + end.y(), end.z()),
+                new Vector3f(h + end.x(), -h + end.y(), end.z())
+        };
+        Vector3f[] bottom = new Vector3f[]{
+                new Vector3f(h + end.x(), h + end.y(), end.z()),
+                new Vector3f(-h + end.x(), h + end.y(), end.z()),
+                new Vector3f(-h + start.x(), h + start.y(), start.z()),
+                new Vector3f(h + start.x(), h + start.y(), start.z())
+        };
+
+        quad(consumer, partialTick, f, f1, f2, quaternion, left);
+        quad(consumer, partialTick, f, f1, f2, quaternion, right);
+        quad(consumer, partialTick, f, f1, f2, quaternion, top);
+        quad(consumer, partialTick, f, f1, f2, quaternion, bottom);
     }
 
     public void drawQuad(VertexConsumer consumer, Vec3 from, Vec3 to, float width, float height, int r, int g, int b, int a) {
@@ -184,9 +221,27 @@ public class ZapParticle extends TextureSheetParticle {
     @NotNull
     @Override
     public ParticleRenderType getRenderType() {
-        //TODO: custom render type
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        return PARTICLE_EMISSIVE;
     }
+
+    ParticleRenderType PARTICLE_EMISSIVE = new ParticleRenderType() {
+        public void begin(BufferBuilder p_107455_, TextureManager p_107456_) {
+            RenderSystem.depthMask(true);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
+            RenderSystem.enableBlend();
+            RenderSystem.disableCull();
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
+            p_107455_.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+        }
+
+        public void end(Tesselator p_107458_) {
+            p_107458_.end();
+        }
+
+        public String toString() {
+            return "PARTICLE_EMISSIVE";
+        }
+    };
 
     @Override
     protected int getLightColor(float pPartialTick) {

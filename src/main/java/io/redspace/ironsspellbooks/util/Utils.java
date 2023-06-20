@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.util;
 
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
@@ -381,7 +382,13 @@ public class Utils {
                 getRandomScaled(scale)
         );
     }
-
+    public static Vector3f getRandomVec3f(double scale) {
+        return new Vector3f(
+                (float) getRandomScaled(scale),
+                (float) getRandomScaled(scale),
+                (float) getRandomScaled(scale)
+        );
+    }
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
         if (healer instanceof NeutralMob neutralMob && neutralMob.isAngryAt(target))
             return false;
