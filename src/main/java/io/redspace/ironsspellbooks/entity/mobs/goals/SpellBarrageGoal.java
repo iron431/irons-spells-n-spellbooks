@@ -82,8 +82,11 @@ public class SpellBarrageGoal extends Goal {
 
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         if (distanceSquared < attackRadiusSqr) {
+            IronsSpellbooks.LOGGER.debug("SpellBarrageGoal ({}) initiate cast on tick {}", this.hashCode(), attackTime);
             this.mob.getLookControl().setLookAt(this.target, 45, 45);
             mob.initiateCastSpell(spell, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
+            //TODO: remove this. here for debugging tick count
+            attackTime--;
         }
 
 

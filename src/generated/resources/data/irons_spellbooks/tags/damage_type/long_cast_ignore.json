@@ -3,6 +3,7 @@
     "minecraft:freeze",
     "minecraft:starve",
     "minecraft:on_fire",
-    "minecraft:wither"
+    "minecraft:wither",
+    "minecraft:magic"
   ]
 }
