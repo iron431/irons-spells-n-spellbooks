@@ -73,7 +73,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
         }
         HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-        if (hitresult.getType() != HitResult.Type.MISS) {
+        if (hitresult.getType() != HitResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
             onHit(hitresult);
         }
         setPos(position().add(getDeltaMovement()));
