@@ -172,6 +172,12 @@ public class CreativeTabRegistry {
             .withTabsBefore(EQUIPMENT_TAB.getKey())
             .build());
 
+    public static final RegistryObject<CreativeModeTab> SCROLLS_TAB = TABS.register("spellbook_scrolls", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup." + IronsSpellbooks.MODID + ".spellbook_scrolls_tab"))
+            .icon(() -> new ItemStack(ItemRegistry.SCROLL.get()))
+            .withTabsBefore(MATERIALS_TAB.getKey())
+            .build());
+
     @SubscribeEvent
     public static void fillCreativeTabs(final BuildCreativeModeTabContentsEvent event) {
         if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.FUNCTIONAL_BLOCKS)) {
@@ -182,7 +188,7 @@ public class CreativeTabRegistry {
             event.accept(ItemRegistry.ARMOR_PILE_BLOCK_ITEM.get());
         }
 
-        if (event.getTab() == CreativeModeTabs.searchTab()) {
+        if (event.getTab() == CreativeModeTabs.searchTab() || event.getTab() == SCROLLS_TAB.get()) {
             Arrays.stream(SpellType.values())
                     .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
                     .forEach(spellType -> {
