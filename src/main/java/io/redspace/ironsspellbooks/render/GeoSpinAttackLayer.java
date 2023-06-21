@@ -32,7 +32,8 @@ public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
 
     @Override
     public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        if (animatable.isAutoSpinAttack()) {
+        //TODO: 1.20 port
+        if (animatable.isAutoSpinAttack() && false ) {
             for (int i = 0; i < 3; ++i) {
                 poseStack.pushPose();
                 float f = animatable.tickCount * (float) (-(45 + i * 5));
