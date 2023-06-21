@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -19,6 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import software.bernie.geckolib.GeckoLib;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -179,9 +182,20 @@ public class CreativeTabRegistry {
             event.accept(ItemRegistry.ARMOR_PILE_BLOCK_ITEM.get());
         }
 
+        if (event.getTab() == CreativeModeTabs.searchTab()) {
+            Arrays.stream(SpellType.values())
+                    .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
+                    .forEach(spellType -> {
+                        for (int i = spellType.getMinLevel(); i <= spellType.getMaxLevel(); i++) {
+                            var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
+                            SpellData.setSpellData(itemstack, spellType, i);
+                            event.accept(itemstack);
+                        }
+                    });
+        }
+
         if (event.getTab() == BuiltInRegistries.CREATIVE_MODE_TAB.get(CreativeModeTabs.NATURAL_BLOCKS)) {
             event.accept(ItemRegistry.ARCANE_DEBRIS_BLOCK_ITEM.get());
         }
-
     }
 }

@@ -177,7 +177,7 @@ dependencies {
     // JEI ********************************************************************************************************
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}")
-    //runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
 
     // CURIOS *****************************************************************************************************
     implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
@@ -229,7 +229,7 @@ def replaceProperties = [
         loader_version_range: loader_version_range,
         mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
         mod_authors         : mod_authors, mod_description: mod_description, mod_credits: mod_credits,
-        mod_issue_tracker   : mod_issue_tracker, mod_display_url: mod_display_url, mod_logo_file : mod_logo_file
+        mod_issue_tracker   : mod_issue_tracker, mod_display_url: mod_display_url, mod_logo_file: mod_logo_file
 ]
 
 processResources {
