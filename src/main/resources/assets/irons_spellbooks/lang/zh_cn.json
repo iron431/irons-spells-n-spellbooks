@@ -443,7 +443,7 @@
   "death.attack.fire_field": "%1$s 在 %2$s 的火场内烧的灰都不剩",
   "death.attack.starfall_spell": "%1$s 被 %2$s 召唤的流星砸成了一滩拦泥",
   "death.attack.fire_bomb_spell": "%2$s 使 %1$s 的身体瞬间爆炸！",
-  "death.attack.guiding_bolt":  %2$s超度了"%1$s",
+  "death.attack.guiding_bolt": "%2$s超度了%1$s",
   "death.attack.chain_lightning": "%1$s 被 %2$s 电麻了",
 
   "death.attack.raise_dead_spell.item": "%1$s was mauled by %2$s's undead using %3$s",
