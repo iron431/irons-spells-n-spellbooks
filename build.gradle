@@ -175,9 +175,9 @@ dependencies {
     //implementation fg.deobf("se.mickelus.mutil:mutil:${minecraft_version}-${mutil_version}")
 
     // JEI ********************************************************************************************************
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge-api:${jei_version}")
+    //runtimeOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-forge:${jei_version}")
 
     // CURIOS *****************************************************************************************************
     implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
@@ -298,13 +298,13 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
-tasks.register('copyAnimations', Copy) {
-    from 'src/main/resources/assets/irons_spellbooks/player_animation'
-    include 'casting_animations.json'
-    into 'src/main/resources/assets/irons_spellbooks/animations'
-}
-
-processResources.dependsOn(tasks.copyAnimations)
+//tasks.register('copyAnimations', Copy) {
+//    from 'src/main/resources/assets/irons_spellbooks/player_animation'
+//    include 'casting_animations.json'
+//    into 'src/main/resources/assets/irons_spellbooks/animations'
+////}
+//
+//processResources.dependsOn(tasks.copyAnimations)
 
 mixin {
     add sourceSets.main, 'irons_spellbooks.refmap.json'

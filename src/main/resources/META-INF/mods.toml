@@ -49,7 +49,7 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
     modId="playeranimator" #mandatory
     mandatory=true #mandatory
-    versionRange="[1.0.2,)" #mandatory
+    versionRange="1.0.2" #mandatory
     ordering="AFTER"
     side="BOTH"
 [[dependencies.${mod_id}]]
