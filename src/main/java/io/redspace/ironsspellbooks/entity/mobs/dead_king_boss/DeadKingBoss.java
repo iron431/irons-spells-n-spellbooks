@@ -32,6 +32,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -123,6 +124,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellType.BLOOD_STEP_SPELL, 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 10, 50, 8, 8));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+
     }
 
     protected void setFinalPhaseGoals() {
@@ -132,6 +135,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellType.BLOOD_STEP_SPELL, 1, 1, 100, 180, 1));
         this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellType.BLAZE_STORM_SPELL, 10, 30, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 
         //this.goalSelector.addGoal(2, new VexRandomMoveGoal());
     }
