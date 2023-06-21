@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,11 +43,12 @@ public class SpellBarrageGoal extends Goal {
             return false;
 
         if (attackTime <= -interval * (projectileCount - 1)) {
+            //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal.canUse resetAttackTimer");
             resetAttackTimer();
         }
- //Ironsspellbooks.logger.debug("SpellBarrageGoal ({}) canUse: attackTime: {}, reset threshold: {}", spell, attackTime, -interval * (projectileCount - 1));
-        return --attackTime <= 0 && attackTime % interval == 0;
-
+        attackTime--;
+        //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal.canUse: spell:{}, attackTime:{}, interval:{}, a%i:{}, result:{}", spell, attackTime, interval, attackTime % interval, attackTime <= 0 && attackTime % interval == 0);
+        return attackTime <= 0 && attackTime % interval == 0;
     }
 
     /**
@@ -62,6 +62,7 @@ public class SpellBarrageGoal extends Goal {
      * Reset the task's internal state. Called when this task is interrupted by another one
      */
     public void stop() {
+        //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal.stop");
         this.target = null;
         if (attackTime > 0)
             this.attackTime = -projectileCount * interval - 1;
@@ -75,6 +76,7 @@ public class SpellBarrageGoal extends Goal {
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
+        //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal.tick: spell:{}, attackTime:{}, interval:{}, a%i:{}, result:{}", spell, attackTime, interval, attackTime % interval, attackTime <= 0 && attackTime % interval == 0);
 
         if (target == null) {
             return;
@@ -82,10 +84,11 @@ public class SpellBarrageGoal extends Goal {
 
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         if (distanceSquared < attackRadiusSqr) {
+            //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal ({}) initiate cast on tick {}", this.hashCode(), attackTime);
             this.mob.getLookControl().setLookAt(this.target, 45, 45);
             mob.initiateCastSpell(spell, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
+            stop();
         }
-
 
 
     }
