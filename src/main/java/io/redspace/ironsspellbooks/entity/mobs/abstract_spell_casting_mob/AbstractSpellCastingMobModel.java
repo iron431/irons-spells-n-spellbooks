@@ -99,6 +99,8 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
             leftLeg.setRotY((float) Math.PI / 10F);
             leftLeg.setRotZ(0.07853982F);
         } else if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
+            rightLeg.updateRotation(0f, 0f, 0f);
+            leftLeg.updateRotation(0f, 0f, 0f);
             //rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
             //leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount / f);
             //addRotationX(rightLeg, (Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f));
