@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.fireball;
 
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -8,7 +7,6 @@ import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -50,7 +48,6 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level(), ParticleTypes.LAVA, x, y, z, 50, .1, .1, .1, 0.5 * getExplosionRadius(), false);
     }
 
     @Override
