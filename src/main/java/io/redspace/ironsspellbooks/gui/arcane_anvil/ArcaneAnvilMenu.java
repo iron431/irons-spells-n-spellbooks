@@ -91,6 +91,20 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 UpgradeUtils.appendUpgrade(result, upgradeOrb.getUpgradeType(), slot);
                 //IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
             }
+            //Shriving Stone
+            else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
+                if (!(baseItemStack.getItem() instanceof Scroll)) {
+                    if (SpellData.hasSpellData(baseItemStack)) {
+                        result = baseItemStack.copy();
+                        result.removeTagKey(SpellData.ISB_SPELL);
+
+                    } else if (UpgradeUtils.isUpgraded(baseItemStack)) {
+                        result = baseItemStack.copy();
+                        result.removeTagKey(UpgradeUtils.Upgrades);
+
+                    }
+                }
+            }
         }
 
         resultSlots.setItem(0, result);
