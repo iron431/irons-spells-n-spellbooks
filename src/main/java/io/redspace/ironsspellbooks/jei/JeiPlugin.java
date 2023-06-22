@@ -59,7 +59,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipes(ScrollForgeRecipeCategory.SCROLL_FORGE_RECIPE_RECIPE_TYPE, ScrollForgeRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
 
         Arrays.stream(SpellType.values()).forEach(spellType -> {
-            if (spellType.isEnabled() && spellType!= SpellType.NONE_SPELL)
+            if (spellType.isEnabled() && spellType != SpellType.NONE_SPELL)
                 IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
                         .forEach((spellLevel) -> {
                             var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
@@ -67,6 +67,8 @@ public class JeiPlugin implements IModPlugin {
                             registration.addIngredientInfo(scrollStack, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spellType.getComponentId())));
                         });
         });
+        registration.addItemStackInfo(new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()), Component.translatable("item.irons_spellbooks.lightning_bottle.guide"));
+        registration.addItemStackInfo(new ItemStack(ItemRegistry.BLOOD_VIAL.get()), Component.translatable("item.irons_spellbooks.blood_vial.guide"));
     }
 
     @Override
