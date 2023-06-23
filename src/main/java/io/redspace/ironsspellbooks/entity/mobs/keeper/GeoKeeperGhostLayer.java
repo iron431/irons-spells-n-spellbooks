@@ -30,13 +30,11 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
         //renderType = RenderType.endGateway();
         VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
         matrixStackIn.pushPose();
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-90));
         var model = getEntityModel().getModel(KeeperModel.modelResource);
 //        var bone = model.getBone("head");
 //        bone.ifPresent((b) -> b.setHidden(true));
         float scale = 1 / (1.3f);
         matrixStackIn.scale(scale, scale, scale);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-90));
         model.getBone("body").ifPresent((rootBone) -> {
             rootBone.childBones.forEach(bone -> {
                 //IronsSpellbooks.LOGGER.debug("{}", bone.getName());

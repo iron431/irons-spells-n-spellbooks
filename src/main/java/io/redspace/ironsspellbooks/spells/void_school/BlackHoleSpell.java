@@ -36,7 +36,7 @@ public class BlackHoleSpell extends AbstractSpell {
 
     public static DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
-            .setSchool(SchoolType.VOID)
+            .setSchool(SchoolType.ENDER)
             .setMaxLevel(6)
             .setCooldownSeconds(120)
             .build();

@@ -111,7 +111,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> POISON_RUNE = ITEMS.register("poison_rune", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> WAYWARD_COMPASS = ITEMS.register("wayward_compass", WaywardCompass::new);
     //    public static final RegistryObject<Item> ANTIQUATED_COMPASS = ITEMS.register("antiquated_compass", AntiquatedCompass::new);
-    public static final RegistryObject<Item> RUINED_BOOK = ITEMS.register("ruined_book", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.EPIC)));
+//    public static final RegistryObject<Item> RUINED_BOOK = ITEMS.register("ruined_book", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> CINDER_ESSENCE = ITEMS.register("cinder_essence", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> ARCANE_SALVAGE = ITEMS.register("arcane_salvage", ArcaneSalvageItem::new);
     public static final RegistryObject<Item> ARCANE_INGOT = ITEMS.register("arcane_ingot", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));

@@ -14,7 +14,6 @@ public enum SchoolType {
     ENDER(4),
     BLOOD(5),
     EVOCATION(6),
-    VOID(7),
     POISON(8);
 
     private final int value;

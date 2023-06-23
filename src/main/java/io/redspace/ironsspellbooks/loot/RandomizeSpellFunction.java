@@ -119,7 +119,6 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
                     case "evocation" -> SpellType.getSpellsFromSchool(SchoolType.EVOCATION);
                     case "holy" -> SpellType.getSpellsFromSchool(SchoolType.HOLY);
                     case "blood" -> SpellType.getSpellsFromSchool(SchoolType.BLOOD);
-                    case "void" -> SpellType.getSpellsFromSchool(SchoolType.VOID);
                     default -> List.of(SpellType.NONE_SPELL);
                 };
             } else if (GsonHelper.isArrayNode(json, "spells")) {
@@ -134,7 +133,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
                 }
                 return applicableSpellList;
             } else {
-                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID).toList();
+                return Arrays.stream(SpellType.values()).filter((spellType) -> spellType != SpellType.NONE_SPELL).toList();
 //                var nonVoidSpells = new SpellType[SpellType.values().length - SpellType.getSpellsFromSchool(SchoolType.VOID).length];
 //                int j = 0;
 //                for (int i = 0; i < nonVoidSpells.length; i++) {

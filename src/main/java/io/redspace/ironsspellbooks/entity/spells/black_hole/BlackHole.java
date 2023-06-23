@@ -123,7 +123,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 entity.push(diff.x, diff.y, diff.z);
                 if (this.tickCount % 10 == 0) {
                     if (distance < 3f && canHitEntity(entity))
-                        DamageSources.applyDamage(entity, damage, SpellType.BLACK_HOLE_SPELL.getDamageSource(this, getOwner()), SchoolType.VOID);
+                        DamageSources.applyDamage(entity, damage, SpellType.BLACK_HOLE_SPELL.getDamageSource(this, getOwner()), SchoolType.ENDER);
                 }
                 entity.resetFallDistance();
             }
