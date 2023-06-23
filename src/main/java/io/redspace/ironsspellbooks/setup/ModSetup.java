@@ -39,7 +39,6 @@ public class ModSetup {
         bus.addListener(MagicEvents::onWorldTick);
         bus.addListener(CommonPlayerEvents::onPlayerRightClickItem);
         bus.addListener(CommonPlayerEvents::onUseItemStop);
-        bus.addListener(CommonPlayerEvents::onUseItemFinish);
 
         //SPELLBOOKS
         //bus.addGenericListener(ItemStack.class, SpellBookDataEvents::onAttachCapabilities);

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -34,13 +35,5 @@ public class CommonPlayerEvents {
                 Utils.releaseUsingHelper(entity);
             }
         }
-    }
-
-    public static void onUseItemFinish(LivingEntityUseItemEvent.Finish event) {
-        if (Utils.canImbue(event.getItem())) {
-            //IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemFinish set cancelled");
-            event.setCanceled(true);
-        }
-        //IronsSpellbooks.LOGGER.debug("CommonPlayerEvents.onUseItemFinish {} {}", event.getEntity().getLevel().isClientSide, event.getItem().getItem());
     }
 }
