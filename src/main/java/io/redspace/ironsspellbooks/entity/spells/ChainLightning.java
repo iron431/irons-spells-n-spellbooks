@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.EntityPositionSource;
@@ -99,8 +100,8 @@ public class ChainLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    protected boolean canHitEntity(Entity pTarget) {
-        return !DamageSources.isFriendlyFireBetween(pTarget, getOwner()) && pTarget != getOwner() && !hasAlreadyZapped(pTarget) && super.canHitEntity(pTarget);
+    protected boolean canHitEntity(Entity target) {
+        return target instanceof LivingEntity && !DamageSources.isFriendlyFireBetween(target, getOwner()) && target != getOwner() && !hasAlreadyZapped(target) && super.canHitEntity(target);
     }
 
     @Override
