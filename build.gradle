@@ -198,13 +198,28 @@ java {
     //withJavadocJar()
 }
 
+tasks.register('apiJar', Jar) {
+    archiveClassifier.set('api')
+    include 'io/redspace/ironsspellbooks/api/**/*'
+    from sourceSets.main.allSource
+    from sourceSets.main.output
+}
+
+artifacts {
+    archives apiJar
+    archives sourcesJar
+}
+
 publishing {
+    tasks.publish.dependsOn 'build'
     publications {
         mavenJava(MavenPublication) {
             groupId project.group
             artifactId project.archivesBaseName
             version project.version
             from components.java
+            artifact jar
+            artifact apiJar
         }
     }
 
