@@ -6,76 +6,76 @@
 # The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
 modLoader="javafml" #mandatory`
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[40,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="${loader_version_range}" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
-license="All rights reserved"
+license="${mod_license}"
 # A URL to refer people to when problems occur with this mod
-issueTrackerURL="https://github.com/iron431/Irons-Spells-n-Spellbooks/issues" #optional
+issueTrackerURL="${mod_issue_tracker}" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="irons_spellbooks" #mandatory
+modId="${mod_id}" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-# ${file.jarVersion} will substitute the value of the Implementation-Version as read from the mod's JAR file metadata
 # see the associated build.gradle script for how to populate this completely automatically during a build
-version="${file.jarVersion}" #mandatory
+version="${mod_version}" #mandatory
  # A display name for the mod
-displayName="Iron's Spells 'n Spellbooks" #mandatory
+displayName="${mod_name}" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="https://www.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks" #optional
+displayURL="${mod_display_url}" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="spellbooks title small background low res.png" #optional
+logoFile="${mod_logo_file}" #optional
 # A text field displayed in the mod UI
-credits="Some assets remixed from J. W. Bjerk (eleazzaar)'s Painterly Spell Icon Packs -- www.jwbjerk.com/art  -- find this and other open art at: http://opengameart.org. Some Spell Books remixed from xali's Enchanted Books." #optional
+credits="${mod_credits}" #optional
 # A text field displayed in the mod UI
-authors="Iron431, Lab3" #optional
+authors="${mod_authors}" #optional
 # The description text for the mod (multi line!) (#mandatory)
-description='''
-A magic mod for Minecraft returning to the classic RPG spellcasting fantasy.'''
+description='''${mod_description}'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.irons_spellbooks]] #optional
+[[dependencies.${mod_id}]] #optional
     # the modid of the dependency
     modId="forge" #mandatory
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[40,)" #mandatory
-    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+    versionRange="${forge_version_range}" #mandatory
+    # An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
+    # BEFORE - This mod is loaded BEFORE the dependency
+    # AFTER - This mod is loaded AFTER the dependency
     ordering="NONE"
-    # Side this dependency is applied on - BOTH, CLIENT or SERVER
+    # Side this dependency is applied on - BOTH, CLIENT, or SERVER
     side="BOTH"
-[[dependencies.irons_spellbooks]]
+[[dependencies.${mod_id}]]
     modId="playeranimator" #mandatory
     mandatory=true #mandatory
     versionRange="[1.0.2,)" #mandatory
     ordering="AFTER"
     side="BOTH"
-[[dependencies.irons_spellbooks]]
-    modId="geckolib3" #mandatory
+[[dependencies.${mod_id}]]
+    modId="geckolib" #mandatory
     mandatory=true #mandatory
     versionRange="[3.1.39,)" #mandatory
     ordering="NONE"
     side="BOTH"
-[[dependencies.irons_spellbooks]]
+[[dependencies.${mod_id}]]
     modId="curios" #mandatory
     mandatory=true #mandatory
     versionRange="[1.19.2-5.1.3.0,)" #mandatory
     ordering="NONE"
     side="BOTH"
-[[dependencies.irons_spellbooks]]
+[[dependencies.${mod_id}]]
     modId="caelus" #mandatory
     mandatory=true #mandatory
     versionRange="[1.19.2-3.0.0.6,)" #mandatory
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
-[[dependencies.irons_spellbooks]]
-    modId="minecraft"
+[[dependencies.${mod_id}]]
+modId="minecraft"
     mandatory=true
-# This version range declares a minimum of the current minecraft version up to but not including the next major version
-    versionRange="[1.19.2,1.19.3)"
+    # This version range declares a minimum of the current minecraft version up to but not including the next major version
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
