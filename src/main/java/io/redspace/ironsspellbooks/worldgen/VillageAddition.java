@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.worldgen;
 
 import com.mojang.datafixers.util.Pair;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,10 @@ public class VillageAddition {
         for (int i = 0; i < weight; i++) {
             pool.templates.add(piece);
         }
+        pool.templates.forEach((structurePoolElement) -> {
+            IronsSpellbooks.LOGGER.debug("{}", Registry.STRUCTURE_POOL_ELEMENT.getKey(structurePoolElement.getType()).toString()
+            );
+        });
 
         // Use AccessTransformer or Accessor Mixin to make StructureTemplatePool's rawTemplates field public for us to see.
         // This list of pairs of pieces and weights is not used by vanilla by default but another mod may need it for efficiency.
@@ -63,15 +69,20 @@ public class VillageAddition {
      */
     @SubscribeEvent
     public static void addNewVillageBuilding(final ServerAboutToStartEvent event) {
-        IronsSpellbooks.LOGGER.debug("ServerAboutToStartEvent: addNewVillageBuilding");
         Registry<StructureTemplatePool> templatePoolRegistry = event.getServer().registryAccess().registry(Registry.TEMPLATE_POOL_REGISTRY).orElseThrow();
         Registry<StructureProcessorList> processorListRegistry = event.getServer().registryAccess().registry(Registry.PROCESSOR_LIST_REGISTRY).orElseThrow();
 
         // Adds our piece to all village houses pool
         // Note, the resourcelocation is getting the pool files from the data folder. Not assets folder.
+        int weight = ServerConfigs.PRIEST_TOWER_SPAWNRATE.get();
+        if (weight == ServerConfigs.PRIEST_TOWER_SPAWNRATE.getDefault() && FMLLoader.getLoadingModList().getModFileById("bettervillage") != null)
+            weight = 2;
+        IronsSpellbooks.LOGGER.debug("ServerAboutToStartEvent: addNewVillageBuilding {}", ServerConfigs.PRIEST_TOWER_SPAWNRATE.get());
+
         addBuildingToPool(templatePoolRegistry, processorListRegistry,
                 new ResourceLocation("minecraft:village/plains/houses"),
-                "irons_spellbooks:priest_house", 250);
+                "irons_spellbooks:priest_house", weight);
+
 
         //addBuildingToPool(templatePoolRegistry, processorListRegistry,
         //        new ResourceLocation("minecraft:village/snowy/houses"),

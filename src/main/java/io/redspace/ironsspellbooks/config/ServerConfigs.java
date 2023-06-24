@@ -34,6 +34,8 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
+    public static final ForgeConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
+
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
     public static final ForgeConfigSpec.ConfigValue<List<? extends Double>> RARITY_CONFIG;
@@ -75,6 +77,11 @@ public class ServerConfigs {
         IMBUE_WHITELIST = BUILDER.defineList("imbueWhitelist", ArrayList::new, (string) -> true);
         BUILDER.comment("Upgrade Blacklist. Use an item's id to prevent it from being imbued, ex: \"minecraft:iron_sword\"");
         IMBUE_BLACKLIST = BUILDER.defineList("imbueBlacklist", ArrayList::new, (string) -> true);
+        BUILDER.pop();
+
+        BUILDER.push("Worldgen");
+        BUILDER.comment("The weight of the priest house spawning in a village. Depending on other village mods installed, it can vary wildly what is a good spawn rate. Default: 200");
+        PRIEST_TOWER_SPAWNRATE = BUILDER.define("priestHouseWeight", 200);
         BUILDER.pop();
         //IronsSpellbooks.LOGGER.debug("CFG: static");
         BUILDER.comment("Individual Spell Configuration");
