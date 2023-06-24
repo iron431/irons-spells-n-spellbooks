@@ -68,10 +68,6 @@ public class SpellBook extends Item {
                     || ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
                 return InteractionResultHolder.pass(itemStack);
             } else {
-                //spell.onClientPreCast(level, player, hand, null);
-                if (spell.getCastType().holdToCast()) {
-                    player.startUsingItem(hand);
-                }
                 return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
             }
         }

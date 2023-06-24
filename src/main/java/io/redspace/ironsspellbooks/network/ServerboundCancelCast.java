@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.network;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -51,7 +50,7 @@ public class ServerboundCancelCast {
 
  //Ironsspellbooks.logger.debug("ServerBoundCancelCast.cancelCast");
                 playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, true);
-
+                serverPlayer.stopUsingItem();
                 if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
             }
