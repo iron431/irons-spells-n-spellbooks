@@ -182,6 +182,7 @@
   "ui.irons_spellbooks.damage": "%d Damage",
   "ui.irons_spellbooks.aoe_damage": "%d AOE Damage",
   "ui.irons_spellbooks.aoe_healing": "%d AOE Healing",
+  "ui.irons_spellbooks.max_hp_on_kill": "%d Max HP on Kill",
   "ui.irons_spellbooks.additional_poisoned_damage": "%d%% Additional Poisoned Damage",
   "ui.irons_spellbooks.strength": "%d Strength",
   "ui.irons_spellbooks.max_victims": "%d Max Hits",
