@@ -252,13 +252,18 @@ public class Utils {
         }
     }
 
-    public static void releaseUsingHelper(LivingEntity entity) {
+    public static void releaseUsingHelper(LivingEntity entity, ItemStack itemStack, int ticksUsed) {
         if (entity instanceof ServerPlayer serverPlayer) {
             var pmd = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            if (pmd.isCasting() && (pmd.getCastType() != CastType.CHARGE ||
-                    (pmd.getCastType() == CastType.CHARGE && pmd.getCastDurationRemaining() > 0))) {
-                Utils.serverSideCancelCast(serverPlayer);
-                serverPlayer.stopUsingItem();
+            if (pmd.isCasting()) {
+                if ((pmd.getCastType() != CastType.CHARGE && pmd.getCastType() != CastType.LONG)
+                        || (pmd.getCastType() == CastType.CHARGE && pmd.getCastDurationRemaining() > 0)
+                        || (pmd.getCastType() == CastType.LONG && itemStack.getUseDuration() - ticksUsed > 4)
+                ) {
+                    Utils.serverSideCancelCast(serverPlayer);
+                    serverPlayer.stopUsingItem();
+                }
+
             }
         }
     }

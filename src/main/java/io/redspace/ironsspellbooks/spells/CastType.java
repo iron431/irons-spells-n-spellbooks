@@ -18,6 +18,6 @@ public enum CastType {
     }
 
     public boolean holdToCast(){
-        return this == CONTINUOUS || this == CHARGE;
+        return this == CONTINUOUS || this == CHARGE || this == LONG;
     }
 }
