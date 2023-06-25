@@ -80,8 +80,8 @@ public class ServerConfigs {
         BUILDER.pop();
 
         BUILDER.push("Worldgen");
-        BUILDER.comment("The weight of the priest house spawning in a village. Depending on other village mods installed, it can vary wildly what is a good spawn rate. Default: 200");
-        PRIEST_TOWER_SPAWNRATE = BUILDER.define("priestHouseWeight", 200);
+        BUILDER.comment("The weight of the priest house spawning in a village.");
+        PRIEST_TOWER_SPAWNRATE = BUILDER.define("priestHouseWeight", 4);
         BUILDER.pop();
         //IronsSpellbooks.LOGGER.debug("CFG: static");
         BUILDER.comment("Individual Spell Configuration");
