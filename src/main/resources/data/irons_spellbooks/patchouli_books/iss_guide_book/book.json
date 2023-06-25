@@ -1,5 +1,7 @@
 {
-  "name": "Spellbook Guide Book (theres potential there)",
-  "landing_text": "landing text",
-  "version": 1
+  "name": "Wizard's Manuscript",
+  "landing_text": "Iron's Spells 'n Spellbooks is an RPG-inspired spellcasting mod. You can fight dangerous wizards, raid structures, delve through dungeons, collect resources, and find powerful magical items. $(l:https://iron431.github.io/Irons-Spellbooks-Docs)External wiki here$(/l)",
+  "version": 1,
+  "pamphlet": true,
+  "show_progress": false
 }

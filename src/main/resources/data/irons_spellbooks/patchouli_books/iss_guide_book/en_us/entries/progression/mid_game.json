@@ -1,7 +1,8 @@
 {
   "name": "Mid Game",
   "icon": "irons_spellbooks:scroll_forge",
-  "category": "irons_spellbooks:progression",
+  "category": "irons_spellbooks:root",
+  "sortnum": -2,
   "pages": [
     {
       "type": "patchouli:text",
