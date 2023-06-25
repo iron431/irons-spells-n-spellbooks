@@ -1,11 +1,12 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.spells.CastSource;
-import io.redspace.ironsspellbooks.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class Scroll extends Item {
+public class Scroll extends Item implements IScroll {
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));

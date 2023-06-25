@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.effect.AirborneEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -12,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import software.bernie.geckolib3.core.builder.ILoopType;
 
@@ -98,7 +100,7 @@ public class GustSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
+    public boolean shouldAIStopCasting(Mob mob, LivingEntity target) {
         return target.distanceToSqr(mob) > getRange(mob) * getRange(mob) * 1.25;
     }
 }

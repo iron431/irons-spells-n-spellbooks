@@ -1,8 +1,8 @@
-package io.redspace.ironsspellbooks.capabilities.magic;
+package io.redspace.ironsspellbooks.api.spells;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-public interface CastDataSerializable extends CastData {
+public interface ICastDataSerializable extends ICastData {
 
     void writeToStream(FriendlyByteBuf buffer);
 

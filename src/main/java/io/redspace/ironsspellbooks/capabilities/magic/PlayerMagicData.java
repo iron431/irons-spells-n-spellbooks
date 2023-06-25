@@ -1,9 +1,10 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.CastSource;
-import io.redspace.ironsspellbooks.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -79,7 +80,7 @@ public class PlayerMagicData extends AbstractMagicData {
     private int castDurationRemaining = 0;
     private CastSource castSource;
     private CastType castType;
-    private @Nullable CastData additionalCastData;
+    private @Nullable ICastData additionalCastData;
 
     private ItemStack castingItemStack = ItemStack.EMPTY;
 
@@ -110,11 +111,11 @@ public class PlayerMagicData extends AbstractMagicData {
         this.syncedSpellData.setIsCasting(true, spellId, spellLevel);
     }
 
-    public CastData getAdditionalCastData() {
+    public ICastData getAdditionalCastData() {
         return additionalCastData;
     }
 
-    public void setAdditionalCastData(CastData newCastData) {
+    public void setAdditionalCastData(ICastData newCastData) {
         additionalCastData = newCastData;
     }
 

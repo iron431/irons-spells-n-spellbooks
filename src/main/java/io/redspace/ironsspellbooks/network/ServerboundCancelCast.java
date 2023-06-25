@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.network;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,7 +46,7 @@ public class ServerboundCancelCast {
                 int spellId = playerMagicData.getCastingSpellId();
 
                 if (triggerCooldown) {
-                    MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
+                    MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
                 }
 
  //Ironsspellbooks.logger.debug("ServerBoundCancelCast.cancelCast");

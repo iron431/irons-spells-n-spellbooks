@@ -198,17 +198,17 @@ java {
     //withJavadocJar()
 }
 
-tasks.register('apiJar', Jar) {
-    archiveClassifier.set('api')
-    include 'io/redspace/ironsspellbooks/api/**/*'
-    from sourceSets.main.allSource
-    from sourceSets.main.output
-}
+//tasks.register('apiJar', Jar) {
+//    archiveClassifier.set('api')
+//    include 'io/redspace/ironsspellbooks/api/**/*'
+//    from sourceSets.main.allSource
+//    from sourceSets.main.output
+//}
 
-artifacts {
-    archives apiJar
-    archives sourcesJar
-}
+//artifacts {
+//    //archives apiJar
+//    archives sourcesJar
+//}
 
 publishing {
     tasks.publish.dependsOn 'build'
@@ -218,8 +218,8 @@ publishing {
             artifactId project.archivesBaseName
             version project.version
             from components.java
-            artifact jar
-            artifact apiJar
+            //artifact jar
+//            artifact apiJar
         }
     }
 
@@ -253,6 +253,6 @@ tasks.processResources.dependsOn(tasks.copyAnimations)
 tasks.sourcesJar.dependsOn(tasks.copyAnimations)
 
 mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
-    config "mixins.${mod_id}.json"
+    add sourceSets.main, 'irons_spellbooks.refmap.json'
+    config 'mixins.irons_spellbooks.json'
 }

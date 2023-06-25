@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import io.redspace.ironsspellbooks.item.spell_books.VillagerSpellBook;
 import io.redspace.ironsspellbooks.item.weapons.BloodStaffItem;
 import io.redspace.ironsspellbooks.item.weapons.MagehunterItem;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.blood.BloodSlashSpell;

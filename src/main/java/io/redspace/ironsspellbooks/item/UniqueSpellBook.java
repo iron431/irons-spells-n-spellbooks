@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 
 public class UniqueSpellBook extends SpellBook implements UniqueItem {

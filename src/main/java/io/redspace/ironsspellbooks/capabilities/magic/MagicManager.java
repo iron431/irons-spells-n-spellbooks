@@ -1,18 +1,16 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldown;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.CastSource;
-import io.redspace.ironsspellbooks.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -23,24 +21,9 @@ import javax.annotation.Nonnull;
 import static io.redspace.ironsspellbooks.registries.AttributeRegistry.COOLDOWN_REDUCTION;
 import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
 
-public class MagicManager {
+public class MagicManager implements IMagicManager {
     public static final int MANA_REGEN_TICKS = 10;
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
-
-    private static MagicManager magicManager = null;
-
-    @Nonnull
-    public static MagicManager get(Level level) {
-
-        if (level.isClientSide) {
-            throw new RuntimeException("Don't access the ManaManager client-side!");
-        }
-
-        if (magicManager == null) {
-            magicManager = new MagicManager();
-        }
-        return magicManager;
-    }
 
     public void setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
         var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
@@ -124,7 +107,6 @@ public class MagicManager {
         PlayerMagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
         Messages.sendToPlayer(new ClientboundSyncCooldown(spellType.getValue(), effectiveCooldown), serverPlayer);
     }
-
 
     public static int getEffectiveSpellCooldown(SpellType spellType, Player player, CastSource castSource) {
         double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION.get());

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -13,6 +14,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -82,7 +84,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
+    public boolean shouldAIStopCasting(Mob mob, LivingEntity target) {
         return mob.distanceToSqr(target) > (getRange(getLevel(mob)) * getRange(getLevel(mob))) * 1.2;
     }
 }

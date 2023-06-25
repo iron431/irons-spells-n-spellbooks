@@ -1,8 +1,9 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class ImpulseCastData implements CastDataSerializable {
+public class ImpulseCastData implements ICastDataSerializable {
     public float x;
     public float y;
     public float z;

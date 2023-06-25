@@ -45,6 +45,6 @@ public class MagicEvents {
             return;
         }
 
-        MagicManager.get(event.level).tick(event.level);
+        IronsSpellbooks.MAGIC_MANAGER.tick(event.level);
     }
 }

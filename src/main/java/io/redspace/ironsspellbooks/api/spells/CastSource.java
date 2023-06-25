@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.spells;
+package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 

@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.spells;
+package io.redspace.ironsspellbooks.api.spells;
 
 public enum CastType {
     NONE(0),

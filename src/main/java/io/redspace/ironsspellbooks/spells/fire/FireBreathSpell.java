@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
@@ -12,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -78,7 +80,7 @@ public class FireBreathSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
+    public boolean shouldAIStopCasting(Mob mob, LivingEntity target) {
         return mob.distanceToSqr(target) > (10 * 10) * 1.2;
     }
 }

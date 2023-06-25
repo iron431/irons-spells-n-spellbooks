@@ -7,9 +7,9 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
@@ -168,7 +168,7 @@ public class ClientSpellCastHelper {
     /**
      * Network Handling Wrapper
      */
-    public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource, CastData castData) {
+    public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource, ICastData castData) {
         var spell = AbstractSpell.getSpell(spellId, level);
         //IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
 

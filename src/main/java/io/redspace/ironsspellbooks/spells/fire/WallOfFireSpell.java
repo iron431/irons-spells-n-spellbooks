@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
@@ -175,7 +177,7 @@ public class WallOfFireSpell extends AbstractSpell {
         }
     }
 
-    public class FireWallData implements CastData {
+    public class FireWallData implements ICastData {
         private Entity castingEntity;
         public List<Vec3> anchors = new ArrayList<>();
         public float maxTotalDistance;

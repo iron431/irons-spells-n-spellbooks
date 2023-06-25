@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.spells.ender;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundTeleportParticles;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -136,7 +137,7 @@ public class TeleportSpell extends AbstractSpell {
         return getSpellPower(sourceEntity);
     }
 
-    public static class TeleportData implements CastData {
+    public static class TeleportData implements ICastData {
         private Vec3 teleportTargetPosition;
 
         public TeleportData(Vec3 teleportTargetPosition) {

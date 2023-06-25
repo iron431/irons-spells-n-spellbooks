@@ -1,6 +1,9 @@
 package io.redspace.ironsspellbooks;
 
 import com.mojang.logging.LogUtils;
+import io.redspace.ironsspellbooks.api.magic.IMagicManager;
+import io.redspace.ironsspellbooks.api.magic.MagicHelper;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
@@ -37,10 +40,14 @@ public class IronsSpellbooks {
     // Directly reference a slf4j logger
     public static final String MODID = "irons_spellbooks";
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static MagicManager MAGIC_MANAGER;
 
     public IronsSpellbooks() {
 
         ModSetup.setup();
+
+        //MAGIC_MANAGER = new MagicManager();
+        //MagicHelper.MAGIC_MANAGER = MAGIC_MANAGER;
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(ModSetup::init);

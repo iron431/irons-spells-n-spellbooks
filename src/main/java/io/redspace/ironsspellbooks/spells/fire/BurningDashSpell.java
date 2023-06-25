@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -48,7 +51,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientCast(Level level, LivingEntity entity, CastData castData) {
+    public void onClientCast(Level level, LivingEntity entity, ICastData castData) {
         if (castData instanceof ImpulseCastData bdcd) {
             entity.hasImpulse = bdcd.hasImpulse;
             entity.setDeltaMovement(entity.getDeltaMovement().add(bdcd.x, bdcd.y, bdcd.z));
@@ -58,7 +61,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public CastDataSerializable getEmptyCastData() {
+    public ICastDataSerializable getEmptyCastData() {
         return new ImpulseCastData();
     }
 
@@ -121,7 +124,7 @@ public class BurningDashSpell extends AbstractSpell {
             mob.startAutoSpinAttack(durationInTicks);
     }
 
-    public static class BurningDashDirectionOverrideCastData implements CastData {
+    public static class BurningDashDirectionOverrideCastData implements ICastData {
 
         @Override
         public void reset() {

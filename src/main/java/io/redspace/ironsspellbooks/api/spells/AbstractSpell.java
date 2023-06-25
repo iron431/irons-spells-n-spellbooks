@@ -1,14 +1,11 @@
-package io.redspace.ironsspellbooks.spells;
+package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
-import io.redspace.ironsspellbooks.capabilities.magic.CastDataSerializable;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.api.item.IScroll;
+import io.redspace.ironsspellbooks.api.item.ISpellbook;
+import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
@@ -20,6 +17,9 @@ import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.spells.SchoolType;
+import io.redspace.ironsspellbooks.spells.SpellRarity;
+import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -33,6 +33,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -52,7 +53,7 @@ public abstract class AbstractSpell {
     public static final AnimationHolder ANIMATION_LONG_CAST = new AnimationHolder("long_cast", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     public static final AnimationHolder ANIMATION_LONG_CAST_FINISH = new AnimationHolder("long_cast_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     public static final AnimationHolder ANIMATION_CONTINUOUS_OVERHEAD = new AnimationHolder("continuous_overhead", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
-
+    //
     private final SpellType spellType;
     private final CastType castType;
     private int level;
@@ -121,7 +122,7 @@ public abstract class AbstractSpell {
         return this.castTime;
     }
 
-    public CastDataSerializable getEmptyCastData() {
+    public ICastDataSerializable getEmptyCastData() {
         return null;
     }
 
@@ -264,7 +265,7 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell isClient:{}, spell{}({})", world.isClientSide, this.spellType, this.getRawLevel());
         }
 
-        MagicManager magicManager = MagicManager.get(serverPlayer.level);
+        var magicManager = MagicHelper.MAGIC_MANAGER;
         PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
 
         if (castSource.consumesMana()) {
@@ -274,7 +275,7 @@ public abstract class AbstractSpell {
         }
 
         if (triggerCooldown) {
-            MagicManager.get(serverPlayer.level).addCooldown(serverPlayer, spellType, castSource);
+            magicManager.addCooldown(serverPlayer, spellType, castSource);
         }
 
         onCast(world, serverPlayer, playerMagicData);
@@ -284,7 +285,7 @@ public abstract class AbstractSpell {
             onServerCastComplete(world, serverPlayer, playerMagicData, false);
         }
 
-        if (serverPlayer.getMainHandItem().getItem() instanceof SpellBook || serverPlayer.getMainHandItem().getItem() instanceof Scroll)
+        if (serverPlayer.getMainHandItem().getItem() instanceof ISpellbook || serverPlayer.getMainHandItem().getItem() instanceof IScroll)
             playerMagicData.setPlayerCastingItem(serverPlayer.getMainHandItem());
         else
             playerMagicData.setPlayerCastingItem(serverPlayer.getOffhandItem());
@@ -294,7 +295,7 @@ public abstract class AbstractSpell {
     /**
      * The primary spell effect sound and particle handling goes here. Called Client Side only
      */
-    public void onClientCast(Level level, LivingEntity entity, CastData castData) {
+    public void onClientCast(Level level, LivingEntity entity, ICastData castData) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, this.spellType, this.getRawLevel());
         }
@@ -388,7 +389,7 @@ public abstract class AbstractSpell {
     }
 
     /**
-     * Called on the server each tick while casting
+     * Called on the server each tick while casting.
      */
     public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
 
@@ -397,7 +398,7 @@ public abstract class AbstractSpell {
     /**
      * Used by AbstractSpellCastingMob to determine if the cast is no longer valid (ie player out of range of a particular spell). Override to create spell-specific criteria
      */
-    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
+    public boolean shouldAIStopCasting(Mob mob, LivingEntity target) {
         return false;
     }
 

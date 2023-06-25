@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
-import io.redspace.ironsspellbooks.capabilities.magic.CastDataSerializable;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
+import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.capabilities.magic.ImpulseCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -64,12 +65,12 @@ public class AscensionSpell extends AbstractSpell {
     }
 
     @Override
-    public CastDataSerializable getEmptyCastData() {
+    public ICastDataSerializable getEmptyCastData() {
         return new ImpulseCastData();
     }
 
     @Override
-    public void onClientCast(Level level, LivingEntity entity, CastData castData) {
+    public void onClientCast(Level level, LivingEntity entity, ICastData castData) {
         if (castData instanceof ImpulseCastData data) {
             entity.hasImpulse = data.hasImpulse;
             double y = Math.max(entity.getDeltaMovement().y, data.y);

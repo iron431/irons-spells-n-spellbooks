@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.api.spells.ICastData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
@@ -7,7 +8,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class CastTargetingData implements CastData {
+public class CastTargetingData implements ICastData {
     //private Entity castingEntity;
     //private LivingEntity targetEntity;
     private UUID targetUUID;

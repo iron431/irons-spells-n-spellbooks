@@ -1,11 +1,10 @@
 package io.redspace.ironsspellbooks.network.spell;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
-import io.redspace.ironsspellbooks.capabilities.magic.CastDataSerializable;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
+import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -17,9 +16,9 @@ public class ClientboundOnClientCast {
     int spellId;
     int level;
     CastSource castSource;
-    CastData castData;
+    ICastData castData;
 
-    public ClientboundOnClientCast(int spellId, int level, CastSource castSource, CastData castData) {
+    public ClientboundOnClientCast(int spellId, int level, CastSource castSource, ICastData castData) {
         this.spellId = spellId;
         this.level = level;
         this.castSource = castSource;
@@ -42,7 +41,7 @@ public class ClientboundOnClientCast {
         buf.writeInt(spellId);
         buf.writeInt(level);
         buf.writeEnum(castSource);
-        if (castData instanceof CastDataSerializable castDataSerializable) {
+        if (castData instanceof ICastDataSerializable castDataSerializable) {
  //Ironsspellbooks.logger.debug("ClientboundOnClientCast.toBytes.1");
             buf.writeBoolean(true);
             castDataSerializable.writeToStream(buf);
