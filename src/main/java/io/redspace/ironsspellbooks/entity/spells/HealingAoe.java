@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleOptions;
@@ -14,7 +16,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class HealingAoe extends AoeEntity {
+public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
 
     public HealingAoe(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -78,5 +80,10 @@ public class HealingAoe extends AoeEntity {
     @Override
     public ParticleOptions getParticle() {
         return ParticleTypes.ENTITY_EFFECT;
+    }
+
+    @Override
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        discard();
     }
 }

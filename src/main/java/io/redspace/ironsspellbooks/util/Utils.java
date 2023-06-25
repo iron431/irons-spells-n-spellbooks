@@ -255,13 +255,18 @@ public class Utils {
         }
     }
 
-    public static void releaseUsingHelper(LivingEntity entity) {
+    public static void releaseUsingHelper(LivingEntity entity, ItemStack itemStack, int ticksUsed) {
         if (entity instanceof ServerPlayer serverPlayer) {
             var pmd = PlayerMagicData.getPlayerMagicData(serverPlayer);
-            if (pmd.isCasting() && (pmd.getCastType() != CastType.CHARGE ||
-                    (pmd.getCastType() == CastType.CHARGE && pmd.getCastDurationRemaining() > 0))) {
-                Utils.serverSideCancelCast(serverPlayer);
-                serverPlayer.stopUsingItem();
+            if (pmd.isCasting()) {
+                if ((pmd.getCastType() != CastType.LONG)
+                        || (pmd.getCastType() == CastType.LONG
+                        && (pmd.getCastDurationRemaining() > 0 && !(itemStack.getUseDuration() - ticksUsed < 4))
+                        //If it is a long cast, we refrain from cancelling if the cast is complete (duh) or if they only clicked (4 tick window)
+                )) {
+                    Utils.serverSideCancelCast(serverPlayer);
+                    serverPlayer.stopUsingItem();
+                }
             }
         }
     }
@@ -434,11 +439,6 @@ public class Utils {
                     return InteractionResultHolder.pass(stack);
                 } else {
                     //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.6");
-                    //spell.onClientPreCast(level, player, hand, null);
-                    if (spell.getCastType().holdToCast()) {
-                        //Ironsspellbooks.logger.debug("onUseCastingHelper.1");
-                        player.startUsingItem(hand);
-                    }
                     return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
                 }
             }

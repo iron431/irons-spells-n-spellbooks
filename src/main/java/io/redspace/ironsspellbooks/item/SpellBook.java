@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
@@ -67,10 +68,6 @@ public class SpellBook extends Item {
                     || ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
                 return InteractionResultHolder.pass(itemStack);
             } else {
-                //spell.onClientPreCast(level, player, hand, null);
-                if (spell.getCastType().holdToCast()) {
-                    player.startUsingItem(hand);
-                }
                 return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
             }
         }
@@ -102,8 +99,9 @@ public class SpellBook extends Item {
 
     @Override
     public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
+        IronsSpellbooks.LOGGER.debug("Spellbook Release Using ticks used: {}", p_41415_);
         entity.stopUsingItem();
-        Utils.releaseUsingHelper(entity);
+        Utils.releaseUsingHelper(entity, itemStack, p_41415_);
         super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
     }
 

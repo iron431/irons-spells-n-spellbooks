@@ -4,8 +4,8 @@ public enum CastType {
     NONE(0),
     INSTANT(1),
     LONG(2),
-    CONTINUOUS(3),
-    CHARGE(4);
+    CONTINUOUS(3)/*,
+    CHARGE(4)*/;
 
     private final int value;
 
@@ -18,6 +18,6 @@ public enum CastType {
     }
 
     public boolean holdToCast(){
-        return this == CONTINUOUS || this == CHARGE;
+        return this == CONTINUOUS || this == LONG;
     }
 }

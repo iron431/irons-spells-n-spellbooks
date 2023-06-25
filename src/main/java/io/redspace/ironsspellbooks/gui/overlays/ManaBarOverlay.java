@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
-import static io.redspace.ironsspellbooks.config.ClientConfigs.MANA_BAR_TEXT_VISIBLE;
 import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
 
 public class ManaBarOverlay implements IGuiOverlay {
@@ -67,8 +66,8 @@ public class ManaBarOverlay implements IGuiOverlay {
         Anchor anchor = ClientConfigs.MANA_BAR_ANCHOR.get();
         if (anchor == Anchor.XP && player.getJumpRidingScale() > 0) //Hide XP Mana bar when actively jumping on a horse
             return;
-        barX = getBarX(anchor, screenWidth, player) + configOffsetX;
-        barY = getBarY(anchor, screenHeight, player) - configOffsetY;
+        barX = getBarX(anchor, screenWidth) + configOffsetX;
+        barY = getBarY(anchor, screenHeight, gui) - configOffsetY;
 
         //RenderSystem.setShader(GameRenderer::getPositionTexShader);
         //RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -92,22 +91,13 @@ public class ManaBarOverlay implements IGuiOverlay {
         }
     }
 
-    private static int getOffsetCountFromHotbar(Player player) {
-        if (!(player == null || player.getAirSupply() <= 0 || player.getAirSupply() >= 300))
-            return 3;
-        else if (!player.isCreative())
-            return 2;
-        else
-            return 1;
-    }
-
     public static boolean shouldShowManaBar(Player player) {
         //We show mana if they are holding an item that can cast spells or if their mana is not full
         var display = ClientConfigs.MANA_BAR_DISPLAY.get();
         return !player.isSpectator() && display != Display.Never && (display == Display.Always || player.isHolding((itemstack -> itemstack.getItem() instanceof SpellBook || SpellData.hasSpellData(itemstack))) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get()));
     }
 
-    private static int getBarX(Anchor anchor, int screenWidth, Player player) {
+    private static int getBarX(Anchor anchor, int screenWidth) {
         if (anchor == Anchor.XP)
             return screenWidth / 2 - 91 - 3; //Vanilla's Pos - 3
         if (anchor == Anchor.Hunger || anchor == Anchor.Center)
@@ -118,14 +108,22 @@ public class ManaBarOverlay implements IGuiOverlay {
 
     }
 
-    private static int getBarY(Anchor anchor, int screenHeight, Player player) {
+    private static int getBarY(Anchor anchor, int screenHeight, ForgeGui gui) {
         if (anchor == Anchor.XP)
             return screenHeight - 32 + 3 - 8; //Vanilla's Pos - 8
-        if (anchor == Anchor.Hunger || anchor == Anchor.Center)
-            return screenHeight - HOTBAR_HEIGHT - (int) (ICON_ROW_HEIGHT * (anchor == Anchor.Center ? 2.5f : getOffsetCountFromHotbar(player))) - IMAGE_HEIGHT / 2;
-        else if (anchor == Anchor.TopLeft || anchor == Anchor.TopRight)
+        if (anchor == Anchor.Hunger)
+            return screenHeight - (getAndIncrementRightHeight(gui) - 2) - IMAGE_HEIGHT / 2;
+        if (anchor == Anchor.Center)
+            return screenHeight - HOTBAR_HEIGHT - (int) (ICON_ROW_HEIGHT * 2.5f) - IMAGE_HEIGHT / 2;
+        if (anchor == Anchor.TopLeft || anchor == Anchor.TopRight)
             return SCREEN_BORDER_MARGIN;
-        else return screenHeight - SCREEN_BORDER_MARGIN - IMAGE_HEIGHT;
+        return screenHeight - SCREEN_BORDER_MARGIN - IMAGE_HEIGHT;
 
+    }
+
+    private static int getAndIncrementRightHeight(ForgeGui gui) {
+        int x = gui.rightHeight;
+        gui.rightHeight += 10;
+        return x;
     }
 }

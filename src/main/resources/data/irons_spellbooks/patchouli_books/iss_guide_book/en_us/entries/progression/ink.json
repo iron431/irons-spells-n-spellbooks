@@ -1,0 +1,39 @@
+{
+  "name": "Ink",
+  "icon": "irons_spellbooks:epic_ink",
+  "category": "irons_spellbooks:root",
+  "sortnum": 4,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:common_ink",
+      "text": "The most common of the inks (ergo the name), common ink can craft the lowest level of spells. If a spell's lowest level is above common, it cannot be crafted with common ink. The same goes for all other inks."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:uncommon_ink",
+      "text": "Less common than common, it can craft slightly more powerful spells."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:rare_ink",
+      "text": "The rare ink should be able to be found regularly in magic treasure chests or by killing spellcasting mobs."
+
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:epic_ink",
+      "text": "The best place for epic ink and all other high rarity inks is from magic treasure or killing spellcasting mobs."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:legendary_ink",
+      "text": "The most rare ink, it will craft the most powerful spells. Keep in mind, some spells have multiple legendary levels, requiring use of the Arcane Anvil to obtain them."
+    },
+    {
+      "type": "patchouli:empty",
+      "draw_filler": false
+    }
+  ]
+}

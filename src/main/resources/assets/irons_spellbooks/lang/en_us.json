@@ -202,6 +202,7 @@
   "ui.irons_spellbooks.projectile_count": "%d Projectiles",
   "ui.irons_spellbooks.frostbite_success_chance": "Auto-Success Threshold: %d% Chance",
   "ui.irons_spellbooks.charge_ready": "Charged",
+  "ui.irons_spellbooks.cast_ready": "Cast!",
   "ui.irons_spellbooks.hits_dodged": "%d Hits Dodged",
   "ui.irons_spellbooks.cast_error_mana": "Not enough mana to cast %s!",
   "ui.irons_spellbooks.cast_error_cooldown": "%s is on cooldown.",

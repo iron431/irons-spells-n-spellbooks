@@ -1,15 +1,14 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.util.Utils;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -28,10 +27,7 @@ public class CastBarOverlay implements IGuiOverlay {
 
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
         String castTimeString = Utils.timeFromTicks((1 - castCompletionPercent) * ClientMagicData.getCastDuration(), 1);
-        if (ClientMagicData.getCastType() == CastType.CHARGE && ClientMagicData.getCastDurationRemaining() < 0) {
-            castCompletionPercent = 1;
-            castTimeString = Component.translatable("ui.irons_spellbooks.charge_ready").getString();
-        } else if (ClientMagicData.getCastType() == CastType.CONTINUOUS) {
+        if (ClientMagicData.getCastType() == CastType.CONTINUOUS) {
             castCompletionPercent = 1 - castCompletionPercent;
         }
 

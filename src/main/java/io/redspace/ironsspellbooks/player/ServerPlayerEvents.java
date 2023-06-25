@@ -11,17 +11,14 @@ import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
-import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -295,8 +292,9 @@ public class ServerPlayerEvents {
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             if (playerMagicData.isCasting()
-                    && SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG
-                    && !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE)) {
+                    &&
+                    SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
+                    playerMagicData.getCastDurationRemaining() > 0 &&!event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE)) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
         }
