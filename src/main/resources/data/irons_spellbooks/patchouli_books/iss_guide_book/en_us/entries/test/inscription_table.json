@@ -1,0 +1,15 @@
+{
+  "name": "Inscription Table",
+  "icon": "irons_spellbooks:inscription_table",
+  "category": "irons_spellbooks:early_game",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "In order to properly use a Spell Book, you must inscribe spells into it with the Inscription Table by using scrolls. Scrolls can be retrieved once put into a Spell Book, but it will uninscribe the spell."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:inscription_table"
+    }
+  ]
+}

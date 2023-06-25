@@ -207,7 +207,12 @@ dependencies {
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
-    // JSON ******************************************************************************************************
+    // PATCHOULI **************************************************************************************************
+
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+
+    // JSON *******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"
 
     // LOCAL LIBS FOR TESTING (put the jar in /libs/ folder
