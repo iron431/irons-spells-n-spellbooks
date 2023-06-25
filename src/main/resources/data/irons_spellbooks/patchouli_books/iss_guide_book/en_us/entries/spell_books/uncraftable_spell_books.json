@@ -3,6 +3,7 @@
   "icon": "irons_spellbooks:evoker_spell_book",
   "category": "irons_spellbooks:root",
   "sortnum": 2,
+  "read_by_default" : true,
   "pages": [
     {
       "type": "patchouli:text",
