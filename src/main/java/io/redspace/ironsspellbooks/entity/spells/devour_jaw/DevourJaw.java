@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.devour_jaw;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -39,20 +38,31 @@ public class DevourJaw extends AoeEntity {
             if (DamageSources.applyDamage(target, getDamage(), SpellType.DEVOUR_SPELL.getDamageSource(this, getOwner()), SpellType.DEVOUR_SPELL.getSchoolType()) && getOwner() instanceof LivingEntity livingOwner) {
                 livingOwner.heal(getDamage() * .15f);
                 if (target.isDeadOrDying()) {
-                    livingOwner.addEffect(new MobEffectInstance(MobEffectRegistry.VIGOR.get(), 20 * 60, vigorLevel));
+                    var oldVigor = livingOwner.getEffect(MobEffectRegistry.VIGOR.get());
+                    var addition = 0;
+                    if (oldVigor != null)
+                        addition = oldVigor.getAmplifier() + 1;
+                    livingOwner.addEffect(new MobEffectInstance(MobEffectRegistry.VIGOR.get(), 20 * 60, vigorLevel + addition));
                     livingOwner.heal((vigorLevel + 1) * 2);
                 }
             }
 
     }
 
+    public final int waitTime = 5;
+    public final int warmupTime = waitTime + 8;
+    public final int deathTime = warmupTime + 8;
+
     @Override
     public void tick() {
-        if (tickCount == 10) {
-            IronsSpellbooks.LOGGER.debug("DevourJaw.tick 10");
+        if (tickCount < waitTime) {
+            if (this.target != null)
+                setPos(this.target.position());
+        } else if (tickCount == warmupTime) {
             if (level.isClientSide) {
                 float y = this.getYRot();
                 int countPerSide = 25;
+                //These particles were not at all what I intended. But they're cooler. no clue how it works
                 for (int i = -countPerSide; i < countPerSide; i++) {
                     Vec3 motion = new Vec3(0, Math.abs(countPerSide) - i, countPerSide * .5f).yRot(y).normalize().multiply(.4f, .8f, .4f);
                     level.addParticle(ParticleHelper.BLOOD, getX(), getY() + .5f, getZ(), motion.x, motion.y, motion.z);
@@ -60,8 +70,13 @@ public class DevourJaw extends AoeEntity {
             } else {
                 checkHits();
             }
-        } else if (tickCount > 25)
+        } else if (tickCount > deathTime)
             discard();
+    }
+
+    @Override
+    protected float getInflation() {
+        return 1f;
     }
 
     @Override
