@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.devour_jaw;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.EvokerFangsModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -29,7 +29,7 @@ public class DevourJawRenderer extends EntityRenderer<DevourJaw> {
             return;
         float f = entity.tickCount + partialTicks;
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getYRot()));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
         poseStack.scale(-1, -1, 1);
         poseStack.scale(1.85f, 1.85f, 1.85f);
         this.model.setupAnim(entity, f, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
