@@ -102,7 +102,9 @@ public enum SpellType {
     GUIDING_BOLT_SPELL(62, GuidingBoltSpell::new),
     SUNBEAM_SPELL(63, SunbeamSpell::new),
     GUST_SPELL(64, GustSpell::new),
-    CHAIN_LIGHTNING_SPELL(65, ChainLightningSpell::new);
+    CHAIN_LIGHTNING_SPELL(65, ChainLightningSpell::new),
+    DEVOUR_SPELL(66, DevourSpell::new),
+    ;
 
     private final int value;
     private final int maxRarity;
