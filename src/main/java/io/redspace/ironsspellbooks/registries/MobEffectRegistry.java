@@ -40,6 +40,7 @@ public class MobEffectRegistry {
     public static final RegistryObject<MobEffect> BLIGHT = MOB_EFFECT_DEFERRED_REGISTER.register("blight", () -> new BlightEffect(MobEffectCategory.HARMFUL, 0xdfff2b));
     public static final RegistryObject<MobEffect> GUIDING_BOLT = MOB_EFFECT_DEFERRED_REGISTER.register("guided", () -> new GuidingBoltEffect(MobEffectCategory.HARMFUL, 16239960));
     public static final RegistryObject<MobEffect> AIRBORNE = MOB_EFFECT_DEFERRED_REGISTER.register("airborne", () -> new AirborneEffect(MobEffectCategory.HARMFUL, 0xFFFFFF));
+    public static final RegistryObject<MobEffect> VIGOR = MOB_EFFECT_DEFERRED_REGISTER.register("vigor", () -> new MobEffect(MobEffectCategory.BENEFICIAL, 0x850d0d) {}.addAttributeModifier(Attributes.MAX_HEALTH, "d2b7228b-3ded-412e-940b-8f9f1e2cf882", 2, AttributeModifier.Operation.ADDITION));
     //public static final RegistryObject<MobEffect> ROOT = MOB_EFFECT_DEFERRED_REGISTER.register("root", () -> new RootEffect(MobEffectCategory.HARMFUL, 0x604730));
     //public static final RegistryObject<MobEffect> ENCHANTED_WARD = MOB_EFFECT_DEFERRED_REGISTER.register("enchanted_ward", () -> new EnchantedWardEffect(MobEffectCategory.HARMFUL, 3311322));
 }

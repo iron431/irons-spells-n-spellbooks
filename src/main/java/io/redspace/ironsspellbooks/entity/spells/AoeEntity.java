@@ -75,7 +75,7 @@ public abstract class AoeEntity extends Projectile {
     protected void checkHits() {
         if (level().isClientSide)
             return;
-        List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox());
+        List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation()));
         boolean hit = false;
         for (LivingEntity target : targets) {
             if (canHitEntity(target) && (!isCircular() || target.distanceTo(this) < getRadius())) {
@@ -90,6 +90,10 @@ public abstract class AoeEntity extends Projectile {
             this.duration += durationOnUse;
             onPostHit();
         }
+    }
+
+    protected float getInflation() {
+        return 0;
     }
 
     @Override
