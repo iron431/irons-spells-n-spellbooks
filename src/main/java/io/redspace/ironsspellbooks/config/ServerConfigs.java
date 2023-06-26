@@ -80,7 +80,7 @@ public class ServerConfigs {
         BUILDER.pop();
 
         BUILDER.push("Worldgen");
-        BUILDER.comment("The weight of the priest house spawning in a village.");
+        BUILDER.comment("The weight of the priest house spawning in a village. Default: 4");
         PRIEST_TOWER_SPAWNRATE = BUILDER.define("priestHouseWeight", 4);
         BUILDER.pop();
         //IronsSpellbooks.LOGGER.debug("CFG: static");
