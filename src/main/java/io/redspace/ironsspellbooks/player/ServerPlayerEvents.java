@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -54,7 +54,7 @@ public class ServerPlayerEvents {
         }
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()
                     && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1)
                     && (event.getFrom().getItem() instanceof SpellBook || SpellData.hasSpellData(event.getFrom()))) {
@@ -71,7 +71,7 @@ public class ServerPlayerEvents {
         //Ironsspellbooks.logger.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
@@ -113,7 +113,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onStartTracking(final PlayerEvent.StartTracking event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ServerPlayer targetPlayer) {
-            PlayerMagicData.getPlayerMagicData(serverPlayer).getSyncedData().syncToPlayer(targetPlayer);
+            MagicData.getPlayerMagicData(serverPlayer).getSyncedData().syncToPlayer(targetPlayer);
         }
     }
 
@@ -121,7 +121,7 @@ public class ServerPlayerEvents {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             //Ironsspellbooks.logger.debug("onPlayerLoggedIn syncing cooldowns to {}", serverPlayer.getName().getString());
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
             playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
         }
@@ -188,7 +188,7 @@ public class ServerPlayerEvents {
                     serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), effect));
                 }
             }));
-            PlayerMagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA.get()) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
+            MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA.get()) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
         }
     }
 
@@ -198,7 +198,7 @@ public class ServerPlayerEvents {
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
 
         if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof AbstractSpellCastingMob)) {
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(livingEntity);
+            var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
                 if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
                     event.setCanceled(true);
@@ -275,7 +275,7 @@ public class ServerPlayerEvents {
         /*
         Damage Reducing Effects
          */
-        var playerMagicData = PlayerMagicData.getPlayerMagicData(event.getEntity());
+        var playerMagicData = MagicData.getPlayerMagicData(event.getEntity());
         if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.HEARTSTOP)) {
             playerMagicData.getSyncedData().addHeartstopDamage(event.getAmount() * .5f);
             //Ironsspellbooks.logger.debug("Accumulated damage: {}", playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
@@ -303,7 +303,7 @@ public class ServerPlayerEvents {
         }
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
@@ -323,7 +323,7 @@ public class ServerPlayerEvents {
             var victim = entityHitResult.getEntity();
             if (victim instanceof AbstractSpellCastingMob || victim instanceof Player) {
                 var livingEntity = (LivingEntity) victim;
-                PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(livingEntity);
+                MagicData playerMagicData = MagicData.getPlayerMagicData(livingEntity);
                 if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
                     if (EvasionEffect.doEffect(livingEntity, new IndirectEntityDamageSource("noop", event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);

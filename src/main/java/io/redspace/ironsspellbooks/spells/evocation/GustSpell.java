@@ -1,9 +1,8 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.effect.AirborneEffect;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -59,7 +58,7 @@ public class GustSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
         float range = getRange(entity);
         float strength = getStrength(entity);
 

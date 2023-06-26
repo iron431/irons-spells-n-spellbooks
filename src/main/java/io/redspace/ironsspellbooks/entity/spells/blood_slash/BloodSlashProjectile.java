@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_slash;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
@@ -234,7 +233,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
     }
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData playerMagicData) {
         this.discard();
     }
 

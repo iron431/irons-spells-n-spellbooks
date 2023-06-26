@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.void_school;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -56,7 +56,7 @@ public class AbyssalShroudSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ABYSSAL_SHROUD.get(), (int) getSpellPower(entity) * 20, 0, false, false, true));
         super.onCast(world, entity, playerMagicData);
     }

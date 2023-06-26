@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.ice;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.network.spell.ClientboundFrostStepParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -67,7 +67,7 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
         var teleportData = (TeleportSpell.TeleportData) playerMagicData.getAdditionalCastData();
 
         FrozenHumanoid shadow = new FrozenHumanoid(level, entity);

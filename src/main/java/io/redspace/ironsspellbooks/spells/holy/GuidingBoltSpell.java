@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -54,7 +54,7 @@ public class GuidingBoltSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         GuidingBoltProjectile guidingBolt = new GuidingBoltProjectile(world, entity);
         guidingBolt.setPos(entity.position().add(0, entity.getEyeHeight() - guidingBolt.getBoundingBox().getYsize() * .5f, 0));
         guidingBolt.shoot(entity.getLookAngle());

@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -44,14 +45,14 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.UUID;
 
-public abstract class AbstractSpellCastingMob extends PathfinderMob implements IAnimatable {
+public abstract class AbstractSpellCastingMob extends PathfinderMob implements IAnimatable, IMagicEntity {
     public static final ResourceLocation modelResource = new ResourceLocation(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
     public static final ResourceLocation animationInstantCast = new ResourceLocation(IronsSpellbooks.MODID, "animations/casting_animations.json");
     //private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SyncedSpellData.SYNCED_SPELL_DATA);
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
-    private final PlayerMagicData playerMagicData = new PlayerMagicData(true);
+    private final MagicData playerMagicData = new MagicData(true);
     private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
     private @Nullable AbstractSpell castingSpell;
@@ -64,7 +65,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         playerMagicData.setSyncedData(new SyncedSpellData(this));
     }
 
-    public PlayerMagicData getPlayerMagicData() {
+    public MagicData getPlayerMagicData() {
         return playerMagicData;
     }
 

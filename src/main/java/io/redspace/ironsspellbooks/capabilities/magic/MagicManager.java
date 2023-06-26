@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldown;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
@@ -16,8 +17,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
-
 import static io.redspace.ironsspellbooks.registries.AttributeRegistry.COOLDOWN_REDUCTION;
 import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
 
@@ -26,11 +25,11 @@ public class MagicManager implements IMagicManager {
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
     public void setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
-        var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+        var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
         playerMagicData.setMana(newManaValue);
     }
 
-    public void regenPlayerMana(ServerPlayer serverPlayer, PlayerMagicData playerMagicData) {
+    public void regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
         int increment = Math.round(Math.max(playerMaxMana * .01f, 1));
 
@@ -49,7 +48,7 @@ public class MagicManager implements IMagicManager {
 
         level.players().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {
-                PlayerMagicData playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+                MagicData playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                 playerMagicData.getPlayerCooldowns().tick(1);
 
                 if (playerMagicData.isCasting()) {
@@ -104,7 +103,7 @@ public class MagicManager implements IMagicManager {
 
         //IronsSpellbooks.LOGGER.debug("addCooldown: serverPlayer: {} playerCooldownModifier:{} effectiveCooldown:{}", serverPlayer.getName().getString(), playerCooldownModifier, effectiveCooldown);
 
-        PlayerMagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
+        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spellType, effectiveCooldown);
         Messages.sendToPlayer(new ClientboundSyncCooldown(spellType.getValue(), effectiveCooldown), serverPlayer);
     }
 

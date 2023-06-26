@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -211,7 +211,7 @@ public class WizardAttackGoal extends Goal {
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
         }
         if (mob.isCasting()) {
-            var pmg = PlayerMagicData.getPlayerMagicData(mob);
+            var pmg = MagicData.getPlayerMagicData(mob);
             if (target.isDeadOrDying() || AbstractSpell.getSpell(pmg.getCastingSpellId(), pmg.getCastingSpellLevel()).shouldAIStopCasting(mob, target))
                 mob.cancelCast();
 

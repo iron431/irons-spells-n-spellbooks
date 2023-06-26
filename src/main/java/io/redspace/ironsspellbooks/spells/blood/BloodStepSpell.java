@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -66,7 +66,7 @@ public class BloodStepSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
+    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable MagicData playerMagicData) {
         super.onClientPreCast(level, entity, hand, playerMagicData);
         Vec3 forward = entity.getForward().normalize();
         for (int i = 0; i < 35; i++) {
@@ -76,7 +76,7 @@ public class BloodStepSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
         Vec3 dest = null;
         var teleportData = (TeleportSpell.TeleportData) playerMagicData.getAdditionalCastData();
         if (teleportData != null) {

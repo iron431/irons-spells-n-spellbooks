@@ -46,8 +46,8 @@ public class IronsSpellbooks {
 
         ModSetup.setup();
 
-        //MAGIC_MANAGER = new MagicManager();
-        //MagicHelper.MAGIC_MANAGER = MAGIC_MANAGER;
+        MAGIC_MANAGER = new MagicManager();
+        MagicHelper.MAGIC_MANAGER = MAGIC_MANAGER;
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(ModSetup::init);

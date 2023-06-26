@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -58,7 +58,7 @@ public class InvisibilitySpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
 
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), getDuration(entity), 0, false, false, true));
 

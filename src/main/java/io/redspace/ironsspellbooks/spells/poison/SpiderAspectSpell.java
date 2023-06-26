@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.poison;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -62,7 +62,7 @@ public class SpiderAspectSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
 
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.SPIDER_ASPECT.get(), (int) (getSpellPower(entity) * 20), this.getLevel(entity) - 1, false, false, true));
 

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.*;
@@ -54,7 +54,7 @@ public class GreaterHealSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         entity.heal(entity.getMaxHealth());
         Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(entity.position()), entity,true);
 

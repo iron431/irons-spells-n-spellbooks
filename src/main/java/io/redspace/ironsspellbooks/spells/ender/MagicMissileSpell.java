@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.ender;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileProjectile;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -52,7 +52,7 @@ public class MagicMissileSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         MagicMissileProjectile magicMissileProjectile = new MagicMissileProjectile(world, entity);
         magicMissileProjectile.setPos(entity.position().add(0, entity.getEyeHeight() - magicMissileProjectile.getBoundingBox().getYsize() * .5f, 0));
         magicMissileProjectile.shoot(entity.getLookAngle());

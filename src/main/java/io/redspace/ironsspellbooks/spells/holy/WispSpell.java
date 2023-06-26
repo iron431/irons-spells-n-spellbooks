@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -63,12 +63,12 @@ public class WispSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
         return Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 48, .35f);
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetingData) {
             var targetEntity = targetingData.getTarget((ServerLevel) world);
             WispEntity wispEntity = new WispEntity(world, entity, getSpellPower(entity));

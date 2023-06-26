@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.IScroll;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -58,7 +58,7 @@ public class Scroll extends Item implements IScroll {
     }
 
     public static boolean attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
-        ItemStack potentialScroll = PlayerMagicData.getPlayerMagicData(serverPlayer).getPlayerCastingItem();
+        ItemStack potentialScroll = MagicData.getPlayerMagicData(serverPlayer).getPlayerCastingItem();
         if (potentialScroll.getItem() instanceof Scroll scroll) {
             scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
             return true;

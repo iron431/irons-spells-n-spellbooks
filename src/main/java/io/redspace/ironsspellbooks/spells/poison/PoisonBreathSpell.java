@@ -2,8 +2,7 @@ package io.redspace.ironsspellbooks.spells.poison;
 
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.poison_breath.PoisonBreathProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -58,7 +57,7 @@ public class PoisonBreathSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.isCasting()
                 && playerMagicData.getCastingSpellId() == this.getID()
                 && playerMagicData.getAdditionalCastData() instanceof EntityCastData entityCastData

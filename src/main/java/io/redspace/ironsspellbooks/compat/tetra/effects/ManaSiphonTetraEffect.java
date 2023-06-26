@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.compat.tetra.effects;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,7 +49,7 @@ public class ManaSiphonTetraEffect {
                     level *= .01f;
                     int increment = (int) Math.min(level * event.getAmount(), 50);
                     int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
-                    var playerMagicData = PlayerMagicData.getPlayerMagicData(player);
+                    var playerMagicData = MagicData.getPlayerMagicData(player);
                     int newMana = Math.min(increment + playerMagicData.getMana(), maxMana);
                     playerMagicData.setMana(newMana);
                     Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), player);

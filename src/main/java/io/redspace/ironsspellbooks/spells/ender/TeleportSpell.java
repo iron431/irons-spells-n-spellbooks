@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.ender;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundTeleportParticles;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.*;
@@ -60,7 +60,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("TeleportSpell.onCast isClient:{}, entity:{}, pmd:{}", level.isClientSide, entity, playerMagicData);
         }

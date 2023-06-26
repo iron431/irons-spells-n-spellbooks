@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.spells.*;
@@ -69,7 +69,7 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.getAdditionalCastData() == null) {
             //IronsSpellbooks.LOGGER.debug("WallOfFireSpell: creating new data");
             var fireWallData = new FireWallData(getWallLength(entity));
@@ -83,7 +83,7 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
-    public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+    public void onServerCastTick(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
         //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastTick");
         if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
             //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastTick {}", fireWallData.ticks);
@@ -95,7 +95,7 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
-    public void onServerCastComplete(Level level, LivingEntity entity, PlayerMagicData playerMagicData, boolean cancelled) {
+    public void onServerCastComplete(Level level, LivingEntity entity, MagicData playerMagicData, boolean cancelled) {
         //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.1");
         if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
             //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.2");
@@ -151,7 +151,7 @@ public class WallOfFireSpell extends AbstractSpell {
                 anchor = setOnGround(anchor, level);
                 anchorPoints.add(anchor);
                 if (entity instanceof ServerPlayer serverPlayer) {
-                    var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+                    var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                     boolean triggerCooldown = playerMagicData.getCastSource() != CastSource.SCROLL;
                     ServerboundCancelCast.cancelCast(serverPlayer, triggerCooldown);
                 }

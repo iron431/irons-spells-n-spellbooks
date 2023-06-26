@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.capabilities.magic.ImpulseCastData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -80,7 +80,7 @@ public class AscensionSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
 
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ASCENSION.get(), 80, 0, false, false, true));
 

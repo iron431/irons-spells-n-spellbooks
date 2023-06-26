@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -18,12 +18,12 @@ public class ChargeEffect extends MobEffect {
     @Override
     public void removeAttributeModifiers(LivingEntity livingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(livingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.CHARGED);
+        MagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.CHARGED);
     }
 
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.CHARGED);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.CHARGED);
     }
 }

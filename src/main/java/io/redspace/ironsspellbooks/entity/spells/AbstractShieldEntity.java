@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
@@ -139,7 +139,7 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     }
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData playerMagicData) {
         this.discard();
     }
 }

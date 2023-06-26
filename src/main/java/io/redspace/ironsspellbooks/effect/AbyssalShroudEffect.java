@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -26,13 +26,13 @@ public class AbyssalShroudEffect extends MobEffect {
     @Override
     public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ABYSSAL_SHROUD);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.ABYSSAL_SHROUD);
     }
 
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ABYSSAL_SHROUD);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ABYSSAL_SHROUD);
     }
 
 

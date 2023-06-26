@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.util;
 
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -257,7 +257,7 @@ public class Utils {
 
     public static void releaseUsingHelper(LivingEntity entity) {
         if (entity instanceof ServerPlayer serverPlayer) {
-            var pmd = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            var pmd = MagicData.getPlayerMagicData(serverPlayer);
             if (pmd.isCasting() && (pmd.getCastType() != CastType.CHARGE ||
                     (pmd.getCastType() == CastType.CHARGE && pmd.getCastDurationRemaining() > 0))) {
                 Utils.serverSideCancelCast(serverPlayer);
@@ -291,7 +291,7 @@ public class Utils {
     }
 
     public static void serverSideCancelCast(ServerPlayer serverPlayer) {
-        ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[PlayerMagicData.getPlayerMagicData(serverPlayer).getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
+        ServerboundCancelCast.cancelCast(serverPlayer, SpellType.values()[MagicData.getPlayerMagicData(serverPlayer).getCastingSpellId()].getCastType() == CastType.CONTINUOUS);
     }
 
     public static void serverSideCancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
@@ -495,11 +495,11 @@ public class Utils {
         target.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_warning", caster.getDisplayName().getString(), spell.getDisplayName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
     }
 
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, PlayerMagicData playerMagicData, SpellType spellType, int range, float aimAssist) {
+    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, SpellType spellType, int range, float aimAssist) {
         return preCastTargetHelper(level, caster, playerMagicData, spellType, range, aimAssist, true);
     }
 
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, PlayerMagicData playerMagicData, SpellType spellType, int range, float aimAssist, boolean sendFailureMessage) {
+    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, SpellType spellType, int range, float aimAssist, boolean sendFailureMessage) {
         var target = Utils.raycastForEntity(caster.level, caster, range, true, aimAssist);
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));

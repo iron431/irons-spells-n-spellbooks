@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.black_hole;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -36,7 +36,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     List<Entity> trackingEntities = new ArrayList<>();
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData playerMagicData) {
     }
 
     public void refreshDimensions() {

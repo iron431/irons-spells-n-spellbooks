@@ -1,10 +1,13 @@
-package io.redspace.ironsspellbooks.capabilities.magic;
+package io.redspace.ironsspellbooks.api.magic;
 
+import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
+import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -14,19 +17,19 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class PlayerMagicData extends AbstractMagicData {
+public class MagicData {
 
     private boolean isMob = false;
 
-    public PlayerMagicData(boolean isMob) {
+    public MagicData(boolean isMob) {
         this.isMob = isMob;
     }
 
-    public PlayerMagicData() {
+    public MagicData() {
         this(false);
     }
 
-    public PlayerMagicData(ServerPlayer serverPlayer) {
+    public MagicData(ServerPlayer serverPlayer) {
         this(false);
         this.serverPlayer = serverPlayer;
     }
@@ -86,7 +89,7 @@ public class PlayerMagicData extends AbstractMagicData {
 
 
     public void resetCastingState() {
- //Ironsspellbooks.logger.debug("PlayerMagicData.resetCastingState: serverPlayer:{}", serverPlayer);
+        //Ironsspellbooks.logger.debug("PlayerMagicData.resetCastingState: serverPlayer:{}", serverPlayer);
         this.castingSpellLevel = 0;
         this.castDuration = 0;
         this.castDurationRemaining = 0;
@@ -196,25 +199,25 @@ public class PlayerMagicData extends AbstractMagicData {
 
     /********* SYSTEM *******************************************************/
 
-    public static PlayerMagicData getPlayerMagicData(LivingEntity livingEntity) {
-        if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
-            return abstractSpellCastingMob.getPlayerMagicData();
+    public static MagicData getPlayerMagicData(LivingEntity livingEntity) {
+        if (livingEntity instanceof IMagicEntity magicEntity) {
+            return magicEntity.getMagicData();
         } else if (livingEntity instanceof ServerPlayer serverPlayer) {
 
             var capContainer = serverPlayer.getCapability(PlayerMagicProvider.PLAYER_MAGIC);
             if (capContainer.isPresent()) {
                 var opt = capContainer.resolve();
                 if (opt.isEmpty()) {
-                    return new PlayerMagicData(serverPlayer);
+                    return new MagicData(serverPlayer);
                 }
 
                 var pmd = opt.get();
                 pmd.setServerPlayer(serverPlayer);
                 return pmd;
             }
-            return new PlayerMagicData(serverPlayer);
+            return new MagicData(serverPlayer);
         } else
-            return new PlayerMagicData(null);
+            return new MagicData(null);
 
 
     }

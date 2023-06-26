@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundRegenCloudParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -67,7 +67,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
         level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(radius)).forEach((target) -> {
             if (target.distanceToSqr(entity.position()) < radius * radius && Utils.shouldHealEntity(entity, target)) {
                 target.heal(getHealing(entity));
@@ -80,7 +80,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
+    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable MagicData playerMagicData) {
         super.onClientPreCast(level, entity, hand, playerMagicData);
     }
 }

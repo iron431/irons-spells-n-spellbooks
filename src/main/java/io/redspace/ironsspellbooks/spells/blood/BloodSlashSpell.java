@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.AnimationHolder;
@@ -56,7 +56,7 @@ public class BloodSlashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         BloodSlashProjectile bloodSlash = new BloodSlashProjectile(world, entity);
         bloodSlash.setPos(entity.getEyePosition());
         bloodSlash.shoot(entity.getLookAngle());

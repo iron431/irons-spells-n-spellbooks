@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.player;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -23,7 +23,7 @@ public class ClientMagicData {
     /**
      * Current Player's Synced Data
      */
-    private static final PlayerMagicData playerMagicData = new PlayerMagicData();
+    private static final MagicData playerMagicData = new MagicData();
 
     /**
      * Other Player's Synced Data

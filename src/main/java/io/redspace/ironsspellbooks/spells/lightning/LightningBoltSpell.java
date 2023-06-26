@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLightningBolt;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -57,7 +57,7 @@ public class LightningBoltSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
         Vec3 pos = Utils.raycastForEntity(level, entity, 100, true).getLocation();
         LightningBolt lightningBolt = new ExtendedLightningBolt(level, entity, getSpellPower(entity));
         //lightningBolt.setDamage(getSpellPower(entity));

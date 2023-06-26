@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -52,12 +52,12 @@ public class LightningLanceSpell extends AbstractSpell {
     }
 
     @Override
-    public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+    public void onServerPreCast(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
         super.onServerPreCast(level, entity, playerMagicData);
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
         LightningLanceProjectile lance = new LightningLanceProjectile(level, entity);
         lance.setPos(entity.position().add(0, entity.getEyeHeight(), 0).add(entity.getForward()));
         lance.shoot(entity.getLookAngle());

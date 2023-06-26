@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
@@ -25,13 +24,13 @@ public class HeartstopEffect extends MobEffect {
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.HEARTSTOP);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.HEARTSTOP);
     }
 
     @Override
     public void removeAttributeModifiers(@NotNull LivingEntity pLivingEntity, @NotNull AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        var playerMagicData = PlayerMagicData.getPlayerMagicData(pLivingEntity);
+        var playerMagicData = MagicData.getPlayerMagicData(pLivingEntity);
         playerMagicData.getSyncedData().removeEffects(SyncedSpellData.HEARTSTOP);
 
         //Whether or not player has spawn immunity (we want to damage them regardless)

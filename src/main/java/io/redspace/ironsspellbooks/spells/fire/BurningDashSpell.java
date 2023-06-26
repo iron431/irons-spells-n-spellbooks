@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
@@ -76,7 +77,7 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         entity.hasImpulse = true;
         float multiplier = (15 + getSpellPower(entity)) / 12f;
 

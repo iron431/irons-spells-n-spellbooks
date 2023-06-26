@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -191,7 +191,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
     }
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData playerMagicData) {
         MagicManager.spawnParticles(level, ParticleTypes.SMOKE, getX(), getY() + 1, getZ(), 50, .2, 1.25, .2, .08, false);
         this.discard();
     }

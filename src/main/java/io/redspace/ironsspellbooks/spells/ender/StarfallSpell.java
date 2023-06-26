@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.spells.ender;
 
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.comet.Comet;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -68,7 +68,7 @@ public class StarfallSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         if (!(playerMagicData.getAdditionalCastData() instanceof TargetAreaCastData)) {
             Vec3 targetArea = Utils.moveToRelativeGroundLevel(world, Utils.raycastForEntity(world, entity, 40, true).getLocation(), 12);
             playerMagicData.setAdditionalCastData(new TargetAreaCastData(targetArea, TargetedAreaEntity.createTargetAreaEntity(world, targetArea, getRadius(entity), 0x60008c)));
@@ -77,7 +77,7 @@ public class StarfallSpell extends AbstractSpell {
     }
 
     @Override
-    public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+    public void onServerCastTick(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
         if (playerMagicData != null && (playerMagicData.getCastDurationRemaining() + 1) % 4 == 0)
             if (playerMagicData.getAdditionalCastData() instanceof TargetAreaCastData targetAreaCastData) {
                 for (int i = 0; i < 2; i++) {

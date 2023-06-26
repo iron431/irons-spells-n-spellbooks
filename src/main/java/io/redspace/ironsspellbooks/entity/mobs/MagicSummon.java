@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import net.minecraft.network.chat.Component;
@@ -22,7 +22,7 @@ public interface MagicSummon extends AntiMagicSusceptible {
     void onUnSummon();
 
     @Override
-    default void onAntiMagic(PlayerMagicData playerMagicData) {
+    default void onAntiMagic(MagicData playerMagicData) {
         onUnSummon();
     }
 

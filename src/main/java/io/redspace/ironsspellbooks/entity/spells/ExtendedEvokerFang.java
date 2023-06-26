@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.spells.SchoolType;
@@ -80,7 +80,7 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
     }
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData playerMagicData) {
         this.discard();
     }
 }

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.network.spell.ClientboundAborptionParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundFortifyAreaParticles;
@@ -65,7 +65,7 @@ public class FortifySpell extends AbstractSpell {
     }
 
     @Override
-    public void onServerPreCast(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+    public void onServerPreCast(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
         super.onServerPreCast(level, entity, playerMagicData);
         if (playerMagicData == null)
             return;
@@ -75,7 +75,7 @@ public class FortifySpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
         level.getEntitiesOfClass(LivingEntity.class, new AABB(entity.position().subtract(radius, radius, radius), entity.position().add(radius, radius, radius))).forEach((target) -> {
             if (Utils.shouldHealEntity(entity, target) && entity.distanceTo(target) <= radius) {
                 target.addEffect(new MobEffectInstance(MobEffectRegistry.FORTIFY.get(), 20 * 120, (int) getSpellPower(entity), false, false, true));

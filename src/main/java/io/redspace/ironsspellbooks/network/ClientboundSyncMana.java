@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.network;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
@@ -10,10 +10,10 @@ import java.util.function.Supplier;
 public class ClientboundSyncMana {
 
     private int playerMana = 0;
-    private PlayerMagicData playerMagicData = null;
+    private MagicData playerMagicData = null;
 
 
-    public ClientboundSyncMana(PlayerMagicData playerMagicData) {
+    public ClientboundSyncMana(MagicData playerMagicData) {
         //Server side only
         this.playerMagicData = playerMagicData;
     }

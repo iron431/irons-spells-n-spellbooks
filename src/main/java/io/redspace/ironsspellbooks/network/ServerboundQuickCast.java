@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.network;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
@@ -40,7 +40,7 @@ public class ServerboundQuickCast {
             if (sbd.getSpellSlots() > 0) {
                 var spell = sbd.getSpell(slot);
                 if (spell != null) {
-                    var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+                    var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                     if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() != spell.getID()) {
                         ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                     }

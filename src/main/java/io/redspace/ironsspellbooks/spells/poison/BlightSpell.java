@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.spells.poison;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.effect.BlightEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -64,12 +64,12 @@ public class BlightSpell extends AbstractSpell {
 
 
     @Override
-    public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
         return Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 32, .35f);
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {

@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.network;
 
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -40,7 +39,7 @@ public class ServerboundCancelCast {
 
     public static void cancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
         if (serverPlayer != null) {
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
  //Ironsspellbooks.logger.debug("PacketCancelCast.cancelCast currently casting");
                 int spellId = playerMagicData.getCastingSpellId();

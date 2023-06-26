@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -58,12 +58,12 @@ public class BlazeStormSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         super.onCast(world, entity, playerMagicData);
     }
 
     @Override
-    public void onServerCastTick(Level level, LivingEntity entity, @Nullable PlayerMagicData playerMagicData) {
+    public void onServerCastTick(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
         if (playerMagicData != null && (playerMagicData.getCastDurationRemaining() + 1) % 5 == 0)
             shootBlazeFireball(level, entity);
     }

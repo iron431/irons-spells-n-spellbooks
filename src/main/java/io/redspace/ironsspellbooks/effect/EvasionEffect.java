@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -41,14 +41,14 @@ public class EvasionEffect extends MobEffect {
     @Override
     public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.EVASION);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.EVASION);
     }
 
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.EVASION);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.EVASION);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
 
     }
 
@@ -57,7 +57,7 @@ public class EvasionEffect extends MobEffect {
             return false;
         }
 
-        var data = PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData();
+        var data = MagicData.getPlayerMagicData(livingEntity).getSyncedData();
         data.subtractEvasionHit();
         if (data.getEvasionHitsRemaining() == 0)
             livingEntity.removeEffect(MobEffectRegistry.EVASION.get());
