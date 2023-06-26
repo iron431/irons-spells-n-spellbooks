@@ -446,8 +446,8 @@
   "death.attack.fire_field": "%1$s cooked in %2$s's fiery field",
   "death.attack.starfall_spell": "%1$s was struck by %2$s's shooting stars",
   "death.attack.fire_bomb_spell": "%1$s was blasted away by %2$s",
-  "death.attack.guiding_bolt": "%1$s was led to the grave by %2$s",
-  "death.attack.chain_lightning": "%1$s was zapped to death by %2$s",
+  "death.attack.guiding_bolt_spell": "%1$s was led to the grave by %2$s",
+  "death.attack.chain_lightning_spell": "%1$s was zapped to death by %2$s",
 
   "death.attack.raise_dead_spell.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.summon_vex_spell.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
