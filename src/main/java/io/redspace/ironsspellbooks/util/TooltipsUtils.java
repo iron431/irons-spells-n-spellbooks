@@ -96,7 +96,6 @@ public class TooltipsUtils {
         return switch (type) {
             case CONTINUOUS -> Component.translatable("tooltip.irons_spellbooks.cast_continuous", castTime);
             case LONG -> Component.translatable("tooltip.irons_spellbooks.cast_long", castTime);
-            case CHARGE -> Component.translatable("tooltip.irons_spellbooks.cast_charge", castTime);
             default -> Component.translatable("ui.irons_spellbooks.cast_instant");
         };
     }
