@@ -1,9 +1,10 @@
-package io.redspace.ironsspellbooks.item.curios;
+package io.redspace.ironsspellbooks.api.item.curios;
 
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.world.item.ItemStack;
 
 public class RingData {
+    public static final String nbtKey = "ISBEnhance";
     SpellType spell;
 
     private RingData(int id) {
@@ -12,7 +13,7 @@ public class RingData {
 
     public static RingData getRingData(ItemStack stack) {
         if (hasRingData(stack)) {
-            return new RingData(stack.getOrCreateTag().getInt(AffinityRing.nbtKey));
+            return new RingData(stack.getOrCreateTag().getInt(nbtKey));
         } else {
             return new RingData(0);
         }
@@ -20,11 +21,11 @@ public class RingData {
 
     public static void setRingData(ItemStack stack, SpellType spell) {
         var spellTag = stack.getOrCreateTag();
-        spellTag.putInt(AffinityRing.nbtKey, spell.getValue());
+        spellTag.putInt(nbtKey, spell.getValue());
     }
 
     public static boolean hasRingData(ItemStack stack) {
-        return stack.getOrCreateTag().contains(AffinityRing.nbtKey);
+        return stack.getOrCreateTag().contains(nbtKey);
     }
 
     public SpellType getSpell() {

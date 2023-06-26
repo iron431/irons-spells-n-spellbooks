@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item.curios;
 
+import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -11,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class AffinityRing extends SimpleDescriptiveCurio {
-    public static final String nbtKey = "ISBEnhance";
 
     public AffinityRing(Properties properties) {
         super(properties);

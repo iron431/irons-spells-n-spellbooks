@@ -51,7 +51,7 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRende
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
-import io.redspace.ironsspellbooks.item.curios.RingData;
+import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.particle.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
