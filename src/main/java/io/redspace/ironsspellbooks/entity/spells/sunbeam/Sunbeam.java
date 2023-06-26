@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.sunbeam;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
@@ -14,7 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 
-public class Sunbeam extends AoeEntity {
+public class Sunbeam extends AoeEntity implements AntiMagicSusceptible {
 
     public Sunbeam(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -65,5 +67,10 @@ public class Sunbeam extends AoeEntity {
     @Override
     public ParticleOptions getParticle() {
         return ParticleHelper.SIPHON;
+    }
+
+    @Override
+    public void onAntiMagic(PlayerMagicData playerMagicData) {
+        discard();
     }
 }

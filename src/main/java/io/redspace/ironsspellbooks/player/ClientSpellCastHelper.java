@@ -219,5 +219,13 @@ public class ClientSpellCastHelper {
                         animatePlayerStart(player, resourceLocation);
                     }
                 }));
+
+
+        if (ClientInputEvents.isUseKeyDown) {
+            if (spellType.getCastType().holdToCast()) {
+                ClientSpellCastHelper.setSuppressRightClicks(true);
+            }
+            ClientInputEvents.hasReleasedSinceCasting = false;
+        }
     }
 }

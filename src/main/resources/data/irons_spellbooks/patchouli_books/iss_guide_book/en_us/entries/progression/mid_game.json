@@ -1,0 +1,50 @@
+{
+  "name": "Mid Game",
+  "icon": "irons_spellbooks:scroll_forge",
+  "category": "irons_spellbooks:root",
+  "sortnum": -2,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "Scroll Forge",
+      "text": "Upon reaching nether level resources, you will unlock an entirely new dynamic to gaining power: The Scroll Forge$(br2)The Scroll Forge is used to craft scrolls by using ink, paper, and a focus. The ink determines the rarity (and therefore level), and the focus determines spell's school."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:scroll_forge"
+    },
+    {
+      "type": "patchouli:crafting",
+      "title": "New Spell Books",
+      "text": "Furthermore, intermediate spell books can be crafted using nether resources",
+      "recipe": "irons_spellbooks:gold_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:diamond_spell_book",
+      "text": "Hogskin is dropped by Hoglins"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:magic_cloth",
+      "title": "New Materials",
+      "text": "You should also start to craft stronger armor using arcane cloth. In order to get high quantities of arcane essence, you will need to focus on raiding magical structures."
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "Scarecrow Armor",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:pumpkin_boots',Count:1b},{id:'irons_spellbooks:pumpkin_leggings',Count:1b},{id:'irons_spellbooks:pumpkin_chestplate',Count:1b},{id:'irons_spellbooks:pumpkin_helmet',Count:1b}],NoBasePlate:1b}"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blank_rune",
+      "title": "Rare Materials",
+      "text": "In order to continue progressing, keep an eye out for runestones in magical structures. Runestones are used to craft even more powerful armor. Class mages always drop a rune of their school."
+    },
+    {
+      "type": "patchouli:empty",
+      "draw_filler": false
+    }
+  ]
+}

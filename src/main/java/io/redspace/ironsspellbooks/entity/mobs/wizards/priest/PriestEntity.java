@@ -18,6 +18,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -48,7 +50,9 @@ import java.util.List;
 
 public class PriestEntity extends NeutralWizard implements VillagerDataHolder, SupportMob, HomeOwner {
     private static final EntityDataAccessor<VillagerData> DATA_VILLAGER_DATA = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.VILLAGER_DATA);
+    private static final EntityDataAccessor<Boolean> DATA_VILLAGER_UNHAPPY = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.BOOLEAN);
     public GoalSelector supportTargetSelector;
+    private int unhappyTimer;
 
     public PriestEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -155,12 +159,17 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_VILLAGER_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
+        this.entityData.define(DATA_VILLAGER_UNHAPPY, false);
     }
 
     public void setVillagerData(VillagerData villagerdata) {
         //VillagerData villagerdata = this.getVillagerData();
         villagerdata.setProfession(VillagerProfession.NONE);
         this.entityData.set(DATA_VILLAGER_DATA, villagerdata);
+    }
+
+    public boolean isUnhappy() {
+        return this.entityData.get(DATA_VILLAGER_UNHAPPY);
     }
 
     public @NotNull VillagerData getVillagerData() {
@@ -195,11 +204,28 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                             mob.setTarget(this);
             });
         }
+        if (unhappyTimer > 0)
+            if (--unhappyTimer == 0)
+                this.entityData.set(DATA_VILLAGER_UNHAPPY, false);
 //        this.level.getProfiler().push("priestBrain");
 //        this.getBrain().tick((ServerLevel) this.level, this);
 //        this.level.getProfiler().pop();
 //        this.getBrain().setActiveActivityToFirstValid(ImmutableList.of(Activity.CORE));
 
+    }
+
+    @Override
+    protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
+        setUnhappy();
+        return super.mobInteract(pPlayer, pHand);
+    }
+
+    public void setUnhappy() {
+        if (!level.isClientSide) {
+            this.playSound(SoundEvents.VILLAGER_NO, this.getSoundVolume(), this.getVoicePitch());
+            unhappyTimer = 20;
+            this.entityData.set(DATA_VILLAGER_UNHAPPY, true);
+        }
     }
 
     BlockPos homePos;

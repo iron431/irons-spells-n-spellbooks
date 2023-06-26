@@ -12,8 +12,6 @@ import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastStarted;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
-import io.redspace.ironsspellbooks.player.ClientInputEvents;
-import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -138,7 +136,7 @@ public abstract class AbstractSpell {
             case INSTANT -> ANIMATION_INSTANT_CAST;
             case CONTINUOUS -> ANIMATION_CONTINUOUS_CAST;
             case LONG -> ANIMATION_LONG_CAST;
-            case CHARGE -> ANIMATION_CHARGED_CAST;
+            //case CHARGE -> ANIMATION_CHARGED_CAST;
             default -> AnimationHolder.none();
         };
     }
@@ -241,7 +239,7 @@ public abstract class AbstractSpell {
                  * Immediately cast spell
                  */
                 castSpell(level, serverPlayer, castSource, triggerCooldown);
-            } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS || this.castType == CastType.CHARGE) {
+            } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
                 /*
                  * Prepare to cast spell (magic manager will pick it up by itself)
                  */
@@ -299,14 +297,8 @@ public abstract class AbstractSpell {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, this.spellType, this.getRawLevel());
         }
-
         playSound(getCastFinishSound(), entity, true);
-        if (ClientInputEvents.isUseKeyDown) {
-            if (this.spellType.getCastType().holdToCast()) {
-                ClientSpellCastHelper.setSuppressRightClicks(true);
-            }
-            ClientInputEvents.hasReleasedSinceCasting = false;
-        }
+
     }
 
     /**

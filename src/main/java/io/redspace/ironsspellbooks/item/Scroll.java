@@ -75,10 +75,6 @@ public class Scroll extends Item implements IScroll {
             if (ClientMagicData.isCasting()) {
                 return InteractionResultHolder.fail(stack);
             } else {
-                //spell.onClientPreCast(level, player, hand, null);
-                if (spell.getCastType().holdToCast()) {
-                    player.startUsingItem(hand);
-                }
                 return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
             }
         }
@@ -110,7 +106,7 @@ public class Scroll extends Item implements IScroll {
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
         //entity.stopUsingItem();
         if (SpellData.getSpellData(itemStack).getSpell().getCastType() != CastType.CONTINUOUS || getUseDuration(itemStack) - ticksUsed >= 4) {
-            Utils.releaseUsingHelper(entity);
+            Utils.releaseUsingHelper(entity, itemStack, ticksUsed);
         }
         super.releaseUsing(itemStack, level, entity, ticksUsed);
     }

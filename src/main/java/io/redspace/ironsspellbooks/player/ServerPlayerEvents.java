@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
@@ -17,7 +18,6 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -286,6 +286,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             if (playerMagicData.isCasting() &&
                     SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
+                    playerMagicData.getCastDurationRemaining() > 0 &&
                     event.getSource() != DamageSource.FREEZE &&
                     event.getSource() != DamageSource.STARVE &&
                     event.getSource() != DamageSource.ON_FIRE &&

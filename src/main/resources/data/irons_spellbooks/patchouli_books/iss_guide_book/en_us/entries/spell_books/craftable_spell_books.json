@@ -1,0 +1,29 @@
+{
+  "name": "Craftable Spell Books",
+  "icon": "irons_spellbooks:iron_spell_book",
+  "category": "irons_spellbooks:root",
+  "sortnum": 1,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "Craftable Spell Books",
+      "text": "Spell Books can be crafted from a base of vanilla materials and arcane materials. Each further tier crafted increases the rarity and slot count of the spell book, increasing the power and quantity of scrolls it can contain."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:copper_spell_book",
+      "recipe2": "irons_spellbooks:iron_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:gold_spell_book",
+      "recipe2": "irons_spellbooks:diamond_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:netherite_spell_book",
+      "recipe2": "irons_spellbooks:dragonskin_spell_book"
+    }
+  ]
+}

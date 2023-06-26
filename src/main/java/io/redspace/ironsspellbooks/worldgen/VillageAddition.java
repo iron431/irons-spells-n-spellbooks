@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.worldgen;
 
 import com.mojang.datafixers.util.Pair;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -55,6 +55,8 @@ public class VillageAddition {
         List<Pair<StructurePoolElement, Integer>> listOfPieceEntries = new ArrayList<>(pool.rawTemplates);
         listOfPieceEntries.add(new Pair<>(piece, weight));
         pool.rawTemplates = listOfPieceEntries;
+//        pool.rawTemplates.forEach((pair) ->
+//                IronsSpellbooks.LOGGER.debug("{}: {}", pair.getFirst().toString(), pair.getSecond()));
     }
 
     /**
@@ -63,15 +65,22 @@ public class VillageAddition {
      */
     @SubscribeEvent
     public static void addNewVillageBuilding(final ServerAboutToStartEvent event) {
-        IronsSpellbooks.LOGGER.debug("ServerAboutToStartEvent: addNewVillageBuilding");
         Registry<StructureTemplatePool> templatePoolRegistry = event.getServer().registryAccess().registry(Registry.TEMPLATE_POOL_REGISTRY).orElseThrow();
         Registry<StructureProcessorList> processorListRegistry = event.getServer().registryAccess().registry(Registry.PROCESSOR_LIST_REGISTRY).orElseThrow();
 
         // Adds our piece to all village houses pool
         // Note, the resourcelocation is getting the pool files from the data folder. Not assets folder.
+        int weight = ServerConfigs.PRIEST_TOWER_SPAWNRATE.get();
+//        if (weight == ServerConfigs.PRIEST_TOWER_SPAWNRATE.getDefault() && FMLLoader.getLoadingModList().getModFileById("bettervillage") != null)
+//            weight = 2;
+        //IronsSpellbooks.LOGGER.debug("ServerAboutToStartEvent: addNewVillageBuilding {}", ServerConfigs.PRIEST_TOWER_SPAWNRATE.get());
+        if (weight <= 0)
+            return;
+
         addBuildingToPool(templatePoolRegistry, processorListRegistry,
                 new ResourceLocation("minecraft:village/plains/houses"),
-                "irons_spellbooks:priest_house", 250);
+                "irons_spellbooks:priest_house", weight);
+
 
         //addBuildingToPool(templatePoolRegistry, processorListRegistry,
         //        new ResourceLocation("minecraft:village/snowy/houses"),

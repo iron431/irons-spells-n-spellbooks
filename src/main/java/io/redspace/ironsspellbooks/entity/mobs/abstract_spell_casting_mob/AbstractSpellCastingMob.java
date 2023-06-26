@@ -239,7 +239,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
                 IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.2");
             }
 
-            if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.CHARGE || castingSpell.getCastType() == CastType.INSTANT) {
+            if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.INSTANT) {
                 if (Log.SPELL_DEBUG) {
                     IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.3");
                 }
@@ -439,7 +439,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
         var controller = event.getController();
         if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationState.Stopped) {
-            if (castingSpell.getCastType() == CastType.CONTINUOUS || castingSpell.getCastType() == CastType.CHARGE) {
+            if (castingSpell.getCastType() == CastType.CONTINUOUS) {
                 setStartAnimationFromSpell(controller, castingSpell);
             }
             return PlayState.CONTINUE;

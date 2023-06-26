@@ -1,0 +1,8 @@
+{
+  "name": "Iron's Guidebook",
+  "landing_text": "Iron's Spells 'n Spellbooks is an RPG-inspired spellcasting mod. You can fight dangerous wizards, raid structures, delve through dungeons, collect resources, and find powerful magical items. $(l:https://iron431.github.io/Irons-Spellbooks-Docs)External wiki here$(/l)",
+  "version": 1,
+  "pamphlet": true,
+  "show_progress": false,
+  "model": "irons_spellbooks:patchouli_book"
+}

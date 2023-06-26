@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Utils;
@@ -32,7 +31,7 @@ public class CommonPlayerEvents {
 
             if (spell.getSpellType() != SpellType.NONE_SPELL) {
                 entity.stopUsingItem();
-                Utils.releaseUsingHelper(entity);
+                Utils.releaseUsingHelper(entity, stack, event.getDuration());
             }
         }
     }

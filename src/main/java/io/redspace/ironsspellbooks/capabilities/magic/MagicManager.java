@@ -17,6 +17,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nonnull;
+
 import static io.redspace.ironsspellbooks.registries.AttributeRegistry.COOLDOWN_REDUCTION;
 import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
 
@@ -55,7 +57,7 @@ public class MagicManager implements IMagicManager {
                     playerMagicData.handleCastDuration();
                     var spell = AbstractSpell.getSpell(playerMagicData.getCastingSpellId(), playerMagicData.getCastingSpellLevel());
                     //irons_spellbooks.LOGGER.debug("MagicManager.tick: playerMagicData:{}", playerMagicData);
-                    if (spell.getCastType() == CastType.LONG || (spell.getCastType() == CastType.CHARGE && !serverPlayer.isUsingItem())) {
+                    if (spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
                             //Messages.sendToPlayer(new ClientboundUpdateCastingState(playerMagicData.getCastingSpellId(), 0, 0, playerMagicData.getCastSource(), true), serverPlayer);
                             spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);

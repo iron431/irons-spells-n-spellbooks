@@ -108,6 +108,10 @@ dependencies {
     //Uncomment the following line to run with Curios in dev
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
+    // PATCHOULI **************************************************************************************************
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+
     // APOTHEOSIS
     compileOnly fg.deobf("curse.maven:apotheosis-313970:4547399")
     compileOnly fg.deobf("curse.maven:placebo-283644:4546960")
