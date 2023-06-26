@@ -7,8 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 
 public class PriestModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID,"textures/entity/priest.png");
@@ -25,14 +25,15 @@ public class PriestModel extends AbstractSpellCastingMobModel {
     }
 
     @Override
-    public void setCustomAnimations(AbstractSpellCastingMob entity, int instanceId, AnimationEvent animationEvent) {
-        super.setCustomAnimations(entity, instanceId, animationEvent);
+    public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
+        super.setCustomAnimations(entity, instanceId, animationState);
         if (entity instanceof PriestEntity priest && priest.isUnhappy()) {
             if (Minecraft.getInstance().isPaused() || !entity.shouldBeExtraAnimated())
                 return;
-            IBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-            head.setRotationZ(0.3F * Mth.sin(0.45F * (entity.tickCount + animationEvent.getPartialTick())));
-            head.setRotationX(-0.4F);
+            CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
+            head.updateRotation(0, 0, 0);
+            head.setRotZ(0.3F * Mth.sin(0.45F * (entity.tickCount + animationState.getPartialTick())));
+            head.setRotX(-0.4F);
         }
     }
 }
