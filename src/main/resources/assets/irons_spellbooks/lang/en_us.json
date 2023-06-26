@@ -489,8 +489,8 @@
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.starfall_spell.item": "%1$s was struck by %2$s's shooting stars while using %3$s",
   "death.attack.fire_bomb_spell.item": "%1$s blasted away by %2$s while using %3$s",
-  "death.attack.guiding_bolt.item": "%1$s was led to the grave by %2$s's %3$s",
-  "death.attack.chain_lightning.item": "%1$s was zapped to death by %2$s's %3$s",
+  "death.attack.guiding_bolt_spell.item": "%1$s was led to the grave by %2$s's %3$s",
+  "death.attack.chain_lightning_spell.item": "%1$s was zapped to death by %2$s's %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
