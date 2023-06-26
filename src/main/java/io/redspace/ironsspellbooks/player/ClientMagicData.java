@@ -130,7 +130,7 @@ public class ClientMagicData {
             return playerSyncedDataLookup.getOrDefault(livingEntity.getId(), emptySyncedData);
         }
         if (livingEntity instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
-            return abstractSpellCastingMob.getPlayerMagicData().getSyncedData();
+            return abstractSpellCastingMob.getMagicData().getSyncedData();
         }
         return new SyncedSpellData(null);
 

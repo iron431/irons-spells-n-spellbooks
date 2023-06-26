@@ -9,6 +9,8 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
+import io.redspace.ironsspellbooks.plugin.PluginDiscovery;
+import io.redspace.ironsspellbooks.plugin.PluginRegistration;
 import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.setup.ModSetup;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -84,6 +86,8 @@ public class IronsSpellbooks {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+
+        PluginRegistration.LoadPlugins();
     }
 
     @SuppressWarnings("removal")

@@ -65,7 +65,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         playerMagicData.setSyncedData(new SyncedSpellData(this));
     }
 
-    public MagicData getPlayerMagicData() {
+    public MagicData getMagicData() {
         return playerMagicData;
     }
 
