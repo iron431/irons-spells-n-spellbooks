@@ -15,3 +15,4 @@
 - Chain Lightning can no longer target non-living entities, such as minecarts
 - Ceased cancelling the use item finish event
 - Magical Area of Effect entities are now affected by counterspell
+- Fixed typo in language file causing guiding bolt and chaing lightning death messages to not appear
