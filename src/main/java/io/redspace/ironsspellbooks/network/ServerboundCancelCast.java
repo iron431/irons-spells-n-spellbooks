@@ -15,7 +15,6 @@ public class ServerboundCancelCast {
     private final boolean triggerCooldown;
 
     public ServerboundCancelCast(boolean triggerCooldown) {
-
         this.triggerCooldown = triggerCooldown;
     }
 
@@ -28,7 +27,6 @@ public class ServerboundCancelCast {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
- //Ironsspellbooks.logger.debug("PacketCancelCast.handle");
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.getSender();
@@ -41,18 +39,17 @@ public class ServerboundCancelCast {
         if (serverPlayer != null) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
- //Ironsspellbooks.logger.debug("PacketCancelCast.cancelCast currently casting");
                 int spellId = playerMagicData.getCastingSpellId();
 
                 if (triggerCooldown) {
                     MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
                 }
 
- //Ironsspellbooks.logger.debug("ServerBoundCancelCast.cancelCast");
                 playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, true);
-                serverPlayer.stopUsingItem();
-                if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)
+
+                if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS) {
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
+                }
             }
         }
     }
