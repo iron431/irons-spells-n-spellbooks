@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -63,5 +64,10 @@ public class LightningLanceSpell extends AbstractSpell {
         lance.setDamage(getSpellPower(entity));
         level.addFreshEntity(lance);
         super.onCast(level, entity, playerMagicData);
+    }
+
+    @Override
+    public AnimationHolder getCastStartAnimation() {
+        return ANIMATION_CHARGED_CAST;
     }
 }
