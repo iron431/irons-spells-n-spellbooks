@@ -213,12 +213,11 @@ artifacts {
 publishing {
     tasks.publish.dependsOn 'build'
     publications {
+
         mavenJava(MavenPublication) {
-            groupId project.group
             artifactId project.archivesBaseName
-            version project.version
-            from components.java
             artifact jar
+            artifact sourcesJar
             artifact apiJar
         }
     }
@@ -226,7 +225,13 @@ publishing {
     repositories {
         maven {
             name = "redspace"
-            url uri("https://code.redspace.io/releases")
+
+            if (project.version.endsWith('-SNAPSHOT')) {
+                url uri("https://code.redspace.io/snapshots")
+            } else {
+                url uri("https://code.redspace.io/releases")
+            }
+
             credentials {
                 username = System.getenv("MAVEN_USER")
                 password = System.getenv("MAVEN_PASS")
