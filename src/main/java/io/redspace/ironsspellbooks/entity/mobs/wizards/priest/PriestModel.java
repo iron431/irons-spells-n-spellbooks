@@ -31,7 +31,6 @@ public class PriestModel extends AbstractSpellCastingMobModel {
             if (Minecraft.getInstance().isPaused() || !entity.shouldBeExtraAnimated())
                 return;
             CoreGeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-            head.updateRotation(0, 0, 0);
             head.setRotZ(0.3F * Mth.sin(0.45F * (entity.tickCount + animationState.getPartialTick())));
             head.setRotX(-0.4F);
         }
