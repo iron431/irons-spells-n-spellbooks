@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleOptions;
@@ -42,7 +43,7 @@ public class DevourJaw extends AoeEntity {
                     var addition = 0;
                     if (oldVigor != null)
                         addition = oldVigor.getAmplifier() + 1;
-                    livingOwner.addEffect(new MobEffectInstance(MobEffectRegistry.VIGOR.get(), 20 * 60, vigorLevel + addition));
+                    livingOwner.addEffect(new MobEffectInstance(MobEffectRegistry.VIGOR.get(), 20 * 60, vigorLevel + addition, false, false, true));
                     livingOwner.heal((vigorLevel + 1) * 2);
                 }
             }
@@ -58,6 +59,8 @@ public class DevourJaw extends AoeEntity {
         if (tickCount < waitTime) {
             if (this.target != null)
                 setPos(this.target.position());
+        } else if (tickCount == waitTime) {
+            this.playSound(SoundRegistry.DEVOUR_BITE.get(), 2, 1);
         } else if (tickCount == warmupTime) {
             if (level.isClientSide) {
                 float y = this.getYRot();
@@ -76,7 +79,7 @@ public class DevourJaw extends AoeEntity {
 
     @Override
     protected float getInflation() {
-        return 1f;
+        return 2f;
     }
 
     @Override

@@ -67,6 +67,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> GUIDING_BOLT_IMPACT = registerSoundEvent("entity.guiding_bolt.impact");
     public static RegistryObject<SoundEvent> GUIDING_BOLT_CAST = registerSoundEvent("spell.guiding_bolt.cast");
     public static RegistryObject<SoundEvent> CHAIN_LIGHTNING_CHAIN = registerSoundEvent("entity.chain_lightning.lightning_chain");
+    public static RegistryObject<SoundEvent> DEVOUR_BITE = registerSoundEvent("entity.devour_jaw.bite");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

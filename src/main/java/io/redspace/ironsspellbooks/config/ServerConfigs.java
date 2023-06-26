@@ -97,6 +97,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.WITHER_SKULL_SPELL, WitherSkullSpell.defaultConfig, true);
         createSpellConfig(SpellType.BlOOD_NEEDLES_SPELL, BloodNeedlesSpell.defaultConfig, true);
         createSpellConfig(SpellType.ACUPUNCTURE_SPELL, AcupunctureSpell.defaultConfig, true);
+        createSpellConfig(SpellType.DEVOUR_SPELL, DevourSpell.defaultConfig, true);
         //Ender
         BUILDER.comment("Ender Spells");
         createSpellConfig(SpellType.EVASION_SPELL, EvasionSpell.defaultConfig, true);

@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
 import io.redspace.ironsspellbooks.spells.*;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -11,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +71,7 @@ public class DevourSpell extends AbstractSpell {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
+                particleStream(entity.position().add(0, entity.getBbHeight() / 2, 0), entity.position().add(0, targetEntity.getBbHeight() / 2, 0), world);
                 targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(targetEntity.position().subtract(entity.position()).scale(-.25f)));
                 targetEntity.hurtMarked = true;
                 DevourJaw devour = new DevourJaw(world, entity, targetEntity);
@@ -80,6 +84,16 @@ public class DevourSpell extends AbstractSpell {
         }
 
         super.onCast(world, entity, playerMagicData);
+    }
+
+    private void particleStream(Vec3 start, Vec3 end, Level level) {
+        float step = .15f;
+        float distance = (float) (end.distanceTo(start) / step);
+        Vec3 jump = end.subtract(start).normalize().scale(step);
+        for (int i = 0; i < distance; i++) {
+            Vec3 pos = start.add(jump.scale(i));
+            MagicManager.spawnParticles(level, ParticleHelper.BLOOD, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
+        }
     }
 
     public float getDamage(LivingEntity caster) {

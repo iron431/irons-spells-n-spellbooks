@@ -332,6 +332,7 @@
   "spell.irons_spellbooks.guiding_bolt": "Guiding Bolt",
   "spell.irons_spellbooks.gust": "Gust",
   "spell.irons_spellbooks.chain_lightning": "Chain Lightning",
+  "spell.irons_spellbooks.devour": "Devour",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -399,6 +400,7 @@
   "spell.irons_spellbooks.guiding_bolt.guide": "Fire a slow bolt of holy energy. Creatures hit will gain the Guided effect, homing nearby projectiles in towards them",
   "spell.irons_spellbooks.gust.guide": "Conjure a strong gust of wind, knocking back creatures in a conical shape, causing damage if they impact a wall",
   "spell.irons_spellbooks.chain_lightning.guide": "Start a chain of lightning from a targeted creature, causing waves of zapping magic to cascade to nearby creatures",
+  "spell.irons_spellbooks.devour.guide": "Pull in a nearby creature and attack them with a bite, leeching 15% of damage done as health. If the creature is killed, you temporarily gain additional max HP. Created by the ancient magician known as Yorhavich",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -449,6 +451,7 @@
   "death.attack.fire_bomb_spell": "%1$s was blasted away by %2$s",
   "death.attack.guiding_bolt_spell": "%1$s was led to the grave by %2$s",
   "death.attack.chain_lightning_spell": "%1$s was zapped to death by %2$s",
+  "death.attack.devour_spell": "%1$s was devoured by %2$s",
 
   "death.attack.raise_dead_spell.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.summon_vex_spell.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
@@ -492,6 +495,7 @@
   "death.attack.fire_bomb_spell.item": "%1$s blasted away by %2$s while using %3$s",
   "death.attack.guiding_bolt_spell.item": "%1$s was led to the grave by %2$s's %3$s",
   "death.attack.chain_lightning_spell.item": "%1$s was zapped to death by %2$s's %3$s",
+  "death.attack.devour_spell.item": "%1$s was devoured by %2$s while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -512,6 +516,7 @@
   "effect.irons_spellbooks.blight": "Blighted",
   "effect.irons_spellbooks.guided": "Guided",
   "effect.irons_spellbooks.airborne": "Airborne",
+  "effect.irons_spellbooks.vigor": "Vigor",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -531,6 +536,7 @@
   "effect.irons_spellbooks.blight.description": "Decreases your outgoing damage by 5% per level and incoming healing by 10% per level",
   "effect.irons_spellbooks.guided.description": "Nearby projectiles are attracted towards you.",
   "effect.irons_spellbooks.airborne.description": "You are vulnerable to taking kinetic damage",
+  "effect.irons_spellbooks.vigor.description": "Gain 1 additional heart of max hp per level",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
@@ -594,6 +600,7 @@
   "entity.irons_spellbooks.chain_lightning": "Chain Lightning",
   "entity.irons_spellbooks.gust": "Gust",
   "entity.irons_spellbooks.priest": "Priest",
+  "entity.irons_spellbooks.devour_jaw": "Devour Jaw",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
