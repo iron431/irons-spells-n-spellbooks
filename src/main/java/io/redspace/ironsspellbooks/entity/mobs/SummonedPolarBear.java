@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import dev.kosmx.playerAnim.core.util.Vec3f;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -33,7 +35,6 @@ import java.util.UUID;
 public class SummonedPolarBear extends PolarBear implements MagicSummon {
     public SummonedPolarBear(EntityType<? extends PolarBear> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        maxUpStep = 1f;
         xpReward = 0;
     }
 
@@ -44,6 +45,11 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     protected LivingEntity cachedSummoner;
     protected UUID summonerUUID;
+
+    @Override
+    public float getStepHeight() {
+        return 1f;
+    }
 
     @Override
     public void registerGoals() {
@@ -153,26 +159,73 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
                 .add(Attributes.ATTACK_DAMAGE, 6.0D);
     }
 
-    @Override
-    public void travel(Vec3 pTravelVector) {
-        Entity conductor = this.getControllingPassenger();
-        if (this.isVehicle() && conductor instanceof LivingEntity livingEntity) {
-            this.yRotO = this.getYRot();
-            this.setYRot(livingEntity.getYRot());
-            this.setXRot(livingEntity.getXRot());
-            this.setRot(this.getYRot(), this.getXRot());
-            this.yBodyRot = this.yRotO;
-            this.yHeadRot = this.getYRot();
-            float f = livingEntity.xxa * 0.5F;
-            float f1 = livingEntity.zza;
-            if (this.isControlledByLocalInstance()) {
-                this.setSpeed((float) this.getAttributeValue(Attributes.MOVEMENT_SPEED) * .55f);
-                super.travel(new Vec3((double) f, pTravelVector.y, (double) f1));
-            }
+//    @Override
+//    public void travel(Vec3 pTravelVector) {
+//        Entity conductor = this.getControllingPassenger();
+//        if (this.isVehicle() && conductor instanceof LivingEntity livingEntity) {
+//            this.yRotO = this.getYRot();
+//            this.setYRot(livingEntity.getYRot());
+//            this.setXRot(livingEntity.getXRot());
+//            this.setRot(this.getYRot(), this.getXRot());
+//            this.yBodyRot = this.yRotO;
+//            this.yHeadRot = this.getYRot();
+//            float f = livingEntity.xxa * 0.5F;
+//            float f1 = livingEntity.zza;
+//            if (this.isControlledByLocalInstance()) {
+//                this.setSpeed((float) this.getAttributeValue(Attributes.MOVEMENT_SPEED) * .55f);
+//                super.travel(new Vec3((double) f, pTravelVector.y, (double) f1));
+//            }
+//        } else {
+//            super.travel(pTravelVector);
+//        }
+//    }
+
+    @Nullable
+    public LivingEntity getControllingPassenger() {
+        Entity entity = this.getFirstPassenger();
+        if (entity instanceof Mob) {
+            return (Mob) entity;
         } else {
-            super.travel(pTravelVector);
+            entity = this.getFirstPassenger();
+            if (entity instanceof Player) {
+                return (Player) entity;
+            }
+
+            return null;
         }
     }
+
+    @Override
+    protected void tickRidden(Player player, Vec3 p_275242_) {
+        //IronsSpellbooks.LOGGER.debug("PolarBear.tickRidden: {} | {}",this.getControllingPassenger(), this.isControlledByLocalInstance());
+        super.tickRidden(player, p_275242_);
+        this.yRotO = this.getYRot();
+        this.setYRot(player.getYRot());
+        this.setXRot(player.getXRot());
+        this.setRot(this.getYRot(), this.getXRot());
+        this.yBodyRot = this.yRotO;
+        this.yHeadRot = this.getYRot();
+    }
+
+    @Override
+    protected Vec3 getRiddenInput(Player player, Vec3 p_275300_) {
+        float f = player.xxa * 0.5F;
+        float f1 = player.zza;
+        if (f1 <= 0.0F) {
+            f1 *= 0.25F;
+        }
+        if (this.isInWater()) {
+            f *= .3f;
+            f1 *= .3f;
+        }
+        return new Vec3(f, 0.0D, f1);
+    }
+
+    @Override
+    protected float getRiddenSpeed(Player p_278336_) {
+        return (float) this.getAttributeValue(Attributes.MOVEMENT_SPEED) * .8f;
+    }
+
 
     class PolarBearMeleeAttackGoal extends MeleeAttackGoal {
         public PolarBearMeleeAttackGoal() {

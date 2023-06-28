@@ -47,8 +47,12 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
     public KeeperEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 25;
-        maxUpStep = 1f;
+    }
 
+
+    @Override
+    public float getStepHeight() {
+        return 1f;
     }
 
     public KeeperEntity(Level pLevel) {
