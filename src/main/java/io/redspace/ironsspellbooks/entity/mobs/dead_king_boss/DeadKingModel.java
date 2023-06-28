@@ -5,6 +5,9 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.processor.IBone;
 
 public class DeadKingModel extends AbstractSpellCastingMobModel {
     //private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king.png");
@@ -34,4 +37,18 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
         return MODEL;
     }
 
+    @Override
+    public void setCustomAnimations(AbstractSpellCastingMob entity, int instanceId, AnimationEvent animationEvent) {
+        super.setCustomAnimations(entity, instanceId, animationEvent);
+        IBone jaw = this.getAnimationProcessor().getBone("jaw");
+        IBone hair1 = this.getAnimationProcessor().getBone("hair");
+        IBone hair2 = this.getAnimationProcessor().getBone("hair2");
+
+        float f = entity.tickCount + animationEvent.getPartialTick();
+
+        jaw.setRotationX(Mth.sin(f * .05f) * 5 * Mth.DEG_TO_RAD);
+        hair1.setRotationX((Mth.sin(f * .1f) * 10 - 30) * Mth.DEG_TO_RAD);
+        hair2.setRotationX(Mth.sin(f * .15f) * 15 * Mth.DEG_TO_RAD);
+
+    }
 }

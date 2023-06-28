@@ -242,7 +242,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                     var player = level.getNearestPlayer(this, 16);
                     if (player != null)
                         lookAt(player, 360, 360);
-                    setHealth(halfHealth);
+                    if (!isDeadOrDying())
+                        setHealth(halfHealth);
                     playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get());
                     //Overriding isInvulnerable just doesn't seem to work
                     setInvulnerable(true);
