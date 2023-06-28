@@ -13,7 +13,7 @@
 			"bones": [
 				{
 					"name": "body",
-					"pivot": [0, 39, 0]
+					"pivot": [0, 19, 0]
 				},
 				{
 					"name": "left_arm",
@@ -27,7 +27,7 @@
 				{
 					"name": "bipedHandLeft",
 					"parent": "left_arm",
-					"pivot": [6, 16, 0],
+					"pivot": [6, 15, 0],
 					"cubes": [
 						{
 							"origin": [6, 16, 0],
@@ -55,7 +55,7 @@
 				{
 					"name": "bipedHandRight",
 					"parent": "right_arm",
-					"pivot": [-6, 16, 0],
+					"pivot": [-6, 15, 0],
 					"cubes": [
 						{
 							"origin": [-6, 16, 0],
@@ -74,9 +74,12 @@
 				{
 					"name": "torso",
 					"parent": "body",
-					"pivot": [0, 0, 0],
+					"pivot": [0, 19, 0],
 					"cubes": [
-						{"origin": [-5, 19, -4], "size": [10, 18, 8], "uv": [0, 0]},
+						{"origin": [-5, 28, -4], "size": [10, 9, 8], "uv": [0, 0]},
+						{"origin": [-5, 25, -4], "size": [10, 2, 8], "uv": [66, 27]},
+						{"origin": [-5, 19, -4], "size": [10, 3, 8], "uv": [0, 0]},
+						{"origin": [-1, 22, 2], "size": [2, 6, 2], "uv": [106, 10]},
 						{"origin": [-5, 15, -4], "size": [10, 4, 8], "inflate": 0.02, "uv": [30, 18]}
 					]
 				},
@@ -85,9 +88,11 @@
 					"parent": "body",
 					"pivot": [0, 37, 0],
 					"cubes": [
-						{"origin": [-5, 37, -5], "size": [10, 10, 10], "uv": [0, 26]},
+						{"origin": [-5, 40, -5], "size": [10, 7, 10], "uv": [0, 26]},
 						{"origin": [-3, 47, -5], "size": [6, 3, 0], "uv": [30, 30]},
-						{"origin": [-5, 30, 3], "size": [10, 7, 2], "inflate": 0.02, "uv": [36, 0]}
+						{"origin": [-5, 33, 3], "size": [10, 7, 2], "inflate": 0.02, "uv": [36, 0]},
+						{"origin": [-1, 37, 2], "size": [2, 3, 2], "uv": [106, 10]},
+						{"origin": [-3, 39, -5], "size": [6, 1, 4], "uv": [66, 42], "mirror": true}
 					]
 				},
 				{
@@ -121,7 +126,7 @@
 					]
 				},
 				{
-					"name": "right_leg",
+					"name": "left_leg",
 					"parent": "body",
 					"pivot": [3, 19, 0],
 					"cubes": [
@@ -129,7 +134,7 @@
 					]
 				},
 				{
-					"name": "left_leg",
+					"name": "right_leg",
 					"parent": "body",
 					"pivot": [-3, 19, 0],
 					"cubes": [
