@@ -58,7 +58,7 @@ public class SummonHorseSpell extends AbstractSpell {
         spawn.add(forward.x, 0.15f, forward.z);
 
         //Teleport pre-existing or create new horse
-        var horses = world.getEntitiesOfClass(SummonedHorse.class, entity.getBoundingBox().inflate(100), (summonedHorse) -> summonedHorse.getSummoner() == entity);
+        var horses = world.getEntitiesOfClass(SummonedHorse.class, entity.getBoundingBox().inflate(100), (summonedHorse) -> summonedHorse.getSummoner() == entity && !summonedHorse.isDeadOrDying());
         SummonedHorse horse = horses.size() > 0 ? horses.get(0) : new SummonedHorse(world, entity);
 
         horse.setPos(spawn);
@@ -88,6 +88,7 @@ public class SummonHorseSpell extends AbstractSpell {
         horse.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(Mth.lerp(quality, minSpeed, maxSpeed));
         horse.getAttribute(Attributes.JUMP_STRENGTH).setBaseValue(Mth.lerp(quality, minJump, maxJump));
         horse.getAttribute(Attributes.MAX_HEALTH).setBaseValue(Mth.lerp(quality, minHealth, maxHealth));
-        horse.setHealth(horse.getMaxHealth());
+        if (!horse.isDeadOrDying())
+            horse.setHealth(horse.getMaxHealth());
     }
 }
