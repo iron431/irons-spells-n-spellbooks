@@ -10,13 +10,10 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 
 public class DeadKingModel extends AbstractSpellCastingMobModel {
-    //private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king.png");
-    //private static final ResourceLocation TEXTURE2 = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_resting.png");
-    //private static final ResourceLocation TEXTURE3 = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged.png");
-    private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_texture.png");
-    private static final ResourceLocation TEXTURE2 = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/corpse.png");
-    private static final ResourceLocation TEXTURE3 = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_phase2_texture.png");
-    private static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/dead_king.geo.json");
+    public static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king.png");
+    public static final ResourceLocation TEXTURE_CORPSE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_resting.png");
+    public static final ResourceLocation TEXTURE_ENRAGED = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged.png");
+    public static final ResourceLocation MODEL = new ResourceLocation(IronsSpellbooks.MODID, "geo/dead_king.geo.json");
 
     public DeadKingModel() {
     }
@@ -25,11 +22,11 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
     public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
         if (object instanceof DeadKingBoss boss) {
             if (boss.isPhase(DeadKingBoss.Phases.FinalPhase))
-                return TEXTURE3;
+                return TEXTURE_ENRAGED;
             else
-                return TEXTURE;
+                return TEXTURE_NORMAL;
         } else
-            return TEXTURE2;
+            return TEXTURE_CORPSE;
     }
 
     @Override
