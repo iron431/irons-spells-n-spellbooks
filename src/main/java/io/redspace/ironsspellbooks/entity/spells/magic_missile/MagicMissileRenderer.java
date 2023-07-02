@@ -19,12 +19,12 @@ import net.minecraft.world.phys.Vec3;
 
 public class MagicMissileRenderer extends EntityRenderer<MagicMissileProjectile> {
     //private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/magic_missile_projectile.png");
-    private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/comet/magic_missile.png");
+    private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/magic_missile/magic_missile.png");
     private final static ResourceLocation FIRE_TEXTURES[] = {
-            IronsSpellbooks.id("textures/entity/comet/fire_1.png"),
-            IronsSpellbooks.id("textures/entity/comet/fire_2.png"),
-            IronsSpellbooks.id("textures/entity/comet/fire_3.png"),
-            IronsSpellbooks.id("textures/entity/comet/fire_4.png")
+            IronsSpellbooks.id("textures/entity/magic_missile/fire_1.png"),
+            IronsSpellbooks.id("textures/entity/magic_missile/fire_2.png"),
+            IronsSpellbooks.id("textures/entity/magic_missile/fire_3.png"),
+            IronsSpellbooks.id("textures/entity/magic_missile/fire_4.png")
     };
     private final ModelPart body;
     protected final ModelPart outline;
