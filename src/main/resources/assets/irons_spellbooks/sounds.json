@@ -343,5 +343,10 @@
       "irons_spellbooks:lightning_chain_3",
       "irons_spellbooks:lightning_chain_4"
     ]
+  },
+  "entity.devour_jaw.bite": {
+    "sounds": [
+      "irons_spellbooks:devour"
+    ]
   }
 }

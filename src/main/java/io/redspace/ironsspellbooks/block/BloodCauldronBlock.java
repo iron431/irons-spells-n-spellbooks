@@ -63,7 +63,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
         if (entity.tickCount % 20 == 0) {
-            cookEntity(blockState, level, pos, entity, () -> {
+            attemptCookEntity(blockState, level, pos, entity, () -> {
                 level.setBlockAndUpdate(pos, blockState.cycle(LayeredCauldronBlock.LEVEL));
                 level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
             });
@@ -73,7 +73,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
 
     }
 
-    public static void cookEntity(BlockState blockState, Level level, BlockPos pos, Entity entity, CookExecution execution) {
+    public static void attemptCookEntity(BlockState blockState, Level level, BlockPos pos, Entity entity, CookExecution execution) {
         if (!level.isClientSide) {
             if (CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
                 if (level.getBlockState(pos).getBlock() instanceof AbstractCauldronBlock cauldron) {

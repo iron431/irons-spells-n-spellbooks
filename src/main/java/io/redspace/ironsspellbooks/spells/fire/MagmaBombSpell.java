@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.spells.fire;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -15,7 +17,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
-public class FireBombSpell extends AbstractSpell {
+public class MagmaBombSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
@@ -33,8 +35,8 @@ public class FireBombSpell extends AbstractSpell {
             .setCooldownSeconds(12)
             .build();
 
-    public FireBombSpell(int level) {
-        super(SpellType.FIRE_BOMB_SPELL);
+    public MagmaBombSpell(int level) {
+        super(SpellType.MAGMA_BOMB_SPELL);
         this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 8;
@@ -74,4 +76,8 @@ public class FireBombSpell extends AbstractSpell {
         return getSpellPower(caster);
     }
 
+    @Override
+    public AnimationHolder getCastStartAnimation() {
+        return SpellAnimations.ANIMATION_CHARGED_CAST;
+    }
 }

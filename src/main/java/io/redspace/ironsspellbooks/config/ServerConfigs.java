@@ -80,7 +80,7 @@ public class ServerConfigs {
         BUILDER.pop();
 
         BUILDER.push("Worldgen");
-        BUILDER.comment("The weight of the priest house spawning in a village.");
+        BUILDER.comment("The weight of the priest house spawning in a village. Default: 4");
         PRIEST_TOWER_SPAWNRATE = BUILDER.define("priestHouseWeight", 4);
         BUILDER.pop();
         //IronsSpellbooks.LOGGER.debug("CFG: static");
@@ -97,6 +97,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.WITHER_SKULL_SPELL, WitherSkullSpell.defaultConfig, true);
         createSpellConfig(SpellType.BlOOD_NEEDLES_SPELL, BloodNeedlesSpell.defaultConfig, true);
         createSpellConfig(SpellType.ACUPUNCTURE_SPELL, AcupunctureSpell.defaultConfig, true);
+        createSpellConfig(SpellType.DEVOUR_SPELL, DevourSpell.defaultConfig, true);
         //Ender
         BUILDER.comment("Ender Spells");
         createSpellConfig(SpellType.EVASION_SPELL, EvasionSpell.defaultConfig, true);
@@ -128,7 +129,7 @@ public class ServerConfigs {
         createSpellConfig(SpellType.FIREBOLT_SPELL, FireboltSpell.defaultConfig, true);
         createSpellConfig(SpellType.FIRE_BREATH_SPELL, FireBreathSpell.defaultConfig, true);
         createSpellConfig(SpellType.WALL_OF_FIRE_SPELL, WallOfFireSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FIRE_BOMB_SPELL, FireBombSpell.defaultConfig, true);
+        createSpellConfig(SpellType.MAGMA_BOMB_SPELL, MagmaBombSpell.defaultConfig, true);
         //Holy
         BUILDER.comment("Holy Spells");
         createSpellConfig(SpellType.ANGEL_WING_SPELL, AngelWingsSpell.defaultConfig, true);

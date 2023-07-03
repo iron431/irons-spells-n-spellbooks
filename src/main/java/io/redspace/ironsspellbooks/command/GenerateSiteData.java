@@ -115,6 +115,7 @@ public class GenerateSiteData {
             source.getLevel().getRecipeManager().getRecipes()
                     .stream()
                     .filter(r -> r.getId().getNamespace().equals("irons_spellbooks") && !r.getId().toString().contains("poisonous_potato"))
+                    .sorted(Comparator.comparing(x -> x.getId().toString()))
                     .forEach(recipe -> {
                         //IronsSpellbooks.LOGGER.debug("recipe: {}, {}, {}", recipe.getId(), recipe.getClass(), recipe.getType());
                         //IronsSpellbooks.LOGGER.debug("recipe: resultItem: {}", ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem()));
@@ -155,30 +156,33 @@ public class GenerateSiteData {
                         }
                     });
 
-            ForgeRegistries.ITEMS.forEach(item -> {
-                var itemResource = ForgeRegistries.ITEMS.getKey(item);
-                var tooltip = getTooltip(source.getPlayer(), new ItemStack(item));
+            ForgeRegistries.ITEMS.getValues()
+                    .stream()
+                    .sorted(Comparator.comparing(Item::getDescriptionId))
+                    .forEach(item -> {
+                        var itemResource = ForgeRegistries.ITEMS.getKey(item);
+                        var tooltip = getTooltip(source.getPlayer(), new ItemStack(item));
 
-                if (itemResource.toString().contains("irons_spellbooks") && !itemsTracked.contains(item)) {
-                    //Non craftable items
-                    var name = item.getName(ItemStack.EMPTY).getString();
-                    if (item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
-                        //Skip
-                    } else if (armorTypes.stream().anyMatch(itemToMatch -> name.contains(itemToMatch))) {
-                        appendToBuilder2(armorBuilder, name, itemResource, tooltip);
-                    } else if (item instanceof UniqueSpellBook) {
-                        appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
-                    } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem) {
-                        appendToBuilder2(spellbookBuilder, name, itemResource, tooltip);
-                    } else if (item instanceof BlockItem) {
-                        appendToBuilder2(blockBuilder, name, itemResource, tooltip);
-                    } else {
-                        appendToBuilder2(itemBuilder, name, itemResource, tooltip);
-                    }
-                    itemsTracked.add(item);
+                        if (itemResource.toString().contains("irons_spellbooks") && !itemsTracked.contains(item)) {
+                            //Non craftable items
+                            var name = item.getName(ItemStack.EMPTY).getString();
+                            if (item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
+                                //Skip
+                            } else if (armorTypes.stream().anyMatch(itemToMatch -> name.contains(itemToMatch))) {
+                                appendToBuilder2(armorBuilder, name, itemResource, tooltip);
+                            } else if (item instanceof UniqueSpellBook) {
+                                appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
+                            } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem) {
+                                appendToBuilder2(spellbookBuilder, name, itemResource, tooltip);
+                            } else if (item instanceof BlockItem) {
+                                appendToBuilder2(blockBuilder, name, itemResource, tooltip);
+                            } else {
+                                appendToBuilder2(itemBuilder, name, itemResource, tooltip);
+                            }
+                            itemsTracked.add(item);
 
-                }
-            });
+                        }
+                    });
 
             var file = new BufferedWriter(new FileWriter("item_data.yml"));
             file.write(postProcess(itemBuilder));
