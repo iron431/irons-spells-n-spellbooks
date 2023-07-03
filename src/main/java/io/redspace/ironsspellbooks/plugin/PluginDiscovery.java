@@ -15,6 +15,8 @@ public final class PluginDiscovery {
 
         allScanData.forEach(scanData -> {
             scanData.getAnnotations().forEach(annotationData -> {
+                //IronsSpellbooks.LOGGER.debug("ISS Plugin 1 {}", annotationData.annotationType());
+
                 if (Objects.equals(annotationData.annotationType(), Type.getType(IronsSpellbooksPlugin.class))) {
                     pluginClassNames.add(annotationData.memberName());
                 }
@@ -23,6 +25,7 @@ public final class PluginDiscovery {
 
         List<IIronsSpellbooksPlugin> plugins = new ArrayList<>();
         pluginClassNames.forEach(pluginClassName -> {
+            //IronsSpellbooks.LOGGER.debug("ISS Plugin 2 {}", pluginClassName);
             try {
                 Class<?> pluginClass = Class.forName(pluginClassName);
                 var pluginClassSubclass = pluginClass.asSubclass(IIronsSpellbooksPlugin.class);

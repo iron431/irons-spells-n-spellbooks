@@ -2,11 +2,12 @@ package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.effect.AirborneEffect;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -86,16 +87,14 @@ public class GustSpell extends AbstractSpell {
         return getSpellPower(caster);
     }
 
-    public static final AnimationHolder CHARGE_WAVY_ANIMATION = new AnimationHolder("charge_wavy", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return CHARGE_WAVY_ANIMATION;
+        return SpellAnimations.CHARGE_WAVY_ANIMATION;
     }
 
     @Override
     public AnimationHolder getCastFinishAnimation() {
-        return AbstractSpell.ANIMATION_LONG_CAST_FINISH;
+        return SpellAnimations.ANIMATION_LONG_CAST_FINISH;
     }
 
     @Override

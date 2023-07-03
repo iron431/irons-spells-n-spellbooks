@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundTeleportParticles;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;

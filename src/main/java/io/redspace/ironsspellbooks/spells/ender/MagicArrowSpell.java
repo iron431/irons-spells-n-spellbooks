@@ -2,10 +2,11 @@ package io.redspace.ironsspellbooks.spells.ender;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -62,11 +63,9 @@ public class MagicArrowSpell extends AbstractSpell {
         super.onCast(level, entity, playerMagicData);
     }
 
-    public static final AnimationHolder BOW_CHARGE_ANIMATION = new AnimationHolder("charge_arrow", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return BOW_CHARGE_ANIMATION;
+        return SpellAnimations.BOW_CHARGE_ANIMATION;
     }
 
 

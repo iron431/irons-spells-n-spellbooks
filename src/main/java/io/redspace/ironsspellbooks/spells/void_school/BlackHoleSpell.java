@@ -2,10 +2,11 @@ package io.redspace.ironsspellbooks.spells.void_school;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -94,16 +95,13 @@ public class BlackHoleSpell extends AbstractSpell {
         return (2 * getLevel(entity) + 4) * getSpellPower(entity);
     }
 
-    public static final AnimationHolder CHARGE_ANIMATION = new AnimationHolder("charge_black_hole", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    public static final AnimationHolder FINISH_ANIMATION = new AnimationHolder("long_cast_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return CHARGE_ANIMATION;
+        return SpellAnimations.CHARGE_ANIMATION;
     }
 
     @Override
     public AnimationHolder getCastFinishAnimation() {
-        return FINISH_ANIMATION;
+        return SpellAnimations.FINISH_ANIMATION;
     }
 }

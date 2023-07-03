@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.sunbeam;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
@@ -70,7 +70,7 @@ public class Sunbeam extends AoeEntity implements AntiMagicSusceptible {
     }
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData magicData) {
         discard();
     }
 }

@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.util;
+package io.redspace.ironsspellbooks.api.util;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.ResourceLocation;

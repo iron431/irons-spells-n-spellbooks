@@ -10,6 +10,7 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
@@ -145,7 +146,7 @@ public class ClientSpellCastHelper {
         var keyframeAnimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
         if (keyframeAnimation != null) {
             //noinspection unchecked
-            var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(AbstractSpell.ANIMATION_RESOURCE);
+            var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
             if (animation != null) {
                 var castingAnimationPlayer = new KeyframeAnimationPlayer(keyframeAnimation);
                 ClientMagicData.castingAnimationPlayerLookup.put(player.getUUID(), castingAnimationPlayer);

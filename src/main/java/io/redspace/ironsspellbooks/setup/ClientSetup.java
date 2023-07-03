@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.setup;
 
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
@@ -288,7 +289,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
-                AbstractSpell.ANIMATION_RESOURCE,
+                SpellAnimations.ANIMATION_RESOURCE,
                 42,
                 AbstractClientPlayerMixinHelper::playerMixinInit);
     }

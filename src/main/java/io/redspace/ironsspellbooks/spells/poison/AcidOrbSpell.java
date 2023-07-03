@@ -2,10 +2,11 @@ package io.redspace.ironsspellbooks.spells.poison;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -80,17 +81,13 @@ public class AcidOrbSpell extends AbstractSpell {
         return (int) (getSpellPower(caster) * 20 * 15);
     }
 
-    public static final AnimationHolder CHARGE_SPIT_ANIMATION = new AnimationHolder("charge_spit", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    public static final AnimationHolder SPIT_FINISH_ANIMATION = new AnimationHolder("charge_spit_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return CHARGE_SPIT_ANIMATION;
+        return SpellAnimations.CHARGE_SPIT_ANIMATION;
     }
 
     @Override
     public AnimationHolder getCastFinishAnimation() {
-        return SPIT_FINISH_ANIMATION;
+        return SpellAnimations.SPIT_FINISH_ANIMATION;
     }
-
 }

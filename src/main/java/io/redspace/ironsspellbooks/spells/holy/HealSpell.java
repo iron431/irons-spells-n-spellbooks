@@ -2,9 +2,10 @@ package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -73,10 +74,8 @@ public class HealSpell extends AbstractSpell {
         super.onCast(world, entity, playerMagicData);
     }
 
-    public static final AnimationHolder SELF_CAST_ANIMATION = new AnimationHolder("instant_self", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return SELF_CAST_ANIMATION;
+        return SpellAnimations.SELF_CAST_ANIMATION;
     }
 }
