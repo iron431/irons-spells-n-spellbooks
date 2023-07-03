@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.void_school;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class VoidTentaclesSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "void_tentacles");
     public VoidTentaclesSpell() {
         this(1);
     }
@@ -49,6 +52,11 @@ public class VoidTentaclesSpell extends AbstractSpell {
         this.spellPowerPerLevel = 2;
         this.castTime = 20;
         this.baseManaCost = 150;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

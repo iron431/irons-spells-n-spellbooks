@@ -240,7 +240,7 @@ public class SpellWheelOverlay extends GuiComponent {
             final double y1m2 = Math.sin(beginRadians + fragment2) * ringOuterEdge;
             final double y2m2 = Math.sin(endRadians - fragment2) * ringOuterEdge;
 
-            final boolean isSelected = spell != null && spellBookData.getActiveSpell().getID() == spell.getID();
+            final boolean isSelected = spell != null && spellBookData.getActiveSpell().getLegacyID() == spell.getLegacyID();
 
             final int extendBy = 10;
 //            final boolean isHighlighted = inTriangle(x1m1, y1m1, x2m2 * extendBy, y2m2 * extendBy, x2m1, y2m1, mouseXCenter, mouseYCenter)

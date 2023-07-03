@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
@@ -7,6 +8,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class BloodNeedlesSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_needles");
+
     public BloodNeedlesSpell() {
         this(1);
     }
@@ -45,6 +49,11 @@ public class BloodNeedlesSpell extends AbstractSpell {
         this.baseManaCost = 25;
 
 
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

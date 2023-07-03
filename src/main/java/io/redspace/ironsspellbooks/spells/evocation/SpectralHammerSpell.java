@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
@@ -8,6 +9,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class SpectralHammerSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer");
 
     public SpectralHammerSpell() {
         this(1);
@@ -49,6 +52,11 @@ public class SpectralHammerSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 25;
         this.baseManaCost = 15;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -7,6 +8,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class AngelWingsSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "angel_wing");
+
     public AngelWingsSpell() {
         this(1);
     }
@@ -45,6 +49,11 @@ public class AngelWingsSpell extends AbstractSpell {
 
     private int getEffectDuration(LivingEntity entity) {
         return (int) getSpellPower(entity) * 20;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.spells.ice;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,9 +19,12 @@ import java.util.List;
 import java.util.Optional;
 
 public class FrostbiteSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "frostbite");
+
     public FrostbiteSpell() {
         this(1);
     }
+
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(
@@ -46,6 +51,11 @@ public class FrostbiteSpell extends AbstractSpell {
     }
 
     @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
+    }
+
+    @Override
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.empty();
     }
@@ -65,10 +75,10 @@ public class FrostbiteSpell extends AbstractSpell {
                 float hpPercent = livingTarget.getHealth() / livingTarget.getMaxHealth();
                 boolean success = false;
                 /*
-                *   The Chance to succeed and inflict frostbite is based off of the current target's health
-                *   If their health is below our spell power, we automatically succeed
-                *   Otherwise, we have a chance to succeed
-                * */
+                 *   The Chance to succeed and inflict frostbite is based off of the current target's health
+                 *   If their health is below our spell power, we automatically succeed
+                 *   Otherwise, we have a chance to succeed
+                 * */
                 if (livingTarget.getHealth() <= threshold)
                     success = true;
                 //else if()

@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -19,6 +21,8 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 
 public class SummonHorseSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "summon_horse");
+
     public SummonHorseSpell() {
         this(1);
     }
@@ -40,6 +44,11 @@ public class SummonHorseSpell extends AbstractSpell {
             .setMaxLevel(5)
             .setCooldownSeconds(20)
             .build();
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
+    }
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {

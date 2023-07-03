@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.ice;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
@@ -14,6 +15,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class FrostStepSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "frost_step");
 
     public FrostStepSpell() {
         this(1);
@@ -54,6 +57,11 @@ public class FrostStepSpell extends AbstractSpell {
         this.castTime = 0;
 
 
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

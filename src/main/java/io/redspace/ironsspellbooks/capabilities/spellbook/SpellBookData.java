@@ -189,7 +189,7 @@ public class SpellBookData {
             var spell = transcribedSpells[i];
             if (spell != null) {
                 CompoundTag ct = new CompoundTag();
-                ct.putInt(ID, spell.getID());
+                ct.putInt(ID, spell.getLegacyID());
                 ct.putInt(LEVEL, spell.getLevel(null));
                 ct.putInt(SLOT, i);
                 listTagSpells.add(ct);

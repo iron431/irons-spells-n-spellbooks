@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
@@ -7,6 +8,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class WitherSkullSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "wither_skull");
+
     public WitherSkullSpell() {
         this(1);
     }
@@ -44,6 +48,11 @@ public class WitherSkullSpell extends AbstractSpell {
     }
 
     @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
+    }
+
+    @Override
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.empty();
     }
@@ -55,7 +64,7 @@ public class WitherSkullSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
-        float speed = (8 + getLevel(entity) ) * .01f;
+        float speed = (8 + getLevel(entity)) * .01f;
         float damage = getDamage(entity);
         ExtendedWitherSkull skull = new ExtendedWitherSkull(entity, level, speed, damage);
         Vec3 spawn = entity.getEyePosition().add(entity.getForward());

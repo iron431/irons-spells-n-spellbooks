@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -18,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class BloodSlashSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_slash");
+
     public BloodSlashSpell() {
         this(1);
     }
@@ -44,6 +48,11 @@ public class BloodSlashSpell extends AbstractSpell {
         this.baseManaCost = 25;
 
 
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

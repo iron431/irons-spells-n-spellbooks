@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -13,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -29,6 +31,8 @@ import java.util.Optional;
 
 
 public class WallOfFireSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "wall_of_fire");
+
     public WallOfFireSpell() {
         this(1);
     }
@@ -59,6 +63,11 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
+    }
+
+    @Override
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.empty();
     }
@@ -70,7 +79,7 @@ public class WallOfFireSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
-        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID() && playerMagicData.getAdditionalCastData() == null) {
+        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getLegacyID() && playerMagicData.getAdditionalCastData() == null) {
             //IronsSpellbooks.LOGGER.debug("WallOfFireSpell: creating new data");
             var fireWallData = new FireWallData(getWallLength(entity));
             playerMagicData.setAdditionalCastData(fireWallData);

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
@@ -10,6 +11,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class CloudOfRegenerationSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "cloud_of_regeneration");
+
     public CloudOfRegenerationSpell() {
         this(1);
     }
@@ -50,6 +54,11 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         this.castTime = 200;
         this.baseManaCost = 10;
 
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     private float getHealing(LivingEntity caster) {

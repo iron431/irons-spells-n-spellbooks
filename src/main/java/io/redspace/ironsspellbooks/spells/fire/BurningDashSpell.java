@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
@@ -13,6 +14,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +26,8 @@ import java.util.Optional;
 
 
 public class BurningDashSpell extends AbstractSpell {
-    //package net.minecraft.client.renderer.entity.layers;
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "burning_dash");
+
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
@@ -49,6 +52,11 @@ public class BurningDashSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 20;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

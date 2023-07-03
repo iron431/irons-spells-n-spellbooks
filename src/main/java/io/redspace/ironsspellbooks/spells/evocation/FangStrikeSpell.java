@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class FangStrikeSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "fang_strike");
+
     public FangStrikeSpell() {
         this(1);
     }
@@ -47,6 +51,11 @@ public class FangStrikeSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 30;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

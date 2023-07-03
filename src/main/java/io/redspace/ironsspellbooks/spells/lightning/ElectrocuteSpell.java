@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 
 public class ElectrocuteSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "electrocute");
     public ElectrocuteSpell() {
         this(1);
     }
@@ -47,6 +50,11 @@ public class ElectrocuteSpell extends AbstractSpell {
     }
 
     @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
+    }
+
+    @Override
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.empty();
     }
@@ -59,7 +67,7 @@ public class ElectrocuteSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.isCasting()
-                && playerMagicData.getCastingSpellId() == this.getID()
+                && playerMagicData.getCastingSpellId() == this.getLegacyID()
                 && playerMagicData.getAdditionalCastData() instanceof EntityCastData entityCastData
                 && entityCastData.getCastingEntity() instanceof AbstractConeProjectile cone) {
             cone.setDealDamageActive();

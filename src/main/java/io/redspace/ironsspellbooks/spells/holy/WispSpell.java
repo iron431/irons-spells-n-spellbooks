@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class WispSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "wisp");
 
     public WispSpell() {
         this(1);
@@ -46,6 +49,11 @@ public class WispSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 15;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

@@ -1,7 +1,9 @@
 package io.redspace.ironsspellbooks.spells;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -9,6 +11,8 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 
 public class NoneSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "none");
+
     public NoneSpell() {
         this(0);
     }
@@ -20,6 +24,11 @@ public class NoneSpell extends AbstractSpell {
         this.manaCostPerLevel = 0;
         this.baseSpellPower = 0;
         this.spellPowerPerLevel = 0;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

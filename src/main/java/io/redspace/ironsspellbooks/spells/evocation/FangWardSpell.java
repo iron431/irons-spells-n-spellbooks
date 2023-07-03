@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedEvokerFang;
@@ -8,6 +9,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class FangWardSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "fang_ward");
+
     public FangWardSpell() {
         this(1);
     }
@@ -48,6 +52,10 @@ public class FangWardSpell extends AbstractSpell {
 
     }
 
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
+    }
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {

@@ -41,7 +41,7 @@ public class ServerboundQuickCast {
                 var spell = sbd.getSpell(slot);
                 if (spell != null) {
                     var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-                    if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() != spell.getID()) {
+                    if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() != spell.getLegacyID()) {
                         ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                     }
                     spell.attemptInitiateCast(itemStack, serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
@@ -13,6 +14,7 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class HealingCircleSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "healing_circle");
+
     public HealingCircleSpell() {
         this(1);
     }
@@ -52,6 +56,11 @@ public class HealingCircleSpell extends AbstractSpell {
         this.castTime = 20;
         this.baseManaCost = 40;
 
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

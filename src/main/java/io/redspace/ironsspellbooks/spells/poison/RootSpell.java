@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 
 public class RootSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "root");
     public RootSpell() {
         this(1);
     }
@@ -51,6 +53,11 @@ public class RootSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 40;
         this.baseManaCost = 45;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

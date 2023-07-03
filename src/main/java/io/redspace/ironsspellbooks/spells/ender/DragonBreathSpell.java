@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells.ender;
 
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
@@ -10,6 +11,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class DragonBreathSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath");
+
     public DragonBreathSpell() {
         this(1);
     }
@@ -48,6 +52,11 @@ public class DragonBreathSpell extends AbstractSpell {
     }
 
     @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
+    }
+
+    @Override
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.of(SoundEvents.ENDER_DRAGON_GROWL);
     }
@@ -60,7 +69,7 @@ public class DragonBreathSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
 
-        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID()
+        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getLegacyID()
                 && playerMagicData.getAdditionalCastData() instanceof EntityCastData entityCastData
                 && entityCastData.getCastingEntity() instanceof AbstractConeProjectile cone) {
             cone.setDealDamageActive();

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.spell;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -13,27 +14,30 @@ import java.util.List;
 
 public class SpellData {
 
-    public static final String SPELL_ID = "spellId";
-    public static final String LEVEL = "level";
     public static final String ISB_SPELL = "ISB_spell";
     public static final String SPELL_TYPE = "type";
+    public static final String SPELL_ID = "id";
     public static final String SPELL_LEVEL = "level";
     private MutableComponent displayName;
     private List<MutableComponent> hoverText;
     private AbstractSpell spell;
-    private int spellId;
-    private int spellLevel;
+    private final int spellId;
+    private final int spellLevel;
 
     public SpellData(SpellType spellType, int level) {
         this.spellId = spellType.getValue();
         this.spellLevel = level;
-        //irons_spellbooks.LOGGER.debug("ScrollData.1: {}, {}", spellId, spellLevel);
     }
 
     public static SpellData getSpellData(ItemStack stack) {
         CompoundTag tag = stack.getTagElement(ISB_SPELL);
 
         if (tag != null) {
+            if (tag.contains(SPELL_TYPE)) {
+                IronsSpellbooks.LOGGER.debug("Legacy spell id found.. converting");
+                //TODO: deal with this when spelltype, level and registration are further along
+            }
+
             return new SpellData(SpellType.getTypeFromValue(tag.getInt(SPELL_TYPE)), tag.getInt(SPELL_LEVEL));
         } else if (stack.getItem() instanceof ExtendedSwordItem extendedSwordItem) {
             setSpellData(stack, extendedSwordItem.getImbuedSpell(), extendedSwordItem.getImbuedLevel());

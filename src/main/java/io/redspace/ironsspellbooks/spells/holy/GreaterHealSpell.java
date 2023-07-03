@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
@@ -7,6 +8,7 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -15,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class GreaterHealSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "greater_heal");
+
     public GreaterHealSpell() {
         this(1);
     }
@@ -41,6 +45,11 @@ public class GreaterHealSpell extends AbstractSpell {
         this.spellPowerPerLevel = 0;
         this.castTime = 120;
         this.baseManaCost = 100;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

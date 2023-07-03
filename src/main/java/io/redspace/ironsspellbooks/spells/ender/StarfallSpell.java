@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells.ender;
 
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
@@ -15,6 +16,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -28,6 +30,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class StarfallSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "starfall");
+
     public StarfallSpell() {
         this(1);
     }
@@ -56,6 +60,11 @@ public class StarfallSpell extends AbstractSpell {
         this.castTime = 160;
         this.baseManaCost = 5;
 
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

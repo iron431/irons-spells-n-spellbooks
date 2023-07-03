@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.ice;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
@@ -10,6 +11,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class IceBlockSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "ice_block");
+
     public IceBlockSpell() {
         this(1);
     }
@@ -46,6 +50,11 @@ public class IceBlockSpell extends AbstractSpell {
         this.spellPowerPerLevel = 2;
         this.castTime = 30;
         this.baseManaCost = 40;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

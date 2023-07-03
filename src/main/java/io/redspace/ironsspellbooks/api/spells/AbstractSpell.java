@@ -35,7 +35,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib3.core.builder.ILoopType;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
@@ -62,9 +61,11 @@ public abstract class AbstractSpell {
         this.castType = spellType.getCastType();
     }
 
-    public int getID() {
+    public int getLegacyID() {
         return this.spellType.getValue();
     }
+
+    public abstract ResourceLocation getSpellId();
 
     public SpellType getSpellType() {
         return this.spellType;
@@ -238,9 +239,9 @@ public abstract class AbstractSpell {
                  * Prepare to cast spell (magic manager will pick it up by itself)
                  */
                 int effectiveCastTime = getEffectiveCastTime(player);
-                playerMagicData.initiateCast(getID(), getLevel(player), effectiveCastTime, castSource);
+                playerMagicData.initiateCast(getLegacyID(), getLevel(player), effectiveCastTime, castSource);
                 onServerPreCast(player.level, player, playerMagicData);
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(getID(), getLevel(player), effectiveCastTime, castSource), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(getLegacyID(), getLevel(player), effectiveCastTime, castSource), serverPlayer);
             }
 
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), spellType), serverPlayer, true);
@@ -271,7 +272,7 @@ public abstract class AbstractSpell {
         }
 
         onCast(world, serverPlayer, playerMagicData);
-        Messages.sendToPlayer(new ClientboundOnClientCast(this.getID(), this.getLevel(serverPlayer), castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
+        Messages.sendToPlayer(new ClientboundOnClientCast(this.getLegacyID(), this.getLevel(serverPlayer), castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
 
         if (this.castType == CastType.INSTANT) {
             onServerCastComplete(world, serverPlayer, playerMagicData, false);

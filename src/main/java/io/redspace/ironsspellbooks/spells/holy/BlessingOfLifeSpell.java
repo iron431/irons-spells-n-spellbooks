@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,6 +23,8 @@ import java.util.Optional;
 
 
 public class BlessingOfLifeSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blessing_of_life");
+
     public BlessingOfLifeSpell() {
         this(1);
     }
@@ -50,6 +54,11 @@ public class BlessingOfLifeSpell extends AbstractSpell {
     }
 
     @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
+    }
+
+    @Override
     public Optional<SoundEvent> getCastStartSound() {
         return Optional.empty();
     }
@@ -58,7 +67,6 @@ public class BlessingOfLifeSpell extends AbstractSpell {
     public Optional<SoundEvent> getCastFinishSound() {
         return Optional.empty();
     }
-
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
@@ -10,6 +11,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class LightningLanceSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "lightning_lance");
 
     @Override
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
@@ -40,6 +43,11 @@ public class LightningLanceSpell extends AbstractSpell {
         this.spellPowerPerLevel = 2;
         this.castTime = 40;
         this.baseManaCost = 50;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

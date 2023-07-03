@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
@@ -8,6 +9,7 @@ import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -21,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class BlazeStormSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blaze_storm");
+
     public BlazeStormSpell() {
         this(1);
     }
@@ -45,6 +49,11 @@ public class BlazeStormSpell extends AbstractSpell {
         this.castTime = 80 + 5 * level;
         this.baseManaCost = 5;
 
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

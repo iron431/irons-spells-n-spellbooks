@@ -290,7 +290,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
             setBurningDashDirectionData();
         }
 
-        playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(this), castingSpell.getEffectiveCastTime(this), CastSource.MOB);
+        playerMagicData.initiateCast(castingSpell.getLegacyID(), castingSpell.getLevel(this), castingSpell.getEffectiveCastTime(this), CastSource.MOB);
 
         if (!level.isClientSide) {
             castingSpell.onServerPreCast(level, this, playerMagicData);

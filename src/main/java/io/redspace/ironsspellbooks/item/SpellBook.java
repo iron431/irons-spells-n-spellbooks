@@ -120,7 +120,7 @@ public class SpellBook extends Item implements ISpellbook {
         lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", this.spellSlots).withStyle(ChatFormatting.GRAY));
 
         var player = Minecraft.getInstance().player;
-        if (player != null && SpellBookData.getSpellBookData(itemStack).getActiveSpell().getID() > 0) {
+        if (player != null && SpellBookData.getSpellBookData(itemStack).getActiveSpell().getLegacyID() > 0) {
             lines.addAll(TooltipsUtils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK, player));
         }
 

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -13,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -29,6 +31,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class BloodStepSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_step");
+
     public BloodStepSpell() {
         this(1);
     }
@@ -53,6 +57,11 @@ public class BloodStepSpell extends AbstractSpell {
         this.baseManaCost = 30;
         this.manaCostPerLevel = 10;
         this.castTime = 0;
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override

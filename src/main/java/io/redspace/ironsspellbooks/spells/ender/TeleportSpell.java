@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TeleportSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "teleport");
 
     public TeleportSpell() {
         this(1);
@@ -47,6 +49,11 @@ public class TeleportSpell extends AbstractSpell {
         this.manaCostPerLevel = 2;
         this.castTime = 0;
 
+    }
+
+    @Override
+    public ResourceLocation getSpellId() {
+        return spellId;
     }
 
     @Override
