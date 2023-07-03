@@ -31,13 +31,14 @@ public class ExtendedLightningBolt extends LightningBolt {
     public void tick() {
         super.tick();
         //Copied from base
-        if (!level.isClientSide) {
-            List<Entity> list1 = this.level.getEntities(this, new AABB(this.getX() - 3.0D, this.getY() - 3.0D, this.getZ() - 3.0D, this.getX() + 3.0D, this.getY() + 6.0D + 3.0D, this.getZ() + 3.0D), Entity::isAlive);
+        if (tickCount == 1)
+            if (!level.isClientSide) {
+                List<Entity> list1 = this.level.getEntities(this, new AABB(this.getX() - 3.0D, this.getY() - 3.0D, this.getZ() - 3.0D, this.getX() + 3.0D, this.getY() + 6.0D + 3.0D, this.getZ() + 3.0D), Entity::isAlive);
 
-            for (Entity entity : list1) {
-                DamageSources.applyDamage(entity, damage, SpellType.LIGHTNING_BOLT_SPELL.getDamageSource(owner), SchoolType.LIGHTNING);
+                for (Entity entity : list1) {
+                    DamageSources.applyDamage(entity, damage, SpellType.LIGHTNING_BOLT_SPELL.getDamageSource(owner), SchoolType.LIGHTNING);
+                }
             }
-        }
     }
 
 }
