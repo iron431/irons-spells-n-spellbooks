@@ -4,10 +4,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -15,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib3.core.builder.ILoopType;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +36,7 @@ public class HealSpell extends AbstractSpell {
 
     final float twoPi = 6.283f;
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchool(SchoolType.HOLY)
             .setMaxLevel(10)
@@ -54,7 +54,12 @@ public class HealSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

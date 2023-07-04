@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.ender;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import net.minecraft.network.chat.Component;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 public class EvasionSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "evasion");
+
     public EvasionSpell() {
         this(1);
     }
@@ -27,7 +29,7 @@ public class EvasionSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(caster)));
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
             .setSchool(SchoolType.ENDER)
             .setMaxLevel(5)
@@ -45,7 +47,12 @@ public class EvasionSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

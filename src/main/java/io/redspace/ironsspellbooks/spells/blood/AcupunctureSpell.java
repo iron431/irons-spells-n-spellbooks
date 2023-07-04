@@ -3,10 +3,11 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +24,13 @@ import java.util.Optional;
 public class AcupunctureSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "acupuncture");
 
+    private final DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.RARE)
+            .setSchool(SchoolType.BLOOD)
+            .setMaxLevel(10)
+            .setCooldownSeconds(20)
+            .build();
+
     public AcupunctureSpell() {
         this(1);
     }
@@ -33,13 +41,6 @@ public class AcupunctureSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.projectile_count", getCount(caster)));
 
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(10)
-            .setCooldownSeconds(20)
-            .build();
 
     public AcupunctureSpell(int level) {
         super(SpellType.ACUPUNCTURE_SPELL);
@@ -54,7 +55,12 @@ public class AcupunctureSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

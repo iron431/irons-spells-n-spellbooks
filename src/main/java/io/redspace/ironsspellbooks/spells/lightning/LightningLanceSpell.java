@@ -4,11 +4,12 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +29,7 @@ public class LightningLanceSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
             .setSchool(SchoolType.LIGHTNING)
             .setMaxLevel(10)
@@ -45,8 +46,17 @@ public class LightningLanceSpell extends AbstractSpell {
         this.baseManaCost = 50;
     }
 
+    public LightningLanceSpell() {
+        this(1);
+    }
+
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

@@ -33,16 +33,16 @@ public class ImbuedSpellOverlay extends GuiComponent {
             stack = player.getOffhandItem();
             if (SpellData.hasSpellData(stack)) {
                 spellData = SpellData.getSpellData(stack);
-            }else{
+            } else {
                 return;
             }
         }
 
-        if(stack.isEmpty()){
+        if (stack.isEmpty()) {
             return;
         }
 
-        if (spellData.getSpellId() == 0) {
+        if (spellData.getLegacySpellId() == 0) {
             return;
         }
 
@@ -60,7 +60,7 @@ public class ImbuedSpellOverlay extends GuiComponent {
         setTranslucentTexture(WIDGETS_LOCATION);
         gui.blit(poseStack, centerX, centerY, 24, 22, 29, 24);
         //Spell Icon
-        setOpaqueTexture(spell.getSpellType().getResourceLocation());
+        setOpaqueTexture(spell.getSpellIconResource());
         gui.blit(poseStack, centerX + 3, centerY + 4, 0, 0, 16, 16, 16, 16);
         //Border + Cooldowns
         float f = ClientMagicData.getCooldownPercent(spell.getSpellType());

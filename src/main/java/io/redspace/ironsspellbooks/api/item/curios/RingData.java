@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.api.item.curios;
 
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.world.item.ItemStack;
 
 public class RingData {

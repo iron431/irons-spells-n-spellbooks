@@ -3,9 +3,10 @@ package io.redspace.ironsspellbooks.spells.evocation;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedEvokerFang;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -34,7 +35,7 @@ public class FangWardSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchool(SchoolType.EVOCATION)
             .setMaxLevel(8)
@@ -53,7 +54,12 @@ public class FangWardSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

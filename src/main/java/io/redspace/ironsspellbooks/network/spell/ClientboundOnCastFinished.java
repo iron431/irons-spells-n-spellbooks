@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.network.spell;
 
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 

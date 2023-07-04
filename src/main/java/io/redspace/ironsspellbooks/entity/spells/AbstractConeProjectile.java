@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;

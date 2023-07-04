@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.network.ClientboundSyncEntityData;
 import io.redspace.ironsspellbooks.network.ClientboundSyncPlayerData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;

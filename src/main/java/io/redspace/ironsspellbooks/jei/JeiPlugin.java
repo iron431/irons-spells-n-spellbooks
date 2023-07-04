@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -94,7 +94,7 @@ public class JeiPlugin implements IModPlugin {
 
         if (stack.hasTag()) {
             var spellData = SpellData.getSpellData(stack);
-            return String.format("scroll:%d:%d", spellData.getSpellId(), spellData.getLevel());
+            return String.format("scroll:%d:%d", spellData.getLegacySpellId(), spellData.getLevel());
         }
 
         return IIngredientSubtypeInterpreter.NONE;

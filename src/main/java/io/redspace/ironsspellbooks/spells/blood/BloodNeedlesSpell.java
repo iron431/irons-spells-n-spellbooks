@@ -3,9 +3,10 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +21,12 @@ import java.util.Optional;
 
 public class BloodNeedlesSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_needles");
+    private final DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.BLOOD)
+            .setMaxLevel(10)
+            .setCooldownSeconds(10)
+            .build();
 
     public BloodNeedlesSpell() {
         this(1);
@@ -32,13 +39,6 @@ public class BloodNeedlesSpell extends AbstractSpell {
 
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(10)
-            .setCooldownSeconds(10)
-            .build();
-
     public BloodNeedlesSpell(int level) {
         super(SpellType.BlOOD_NEEDLES_SPELL);
         this.setLevel(level);
@@ -47,12 +47,15 @@ public class BloodNeedlesSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 25;
-
-
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

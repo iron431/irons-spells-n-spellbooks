@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.spells.SpellType;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 

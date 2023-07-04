@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -140,7 +140,7 @@ public class SpellWheelOverlay extends GuiComponent {
         for (int i = 0; i < locations.length; i++) {
             var spell = spells.get(i);
             if (spell != null) {
-                setOpaqueTexture(spells.get(i).getSpellType().getResourceLocation());
+                setOpaqueTexture(spells.get(i).getSpellIconResource());
                 poseStack.pushPose();
                 poseStack.translate(centerX, centerY, 0);
 

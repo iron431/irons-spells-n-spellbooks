@@ -1,16 +1,14 @@
 package io.redspace.ironsspellbooks;
 
 import com.mojang.logging.LogUtils;
-import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
-import io.redspace.ironsspellbooks.plugin.PluginDiscovery;
-import io.redspace.ironsspellbooks.plugin.PluginRegistration;
 import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.setup.ModSetup;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -66,6 +64,8 @@ public class IronsSpellbooks {
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
         FeatureRegistry.register(modEventBus);
+        SpellRegistry.register(modEventBus);
+        CommandArgumentRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
 
@@ -83,24 +83,19 @@ public class IronsSpellbooks {
         // Register the processIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 
-
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
-        PluginRegistration.LoadPlugins();
     }
 
     @SuppressWarnings("removal")
     private void clientSetup(final FMLClientSetupEvent e) {
-
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
         MenuScreens.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
 
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.ARMOR_PILE_BLOCK.get(), RenderType.translucent());
-
-
     }
 
 //    private void setup(final FMLCommonSetupEvent event) {

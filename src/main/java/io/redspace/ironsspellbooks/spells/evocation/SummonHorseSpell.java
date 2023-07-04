@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -38,7 +39,7 @@ public class SummonHorseSpell extends AbstractSpell {
 
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchool(SchoolType.EVOCATION)
             .setMaxLevel(5)
@@ -46,7 +47,12 @@ public class SummonHorseSpell extends AbstractSpell {
             .build();
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 
@@ -83,7 +89,7 @@ public class SummonHorseSpell extends AbstractSpell {
     }
 
     private void setAttributes(AbstractHorse horse, float power) {
-        int maxPower = baseSpellPower + (ServerConfigs.getSpellConfig(SpellType.SUMMON_HORSE_SPELL).maxLevel() - 1) * spellPowerPerLevel;
+        int maxPower = baseSpellPower + (ServerConfigs.getSpellConfig(this).maxLevel() - 1) * spellPowerPerLevel;
         float quality = power / (float) maxPower;
 
         float minSpeed = .2f;

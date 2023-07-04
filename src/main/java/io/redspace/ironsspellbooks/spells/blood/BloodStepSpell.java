@@ -3,12 +3,13 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -32,6 +33,12 @@ import java.util.Optional;
 
 public class BloodStepSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_step");
+    private final DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.BLOOD)
+            .setMaxLevel(5)
+            .setCooldownSeconds(5)
+            .build();
 
     public BloodStepSpell() {
         this(1);
@@ -41,13 +48,6 @@ public class BloodStepSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(caster), 1)));
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(5)
-            .setCooldownSeconds(5)
-            .build();
 
     public BloodStepSpell(int level) {
         super(SpellType.BLOOD_STEP_SPELL);
@@ -60,7 +60,12 @@ public class BloodStepSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 
@@ -94,7 +99,7 @@ public class BloodStepSpell extends AbstractSpell {
                 dest = potentialTarget;
                 entity.teleportTo(dest.x, dest.y, dest.z);
             }
-        }else{
+        } else {
             HitResult hitResult = Utils.raycastForEntity(level, entity, getDistance(entity), true);
             if (entity.isPassenger()) {
                 entity.stopRiding();

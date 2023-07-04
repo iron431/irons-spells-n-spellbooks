@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldowns;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

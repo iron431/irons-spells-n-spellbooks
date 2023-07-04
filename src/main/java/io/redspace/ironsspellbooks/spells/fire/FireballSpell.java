@@ -3,10 +3,11 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -33,12 +34,12 @@ public class FireballSpell extends AbstractSpell {
         );
     }
 
-//    public static DefaultConfig defaultConfig = new DefaultConfig((config) -> {
+//    public final DefaultConfig defaultConfig = new DefaultConfig((config) -> {
 //        config.minRarity = SpellRarity.EPIC;
 //        config.maxLevel = 8;
 //    });
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
             .setSchool(SchoolType.FIRE)
             .setMaxLevel(3)
@@ -56,7 +57,12 @@ public class FireballSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

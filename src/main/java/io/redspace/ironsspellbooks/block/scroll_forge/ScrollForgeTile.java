@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.block.scroll_forge;
 
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

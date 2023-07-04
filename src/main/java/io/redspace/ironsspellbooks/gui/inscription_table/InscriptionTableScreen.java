@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -197,7 +197,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private void drawSpellIcon(PoseStack poseStack, Vec2 pos, SpellSlotInfo slot) {
-        setTexture(slot.containedSpell.getSpellType().getResourceLocation());
+        setTexture(slot.containedSpell.getSpellIconResource());
         this.blit(poseStack, (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
     }
 

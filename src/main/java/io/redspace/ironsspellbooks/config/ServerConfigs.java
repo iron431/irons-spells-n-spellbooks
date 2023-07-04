@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.config;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.spells.DefaultConfig;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.blood.*;
 import io.redspace.ironsspellbooks.spells.ender.*;
 import io.redspace.ironsspellbooks.spells.evocation.*;
@@ -42,7 +44,7 @@ public class ServerConfigs {
 
     //https://forge.gemwire.uk/wiki/Configs
 
-    private static final Map<SpellType, SpellConfigParameters> SPELL_CONFIGS = new HashMap<>();
+    private static final Map<String, SpellConfigParameters> SPELL_CONFIGS = new HashMap<>();
 
     static {
         BUILDER.comment("Other Configuration");
@@ -87,117 +89,36 @@ public class ServerConfigs {
         BUILDER.comment("Individual Spell Configuration");
         BUILDER.push("Spells");
 
-        //Blood
-        BUILDER.comment("Blood Spells");
-        createSpellConfig(SpellType.BLOOD_SLASH_SPELL, BloodSlashSpell.defaultConfig, true);
-        createSpellConfig(SpellType.BLOOD_STEP_SPELL, BloodStepSpell.defaultConfig, true);
-        createSpellConfig(SpellType.HEARTSTOP_SPELL, HeartstopSpell.defaultConfig, true);
-        createSpellConfig(SpellType.RAISE_DEAD_SPELL, RaiseDeadSpell.defaultConfig, true);
-        createSpellConfig(SpellType.RAY_OF_SIPHONING_SPELL, RayOfSiphoningSpell.defaultConfig, true);
-        createSpellConfig(SpellType.WITHER_SKULL_SPELL, WitherSkullSpell.defaultConfig, true);
-        createSpellConfig(SpellType.BlOOD_NEEDLES_SPELL, BloodNeedlesSpell.defaultConfig, true);
-        createSpellConfig(SpellType.ACUPUNCTURE_SPELL, AcupunctureSpell.defaultConfig, true);
-        createSpellConfig(SpellType.DEVOUR_SPELL, DevourSpell.defaultConfig, true);
-        //Ender
-        BUILDER.comment("Ender Spells");
-        createSpellConfig(SpellType.EVASION_SPELL, EvasionSpell.defaultConfig, true);
-        createSpellConfig(SpellType.MAGIC_ARROW_SPELL, MagicArrowSpell.defaultConfig, true);
-        createSpellConfig(SpellType.MAGIC_MISSILE_SPELL, MagicMissileSpell.defaultConfig, true);
-        createSpellConfig(SpellType.TELEPORT_SPELL, TeleportSpell.defaultConfig, true);
-        createSpellConfig(SpellType.COUNTERSPELL_SPELL, CounterspellSpell.defaultConfig, true);
-        createSpellConfig(SpellType.DRAGON_BREATH_SPELL, DragonBreathSpell.defaultConfig, true);
-        createSpellConfig(SpellType.STARFALL_SPELL, StarfallSpell.defaultConfig, true);
+        SpellRegistry.REGISTRY.get().getValues()
+                .stream()
+                .collect(Collectors.groupingBy(x -> x.getDefaultConfig().school))
+                .forEach((school, spells) -> {
+                    BUILDER.comment(school.name());
+                    spells.forEach(ServerConfigs::createSpellConfig);
+                });
 
-        //Evocation
-        BUILDER.comment("Evocation Spells");
-        createSpellConfig(SpellType.CHAIN_CREEPER_SPELL, ChainCreeperSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FANG_STRIKE_SPELL, FangStrikeSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FANG_WARD_SPELL, FangWardSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FIRECRACKER_SPELL, FirecrackerSpell.defaultConfig, true);
-        createSpellConfig(SpellType.INVISIBILITY_SPELL, InvisibilitySpell.defaultConfig, true);
-        createSpellConfig(SpellType.LOB_CREEPER_SPELL, LobCreeperSpell.defaultConfig, true);
-        createSpellConfig(SpellType.SHIELD_SPELL, ShieldSpell.defaultConfig, true);
-        createSpellConfig(SpellType.SUMMON_HORSE_SPELL, SummonHorseSpell.defaultConfig, true);
-        createSpellConfig(SpellType.SUMMON_VEX_SPELL, SummonVexSpell.defaultConfig, true);
-        createSpellConfig(SpellType.SPECTRAL_HAMMER_SPELL, SpectralHammerSpell.defaultConfig, true);
-        createSpellConfig(SpellType.GUST_SPELL, GustSpell.defaultConfig, true);
-        //Fire
-        BUILDER.comment("Fire Spells");
-        createSpellConfig(SpellType.BLAZE_STORM_SPELL, BlazeStormSpell.defaultConfig, true);
-        createSpellConfig(SpellType.BURNING_DASH_SPELL, BurningDashSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FIREBALL_SPELL, FireballSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FIREBOLT_SPELL, FireboltSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FIRE_BREATH_SPELL, FireBreathSpell.defaultConfig, true);
-        createSpellConfig(SpellType.WALL_OF_FIRE_SPELL, WallOfFireSpell.defaultConfig, true);
-        createSpellConfig(SpellType.MAGMA_BOMB_SPELL, MagmaBombSpell.defaultConfig, true);
-        //Holy
-        BUILDER.comment("Holy Spells");
-        createSpellConfig(SpellType.ANGEL_WING_SPELL, AngelWingsSpell.defaultConfig, true);
-        createSpellConfig(SpellType.CLOUD_OF_REGENERATION_SPELL, CloudOfRegenerationSpell.defaultConfig, false);
-        createSpellConfig(SpellType.GREATER_HEAL_SPELL, GreaterHealSpell.defaultConfig, true);
-        createSpellConfig(SpellType.HEAL_SPELL, HealSpell.defaultConfig, true);
-        createSpellConfig(SpellType.WISP_SPELL, WispSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FORTIFY_SPELL, FortifySpell.defaultConfig, true);
-        createSpellConfig(SpellType.BLESSING_OF_LIFE_SPELL, BlessingOfLifeSpell.defaultConfig, true);
-        createSpellConfig(SpellType.HEALING_CIRCLE_SPELL, HealingCircleSpell.defaultConfig, true);
-        createSpellConfig(SpellType.GUIDING_BOLT_SPELL, GuidingBoltSpell.defaultConfig, true);
-        createSpellConfig(SpellType.SUNBEAM_SPELL, SunbeamSpell.defaultConfig, false);
-        //Ice
-        BUILDER.comment("Ice Spells");
-        createSpellConfig(SpellType.CONE_OF_COLD_SPELL, ConeOfColdSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FROST_STEP_SPELL, FrostStepSpell.defaultConfig, true);
-        createSpellConfig(SpellType.ICICLE_SPELL, IcicleSpell.defaultConfig, true);
-        createSpellConfig(SpellType.SUMMON_POLAR_BEAR_SPELL, SummonPolarBearSpell.defaultConfig, true);
-        createSpellConfig(SpellType.ICE_BLOCK_SPELL, IceBlockSpell.defaultConfig, true);
-        createSpellConfig(SpellType.FROSTBITE_SPELL, FrostbiteSpell.defaultConfig, false);
-        //Lightning
-        BUILDER.comment("Lightning Spells");
-        createSpellConfig(SpellType.ELECTROCUTE_SPELL, ElectrocuteSpell.defaultConfig, true);
-        createSpellConfig(SpellType.LIGHTNING_BOLT_SPELL, LightningBoltSpell.defaultConfig, true);
-        createSpellConfig(SpellType.LIGHTNING_LANCE_SPELL, LightningLanceSpell.defaultConfig, true);
-        createSpellConfig(SpellType.CHARGE_SPELL, ChargeSpell.defaultConfig, true);
-        createSpellConfig(SpellType.ASCENSION_SPELL, AscensionSpell.defaultConfig, true);
-        createSpellConfig(SpellType.CHAIN_LIGHTNING_SPELL, ChainLightningSpell.defaultConfig, true);
-        //Void
-        BUILDER.comment("Void Spells");
-        createSpellConfig(SpellType.ABYSSAL_SHROUD_SPELL, AbyssalShroudSpell.defaultConfig, true);
-        createSpellConfig(SpellType.VOID_TENTACLES_SPELL, VoidTentaclesSpell.defaultConfig, true);
-        createSpellConfig(SpellType.BLACK_HOLE_SPELL, BlackHoleSpell.defaultConfig, true);
-        //Poison
-        BUILDER.comment("Poison Spells");
-        createSpellConfig(SpellType.POISON_ARROW_SPELL, PoisonArrowSpell.defaultConfig, true);
-        createSpellConfig(SpellType.POISON_SPLASH_SPELL, PoisonSplashSpell.defaultConfig, true);
-        createSpellConfig(SpellType.POISON_BREATH_SPELL, PoisonBreathSpell.defaultConfig, true);
-        createSpellConfig(SpellType.ACID_ORB_SPELL, AcidOrbSpell.defaultConfig, true);
-        createSpellConfig(SpellType.SPIDER_ASPECT_SPELL, SpiderAspectSpell.defaultConfig, true);
-        createSpellConfig(SpellType.BLIGHT_SPELL, BlightSpell.defaultConfig, true);
-        createSpellConfig(SpellType.ROOT_SPELL, RootSpell.defaultConfig, true);
         BUILDER.pop();
 
 
         SPEC = BUILDER.build();
     }
 
-    public static SpellConfigParameters getSpellConfig(SpellType spellType) {
+    public static SpellConfigParameters getSpellConfig(AbstractSpell abstractSpell) {
         //IronsSpellbooks.LOGGER.debug("CFG: getSpellConfig {} {}", spellType, SPELL_CONFIGS.containsKey(spellType));
-        return SPELL_CONFIGS.getOrDefault(spellType, DEFAULT_CONFIG);
+        return SPELL_CONFIGS.getOrDefault(abstractSpell.getSpellResource().toString(), DEFAULT_CONFIG);
     }
 
-    public static SpellConfigParameters getSpellConfig(int spellId) {
-        //IronsSpellbooks.LOGGER.debug("CFG: getSpellConfig {}", spellId);
-        return getSpellConfig(SpellType.getTypeFromValue(spellId));
-    }
-
-    public static Map<SpellType, SpellConfigParameters> getSpellConfigs() {
+    public static Map<String, SpellConfigParameters> getSpellConfigs() {
         return SPELL_CONFIGS;
     }
 
-    private static void createSpellConfig(SpellType spell, DefaultConfig config, boolean enabledByDefault) {
+    private static void createSpellConfig(AbstractSpell spell) {
+        DefaultConfig config = spell.getDefaultConfig();
         //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
-        BUILDER.push(createSpellConfigTitle(spell.getId()));
+        BUILDER.push(spell.getSpellResource().toString());
 
-        SPELL_CONFIGS.put(spell, new SpellConfigParameters(
-                BUILDER.define("Enabled", enabledByDefault),
+        SPELL_CONFIGS.put(spell.getSpellResource().toString(), new SpellConfigParameters(
+                BUILDER.define("Enabled", config.enabled),
                 BUILDER.defineEnum("School", config.school),
                 BUILDER.define("MaxLevel", config.maxLevel),
                 BUILDER.defineEnum("MinRarity", config.minRarity),
@@ -233,6 +154,7 @@ public class ServerConfigs {
         final Supplier<Double> P_MULT;
         final Supplier<Double> CS;
         private SchoolType resolvedSchool = null;
+
         SpellConfigParameters(
                 Supplier<Boolean> ENABLED,
                 Supplier<SchoolType> SCHOOL,

@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.IIronsSpellbooksPlugin;
 import io.redspace.ironsspellbooks.api.IronsSpellbooksPlugin;
 import io.redspace.ironsspellbooks.api.registration.ISpellRegistration;
+import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.annotation.Annotation;
@@ -19,7 +20,7 @@ public class SamplePlugin implements IIronsSpellbooksPlugin {
 
     @Override
     public void registerSpells(ISpellRegistration registration) {
-        IIronsSpellbooksPlugin.super.registerSpells(registration);
+        registration.registerSpell(new BlackHoleSpell());
     }
 
     @Override

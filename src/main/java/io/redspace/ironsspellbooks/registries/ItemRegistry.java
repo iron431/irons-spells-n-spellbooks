@@ -7,10 +7,8 @@ import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import io.redspace.ironsspellbooks.item.spell_books.VillagerSpellBook;
 import io.redspace.ironsspellbooks.item.weapons.BloodStaffItem;
-import io.redspace.ironsspellbooks.item.weapons.MagehunterItem;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.blood.BloodSlashSpell;
 import io.redspace.ironsspellbooks.spells.blood.BloodStepSpell;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
@@ -58,7 +56,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.ENDER_SPELL_POWER.get(), .10));
     public static final RegistryObject<Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", VillagerSpellBook::new);
     public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new BloodStaffItem(new AbstractSpell[]{new WitherSkullSpell(6), new RayOfSiphoningSpell(6), new BloodStepSpell(3), new BloodSlashSpell(6), new BlazeStormSpell(6)}));
-    public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", () -> new MagehunterItem(SpellType.COUNTERSPELL_SPELL, 1));
+    //public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", () -> new MagehunterItem(SpellType.COUNTERSPELL_SPELL, 1));
     public static final RegistryObject<Item> SCROLL = ITEMS.register("scroll", Scroll::new);
 
     /**

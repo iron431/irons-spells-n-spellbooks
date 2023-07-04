@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -63,7 +63,7 @@ public class SpellBarOverlay extends GuiComponent {
         //Spell Icons
         for (int i = 0; i < locations.size(); i++) {
             if (spells[i] != null) {
-                setOpaqueTexture(spells[i].getSpellType().getResourceLocation());
+                setOpaqueTexture(spells[i].getSpellIconResource());
                 gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
             }
         }

@@ -6,6 +6,7 @@ public class DefaultConfig {
     public SpellRarity minRarity;
     public SchoolType school;
     public int maxLevel = -1;
+    public boolean enabled = true;
     public double cooldownInSeconds = -1;
 
     public DefaultConfig(Consumer<DefaultConfig> intialize) throws RuntimeException {
@@ -18,6 +19,11 @@ public class DefaultConfig {
 
     public DefaultConfig setMaxLevel(int i) {
         this.maxLevel = i;
+        return this;
+    }
+
+    public DefaultConfig setEnabled(boolean enabled) {
+        this.enabled = enabled;
         return this;
     }
 

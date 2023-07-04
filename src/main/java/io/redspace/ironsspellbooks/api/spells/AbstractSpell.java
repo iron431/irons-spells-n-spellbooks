@@ -15,12 +15,12 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.spells.DefaultConfig;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Log;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -39,6 +39,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
@@ -47,6 +48,7 @@ public abstract class AbstractSpell {
     private final SpellType spellType;
     private final CastType castType;
     private int level;
+    private String spellID = null;
     protected int baseManaCost;
     protected int manaCostPerLevel;
     protected int baseSpellPower;
@@ -65,7 +67,32 @@ public abstract class AbstractSpell {
         return this.spellType.getValue();
     }
 
-    public abstract ResourceLocation getSpellId();
+    public final String getSpellId() {
+        if (spellID == null) {
+            var resourceLocation = Objects.requireNonNull(getSpellResource());
+            spellID = resourceLocation.getPath().intern();
+        }
+
+        IronsSpellbooks.LOGGER.debug("AbstractSpell.getSpellId {}", spellID);
+
+        return spellID;
+    }
+
+    public final ResourceLocation getSpellIconResource() {
+        return new ResourceLocation(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellId() + ".png");
+    }
+
+    public int getMinRarity() {
+        return ServerConfigs.getSpellConfig(this).minRarity().getValue();
+    }
+
+    public int getMaxLevel() {
+        return ServerConfigs.getSpellConfig(this).maxLevel();
+    }
+
+    public abstract ResourceLocation getSpellResource();
+
+    public abstract DefaultConfig getDefaultConfig();
 
     public SpellType getSpellType() {
         return this.spellType;
@@ -80,7 +107,7 @@ public abstract class AbstractSpell {
     }
 
     public SchoolType getSchoolType() {
-        return spellType.getSchoolType();
+        return ServerConfigs.getSpellConfig(this).school();
     }
 
     public int getLevel(@Nullable LivingEntity caster) {
@@ -104,11 +131,11 @@ public abstract class AbstractSpell {
     }
 
     public int getManaCost() {
-        return (int) ((baseManaCost + manaCostPerLevel * (getLevel(null) - 1)) * ServerConfigs.getSpellConfig(spellType).manaMultiplier());
+        return (int) ((baseManaCost + manaCostPerLevel * (getLevel(null) - 1)) * ServerConfigs.getSpellConfig(this).manaMultiplier());
     }
 
     public int getSpellCooldown() {
-        return ServerConfigs.getSpellConfig(spellType).cooldownInTicks();
+        return ServerConfigs.getSpellConfig(this).cooldownInTicks();
     }
 
     private int getCastTime() {
@@ -151,7 +178,7 @@ public abstract class AbstractSpell {
         float entitySpellPowerModifier = 1;
         float entitySchoolPowerModifier = 1;
 
-        float configPowerModifier = (float) ServerConfigs.getSpellConfig(spellType).powerMultiplier();
+        float configPowerModifier = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
         int level = getLevel(null);
         if (sourceEntity instanceof LivingEntity livingEntity) {
             level = getLevel(livingEntity);

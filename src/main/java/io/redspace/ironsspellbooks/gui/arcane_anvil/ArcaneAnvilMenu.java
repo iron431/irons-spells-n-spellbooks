@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -68,11 +68,11 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof Scroll) {
                 var scrollData1 = SpellData.getSpellData(baseItemStack);
                 var scrollData2 = SpellData.getSpellData(modifierItemStack);
-                if (scrollData1.getSpellId() == scrollData2.getSpellId() && scrollData1.getLevel() == scrollData2.getLevel()) {
-                    if (scrollData1.getLevel() < ServerConfigs.getSpellConfig(scrollData1.getSpellId()).maxLevel()) {
+                if (scrollData1.getLegacySpellId() == scrollData2.getLegacySpellId() && scrollData1.getLevel() == scrollData2.getLevel()) {
+                    if (scrollData1.getLevel() < ServerConfigs.getSpellConfig(scrollData1.getLegacySpellId()).maxLevel()) {
                         result = new ItemStack(ItemRegistry.SCROLL.get());
 
-                        SpellData.setSpellData(result, scrollData1.getSpellId(), scrollData1.getLevel() + 1);
+                        SpellData.setSpellData(result, scrollData1.getLegacySpellId(), scrollData1.getLevel() + 1);
                     }
                 }
 

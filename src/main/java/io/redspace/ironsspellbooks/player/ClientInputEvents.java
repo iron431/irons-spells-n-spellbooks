@@ -6,9 +6,10 @@ import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -35,8 +36,15 @@ public final class ClientInputEvents {
     public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
 
+    public static int test = 0;
+
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
+        if (event.side.isClient() && event.phase == TickEvent.Phase.START && test++ % 100 == 0) {
+            SpellRegistry.REGISTRY.get().getEntries().forEach(e -> {
+                IronsSpellbooks.LOGGER.debug("clientTick: spell registry:{}, {}, {}", e.getKey(), e.getValue().getSpellId(), e.getValue().getSpellResource());
+            });
+        }
 
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;

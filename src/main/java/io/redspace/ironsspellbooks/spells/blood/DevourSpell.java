@@ -3,10 +3,11 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +22,12 @@ import java.util.Optional;
 
 public class DevourSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "devour");
+    private final DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.BLOOD)
+            .setMaxLevel(10)
+            .setCooldownSeconds(20)
+            .build();
 
     public DevourSpell() {
         this(1);
@@ -34,13 +41,6 @@ public class DevourSpell extends AbstractSpell {
         );
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(10)
-            .setCooldownSeconds(20)
-            .build();
-
     public DevourSpell(int level) {
         super(SpellType.DEVOUR_SPELL);
         this.setLevel(level);
@@ -49,11 +49,15 @@ public class DevourSpell extends AbstractSpell {
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 25;
-
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

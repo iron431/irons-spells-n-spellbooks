@@ -1,11 +1,12 @@
-package io.redspace.ironsspellbooks.spells;
+package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.spells.NoneSpell;
+import io.redspace.ironsspellbooks.spells.SchoolType;
+import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.blood.*;
 import io.redspace.ironsspellbooks.spells.ender.*;
 import io.redspace.ironsspellbooks.spells.evocation.*;
@@ -123,20 +124,12 @@ public enum SpellType {
         return value;
     }
 
-    public int getMinRarity() {
-        return ServerConfigs.getSpellConfig(this).minRarity().getValue();
-    }
-
     public int getMaxRarity() {
         return maxRarity;
     }
 
     public int getMinLevel() {
         return 1;
-    }
-
-    public int getMaxLevel() {
-        return ServerConfigs.getSpellConfig(this).maxLevel();
     }
 
     public static SpellType getTypeFromValue(int value) {
@@ -321,9 +314,9 @@ public enum SpellType {
         return Component.translatable(getComponentId());
     }
 
-    public ResourceLocation getResourceLocation() {
-        return new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
-    }
+//    public ResourceLocation getResourceLocation() {
+//        return new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
+//    }
 
     public DamageSource getDamageSource() {
         return new DamageSource(this.getId() + "_spell");

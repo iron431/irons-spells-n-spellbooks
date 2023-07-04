@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

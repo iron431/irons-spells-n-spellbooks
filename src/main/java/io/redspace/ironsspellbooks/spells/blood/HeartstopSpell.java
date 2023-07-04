@@ -3,10 +3,11 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +21,12 @@ import java.util.Optional;
 
 public class HeartstopSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "heartstop");
+    private final DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.COMMON)
+            .setSchool(SchoolType.BLOOD)
+            .setMaxLevel(10)
+            .setCooldownSeconds(120)
+            .build();
 
     public HeartstopSpell() {
         this(1);
@@ -29,13 +36,6 @@ public class HeartstopSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster), 1)));
     }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(10)
-            .setCooldownSeconds(120)
-            .build();
 
     public HeartstopSpell(int level) {
         super(SpellType.HEARTSTOP_SPELL);
@@ -49,7 +49,12 @@ public class HeartstopSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

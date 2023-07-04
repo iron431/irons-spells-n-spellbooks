@@ -4,46 +4,59 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.List;
+import java.util.Objects;
 
 public class SpellData {
-
     public static final String ISB_SPELL = "ISB_spell";
-    public static final String SPELL_TYPE = "type";
+    public static final String LEGACY_SPELL_TYPE = "type";
     public static final String SPELL_ID = "id";
     public static final String SPELL_LEVEL = "level";
     private MutableComponent displayName;
-    private List<MutableComponent> hoverText;
     private AbstractSpell spell;
-    private final int spellId;
     private final int spellLevel;
 
-    public SpellData(SpellType spellType, int level) {
-        this.spellId = spellType.getValue();
+    //TODO: remove this after spell reg
+    private SpellType legacySpellType;
+
+    private SpellData() throws Exception {
+        throw new Exception("Cannot create empty spell data.");
+    }
+
+    private SpellData(AbstractSpell spell, int level) {
+        this.spell = Objects.requireNonNull(spell);
         this.spellLevel = level;
+        this.legacySpellType = spell.getSpellType();
+    }
+
+    public int getLegacySpellId() {
+        return legacySpellType.getValue();
     }
 
     public static SpellData getSpellData(ItemStack stack) {
         CompoundTag tag = stack.getTagElement(ISB_SPELL);
 
         if (tag != null) {
-            if (tag.contains(SPELL_TYPE)) {
-                IronsSpellbooks.LOGGER.debug("Legacy spell id found.. converting");
-                //TODO: deal with this when spelltype, level and registration are further along
+
+            if (tag.contains(LEGACY_SPELL_TYPE)) {
+                IronsSpellbooks.LOGGER.debug("Legacy spell type found: {}", tag.getInt(LEGACY_SPELL_TYPE));
+                //TODO: deal with this when spell type, level and registration are further along.. or deal with en mass when the world is loading?
             }
 
-            return new SpellData(SpellType.getTypeFromValue(tag.getInt(SPELL_TYPE)), tag.getInt(SPELL_LEVEL));
+            return new SpellData(SpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
         } else if (stack.getItem() instanceof ExtendedSwordItem extendedSwordItem) {
-            setSpellData(stack, extendedSwordItem.getImbuedSpell(), extendedSwordItem.getImbuedLevel());
-            return new SpellData(extendedSwordItem.getImbuedSpell(), extendedSwordItem.getImbuedLevel());
+            var spell = SpellRegistry.getSpell(new ResourceLocation(extendedSwordItem.getImbuedSpellId()));
+            setSpellData(stack, spell, extendedSwordItem.getImbuedLevel());
+            return new SpellData(spell, extendedSwordItem.getImbuedLevel());
         } else {
-            return new SpellData(SpellType.NONE_SPELL, 0);
+            return new SpellData(SpellRegistry.none(), 0);
         }
     }
 
@@ -52,31 +65,45 @@ public class SpellData {
         return tag != null;
     }
 
-    public static void setSpellData(ItemStack stack, int spellTypeId, int spellLevel) {
+    public static void setSpellData(ItemStack stack, String spellId, int spellLevel) {
         var spellTag = new CompoundTag();
-        spellTag.putInt(SPELL_TYPE, spellTypeId);
+        spellTag.putString(SPELL_ID, spellId);
+        spellTag.putInt(SPELL_LEVEL, spellLevel);
+        stack.addTagElement(ISB_SPELL, spellTag);
+    }
+
+    public static void setSpellData(ItemStack stack, int spellType, int spellLevel) {
+        var spellTag = new CompoundTag();
+        spellTag.putInt(LEGACY_SPELL_TYPE, spellType);
         spellTag.putInt(SPELL_LEVEL, spellLevel);
         stack.addTagElement(ISB_SPELL, spellTag);
     }
 
     public static void setSpellData(ItemStack stack, SpellType spellType, int spellLevel) {
-        setSpellData(stack, spellType.getValue(), spellLevel);
+        //TODO: remove this once spell reg is complete
+        IronsSpellbooks.LOGGER.error("DO NOT USE: setSpellData(ItemStack stack, AbstractSpell spell)");
+        var spellTag = new CompoundTag();
+        spellTag.putInt(LEGACY_SPELL_TYPE, spellType.getValue());
+        spellTag.putInt(SPELL_LEVEL, spellLevel);
+        stack.addTagElement(ISB_SPELL, spellTag);
+    }
+
+    public static void setSpellData(ItemStack stack, AbstractSpell spell, int spellLevel) {
+        setSpellData(stack, spell.getSpellId(), spellLevel);
     }
 
     public static void setSpellData(ItemStack stack, AbstractSpell spell) {
-        setSpellData(stack, spell.getSpellType().getValue(), spell.getLevel(null));
+        //TODO: remove this once spell reg is complete
+        IronsSpellbooks.LOGGER.error("DO NOT USE: setSpellData(ItemStack stack, AbstractSpell spell)");
+        setSpellData(stack, spell.getSpellId(), 1);
     }
 
     public AbstractSpell getSpell() {
         if (spell == null) {
-            spell = AbstractSpell.getSpell(spellId, spellLevel);
+            return SpellRegistry.none();
         }
 
         return spell;
-    }
-
-    public int getSpellId() {
-        return spellId;
     }
 
     public int getLevel() {

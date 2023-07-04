@@ -3,9 +3,10 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +21,12 @@ import java.util.Optional;
 
 public class WitherSkullSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "wither_skull");
+    private final DefaultConfig defaultConfig = new DefaultConfig()
+            .setMinRarity(SpellRarity.UNCOMMON)
+            .setSchool(SchoolType.BLOOD)
+            .setMaxLevel(10)
+            .setCooldownSeconds(1)
+            .build();
 
     public WitherSkullSpell() {
         this(1);
@@ -30,12 +37,6 @@ public class WitherSkullSpell extends AbstractSpell {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
-            .setMaxLevel(10)
-            .setCooldownSeconds(1)
-            .build();
 
     public WitherSkullSpell(int level) {
         super(SpellType.WITHER_SKULL_SPELL);
@@ -48,7 +49,12 @@ public class WitherSkullSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellId() {
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
         return spellId;
     }
 

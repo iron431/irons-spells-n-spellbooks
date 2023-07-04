@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.api.registration;
 
-import io.redspace.ironsspellbooks.api.spells.ISpell;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import net.minecraftforge.registries.RegistryObject;
 
 public interface ISpellRegistration {
-    void registerSpell(ISpell spell);
+    RegistryObject<AbstractSpell> registerSpell(AbstractSpell spell);
 }

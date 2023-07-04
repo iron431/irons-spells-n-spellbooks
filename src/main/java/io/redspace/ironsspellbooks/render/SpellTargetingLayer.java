@@ -8,7 +8,7 @@ import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -22,8 +22,8 @@ import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
-import static io.redspace.ironsspellbooks.spells.SpellType.BLESSING_OF_LIFE_SPELL;
-import static io.redspace.ironsspellbooks.spells.SpellType.HEALING_CIRCLE_SPELL;
+import static io.redspace.ironsspellbooks.api.spells.SpellType.BLESSING_OF_LIFE_SPELL;
+import static io.redspace.ironsspellbooks.api.spells.SpellType.HEALING_CIRCLE_SPELL;
 
 public class SpellTargetingLayer {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/target/heal.png");

@@ -60,7 +60,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.render.*;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.util.AbstractClientPlayerMixinHelper;
 import net.minecraft.client.Minecraft;
@@ -89,6 +88,8 @@ import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTUR
 
 @Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientSetup {
+
+
 
     @SubscribeEvent
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -277,7 +278,7 @@ public class ClientSetup {
                 (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue())
         );
         e.enqueueWork(() -> ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("spell"),
-                (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpellId())
+                (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getLegacySpellId())
         );
 
 
