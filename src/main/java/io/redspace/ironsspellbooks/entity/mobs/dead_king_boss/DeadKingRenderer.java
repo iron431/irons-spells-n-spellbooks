@@ -42,4 +42,6 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
     public RenderType getRenderType(AbstractSpellCastingMob animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
         return RenderType.entityCutoutNoCull(texture);
     }
+
+
 }

@@ -42,10 +42,15 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
         IBone hair2 = this.getAnimationProcessor().getBone("hair2");
 
         float f = entity.tickCount + animationEvent.getPartialTick();
+        //Builtin Resource Pack does not contain these bones
+        if (jaw == null || hair1 == null || hair2 == null)
+            return;
 
         jaw.setRotationX(Mth.sin(f * .05f) * 5 * Mth.DEG_TO_RAD);
         hair1.setRotationX((Mth.sin(f * .1f) * 10 - 30) * Mth.DEG_TO_RAD);
         hair2.setRotationX(Mth.sin(f * .15f) * 15 * Mth.DEG_TO_RAD);
 
     }
+
+
 }
