@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_slash;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
@@ -189,7 +190,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            var hit = DamageSources.applyDamage(entity, damage, SpellType.BLOOD_SLASH_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
+            var hit = DamageSources.applyDamage(entity, damage, SpellRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this, getOwner()), SchoolType.BLOOD);
             if (hit && entity instanceof LivingEntity livingEntity) {
                 //livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
                 if (getOwner() instanceof LivingEntity livingOwner) {

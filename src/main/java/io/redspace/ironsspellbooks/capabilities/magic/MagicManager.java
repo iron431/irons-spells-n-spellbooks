@@ -56,29 +56,29 @@ public class MagicManager implements IMagicManager {
                     var spell = SpellRegistry.getSpell(playerMagicData.getCastingSpellId());
                     if (spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
-                            spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
-                            spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, false);
+                            spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
+                            spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
                             Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                         }
                     } else if (spell.getCastType() == CastType.CONTINUOUS) {
                         if ((playerMagicData.getCastDurationRemaining() + 1) % CONTINUOUS_CAST_TICK_INTERVAL == 0) {
-                            if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost() * 2 < 0)) {
-                                spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), true);
+                            if (playerMagicData.getCastDurationRemaining() < CONTINUOUS_CAST_TICK_INTERVAL || (playerMagicData.getCastSource().consumesMana() && playerMagicData.getMana() - spell.getManaCost(playerMagicData.getCastingSpellLevel(), null) * 2 < 0)) {
+                                spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
 
                                 if (playerMagicData.getCastSource() == CastSource.SCROLL) {
                                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                                 }
 
-                                spell.onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, false);
+                                spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
 
                             } else {
-                                spell.castSpell(serverPlayer.level, serverPlayer, playerMagicData.getCastSource(), false);
+                                spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), false);
                             }
                         }
                     }
 
                     if (playerMagicData.isCasting()) {
-                        spell.onServerCastTick(serverPlayer.level, serverPlayer, playerMagicData);
+                        spell.onServerCastTick(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData);
                     }
                 }
 

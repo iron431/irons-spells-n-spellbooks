@@ -36,7 +36,6 @@ public class SpellData implements Comparable<SpellData> {
         CompoundTag tag = stack.getTagElement(ISB_SPELL);
 
         if (tag != null) {
-
             if (tag.contains(LEGACY_SPELL_TYPE)) {
                 IronsSpellbooks.LOGGER.debug("Legacy spell type found: {}", tag.getInt(LEGACY_SPELL_TYPE));
                 //TODO: deal with this when spell type, level and registration are further along.. or deal with en mass when the world is loading?
@@ -48,7 +47,7 @@ public class SpellData implements Comparable<SpellData> {
             setSpellData(stack, spell, extendedSwordItem.getImbuedLevel());
             return new SpellData(spell, extendedSwordItem.getImbuedLevel());
         } else {
-            return new SpellData(SpellRegistry.none(), 0);
+            return EMPTY;
         }
     }
 

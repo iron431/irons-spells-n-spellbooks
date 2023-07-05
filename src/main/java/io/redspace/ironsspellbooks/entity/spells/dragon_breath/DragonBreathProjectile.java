@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.dragon_breath;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -50,7 +51,7 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(entity, damage, SpellType.DRAGON_BREATH_SPELL.getDamageSource(this, getOwner()), SchoolType.ENDER)) {
+        if (DamageSources.applyDamage(entity, damage, SpellRegistry.DRAGON_BREATH_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ENDER)) {
             if (random.nextFloat() < .3f)
                 createDragonBreathPuddle(entity.position());
         }

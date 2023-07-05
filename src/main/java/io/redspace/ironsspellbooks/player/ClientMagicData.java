@@ -81,6 +81,10 @@ public class ClientMagicData {
         return playerMagicData.getCastingSpellId();
     }
 
+    public static int getCastingSpellLevel() {
+        return playerMagicData.getCastingSpellLevel();
+    }
+
     public static int getCastDurationRemaining() {
         return playerMagicData.getCastDurationRemaining();
     }

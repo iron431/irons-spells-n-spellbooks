@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -39,7 +40,7 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
         Entity entity = pResult.getEntity();
-        DamageSources.applyDamage(entity, damage, SpellType.WITHER_SKULL_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
+        DamageSources.applyDamage(entity, damage, SpellRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this, getOwner()), SchoolType.BLOOD);
  //Ironsspellbooks.logger.debug("hmm.");
     }
 
@@ -53,7 +54,7 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
                 double distance = entity.distanceToSqr(hitResult.getLocation());
                 if (distance < explosionRadius * explosionRadius  && canHitEntity(entity)) {
                     float damage = (float) (this.damage * (1 - distance / (explosionRadius * explosionRadius)));
-                    DamageSources.applyDamage(entity, damage, SpellType.WITHER_SKULL_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this, getOwner()), SchoolType.BLOOD);
                 }
             }
 

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.spells.SchoolType;
@@ -52,7 +53,7 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
         boolean los = false;
         double explosionRadius = 2;
         for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(explosionRadius))) {
-            if (this.distanceToSqr(livingentity) <= explosionRadius * explosionRadius  && canHitEntity(livingentity)) {
+            if (this.distanceToSqr(livingentity) <= explosionRadius * explosionRadius && canHitEntity(livingentity)) {
 
                 for (int i = 0; i < 2; ++i) {
                     Vec3 targetPos = new Vec3(livingentity.getX(), livingentity.getY(0.5D * (double) i), livingentity.getZ());
@@ -64,7 +65,7 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
                 }
 
                 if (los) {
-                    DamageSources.applyDamage(livingentity, this.getDamage(), SpellType.FIRECRACKER_SPELL.getDamageSource(this,getOwner()), SchoolType.EVOCATION);
+                    DamageSources.applyDamage(livingentity, this.getDamage(), SpellRegistry.FIRECRACKER_SPELL.get().getDamageSource(this, getOwner()), SchoolType.EVOCATION);
                 }
             }
         }

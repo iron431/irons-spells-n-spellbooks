@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.firebolt;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -67,7 +68,7 @@ public class FireboltProjectile extends AbstractMagicProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         var target = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(target, getDamage(), SpellType.FIREBOLT_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE)) {
+        if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.FIREBOLT_SPELL.get().getDamageSource(this, getOwner()), SchoolType.FIRE)) {
             target.setSecondsOnFire(3);
             kill();
         }

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.dragon_breath;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -14,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 public class DragonBreathPool extends AoeEntity {
 
-    public static final DamageSource DAMAGE_SOURCE = new DamageSource(SpellType.DRAGON_BREATH_SPELL.getId() + "_pool").setMagic();
+    public static final DamageSource DAMAGE_SOURCE = new DamageSource(SpellRegistry.DRAGON_BREATH_SPELL.get().getSpellId() + "_pool").setMagic();
 
     public DragonBreathPool(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);

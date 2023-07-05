@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
@@ -30,6 +31,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -483,6 +485,18 @@ public abstract class AbstractSpell {
         }
 
         return SpellRarity.COMMON;
+    }
+
+    public DamageSource getDamageSource() {
+        return new DamageSource(getSpellId() + "_spell");
+    }
+
+    public DamageSource getDamageSource(Entity attacker) {
+        return DamageSources.directDamageSource(getDamageSource(), attacker);
+    }
+
+    public DamageSource getDamageSource(Entity projectile, Entity attacker) {
+        return DamageSources.indirectDamageSource(getDamageSource(), projectile, attacker);
     }
 
     public boolean isEnabled() {

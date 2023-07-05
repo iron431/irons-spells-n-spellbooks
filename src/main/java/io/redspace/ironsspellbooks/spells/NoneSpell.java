@@ -22,11 +22,6 @@ public class NoneSpell extends AbstractSpell {
             .build();
 
     public NoneSpell() {
-        this(0);
-    }
-
-    public NoneSpell(int level) {
-        this.setLevel(level);
         this.baseManaCost = 0;
         this.manaCostPerLevel = 0;
         this.baseSpellPower = 0;
@@ -59,7 +54,6 @@ public class NoneSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
-
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
     }
 }

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_needle;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -83,12 +84,11 @@ public class BloodNeedle extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellType.BlOOD_NEEDLES_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
+        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.BLOOD_NEEDLES_SPELL.get().getDamageSource(this, getOwner()), SchoolType.BLOOD);
         if (hit && entityHitResult.getEntity() instanceof LivingEntity target && getOwner() instanceof LivingEntity livingOwner) {
             livingOwner.heal(getDamage() * DamageSources.getResist(target, SchoolType.BLOOD) * .25f);
         }
         entityHitResult.getEntity().invulnerableTime = 0;
-
     }
 
     @Override
