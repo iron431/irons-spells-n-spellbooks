@@ -255,18 +255,18 @@ public abstract class AbstractSpell {
                 /*
                  * Immediately cast spell
                  */
-                castSpell(level, serverPlayer, castSource, triggerCooldown);
+                castSpell(level, spellLevel, serverPlayer, castSource, triggerCooldown);
             } else if (castType == CastType.LONG || castType == CastType.CONTINUOUS) {
                 /*
                  * Prepare to cast spell (magic manager will pick it up by itself)
                  */
                 int effectiveCastTime = getEffectiveCastTime(player);
                 playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
-                onServerPreCast(player.level, player, playerMagicData);
+                onServerPreCast(player.level, spellLevel, player, playerMagicData);
                 Messages.sendToPlayer(new ClientboundUpdateCastingState(getLegacyID(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
             }
 
-            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), spellType), serverPlayer, true);
+            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), getSpellId()), serverPlayer, true);
 
             return true;
         } else {
@@ -275,29 +275,29 @@ public abstract class AbstractSpell {
         }
     }
 
-    public void castSpell(Level world, ServerPlayer serverPlayer, CastSource castSource, boolean triggerCooldown) {
+    public void castSpell(Level world, int spellLevel, ServerPlayer serverPlayer, CastSource castSource, boolean triggerCooldown) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell isClient:{}, spell{}({})", world.isClientSide, this.spellType, this.getRawLevel());
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell isClient:{}, spell{}({})", world.isClientSide, getSpellId(), spellLevel);
         }
 
         var magicManager = MagicHelper.MAGIC_MANAGER;
         MagicData playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
 
         if (castSource.consumesMana()) {
-            int newMana = playerMagicData.getMana() - getManaCost();
+            int newMana = playerMagicData.getMana() - getManaCost(spellLevel, serverPlayer);
             magicManager.setPlayerCurrentMana(serverPlayer, newMana);
             Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
         }
 
         if (triggerCooldown) {
-            magicManager.addCooldown(serverPlayer, spellType, castSource);
+            magicManager.addCooldown(serverPlayer, this, castSource);
         }
 
-        onCast(world, serverPlayer, playerMagicData);
-        Messages.sendToPlayer(new ClientboundOnClientCast(this.getLegacyID(), this.getLevel(serverPlayer), castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
+        onCast(world, spellLevel, serverPlayer, playerMagicData);
+        Messages.sendToPlayer(new ClientboundOnClientCast(this.getLegacyID(), this.getLevel(spellLevel, serverPlayer), castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
 
-        if (this.castType == CastType.INSTANT) {
-            onServerCastComplete(world, serverPlayer, playerMagicData, false);
+        if (getCastType() == CastType.INSTANT) {
+            onServerCastComplete(world, spellLevel, serverPlayer, playerMagicData, false);
         }
 
         if (serverPlayer.getMainHandItem().getItem() instanceof ISpellbook || serverPlayer.getMainHandItem().getItem() instanceof IScroll)
@@ -310,20 +310,19 @@ public abstract class AbstractSpell {
     /**
      * The primary spell effect sound and particle handling goes here. Called Client Side only
      */
-    public void onClientCast(Level level, LivingEntity entity, ICastData castData) {
+    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, this.spellType, this.getRawLevel());
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, getSpellId(), spellLevel);
         }
         playSound(getCastFinishSound(), entity, true);
-
     }
 
     /**
      * The primary spell effect handling goes here. Called Server Side
      */
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.onCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, this.spellType, this.getRawLevel(), playerMagicData);
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.onCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
         }
 
         playSound(getCastFinishSound(), entity, true);
@@ -366,23 +365,23 @@ public abstract class AbstractSpell {
     /**
      * Called on the server when a spell finishes casting or is cancelled, used for any cleanup or extra functionality
      */
-    public void onServerCastComplete(Level level, LivingEntity entity, MagicData playerMagicData, boolean cancelled) {
+    public void onServerCastComplete(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData, boolean cancelled) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.onServerCastComplete isClient:{}, spell{}({}), pmd:{}, cancelled:{}", level.isClientSide, this.spellType, this.getRawLevel(), playerMagicData, cancelled);
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.onServerCastComplete isClient:{}, spell{}({}), pmd:{}, cancelled:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData, cancelled);
         }
 
         playerMagicData.resetCastingState();
         if (entity instanceof ServerPlayer serverPlayer) {
-            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), spellType, cancelled), serverPlayer, true);
+            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastFinished(serverPlayer.getUUID(), getSpellId(), cancelled), serverPlayer, true);
         }
     }
 
     /**
      * Called once just before executing onCast. Can be used for client side sounds and particles
      */
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable MagicData playerMagicData) {
+    public void onClientPreCast(Level level, int spellLevel, LivingEntity entity, InteractionHand hand, @Nullable MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, this.spellType, this.getRawLevel(), playerMagicData);
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
         }
         playSound(getCastStartSound(), entity);
     }
@@ -390,9 +389,9 @@ public abstract class AbstractSpell {
     /**
      * Called once just before executing onCast. Can be used for server side sounds and particles
      */
-    public void onServerPreCast(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
+    public void onServerPreCast(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.onServerPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, this.spellType, this.getRawLevel(), playerMagicData);
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.onServerPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), level, playerMagicData);
         }
         playSound(getCastStartSound(), entity);
     }
@@ -400,7 +399,7 @@ public abstract class AbstractSpell {
     /**
      * Called on the server each tick while casting.
      */
-    public void onServerCastTick(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
+    public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
 
     }
 
