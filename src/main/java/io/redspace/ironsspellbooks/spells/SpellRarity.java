@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -23,7 +24,6 @@ public enum SpellRarity {
     ANCIENT(6)*/;
 
     private final int value;
-
 
     SpellRarity(final int newValue) {
         value = newValue;
@@ -84,7 +84,7 @@ public enum SpellRarity {
 
     public static void rarityTest() {
         var sb = new StringBuilder();
-        Arrays.stream(SpellType.values()).forEach(s -> {
+        SpellRegistry.REGISTRY.get().getValues().forEach(s -> {
             sb.append(String.format("\nSpellType:%s\n", s));
             sb.append(String.format("\tMinRarity:%s, MaxRarity:%s\n", s.getMinRarity(), s.getMaxRarity()));
             sb.append(String.format("\tMinLevel:%s, MaxLevel:%s\n", s.getMinLevel(), s.getMaxLevel()));
