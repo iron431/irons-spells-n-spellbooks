@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.gui.scroll_forge;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeTile;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.InkItem;
@@ -37,7 +39,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     private final Slot focusSlot;
     private final Slot resultSlot;
 
-    private SpellType spellRecipeSelection = SpellType.NONE_SPELL;
+    private AbstractSpell spellRecipeSelection = SpellRegistry.none();
 
     //private List<SpellCardInfo> spellCards;
 
@@ -101,18 +103,18 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
  //Ironsspellbooks.logger.debug("ScrollForgeMenu.slotsChanged");
     }
 
-    private void setupResultSlot(SpellType selectedSpellType) {
+    private void setupResultSlot(AbstractSpell selectedSpellType) {
  //Ironsspellbooks.logger.debug("ScrollForgeMenu.setupResultSlot");
 
         ItemStack scrollStack = this.blankScrollSlot.getItem();
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && selectedSpellType != SpellType.NONE_SPELL) {
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && selectedSpellType != SpellRegistry.none()) {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);
-                SpellData.setSpellData(resultStack, selectedSpellType.getSpellForRarity(inkItem.getRarity()));
+                SpellData.setSpellData(resultStack, selectedSpellType.getMinLevelForRarity(inkItem.getRarity()));
             }
         }
 
@@ -121,7 +123,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         }
     }
 
-    public void setRecipeSpell(SpellType typeFromValue) {
+    public void setRecipeSpell(AbstractSpell typeFromValue) {
         this.spellRecipeSelection = typeFromValue;
  //Ironsspellbooks.logger.debug("Setting selected Spell");
         setupResultSlot(typeFromValue);
