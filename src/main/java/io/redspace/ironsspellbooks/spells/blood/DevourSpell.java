@@ -33,10 +33,10 @@ public class DevourSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.max_hp_on_kill", getHpBonus(caster))
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.max_hp_on_kill", getHpBonus(spellLevel, caster))
         );
     }
 
@@ -80,7 +80,7 @@ public class DevourSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
@@ -89,21 +89,20 @@ public class DevourSpell extends AbstractSpell {
                 DevourJaw devour = new DevourJaw(world, entity, targetEntity);
                 devour.setPos(targetEntity.position());
                 devour.setYRot(entity.getYRot());
-                devour.setDamage(getDamage(entity));
-                devour.vigorLevel = (getHpBonus(entity) / 2) - 1;
+                devour.setDamage(getDamage(spellLevel, entity));
+                devour.vigorLevel = (getHpBonus(spellLevel, entity) / 2) - 1;
                 world.addFreshEntity(devour);
             }
         }
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
-    public float getDamage(LivingEntity caster) {
-        return getSpellPower(caster);
+    public float getDamage(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster);
     }
 
-    public int getHpBonus(LivingEntity caster) {
-        return 2 * (int) (getSpellPower(caster) * .25f);
+    public int getHpBonus(int spellLevel, LivingEntity caster) {
+        return 2 * (int) (getSpellPower(spellLevel, caster) * .25f);
     }
-
 }

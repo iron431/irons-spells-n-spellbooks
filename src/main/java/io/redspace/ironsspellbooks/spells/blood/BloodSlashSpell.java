@@ -33,8 +33,8 @@ public class BloodSlashSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)));
     }
 
     public BloodSlashSpell(int level) {
@@ -71,13 +71,13 @@ public class BloodSlashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         BloodSlashProjectile bloodSlash = new BloodSlashProjectile(world, entity);
         bloodSlash.setPos(entity.getEyePosition());
         bloodSlash.shoot(entity.getLookAngle());
-        bloodSlash.setDamage(getSpellPower(entity));
+        bloodSlash.setDamage(getSpellPower(spellLevel, entity));
         world.addFreshEntity(bloodSlash);
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     @Override

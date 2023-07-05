@@ -36,10 +36,9 @@ public class AcupunctureSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 2)),
-                Component.translatable("ui.irons_spellbooks.projectile_count", getCount(caster)));
-
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.projectile_count", getCount(spellLevel, caster)));
     }
 
     public AcupunctureSpell(int level) {
@@ -81,12 +80,12 @@ public class AcupunctureSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
-                int count = getCount(entity);
-                float damage = getDamage(entity);
+                int count = getCount(spellLevel, entity);
+                float damage = getDamage(spellLevel, entity);
                 Vec3 center = targetEntity.position().add(0, targetEntity.getEyeHeight() / 2, 0);
                 float degreesPerNeedle = 360f / count;
                 for (int i = 0; i < count; i++) {
@@ -104,15 +103,15 @@ public class AcupunctureSpell extends AbstractSpell {
             }
         }
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
 
-    private int getCount(LivingEntity caster) {
-        return (int) ((4 + getLevel(caster)) * getSpellPower(caster));
+    private int getCount(int spellLevel, LivingEntity caster) {
+        return (int) ((4 + getLevel(spellLevel, caster)) * getSpellPower(spellLevel, caster));
     }
 
-    private float getDamage(LivingEntity caster) {
-        return 1 + getSpellPower(caster);
+    private float getDamage(int spellLevel, LivingEntity caster) {
+        return 1 + getSpellPower(spellLevel, caster);
     }
 }

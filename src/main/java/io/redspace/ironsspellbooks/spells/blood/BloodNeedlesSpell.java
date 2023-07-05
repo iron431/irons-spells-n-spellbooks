@@ -33,10 +33,9 @@ public class BloodNeedlesSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 2)),
-                Component.translatable("ui.irons_spellbooks.projectile_count", getCount()));
-
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.projectile_count", getCount(spellLevel)));
     }
 
     public BloodNeedlesSpell(int level) {
@@ -73,9 +72,9 @@ public class BloodNeedlesSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
-        int count = getCount();
-        float damage = getDamage(entity);
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        int count = getCount(spellLevel);
+        float damage = getDamage(spellLevel, entity);
         int degreesPerNeedle = 360 / count;
         var raycast = Utils.raycastForEntity(world, entity, 32, true);
         for (int i = 0; i < count; i++) {
@@ -88,7 +87,7 @@ public class BloodNeedlesSpell extends AbstractSpell {
             needle.shoot(raycast.getLocation().subtract(spawn).normalize());
             world.addFreshEntity(needle);
         }
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
 //    public static final AnimationHolder SLASH_ANIMATION = new AnimationHolder("instant_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
@@ -98,12 +97,12 @@ public class BloodNeedlesSpell extends AbstractSpell {
 //        return SLASH_ANIMATION;
 //    }
 
-    private int getCount() {
+    private int getCount(int spellLevel) {
         return 5;
 //        return this.getRarity().getValue() + 3;
     }
 
-    private float getDamage(LivingEntity caster) {
-        return getSpellPower(caster) * .25f;
+    private float getDamage(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster) * .25f;
     }
 }
