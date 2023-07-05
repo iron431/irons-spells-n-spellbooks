@@ -1,9 +1,12 @@
 package io.redspace.ironsspellbooks.jei;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
+import net.minecraft.client.gui.screens.social.SocialInteractionsPlayerList;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -35,9 +38,9 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     private static Stream<ArcaneAnvilRecipe> getScrollRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        return Arrays.stream(SpellType.values())
-                .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
-                .sorted(Comparator.comparing(Enum::name))
+        return SpellRegistry.REGISTRY.get().getValues().stream()
+                .filter(spell -> spell != SpellRegistry.none() && spell.isEnabled())
+                .sorted(Comparator.comparing(AbstractSpell::getSpellId))
                 .map(ArcaneAnvilRecipeMaker::enumerateScrollCombinations)
                 .filter(ArcaneAnvilRecipe::isValid); //Filter out any blank recipes created where min and max spell level are equal
     }
@@ -48,9 +51,9 @@ public final class ArcaneAnvilRecipeMaker {
         var rightInputs = new ArrayList<ItemStack>();
         var outputs = new ArrayList<ItemStack>();
 
-        Arrays.stream(SpellType.values())
-                .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
-                .sorted(Comparator.comparing(Enum::name))
+        SpellRegistry.REGISTRY.get().getValues().stream()
+                .filter(spell -> spell != SpellRegistry.none() && spell.isEnabled())
+                .sorted(Comparator.comparing(AbstractSpell::getSpellId))
                 .forEach((spellType) -> {
                     Registry.ITEM.stream().filter((k) -> k instanceof SwordItem).forEach((swordItem) -> {
                         var inputSwordStack = new ItemStack(swordItem);
@@ -70,26 +73,26 @@ public final class ArcaneAnvilRecipeMaker {
         return Stream.empty();
     }
 
-    private static ArcaneAnvilRecipe enumerateScrollCombinations(SpellType spellType) {
+    private static ArcaneAnvilRecipe enumerateScrollCombinations(AbstractSpell spell) {
         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
 
         var leftInputs = new ArrayList<ItemStack>();
         var rightInputs = new ArrayList<ItemStack>();
         var outputs = new ArrayList<ItemStack>();
 
-        IntStream.range(spellType.getMinLevel(), spellType.getMaxLevel())
+        IntStream.range(spell.getMinLevel(), spell.getMaxLevel())
                 .forEach((spellLevel) -> {
-                    leftInputs.add(getScrollStack(scrollStack, spellType, spellLevel));
-                    rightInputs.add(getScrollStack(scrollStack, spellType, spellLevel));
-                    outputs.add(getScrollStack(scrollStack, spellType, spellLevel + 1));
+                    leftInputs.add(getScrollStack(scrollStack, spell, spellLevel));
+                    rightInputs.add(getScrollStack(scrollStack, spell, spellLevel));
+                    outputs.add(getScrollStack(scrollStack, spell, spellLevel + 1));
                 });
 
         return new ArcaneAnvilRecipe(leftInputs, rightInputs, outputs);
     }
 
-    private static ItemStack getScrollStack(ItemStack stack, SpellType spellType, int spellLevel) {
+    private static ItemStack getScrollStack(ItemStack stack, AbstractSpell spell, int spellLevel) {
         var scrollStack = stack.copy();
-        SpellData.setSpellData(scrollStack, spellType, spellLevel);
+        SpellData.setSpellData(scrollStack, spell, spellLevel);
         return scrollStack;
     }
 }

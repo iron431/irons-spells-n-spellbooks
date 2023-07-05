@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -29,8 +30,8 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
 
     protected boolean isFlying;
 
-    protected final ArrayList<SpellType> healingSpells = new ArrayList<>();
-    protected final ArrayList<SpellType> buffSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpell> healingSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpell> buffSpells = new ArrayList<>();
     //protected final ArrayList<SpellType> movementSpells = new ArrayList<>();
     //protected final ArrayList<SpellType> supportSpells = new ArrayList<>();
 
@@ -51,7 +52,7 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
 
     }
 
-    public WizardSupportGoal setSpells(List<SpellType> healingSpells, List<SpellType> buffSpells) {
+    public WizardSupportGoal setSpells(List<AbstractSpell> healingSpells, List<AbstractSpell> buffSpells) {
         this.healingSpells.clear();
         this.buffSpells.clear();
 
@@ -143,8 +144,8 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
         }
         if (mob.isCasting()) {
-            var pmg = MagicData.getPlayerMagicData(mob);
-            if (target.isDeadOrDying() || AbstractSpell.getSpell(pmg.getCastingSpellId(), pmg.getCastingSpellLevel()).shouldAIStopCasting(mob, target))
+            var spellData = MagicData.getPlayerMagicData(mob).getCastingSpell();
+            if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target))
                 mob.cancelCast();
 
         }
@@ -173,28 +174,26 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
     }
 
     protected void doSpellAction() {
-
         int spellLevel = (int) (getNextSpellType().getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
         spellLevel = Math.max(spellLevel, 1);
-        var spellType = getNextSpellType();
+        var abstractSpell = getNextSpellType();
 
         //Make sure cast is valid
-        if (!AbstractSpell.getSpell(spellType, spellLevel).shouldAIStopCasting(mob, target))
-            mob.initiateCastSpell(spellType, spellLevel);
+        if (!abstractSpell.shouldAIStopCasting(spellLevel, mob, target))
+            mob.initiateCastSpell(abstractSpell, spellLevel);
         mob.setSupportTarget(null);
-
     }
 
-    protected SpellType getNextSpellType() {
+    protected AbstractSpell getNextSpellType() {
         float shouldBuff = 0;
         if (!buffSpells.isEmpty() && target instanceof Mob mob && mob.isAggressive())
             shouldBuff = target.getHealth() / target.getMaxHealth();
         return getSpell(mob.getRandom().nextFloat() > shouldBuff ? healingSpells : buffSpells);
     }
 
-    protected SpellType getSpell(List<SpellType> spells) {
+    protected AbstractSpell getSpell(List<AbstractSpell> spells) {
         if (spells.size() < 1)
-            return SpellType.NONE_SPELL;
+            return SpellRegistry.none();
         return spells.get(mob.getRandom().nextInt(spells.size()));
     }
 

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -13,13 +14,13 @@ public class SpellBarrageGoal extends Goal {
     protected final float attackRadius;
     protected final float attackRadiusSqr;
     protected final int projectileCount;
-    protected final SpellType spell;
+    protected final AbstractSpell spell;
     protected int attackTime;
 
     protected final int minSpellLevel;
     protected final int maxSpellLevel;
 
-    public SpellBarrageGoal(AbstractSpellCastingMob abstractSpellCastingMob, SpellType spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
+    public SpellBarrageGoal(AbstractSpellCastingMob abstractSpellCastingMob, AbstractSpell spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
         this.mob = abstractSpellCastingMob;
         this.attackIntervalMin = pAttackIntervalMin;
         this.attackIntervalMax = pAttackIntervalMax;
