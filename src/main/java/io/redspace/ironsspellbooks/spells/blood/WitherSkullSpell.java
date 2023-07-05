@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -38,13 +39,16 @@ public class WitherSkullSpell extends AbstractSpell {
 
 
     public WitherSkullSpell(int level) {
-        super(SpellType.WITHER_SKULL_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 20;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
