@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.fire_breath;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
@@ -87,7 +88,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(entity, damage, SpellType.FIRE_BREATH_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE))
+        if (DamageSources.applyDamage(entity, damage, SpellRegistry.FIRE_BREATH_SPELL.get().getDamageSource(this, getOwner()), SchoolType.FIRE))
             entity.setSecondsOnFire(4);
     }
 }

@@ -160,7 +160,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
     private void castComplete() {
         if (!level.isClientSide) {
-            castingSpell.getSpell().onServerCastComplete(level, this, playerMagicData, false);
+            castingSpell.getSpell().onServerCastComplete(level, castingSpell.getLevel(), this, playerMagicData, false);
         } else {
             playerMagicData.resetCastingState();
         }
@@ -204,7 +204,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
             //TODO: why is this using casting spell but the check above is using playerMagicData.getCastingSpell()
             if (castingSpell.getSpell().getCastType() == CastType.INSTANT) {
                 instantCastSpellType = castingSpell.getSpell();
-                castingSpell.getSpell().onClientPreCast(level, this, InteractionHand.MAIN_HAND, playerMagicData);
+                castingSpell.getSpell().onClientPreCast(level, castingSpell.getLevel(), this, InteractionHand.MAIN_HAND, playerMagicData);
                 castComplete();
             }
         }
@@ -229,7 +229,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         playerMagicData.handleCastDuration();
 
         if (playerMagicData.isCasting()) {
-            castingSpell.getSpell().onServerCastTick(level, this, playerMagicData);
+            castingSpell.getSpell().onServerCastTick(level, castingSpell.getLevel(), this, playerMagicData);
         }
 
         if (Log.SPELL_DEBUG) {
@@ -247,12 +247,12 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
                 if (Log.SPELL_DEBUG) {
                     IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.3");
                 }
-                castingSpell.getSpell().onCast(level, this, playerMagicData);
+                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, playerMagicData);
             }
             castComplete();
         } else if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
-                castingSpell.getSpell().onCast(level, this, playerMagicData);
+                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, playerMagicData);
             }
         }
     }
@@ -298,7 +298,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         playerMagicData.initiateCast(castingSpell.getSpell(), castingSpell.getLevel(), castingSpell.getSpell().getEffectiveCastTime(this), CastSource.MOB);
 
         if (!level.isClientSide) {
-            castingSpell.getSpell().onServerPreCast(level, this, playerMagicData);
+            castingSpell.getSpell().onServerPreCast(level, castingSpell.getLevel(), this, playerMagicData);
         }
     }
 

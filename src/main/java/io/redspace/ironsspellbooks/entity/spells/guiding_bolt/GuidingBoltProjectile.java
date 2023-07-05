@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.guiding_bolt;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -68,7 +69,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
         super.onHitEntity(entityHitResult);
         //irons_spellbooks.LOGGER.debug("MagicMissileProjectile.onHitEntity");
 
-        if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.GUIDING_BOLT_SPELL.getDamageSource(this, getOwner()), SchoolType.HOLY)) {
+        if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.GUIDING_BOLT_SPELL.get().getDamageSource(this, getOwner()), SchoolType.HOLY)) {
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT.get(), 15 * 20));
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 15 * 20, 0, false, false, false));

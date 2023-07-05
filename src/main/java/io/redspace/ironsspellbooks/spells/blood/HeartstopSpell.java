@@ -33,8 +33,8 @@ public class HeartstopSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(spellLevel, caster), 1)));
     }
 
     public HeartstopSpell(int level) {
@@ -72,8 +72,8 @@ public class HeartstopSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.HEARTSTOP.get(), (int) getSpellPower(entity), 0, false, false, true));
-        super.onCast(world, entity, playerMagicData);
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.HEARTSTOP.get(), (int) getSpellPower(spellLevel, entity), 0, false, false, true));
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 }

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -104,7 +105,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
 
     public boolean dealDamage(LivingEntity target) {
         if (target != getOwner())
-            if (DamageSources.applyDamage(target, damage, SpellType.VOID_TENTACLES_SPELL.getDamageSource(this, getOwner()), SchoolType.VOID)) {
+            if (DamageSources.applyDamage(target, damage, SpellRegistry.VOID_TENTACLES_SPELL.get().getDamageSource(this, getOwner()), SchoolType.VOID)) {
                 target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
                 return true;
             }

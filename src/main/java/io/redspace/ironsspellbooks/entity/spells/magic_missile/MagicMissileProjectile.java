@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.magic_missile;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -63,7 +64,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
         super.onHitEntity(entityHitResult);
         //irons_spellbooks.LOGGER.debug("MagicMissileProjectile.onHitEntity");
 
-        if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.MAGIC_MISSILE_SPELL.getDamageSource(this, getOwner()), SchoolType.ENDER))
+        if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.MAGIC_MISSILE_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ENDER))
             kill();
 
     }

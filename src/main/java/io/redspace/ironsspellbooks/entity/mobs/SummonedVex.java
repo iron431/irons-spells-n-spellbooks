@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -62,7 +63,7 @@ public class SummonedVex extends Vex implements MagicSummon {
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
-        return Utils.doMeleeAttack(this, pEntity, SpellType.SUMMON_VEX_SPELL.getDamageSource(this, getSummoner()), SchoolType.EVOCATION);
+        return Utils.doMeleeAttack(this, pEntity, SpellRegistry.SUMMON_VEX_SPELL.get().getDamageSource(this, getSummoner()), SchoolType.EVOCATION);
     }
 
     @Override

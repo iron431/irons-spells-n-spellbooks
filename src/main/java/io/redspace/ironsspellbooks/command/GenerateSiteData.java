@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
@@ -219,7 +220,7 @@ public class GenerateSiteData {
     private static String getSpells(ItemStack itemStack) {
         if (itemStack.getItem() instanceof SpellBook) {
             return SpellBookData.getSpellBookData(itemStack).getActiveInscribedSpells().stream().map(spell -> {
-                return spell.getSpellType().getDisplayName().getString() + " (" + spell.getLevel(null) + ")";
+                return spell.getSpell().getDisplayName().getString() + " (" + spell.getLevel() + ")";
             }).collect(Collectors.joining(", "));
         }
         return "";
@@ -330,30 +331,30 @@ public class GenerateSiteData {
         try {
             var sb = new StringBuilder();
 
-            Arrays.stream(SpellType.values())
-                    .filter(st -> (st.isEnabled() && st != SpellType.NONE_SPELL))
+            SpellRegistry.REGISTRY.get().getValues().stream()
+                    .filter(st -> (st.isEnabled() && st != SpellRegistry.none()))
                     .forEach(spellType -> {
-                        var spellMin = AbstractSpell.getSpell(spellType, spellType.getMinLevel());
-                        var spellMax = AbstractSpell.getSpell(spellType, spellType.getMaxLevel());
+                        var spellMin = spellType.getMinLevel();
+                        var spellMax = spellType.getMaxLevel();
 
-                        var uniqueInfo = spellMin.getUniqueInfo(null);
+                        var uniqueInfo = spellType.getUniqueInfo(spellMin, null);
                         var u1 = uniqueInfo.size() >= 1 ? uniqueInfo.get(0).getString() : "";
                         var u2 = uniqueInfo.size() >= 2 ? uniqueInfo.get(1).getString() : "";
                         var u3 = uniqueInfo.size() >= 3 ? uniqueInfo.get(2).getString() : "";
                         var u4 = uniqueInfo.size() >= 4 ? uniqueInfo.get(3).getString() : "";
 
                         sb.append(String.format(SPELL_DATA_TEMPLATE,
-                                handleCapitalization(spellType.name()),
+                                handleCapitalization(spellType.getSpellName()),
                                 handleCapitalization(spellType.getSchoolType().name()),
-                                String.format("/img/spells/%s.png", spellType.getId()),
+                                String.format("/img/spells/%s.png", spellType.getSpellId()),
                                 spellType.getMinLevel(),
                                 spellType.getMaxLevel(),
-                                spellMin.getManaCost(),
-                                spellMax.getManaCost(),
-                                spellMin.getSpellCooldown(),
+                                spellType.getManaCost(spellMin, null),
+                                spellType.getManaCost(spellMax, null),
+                                spellType.getSpellCooldown(),
                                 handleCapitalization(spellType.getCastType().name()),
-                                handleCapitalization(spellMin.getRarity().name()),
-                                handleCapitalization(spellMax.getRarity().name()),
+                                handleCapitalization(spellType.getRarity(spellMin).name()),
+                                handleCapitalization(spellType.getRarity(spellMax).name()),
                                 Component.translatable(String.format("%s.guide", spellType.getComponentId())).getString(),
                                 u1,
                                 u2,

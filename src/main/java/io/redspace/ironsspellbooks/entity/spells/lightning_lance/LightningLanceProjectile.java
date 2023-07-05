@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.lightning_lance;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -60,7 +61,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellType.LIGHTNING_LANCE_SPELL.getDamageSource(this, getOwner()), SchoolType.LIGHTNING);
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.LIGHTNING_LANCE_SPELL.get().getDamageSource(this, getOwner()), SchoolType.LIGHTNING);
 
     }
 

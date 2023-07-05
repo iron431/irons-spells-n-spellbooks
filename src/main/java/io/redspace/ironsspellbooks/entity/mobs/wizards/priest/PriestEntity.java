@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.priest;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
@@ -66,15 +67,15 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.goalSelector.addGoal(1, new PriestDefenseGoal(this));
         this.goalSelector.addGoal(2, new WizardSupportGoal<>(this, 1.5f, 100, 180)
                 .setSpells(
-                        List.of(SpellType.BLESSING_OF_LIFE_SPELL, SpellType.BLESSING_OF_LIFE_SPELL, SpellType.HEALING_CIRCLE_SPELL),
-                        List.of(SpellType.FORTIFY_SPELL)
+                        List.of(SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.HEALING_CIRCLE_SPELL.get()),
+                        List.of(SpellRegistry.FORTIFY_SPELL.get())
                 ));
         this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.5f, 35, 70)
                 .setSpells(
-                        List.of(SpellType.WISP_SPELL, SpellType.GUIDING_BOLT_SPELL, SpellType.GUIDING_BOLT_SPELL),
-                        List.of(SpellType.GUST_SPELL),
+                        List.of(SpellRegistry.WISP_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get()),
+                        List.of(SpellRegistry.GUST_SPELL.get()),
                         List.of(),
-                        List.of(SpellType.HEAL_SPELL))
+                        List.of(SpellRegistry.HEAL_SPELL.get()))
                 .setSpellQuality(0.3f, 0.5f)
                 .setDrinksPotions());
         this.goalSelector.addGoal(5, new RoamVillageGoal(this, 30, 1f));
@@ -304,9 +305,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         @Override
         public void start() {
             this.attackCooldown = 40 + mob.random.nextInt(30);
-            int spellLevel = (int) (SpellType.GUST_SPELL.getMaxLevel() * .5f);
-            var spellType = SpellType.GUST_SPELL;
-
+            int spellLevel = (int) (SpellRegistry.GUST_SPELL.get().getMaxLevel() * .5f);
+            var spellType = SpellRegistry.GUST_SPELL.get();
             mob.initiateCastSpell(spellType, spellLevel);
         }
     }

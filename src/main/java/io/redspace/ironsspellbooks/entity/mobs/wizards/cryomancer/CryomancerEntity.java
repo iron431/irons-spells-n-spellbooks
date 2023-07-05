@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
@@ -35,14 +36,14 @@ public class CryomancerEntity extends AbstractSpellCastingMob implements Enemy {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.ICE_BLOCK_SPELL, 3, 6, 100, 250, 1));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.ICE_BLOCK_SPELL.get(), 3, 6, 100, 250, 1));
         this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.25f, 50, 75)
                 .setSpells(
-                        List.of(SpellType.ICICLE_SPELL, SpellType.ICICLE_SPELL, SpellType.ICICLE_SPELL, SpellType.CONE_OF_COLD_SPELL),
-                        List.of(SpellType.COUNTERSPELL_SPELL),
-                        List.of(SpellType.FROST_STEP_SPELL),
+                        List.of(SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.CONE_OF_COLD_SPELL.get()),
+                        List.of(SpellRegistry.COUNTERSPELL_SPELL.get()),
+                        List.of(SpellRegistry.FROST_STEP_SPELL.get()),
                         List.of()
-                ).setSingleUseSpell(SpellType.SUMMON_POLAR_BEAR_SPELL, 80, 400, 3, 6)
+                ).setSingleUseSpell(SpellRegistry.SUMMON_POLAR_BEAR_SPELL.get(), 80, 400, 3, 6)
                 .setDrinksPotions());
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
