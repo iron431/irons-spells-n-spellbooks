@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.jei;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -40,16 +42,16 @@ public final class ScrollForgeRecipeMaker {
                     var paperInput = new ItemStack(Items.PAPER);
                     var focusInput = new ItemStack(item);
                     var school = SchoolType.getSchoolFromItem(focusInput);
-                    var spells = SpellType.getSpellsFromSchool(school);
+                    var spells = SpellRegistry.getSpellsForSchool(school);
                     var scrollOutputs = new ArrayList<ItemStack>();
                     var inkOutputs = new ArrayList<ItemStack>();
 
                     inkItems.forEach(ink -> {
                         spells.forEach(spell -> {
-                            var spellToUse = spell.getSpellForRarity(ink.getRarity());
-                            if (spellToUse.getSpellType() != SpellType.NONE_SPELL) {
+                            var spellLevel = spell.getMinLevelForRarity(ink.getRarity());
+                            if (spell != SpellRegistry.none()) {
                                 inkOutputs.add(new ItemStack(ink));
-                                scrollOutputs.add(getScrollStack(spellToUse.getSpellType(), spellToUse.getLevel(null)));
+                                scrollOutputs.add(getScrollStack(spell, spell.getLevel(spellLevel, null)));
                             }
                         });
                     });
@@ -60,9 +62,9 @@ public final class ScrollForgeRecipeMaker {
         return recipes.toList();
     }
 
-    private static ItemStack getScrollStack(SpellType spellType, int spellLevel) {
+    private static ItemStack getScrollStack(AbstractSpell spell, int spellLevel) {
         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-        SpellData.setSpellData(scrollStack, spellType, spellLevel);
+        SpellData.setSpellData(scrollStack, spell, spellLevel);
         return scrollStack;
     }
 }

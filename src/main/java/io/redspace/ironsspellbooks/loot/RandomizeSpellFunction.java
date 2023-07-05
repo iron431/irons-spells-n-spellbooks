@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.loot;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
@@ -38,13 +40,13 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
 
             var spellList = getWeightedSpellList(applicableSpells.getApplicableSpells());
             int total = spellList.floorKey(Integer.MAX_VALUE);
-            SpellType spellType = SpellType.NONE_SPELL;
+            AbstractSpell abstractSpell = SpellRegistry.none();
             if (!spellList.isEmpty()) {
-                spellType = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
+                abstractSpell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
             }
 
-            var spellId = spellType.getValue();
-            int maxLevel = spellType.getMaxLevel();
+            var spellId = abstractSpell.getSpellId();
+            int maxLevel = abstractSpell.getMaxLevel();
             float quality = qualityRange.getFloat(lootContext);
             //https://www.desmos.com/calculator/ablc1wg06w
             quality = quality * (float) Math.sin(1.57 * quality * quality);
@@ -54,12 +56,12 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         return itemStack;
     }
 
-    private NavigableMap<Integer, SpellType> getWeightedSpellList(List<SpellType> entries) {
+    private NavigableMap<Integer, AbstractSpell> getWeightedSpellList(List<AbstractSpell> entries) {
         int total = 0;
-        NavigableMap<Integer, SpellType> weightedSpells = new TreeMap<>();
+        NavigableMap<Integer, AbstractSpell> weightedSpells = new TreeMap<>();
 
-        for (SpellType entry : entries) {
-            if (entry != SpellType.NONE_SPELL && entry.isEnabled()) {
+        for (AbstractSpell entry : entries) {
+            if (entry != SpellRegistry.none() && entry.isEnabled()) {
                 total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
                 weightedSpells.put(total, entry);
             }
