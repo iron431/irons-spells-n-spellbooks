@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -47,19 +47,22 @@ public class RaiseDeadSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.summon_count", getLevel(caster)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.summon_count", getLevel(spellLevel, caster)));
     }
 
     public RaiseDeadSpell(int level) {
-        super(SpellType.RAISE_DEAD_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 3;
         this.castTime = 30;
         this.baseManaCost = 50;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override
@@ -133,7 +136,7 @@ public class RaiseDeadSpell extends AbstractSpell {
         Item[] iron = {Items.IRON_BOOTS, Items.IRON_LEGGINGS, Items.IRON_CHESTPLATE, Items.IRON_HELMET};
 
         int minQuality = 12;
-        int maxQuality = SpellType.RAISE_DEAD_SPELL.getMaxLevel() * spellPowerPerLevel + 15;
+        int maxQuality = getMaxLevel() * spellPowerPerLevel + 15;
 
         ItemStack[] result = new ItemStack[4];
         for (int i = 0; i < 4; i++) {

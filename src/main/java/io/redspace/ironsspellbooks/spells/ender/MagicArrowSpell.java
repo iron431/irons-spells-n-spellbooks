@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.spells.ender;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -40,14 +40,17 @@ public class MagicArrowSpell extends AbstractSpell {
     }
 
     public MagicArrowSpell(int level) {
-        super(SpellType.MAGIC_ARROW_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 2;
         this.castTime = 30;
         this.baseManaCost = 40;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

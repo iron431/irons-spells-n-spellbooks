@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.holy;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.network.spell.ClientboundAborptionParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundFortifyAreaParticles;
@@ -50,13 +50,16 @@ public class FortifySpell extends AbstractSpell {
             .build();
 
     public FortifySpell(int level) {
-        super(SpellType.FORTIFY_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
         this.castTime = 40;
         this.baseManaCost = 40;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

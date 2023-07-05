@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.network.ClientboundSyncEntityData;
 import io.redspace.ironsspellbooks.network.ClientboundSyncPlayerData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -26,13 +25,12 @@ public class SyncedSpellData {
     //localEffectFlags
     public static final long HEAL_TARGET = 1;
 
-
     //TODO: may want to switch this to ServerPlayer.UUID
     private final int serverPlayerId;
     private @Nullable LivingEntity livingEntity;
 
     private boolean isCasting;
-    private int castingSpellId;
+    private String castingSpellId;
     private int castingSpellLevel;
     private long syncedEffectFlags;
     private long localEffectFlags;
@@ -45,7 +43,7 @@ public class SyncedSpellData {
         this.livingEntity = null;
         this.serverPlayerId = serverPlayerId;
         this.isCasting = false;
-        this.castingSpellId = 0;
+        this.castingSpellId = "";
         this.castingSpellLevel = 0;
         this.syncedEffectFlags = 0;
         this.localEffectFlags = 0;
@@ -64,7 +62,7 @@ public class SyncedSpellData {
         public void write(FriendlyByteBuf buffer, SyncedSpellData data) {
             buffer.writeInt(data.serverPlayerId);
             buffer.writeBoolean(data.isCasting);
-            buffer.writeInt(data.castingSpellId);
+            buffer.writeUtf(data.castingSpellId);
             buffer.writeInt(data.castingSpellLevel);
             buffer.writeLong(data.syncedEffectFlags);
             buffer.writeFloat(data.heartStopAccumulatedDamage);
@@ -75,7 +73,7 @@ public class SyncedSpellData {
         public SyncedSpellData read(FriendlyByteBuf buffer) {
             var data = new SyncedSpellData(buffer.readInt());
             data.isCasting = buffer.readBoolean();
-            data.castingSpellId = buffer.readInt();
+            data.castingSpellId = buffer.readUtf();
             data.castingSpellLevel = buffer.readInt();
             data.syncedEffectFlags = buffer.readLong();
             data.heartStopAccumulatedDamage = buffer.readFloat();
@@ -85,21 +83,9 @@ public class SyncedSpellData {
         }
     };
 
-    public SyncedSpellData deepClone() {
-        var syncedSpellData = new SyncedSpellData(this.livingEntity);
-        syncedSpellData.isCasting = this.isCasting;
-        syncedSpellData.castingSpellId = this.castingSpellId;
-        syncedSpellData.castingSpellLevel = this.castingSpellLevel;
-        syncedSpellData.syncedEffectFlags = this.syncedEffectFlags;
-        syncedSpellData.heartStopAccumulatedDamage = this.heartStopAccumulatedDamage;
-        syncedSpellData.evasionHitsRemaining = this.evasionHitsRemaining;
-        syncedSpellData.spinAttackType = this.spinAttackType;
-        return syncedSpellData;
-    }
-
     public void saveNBTData(CompoundTag compound) {
         compound.putBoolean("isCasting", this.isCasting);
-        compound.putInt("castingSpellId", this.castingSpellId);
+        compound.putString("castingSpellId", this.castingSpellId);
         compound.putInt("castingSpellLevel", this.castingSpellLevel);
         compound.putLong("effectFlags", this.syncedEffectFlags);
         compound.putFloat("heartStopAccumulatedDamage", this.heartStopAccumulatedDamage);
@@ -109,7 +95,7 @@ public class SyncedSpellData {
 
     public void loadNBTData(CompoundTag compound) {
         this.isCasting = compound.getBoolean("isCasting");
-        this.castingSpellId = compound.getInt("castingSpellId");
+        this.castingSpellId = compound.getString("castingSpellId");
         this.castingSpellLevel = compound.getInt("castingSpellLevel");
         this.syncedEffectFlags = compound.getLong("effectFlags");
         this.heartStopAccumulatedDamage = compound.getFloat("heartStopAccumulatedDamage");
@@ -202,7 +188,7 @@ public class SyncedSpellData {
         Messages.sendToPlayer(new ClientboundSyncPlayerData(this), serverPlayer);
     }
 
-    public void setIsCasting(boolean isCasting, int castingSpellId, int castingSpellLevel) {
+    public void setIsCasting(boolean isCasting, String castingSpellId, int castingSpellLevel) {
         this.isCasting = isCasting;
         this.castingSpellId = castingSpellId;
         this.castingSpellLevel = castingSpellLevel;
@@ -213,18 +199,9 @@ public class SyncedSpellData {
         return isCasting;
     }
 
-    public int getCastingSpellId() {
+    public String getCastingSpellId() {
         return castingSpellId;
     }
-
-    public int getCastingSpellLevel() {
-        return castingSpellLevel;
-    }
-
-    public SpellType getCastingSpellType() {
-        return SpellType.values()[castingSpellId];
-    }
-
 
     @Override
     protected SyncedSpellData clone() {
@@ -233,7 +210,7 @@ public class SyncedSpellData {
 
     @Override
     public String toString() {
-        return String.format("isCasting:%s, spellID:%d, spellLevel:%d, effectFlags:%d",
+        return String.format("isCasting:%s, spellID:%s, spellLevel:%d, effectFlags:%d",
                 isCasting,
                 castingSpellId,
                 castingSpellLevel,

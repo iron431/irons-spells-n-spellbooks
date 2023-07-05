@@ -4,8 +4,8 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
@@ -53,14 +53,17 @@ public class WallOfFireSpell extends AbstractSpell {
             .build();
 
     public WallOfFireSpell(int level) {
-        super(SpellType.WALL_OF_FIRE_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 10;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.CONTINUOUS;
     }
 
     @Override

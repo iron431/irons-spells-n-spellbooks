@@ -1,14 +1,11 @@
 package io.redspace.ironsspellbooks.api.magic;
 
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
-import io.redspace.ironsspellbooks.api.spells.ICastData;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -95,7 +92,7 @@ public class MagicData {
         this.castDurationRemaining = 0;
         this.castSource = CastSource.NONE;
         this.castType = CastType.NONE;
-        this.getSyncedData().setIsCasting(false, SpellType.NONE_SPELL.getValue(), 0);
+        this.getSyncedData().setIsCasting(false, "", 0);
         resetAdditionalCastData();
 
         if (serverPlayer != null) {
@@ -105,13 +102,13 @@ public class MagicData {
         }
     }
 
-    public void initiateCast(int spellId, int spellLevel, int castDuration, CastSource castSource) {
+    public void initiateCast(AbstractSpell spell, int spellLevel, int castDuration, CastSource castSource) {
         this.castingSpellLevel = spellLevel;
         this.castDuration = castDuration;
         this.castDurationRemaining = castDuration;
         this.castSource = castSource;
-        this.castType = AbstractSpell.getSpell(spellId, spellLevel).getCastType();
-        this.syncedSpellData.setIsCasting(true, spellId, spellLevel);
+        this.castType = spell.getCastType();
+        this.syncedSpellData.setIsCasting(true, spell.getSpellId(), spellLevel);
     }
 
     public ICastData getAdditionalCastData() {
@@ -133,12 +130,12 @@ public class MagicData {
         return getSyncedData().isCasting();
     }
 
-    public int getCastingSpellId() {
+    public String getCastingSpellId() {
         return getSyncedData().getCastingSpellId();
     }
 
-    public AbstractSpell getCastingSpell() {
-        return AbstractSpell.getSpell(getSyncedData().getCastingSpellId(), castingSpellLevel);
+    public SpellData getCastingSpell() {
+        return new SpellData(SpellRegistry.getSpell(getSyncedData().getCastingSpellId()), castingSpellLevel);
     }
 
     public int getCastingSpellLevel() {
@@ -249,7 +246,7 @@ public class MagicData {
 
     @Override
     public String toString() {
-        return String.format("isCasting:%s, spellID:%d, spellLevel:%s, duration:%s, durationRemaining:%s, source:%s, type:%s",
+        return String.format("isCasting:%s, spellID:%s], spellLevel:%s, duration:%s, durationRemaining:%s, source:%s, type:%s",
                 getSyncedData().isCasting(),
                 getSyncedData().getCastingSpellId(),
                 castingSpellLevel,

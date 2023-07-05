@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.lightning;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -40,14 +40,17 @@ public class ElectrocuteSpell extends AbstractSpell {
             .build();
 
     public ElectrocuteSpell(int level) {
-        super(SpellType.ELECTROCUTE_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 0;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 3;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.CONTINUOUS;
     }
 
     @Override

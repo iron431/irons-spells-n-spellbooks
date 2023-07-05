@@ -113,10 +113,11 @@ public class Utils {
 //            return 2 - baseValue <= 1.7 ? baseValue : 2 - Math.pow(Math.E, -(baseValue - 0.6) * (baseValue - 0.6));
 //        }
 //    }
+
     /**
      * X should be between 0-2, and has a horizontal asymptote of 2 applied to soft-cap it for reductive attribute calculations
      */
-    public static double softCapFormula(double x){
+    public static double softCapFormula(double x) {
         //Softcap (https://www.desmos.com/calculator/cokngo3opu)
         return x <= 1.7 ? x : 2 - Math.pow(Math.E, -(x - 0.6) * (x - 0.6));
     }
@@ -164,9 +165,9 @@ public class Utils {
 //        return rotation.add(pos);
 //    }
 
-    public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForShields){
-        if(checkForShields){
-            List<ShieldEntity> shieldEntities = level.getEntitiesOfClass(ShieldEntity.class,new AABB(start,end));
+    public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForShields) {
+        if (checkForShields) {
+            List<ShieldEntity> shieldEntities = level.getEntitiesOfClass(ShieldEntity.class, new AABB(start, end));
             if (shieldEntities.size() > 0) {
                 var shieldImpact = checkEntityIntersecting(shieldEntities.get(0), start, end, 0);
                 if (shieldImpact.getType() != HitResult.Type.MISS)
@@ -390,6 +391,7 @@ public class Utils {
                 getRandomScaled(scale)
         );
     }
+
     public static Vector3f getRandomVec3f(double scale) {
         return new Vector3f(
                 (float) getRandomScaled(scale),
@@ -397,6 +399,7 @@ public class Utils {
                 (float) getRandomScaled(scale)
         );
     }
+
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
         if (healer instanceof NeutralMob neutralMob && neutralMob.isAngryAt(target))
             return false;
@@ -451,7 +454,7 @@ public class Utils {
 
             if (spell.attemptInitiateCast(stack, level, player, CastSource.SWORD, true)) {
                 if (spell.getCastType().holdToCast()) {
- //Ironsspellbooks.logger.debug("onUseCastingHelper.2");
+                    //Ironsspellbooks.logger.debug("onUseCastingHelper.2");
                     player.startUsingItem(hand);
                 }
                 return InteractionResultHolder.success(stack);
@@ -491,22 +494,22 @@ public class Utils {
         return !pLevel.getBiome(pPos).is(Biomes.DEEP_DARK) && !pLevel.getBiome(pPos).is(Biomes.MUSHROOM_FIELDS) && Monster.checkMonsterSpawnRules(EntityType.ZOMBIE, pLevel, pSpawnType, pPos, pRandom);
     }
 
-    public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, SpellType spell) {
+    public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, AbstractSpell spell) {
         target.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_warning", caster.getDisplayName().getString(), spell.getDisplayName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
     }
 
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, SpellType spellType, int range, float aimAssist) {
-        return preCastTargetHelper(level, caster, playerMagicData, spellType, range, aimAssist, true);
+    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist) {
+        return preCastTargetHelper(level, caster, playerMagicData, spell, range, aimAssist, true);
     }
 
-    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, SpellType spellType, int range, float aimAssist, boolean sendFailureMessage) {
+    public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist, boolean sendFailureMessage) {
         var target = Utils.raycastForEntity(caster.level, caster, range, true, aimAssist);
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
             if (caster instanceof ServerPlayer serverPlayer)
-                Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spellType), serverPlayer);
+                Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spell), serverPlayer);
             if (livingTarget instanceof ServerPlayer serverPlayer)
-                Utils.sendTargetedNotification(serverPlayer, caster, spellType);
+                Utils.sendTargetedNotification(serverPlayer, caster, spell);
             return true;
         } else if (sendFailureMessage && caster instanceof ServerPlayer serverPlayer) {
             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_target").withStyle(ChatFormatting.RED)));

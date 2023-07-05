@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.holy;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
 import io.redspace.ironsspellbooks.spells.*;
@@ -45,13 +45,16 @@ public class SunbeamSpell extends AbstractSpell {
             .build();
 
     public SunbeamSpell(int level) {
-        super(SpellType.SUNBEAM_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
         this.castTime = 15;
         this.baseManaCost = 40;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

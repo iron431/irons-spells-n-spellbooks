@@ -4,7 +4,7 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -41,14 +41,17 @@ public class FireBreathSpell extends AbstractSpell {
             .build();
 
     public FireBreathSpell(int level) {
-        super(SpellType.FIRE_BREATH_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 0;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 5;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.CONTINUOUS;
     }
 
     @Override

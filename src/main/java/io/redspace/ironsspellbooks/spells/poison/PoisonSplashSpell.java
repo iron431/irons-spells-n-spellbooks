@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.poison;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonSplash;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -46,13 +46,16 @@ public class PoisonSplashSpell extends AbstractSpell {
             .build();
 
     public PoisonSplashSpell(int level) {
-        super(SpellType.POISON_SPLASH_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
         this.castTime = 15;
         this.baseManaCost = 40;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

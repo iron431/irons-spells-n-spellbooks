@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.spells;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
@@ -38,6 +39,7 @@ import net.minecraft.world.level.Level;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,10 +47,8 @@ import java.util.Optional;
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
 
 public abstract class AbstractSpell {
-    private final SpellType spellType;
-    private final CastType castType;
-    private int level;
     private String spellID = null;
+    private String spellName = null;
     protected int baseManaCost;
     protected int manaCostPerLevel;
     protected int baseSpellPower;
@@ -58,19 +58,28 @@ public abstract class AbstractSpell {
     protected int castTime;
     //protected int cooldown;
 
-    public AbstractSpell(SpellType spellType) {
-        this.spellType = spellType;
-        this.castType = spellType.getCastType();
+    public AbstractSpell() {
     }
 
     public int getLegacyID() {
-        return this.spellType.getValue();
+        return -1;
+    }
+
+    public final String getSpellName() {
+        if (spellName == null) {
+            var resourceLocation = Objects.requireNonNull(getSpellResource());
+            spellName = resourceLocation.getPath().intern();
+        }
+
+        IronsSpellbooks.LOGGER.debug("AbstractSpell.getSpellName {}", spellName);
+
+        return spellName;
     }
 
     public final String getSpellId() {
         if (spellID == null) {
             var resourceLocation = Objects.requireNonNull(getSpellResource());
-            spellID = resourceLocation.getPath().intern();
+            spellID = resourceLocation.toString().intern();
         }
 
         IronsSpellbooks.LOGGER.debug("AbstractSpell.getSpellId {}", spellID);
@@ -79,7 +88,7 @@ public abstract class AbstractSpell {
     }
 
     public final ResourceLocation getSpellIconResource() {
-        return new ResourceLocation(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellId() + ".png");
+        return new ResourceLocation(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
     }
 
     public int getMinRarity() {
@@ -90,48 +99,42 @@ public abstract class AbstractSpell {
         return ServerConfigs.getSpellConfig(this).maxLevel();
     }
 
+    public int getMinLevel() {
+        return 1;
+    }
+
+    public MutableComponent getDisplayName() {
+        return Component.translatable(getComponentId());
+    }
+
+    public String getComponentId() {
+        return String.format("spell.%s.%s", getSpellResource().getNamespace(), getSpellName());
+    }
+
     public abstract ResourceLocation getSpellResource();
 
     public abstract DefaultConfig getDefaultConfig();
 
-    public SpellType getSpellType() {
-        return this.spellType;
-    }
-
-    public SpellRarity getRarity() {
-        return spellType.getRarity(getLevel(null));
-    }
-
-    public CastType getCastType() {
-        return this.castType;
-    }
+    public abstract CastType getCastType();
 
     public SchoolType getSchoolType() {
         return ServerConfigs.getSpellConfig(this).school();
     }
 
-    public int getLevel(@Nullable LivingEntity caster) {
+    public int getLevel(int level, @Nullable LivingEntity caster) {
         int addition = 0;
         if (caster != null) {
             addition = CuriosApi.getCuriosHelper().findCurios(caster, this::filterCurios).size();
         }
-        return this.level + addition;
-    }
-
-    public int getRawLevel() {
-        return this.level;
+        return level + addition;
     }
 
     private boolean filterCurios(ItemStack itemStack) {
-        return RingData.hasRingData(itemStack) && RingData.getRingData(itemStack).getSpell() == this.spellType;
+        return RingData.hasRingData(itemStack) && RingData.getRingData(itemStack).getSpell().equals(this);
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public int getManaCost() {
-        return (int) ((baseManaCost + manaCostPerLevel * (getLevel(null) - 1)) * ServerConfigs.getSpellConfig(this).manaMultiplier());
+    public int getManaCost(int level, @Nullable LivingEntity caster) {
+        return (int) ((baseManaCost + manaCostPerLevel * (getLevel(level, caster) - 1)) * ServerConfigs.getSpellConfig(this).manaMultiplier());
     }
 
     public int getSpellCooldown() {
@@ -154,11 +157,10 @@ public abstract class AbstractSpell {
      * Default Animations Based on Cast Type. Override for specific spell-based animations
      */
     public AnimationHolder getCastStartAnimation() {
-        return switch (this.castType) {
+        return switch (getCastType()) {
             case INSTANT -> ANIMATION_INSTANT_CAST;
             case CONTINUOUS -> ANIMATION_CONTINUOUS_CAST;
             case LONG -> ANIMATION_LONG_CAST;
-            //case CHARGE -> ANIMATION_CHARGED_CAST;
             default -> AnimationHolder.none();
         };
     }
@@ -167,21 +169,21 @@ public abstract class AbstractSpell {
      * Default Animations Based on Cast Type. Override for specific spell-based animations
      */
     public AnimationHolder getCastFinishAnimation() {
-        return switch (this.castType) {
+        return switch (getCastType()) {
             case LONG -> ANIMATION_LONG_CAST_FINISH;
             default -> AnimationHolder.none();
         };
     }
 
-    public float getSpellPower(@Nullable Entity sourceEntity) {
+    public float getSpellPower(int spellLevel, @Nullable Entity sourceEntity) {
 
         float entitySpellPowerModifier = 1;
         float entitySchoolPowerModifier = 1;
 
         float configPowerModifier = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
-        int level = getLevel(null);
+        int level = getLevel(spellLevel, null);
         if (sourceEntity instanceof LivingEntity livingEntity) {
-            level = getLevel(livingEntity);
+            level = getLevel(spellLevel, livingEntity);
             entitySpellPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
             switch (this.getSchoolType()) {
                 case FIRE -> entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER.get());
@@ -205,7 +207,7 @@ public abstract class AbstractSpell {
             /*
         Long/Charge casts trigger faster while continuous casts last longer.
         */
-            if (this.castType != CastType.CONTINUOUS)
+            if (getCastType() != CastType.CONTINUOUS)
                 entityCastTimeModifier = 2 - Utils.softCapFormula(entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get()));
             else
                 entityCastTimeModifier = entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get());
@@ -214,20 +216,12 @@ public abstract class AbstractSpell {
         return Math.round(this.castTime * (float) entityCastTimeModifier);
     }
 
-    public static AbstractSpell getSpell(SpellType spellType, int level) {
-        return spellType.getSpellForType(level);
-    }
-
-    public static AbstractSpell getSpell(int spellId, int level) {
-        return getSpell(SpellType.values()[spellId], level);
-    }
-
     /**
      * returns true/false for success/failure to cast
      */
-    public boolean attemptInitiateCast(ItemStack stack, Level level, Player player, CastSource castSource, boolean triggerCooldown) {
+    public boolean attemptInitiateCast(ItemStack stack, int spellLevel, Level level, Player player, CastSource castSource, boolean triggerCooldown) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("AbstractSpell.attemptInitiateCast isClient:{}, spell{}({})", level.isClientSide, this.spellType, this.getRawLevel());
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.attemptInitiateCast isClient:{}, spell{}({})", level.isClientSide, this.getSpellId(), spellLevel);
         }
 
         if (level.isClientSide) {
@@ -240,35 +234,36 @@ public abstract class AbstractSpell {
         if (!playerMagicData.isCasting()) {
             int playerMana = playerMagicData.getMana();
 
-            boolean hasEnoughMana = playerMana - getManaCost() >= 0;
-            boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
+            boolean hasEnoughMana = playerMana - getManaCost(spellLevel, serverPlayer) >= 0;
+            boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(this);
 
             if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spellType.getDisplayName()).withStyle(ChatFormatting.RED)));
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName()).withStyle(ChatFormatting.RED)));
                 return false;
             }
 
             if (castSource.consumesMana() && !hasEnoughMana) {
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_mana", spellType.getDisplayName()).withStyle(ChatFormatting.RED)));
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_mana", getDisplayName()).withStyle(ChatFormatting.RED)));
                 return false;
             }
 
             if (!checkPreCastConditions(level, serverPlayer, playerMagicData))
                 return false;
 
-            if (this.castType == CastType.INSTANT) {
+            var castType = getCastType();
+            if (castType == CastType.INSTANT) {
                 /*
                  * Immediately cast spell
                  */
                 castSpell(level, serverPlayer, castSource, triggerCooldown);
-            } else if (this.castType == CastType.LONG || this.castType == CastType.CONTINUOUS) {
+            } else if (castType == CastType.LONG || castType == CastType.CONTINUOUS) {
                 /*
                  * Prepare to cast spell (magic manager will pick it up by itself)
                  */
                 int effectiveCastTime = getEffectiveCastTime(player);
-                playerMagicData.initiateCast(getLegacyID(), getLevel(player), effectiveCastTime, castSource);
+                playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
                 onServerPreCast(player.level, player, playerMagicData);
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(getLegacyID(), getLevel(player), effectiveCastTime, castSource), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(getLegacyID(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
             }
 
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), spellType), serverPlayer, true);
@@ -412,20 +407,108 @@ public abstract class AbstractSpell {
     /**
      * Used by AbstractSpellCastingMob to determine if the cast is no longer valid (ie player out of range of a particular spell). Override to create spell-specific criteria
      */
-    public boolean shouldAIStopCasting(Mob mob, LivingEntity target) {
+    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
         return false;
     }
 
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of();
     }
 
     @Override
     public boolean equals(Object obj) {
-        AbstractSpell o = (AbstractSpell) obj;
-        if (o == null)
-            return false;
-        return this.spellType == o.spellType && this.level == o.level;
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj instanceof AbstractSpell other) {
+            return this.getSpellResource().equals(other.getSpellResource());
+        }
+
+        return false;
     }
 
+    private volatile List<Double> rarityWeights;
+
+    private void initializeRarityWeights() {
+        synchronized (SpellRegistry.none()) {
+            if (rarityWeights == null) {
+                int minRarity = getMinRarity();
+                int maxRarity = getMaxRarity();
+                List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
+                List<Double> rarityConfig = SpellRarity.getRarityConfig();
+                //IronsSpellbooks.LOGGER.debug("rarityRawConfig: {} rarityConfig:{}, {}, {}", rarityRawConfig.size(), rarityConfig.size(), this.hashCode(), this.name());
+
+                List<Double> rarityRawWeights;
+                if (minRarity != 0) {
+                    //Must balance remaining weights
+
+                    var subList = rarityRawConfig.subList(minRarity, maxRarity + 1);
+                    double subtotal = subList.stream().reduce(0d, Double::sum);
+                    rarityRawWeights = subList.stream().map(item -> ((item / subtotal) * (1 - subtotal)) + item).toList();
+
+                    var counter = new AtomicDouble();
+                    rarityWeights = new ArrayList<>();
+                    rarityRawWeights.forEach(item -> {
+                        rarityWeights.add(counter.addAndGet(item));
+                    });
+                } else {
+                    //rarityRawWeights = rarityRawConfig;
+                    rarityWeights = rarityConfig;
+                }
+            }
+        }
+    }
+
+    private final int maxRarity = SpellRarity.LEGENDARY.getValue();
+
+    public SpellRarity getRarity(int level) {
+        if (rarityWeights == null) {
+            initializeRarityWeights();
+        }
+
+        int maxLevel = getMaxLevel();
+        int maxRarity = getMaxRarity();
+        if (maxLevel == 1)
+            return SpellRarity.values()[getMinRarity()];
+        double percentOfMaxLevel = (double) level / (double) maxLevel;
+
+        //irons_spellbooks.LOGGER.debug("getRarity: {} {} {} {} {} {}", this.toString(), rarityRawWeights, rarityWeights, percentOfMaxLevel, minRarity, maxRarity);
+
+        int lookupOffset = maxRarity + 1 - rarityWeights.size();
+
+        for (int i = 0; i < rarityWeights.size(); i++) {
+            if (percentOfMaxLevel <= rarityWeights.get(i)) {
+                return SpellRarity.values()[i + lookupOffset];
+            }
+        }
+
+        return SpellRarity.COMMON;
+    }
+
+    public boolean isEnabled() {
+        return ServerConfigs.getSpellConfig(this).enabled();
+    }
+
+    public int getMaxRarity() {
+        return maxRarity;
+    }
+
+    public int getMinLevelForRarity(SpellRarity rarity) {
+        if (rarityWeights == null) {
+            initializeRarityWeights();
+        }
+
+        int minRarity = getMinRarity();
+        int maxLevel = getMaxLevel();
+        if (rarity.getValue() < minRarity) {
+            return 0;
+        }
+
+        if (rarity.getValue() == minRarity) {
+            return 1;
+        }
+
+        return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
+    }
 }

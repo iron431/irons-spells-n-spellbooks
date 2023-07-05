@@ -54,6 +54,7 @@ public class IronsSpellbooks {
 
         modEventBus.addListener(OverlayRegistry::onRegisterOverlays);
 
+        SpellRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);
@@ -64,7 +65,6 @@ public class IronsSpellbooks {
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
         FeatureRegistry.register(modEventBus);
-        SpellRegistry.register(modEventBus);
         CommandArgumentRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);

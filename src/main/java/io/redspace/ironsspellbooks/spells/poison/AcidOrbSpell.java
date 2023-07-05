@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.spells.poison;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -43,14 +43,17 @@ public class AcidOrbSpell extends AbstractSpell {
     }
 
     public AcidOrbSpell(int level) {
-        super(SpellType.ACID_ORB_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
         this.castTime = 15;
         this.baseManaCost = 30;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

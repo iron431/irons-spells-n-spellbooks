@@ -6,9 +6,9 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,9 +21,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
-
-import static io.redspace.ironsspellbooks.api.spells.SpellType.BLESSING_OF_LIFE_SPELL;
-import static io.redspace.ironsspellbooks.api.spells.SpellType.HEALING_CIRCLE_SPELL;
 
 public class SpellTargetingLayer {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/target/heal.png");
@@ -63,12 +60,13 @@ public class SpellTargetingLayer {
         }
     }
 
-    private static Vector3f getColor(int spellId) {
+    private static Vector3f getColor(String spellId) {
         //Specific Spells
-        if(spellId == BLESSING_OF_LIFE_SPELL.getValue() || spellId == HEALING_CIRCLE_SPELL.getValue())
+        if (spellId.equals(SpellRegistry.BLESSING_OF_LIFE_SPELL.get().getSpellId()) || spellId.equals(SpellRegistry.HEALING_CIRCLE_SPELL.get().getSpellId())) {
             return new Vector3f(.85f, 0, 0);
+        }
         //By School Otherwise
-        return switch (SpellType.getTypeFromValue(spellId).getSchoolType()) {
+        return switch (SpellRegistry.getSpell(spellId).getSchoolType()) {
             case HOLY -> new Vector3f(.85f, .75f, .25f);
             case ICE -> new Vector3f(.25f, .25f, 1f);
             case POISON -> new Vector3f(.41f, .88f, .22f);

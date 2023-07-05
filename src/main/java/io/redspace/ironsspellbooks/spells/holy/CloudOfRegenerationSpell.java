@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.holy;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundRegenCloudParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -48,14 +48,17 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
             .build();
 
     public CloudOfRegenerationSpell(int level) {
-        super(SpellType.CLOUD_OF_REGENERATION_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 2;
         this.spellPowerPerLevel = 1;
         this.castTime = 200;
         this.baseManaCost = 10;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.CONTINUOUS;
     }
 
     @Override

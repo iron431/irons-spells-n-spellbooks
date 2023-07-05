@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.spells.NoneSpell;
+import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.blood.*;
 import io.redspace.ironsspellbooks.spells.holy.*;
 import io.redspace.ironsspellbooks.spells.ender.*;
@@ -20,7 +21,9 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class SpellRegistry {
     public static final ResourceKey<Registry<AbstractSpell>> SPELL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(IronsSpellbooks.MODID, "spells"));
@@ -37,7 +40,20 @@ public class SpellRegistry {
     }
 
     public static RegistryObject<AbstractSpell> registerSpell(AbstractSpell spell) {
-        return SPELLS.register(spell.getSpellId(), () -> spell);
+        return SPELLS.register(spell.getSpellName(), () -> spell);
+    }
+
+    public static AbstractSpell getSpell(String spellId) {
+        return getSpell(new ResourceLocation(spellId));
+    }
+
+    public static List<AbstractSpell> getSpellsForSchool(SchoolType schoolType) {
+        var groupedBySchool = SpellRegistry.REGISTRY.get()
+                .getValues()
+                .stream()
+                .collect(Collectors.groupingBy(AbstractSpell::getSchoolType));
+
+        return  groupedBySchool.get(schoolType);
     }
 
     public static AbstractSpell getSpell(ResourceLocation resourceLocation) {

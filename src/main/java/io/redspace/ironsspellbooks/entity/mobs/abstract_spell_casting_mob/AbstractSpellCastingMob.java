@@ -1,13 +1,15 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
+import com.google.common.collect.Maps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.Log;
@@ -43,6 +45,7 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.UUID;
 
 public abstract class AbstractSpellCastingMob extends PathfinderMob implements IAnimatable, IMagicEntity {
@@ -55,8 +58,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     private final MagicData playerMagicData = new MagicData(true);
     private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-    private @Nullable AbstractSpell castingSpell;
-    private final EnumMap<SpellType, AbstractSpell> spells = new EnumMap<>(SpellType.class);
+    private @Nullable SpellData castingSpell;
+    private final HashMap<String, AbstractSpell> spells = Maps.newHashMap();
     private int drinkTime;
     public boolean hasUsedSingleAttack;
 
@@ -157,7 +160,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
     private void castComplete() {
         if (!level.isClientSide) {
-            castingSpell.onServerCastComplete(level, this, playerMagicData, false);
+            castingSpell.getSpell().onServerCastComplete(level, this, playerMagicData, false);
         } else {
             playerMagicData.resetCastingState();
         }
@@ -194,13 +197,14 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         if (!playerMagicData.isCasting() && isCasting) {
             castComplete();
         } else if (playerMagicData.isCasting() && !isCasting)/* if (syncedSpellData.getCastingSpellType().getCastType() == CastType.CONTINUOUS)*/ {
-            var spellType = SpellType.getTypeFromValue(playerMagicData.getCastingSpellId());
+            var spell = playerMagicData.getCastingSpell().getSpell();
 
-            initiateCastSpell(spellType, playerMagicData.getCastingSpellLevel());
+            initiateCastSpell(spell, playerMagicData.getCastingSpellLevel());
 
-            if (castingSpell.getCastType() == CastType.INSTANT) {
-                instantCastSpellType = castingSpell.getSpellType();
-                castingSpell.onClientPreCast(level, this, InteractionHand.MAIN_HAND, playerMagicData);
+            //TODO: why is this using casting spell but the check above is using playerMagicData.getCastingSpell()
+            if (castingSpell.getSpell().getCastType() == CastType.INSTANT) {
+                instantCastSpellType = castingSpell.getSpell();
+                castingSpell.getSpell().onClientPreCast(level, this, InteractionHand.MAIN_HAND, playerMagicData);
                 castComplete();
             }
         }
@@ -225,7 +229,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         playerMagicData.handleCastDuration();
 
         if (playerMagicData.isCasting()) {
-            castingSpell.onServerCastTick(level, this, playerMagicData);
+            castingSpell.getSpell().onServerCastTick(level, this, playerMagicData);
         }
 
         if (Log.SPELL_DEBUG) {
@@ -239,26 +243,26 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
                 IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.2");
             }
 
-            if (castingSpell.getCastType() == CastType.LONG || castingSpell.getCastType() == CastType.INSTANT) {
+            if (castingSpell.getSpell().getCastType() == CastType.LONG || castingSpell.getSpell().getCastType() == CastType.INSTANT) {
                 if (Log.SPELL_DEBUG) {
                     IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.3");
                 }
-                castingSpell.onCast(level, this, playerMagicData);
+                castingSpell.getSpell().onCast(level, this, playerMagicData);
             }
             castComplete();
-        } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
+        } else if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
-                castingSpell.onCast(level, this, playerMagicData);
+                castingSpell.getSpell().onCast(level, this, playerMagicData);
             }
         }
     }
 
-    public void initiateCastSpell(SpellType spellType, int spellLevel) {
+    public void initiateCastSpell(AbstractSpell spell, int spellLevel) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("ASCM.initiateCastSpell: spellType:{} spellLevel:{}, isClient:{}", spellType, spellLevel, level.isClientSide);
+            IronsSpellbooks.LOGGER.debug("ASCM.initiateCastSpell: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, level.isClientSide);
         }
 
-        if (spellType == SpellType.NONE_SPELL) {
+        if (spell == SpellRegistry.none()) {
             castingSpell = null;
             return;
         }
@@ -267,33 +271,34 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
             cancelCastAnimation = false;
         }
 
-        castingSpell = spells.computeIfAbsent(spellType, key -> AbstractSpell.getSpell(spellType, spellLevel));
+        //TODO: why is this using the spells collection instead of the data being passed in?
+        castingSpell = new SpellData(spell, spellLevel);
 
         if (getTarget() != null) {
             forceLookAtTarget(getTarget());
         }
 
-        if (!level.isClientSide && !castingSpell.checkPreCastConditions(level, this, playerMagicData)) {
+        if (!level.isClientSide && !castingSpell.getSpell().checkPreCastConditions(level, this, playerMagicData)) {
             if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spellType, spellLevel, level.isClientSide);
+                IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, level.isClientSide);
             }
 
             castingSpell = null;
             return;
         }
 
-        if (spellType == SpellType.TELEPORT_SPELL || spellType == SpellType.FROST_STEP_SPELL) {
+        if (spell == SpellRegistry.TELEPORT_SPELL.get() || spell == SpellRegistry.FROST_STEP_SPELL.get()) {
             setTeleportLocationBehindTarget(10);
-        } else if (spellType == SpellType.BLOOD_STEP_SPELL) {
+        } else if (spell == SpellRegistry.BLOOD_STEP_SPELL.get()) {
             setTeleportLocationBehindTarget(3);
-        } else if (spellType == SpellType.BURNING_DASH_SPELL) {
+        } else if (spell == SpellRegistry.BURNING_DASH_SPELL.get()) {
             setBurningDashDirectionData();
         }
 
-        playerMagicData.initiateCast(castingSpell.getLegacyID(), castingSpell.getLevel(this), castingSpell.getEffectiveCastTime(this), CastSource.MOB);
+        playerMagicData.initiateCast(castingSpell.getSpell(), castingSpell.getLevel(), castingSpell.getSpell().getEffectiveCastTime(this), CastSource.MOB);
 
         if (!level.isClientSide) {
-            castingSpell.onServerPreCast(level, this, playerMagicData);
+            castingSpell.getSpell().onServerPreCast(level, this, playerMagicData);
         }
     }
 
@@ -376,8 +381,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
      **/
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
-    private SpellType lastCastSpellType = SpellType.NONE_SPELL;
-    private SpellType instantCastSpellType = SpellType.NONE_SPELL;
+    private AbstractSpell lastCastSpellType = SpellRegistry.none();
+    private AbstractSpell instantCastSpellType = SpellRegistry.none();
     private boolean cancelCastAnimation = false;
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
@@ -408,9 +413,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         }
 
         var controller = event.getController();
-        if (instantCastSpellType != SpellType.NONE_SPELL && controller.getAnimationState() == AnimationState.Stopped) {
-            setStartAnimationFromSpell(controller, AbstractSpell.getSpell(instantCastSpellType, 1));
-            instantCastSpellType = SpellType.NONE_SPELL;
+        if (instantCastSpellType != SpellRegistry.none() && controller.getAnimationState() == AnimationState.Stopped) {
+            setStartAnimationFromSpell(controller, instantCastSpellType);
+            instantCastSpellType = SpellRegistry.none();
         }
         return PlayState.CONTINUE;
     }
@@ -421,8 +426,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         }
 
         var controller = event.getController();
-        if (isCasting() && castingSpell != null && castingSpell.getCastType() == CastType.LONG && controller.getAnimationState() == AnimationState.Stopped) {
-            setStartAnimationFromSpell(controller, castingSpell);
+        if (isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG && controller.getAnimationState() == AnimationState.Stopped) {
+            setStartAnimationFromSpell(controller, castingSpell.getSpell());
         }
 
         if (!isCasting() /*&& lastCastSpellType.getCastType() == CastType.LONG*/) {
@@ -439,8 +444,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
         var controller = event.getController();
         if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationState.Stopped) {
-            if (castingSpell.getCastType() == CastType.CONTINUOUS) {
-                setStartAnimationFromSpell(controller, castingSpell);
+            if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
+                setStartAnimationFromSpell(controller, castingSpell.getSpell());
             }
             return PlayState.CONTINUE;
         }
@@ -454,24 +459,21 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
     private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
         spell.getCastStartAnimation().getForMob().ifPresent(animationBuilder -> {
-
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell {}", animationBuilder);
             }
-
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
-            lastCastSpellType = spell.getSpellType();
+            lastCastSpellType = spell;
             cancelCastAnimation = false;
         });
     }
 
-    private void setFinishAnimationFromSpell(AnimationController controller, SpellType spellType) {
-        var spell = AbstractSpell.getSpell(spellType, 1);
+    private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
         spell.getCastFinishAnimation().getForMob().ifPresent(animationBuilder -> {
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
-            lastCastSpellType = SpellType.NONE_SPELL;
+            lastCastSpellType = SpellRegistry.none();
             cancelCastAnimation = false;
         });
     }

@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.player;
 
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
@@ -9,7 +11,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
@@ -60,8 +61,8 @@ public class ClientMagicData {
         return playerMagicData.getPlayerCooldowns();
     }
 
-    public static float getCooldownPercent(SpellType spellType) {
-        return playerMagicData.getPlayerCooldowns().getCooldownPercent(spellType);
+    public static float getCooldownPercent(AbstractSpell spell) {
+        return playerMagicData.getPlayerCooldowns().getCooldownPercent(spell);
     }
 
     public static int getPlayerMana() {
@@ -76,7 +77,7 @@ public class ClientMagicData {
         return ClientMagicData.playerMagicData.getCastType();
     }
 
-    public static int getCastingSpellId() {
+    public static String getCastingSpellId() {
         return playerMagicData.getCastingSpellId();
     }
 
@@ -100,8 +101,8 @@ public class ClientMagicData {
         return playerMagicData.getCastCompletionPercent();
     }
 
-    public static void setClientCastState(int spellId, int spellLevel, int castDuration, CastSource castSource) {
-        playerMagicData.initiateCast(spellId, spellLevel, castDuration, castSource);
+    public static void setClientCastState(String spellId, int spellLevel, int castDuration, CastSource castSource) {
+        playerMagicData.initiateCast(SpellRegistry.getSpell(spellId), spellLevel, castDuration, castSource);
     }
 
     public static void resetClientCastState(UUID playerUUID) {

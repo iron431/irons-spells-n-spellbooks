@@ -4,8 +4,8 @@ package io.redspace.ironsspellbooks.spells.ender;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.comet.Comet;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
@@ -53,14 +53,17 @@ public class StarfallSpell extends AbstractSpell {
             .build();
 
     public StarfallSpell(int level) {
-        super(SpellType.STARFALL_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
         this.castTime = 160;
         this.baseManaCost = 5;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.CONTINUOUS;
     }
 
     @Override

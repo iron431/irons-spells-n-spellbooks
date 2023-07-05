@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.network.spell;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.NetworkEvent;
@@ -14,23 +14,23 @@ public class ClientboundSyncTargetingData {
 
     //private UUID targetUuid;
     private final UUID targetUUID;
-    private final int spellId;
+    private final String spellId;
 
-    public ClientboundSyncTargetingData(LivingEntity entity, SpellType spellType) {
+    public ClientboundSyncTargetingData(LivingEntity entity, AbstractSpell spell) {
         //For some reason client level doesnt have generic get by UUID. players need uuid, mobs need "id"
         targetUUID = entity.getUUID();
-        spellId = spellType.getValue();
+        spellId = spell.getSpellId();
     }
 
     public ClientboundSyncTargetingData(FriendlyByteBuf buf) {
         //targetUuid = buf.readUUID();
         targetUUID = buf.readUUID();
-        spellId = buf.readInt();
+        spellId = buf.readUtf();
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeUUID(targetUUID);
-        buf.writeInt(spellId);
+        buf.writeUtf(spellId);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {

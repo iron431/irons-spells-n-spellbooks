@@ -2,12 +2,12 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -53,28 +53,27 @@ public class SpellBook extends Item implements ISpellbook {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        //Ironsspellbooks.logger.debug("Spellbook.use: level.isClientSide:{}", level.isClientSide);
         ItemStack itemStack = player.getItemInHand(hand);
         var spellBookData = SpellBookData.getSpellBookData(itemStack);
-        AbstractSpell spell = spellBookData.getActiveSpell();
+        SpellData spellData = spellBookData.getActiveSpell();
 
-        if (spell.getSpellType() == SpellType.NONE_SPELL) {
+        if (spellData == SpellData.EMPTY) {
             return InteractionResultHolder.pass(itemStack);
         }
 
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {
                 return InteractionResultHolder.fail(itemStack);
-            } else if (ClientMagicData.getPlayerMana() < spell.getManaCost()
-                    || ClientMagicData.getCooldowns().isOnCooldown(spell.getSpellType())) {
+            } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellData.getLevel(), player)
+                    || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())) {
                 return InteractionResultHolder.pass(itemStack);
             } else {
                 return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
             }
         }
 
-        if (spell.attemptInitiateCast(itemStack, level, player, CastSource.SPELLBOOK, true)) {
-            if (spell.getCastType().holdToCast()) {
+        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, CastSource.SPELLBOOK, true)) {
+            if (spellData.getSpell().getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }
             return InteractionResultHolder.success(itemStack);
@@ -120,12 +119,10 @@ public class SpellBook extends Item implements ISpellbook {
         lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", this.spellSlots).withStyle(ChatFormatting.GRAY));
 
         var player = Minecraft.getInstance().player;
-        if (player != null && SpellBookData.getSpellBookData(itemStack).getActiveSpell().getLegacyID() > 0) {
+        if (player != null && SpellBookData.getSpellBookData(itemStack).getActiveSpell() != SpellData.EMPTY) {
             lines.addAll(TooltipsUtils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK, player));
         }
 
         super.appendHoverText(itemStack, level, lines, flag);
     }
-
-
 }

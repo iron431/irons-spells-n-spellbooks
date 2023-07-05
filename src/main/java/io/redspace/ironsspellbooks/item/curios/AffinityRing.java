@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.item.curios;
 
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;

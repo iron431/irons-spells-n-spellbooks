@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -50,13 +50,16 @@ public class BloodStepSpell extends AbstractSpell {
     }
 
     public BloodStepSpell(int level) {
-        super(SpellType.BLOOD_STEP_SPELL);
-        this.setLevel(level);
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 4;
         this.baseManaCost = 30;
         this.manaCostPerLevel = 10;
         this.castTime = 0;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override

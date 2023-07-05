@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.ice;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedPolarBear;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -43,13 +43,16 @@ public class SummonPolarBearSpell extends AbstractSpell {
             .build();
 
     public SummonPolarBearSpell(int level) {
-        super(SpellType.SUMMON_POLAR_BEAR_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 50;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

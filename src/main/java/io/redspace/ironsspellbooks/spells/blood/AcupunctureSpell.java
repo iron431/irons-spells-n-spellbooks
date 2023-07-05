@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
 import io.redspace.ironsspellbooks.spells.*;
@@ -43,20 +43,21 @@ public class AcupunctureSpell extends AbstractSpell {
     }
 
     public AcupunctureSpell(int level) {
-        super(SpellType.ACUPUNCTURE_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
         this.castTime = 0;
         this.baseManaCost = 25;
-
-
     }
 
     @Override
     public DefaultConfig getDefaultConfig() {
         return defaultConfig;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -76,7 +77,7 @@ public class AcupunctureSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
-        return Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 32, .15f);
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .15f);
     }
 
     @Override

@@ -2,12 +2,13 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -34,16 +35,16 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {
+    public void fillItemCategory(@NotNull CreativeModeTab category, @NotNull NonNullList<ItemStack> items) {
         if (/*category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ||*/ category == CreativeModeTab.TAB_SEARCH) {
-            Arrays.stream(SpellType.values())
-                    .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
-                    .forEach(spellType -> {
-                        int min = category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ? spellType.getMaxLevel() : spellType.getMinLevel();
+            SpellRegistry.REGISTRY.get().getValues().stream()
+                    .filter(AbstractSpell::isEnabled)
+                    .forEach(spell -> {
+                        int min = category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ? spell.getMaxLevel() : spell.getMinLevel();
 
-                        for (int i = min; i <= spellType.getMaxLevel(); i++) {
+                        for (int i = min; i <= spell.getMaxLevel(); i++) {
                             var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                            SpellData.setSpellData(itemstack, spellType, i);
+                            SpellData.setSpellData(itemstack, spell, i);
                             items.add(itemstack);
                         }
                     });
@@ -51,7 +52,6 @@ public class Scroll extends Item implements IScroll {
     }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
-        //irons_spellbooks.LOGGER.debug("removeScrollAfterCast {}", serverPlayer.getName().getString());
         if (!serverPlayer.isCreative()) {
             stack.shrink(1);
         }
@@ -69,7 +69,6 @@ public class Scroll extends Item implements IScroll {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        var spell = SpellData.getSpellData(stack).getSpell();
 
         if (level.isClientSide) {
             if (ClientMagicData.isCasting()) {
@@ -79,7 +78,10 @@ public class Scroll extends Item implements IScroll {
             }
         }
 
-        if (spell.attemptInitiateCast(stack, level, player, CastSource.SCROLL, false)) {
+        var spellData = SpellData.getSpellData(stack);
+        var spell = spellData.getSpell();
+
+        if (spell.attemptInitiateCast(stack, spellData.getLevel(), level, player, CastSource.SCROLL, false)) {
             if (spell.getCastType() == CastType.INSTANT) {
                 removeScrollAfterCast((ServerPlayer) player, stack);
             }

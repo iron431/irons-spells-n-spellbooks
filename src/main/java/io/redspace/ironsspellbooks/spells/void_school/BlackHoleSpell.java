@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.spells.void_school;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -48,13 +48,16 @@ public class BlackHoleSpell extends AbstractSpell {
             .build();
 
     public BlackHoleSpell(int level) {
-        super(SpellType.BLACK_HOLE_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 100;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
         this.castTime = 100;
         this.baseManaCost = 300;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

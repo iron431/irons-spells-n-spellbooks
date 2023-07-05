@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -14,30 +13,23 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
-public class SpellData {
+public class SpellData implements Comparable<SpellData> {
     public static final String ISB_SPELL = "ISB_spell";
     public static final String LEGACY_SPELL_TYPE = "type";
     public static final String SPELL_ID = "id";
     public static final String SPELL_LEVEL = "level";
+    public static final SpellData EMPTY = new SpellData(SpellRegistry.none(), 0);
     private MutableComponent displayName;
-    private AbstractSpell spell;
+    private final AbstractSpell spell;
     private final int spellLevel;
-
-    //TODO: remove this after spell reg
-    private SpellType legacySpellType;
 
     private SpellData() throws Exception {
         throw new Exception("Cannot create empty spell data.");
     }
 
-    private SpellData(AbstractSpell spell, int level) {
+    public SpellData(AbstractSpell spell, int level) {
         this.spell = Objects.requireNonNull(spell);
         this.spellLevel = level;
-        this.legacySpellType = spell.getSpellType();
-    }
-
-    public int getLegacySpellId() {
-        return legacySpellType.getValue();
     }
 
     public static SpellData getSpellData(ItemStack stack) {
@@ -79,30 +71,14 @@ public class SpellData {
         stack.addTagElement(ISB_SPELL, spellTag);
     }
 
-    public static void setSpellData(ItemStack stack, SpellType spellType, int spellLevel) {
-        //TODO: remove this once spell reg is complete
-        IronsSpellbooks.LOGGER.error("DO NOT USE: setSpellData(ItemStack stack, AbstractSpell spell)");
-        var spellTag = new CompoundTag();
-        spellTag.putInt(LEGACY_SPELL_TYPE, spellType.getValue());
-        spellTag.putInt(SPELL_LEVEL, spellLevel);
-        stack.addTagElement(ISB_SPELL, spellTag);
-    }
-
     public static void setSpellData(ItemStack stack, AbstractSpell spell, int spellLevel) {
         setSpellData(stack, spell.getSpellId(), spellLevel);
-    }
-
-    public static void setSpellData(ItemStack stack, AbstractSpell spell) {
-        //TODO: remove this once spell reg is complete
-        IronsSpellbooks.LOGGER.error("DO NOT USE: setSpellData(ItemStack stack, AbstractSpell spell)");
-        setSpellData(stack, spell.getSpellId(), 1);
     }
 
     public AbstractSpell getSpell() {
         if (spell == null) {
             return SpellRegistry.none();
         }
-
         return spell;
     }
 
@@ -112,8 +88,33 @@ public class SpellData {
 
     public Component getDisplayName() {
         if (displayName == null) {
-            displayName = getSpell().getSpellType().getDisplayName().append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));//.append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity",getSpell().getRarity().getDisplayName().getString()));
+            displayName = getSpell().getDisplayName().append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));//.append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity",getSpell().getRarity().getDisplayName().getString()));
         }
         return displayName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj instanceof SpellData other) {
+            return this.spell.equals(other.spell) && this.spellLevel == other.spellLevel;
+        }
+
+        return false;
+    }
+
+    public int hashCode() {
+        return 31 * this.spell.hashCode() + this.spellLevel;
+    }
+
+    public int compareTo(SpellData other) {
+        int i = this.spell.getSpellResource().compareTo(other.spell.getSpellResource());
+        if (i == 0) {
+            i = Integer.compare(this.spellLevel, other.spellLevel);
+        }
+        return i;
     }
 }

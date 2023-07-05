@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.void_school;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
@@ -46,13 +46,16 @@ public class VoidTentaclesSpell extends AbstractSpell {
             .build();
 
     public VoidTentaclesSpell(int level) {
-        super(SpellType.VOID_TENTACLES_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 50;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 2;
         this.castTime = 20;
         this.baseManaCost = 150;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.poison;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.spells.*;
@@ -47,13 +47,16 @@ public class RootSpell extends AbstractSpell {
             .build();
 
     public RootSpell(int level) {
-        super(SpellType.ROOT_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
         this.castTime = 40;
         this.baseManaCost = 45;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

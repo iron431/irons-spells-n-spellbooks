@@ -3,8 +3,9 @@ package io.redspace.ironsspellbooks.loot;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 
@@ -15,35 +16,33 @@ import java.util.function.Predicate;
 
 public class SpellFilter {
     SchoolType schoolType = null;
-    List<SpellType> spells = new ArrayList<>();
+    List<AbstractSpell> spells = new ArrayList<>();
 
     public SpellFilter(SchoolType schoolType) {
         this.schoolType = schoolType;
     }
 
-    public SpellFilter(List<SpellType> spells) {
+    public SpellFilter(List<AbstractSpell> spells) {
         this.spells = spells;
     }
 
     public SpellFilter() {
-
     }
 
     public boolean isFiltered() {
         return schoolType != null || spells.size() > 0;
     }
 
-    public List<SpellType> getApplicableSpells() {
+    public List<AbstractSpell> getApplicableSpells() {
         if (spells.size() > 0)
             return spells;
         else if (schoolType != null)
-            return SpellType.getSpellsFromSchool(schoolType);
+            return SpellRegistry.getSpellsForSchool(schoolType);
         else
-            return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID).toList();
-
+            return SpellRegistry.REGISTRY.get().getValues().stream().filter(spell -> spell.getSchoolType() != SchoolType.VOID).toList();
     }
 
-    public SpellType getRandomSpell(RandomSource random, Predicate<SpellType> filter) {
+    public AbstractSpell getRandomSpell(RandomSource random, Predicate<AbstractSpell> filter) {
         //Will throw a non fatal error if the filter empties the list
         var spells = getApplicableSpells().stream().filter(filter).toList();
         return spells.get(random.nextInt(spells.size()));
@@ -65,12 +64,14 @@ public class SpellFilter {
             };
         } else if (GsonHelper.isArrayNode(json, "spells")) {
             var spellsFromJson = GsonHelper.getAsJsonArray(json, "spells");
-            List<SpellType> applicableSpellList = new ArrayList<>();
+            List<AbstractSpell> applicableSpellList = new ArrayList<>();
             for (JsonElement element : spellsFromJson) {
-                String spell = element.getAsString();
-                for (SpellType spellType : SpellType.values()) {
-                    if (spellType.getId().equalsIgnoreCase(spell))
-                        applicableSpellList.add(spellType);
+                String spellId = element.getAsString();
+
+                var spell = SpellRegistry.getSpell(spellId);
+
+                if (spell != SpellRegistry.none()) {
+                    applicableSpellList.add(spell);
                 }
             }
             return new SpellFilter(applicableSpellList);

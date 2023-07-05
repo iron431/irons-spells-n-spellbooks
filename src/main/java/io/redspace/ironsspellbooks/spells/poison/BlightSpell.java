@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.spells.poison;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.effect.BlightEffect;
@@ -47,14 +47,17 @@ public class BlightSpell extends AbstractSpell {
             .build();
 
     public BlightSpell(int level) {
-        super(SpellType.BLIGHT_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
         this.castTime = 50;
         this.baseManaCost = 10;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
     }
 
     @Override

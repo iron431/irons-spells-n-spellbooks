@@ -5,9 +5,9 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -21,28 +21,31 @@ public class CreateDebugWizardCommand {
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("createDebugWizard").requires((commandSourceStack) -> {
             return commandSourceStack.hasPermission(2);
-        }).then(Commands.argument("spellType", EnumArgument.enumArgument(SpellType.class))
+        }).then(Commands.argument("spell", SpellArgument.spellArgument())
                 .then(Commands.argument("spellLevel", IntegerArgumentType.integer(1))
                         .then(Commands.argument("targetsPlayer", BoolArgumentType.bool())
                                 .then(Commands.argument("cancelAfterTicks", IntegerArgumentType.integer(0))
                                         .executes((ctx) -> {
                                             return createDebugWizard(
                                                     ctx.getSource(),
-                                                    ctx.getArgument("spellType", SpellType.class),
+                                                    ctx.getArgument("spell", String.class),
                                                     IntegerArgumentType.getInteger(ctx, "spellLevel"),
                                                     BoolArgumentType.getBool(ctx, "targetsPlayer"),
                                                     IntegerArgumentType.getInteger(ctx, "cancelAfterTicks"));
                                         }))))));
     }
 
-    private static int createDebugWizard(CommandSourceStack source, SpellType spellType, int spellLevel, boolean targetsPlayer, int cancelAfterTicks) throws CommandSyntaxException {
-        if (spellLevel > spellType.getMaxLevel()) {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spellType, spellType.getMaxLevel())).create();
+    private static int createDebugWizard(CommandSourceStack source, String spellId, int spellLevel, boolean targetsPlayer, int cancelAfterTicks) throws CommandSyntaxException {
+        var spell = SpellRegistry.getSpell(spellId);
+
+
+        if (spellLevel > spell.getMaxLevel()) {
+            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spell.getSpellName(), spell.getMaxLevel())).create();
         }
 
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
-            var debugWizard = new DebugWizard(EntityRegistry.DEBUG_WIZARD.get(), serverPlayer.level, spellType, spellLevel, targetsPlayer, cancelAfterTicks);
+            var debugWizard = new DebugWizard(EntityRegistry.DEBUG_WIZARD.get(), serverPlayer.level, spell, spellLevel, targetsPlayer, cancelAfterTicks);
             debugWizard.setPos(serverPlayer.position());
             if (serverPlayer.level.addFreshEntity(debugWizard)) {
                 return 1;

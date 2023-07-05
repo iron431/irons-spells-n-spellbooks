@@ -1,9 +1,10 @@
 package io.redspace.ironsspellbooks.capabilities.spellbook;
 
+import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -21,16 +22,15 @@ public class SpellBookData {
     public static final String SPELL_SLOTS = "spellSlots";
     public static final String ACTIVE_SPELL_INDEX = "activeSpellIndex";
     public static final String SPELLS = "spells";
-    public static final String ID = "id";
+    public static final String LEGACY_ID = "id";
+    public static final String ID = "sid";
     public static final String LEVEL = "level";
     public static final String SLOT = "slot";
 
-    private AbstractSpell[] transcribedSpells;
+    private SpellData[] transcribedSpells;
     private int activeSpellIndex = -1;
     private int spellSlots;
     private int spellCount = 0;
-    private boolean dirty = true;
-    private List<Component> hoverText;
 
     public SpellBookData(CompoundTag tag) {
         loadFromNBT(tag);
@@ -38,26 +38,21 @@ public class SpellBookData {
 
     public SpellBookData(int spellSlots) {
         this.spellSlots = spellSlots;
-        this.transcribedSpells = new AbstractSpell[this.spellSlots];
+        this.transcribedSpells = new SpellData[this.spellSlots];
     }
 
-    public AbstractSpell getActiveSpell() {
+    public SpellData getActiveSpell() {
         if (activeSpellIndex < 0) {
-            return AbstractSpell.getSpell(SpellType.NONE_SPELL, 0);
+            return SpellData.EMPTY;
         }
 
-        AbstractSpell spell = transcribedSpells[activeSpellIndex];
+        var spellData = transcribedSpells[activeSpellIndex];
 
-        if (spell == null) {
-            return AbstractSpell.getSpell(SpellType.NONE_SPELL, 0);
+        if (spellData == null) {
+            return SpellData.EMPTY;
         }
 
         return transcribedSpells[activeSpellIndex];
-    }
-
-    public boolean setActiveSpellIndex(AbstractSpell spell, ItemStack stack) {
-        var index = ArrayUtils.indexOf(transcribedSpells, spell);
-        return setActiveSpellIndex(index, stack);
     }
 
     public boolean setActiveSpellIndex(int index, ItemStack stack) {
@@ -69,17 +64,15 @@ public class SpellBookData {
         return false;
     }
 
-    public AbstractSpell[] getInscribedSpells() {
-        var result = new AbstractSpell[this.spellSlots];
+    public SpellData[] getInscribedSpells() {
+        var result = new SpellData[this.spellSlots];
         System.arraycopy(transcribedSpells, 0, result, 0, transcribedSpells.length);
         return result;
     }
 
-
-    public List<AbstractSpell> getActiveInscribedSpells() {
+    public List<SpellData> getActiveInscribedSpells() {
         return Arrays.stream(this.transcribedSpells).filter(Objects::nonNull).toList();
     }
-
 
     private void handleDirty(ItemStack stack) {
         if (stack != null) {
@@ -100,20 +93,21 @@ public class SpellBookData {
     }
 
     @Nullable
-    public AbstractSpell getSpell(int index) {
+    public SpellData getSpell(int index) {
         if (index >= 0 && index < transcribedSpells.length)
             return transcribedSpells[index];
         else
             return null;
     }
 
-    public boolean addSpell(AbstractSpell spell, int index, ItemStack stack) {
+    public boolean addSpell(AbstractSpell spell, int level, int index, ItemStack stack) {
         if (index > -1 && index < transcribedSpells.length &&
                 transcribedSpells[index] == null &&
-                Arrays.stream(transcribedSpells).noneMatch(s -> s != null && s.getSpellType() == spell.getSpellType())) {
-            transcribedSpells[index] = spell;
+                Arrays.stream(transcribedSpells).noneMatch(s -> s != null && s.getSpell().equals(spell))) {
+            transcribedSpells[index] = new SpellData(spell, level);
             spellCount++;
             if (spellCount == 1) {
+                //Stack is intentionally null to avoid multiple calls to handleDirty
                 setActiveSpellIndex(index, null);
             }
             handleDirty(stack);
@@ -122,38 +116,16 @@ public class SpellBookData {
         return false;
     }
 
-    public boolean addSpell(AbstractSpell spell, ItemStack stack) {
+    public boolean addSpell(AbstractSpell spell, int level, ItemStack stack) {
         int index = getNextSpellIndex();
         if (index > -1) {
-            return addSpell(spell, index, stack);
+            return addSpell(spell, level, index, stack);
         }
         return false;
     }
 
     private int getNextSpellIndex() {
         return ArrayUtils.indexOf(this.transcribedSpells, null);
-    }
-
-    public boolean replaceSpell(AbstractSpell oldSpell, AbstractSpell newSpell, ItemStack stack) {
-        if (oldSpell != null && newSpell != null) {
-            int index = ArrayUtils.indexOf(transcribedSpells, oldSpell);
-            if (index > -1 && removeSpell(index, null)) {
-                return addSpell(newSpell, index, stack);
-            }
-        }
-
-        return false;
-    }
-
-    public boolean replaceSpell(int index, AbstractSpell newSpell, ItemStack stack) {
-        if (index > -1 && index < transcribedSpells.length) {
-            return replaceSpell(transcribedSpells[index], newSpell, stack);
-        }
-        return false;
-    }
-
-    public boolean removeSpell(AbstractSpell spell, ItemStack stack) {
-        return removeSpell(ArrayUtils.indexOf(transcribedSpells, spell), stack);
     }
 
     public boolean removeSpell(int index, ItemStack stack) {
@@ -186,11 +158,11 @@ public class SpellBookData {
 
         ListTag listTagSpells = new ListTag();
         for (int i = 0; i < transcribedSpells.length; i++) {
-            var spell = transcribedSpells[i];
-            if (spell != null) {
+            var spellData = transcribedSpells[i];
+            if (spellData != null) {
                 CompoundTag ct = new CompoundTag();
-                ct.putInt(ID, spell.getLegacyID());
-                ct.putInt(LEVEL, spell.getLevel(null));
+                ct.putString(ID, spellData.getSpell().getSpellId());
+                ct.putInt(LEVEL, spellData.getLevel());
                 ct.putInt(SLOT, i);
                 listTagSpells.add(ct);
             }
@@ -202,7 +174,7 @@ public class SpellBookData {
 
     public void loadFromNBT(CompoundTag compound) {
         this.spellSlots = compound.getInt(SPELL_SLOTS);
-        this.transcribedSpells = new AbstractSpell[spellSlots];
+        this.transcribedSpells = new SpellData[spellSlots];
         this.activeSpellIndex = compound.getInt(ACTIVE_SPELL_INDEX);
 
         ListTag listTagSpells = (ListTag) compound.get(SPELLS);
@@ -210,18 +182,17 @@ public class SpellBookData {
         if (listTagSpells != null) {
             listTagSpells.forEach(tag -> {
                 CompoundTag t = (CompoundTag) tag;
-                int id = t.getInt(ID);
+                String id = t.getString(ID);
                 int level = t.getInt(LEVEL);
                 int index = t.getInt(SLOT);
-                AbstractSpell s = AbstractSpell.getSpell(id, level);
-                transcribedSpells[index] = s;
+                transcribedSpells[index] = new SpellData(SpellRegistry.getSpell(id), level);
                 spellCount++;
             });
         }
     }
 
     public static SpellBookData getSpellBookData(ItemStack stack) {
-        if(stack == null){
+        if (stack == null) {
             return new SpellBookData(0);
         }
 
@@ -233,7 +204,7 @@ public class SpellBookData {
             var spellBookData = new SpellBookData(spellBook.getSpellSlots());
 
             if (spellBook instanceof UniqueSpellBook uniqueSpellBook) {
-                Arrays.stream(uniqueSpellBook.getSpells()).forEach(spell -> spellBookData.addSpell(spell, null));
+                Arrays.stream(uniqueSpellBook.getSpells()).forEach(sd -> spellBookData.addSpell(sd.getSpell(), sd.getLevel(), null));
             }
 
             setSpellBookData(stack, spellBookData);

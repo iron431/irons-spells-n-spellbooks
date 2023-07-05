@@ -7,11 +7,7 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
-import io.redspace.ironsspellbooks.api.spells.ICastData;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
-import io.redspace.ironsspellbooks.api.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
@@ -156,7 +152,7 @@ public class ClientSpellCastHelper {
                 if (armsFlag || itemsFlag) {
                     castingAnimationPlayer.setFirstPersonMode(/*resourceLocation.getPath().equals("charge_arrow") ? FirstPersonMode.VANILLA : */FirstPersonMode.THIRD_PERSON_MODEL);
                     castingAnimationPlayer.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
-                }else{
+                } else {
                     castingAnimationPlayer.setFirstPersonMode(FirstPersonMode.DISABLED);
                 }
 
@@ -197,23 +193,21 @@ public class ClientSpellCastHelper {
         }
     }
 
-    public static void handleClientBoundOnCastStarted(UUID castingEntityId, SpellType spellType) {
+    public static void handleClientBoundOnCastStarted(UUID castingEntityId, String spellId) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
-        var spell = AbstractSpell.getSpell(spellType, 1);
+        var spell = SpellRegistry.getSpell(spellId);
         //IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
-
         spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
         spell.onClientPreCast(player.level, player, player.getUsedItemHand(), null);
-
     }
 
-    public static void handleClientBoundOnCastFinished(UUID castingEntityId, SpellType spellType, boolean cancelled) {
+    public static void handleClientBoundOnCastFinished(UUID castingEntityId, String spellId, boolean cancelled) {
         //Ironsspellbooks.logger.debug("ClientSpellCastHelper.handleClientBoundOnCastFinished.1 -> ClientMagicData.resetClientCastState: {}", castingEntityId);
         ClientMagicData.resetClientCastState(castingEntityId);
-
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
-        AbstractSpell.getSpell(spellType, 1)
-                .getCastFinishAnimation()
+
+        var spell = SpellRegistry.getSpell(spellId);
+        spell.getCastFinishAnimation()
                 .getForPlayer()
                 .ifPresent((resourceLocation -> {
                     if (!cancelled) {
@@ -221,9 +215,8 @@ public class ClientSpellCastHelper {
                     }
                 }));
 
-
         if (ClientInputEvents.isUseKeyDown) {
-            if (spellType.getCastType().holdToCast()) {
+            if (spell.getCastType().holdToCast()) {
                 ClientSpellCastHelper.setSuppressRightClicks(true);
             }
             ClientInputEvents.hasReleasedSinceCasting = false;
