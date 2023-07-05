@@ -38,9 +38,9 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getTickDamage(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(0), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getTickDamage(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(spellLevel), 1)));
     }
 
     public RayOfSiphoningSpell(int level) {
@@ -77,30 +77,30 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         var hitResult = Utils.raycastForEntity(level, entity, getRange(0), true, .15f);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
-                if (DamageSources.applyDamage(target, getTickDamage(entity), getSpellType().getDamageSource(entity), SchoolType.BLOOD)) {
-                    entity.heal(getTickDamage(entity));
+                if (DamageSources.applyDamage(target, getTickDamage(spellLevel, entity), getDamageSource(entity), SchoolType.BLOOD)) {
+                    entity.heal(getTickDamage(spellLevel, entity));
                     Messages.sendToPlayersTrackingEntity(new ClientboundBloodSiphonParticles(target.position().add(0, target.getBbHeight() / 2, 0), entity.position().add(0, entity.getBbHeight() / 2, 0)), entity, true);
                 }
             }
         }
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     public static float getRange(int level) {
         return 12;
     }
 
-    private float getTickDamage(LivingEntity caster) {
-        return getSpellPower(caster) * .25f;
+    private float getTickDamage(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster) * .25f;
     }
 
     @Override
-    public boolean shouldAIStopCasting(Mob mob, LivingEntity target) {
-        return mob.distanceToSqr(target) > (getRange(getLevel(mob)) * getRange(getLevel(mob))) * 1.2;
+    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
+        return mob.distanceToSqr(target) > (getRange(getLevel(spellLevel, mob)) * getRange(getLevel(spellLevel, mob))) * 1.2;
     }
 }

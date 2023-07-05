@@ -33,10 +33,9 @@ public class WitherSkullSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)));
     }
-
 
     public WitherSkullSpell(int level) {
         this.manaCostPerLevel = 2;
@@ -72,17 +71,17 @@ public class WitherSkullSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
-        float speed = (8 + getLevel(entity)) * .01f;
-        float damage = getDamage(entity);
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        float speed = (8 + getLevel(spellLevel, entity)) * .01f;
+        float damage = getDamage(spellLevel, entity);
         ExtendedWitherSkull skull = new ExtendedWitherSkull(entity, level, speed, damage);
         Vec3 spawn = entity.getEyePosition().add(entity.getForward());
         skull.moveTo(spawn.x, spawn.y - skull.getBoundingBox().getYsize() / 2, spawn.z, entity.getYRot() + 180, entity.getXRot());
         level.addFreshEntity(skull);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    private float getDamage(LivingEntity entity) {
-        return this.getSpellPower(entity) * .5f;
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return this.getSpellPower(spellLevel, entity) * .5f;
     }
 }

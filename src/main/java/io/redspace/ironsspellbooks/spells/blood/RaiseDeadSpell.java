@@ -86,12 +86,12 @@ public class RaiseDeadSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
-        int level = getLevel(entity);
+        int level = getLevel(spellLevel, entity);
         for (int i = 0; i < level; i++) {
             boolean isSkeleton = world.random.nextDouble() < .3;
-            var equipment = getEquipment(getSpellPower(entity), world.getRandom());
+            var equipment = getEquipment(getSpellPower(spellLevel, entity), world.getRandom());
 
             Monster undead = isSkeleton ? new SummonedSkeleton(world, entity, true) : new SummonedZombie(world, entity, true);
             undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
@@ -116,7 +116,7 @@ public class RaiseDeadSpell extends AbstractSpell {
             effectAmplifier += entity.getEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()).getAmplifier() + 1;
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, effectAmplifier, false, false, true));
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     private void equip(Mob mob, ItemStack[] equipment) {
