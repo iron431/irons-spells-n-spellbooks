@@ -181,7 +181,7 @@ public class SpellWheelOverlay extends GuiComponent {
 
             var font = gui.getFont();
             var title = currentSpell.getSpell().getDisplayName().withStyle(Style.EMPTY.withUnderlined(true));
-            var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell.getSpell(), player)).withStyle(selectedSpell.getSpell().getRarity(selectedSpell.getLevel()).getDisplayName().getStyle());
+            var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player)).withStyle(selectedSpell.getSpell().getRarity(selectedSpell.getLevel()).getDisplayName().getStyle());
             var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getSpell().getManaCost(selectedSpell.getLevel(), null)).withStyle(ChatFormatting.AQUA);
 //            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));
             int height = 2 * font.lineHeight + 5;
