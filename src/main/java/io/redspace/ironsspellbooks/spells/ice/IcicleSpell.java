@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.ice;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -19,13 +20,9 @@ import java.util.Optional;
 public class IcicleSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "icicle");
 
-    public IcicleSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -35,14 +32,17 @@ public class IcicleSpell extends AbstractSpell {
             .setCooldownSeconds(1)
             .build();
 
-    public IcicleSpell(int level) {
-        super(SpellType.ICICLE_SPELL);
-        this.setLevel(level);
+    public IcicleSpell() {
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 10;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -66,17 +66,18 @@ public class IcicleSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         IcicleProjectile icicle = new IcicleProjectile(world, entity);
         icicle.setPos(entity.position().add(0, entity.getEyeHeight() - icicle.getBoundingBox().getYsize() * .5f, 0));
         icicle.shoot(entity.getLookAngle());
-        icicle.setDamage(getDamage(entity));
+        icicle.setDamage(getDamage(spellLevel, entity));
         icicle.setNoGravity(true);
         world.addFreshEntity(icicle);
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
-    private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity) * .5f;
+
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return getSpellPower(spellLevel, entity) * .5f;
     }
 
 }

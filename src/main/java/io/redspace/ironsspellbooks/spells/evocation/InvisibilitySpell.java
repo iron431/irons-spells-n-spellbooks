@@ -25,13 +25,9 @@ import java.util.Optional;
 public class InvisibilitySpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "invisibility");
 
-    public InvisibilitySpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster) * 20, 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(spellLevel, caster) * 20, 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -41,13 +37,12 @@ public class InvisibilitySpell extends AbstractSpell {
             .setCooldownSeconds(45)
             .build();
 
-    public InvisibilitySpell(int level) {
+    public InvisibilitySpell() {
         this.manaCostPerLevel = 8;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 5;
         this.castTime = 40;
         this.baseManaCost = 35;
-
     }
 
     @Override
@@ -76,9 +71,9 @@ public class InvisibilitySpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
 
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), getDuration(entity), 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), getDuration(spellLevel, entity), 0, false, false, true));
 
         var targetingCondition = TargetingConditions.forCombat().selector(e -> {
             //IronsSpellbooks.LOGGER.debug("InvisibilitySpell TargetingConditions:{}", e);
@@ -94,11 +89,11 @@ public class InvisibilitySpell extends AbstractSpell {
                     entityTargetingCaster.targetSelector.getAvailableGoals().forEach(WrappedGoal::stop);
                 });
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
-    private int getDuration(LivingEntity source) {
-        return (int) (getSpellPower(source) * 20);
+    private int getDuration(int spellLevel, LivingEntity source) {
+        return (int) (getSpellPower(spellLevel, source) * 20);
     }
 
 }

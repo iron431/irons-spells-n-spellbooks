@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.lightning;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLightningBolt;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -23,13 +24,9 @@ import java.util.Optional;
 public class LightningBoltSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "lightning_bolt");
 
-    public LightningBoltSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -39,15 +36,17 @@ public class LightningBoltSpell extends AbstractSpell {
             .setCooldownSeconds(25)
             .build();
 
-    public LightningBoltSpell(int level) {
-        super(SpellType.LIGHTNING_BOLT_SPELL);
-        this.setLevel(level);
+    public LightningBoltSpell() {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 2;
         this.castTime = 0;
         this.baseManaCost = 75;
+    }
 
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -71,14 +70,14 @@ public class LightningBoltSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 pos = Utils.raycastForEntity(level, entity, 100, true).getLocation();
-        LightningBolt lightningBolt = new ExtendedLightningBolt(level, entity, getSpellPower(entity));
+        LightningBolt lightningBolt = new ExtendedLightningBolt(level, entity, getSpellPower(spellLevel, entity));
         //lightningBolt.setDamage(getSpellPower(entity));
         lightningBolt.setPos(pos);
         if (entity instanceof ServerPlayer serverPlayer)
             lightningBolt.setCause(serverPlayer);
         level.addFreshEntity(lightningBolt);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 }

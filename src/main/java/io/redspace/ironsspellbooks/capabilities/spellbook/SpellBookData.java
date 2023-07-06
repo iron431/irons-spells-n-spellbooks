@@ -97,7 +97,7 @@ public class SpellBookData {
         if (index >= 0 && index < transcribedSpells.length)
             return transcribedSpells[index];
         else
-            return null;
+            return SpellData.EMPTY;
     }
 
     public boolean addSpell(AbstractSpell spell, int level, int index, ItemStack stack) {

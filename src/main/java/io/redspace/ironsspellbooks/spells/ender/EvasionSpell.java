@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.ender;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import net.minecraft.network.chat.Component;
@@ -19,13 +20,9 @@ import java.util.Optional;
 public class EvasionSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "evasion");
 
-    public EvasionSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(caster)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(spellLevel, caster)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -35,9 +32,7 @@ public class EvasionSpell extends AbstractSpell {
             .setCooldownSeconds(180)
             .build();
 
-    public EvasionSpell(int level) {
-        super(SpellType.EVASION_SPELL);
-        this.setLevel(level);
+    public EvasionSpell() {
         this.manaCostPerLevel = 20;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
@@ -48,6 +43,11 @@ public class EvasionSpell extends AbstractSpell {
     @Override
     public DefaultConfig getDefaultConfig() {
         return defaultConfig;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -66,9 +66,9 @@ public class EvasionSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), 60 * 20, (int) getSpellPower(entity), false, false, true));
-        super.onCast(world, entity, playerMagicData);
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION.get(), 60 * 20, (int) getSpellPower(spellLevel, entity), false, false, true));
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
 

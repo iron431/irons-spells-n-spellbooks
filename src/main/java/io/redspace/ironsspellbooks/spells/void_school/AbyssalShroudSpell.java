@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.void_school;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -23,13 +24,9 @@ import java.util.Optional;
 public class AbyssalShroudSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "abyssal_shroud");
 
-    public AbyssalShroudSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster) * 20, 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(spellLevel, caster) * 20, 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -39,14 +36,17 @@ public class AbyssalShroudSpell extends AbstractSpell {
             .setCooldownSeconds(300)
             .build();
 
-    public AbyssalShroudSpell(int level) {
-        super(SpellType.ABYSSAL_SHROUD_SPELL);
-        this.setLevel(level);
+    public AbyssalShroudSpell() {
         this.manaCostPerLevel = 20;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 6;
         this.castTime = 0;
         this.baseManaCost = 350;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -70,9 +70,9 @@ public class AbyssalShroudSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ABYSSAL_SHROUD.get(), (int) getSpellPower(entity) * 20, 0, false, false, true));
-        super.onCast(world, entity, playerMagicData);
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ABYSSAL_SHROUD.get(), (int) getSpellPower(spellLevel, entity) * 20, 0, false, false, true));
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     @Override

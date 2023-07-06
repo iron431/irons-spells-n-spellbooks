@@ -26,13 +26,10 @@ import java.util.Optional;
 public class BlessingOfLifeSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blessing_of_life");
 
-    public BlessingOfLifeSpell() {
-        this(1);
-    }
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(caster), 1))
+                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1))
         );
     }
 
@@ -43,7 +40,7 @@ public class BlessingOfLifeSpell extends AbstractSpell {
             .setCooldownSeconds(10)
             .build();
 
-    public BlessingOfLifeSpell(int level) {
+    public BlessingOfLifeSpell() {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
@@ -79,20 +76,20 @@ public class BlessingOfLifeSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
-        return Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 64, .35f);
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 64, .35f);
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData healTargetingData) {
             var targetEntity = healTargetingData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
-                targetEntity.heal(getSpellPower(entity));
+                targetEntity.heal(getSpellPower(spellLevel, entity));
                 Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(targetEntity.position()), targetEntity, true);
             }
         }
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     @Nullable

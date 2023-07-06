@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -16,8 +17,8 @@ import java.util.UUID;
 public class BloodStaffItem extends UniqueSpellBook {
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
-    public BloodStaffItem(AbstractSpell[] spells) {
-        super(SpellRarity.COMMON, spells);
+    public BloodStaffItem(SpellData[] spellData) {
+        super(SpellRarity.COMMON, spellData);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 7, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -3, AttributeModifier.Operation.ADDITION));

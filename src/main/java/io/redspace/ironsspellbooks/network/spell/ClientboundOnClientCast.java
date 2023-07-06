@@ -1,10 +1,7 @@
 package io.redspace.ironsspellbooks.network.spell;
 
-import io.redspace.ironsspellbooks.api.spells.ICastData;
-import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
@@ -13,12 +10,12 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class ClientboundOnClientCast {
-    int spellId;
+    String spellId;
     int level;
     CastSource castSource;
     ICastData castData;
 
-    public ClientboundOnClientCast(int spellId, int level, CastSource castSource, ICastData castData) {
+    public ClientboundOnClientCast(String spellId, int level, CastSource castSource, ICastData castData) {
         this.spellId = spellId;
         this.level = level;
         this.castSource = castSource;
@@ -26,27 +23,24 @@ public class ClientboundOnClientCast {
     }
 
     public ClientboundOnClientCast(FriendlyByteBuf buf) {
-        spellId = buf.readInt();
+        spellId = buf.readUtf();
         level = buf.readInt();
         castSource = buf.readEnum(CastSource.class);
         if (buf.readBoolean()) {
- //Ironsspellbooks.logger.debug("ClientboundOnClientCast: spellId:{} level:{}", spellId, level);
-            var tmp = AbstractSpell.getSpell(spellId, level).getEmptyCastData();
+            var tmp = SpellRegistry.getSpell(spellId).getEmptyCastData();
             tmp.readFromStream(buf);
             castData = tmp;
         }
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeInt(spellId);
+        buf.writeUtf(spellId);
         buf.writeInt(level);
         buf.writeEnum(castSource);
         if (castData instanceof ICastDataSerializable castDataSerializable) {
- //Ironsspellbooks.logger.debug("ClientboundOnClientCast.toBytes.1");
             buf.writeBoolean(true);
             castDataSerializable.writeToStream(buf);
         } else {
- //Ironsspellbooks.logger.debug("ClientboundOnClientCast.toBytes.2");
             buf.writeBoolean(false);
         }
     }

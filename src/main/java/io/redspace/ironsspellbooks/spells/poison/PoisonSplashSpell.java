@@ -26,15 +26,11 @@ import java.util.Optional;
 public class PoisonSplashSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "poison_splash");
 
-    public PoisonSplashSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(caster), 1))
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
         );
     }
 
@@ -45,7 +41,7 @@ public class PoisonSplashSpell extends AbstractSpell {
             .setCooldownSeconds(20)
             .build();
 
-    public PoisonSplashSpell(int level) {
+    public PoisonSplashSpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
@@ -80,18 +76,18 @@ public class PoisonSplashSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
-        Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 32, .35f, false);
+        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f, false);
         return true;
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 spawn = null;
 
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
             spawn = castTargetingData.getTargetPosition((ServerLevel) level);
         }
-        if(spawn == null){
+        if (spawn == null) {
             HitResult raycast = Utils.raycastForEntity(level, entity, 32, true);
             if (raycast.getType() == HitResult.Type.ENTITY) {
                 spawn = ((EntityHitResult) raycast).getEntity().position();
@@ -103,18 +99,18 @@ public class PoisonSplashSpell extends AbstractSpell {
         PoisonSplash poisonSplash = new PoisonSplash(level);
         poisonSplash.setOwner(entity);
         poisonSplash.moveTo(spawn);
-        poisonSplash.setDamage(getDamage(entity));
-        poisonSplash.setEffectDuration(getDuration(entity));
+        poisonSplash.setDamage(getDamage(spellLevel, entity));
+        poisonSplash.setEffectDuration(getDuration(spellLevel, entity));
         level.addFreshEntity(poisonSplash);
 
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    private float getDamage(LivingEntity entity) {
-        return this.getSpellPower(entity);
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return this.getSpellPower(spellLevel, entity);
     }
 
-    private int getDuration(LivingEntity entity) {
-        return 100 + getLevel(entity) * 40;
+    private int getDuration(int spellLevel, LivingEntity entity) {
+        return 100 + getLevel(spellLevel, entity) * 40;
     }
 }

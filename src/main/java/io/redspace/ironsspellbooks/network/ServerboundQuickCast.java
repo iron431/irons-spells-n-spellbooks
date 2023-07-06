@@ -38,13 +38,13 @@ public class ServerboundQuickCast {
             var itemStack = serverPlayer.getItemInHand(hand);
             SpellBookData sbd = SpellBookData.getSpellBookData(itemStack);
             if (sbd.getSpellSlots() > 0) {
-                var spell = sbd.getSpell(slot);
-                if (spell != null) {
+                var spellData = sbd.getSpell(slot);
+                if (spellData != null) {
                     var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-                    if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() != spell.getLegacyID()) {
+                    if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
                         ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                     }
-                    spell.attemptInitiateCast(itemStack, serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
+                    spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
                 }
             }
         });

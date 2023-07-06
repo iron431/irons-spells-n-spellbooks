@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.spells.ender;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundTeleportParticles;
@@ -29,10 +30,6 @@ import java.util.Optional;
 public class TeleportSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "teleport");
 
-    public TeleportSpell() {
-        this(1);
-    }
-
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchool(SchoolType.ENDER)
@@ -40,20 +37,22 @@ public class TeleportSpell extends AbstractSpell {
             .setCooldownSeconds(3)
             .build();
 
-    public TeleportSpell(int level) {
-        super(SpellType.TELEPORT_SPELL);
-        this.setLevel(level);
+    public TeleportSpell() {
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 10;
         this.baseManaCost = 20;
         this.manaCostPerLevel = 2;
         this.castTime = 0;
-
     }
 
     @Override
     public DefaultConfig getDefaultConfig() {
         return defaultConfig;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -72,7 +71,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("TeleportSpell.onCast isClient:{}, entity:{}, pmd:{}", level.isClientSide, entity, playerMagicData);
         }
@@ -87,7 +86,7 @@ public class TeleportSpell extends AbstractSpell {
         }
 
         if (dest == null) {
-            dest = findTeleportLocation(level, entity, getDistance(entity));
+            dest = findTeleportLocation(level, entity, getDistance(spellLevel, entity));
         }
 
         Messages.sendToPlayersTrackingEntity(new ClientboundTeleportParticles(entity.position(), dest), entity, true);
@@ -102,7 +101,7 @@ public class TeleportSpell extends AbstractSpell {
 //        level.playSound(null, dest.x, dest.y, dest.z, getCastFinishSound().get(), SoundSource.NEUTRAL, 1f, 1f);
         entity.playSound(getCastFinishSound().get(), 2.0f, 1.0f);
 
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     public static Vec3 findTeleportLocation(Level level, LivingEntity entity, float maxDistance) {
@@ -145,8 +144,8 @@ public class TeleportSpell extends AbstractSpell {
         }
     }
 
-    private float getDistance(LivingEntity sourceEntity) {
-        return getSpellPower(sourceEntity);
+    private float getDistance(int spellLevel, LivingEntity sourceEntity) {
+        return getSpellPower(spellLevel, sourceEntity);
     }
 
     public static class TeleportData implements ICastData {
@@ -171,8 +170,8 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(spellLevel, caster), 1)));
     }
 
     @Override

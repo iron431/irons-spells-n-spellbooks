@@ -24,11 +24,11 @@ public class MagmaBombSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "magma_bomb");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(caster) / 5f, 1)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(caster), 1))
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(spellLevel, caster) / 5f, 1)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1))
         );
     }
 
@@ -40,16 +40,11 @@ public class MagmaBombSpell extends AbstractSpell {
             .build();
 
     public MagmaBombSpell() {
-        this(1);
-    }
-
-    public MagmaBombSpell(int level) {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 30;
-
     }
 
     @Override
@@ -78,23 +73,23 @@ public class MagmaBombSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         FireBomb orb = new FireBomb(level, entity);
         orb.setPos(entity.position().add(0, entity.getEyeHeight() - orb.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
         orb.shoot(entity.getLookAngle());
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
-        orb.setExplosionRadius(getRadius(entity));
-        orb.setDamage(getDamage(entity));
+        orb.setExplosionRadius(getRadius(spellLevel, entity));
+        orb.setDamage(getDamage(spellLevel, entity));
         level.addFreshEntity(orb);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    public float getRadius(LivingEntity caster) {
+    public float getRadius(int spellLevel, LivingEntity caster) {
         return 5;
     }
 
-    public float getDamage(LivingEntity caster) {
-        return getSpellPower(caster);
+    public float getDamage(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster);
     }
 
     @Override

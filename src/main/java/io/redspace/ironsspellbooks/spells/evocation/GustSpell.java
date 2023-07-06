@@ -26,10 +26,10 @@ public class GustSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "gust");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.strength", Utils.stringTruncation(getStrength(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(AirborneEffect.getDamageFromLevel(getLevel(caster)), 1))
+                Component.translatable("ui.irons_spellbooks.strength", Utils.stringTruncation(getStrength(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(AirborneEffect.getDamageFromLevel(getLevel(spellLevel, caster)), 1))
         );
     }
 
@@ -41,16 +41,11 @@ public class GustSpell extends AbstractSpell {
             .build();
 
     public GustSpell() {
-        this(1);
-    }
-
-    public GustSpell(int level) {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 1;
         this.castTime = 15;
         this.baseManaCost = 30;
-
     }
 
     @Override
@@ -79,32 +74,32 @@ public class GustSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
-        float range = getRange(entity);
-        float strength = getStrength(entity);
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        float range = getRange(spellLevel, entity);
+        float strength = getStrength(spellLevel, entity);
 
         GustCollider gust = new GustCollider(level, entity);
         gust.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0).add(entity.getForward().normalize().scale(2f)));
         gust.range = range;
         gust.strength = strength;
-        gust.amplifier = this.getLevel(entity) - 1;
+        gust.amplifier = this.getLevel(spellLevel, entity) - 1;
         level.addFreshEntity(gust);
         gust.setDealDamageActive();
         gust.tick();
 
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    public float getRange(LivingEntity caster) {
+    public float getRange(int spellLevel, LivingEntity caster) {
         return 8;
     }
 
-    public float getStrength(LivingEntity caster) {
-        return getSpellPower(caster) * .2f;
+    public float getStrength(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster) * .2f;
     }
 
-    public float getDamage(LivingEntity caster) {
-        return getSpellPower(caster);
+    public float getDamage(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster);
     }
 
     @Override
@@ -118,7 +113,7 @@ public class GustSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(Mob mob, LivingEntity target) {
-        return target.distanceToSqr(mob) > getRange(mob) * getRange(mob) * 1.25;
+    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
+        return target.distanceToSqr(mob) > getRange(spellLevel, mob) * getRange(spellLevel, mob) * 1.25;
     }
 }

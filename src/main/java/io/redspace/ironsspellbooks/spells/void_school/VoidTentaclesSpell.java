@@ -26,15 +26,12 @@ import java.util.Optional;
 
 public class VoidTentaclesSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "void_tentacles");
-    public VoidTentaclesSpell() {
-        this(1);
-    }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRings(caster) * 1.3f, 1))
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRings(spellLevel, caster) * 1.3f, 1))
         );
     }
 
@@ -45,7 +42,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
             .setCooldownSeconds(30)
             .build();
 
-    public VoidTentaclesSpell(int level) {
+    public VoidTentaclesSpell() {
         this.manaCostPerLevel = 50;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 2;
@@ -79,8 +76,8 @@ public class VoidTentaclesSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
-        int rings = getRings(entity);
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        int rings = getRings(spellLevel, entity);
         int count = 2;
         Vec3 center = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 48).getLocation();
         level.playSound(entity instanceof Player player ? player : null, center.x, center.y, center.z, SoundRegistry.VOID_TENTACLES_FINISH.get(), SoundSource.AMBIENT, 1, 1);
@@ -93,7 +90,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
 
                 spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevel(level, spawn, 8), spawn.z);
                 if (!level.getBlockState(new BlockPos(spawn).below()).isAir()) {
-                    VoidTentacle tentacle = new VoidTentacle(level, entity, getDamage(entity));
+                    VoidTentacle tentacle = new VoidTentacle(level, entity, getDamage(spellLevel, entity));
                     tentacle.moveTo(spawn);
                     tentacle.setYRot(level.getRandom().nextInt(360));
                     level.addFreshEntity(tentacle);
@@ -102,14 +99,14 @@ public class VoidTentaclesSpell extends AbstractSpell {
         }
         //In order to trigger sculk sensors
         level.gameEvent(null, GameEvent.ENTITY_ROAR, center);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity);
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return getSpellPower(spellLevel, entity);
     }
 
-    private int getRings(LivingEntity entity) {
-        return 1 + getLevel(entity);
+    private int getRings(int spellLevel, LivingEntity entity) {
+        return 1 + getLevel(spellLevel, entity);
     }
 }

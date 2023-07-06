@@ -33,14 +33,10 @@ import java.util.Optional;
 public class StarfallSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "starfall");
 
-    public StarfallSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)),
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(caster), 1))
         );
     }
@@ -52,7 +48,7 @@ public class StarfallSpell extends AbstractSpell {
             .setCooldownSeconds(16)
             .build();
 
-    public StarfallSpell(int level) {
+    public StarfallSpell() {
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
@@ -87,16 +83,16 @@ public class StarfallSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (!(playerMagicData.getAdditionalCastData() instanceof TargetAreaCastData)) {
             Vec3 targetArea = Utils.moveToRelativeGroundLevel(world, Utils.raycastForEntity(world, entity, 40, true).getLocation(), 12);
             playerMagicData.setAdditionalCastData(new TargetAreaCastData(targetArea, TargetedAreaEntity.createTargetAreaEntity(world, targetArea, getRadius(entity), 0x60008c)));
         }
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     @Override
-    public void onServerCastTick(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
+    public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
         if (playerMagicData != null && (playerMagicData.getCastDurationRemaining() + 1) % 4 == 0)
             if (playerMagicData.getAdditionalCastData() instanceof TargetAreaCastData targetAreaCastData) {
                 for (int i = 0; i < 2; i++) {
@@ -105,7 +101,7 @@ public class StarfallSpell extends AbstractSpell {
                     Vec3 spawn = center.add(new Vec3(0, 0, entity.getRandom().nextFloat() * radius).yRot(entity.getRandom().nextInt(360)));
                     //TODO: not this
                     spawn = raiseWithCollision(spawn, 12, level);
-                    shootComet(level, entity, spawn);
+                    shootComet(level, spellLevel, entity, spawn);
                     MagicManager.spawnParticles(level, ParticleHelper.COMET_FOG, spawn.x, spawn.y, spawn.z, 1, 1, 1, 1, 1, false);
                     MagicManager.spawnParticles(level, ParticleHelper.COMET_FOG, spawn.x, spawn.y, spawn.z, 1, 1, 1, 1, 1, true);
                 }
@@ -129,19 +125,19 @@ public class StarfallSpell extends AbstractSpell {
         return start;
     }
 
-    private float getDamage(LivingEntity caster) {
-        return getSpellPower(caster) * .5f;
+    private float getDamage(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster) * .5f;
     }
 
     private float getRadius(LivingEntity caster) {
         return 6;
     }
 
-    public void shootComet(Level world, LivingEntity entity, Vec3 spawn) {
+    public void shootComet(Level world, int spellLevel, LivingEntity entity, Vec3 spawn) {
         Comet fireball = new Comet(world, entity);
         fireball.setPos(spawn.add(-1, 0, 0));
         fireball.shoot(new Vec3(.15f, -.85f, 0), .075f);
-        fireball.setDamage(getDamage(entity));
+        fireball.setDamage(getDamage(spellLevel, entity));
         fireball.setExplosionRadius(2f);
         world.addFreshEntity(fireball);
         world.playSound(null, spawn.x, spawn.y, spawn.z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.PLAYERS, 3.0f, 0.7f + world.random.nextFloat() * .3f);

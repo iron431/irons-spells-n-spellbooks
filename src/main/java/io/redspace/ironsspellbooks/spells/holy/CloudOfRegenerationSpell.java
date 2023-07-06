@@ -25,14 +25,10 @@ import java.util.Optional;
 public class CloudOfRegenerationSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "cloud_of_regeneration");
 
-    public CloudOfRegenerationSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getHealing(caster), 1)),
+                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getHealing(spellLevel, caster), 1)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(radius, 1))
         );
     }
@@ -47,13 +43,12 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
             .setEnabled(false)
             .build();
 
-    public CloudOfRegenerationSpell(int level) {
+    public CloudOfRegenerationSpell() {
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 2;
         this.spellPowerPerLevel = 1;
         this.castTime = 200;
         this.baseManaCost = 10;
-
     }
 
     @Override
@@ -71,8 +66,8 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         return spellId;
     }
 
-    private float getHealing(LivingEntity caster) {
-        return getSpellPower(caster) * .5f;
+    private float getHealing(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster) * .5f;
     }
 
     @Override
@@ -86,20 +81,15 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(radius)).forEach((target) -> {
             if (target.distanceToSqr(entity.position()) < radius * radius && Utils.shouldHealEntity(entity, target)) {
-                target.heal(getHealing(entity));
-                Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(target.position()), entity,true);
+                target.heal(getHealing(spellLevel, entity));
+                Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(target.position()), entity, true);
             }
         });
-        Messages.sendToPlayersTrackingEntity(new ClientboundRegenCloudParticles(entity.position()), entity,true);
+        Messages.sendToPlayersTrackingEntity(new ClientboundRegenCloudParticles(entity.position()), entity, true);
 
-        super.onCast(level, entity, playerMagicData);
-    }
-
-    @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable MagicData playerMagicData) {
-        super.onClientPreCast(level, entity, hand, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 }

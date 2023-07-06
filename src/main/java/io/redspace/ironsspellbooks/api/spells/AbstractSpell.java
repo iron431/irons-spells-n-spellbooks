@@ -63,10 +63,6 @@ public abstract class AbstractSpell {
     public AbstractSpell() {
     }
 
-    public int getLegacyID() {
-        return -1;
-    }
-
     public final String getSpellName() {
         if (spellName == null) {
             var resourceLocation = Objects.requireNonNull(getSpellResource());
@@ -143,7 +139,7 @@ public abstract class AbstractSpell {
         return ServerConfigs.getSpellConfig(this).cooldownInTicks();
     }
 
-    private int getCastTime() {
+    public int getCastTime(int spellLevel) {
         return this.castTime;
     }
 
@@ -203,7 +199,7 @@ public abstract class AbstractSpell {
         return (baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier;
     }
 
-    public int getEffectiveCastTime(@Nullable LivingEntity entity) {
+    public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
         double entityCastTimeModifier = 1;
         if (entity != null) {
             /*
@@ -215,7 +211,7 @@ public abstract class AbstractSpell {
                 entityCastTimeModifier = entity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION.get());
         }
 
-        return Math.round(this.castTime * (float) entityCastTimeModifier);
+        return Math.round(this.getCastTime(spellLevel) * (float) entityCastTimeModifier);
     }
 
     /**
@@ -262,13 +258,13 @@ public abstract class AbstractSpell {
                 /*
                  * Prepare to cast spell (magic manager will pick it up by itself)
                  */
-                int effectiveCastTime = getEffectiveCastTime(player);
+                int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
                 playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
                 onServerPreCast(player.level, spellLevel, player, playerMagicData);
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(getLegacyID(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
+                Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
             }
 
-            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), getSpellId()), serverPlayer, true);
+            Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), getSpellId(), spellLevel), serverPlayer, true);
 
             return true;
         } else {
@@ -296,7 +292,7 @@ public abstract class AbstractSpell {
         }
 
         onCast(world, spellLevel, serverPlayer, playerMagicData);
-        Messages.sendToPlayer(new ClientboundOnClientCast(this.getLegacyID(), this.getLevel(spellLevel, serverPlayer), castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
+        Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), this.getLevel(spellLevel, serverPlayer), castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
 
         if (getCastType() == CastType.INSTANT) {
             onServerCastComplete(world, spellLevel, serverPlayer, playerMagicData, false);

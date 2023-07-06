@@ -115,11 +115,11 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
     private void drawScrollInfo(Minecraft minecraft, PoseStack poseStack, ItemStack leftStack, ItemStack outputStack) {
         var inputSpellData = SpellData.getSpellData(leftStack);
         var inputText = String.format("L%d", inputSpellData.getLevel());
-        var inputColor = inputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();
+        var inputColor = inputSpellData.getSpell().getRarity(inputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
         var outputSpellData = SpellData.getSpellData(outputStack);
         var outputText = String.format("L%d", outputSpellData.getLevel());
-        var outputColor = outputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();
+        var outputColor = outputSpellData.getSpell().getRarity(outputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
         int y = (getHeight() / 2) + (paddingBottom / 2) + (minecraft.font.lineHeight / 2) - 4;
 

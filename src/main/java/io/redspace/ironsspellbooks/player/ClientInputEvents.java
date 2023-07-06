@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.player;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
@@ -79,9 +80,9 @@ public final class ClientInputEvents {
 //                    irons_spellbooks.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
 
                     List<AbstractSpell> spells = new ArrayList<>();
-                    for (AbstractSpell spell : spellBookData.getInscribedSpells()) {
-                        if (spell != null)
-                            spells.add(spell);
+                    for (SpellData spellData : spellBookData.getInscribedSpells()) {
+                        if (spellData != null)
+                            spells.add(spellData.getSpell());
                     }
                     int spellCount = spellBookData.getSpellCount();
                     int scrollIndex = (spells.indexOf(spellBookData.getActiveSpell()) - direction);

@@ -2,9 +2,7 @@ package io.redspace.ironsspellbooks.spells.fire;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
-import io.redspace.ironsspellbooks.api.spells.ICastData;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -29,8 +27,8 @@ public class BurningDashSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "burning_dash");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -41,17 +39,16 @@ public class BurningDashSpell extends AbstractSpell {
             .build();
 
     public BurningDashSpell() {
-        this(1);
-    }
-
-    public BurningDashSpell(int level) {
-        super(SpellType.BURNING_DASH_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 20;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -65,13 +62,13 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientCast(Level level, LivingEntity entity, ICastData castData) {
+    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
         if (castData instanceof ImpulseCastData bdcd) {
             entity.hasImpulse = bdcd.hasImpulse;
             entity.setDeltaMovement(entity.getDeltaMovement().add(bdcd.x, bdcd.y, bdcd.z));
         }
 
-        super.onClientCast(level, entity, castData);
+        super.onClientCast(level, spellLevel, entity, castData);
     }
 
     @Override
@@ -90,9 +87,9 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         entity.hasImpulse = true;
-        float multiplier = (15 + getSpellPower(entity)) / 12f;
+        float multiplier = (15 + getSpellPower(spellLevel, entity)) / 12f;
 
         //Direction for Mobs to cast in
         Vec3 forward = entity.getLookAngle();
@@ -117,18 +114,18 @@ public class BurningDashSpell extends AbstractSpell {
         //Deal Shockwave Damage and particles
         world.getEntities(entity, entity.getBoundingBox().inflate(4)).forEach((target) -> {
             if (target.distanceToSqr(entity) < 16) {
-                if (DamageSources.applyDamage(target, getDamage(entity), SpellType.BURNING_DASH_SPELL.getDamageSource(entity), SchoolType.FIRE))
+                if (DamageSources.applyDamage(target, getDamage(spellLevel, entity), SpellRegistry.BURNING_DASH_SPELL.get().getDamageSource(entity), SchoolType.FIRE))
                     target.setSecondsOnFire(3);
             }
         });
         MagicManager.spawnParticles(world, ParticleHelper.FIRE, entity.getX(), entity.getY(), entity.getZ(), 75, 1, 0, 1, .08, false);
 
         playerMagicData.getSyncedData().setSpinAttackType(SpinAttackType.FIRE);
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
-    private float getDamage(LivingEntity caster) {
-        return 5 + getSpellPower(caster) / 2;
+    private float getDamage(int spellLevel, LivingEntity caster) {
+        return 5 + getSpellPower(spellLevel, caster) / 2;
     }
 
     private void startSpinAttack(LivingEntity entity, int durationInTicks) {
@@ -139,7 +136,6 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     public static class BurningDashDirectionOverrideCastData implements ICastData {
-
         @Override
         public void reset() {
 

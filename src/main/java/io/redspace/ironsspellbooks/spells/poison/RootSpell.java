@@ -28,14 +28,11 @@ import java.util.Optional;
 
 public class RootSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "root");
-    public RootSpell() {
-        this(1);
-    }
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(caster), 1))
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
         );
     }
 
@@ -46,7 +43,7 @@ public class RootSpell extends AbstractSpell {
             .setCooldownSeconds(35)
             .build();
 
-    public RootSpell(int level) {
+    public RootSpell() {
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
@@ -81,12 +78,11 @@ public class RootSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
-        return Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 32, .35f);
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f);
     }
 
-
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
 //        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
 //            var targetEntity = targetData.getTarget((ServerLevel) level);
 //            if (targetEntity != null) {
@@ -115,7 +111,7 @@ public class RootSpell extends AbstractSpell {
                 }
                 Vec3 spawn = target.position();
                 RootEntity rootEntity = new RootEntity(level, entity);
-                rootEntity.setDuration(getDuration(entity));
+                rootEntity.setDuration(getDuration(spellLevel, entity));
                 rootEntity.setTarget(target);
                 rootEntity.moveTo(spawn);
                 level.addFreshEntity(rootEntity);
@@ -124,7 +120,7 @@ public class RootSpell extends AbstractSpell {
             }
         }
 
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     @Nullable
@@ -137,8 +133,8 @@ public class RootSpell extends AbstractSpell {
         }
     }
 
-    public int getDuration(LivingEntity caster) {
-        return (int) (getSpellPower(caster) * 20);
+    public int getDuration(int spellLevel, LivingEntity caster) {
+        return (int) (getSpellPower(spellLevel, caster) * 20);
     }
 
 }

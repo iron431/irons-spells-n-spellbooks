@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.holy;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.spells.*;
@@ -22,14 +23,10 @@ import java.util.Optional;
 public class HealSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "heal");
 
-    public HealSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(caster), 1))
+                Component.translatable("ui.irons_spellbooks.healing", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1))
         );
     }
 
@@ -42,14 +39,17 @@ public class HealSpell extends AbstractSpell {
             .setCooldownSeconds(25)
             .build();
 
-    public HealSpell(int level) {
-        super(SpellType.HEAL_SPELL);
-        this.setLevel(level);
+    public HealSpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 30;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -73,8 +73,8 @@ public class HealSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
-        entity.heal(getSpellPower(entity));
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        entity.heal(getSpellPower(spellLevel, entity));
         int count = 16;
         float radius = 1.25f;
         for (int i = 0; i < count; i++) {
@@ -84,7 +84,7 @@ public class HealSpell extends AbstractSpell {
             z = Math.sin(theta) * radius;
             MagicManager.spawnParticles(world, ParticleTypes.HEART, entity.position().x + x, entity.position().y, entity.position().z + z, 1, 0, 0, 0, 0.1, false);
         }
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     @Override

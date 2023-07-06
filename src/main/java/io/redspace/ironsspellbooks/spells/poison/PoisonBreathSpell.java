@@ -24,22 +24,17 @@ import java.util.Optional;
 public class PoisonBreathSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "poison_breath");
 
-    public PoisonBreathSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)));
     }
 
-    public PoisonBreathSpell(int level) {
+    public PoisonBreathSpell() {
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 5;
-
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -75,28 +70,28 @@ public class PoisonBreathSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.isCasting()
-                && playerMagicData.getCastingSpellId() == this.getLegacyID()
+                && playerMagicData.getCastingSpellId().equals(getSpellId())
                 && playerMagicData.getAdditionalCastData() instanceof EntityCastData entityCastData
                 && entityCastData.getCastingEntity() instanceof AbstractConeProjectile cone) {
             cone.setDealDamageActive();
         } else {
             PoisonBreathProjectile breath = new PoisonBreathProjectile(world, entity);
             breath.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
-            breath.setDamage(getDamage(entity));
+            breath.setDamage(getDamage(spellLevel, entity));
             world.addFreshEntity(breath);
             playerMagicData.setAdditionalCastData(new EntityCastData(breath));
-            super.onCast(world, entity, playerMagicData);
+            super.onCast(world, spellLevel, entity, playerMagicData);
         }
     }
 
-    public float getDamage(LivingEntity caster) {
-        return 1 + getSpellPower(caster) * .75f;
+    public float getDamage(int spellLevel, LivingEntity caster) {
+        return 1 + getSpellPower(spellLevel, caster) * .75f;
     }
 
     @Override
-    public boolean shouldAIStopCasting(Mob mob, LivingEntity target) {
+    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
         return mob.distanceToSqr(target) > (10 * 10) * 1.2;
     }
 }

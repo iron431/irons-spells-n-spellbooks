@@ -28,16 +28,12 @@ import java.util.Optional;
 public class HealingCircleSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "healing_circle");
 
-    public HealingCircleSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.aoe_healing", Utils.stringTruncation(getHealing(caster), 2)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.duration", Utils.timeFromTicks(getDuration(caster), 1))
+                Component.translatable("ui.irons_spellbooks.aoe_healing", Utils.stringTruncation(getHealing(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.duration", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
         );
     }
 
@@ -48,13 +44,12 @@ public class HealingCircleSpell extends AbstractSpell {
             .setCooldownSeconds(25)
             .build();
 
-    public HealingCircleSpell(int level) {
+    public HealingCircleSpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 2;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 40;
-
     }
 
     @Override
@@ -84,12 +79,12 @@ public class HealingCircleSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
-        Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 32, .15f, false);
+        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .15f, false);
         return true;
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 spawn = null;
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
             var target = castTargetingData.getTarget((ServerLevel) world);
@@ -99,8 +94,8 @@ public class HealingCircleSpell extends AbstractSpell {
         if (spawn == null)
             spawn = Utils.raycastForEntity(world, entity, 32, true, .15f).getLocation();
 
-        int duration = getDuration(entity);
-        float radius = getRadius(entity);
+        int duration = getDuration(spellLevel, entity);
+        float radius = getRadius(spellLevel, entity);
 
         TargetedAreaEntity visualEntity = TargetedAreaEntity.createTargetAreaEntity(world, spawn, radius, 0xc80000);
         visualEntity.setDuration(duration);
@@ -110,22 +105,22 @@ public class HealingCircleSpell extends AbstractSpell {
         aoeEntity.setCircular();
         aoeEntity.setRadius(radius);
         aoeEntity.setDuration(duration);
-        aoeEntity.setDamage(getHealing(entity));
+        aoeEntity.setDamage(getHealing(spellLevel, entity));
         aoeEntity.setPos(spawn);
         world.addFreshEntity(aoeEntity);
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
-    private float getHealing(LivingEntity caster) {
-        return getSpellPower(caster) * .25f;
+    private float getHealing(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster) * .25f;
     }
 
-    private float getRadius(LivingEntity caster) {
+    private float getRadius(int spellLevel, LivingEntity caster) {
         return 4;
     }
 
-    private int getDuration(LivingEntity caster) {
+    private int getDuration(int spellLevel, LivingEntity caster) {
         return 200;
     }
 

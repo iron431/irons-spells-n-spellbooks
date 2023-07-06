@@ -11,9 +11,9 @@ public class ServerboundScrollForgeSelectSpell {
 
 
     private final BlockPos pos;
-    private final int spellId;
+    private final String spellId;
 
-    public ServerboundScrollForgeSelectSpell(BlockPos pos, int spellId) {
+    public ServerboundScrollForgeSelectSpell(BlockPos pos, String spellId) {
         this.pos = pos;
         this.spellId = spellId;
     }
@@ -23,7 +23,7 @@ public class ServerboundScrollForgeSelectSpell {
         int y = buf.readInt();
         int z = buf.readInt();
         pos = new BlockPos(x, y, z);
-        spellId = buf.readInt();
+        spellId = buf.readUtf();
 
     }
 
@@ -31,7 +31,7 @@ public class ServerboundScrollForgeSelectSpell {
         buf.writeInt(pos.getX());
         buf.writeInt(pos.getY());
         buf.writeInt(pos.getZ());
-        buf.writeInt(spellId);
+        buf.writeUtf(spellId);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
@@ -42,7 +42,6 @@ public class ServerboundScrollForgeSelectSpell {
             if (scrollForgeTile != null) {
                 scrollForgeTile.setRecipeSpell(spellId);
             }
-
         });
         return true;
     }

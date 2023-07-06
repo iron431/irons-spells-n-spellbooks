@@ -38,15 +38,15 @@ public class ServerboundCancelCast {
         if (serverPlayer != null) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
-                int spellId = playerMagicData.getCastingSpellId();
+                var spellData = playerMagicData.getCastingSpell();
 
                 if (triggerCooldown) {
-                    MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
+                    MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, spellData.getSpell(), playerMagicData.getCastSource());
                 }
 
-                playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level, serverPlayer, playerMagicData, true);
+                playerMagicData.getCastingSpell().getSpell().onServerCastComplete(serverPlayer.level, spellData.getLevel(), serverPlayer, playerMagicData, true);
 
-                if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS) {
+                if (spellData.getSpell().getCastType() == CastType.CONTINUOUS) {
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                 }
             }

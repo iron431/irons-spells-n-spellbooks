@@ -298,7 +298,7 @@ public class ServerPlayerEvents {
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             if (playerMagicData.isCasting() &&
-                    SpellType.values()[playerMagicData.getCastingSpellId()].getCastType() == CastType.LONG &&
+                    playerMagicData.getCastingSpell().getSpell().getCastType() == CastType.LONG &&
                     playerMagicData.getCastDurationRemaining() > 0 &&
                     event.getSource() != DamageSource.FREEZE &&
                     event.getSource() != DamageSource.STARVE &&
@@ -307,7 +307,6 @@ public class ServerPlayerEvents {
                 Utils.serverSideCancelCast(serverPlayer);
             }
         }
-
     }
 
     @SubscribeEvent
@@ -352,15 +351,15 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void useOnEntityEvent(PlayerInteractEvent.EntityInteractSpecific event){
-        if(event.getTarget() instanceof Creeper creeper){
+    public static void useOnEntityEvent(PlayerInteractEvent.EntityInteractSpecific event) {
+        if (event.getTarget() instanceof Creeper creeper) {
             var player = event.getEntity();
             var useItem = player.getItemInHand(event.getHand());
-            if(useItem.is(Items.GLASS_BOTTLE) && creeper.isPowered()){
+            if (useItem.is(Items.GLASS_BOTTLE) && creeper.isPowered()) {
                 creeper.hurt(DamageSource.GENERIC.bypassMagic(), 5);
                 player.level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 player.swing(event.getHand());
-                event.setCancellationResult(InteractionResultHolder.sidedSuccess(ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get())), player.getLevel().isClientSide).getResult()) ;
+                event.setCancellationResult(InteractionResultHolder.sidedSuccess(ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get())), player.getLevel().isClientSide).getResult());
             }
         }
     }
@@ -373,7 +372,7 @@ public class ServerPlayerEvents {
             if (entity.tickCount % 20 == 0) {
                 BlockPos pos = entity.blockPosition();
                 BlockState blockState = entity.getLevel().getBlockState(pos);
-                if(blockState.is(Blocks.CAULDRON)){
+                if (blockState.is(Blocks.CAULDRON)) {
                     BloodCauldronBlock.attemptCookEntity(blockState, entity.getLevel(), pos, entity, () -> {
                         level.setBlockAndUpdate(pos, BlockRegistry.BLOOD_CAULDRON_BLOCK.get().defaultBlockState());
                         level.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);

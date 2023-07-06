@@ -25,16 +25,11 @@ public class SummonHorseSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "summon_horse");
 
     public SummonHorseSpell() {
-        this(1);
-    }
-
-    public SummonHorseSpell(int level) {
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 2;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 50;
-
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -70,7 +65,7 @@ public class SummonHorseSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
         Vec3 spawn = entity.position();
         Vec3 forward = entity.getForward().normalize().scale(1.5f);
@@ -83,12 +78,12 @@ public class SummonHorseSpell extends AbstractSpell {
         horse.setPos(spawn);
         horse.removeEffectNoUpdate(MobEffectRegistry.SUMMON_HORSE_TIMER.get());
         horse.forceAddEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, false), null);
-        setAttributes(horse, getSpellPower(entity));
+        setAttributes(horse, getSpellPower(spellLevel, entity));
 
         world.addFreshEntity(horse);
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.SUMMON_HORSE_TIMER.get(), summonTime, 0, false, false, true));
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     private void setAttributes(AbstractHorse horse, float power) {

@@ -27,23 +27,19 @@ import java.util.Optional;
 public class IceBlockSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "ice_block");
 
-    public IceBlockSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.RARE )
+            .setMinRarity(SpellRarity.RARE)
             .setSchool(SchoolType.ICE)
             .setMaxLevel(6)
             .setCooldownSeconds(15)
             .build();
 
-    public IceBlockSpell(int level) {
+    public IceBlockSpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 2;
@@ -78,12 +74,12 @@ public class IceBlockSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
-        Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 48, .35f, false);
+        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 48, .35f, false);
         return true;
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 spawn = null;
         LivingEntity target = null;
 
@@ -106,9 +102,9 @@ public class IceBlockSpell extends AbstractSpell {
         IceBlockProjectile iceBlock = new IceBlockProjectile(level, entity, target);
         iceBlock.moveTo(raiseWithCollision(spawn, 4, level));
         iceBlock.setAirTime(target == null ? 20 : 50);
-        iceBlock.setDamage(getDamage(entity));
+        iceBlock.setDamage(getDamage(spellLevel, entity));
         level.addFreshEntity(iceBlock);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     private Vec3 raiseWithCollision(Vec3 start, int blocks, Level level) {
@@ -122,7 +118,7 @@ public class IceBlockSpell extends AbstractSpell {
         return start;
     }
 
-    private float getDamage(LivingEntity entity) {
-        return this.getSpellPower(entity);
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return this.getSpellPower(spellLevel, entity);
     }
 }

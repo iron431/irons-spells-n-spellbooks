@@ -165,11 +165,9 @@ public class ClientSpellCastHelper {
     /**
      * Network Handling Wrapper
      */
-    public static void handleClientboundOnClientCast(int spellId, int level, CastSource castSource, ICastData castData) {
-        var spell = AbstractSpell.getSpell(spellId, level);
-        //IronsSpellbooks.LOGGER.debug("handleClientboundOnClientCast onClientCastComplete spell:{}", spell.getSpellType());
-
-        spell.onClientCast(Minecraft.getInstance().player.level, Minecraft.getInstance().player, castData);
+    public static void handleClientboundOnClientCast(String spellId, int level, CastSource castSource, ICastData castData) {
+        var spell = SpellRegistry.getSpell(spellId);
+        spell.onClientCast(Minecraft.getInstance().player.level, level, Minecraft.getInstance().player, castData);
     }
 
     public static void handleClientboundTeleport(Vec3 pos1, Vec3 pos2) {
@@ -193,16 +191,14 @@ public class ClientSpellCastHelper {
         }
     }
 
-    public static void handleClientBoundOnCastStarted(UUID castingEntityId, String spellId) {
+    public static void handleClientBoundOnCastStarted(UUID castingEntityId, String spellId, int spellLevel) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
         var spell = SpellRegistry.getSpell(spellId);
-        //IronsSpellbooks.LOGGER.debug("handleClientBoundOnCastStarted {} {} {} {}", player, player.getUUID(), castingEntityId, spellType);
         spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
-        spell.onClientPreCast(player.level, player, player.getUsedItemHand(), null);
+        spell.onClientPreCast(player.level, spellLevel, player, player.getUsedItemHand(), null);
     }
 
     public static void handleClientBoundOnCastFinished(UUID castingEntityId, String spellId, boolean cancelled) {
-        //Ironsspellbooks.logger.debug("ClientSpellCastHelper.handleClientBoundOnCastFinished.1 -> ClientMagicData.resetClientCastState: {}", castingEntityId);
         ClientMagicData.resetClientCastState(castingEntityId);
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
 

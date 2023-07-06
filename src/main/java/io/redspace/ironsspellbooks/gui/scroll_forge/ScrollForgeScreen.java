@@ -70,7 +70,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             removeWidget(s.button);
         availableSpells.clear();
 
-        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpell.getLegacyID()));
+        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpell.getSpellId()));
     }
 
     @Override
@@ -169,17 +169,15 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     private void setSelectedSpell(AbstractSpell spell) {
         selectedSpell = spell;
-        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), spell.getLegacyID()));
-
-        //irons_spellbooks.LOGGER.debug("ScrollForgeScreen: setting selected spell: {}", availableSpells.get(index).getDisplayName());
+        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), spell.getSpellId()));
     }
 
     private SpellRarity getRarityFromInk(Item ink) {
-        if (ink instanceof InkItem inkItem)
+        if (ink instanceof InkItem inkItem) {
             return inkItem.getRarity();
-        else
+        } else {
             return null;
-
+        }
     }
 
     public AbstractSpell getSelectedSpell() {

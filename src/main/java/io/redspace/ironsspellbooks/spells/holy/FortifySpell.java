@@ -28,14 +28,10 @@ import java.util.Optional;
 public class FortifySpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "fortify");
 
-    public FortifySpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.absorption", Utils.stringTruncation(getSpellPower(caster), 0)),
+                Component.translatable("ui.irons_spellbooks.absorption", Utils.stringTruncation(getSpellPower(spellLevel, caster), 0)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(radius, 1))
         );
     }
@@ -49,7 +45,7 @@ public class FortifySpell extends AbstractSpell {
             .setCooldownSeconds(35)
             .build();
 
-    public FortifySpell(int level) {
+    public FortifySpell() {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
@@ -83,8 +79,8 @@ public class FortifySpell extends AbstractSpell {
     }
 
     @Override
-    public void onServerPreCast(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
-        super.onServerPreCast(level, entity, playerMagicData);
+    public void onServerPreCast(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
+        super.onServerPreCast(level, spellLevel, entity, playerMagicData);
         if (playerMagicData == null)
             return;
         TargetedAreaEntity targetedAreaEntity = TargetedAreaEntity.createTargetAreaEntity(level, entity.position(), radius, 16239960);
@@ -93,16 +89,15 @@ public class FortifySpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         level.getEntitiesOfClass(LivingEntity.class, new AABB(entity.position().subtract(radius, radius, radius), entity.position().add(radius, radius, radius))).forEach((target) -> {
             if (Utils.shouldHealEntity(entity, target) && entity.distanceTo(target) <= radius) {
-                target.addEffect(new MobEffectInstance(MobEffectRegistry.FORTIFY.get(), 20 * 120, (int) getSpellPower(entity), false, false, true));
+                target.addEffect(new MobEffectInstance(MobEffectRegistry.FORTIFY.get(), 20 * 120, (int) getSpellPower(spellLevel, entity), false, false, true));
                 Messages.sendToPlayersTrackingEntity(new ClientboundAborptionParticles(target.position()), entity, true);
-
             }
         });
         Messages.sendToPlayersTrackingEntity(new ClientboundFortifyAreaParticles(entity.position()), entity, true);
 
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 }

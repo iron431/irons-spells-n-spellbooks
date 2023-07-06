@@ -100,21 +100,21 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
     public void onSlotsChanged() {
         setupResultSlot(spellRecipeSelection);
- //Ironsspellbooks.logger.debug("ScrollForgeMenu.slotsChanged");
+        //Ironsspellbooks.logger.debug("ScrollForgeMenu.slotsChanged");
     }
 
-    private void setupResultSlot(AbstractSpell selectedSpellType) {
- //Ironsspellbooks.logger.debug("ScrollForgeMenu.setupResultSlot");
+    private void setupResultSlot(AbstractSpell spell) {
+        //Ironsspellbooks.logger.debug("ScrollForgeMenu.setupResultSlot");
 
         ItemStack scrollStack = this.blankScrollSlot.getItem();
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && selectedSpellType != SpellRegistry.none()) {
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && !spell.equals(SpellRegistry.none())) {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);
-                SpellData.setSpellData(resultStack, selectedSpellType.getMinLevelForRarity(inkItem.getRarity()));
+                SpellData.setSpellData(resultStack, spell, spell.getMinLevelForRarity(inkItem.getRarity()));
             }
         }
 
@@ -125,7 +125,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
     public void setRecipeSpell(AbstractSpell typeFromValue) {
         this.spellRecipeSelection = typeFromValue;
- //Ironsspellbooks.logger.debug("Setting selected Spell");
+        //Ironsspellbooks.logger.debug("Setting selected Spell");
         setupResultSlot(typeFromValue);
     }
 

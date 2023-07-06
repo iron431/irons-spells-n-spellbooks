@@ -20,12 +20,8 @@ import java.util.Optional;
 public class GreaterHealSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "greater_heal");
 
-    public GreaterHealSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.greater_healing")
         );
@@ -38,7 +34,7 @@ public class GreaterHealSpell extends AbstractSpell {
             .setCooldownSeconds(45)
             .build();
 
-    public GreaterHealSpell(int level) {
+    public GreaterHealSpell() {
         this.manaCostPerLevel = 0;
         this.baseSpellPower = 0;
         this.spellPowerPerLevel = 0;
@@ -72,10 +68,9 @@ public class GreaterHealSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         entity.heal(entity.getMaxHealth());
-        Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(entity.position()), entity,true);
-
-        super.onCast(world, entity, playerMagicData);
+        Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(entity.position()), entity, true);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 }

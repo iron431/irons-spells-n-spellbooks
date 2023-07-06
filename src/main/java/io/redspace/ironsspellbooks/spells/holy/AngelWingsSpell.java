@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.holy;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -20,13 +21,9 @@ import java.util.Optional;
 public class AngelWingsSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "angel_wing");
 
-    public AngelWingsSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(caster) * 20, 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getSpellPower(spellLevel, caster) * 20, 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -36,19 +33,21 @@ public class AngelWingsSpell extends AbstractSpell {
             .setCooldownSeconds(120)
             .build();
 
-    public AngelWingsSpell(int level) {
-        super(SpellType.ANGEL_WING_SPELL);
-        this.setLevel(level);
+    public AngelWingsSpell() {
         this.manaCostPerLevel = 20;
         this.baseSpellPower = 30;
         this.spellPowerPerLevel = 30;
         this.castTime = 0;
         this.baseManaCost = 60;
-
     }
 
-    private int getEffectDuration(LivingEntity entity) {
-        return (int) getSpellPower(entity) * 20;
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
+    }
+
+    private int getEffectDuration(int spellLevel, LivingEntity entity) {
+        return (int) getSpellPower(spellLevel, entity) * 20;
     }
 
     @Override
@@ -72,8 +71,8 @@ public class AngelWingsSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(entity)), entity);
-        super.onCast(world, entity, playerMagicData);
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ANGEL_WINGS.get(), getEffectDuration(spellLevel, entity)), entity);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 }

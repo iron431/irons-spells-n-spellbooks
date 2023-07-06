@@ -26,14 +26,10 @@ import java.util.Optional;
 public class FangStrikeSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "fang_strike");
 
-    public FangStrikeSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.fang_count", getCount(caster)),
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.fang_count", getCount(spellLevel, caster)),
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -43,7 +39,7 @@ public class FangStrikeSpell extends AbstractSpell {
             .setCooldownSeconds(5)
             .build();
 
-    public FangStrikeSpell(int level) {
+    public FangStrikeSpell() {
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
@@ -77,20 +73,19 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 forward = entity.getForward().multiply(1, 0, 1).normalize();
         Vec3 start = entity.getEyePosition().add(forward.scale(1.5));
 
-        for (int i = 0; i < getCount(entity); i++) {
+        for (int i = 0; i < getCount(spellLevel, entity); i++) {
             Vec3 spawn = start.add(forward.scale(i));
             spawn = new Vec3(spawn.x, getGroundLevel(world, spawn, 8), spawn.z);
             if (!world.getBlockState(new BlockPos(spawn).below()).isAir()) {
-                ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, (entity.getYRot() - 90) * Mth.DEG_TO_RAD, i, entity, getDamage(entity));
+                ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, (entity.getYRot() - 90) * Mth.DEG_TO_RAD, i, entity, getDamage(spellLevel, entity));
                 world.addFreshEntity(fang);
             }
-
         }
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     private int getGroundLevel(Level level, Vec3 start, int maxSteps) {
@@ -107,16 +102,16 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(Mob mob, LivingEntity target) {
-        float f = this.getCount(mob) * 1.2f;
+    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
+        float f = this.getCount(spellLevel, mob) * 1.2f;
         return mob.distanceToSqr(target) > (f * f);
     }
 
-    private int getCount(LivingEntity entity) {
-        return 5 + getLevel(entity);
+    private int getCount(int spellLevel, LivingEntity entity) {
+        return 5 + getLevel(spellLevel, entity);
     }
 
-    private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity);
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return getSpellPower(spellLevel, entity);
     }
 }

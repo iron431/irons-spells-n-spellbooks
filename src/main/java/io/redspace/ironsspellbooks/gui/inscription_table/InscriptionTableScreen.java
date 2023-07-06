@@ -73,7 +73,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         inscribeButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()));
         //extractButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.removeSpell()));
         spellSlots = new ArrayList<>();
- //Ironsspellbooks.logger.debug("InscriptionTableScreen: init");
+        //Ironsspellbooks.logger.debug("InscriptionTableScreen: init");
         generateSpellSlots();
     }
 
@@ -128,8 +128,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private int getErrorCode() {
         if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellbook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
-            var scrollData = SpellData.getSpellData(menu.getScrollSlot().getItem());
-            if (spellbook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
+            var spellData = SpellData.getSpellData(menu.getScrollSlot().getItem());
+            if (spellbook.getRarity().compareRarity(spellData.getSpell().getRarity(spellData.getLevel())) < 0)
                 return 1;
         }
 
@@ -209,7 +209,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Title
         //
-        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).containedSpell.getSpellType().getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
+        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).containedSpell.getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
         //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
 
         var titleLines = font.split(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);

@@ -22,22 +22,13 @@ import java.util.Optional;
 public class FireballSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "fireball");
 
-    public FireballSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.radius", getRadius(caster))
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.radius", getRadius(spellLevel, caster))
         );
     }
-
-//    public final DefaultConfig defaultConfig = new DefaultConfig((config) -> {
-//        config.minRarity = SpellRarity.EPIC;
-//        config.maxLevel = 8;
-//    });
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
@@ -46,7 +37,7 @@ public class FireballSpell extends AbstractSpell {
             .setCooldownSeconds(25)
             .build();
 
-    public FireballSpell(int level) {
+    public FireballSpell() {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
@@ -80,26 +71,26 @@ public class FireballSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 origin = entity.getEyePosition();
 
         MagicFireball fireball = new MagicFireball(world, entity);
 
-        fireball.setDamage(getDamage(entity));
-        fireball.setExplosionRadius(getRadius(entity));
+        fireball.setDamage(getDamage(spellLevel, entity));
+        fireball.setExplosionRadius(getRadius(spellLevel, entity));
 
         fireball.setPos(origin.add(entity.getForward()).subtract(0, fireball.getBbHeight() / 2, 0));
         fireball.shoot(entity.getLookAngle());
 
         world.addFreshEntity(fireball);
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
-    public float getDamage(LivingEntity caster) {
-        return 10 * getSpellPower(caster);
+    public float getDamage(int spellLevel, LivingEntity caster) {
+        return 10 * getSpellPower(spellLevel, caster);
     }
 
-    public int getRadius(LivingEntity caster) {
-        return (int) getSpellPower(caster);
+    public int getRadius(int spellLevel, LivingEntity caster) {
+        return (int) getSpellPower(spellLevel, caster);
     }
 }

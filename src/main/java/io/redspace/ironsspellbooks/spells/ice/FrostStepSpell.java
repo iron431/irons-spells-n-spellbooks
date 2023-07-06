@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.ice;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.network.spell.ClientboundFrostStepParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -28,15 +29,11 @@ import java.util.Optional;
 public class FrostStepSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "frost_step");
 
-    public FrostStepSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.shatter_damage", Utils.stringTruncation(getDamage(caster), 1))
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.shatter_damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1))
         );
     }
 
@@ -47,16 +44,17 @@ public class FrostStepSpell extends AbstractSpell {
             .setCooldownSeconds(10)
             .build();
 
-    public FrostStepSpell(int level) {
-        super(SpellType.FROST_STEP_SPELL);
-        this.setLevel(level);
+    public FrostStepSpell() {
         this.baseSpellPower = 14;
         this.spellPowerPerLevel = 3;
         this.baseManaCost = 15;
         this.manaCostPerLevel = 3;
         this.castTime = 0;
+    }
 
-
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -80,11 +78,11 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         var teleportData = (TeleportSpell.TeleportData) playerMagicData.getAdditionalCastData();
 
         FrozenHumanoid shadow = new FrozenHumanoid(level, entity);
-        shadow.setShatterDamage(getDamage(entity));
+        shadow.setShatterDamage(getDamage(spellLevel, entity));
         shadow.setDeathTimer(60);
         level.addFreshEntity(shadow);
         Vec3 dest = null;
@@ -94,7 +92,7 @@ public class FrostStepSpell extends AbstractSpell {
         }
 
         if (dest == null) {
-            dest = findTeleportLocation(level, entity);
+            dest = findTeleportLocation(spellLevel, level, entity);
         }
         Messages.sendToPlayersTrackingEntity(new ClientboundFrostStepParticles(entity.position(), dest), entity, true);
         if (entity.isPassenger()) {
@@ -106,11 +104,11 @@ public class FrostStepSpell extends AbstractSpell {
 
         playerMagicData.resetAdditionalCastData();
 
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    private Vec3 findTeleportLocation(Level level, LivingEntity entity) {
-        return TeleportSpell.findTeleportLocation(level, entity, getDistance(entity));
+    private Vec3 findTeleportLocation(int spellLevel, Level level, LivingEntity entity) {
+        return TeleportSpell.findTeleportLocation(level, entity, getDistance(spellLevel, entity));
     }
 
     public static void particleCloud(Level level, Vec3 pos) {
@@ -130,12 +128,12 @@ public class FrostStepSpell extends AbstractSpell {
         }
     }
 
-    private float getDistance(LivingEntity sourceEntity) {
-        return getSpellPower(sourceEntity) * .65f;
+    private float getDistance(int spellLevel, LivingEntity sourceEntity) {
+        return getSpellPower(spellLevel, sourceEntity) * .65f;
     }
 
-    private float getDamage(LivingEntity caster) {
-        return this.getSpellPower(caster) / 3;
+    private float getDamage(int spellLevel, LivingEntity caster) {
+        return this.getSpellPower(spellLevel, caster) / 3;
     }
 
     @Override

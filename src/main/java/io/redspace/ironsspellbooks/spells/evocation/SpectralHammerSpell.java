@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -23,16 +24,12 @@ import java.util.Optional;
 public class SpectralHammerSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer");
 
-    public SpectralHammerSpell() {
-        this(1);
-    }
-
     private static final int distance = 12;
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.dimensions", 1 + getRadius(caster) * 2, 1 + getRadius(caster) * 2, getDepth(caster) + 1),
+                Component.translatable("ui.irons_spellbooks.dimensions", 1 + getRadius(spellLevel, caster) * 2, 1 + getRadius(spellLevel, caster) * 2, getDepth(spellLevel, caster) + 1),
                 Component.translatable("ui.irons_spellbooks.distance", distance)
         );
     }
@@ -44,14 +41,17 @@ public class SpectralHammerSpell extends AbstractSpell {
             .setCooldownSeconds(10)
             .build();
 
-    public SpectralHammerSpell(int level) {
-        super(SpellType.SPECTRAL_HAMMER_SPELL);
-        this.setLevel(level);
+    public SpectralHammerSpell() {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.castTime = 25;
         this.baseManaCost = 15;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -80,33 +80,33 @@ public class SpectralHammerSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         var blockPosition = Utils.getTargetBlock(world, entity, ClipContext.Fluid.NONE, distance);
         var face = blockPosition.getDirection();
 
-        int radius = getRadius(entity);
-        int depth = getDepth(entity);
+        int radius = getRadius(spellLevel, entity);
+        int depth = getDepth(spellLevel, entity);
 
         var spectralHammer = new SpectralHammer(world, entity, blockPosition, depth, radius);
         Vec3 position = Vec3.atCenterOf(blockPosition.getBlockPos());
 
         if (!face.getAxis().isVertical()) {
             position = position.subtract(0, 2, 0).subtract(entity.getForward().normalize().scale(1.5));
-        }else if(face == Direction.DOWN){
+        } else if (face == Direction.DOWN) {
             position = position.subtract(0, 3, 0);
         }
 
         spectralHammer.setPos(position.x, position.y, position.z);
         world.addFreshEntity(spectralHammer);
         //IronsSpellbooks.LOGGER.debug("SpectralHammerSpell.onCast pos:{}", position);
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
-    private int getDepth(LivingEntity caster) {
-        return (int) getSpellPower(caster);
+    private int getDepth(int spellLevel, LivingEntity caster) {
+        return (int) getSpellPower(spellLevel, caster);
     }
 
-    private int getRadius(LivingEntity caster) {
-        return (int) Math.max(getSpellPower(caster) * .5f, 1);
+    private int getRadius(int spellLevel, LivingEntity caster) {
+        return (int) Math.max(getSpellPower(spellLevel, caster) * .5f, 1);
     }
 }

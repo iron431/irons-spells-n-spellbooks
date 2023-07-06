@@ -57,7 +57,7 @@ public class SpellBook extends Item implements ISpellbook {
         var spellBookData = SpellBookData.getSpellBookData(itemStack);
         SpellData spellData = spellBookData.getActiveSpell();
 
-        if (spellData == SpellData.EMPTY) {
+        if (spellData.equals(SpellData.EMPTY)) {
             return InteractionResultHolder.pass(itemStack);
         }
 
@@ -119,7 +119,7 @@ public class SpellBook extends Item implements ISpellbook {
         lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", this.spellSlots).withStyle(ChatFormatting.GRAY));
 
         var player = Minecraft.getInstance().player;
-        if (player != null && SpellBookData.getSpellBookData(itemStack).getActiveSpell() != SpellData.EMPTY) {
+        if (player != null && !SpellBookData.getSpellBookData(itemStack).getActiveSpell().equals(SpellData.EMPTY)) {
             lines.addAll(TooltipsUtils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK, player));
         }
 

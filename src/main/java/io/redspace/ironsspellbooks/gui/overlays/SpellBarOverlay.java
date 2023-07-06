@@ -63,7 +63,7 @@ public class SpellBarOverlay extends GuiComponent {
         //Spell Icons
         for (int i = 0; i < locations.size(); i++) {
             if (spells[i] != null) {
-                setOpaqueTexture(spells[i].getSpellIconResource());
+                setOpaqueTexture(spells[i].getSpell().getSpellIconResource());
                 gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
             }
         }
@@ -73,7 +73,7 @@ public class SpellBarOverlay extends GuiComponent {
             if (i != spellBookData.getActiveSpellIndex())
                 gui.blit(poseStack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22, 84, 22, 22);
 
-            float f = spells[i] == null ? 0 : ClientMagicData.getCooldownPercent(spells[i].getSpellType());
+            float f = spells[i] == null ? 0 : ClientMagicData.getCooldownPercent(spells[i].getSpell());
             if (f > 0) {
                 int pixels = (int) (16 * f + 1f);
                 gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47, 87, 16, pixels);

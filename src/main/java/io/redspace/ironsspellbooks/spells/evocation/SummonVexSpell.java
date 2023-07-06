@@ -26,13 +26,10 @@ import java.util.Optional;
 public class SummonVexSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "summon_vex");
 
-    public SummonVexSpell() {
-        this(1);
-    }
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.summon_count", getLevel(caster))
+                Component.translatable("ui.irons_spellbooks.summon_count", getLevel(spellLevel, caster))
         );
     }
 
@@ -43,7 +40,7 @@ public class SummonVexSpell extends AbstractSpell {
             .setCooldownSeconds(150)
             .build();
 
-    public SummonVexSpell(int level) {
+    public SummonVexSpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
@@ -77,11 +74,11 @@ public class SummonVexSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
 
-        int level = getLevel(entity);
-        for (int i = 0; i < this.getLevel(entity); i++) {
+        int level = getLevel(spellLevel, entity);
+        for (int i = 0; i < this.getLevel(spellLevel, entity); i++) {
             SummonedVex vex = new SummonedVex(world, entity);
             vex.moveTo(entity.getEyePosition().add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));
             vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
@@ -89,9 +86,9 @@ public class SummonVexSpell extends AbstractSpell {
             world.addFreshEntity(vex);
         }
         int effectAmplifier = level - 1;
-        if(entity.hasEffect(MobEffectRegistry.VEX_TIMER.get()))
+        if (entity.hasEffect(MobEffectRegistry.VEX_TIMER.get()))
             effectAmplifier += entity.getEffect(MobEffectRegistry.VEX_TIMER.get()).getAmplifier() + 1;
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.VEX_TIMER.get(), summonTime, effectAmplifier, false, false, true));
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 }

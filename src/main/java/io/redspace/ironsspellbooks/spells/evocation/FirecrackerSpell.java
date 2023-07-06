@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedFireworkRocket;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -25,13 +26,9 @@ import java.util.Random;
 public class FirecrackerSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "firecracker");
 
-    public FirecrackerSpell() {
-        this(1);
-    }
-
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -41,14 +38,17 @@ public class FirecrackerSpell extends AbstractSpell {
             .setCooldownSeconds(1.5)
             .build();
 
-    public FirecrackerSpell(int level) {
-        super(SpellType.FIRECRACKER_SPELL);
-        this.setLevel(level);
+    public FirecrackerSpell() {
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 20;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
     }
 
     @Override
@@ -72,25 +72,25 @@ public class FirecrackerSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 shootAngle = entity.getLookAngle().normalize();
         float speed = 2.5f;
 
-        Vec3 hitPos = Utils.raycastForEntity(world, entity, getRange(entity), true).getLocation();
+        Vec3 hitPos = Utils.raycastForEntity(world, entity, getRange(spellLevel, entity), true).getLocation();
         Vec3 spawn = hitPos.subtract(shootAngle.scale(.5f));
 
-        ExtendedFireworkRocket firework = new ExtendedFireworkRocket(world, randomFireworkRocket(), entity, spawn.x, spawn.y, spawn.z, true, getDamage(entity));
+        ExtendedFireworkRocket firework = new ExtendedFireworkRocket(world, randomFireworkRocket(), entity, spawn.x, spawn.y, spawn.z, true, getDamage(spellLevel, entity));
         world.addFreshEntity(firework);
         firework.shoot(shootAngle.x, shootAngle.y, shootAngle.z, speed, 0);
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
-    private int getRange(LivingEntity entity) {
-        return 15 + (int) (getSpellPower(entity) * 2);
+    private int getRange(int spellLevel, LivingEntity entity) {
+        return 15 + (int) (getSpellPower(spellLevel, entity) * 2);
     }
 
-    private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity) * .5f;
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return getSpellPower(spellLevel, entity) * .5f;
     }
 
     private ItemStack randomFireworkRocket() {

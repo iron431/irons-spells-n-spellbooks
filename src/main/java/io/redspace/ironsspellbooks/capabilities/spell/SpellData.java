@@ -63,11 +63,8 @@ public class SpellData implements Comparable<SpellData> {
         stack.addTagElement(ISB_SPELL, spellTag);
     }
 
-    public static void setSpellData(ItemStack stack, int spellType, int spellLevel) {
-        var spellTag = new CompoundTag();
-        spellTag.putInt(LEGACY_SPELL_TYPE, spellType);
-        spellTag.putInt(SPELL_LEVEL, spellLevel);
-        stack.addTagElement(ISB_SPELL, spellTag);
+    public static void setSpellData(ItemStack stack, SpellData spellData) {
+        setSpellData(stack, spellData.getSpell().getSpellId(), spellData.getLevel());
     }
 
     public static void setSpellData(ItemStack stack, AbstractSpell spell, int spellLevel) {

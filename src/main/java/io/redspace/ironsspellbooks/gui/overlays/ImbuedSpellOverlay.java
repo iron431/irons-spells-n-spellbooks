@@ -42,7 +42,7 @@ public class ImbuedSpellOverlay extends GuiComponent {
             return;
         }
 
-        if (spellData.getLegacySpellId() == 0) {
+        if (spellData.equals(SpellData.EMPTY)) {
             return;
         }
 
@@ -63,7 +63,7 @@ public class ImbuedSpellOverlay extends GuiComponent {
         setOpaqueTexture(spell.getSpellIconResource());
         gui.blit(poseStack, centerX + 3, centerY + 4, 0, 0, 16, 16, 16, 16);
         //Border + Cooldowns
-        float f = ClientMagicData.getCooldownPercent(spell.getSpellType());
+        float f = ClientMagicData.getCooldownPercent(spell);
         if (f > 0 && !stack.getItem().equals(ItemRegistry.SCROLL.get())) {
             setTranslucentTexture(TEXTURE);
             int pixels = (int) (16 * f + 1f);

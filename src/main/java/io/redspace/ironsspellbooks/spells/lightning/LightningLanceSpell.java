@@ -25,8 +25,8 @@ public class LightningLanceSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "lightning_lance");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -36,7 +36,7 @@ public class LightningLanceSpell extends AbstractSpell {
             .setCooldownSeconds(8)
             .build();
 
-    public LightningLanceSpell(int level) {
+    public LightningLanceSpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 2;
@@ -47,10 +47,6 @@ public class LightningLanceSpell extends AbstractSpell {
     @Override
     public CastType getCastType() {
         return CastType.LONG;
-    }
-
-    public LightningLanceSpell() {
-        this(1);
     }
 
     @Override
@@ -65,7 +61,6 @@ public class LightningLanceSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
- //Ironsspellbooks.logger.debug("LightningLanceSpell.getCastStartSound");
         return Optional.of(SoundRegistry.LIGHTNING_LANCE_CAST.get());
     }
 
@@ -75,18 +70,13 @@ public class LightningLanceSpell extends AbstractSpell {
     }
 
     @Override
-    public void onServerPreCast(Level level, LivingEntity entity, @Nullable MagicData playerMagicData) {
-        super.onServerPreCast(level, entity, playerMagicData);
-    }
-
-    @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         LightningLanceProjectile lance = new LightningLanceProjectile(level, entity);
         lance.setPos(entity.position().add(0, entity.getEyeHeight(), 0).add(entity.getForward()));
         lance.shoot(entity.getLookAngle());
-        lance.setDamage(getSpellPower(entity));
+        lance.setDamage(getSpellPower(spellLevel, entity));
         level.addFreshEntity(lance);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     @Override

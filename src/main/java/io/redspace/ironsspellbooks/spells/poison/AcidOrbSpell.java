@@ -24,11 +24,11 @@ public class AcidOrbSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "acid_orb");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.rend", Utils.stringTruncation((getRendAmplifier(caster) + 1) * 5, 1)),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getRendDuration(caster), 1)));
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.rend", Utils.stringTruncation((getRendAmplifier(spellLevel, caster) + 1) * 5, 1)),
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getRendDuration(spellLevel, caster), 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -38,17 +38,12 @@ public class AcidOrbSpell extends AbstractSpell {
             .setCooldownSeconds(15)
             .build();
 
-    public AcidOrbSpell(){
-        this(1);
-    }
-
-    public AcidOrbSpell(int level) {
+    public AcidOrbSpell() {
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
         this.castTime = 15;
         this.baseManaCost = 30;
-
     }
 
     @Override
@@ -77,28 +72,28 @@ public class AcidOrbSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         AcidOrb orb = new AcidOrb(level, entity);
         orb.setPos(entity.position().add(0, entity.getEyeHeight() - orb.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
         orb.shoot(entity.getLookAngle());
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
-        orb.setExplosionRadius(getRadius(entity));
-        orb.setRendLevel(getRendAmplifier(entity));
-        orb.setRendDuration(getRendDuration(entity));
+        orb.setExplosionRadius(getRadius(spellLevel, entity));
+        orb.setRendLevel(getRendAmplifier(spellLevel, entity));
+        orb.setRendDuration(getRendDuration(spellLevel, entity));
         level.addFreshEntity(orb);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    public float getRadius(LivingEntity caster) {
-        return getSpellPower(caster) * 3;
+    public float getRadius(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster) * 3;
     }
 
-    public int getRendAmplifier(LivingEntity caster) {
-        return (int) (getSpellPower(caster) * this.getLevel(caster) - 1);
+    public int getRendAmplifier(int spellLevel, LivingEntity caster) {
+        return (int) (getSpellPower(spellLevel, caster) * this.getLevel(spellLevel, caster) - 1);
     }
 
-    public int getRendDuration(LivingEntity caster) {
-        return (int) (getSpellPower(caster) * 20 * 15);
+    public int getRendDuration(int spellLevel, LivingEntity caster) {
+        return (int) (getSpellPower(spellLevel, caster) * 20 * 15);
     }
 
     @Override

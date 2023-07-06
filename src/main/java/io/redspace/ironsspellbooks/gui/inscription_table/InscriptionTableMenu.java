@@ -83,7 +83,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
             @Override
             public void onTake(Player player, ItemStack stack) {
- //Ironsspellbooks.logger.debug("InscriptionTableMenu.take spell!");
+                //Ironsspellbooks.logger.debug("InscriptionTableMenu.take spell!");
                 var spellBookStack = spellBookSlot.getItem();
                 var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
                 spellBookData.removeSpell(selectedSpellIndex, spellBookStack);
@@ -117,7 +117,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     @Override
     public void slotsChanged(Container pContainer) {
         super.slotsChanged(pContainer);
- //Ironsspellbooks.logger.debug("InscriptionTableMenu.slotsChanged");
+        //Ironsspellbooks.logger.debug("InscriptionTableMenu.slotsChanged");
         setupResultSlot();
     }
 
@@ -152,8 +152,8 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     }
 
     private void setupResultSlot() {
- //Ironsspellbooks.logger.debug("InscriptionTableMenu.setupResultSlot");
- //Ironsspellbooks.logger.debug("InscriptionTableMenu.selected spell index: {}", selectedSpellIndex);
+        //Ironsspellbooks.logger.debug("InscriptionTableMenu.setupResultSlot");
+        //Ironsspellbooks.logger.debug("InscriptionTableMenu.selected spell index: {}", selectedSpellIndex);
 
         ItemStack resultStack = ItemStack.EMPTY;
         ItemStack spellBookStack = spellBookSlot.getItem();
@@ -164,7 +164,8 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
                 if (selectedSpellIndex >= 0 && spellBookData.getSpell(selectedSpellIndex) != null) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
-                    SpellData.setSpellData(resultStack, spellBookData.getSpell(selectedSpellIndex));
+                    var spellData = spellBookData.getSpell(selectedSpellIndex);
+                    SpellData.setSpellData(resultStack, spellData);
                 }
             }
         }

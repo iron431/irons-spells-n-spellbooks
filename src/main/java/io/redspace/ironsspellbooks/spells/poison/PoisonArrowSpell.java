@@ -30,23 +30,18 @@ public class PoisonArrowSpell extends AbstractSpell {
             .build();
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getArrowDamage(caster), 1)),
-                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getAOEDamage(caster), 1)));
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getArrowDamage(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getAOEDamage(spellLevel, caster), 1)));
     }
 
-    public PoisonArrowSpell(){
-        this(1);
-    }
-
-    public PoisonArrowSpell(int level) {
+    public PoisonArrowSpell() {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
         this.castTime = 20;
         this.baseManaCost = 40;
-
     }
 
     @Override
@@ -75,22 +70,22 @@ public class PoisonArrowSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         PoisonArrow magicArrow = new PoisonArrow(level, entity);
         magicArrow.setPos(entity.position().add(0, entity.getEyeHeight() - magicArrow.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
         magicArrow.shoot(entity.getLookAngle());
-        magicArrow.setDamage(getArrowDamage(entity));
-        magicArrow.setAoeDamage(getAOEDamage(entity));
+        magicArrow.setDamage(getArrowDamage(spellLevel, entity));
+        magicArrow.setAoeDamage(getAOEDamage(spellLevel, entity));
         level.addFreshEntity(magicArrow);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    public float getArrowDamage(LivingEntity caster) {
-        return getSpellPower(caster);
+    public float getArrowDamage(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster);
     }
 
-    public float getAOEDamage(LivingEntity caster) {
-        return getSpellPower(caster) * .185f;
+    public float getAOEDamage(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster) * .185f;
     }
 
     @Override

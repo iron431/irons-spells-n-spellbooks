@@ -28,14 +28,14 @@ public abstract class ItemMixin {
 
     @Inject(method = "getUseDuration", at = @At("HEAD"), cancellable = true)
     public void getUseDuration(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
-        if (SpellData.getSpellData(stack).getLegacySpellId() > 0) {
+        if (!SpellData.getSpellData(stack).equals(SpellData.EMPTY)) {
             cir.setReturnValue(7200);
         }
     }
 
     @Inject(method = "getUseAnimation", at = @At("HEAD"), cancellable = true)
     public void getUseAnimation(ItemStack stack, CallbackInfoReturnable<UseAnim> cir) {
-        if (SpellData.getSpellData(stack).getLegacySpellId() > 0) {
+        if (!SpellData.getSpellData(stack).equals(SpellData.EMPTY)) {
             cir.setReturnValue(UseAnim.BOW);
         }
     }

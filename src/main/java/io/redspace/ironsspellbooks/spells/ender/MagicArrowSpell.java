@@ -24,8 +24,8 @@ public class MagicArrowSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "magic_arrow");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -36,16 +36,11 @@ public class MagicArrowSpell extends AbstractSpell {
             .build();
 
     public MagicArrowSpell() {
-        this(1);
-    }
-
-    public MagicArrowSpell(int level) {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 2;
         this.castTime = 30;
         this.baseManaCost = 40;
-
     }
 
     @Override
@@ -74,13 +69,13 @@ public class MagicArrowSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         MagicArrowProjectile magicArrow = new MagicArrowProjectile(level, entity);
         magicArrow.setPos(entity.position().add(0, entity.getEyeHeight() - magicArrow.getBoundingBox().getYsize() * .5f, 0).add(entity.getForward()));
         magicArrow.shoot(entity.getLookAngle());
-        magicArrow.setDamage(getSpellPower(entity));
+        magicArrow.setDamage(getSpellPower(spellLevel, entity));
         level.addFreshEntity(magicArrow);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     @Override
