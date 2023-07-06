@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class BloodSlashSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_slash");
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -28,16 +30,12 @@ public class BloodSlashSpell extends AbstractSpell {
             .setCooldownSeconds(10)
             .build();
 
-    public BloodSlashSpell() {
-        this(1);
-    }
-
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)));
     }
 
-    public BloodSlashSpell(int level) {
+    public BloodSlashSpell() {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 1;

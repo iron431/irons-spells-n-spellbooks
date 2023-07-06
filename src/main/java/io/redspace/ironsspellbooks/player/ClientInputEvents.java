@@ -41,12 +41,6 @@ public final class ClientInputEvents {
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
-        if (event.side.isClient() && event.phase == TickEvent.Phase.START && test++ % 100 == 0) {
-            SpellRegistry.REGISTRY.get().getEntries().forEach(e -> {
-                IronsSpellbooks.LOGGER.debug("clientTick: spell registry:{}, {}, {}", e.getKey(), e.getValue().getSpellId(), e.getValue().getSpellResource());
-            });
-        }
-
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player == null)

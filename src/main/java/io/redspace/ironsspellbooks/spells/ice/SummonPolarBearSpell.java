@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.ice;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedPolarBear;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class SummonPolarBearSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "summon_polar_bear");
 

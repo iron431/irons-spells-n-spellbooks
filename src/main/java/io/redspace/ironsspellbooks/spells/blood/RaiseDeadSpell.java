@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
@@ -33,6 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class RaiseDeadSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "raise_dead");
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -42,16 +44,12 @@ public class RaiseDeadSpell extends AbstractSpell {
             .setCooldownSeconds(150)
             .build();
 
-    public RaiseDeadSpell() {
-        this(1);
-    }
-
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.summon_count", getLevel(spellLevel, caster)));
     }
 
-    public RaiseDeadSpell(int level) {
+    public RaiseDeadSpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 3;

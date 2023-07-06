@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class BloodStepSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_step");
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -40,16 +42,12 @@ public class BloodStepSpell extends AbstractSpell {
             .setCooldownSeconds(5)
             .build();
 
-    public BloodStepSpell() {
-        this(1);
-    }
-
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(spellLevel, caster), 1)));
     }
 
-    public BloodStepSpell(int level) {
+    public BloodStepSpell() {
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 4;
         this.baseManaCost = 30;

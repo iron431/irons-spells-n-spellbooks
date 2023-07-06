@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
 import io.redspace.ironsspellbooks.spells.*;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class BloodNeedlesSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_needles");
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -28,17 +30,13 @@ public class BloodNeedlesSpell extends AbstractSpell {
             .setCooldownSeconds(10)
             .build();
 
-    public BloodNeedlesSpell() {
-        this(1);
-    }
-
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
                 Component.translatable("ui.irons_spellbooks.projectile_count", getCount(spellLevel)));
     }
 
-    public BloodNeedlesSpell(int level) {
+    public BloodNeedlesSpell() {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;

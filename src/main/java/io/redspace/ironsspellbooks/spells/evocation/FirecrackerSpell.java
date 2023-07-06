@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedFireworkRocket;
 import io.redspace.ironsspellbooks.spells.*;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+@AutoSpellConfig
 public class FirecrackerSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "firecracker");
 

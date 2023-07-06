@@ -88,7 +88,7 @@ public class ServerConfigs {
         BUILDER.comment("Individual Spell Configuration");
         BUILDER.push("Spells");
 
-        SpellRegistry.REGISTRY.get().getValues()
+        SpellDiscovery.getSpellsForConfig()
                 .stream()
                 .collect(Collectors.groupingBy(x -> x.getDefaultConfig().school))
                 .forEach((school, spells) -> {

@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class DevourSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "devour");
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -28,10 +30,6 @@ public class DevourSpell extends AbstractSpell {
             .setCooldownSeconds(20)
             .build();
 
-    public DevourSpell() {
-        this(1);
-    }
-
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
@@ -40,7 +38,7 @@ public class DevourSpell extends AbstractSpell {
         );
     }
 
-    public DevourSpell(int level) {
+    public DevourSpell() {
         this.manaCostPerLevel = 4;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;

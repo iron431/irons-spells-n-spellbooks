@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
@@ -37,15 +38,15 @@ public class CommonSetup {
     @SubscribeEvent
     public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
         IronsSpellbooks.LOGGER.debug("onModConfigLoadingEvent");
-        if(event.getConfig().getType() == ModConfig.Type.SERVER){
-//            SpellType.resolveSchools();
+        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
+
         }
     }
 
     @SubscribeEvent
     public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
         IronsSpellbooks.LOGGER.debug("onModConfigReloadingEvent");
-        if(event.getConfig().getType() == ModConfig.Type.SERVER){
+        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
 //            SpellType.resolveSchools();
         }
     }

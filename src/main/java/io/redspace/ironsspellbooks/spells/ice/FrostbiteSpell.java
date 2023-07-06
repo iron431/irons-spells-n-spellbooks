@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.ice;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.HitResult;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class FrostbiteSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "frostbite");
 

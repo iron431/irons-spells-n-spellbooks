@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.network.spell.ClientboundBloodSiphonParticles;
@@ -24,6 +25,7 @@ import net.minecraft.world.phys.HitResult;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class RayOfSiphoningSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "ray_of_siphoning");
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -33,17 +35,13 @@ public class RayOfSiphoningSpell extends AbstractSpell {
             .setCooldownSeconds(15)
             .build();
 
-    public RayOfSiphoningSpell() {
-        this(1);
-    }
-
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getTickDamage(spellLevel, caster), 1)),
                 Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(spellLevel), 1)));
     }
 
-    public RayOfSiphoningSpell(int level) {
+    public RayOfSiphoningSpell() {
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
