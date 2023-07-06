@@ -197,7 +197,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private void drawSpellIcon(PoseStack poseStack, Vec2 pos, SpellSlotInfo slot) {
-        setTexture(slot.containedSpell.getSpellIconResource());
+        setTexture(slot.spellData.getSpell().getSpellIconResource());
         this.blit(poseStack, (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
     }
 
@@ -209,7 +209,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Title
         //
-        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).containedSpell.getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
+        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).spellData.getSpell().getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
         //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
 
         var titleLines = font.split(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
@@ -234,7 +234,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var colorMana = Style.EMPTY.withColor(0x0044a9);
         var colorCast = Style.EMPTY.withColor(0x115511);
         var colorCooldown = Style.EMPTY.withColor(0x115511);
-        var spell = spellSlots.get(selectedSpellIndex).containedSpell;
+        var spell = spellSlots.get(selectedSpellIndex).spellData.getSpell();
+        var spellLevel = spellSlots.get(selectedSpellIndex).spellData.getLevel();
         float textScale = 1f;
         float reverseScale = 1 / textScale;
 
@@ -257,20 +258,20 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Level
         //
-        var levelText = Component.translatable("ui.irons_spellbooks.level", spell.getLevel(null)).withStyle(textColor);
+        var levelText = Component.translatable("ui.irons_spellbooks.level", spell.getLevel(spellLevel, null)).withStyle(textColor);
         font.draw(poseStack, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF);
         descLine += font.lineHeight * textScale * 2;
 
         //
         // Mana
         //
-        descLine += drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost() + ""), colorMana, textScale);
+        descLine += drawStatText(font, poseStack, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost(spellLevel, null) + ""), colorMana, textScale);
 
         //
         // Cast Time
         //
 
-        descLine += drawText(font, poseStack, TooltipsUtils.getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(null), 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
+        descLine += drawText(font, poseStack, TooltipsUtils.getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, null), 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
 
         //
         // Cooldown
@@ -281,7 +282,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         //  Unique Info
         //
-        for (MutableComponent component : spell.getUniqueInfo(null)) {
+        for (MutableComponent component : spell.getUniqueInfo(spellLevel, null)) {
             descLine += drawText(font, poseStack, component, x + margin, descLine, textColor.getColor().getValue(), 1);
         }
 
@@ -402,8 +403,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 return;
 
             //  Is the spellbook a high enough rarity?
-            var scrollData = SpellData.getSpellData(menu.getScrollSlot().getItem());
-            if (spellBook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
+            var spellData = SpellData.getSpellData(menu.getScrollSlot().getItem());
+            if (spellBook.getRarity().compareRarity(spellData.getSpell().getRarity(spellData.getLevel())) < 0)
                 return;
 
             //  Is the Spell Book unique? (shouldn't even be possible to get this far but...)
@@ -482,18 +483,18 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private final int[][] LAYOUT = ClientRenderCache.SPELL_LAYOUT;
 
     private class SpellSlotInfo {
-        public AbstractSpell containedSpell;
+        public SpellData spellData;
         public Vec2 relativePosition;
         public Button button;
 
-        SpellSlotInfo(AbstractSpell containedSpell, Vec2 relativePosition, Button button) {
-            this.containedSpell = containedSpell;
+        SpellSlotInfo(SpellData spellData, Vec2 relativePosition, Button button) {
+            this.spellData = spellData;
             this.relativePosition = relativePosition;
             this.button = button;
         }
 
         public boolean hasSpell() {
-            return containedSpell != null;
+            return spellData != null && !spellData.equals(SpellData.EMPTY);
         }
     }
 
