@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
-import io.redspace.ironsspellbooks.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;

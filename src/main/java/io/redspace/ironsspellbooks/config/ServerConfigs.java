@@ -1,21 +1,9 @@
 package io.redspace.ironsspellbooks.config;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
-import io.redspace.ironsspellbooks.spells.DefaultConfig;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellRarity;
-import io.redspace.ironsspellbooks.spells.blood.*;
-import io.redspace.ironsspellbooks.spells.ender.*;
-import io.redspace.ironsspellbooks.spells.evocation.*;
-import io.redspace.ironsspellbooks.spells.fire.*;
-import io.redspace.ironsspellbooks.spells.holy.*;
-import io.redspace.ironsspellbooks.spells.ice.*;
-import io.redspace.ironsspellbooks.spells.lightning.*;
-import io.redspace.ironsspellbooks.spells.poison.*;
-import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
-import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
-import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
+import io.redspace.ironsspellbooks.api.DefaultConfig;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.*;

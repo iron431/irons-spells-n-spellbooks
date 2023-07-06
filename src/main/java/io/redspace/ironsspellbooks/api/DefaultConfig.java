@@ -1,4 +1,7 @@
-package io.redspace.ironsspellbooks.spells;
+package io.redspace.ironsspellbooks.api;
+
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 
 import java.util.function.Consumer;
 

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;

@@ -5,8 +5,8 @@
 //import io.redspace.ironsspellbooks.config.ServerConfigs;
 //import io.redspace.ironsspellbooks.damage.DamageSources;
 //import io.redspace.ironsspellbooks.spells.NoneSpell;
-//import io.redspace.ironsspellbooks.spells.SchoolType;
-//import io.redspace.ironsspellbooks.spells.SpellRarity;
+//import io.redspace.ironsspellbooks.api.spells.SchoolType;
+//import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 //import io.redspace.ironsspellbooks.spells.blood.*;
 //import io.redspace.ironsspellbooks.spells.ender.*;
 //import io.redspace.ironsspellbooks.spells.evocation.*;

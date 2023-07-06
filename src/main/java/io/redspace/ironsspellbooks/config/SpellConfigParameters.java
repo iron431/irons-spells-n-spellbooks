@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.config;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 
 public class SpellConfigParameters {
     public final int MAX_LEVEL;

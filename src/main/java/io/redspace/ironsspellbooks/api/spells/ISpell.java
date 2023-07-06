@@ -2,9 +2,7 @@ package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
-import io.redspace.ironsspellbooks.capabilities.magic.ImpulseCastData;
-import io.redspace.ironsspellbooks.spells.DefaultConfig;
-import io.redspace.ironsspellbooks.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.DefaultConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
@@ -15,7 +13,6 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
-import static io.redspace.ironsspellbooks.api.spells.CastType.*;
 
 public interface ISpell {
     ResourceLocation getSpellId();

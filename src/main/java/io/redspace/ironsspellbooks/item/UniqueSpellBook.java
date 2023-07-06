@@ -1,10 +1,8 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellDataRegistryHolder;
-import io.redspace.ironsspellbooks.spells.SpellRarity;
-import net.minecraftforge.registries.RegistryObject;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 
 import java.util.Arrays;
 
