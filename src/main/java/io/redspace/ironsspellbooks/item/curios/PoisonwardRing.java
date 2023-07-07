@@ -9,7 +9,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 public class PoisonwardRing extends SimpleDescriptiveCurio {
     public PoisonwardRing() {
-        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), Component.translatable("item.irons_spellbooks.poisonward_ring.desc").withStyle(ChatFormatting.YELLOW));
+        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), "ring");
     }
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {
