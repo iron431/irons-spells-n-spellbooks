@@ -22,7 +22,7 @@ public class AffinityRing extends SimpleDescriptiveCurio {
         var spell = RingData.getRingData(pStack).getSpell();
         if (spell != SpellType.NONE_SPELL) {
             tooltip.add(Component.empty());
-            tooltip.add(whenWornAsRing);
+            tooltip.add(Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD));
             tooltip.add(Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spell.getDisplayName().withStyle(spell.getSchoolType().getDisplayName().getStyle())).withStyle(ChatFormatting.YELLOW));
         }
     }

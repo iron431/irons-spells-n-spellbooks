@@ -17,6 +17,7 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
 
     public DeadKingRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new DeadKingModel());
+        this.addRenderLayer((new DeadKingEmissiveLayer(this)));
     }
 
     @Override
@@ -30,7 +31,8 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
 
     @Override
     public void preRender(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        poseStack.scale(1.3f, 1.3f, 1.3f);
+        if (animatable instanceof DeadKingBoss)
+            poseStack.scale(1.3f, 1.3f, 1.3f);
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 

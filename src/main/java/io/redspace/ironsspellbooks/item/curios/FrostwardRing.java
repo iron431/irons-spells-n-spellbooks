@@ -8,7 +8,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 public class FrostwardRing extends SimpleDescriptiveCurio {
     public FrostwardRing() {
-        super(new Properties().stacksTo(1), Component.translatable("item.irons_spellbooks.frostward_ring.desc").withStyle(ChatFormatting.YELLOW));
+        super(new Properties().stacksTo(1),"ring");
     }
 
     @Override

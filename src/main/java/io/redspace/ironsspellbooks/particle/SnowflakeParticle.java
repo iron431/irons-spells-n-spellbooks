@@ -17,7 +17,7 @@ public class SnowflakeParticle extends TextureSheetParticle {
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
-        this.quadSize *= .45f;
+        this.quadSize *= .65f;
         this.scale(1f);
         this.lifetime = 50 + (int) (Math.random() * 80);
         sprites = spriteSet;

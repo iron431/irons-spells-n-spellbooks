@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.icicle;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -74,7 +73,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
 
     @Override
     public float getSpeed() {
-        return 2f;
+        return 1.4f;
     }
 
     @Override

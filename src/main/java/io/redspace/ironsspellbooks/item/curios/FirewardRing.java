@@ -10,7 +10,7 @@ import top.theillusivec4.curios.api.SlotContext;
 
 public class FirewardRing extends SimpleDescriptiveCurio {
     public FirewardRing() {
-        super(new Item.Properties().stacksTo(1), Component.translatable("item.irons_spellbooks.fireward_ring.desc").withStyle(ChatFormatting.YELLOW));
+        super(new Item.Properties().stacksTo(1), "ring");
     }
 
 

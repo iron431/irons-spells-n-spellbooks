@@ -1,18 +1,19 @@
+
 ### Additions
-- Added Patchouli Guide Book
-- Added descriptions in JEI for Bottles o' Lightning and Blood vials for how to obtain them
-- Added config for Priest House spawn rate
+- Added Amulet of Concentration
 
 ### Changes
-- Combined Long and Charge Casts
-- Made battlegrounds smaller and more rare
-- Reworked Priest House to better fit vanilla and modded villages
-- Priest shakes his head like a villager if you interact with him
-- Refactored mana bar's hunger Y value calculation to automatically fit with other mods UI elements
+- Redid Icicle Projectile Visuals
+- Slowed Down Icicle Projectile
+- Redid Icicle Spell Icon
+- Redid Snowflake Particle Texture
+- Redid Magic Missile Visuals
+- Redid Magic Missile Icon
+- Replaced Dead King Boss Model and Weapon Model, thanks to Crydigo. Includes Progammer Art Texture Pack
 
 ### Fixes
-- Fixed piglins in the battlegrounds not having weapons
-- Chain Lightning can no longer target non-living entities, such as minecarts
-- Ceased cancelling the use item finish event
-- Magical Area of Effect entities are now affected by counterspell
-- Fixed typo in language file causing guiding bolt and chaing lightning death messages to not appear
+- Fixed Spellcasting Mobs casting Fang Strike while out of range
+- Fixed Quick Casting a spell out of bounds of your current spell book causing a crash
+- Fixed summoned horse being able to enter a glitched death state if summoned while dying
+- Fixed the Dead King not using a second single use spell during his second phase
+- Lightning Bolt Spell no longer strikes multiple times
