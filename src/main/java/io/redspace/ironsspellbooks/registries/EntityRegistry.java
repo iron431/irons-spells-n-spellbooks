@@ -239,7 +239,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<DeadKingBoss>> DEAD_KING =
             ENTITIES.register("dead_king", () -> EntityType.Builder.<DeadKingBoss>of(DeadKingBoss::new, MobCategory.MONSTER)
-                    .sized(.9f, 3f)
+                    .sized(.9f, 4f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "dead_king").toString()));
 
