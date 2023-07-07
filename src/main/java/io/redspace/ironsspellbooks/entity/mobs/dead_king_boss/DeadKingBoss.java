@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -47,6 +48,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -265,6 +267,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
+    protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
+        return pDimensions.height * 0.95F;
+
+    }
+
+    @Override
     public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
         if (isPhase(Phases.FinalPhase))
             return false;
@@ -364,6 +372,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         super.defineSynchedData();
         this.entityData.define(PHASE, 0);
         this.entityData.define(NEXT_SLAM, false);
+    }
+
+    @Override
+    public Packet<?> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     private final AnimationBuilder phase_transition_animation = new AnimationBuilder().addAnimation("dead_king_die", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
