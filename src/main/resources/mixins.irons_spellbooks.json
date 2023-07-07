@@ -5,21 +5,19 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
-    "AbstractClientPlayerMixin",
-    "CauldronMixin",
     "EntityMixin",
-    "GlassBottleMixin",
-    "GuiMixin",
     "ItemMixin",
-    "ItemRendererMixin",
     "LivingEntityMixin",
-    "LocalPlayerMixin",
-    "ParticleMixin",
-    "SpinAttackEffectLayerMixin",
     "TetraBladedItemMixin",
     "TridentItemMixin"
   ],
   "client": [
+    "AbstractClientPlayerMixin",
+    "GuiMixin",
+    "ItemRendererMixin",
+    "LocalPlayerMixin",
+    "SpinAttackEffectLayerMixin",
+    "ParticleMixin",
     "EntityRendererMixin"
   ],
   "injectors": {

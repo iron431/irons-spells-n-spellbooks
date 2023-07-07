@@ -1,10 +1,9 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
@@ -16,6 +15,7 @@ import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.CastType;
@@ -25,18 +25,27 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.AnvilUpdateEvent;
-import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
@@ -44,6 +53,7 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -57,7 +67,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent()
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
 
-        if (event.getEntity().level().isClientSide) {
+        if (event.getEntity().level.isClientSide) {
             return;
         }
 
@@ -73,7 +83,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerOpenContainer(PlayerContainerEvent.Open event) {
-        if (event.getEntity().level().isClientSide) {
+        if (event.getEntity().level.isClientSide) {
             return;
         }
         //Ironsspellbooks.logger.debug("onPlayerOpenContainer {} {}", event.getEntity().getName().getString(), event.getContainer().getType());
@@ -304,7 +314,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onEntityMountEvent(EntityMountEvent event) {
-        if (event.getEntity().level().isClientSide) {
+        if (event.getEntity().level.isClientSide) {
             return;
         }
 
@@ -318,7 +328,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void preventDismount(EntityMountEvent event) {
-        if (!event.getEntity().level().isClientSide && event.getEntityBeingMounted() instanceof PreventDismount && event.isDismounting() && !event.getEntityBeingMounted().isRemoved()) {
+        if (!event.getEntity().level.isClientSide && event.getEntityBeingMounted() instanceof PreventDismount && event.isDismounting() && !event.getEntityBeingMounted().isRemoved()) {
             event.setCanceled(true);
         }
     }
@@ -341,16 +351,37 @@ public class ServerPlayerEvents {
                 }
             }
         }
-
     }
 
-//    //TODO: Citadel reimplementation
-//    @SubscribeEvent
-//    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-//        if (event.phase == TickEvent.Phase.END)
-//            return;
-//        if (event.player instanceof ServerPlayer serverPlayer) {
-//            if (serverPlayer.tickCount % 20 == 0) {
+    @SubscribeEvent
+    public static void useOnEntityEvent(PlayerInteractEvent.EntityInteractSpecific event){
+        if(event.getTarget() instanceof Creeper creeper){
+            var player = event.getEntity();
+            var useItem = player.getItemInHand(event.getHand());
+            if(useItem.is(Items.GLASS_BOTTLE) && creeper.isPowered()){
+                creeper.hurt(DamageSource.GENERIC.bypassMagic(), 5);
+                player.level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
+                player.swing(event.getHand());
+                event.setCancellationResult(InteractionResultHolder.sidedSuccess(ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get())), player.getLevel().isClientSide).getResult()) ;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+        var entity = event.getEntity();
+        var level = entity.level;
+        if (!level.isClientSide) {
+            if (entity.tickCount % 20 == 0) {
+                BlockPos pos = entity.blockPosition();
+                BlockState blockState = entity.level.getBlockState(pos);
+                if(blockState.is(Blocks.CAULDRON)){
+                    BloodCauldronBlock.attemptCookEntity(blockState, entity.level, pos, entity, () -> {
+                        level.setBlockAndUpdate(pos, BlockRegistry.BLOOD_CAULDRON_BLOCK.get().defaultBlockState());
+                        level.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);
+                    });
+                }
+                //TODO: Citadel reimplementation
 //                //boolean inStructure = MAGIC_AURA_PREDICATE.matches(serverPlayer.getLevel(), serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
 //                //boolean inStructure = serverPlayer.getLevel().structureManager().get
 //                //var structure = serverPlayer.getLevel().structureManager().getStructureAt(serverPlayer.blockPosition());
@@ -361,10 +392,10 @@ public class ServerPlayerEvents {
 //                //IronsSpellbooks.LOGGER.debug("ServerPlayerEvents: In citadel: {}", inStructure);
 //                if (inStructure && !ItemRegistry.ENCHANTED_WARD_AMULET.get().isEquippedBy(serverPlayer))
 //                    serverPlayer.addEffect(new MobEffectInstance(MobEffectRegistry.ENCHANTED_WARD.get(), 40, 0, false, false, false));
-//
-//            }
-//        }
-//    }
+
+            }
+        }
+    }
 @SubscribeEvent
 public static void onAnvilRecipe(AnvilUpdateEvent event) {
     //IronsSpellbooks.LOGGER.debug("onAnvilRecipe");

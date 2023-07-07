@@ -10,11 +10,11 @@ import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.*;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -25,6 +25,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GenerateSiteData {
+
+    private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_recipe_data.failed"));
+
     private static final String RECIPE_DATA_TEMPLATE = """
             - id: "%s"
               name: "%s"
@@ -112,32 +115,33 @@ public class GenerateSiteData {
             source.getLevel().getRecipeManager().getRecipes()
                     .stream()
                     .filter(r -> r.getId().getNamespace().equals("irons_spellbooks") && !r.getId().toString().contains("poisonous_potato"))
+                    .sorted(Comparator.comparing(x -> x.getId().toString()))
                     .forEach(recipe -> {
                         //IronsSpellbooks.LOGGER.debug("recipe: {}, {}, {}", recipe.getId(), recipe.getClass(), recipe.getType());
                         //IronsSpellbooks.LOGGER.debug("recipe: resultItem: {}", ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem()));
 
-                        var resultItemResourceLocation = ForgeRegistries.ITEMS.getKey(recipe.getResultItem(source.getLevel().registryAccess()).getItem());
+                        var resultItemResourceLocation = ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem());
                         var recipeData = new ArrayList<RecipeData>(10);
                         recipeData.add(new RecipeData(
                                 resultItemResourceLocation.toString(),
-                                recipe.getResultItem(source.getLevel().registryAccess()).getItem().getName(ItemStack.EMPTY).getString(),
+                                recipe.getResultItem().getItem().getName(ItemStack.EMPTY).getString(),
                                 String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
-                                recipe.getResultItem(source.getLevel().registryAccess()).getItem())
+                                recipe.getResultItem().getItem())
                         );
 
-                        itemsTracked.add(recipe.getResultItem(source.getLevel().registryAccess()).getItem());
+                        itemsTracked.add(recipe.getResultItem().getItem());
 
                         if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
                             recipe.getIngredients().forEach(ingredient -> {
-                                handleIngredient(source, ingredient, recipeData, recipe);
+                                handleIngeredient(ingredient, recipeData, recipe);
                             });
-                        } else if (recipe instanceof SmithingRecipe smithingRecipe) {
-                            handleIngredient(source, smithingRecipe.getIngredients().get(0), recipeData, recipe);
-                            handleIngredient(source, smithingRecipe.getIngredients().get(1), recipeData, recipe);
+                        } else if (recipe instanceof UpgradeRecipe upgradeRecipe) {
+                            handleIngeredient(upgradeRecipe.base, recipeData, recipe);
+                            handleIngeredient(upgradeRecipe.addition, recipeData, recipe);
                         }
 
                         var name = getRecipeDataAtIndex(recipeData, 0).name;
-                        var tooltip = getTooltip(recipe.getResultItem(source.getLevel().registryAccess()));
+                        var tooltip = getTooltip(source.getPlayer(), recipe.getResultItem());
 
                         if (getRecipeDataAtIndex(recipeData, 0).item instanceof SpellBook || getRecipeDataAtIndex(recipeData, 0).item instanceof ExtendedSwordItem) {
                             appendToBuilder(spellbookBuilder, recipe, recipeData, "", tooltip);
@@ -145,37 +149,40 @@ public class GenerateSiteData {
                             var words = name.split(" ");
                             var group = Arrays.stream(words).limit(words.length - 1).collect(Collectors.joining(" "));
                             appendToBuilder(armorBuilder, recipe, recipeData, group, tooltip);
-                        } else if (recipe.getResultItem(source.getLevel().registryAccess()).getItem() instanceof BlockItem) {
+                        } else if (recipe.getResultItem().getItem() instanceof BlockItem) {
                             appendToBuilder(blockBuilder, recipe, recipeData, "", tooltip);
                         } else {
                             appendToBuilder(itemBuilder, recipe, recipeData, "", tooltip);
                         }
                     });
 
-            ForgeRegistries.ITEMS.forEach(item -> {
-                var itemResource = ForgeRegistries.ITEMS.getKey(item);
-                var tooltip = getTooltip(new ItemStack(item));
+            ForgeRegistries.ITEMS.getValues()
+                    .stream()
+                    .sorted(Comparator.comparing(Item::getDescriptionId))
+                    .forEach(item -> {
+                        var itemResource = ForgeRegistries.ITEMS.getKey(item);
+                        var tooltip = getTooltip(source.getPlayer(), new ItemStack(item));
 
-                if (itemResource.toString().contains("irons_spellbooks") && !itemsTracked.contains(item)) {
-                    //Non craftable items
-                    var name = item.getName(ItemStack.EMPTY).getString();
-                    if (item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
-                        //Skip
-                    } else if (armorTypes.stream().anyMatch(itemToMatch -> name.contains(itemToMatch))) {
-                        appendToBuilder2(armorBuilder, name, itemResource, tooltip);
-                    } else if (item instanceof UniqueSpellBook) {
-                        appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
-                    } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem) {
-                        appendToBuilder2(spellbookBuilder, name, itemResource, tooltip);
-                    } else if (item instanceof BlockItem) {
-                        appendToBuilder2(blockBuilder, name, itemResource, tooltip);
-                    } else {
-                        appendToBuilder2(itemBuilder, name, itemResource, tooltip);
-                    }
-                    itemsTracked.add(item);
+                        if (itemResource.toString().contains("irons_spellbooks") && !itemsTracked.contains(item)) {
+                            //Non craftable items
+                            var name = item.getName(ItemStack.EMPTY).getString();
+                            if (item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
+                                //Skip
+                            } else if (armorTypes.stream().anyMatch(itemToMatch -> name.contains(itemToMatch))) {
+                                appendToBuilder2(armorBuilder, name, itemResource, tooltip);
+                            } else if (item instanceof UniqueSpellBook) {
+                                appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
+                            } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem) {
+                                appendToBuilder2(spellbookBuilder, name, itemResource, tooltip);
+                            } else if (item instanceof BlockItem) {
+                                appendToBuilder2(blockBuilder, name, itemResource, tooltip);
+                            } else {
+                                appendToBuilder2(itemBuilder, name, itemResource, tooltip);
+                            }
+                            itemsTracked.add(item);
 
-                }
-            });
+                        }
+                    });
 
             var file = new BufferedWriter(new FileWriter("item_data.yml"));
             file.write(postProcess(itemBuilder));
@@ -219,8 +226,8 @@ public class GenerateSiteData {
         return "";
     }
 
-    private static String getTooltip(ItemStack itemStack) {
-        return Arrays.stream(itemStack.getTooltipLines(Minecraft.getInstance().player, TooltipFlag.Default.NORMAL)
+    private static String getTooltip(ServerPlayer player, ItemStack itemStack) {
+        return Arrays.stream(itemStack.getTooltipLines(player, TooltipFlag.Default.NORMAL)
                         .stream()
                         .skip(1) //First component is always the name. Ignore it
                         .map(Component::getString)
@@ -284,7 +291,7 @@ public class GenerateSiteData {
         ));
     }
 
-    private static void handleIngredient(CommandSourceStack source, Ingredient ingredient, ArrayList<RecipeData> recipeData, Recipe recipe) {
+    private static void handleIngeredient(Ingredient ingredient, ArrayList<RecipeData> recipeData, Recipe recipe) {
         Arrays.stream(ingredient.getItems())
                 .findFirst()
                 .ifPresentOrElse(itemStack -> {
@@ -301,7 +308,7 @@ public class GenerateSiteData {
                             itemResource.toString(),
                             itemStack.getItem().getName(ItemStack.EMPTY).getString(),
                             path,
-                            recipe.getResultItem(source.getLevel().registryAccess()).getItem()));
+                            recipe.getResultItem().getItem()));
 
                 }, () -> {
                     recipeData.add(RecipeData.EMPTY);
