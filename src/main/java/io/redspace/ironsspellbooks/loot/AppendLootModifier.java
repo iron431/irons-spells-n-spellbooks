@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -30,10 +31,11 @@ public class AppendLootModifier<V> extends LootModifier {
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+        IronsSpellbooks.LOGGER.debug("AppendLootModifier.doApply {}",resourceLocationKey);
         ResourceLocation path = new ResourceLocation(resourceLocationKey);
         var lootTable = context.getLevel().getServer().getLootData().getLootTable(path);
         ObjectArrayList<ItemStack> objectarraylist = new ObjectArrayList<>();
-        lootTable.getRandomItems(context, objectarraylist::add);
+        lootTable.getRandomItemsRaw(context, objectarraylist::add);
 
         //generatedLoot.addAll(lootTable.getRandomItems(context));
         generatedLoot.addAll(objectarraylist);
