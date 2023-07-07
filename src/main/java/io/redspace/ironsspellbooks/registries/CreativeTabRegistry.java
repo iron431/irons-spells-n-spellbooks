@@ -104,6 +104,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.POISONWARD_RING.get());
                 entries.accept(ItemRegistry.CONJURERS_TALISMAN.get());
                 entries.accept(ItemRegistry.AFFINITY_RING.get());
+                entries.accept(ItemRegistry.CONCENTRATION_AMULET.get());
 
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
             })

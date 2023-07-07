@@ -115,16 +115,11 @@ public class IronsSpellbooks {
 
     private static void addBuiltinPack(AddPackFindersEvent event, String filename, Component displayName) throws IOException {
         filename = "builtin_resource_packs/" + filename;
-        var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource(filename);
-        var pack = new PathPackResources(ModList.get().getModFileById(MODID).getFile().getFileName() + ":" + resourcePath, resourcePath);
-        var metadataSection = pack.getMetadataSection(PackMetadataSection.SERIALIZER);
         String id = "builtin/" + filename;
-        if (metadataSection != null) {
-            event.addRepositorySource((packConsumer, packConstructor) ->
-                    packConsumer.accept(packConstructor.create(
-                            id, displayName, false,
-                            () -> pack, metadataSection, Pack.Position.TOP, PackSource.BUILT_IN, false)));
-        }
+        var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource(filename);
+        var pack = Pack.readMetaAndCreate(id, displayName, false,
+                (path) -> new PathPackResources(path, true, resourcePath), PackType.CLIENT_RESOURCES, Pack.Position.TOP, PackSource.BUILT_IN);
+        event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
     }
 
 //    private void setup(final FMLCommonSetupEvent event) {

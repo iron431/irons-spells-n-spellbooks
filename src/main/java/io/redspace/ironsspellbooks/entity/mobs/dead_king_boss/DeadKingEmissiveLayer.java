@@ -4,14 +4,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-public class DeadKingEmissiveLayer extends GeoLayerRenderer<AbstractSpellCastingMob> {
+public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
     public static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_glowing.png");
     public static final ResourceLocation TEXTURE_ENRAGED = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged_glowing.png");
 
@@ -33,21 +35,31 @@ public class DeadKingEmissiveLayer extends GeoLayerRenderer<AbstractSpellCasting
 
 
     @Override
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityLivingBaseIn instanceof DeadKingCorpseEntity)
+    public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        if (animatable instanceof DeadKingCorpseEntity)
             return;
-        var model = getEntityModel().getModel(currentModel(entityLivingBaseIn));
+        var model = this.getGeoModel().getBakedModel(currentModel(animatable));
 
-        matrixStackIn.pushPose();
-        float scale = 1 / (1.3f);
-        matrixStackIn.scale(scale, scale, scale);
-        var renderType = renderType(currentTexture(entityLivingBaseIn));
-        VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
-        this.getRenderer().render(
-                model,
-                entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
-                vertexconsumer, 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f
-        );
-        matrixStackIn.popPose();
+        poseStack.pushPose();
+        renderType = renderType(currentTexture(animatable));
+        VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
+        this.getRenderer().actuallyRender(poseStack, animatable, model, renderType, bufferSource, vertexconsumer, true, partialTick,
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        poseStack.popPose();
     }
+//
+//    @Override
+//    public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+//        if (animatable instanceof DeadKingCorpseEntity)
+//            return;
+//        var model = this.getGeoModel().getBakedModel(currentModel(animatable));
+//
+//        poseStack.pushPose();
+//        renderType = renderType(currentTexture(animatable));
+//        VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
+//        this.getRenderer().reRender(model, poseStack, bufferSource, animatable, renderType, vertexconsumer, partialTick,
+//                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0.1f, 0.1f, 0.1f,/*.05f, .06f, 0.1f,*/ 1f);
+//        poseStack.popPose();
+//    }
+
 }
