@@ -36,8 +36,9 @@ public class SpellData {
         if (tag != null) {
             return new SpellData(SpellType.getTypeFromValue(tag.getInt(SPELL_TYPE)), tag.getInt(SPELL_LEVEL));
         } else if (stack.getItem() instanceof ExtendedSwordItem extendedSwordItem) {
-            setSpellData(stack, extendedSwordItem.getImbuedSpell(), extendedSwordItem.getImbuedLevel());
-            return new SpellData(extendedSwordItem.getImbuedSpell(), extendedSwordItem.getImbuedLevel());
+            var spellData = new SpellData(extendedSwordItem.getImbuedSpell(), extendedSwordItem.getImbuedLevel());
+            setSpellData(stack, spellData.spellId, spellData.spellLevel);
+            return spellData;
         } else {
             return new SpellData(SpellType.NONE_SPELL, 0);
         }
