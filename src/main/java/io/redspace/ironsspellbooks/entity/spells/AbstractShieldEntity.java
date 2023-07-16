@@ -25,6 +25,8 @@ import java.util.List;
 public abstract class AbstractShieldEntity extends Entity implements AntiMagicSusceptible {
     private static final EntityDataAccessor<Float> DATA_HEALTH_ID = SynchedEntityData.defineId(AbstractShieldEntity.class, EntityDataSerializers.FLOAT);
 
+    public boolean hurtThisTick;
+
     public AbstractShieldEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
 //        width = 3;
@@ -57,6 +59,7 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
 
     @Override
     public void tick() {
+        hurtThisTick = false;
         for (PartEntity<?> subEntity : getParts()) {
             Vec3 pos = subEntity.position();
             subEntity.setPos(pos);
