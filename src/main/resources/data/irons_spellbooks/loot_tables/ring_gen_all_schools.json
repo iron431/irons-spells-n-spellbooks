@@ -1,0 +1,139 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:affinity_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "school": "fire"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:affinity_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "school": "ice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:affinity_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "school": "lightning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:affinity_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "school": "holy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:affinity_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "school": "ender"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:affinity_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "school": "blood"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:affinity_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "school": "evocation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:affinity_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "school": "poison"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:affinity_ring",
+          "functions": [
+            {
+              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "school": "void"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
