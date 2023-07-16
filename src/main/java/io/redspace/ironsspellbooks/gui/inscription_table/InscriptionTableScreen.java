@@ -79,8 +79,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     @Override
     public void onClose() {
-        resetSelectedSpell();
         super.onClose();
+        resetSelectedSpell();
     }
 
     @Override
