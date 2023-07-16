@@ -230,11 +230,8 @@ dependencies {
     //runtimeOnly fg.deobf('com.stal111.valhelsia_structures:valhelsia_structures-forge:1.19.2-1.0.2')
 
     //Apotheosis
-//    implementation fg.deobf('shadows:Apotheosis:1.19.2-6.1.5')
-    compileOnly fg.deobf("curse.maven:apotheosis-313970:4646000")
-//    implementation fg.deobf('shadows:Placebo:1.19.2-7.1.8')
-    compileOnly fg.deobf("curse.maven:placebo-283644:4546960")
-//    compileOnly fg.deobf('vazkii:Patchouli:1.19.2-77')
+    implementation fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
+    implementation fg.deobf("curse.maven:placebo-${placebo_version}")
 //    compileOnly fg.deobf('me.shedaniel:REIPluginCompatibilities-forge:9.0.48')
 
     //Blue Skies
