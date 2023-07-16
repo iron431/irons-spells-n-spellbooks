@@ -4,5 +4,6 @@
   "version": 1,
   "pamphlet": true,
   "show_progress": false,
-  "model": "irons_spellbooks:patchouli_book"
+  "model": "irons_spellbooks:patchouli_book",
+  "use_resource_pack": true
 }
