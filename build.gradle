@@ -231,7 +231,7 @@ dependencies {
 
     //Apotheosis
 //    implementation fg.deobf('shadows:Apotheosis:1.19.2-6.1.5')
-    compileOnly fg.deobf("curse.maven:apotheosis-313970:4547399")
+    compileOnly fg.deobf("curse.maven:apotheosis-313970:4646000")
 //    implementation fg.deobf('shadows:Placebo:1.19.2-7.1.8')
     compileOnly fg.deobf("curse.maven:placebo-283644:4546960")
 //    compileOnly fg.deobf('vazkii:Patchouli:1.19.2-77')
