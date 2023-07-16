@@ -73,7 +73,6 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
             public boolean mayPlace(ItemStack stack) {
                 return stack.is(ModTags.SCHOOL_FOCUS);
             }
-
         };
         resultSlot = new SlotItemHandler(itemHandler, 3, 35, 47) {
             @Override
@@ -96,15 +95,23 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         this.addSlot(focusSlot);
         this.addSlot(resultSlot);
 
+
     }
 
-    public void onSlotsChanged() {
-        setupResultSlot(spellRecipeSelection);
- //Ironsspellbooks.logger.debug("ScrollForgeMenu.slotsChanged");
+    public void onSlotsChanged(int slot) {
+        if (slot != 3) {
+            //3 is the result slot
+            if (slot == 2)
+                //2 is the focus slot. we want to reset the scroll as to prevent focus swapping exploits
+                setRecipeSpell(SpellType.NONE_SPELL);
+            else
+                setupResultSlot(spellRecipeSelection);
+        }
+        IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.slotsChanged {}", slot);
     }
 
     private void setupResultSlot(SpellType selectedSpellType) {
- //Ironsspellbooks.logger.debug("ScrollForgeMenu.setupResultSlot");
+        IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.setupResultSlot: {}", selectedSpellType);
 
         ItemStack scrollStack = this.blankScrollSlot.getItem();
         ItemStack inkStack = this.inkSlot.getItem();
@@ -119,6 +126,8 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         }
 
         if (!ItemStack.matches(resultStack, this.resultSlot.getItem())) {
+            IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.setupResultSlot new result: {}", resultStack.getDisplayName().getString());
+
             this.resultSlot.set(resultStack);
         }
     }

@@ -54,22 +54,23 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     @Override
     public void onClose() {
-        selectedSpell = SpellType.NONE_SPELL;
+        setSelectedSpell(SpellType.NONE_SPELL);
         resetList();
         super.onClose();
     }
 
     private void resetList() {
         if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(ServerConfigs.getSpellConfig(selectedSpell).minRarity()) >= 0)))
-            selectedSpell = SpellType.NONE_SPELL;
+            setSelectedSpell(SpellType.NONE_SPELL);
         //TODO: reorder setting old focus to test if we actually need to reset the spell... or just give ink its own path since we dont even need to regenerate the list anyways
+        //TODO: update: what the fuck does that mean
         scrollOffset = 0;
 
         for (SpellCardInfo s : availableSpells)
             removeWidget(s.button);
         availableSpells.clear();
 
-        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpell.getValue()));
+        //Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpell.getValue()));
     }
 
     @Override
