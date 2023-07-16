@@ -126,9 +126,9 @@ public class MagicManager {
     public static int getEffectiveSpellCooldown(SpellType spellType, Player player, CastSource castSource) {
         double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION.get());
 
-        int itemCoolDownModifer = 1;
+        float itemCoolDownModifer = 1;
         if (castSource == CastSource.SWORD) {
-            itemCoolDownModifer = 2;
+            itemCoolDownModifer = .5f;
         }
 
         //IronsSpellbooks.LOGGER.debug("getEffectiveSpellCooldown before:{},after:{}", playerCooldownModifier, Utils.softCapFormula(playerCooldownModifier));
