@@ -56,11 +56,12 @@ public class SpellFilter {
                 case "fire" -> new SpellFilter(SchoolType.FIRE);
                 case "ice" -> new SpellFilter(SchoolType.ICE);
                 case "lightning" -> new SpellFilter(SchoolType.LIGHTNING);
-                case "ender" -> new SpellFilter(SchoolType.ENDER);
-                case "evocation" -> new SpellFilter(SchoolType.EVOCATION);
                 case "holy" -> new SpellFilter(SchoolType.HOLY);
+                case "ender" -> new SpellFilter(SchoolType.ENDER);
                 case "blood" -> new SpellFilter(SchoolType.BLOOD);
+                case "evocation" -> new SpellFilter(SchoolType.EVOCATION);
                 case "void" -> new SpellFilter(SchoolType.VOID);
+                case "poison" -> new SpellFilter(SchoolType.POISON);
                 default -> new SpellFilter();
             };
         } else if (GsonHelper.isArrayNode(json, "spells")) {

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldown;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
@@ -126,9 +127,9 @@ public class MagicManager {
     public static int getEffectiveSpellCooldown(SpellType spellType, Player player, CastSource castSource) {
         double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION.get());
 
-        int itemCoolDownModifer = 1;
+        float itemCoolDownModifer = 1;
         if (castSource == CastSource.SWORD) {
-            itemCoolDownModifer = 2;
+            itemCoolDownModifer = ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue();
         }
 
         //IronsSpellbooks.LOGGER.debug("getEffectiveSpellCooldown before:{},after:{}", playerCooldownModifier, Utils.softCapFormula(playerCooldownModifier));

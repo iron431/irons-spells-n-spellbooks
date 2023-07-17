@@ -44,7 +44,7 @@ public class DevourJaw extends AoeEntity {
                     var addition = 0;
                     if (oldVigor != null)
                         addition = oldVigor.getAmplifier() + 1;
-                    livingOwner.addEffect(new MobEffectInstance(MobEffectRegistry.VIGOR.get(), 20 * 60, vigorLevel + addition, false, false, true));
+                    livingOwner.addEffect(new MobEffectInstance(MobEffectRegistry.VIGOR.get(), 20 * 60, Math.min(vigorLevel + addition, 9), false, false, true));
                     livingOwner.heal((vigorLevel + 1) * 2);
                 }
             }

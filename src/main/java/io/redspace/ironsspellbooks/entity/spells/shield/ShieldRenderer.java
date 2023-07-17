@@ -50,7 +50,7 @@ public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements Rend
         var offset = getEnergySwirlOffset(entity, partialTicks);
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity), offset.x, offset.y));
 
-        float width = entity.width * .75f;
+        float width = entity.width * .65f;
         poseStack.scale(width, width, width);
         RenderSystem.disableBlend();
         model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0.65F, 0.65F, 0.65F, 1.0F);

@@ -88,7 +88,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     public void startDrinkingPotion() {
-        if (!level().isClientSide) {
+        if (!level.isClientSide) {
             setDrinkingPotion(true);
             drinkTime = 35;
             AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -102,7 +102,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         this.heal(Math.min(10, getMaxHealth() / 4));
         this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_MODIFIER_DRINKING);
         if (!this.isSilent()) {
-            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_DRINK, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_DRINK, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
         }
     }
 
@@ -110,13 +110,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
         super.onSyncedDataUpdated(pKey);
 
-        if (!level().isClientSide) {
+        if (!level.isClientSide) {
             return;
         }
 
         if (pKey.getId() == DATA_CANCEL_CAST.getId()) {
             if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.1 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level().isClientSide());
+                IronsSpellbooks.LOGGER.debug("ASCM.onSyncedDataUpdated.1 this.isCasting:{}, playerMagicData.isCasting:{} isClient:{}", isCasting(), playerMagicData == null ? "null" : playerMagicData.isCasting(), this.level.isClientSide());
             }
             cancelCast();
         }
@@ -134,13 +134,15 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         super.readAdditionalSaveData(pCompound);
         var syncedSpellData = new SyncedSpellData(this);
         syncedSpellData.loadNBTData(pCompound);
+        if (syncedSpellData.isCasting())
+            this.initiateCastSpell(syncedSpellData.getCastingSpellType(), syncedSpellData.getCastingSpellLevel());
         playerMagicData.setSyncedData(syncedSpellData);
         hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
     }
 
     public void cancelCast() {
         if (isCasting()) {
-            if (level().isClientSide) {
+            if (level.isClientSide) {
                 cancelCastAnimation = true;
             } else {
                 //Need to ensure we pass a different value if we want the data to sync
@@ -153,8 +155,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     private void castComplete() {
-        if (!level().isClientSide) {
-            castingSpell.onServerCastComplete(level(), this, playerMagicData, false);
+        if (!level.isClientSide) {
+            if (castingSpell != null)
+                castingSpell.onServerCastComplete(level, this, playerMagicData, false);
         } else {
             playerMagicData.resetCastingState();
         }
@@ -164,7 +167,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     public void startAutoSpinAttack(int pAttackTicks) {
         this.autoSpinAttackTicks = pAttackTicks;
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             this.setLivingEntityFlag(4, true);
         }
         //Lil trick
@@ -172,7 +175,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     public void setSyncedSpellData(SyncedSpellData syncedSpellData) {
-        if (!level().isClientSide) {
+        if (!level.isClientSide) {
             return;
         }
 
@@ -197,7 +200,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
             if (castingSpell.getCastType() == CastType.INSTANT) {
                 instantCastSpellType = castingSpell.getSpellType();
-                castingSpell.onClientPreCast(level(), this, InteractionHand.MAIN_HAND, playerMagicData);
+                castingSpell.onClientPreCast(level, this, InteractionHand.MAIN_HAND, playerMagicData);
                 castComplete();
             }
         }
@@ -211,7 +214,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 finishDrinkingPotion();
             } else if (drinkTime % 4 == 0)
                 if (!this.isSilent())
-                    this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, this.level().random.nextFloat() * 0.1F + 0.9F);
+                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, this.level.random.nextFloat() * 0.1F + 0.9F);
 
         }
 
@@ -222,7 +225,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         playerMagicData.handleCastDuration();
 
         if (playerMagicData.isCasting()) {
-            castingSpell.onServerCastTick(level(), this, playerMagicData);
+            castingSpell.onServerCastTick(level, this, playerMagicData);
         }
 
         if (Log.SPELL_DEBUG) {
@@ -240,19 +243,19 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 if (Log.SPELL_DEBUG) {
                     IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.3");
                 }
-                castingSpell.onCast(level(), this, playerMagicData);
+                castingSpell.onCast(level, this, playerMagicData);
             }
             castComplete();
         } else if (castingSpell.getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
-                castingSpell.onCast(level(), this, playerMagicData);
+                castingSpell.onCast(level, this, playerMagicData);
             }
         }
     }
 
     public void initiateCastSpell(SpellType spellType, int spellLevel) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("ASCM.initiateCastSpell: spellType:{} spellLevel:{}, isClient:{}", spellType, spellLevel, level().isClientSide);
+            IronsSpellbooks.LOGGER.debug("ASCM.initiateCastSpell: spellType:{} spellLevel:{}, isClient:{}", spellType, spellLevel, level.isClientSide);
         }
 
         if (spellType == SpellType.NONE_SPELL) {
@@ -260,7 +263,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             return;
         }
 
-        if (level().isClientSide) {
+        if (level.isClientSide) {
             cancelCastAnimation = false;
         }
 
@@ -270,9 +273,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             forceLookAtTarget(getTarget());
         }
 
-        if (!level().isClientSide && !castingSpell.checkPreCastConditions(level(), this, playerMagicData)) {
+        if (!level.isClientSide && !castingSpell.checkPreCastConditions(level, this, playerMagicData)) {
             if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spellType, spellLevel, level().isClientSide);
+                IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spellType, spellLevel, level.isClientSide);
             }
 
             castingSpell = null;
@@ -289,8 +292,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
         playerMagicData.initiateCast(castingSpell.getID(), castingSpell.getLevel(this), castingSpell.getEffectiveCastTime(this), CastSource.MOB);
 
-        if (!level().isClientSide) {
-            castingSpell.onServerPreCast(level(), this, playerMagicData);
+        if (!level.isClientSide) {
+            castingSpell.onServerPreCast(level, this, playerMagicData);
         }
     }
 
@@ -308,11 +311,11 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             boolean valid = false;
             for (int i = 0; i < 24; i++) {
                 teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
-                int y = Utils.findRelativeGroundLevel(target.level(), teleportPos, 5);
+                int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 5);
                 teleportPos = new Vec3(teleportPos.x, y, teleportPos.z);
                 var bb = this.getBoundingBox().inflate(.5f);
                 var reposBB = bb.move(teleportPos.subtract(this.position()));
-                if (!level().collidesWithSuffocatingBlock(this, reposBB)) {
+                if (!level.collidesWithSuffocatingBlock(this, reposBB)) {
                     IronsSpellbooks.LOGGER.debug("\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\nsetTeleportLocationBehindTarget: {} {} {} empty. teleporting\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n", reposBB.minX, reposBB.minY, reposBB.minZ);
                     valid = true;
                     break;
@@ -321,19 +324,19 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             }
             if (valid) {
                 if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: valid, pos:{}, isClient:{}", teleportPos, level().isClientSide());
+                    IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: valid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
                 }
                 playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
             } else {
                 if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level().isClientSide());
+                    IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
                 }
                 playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
 
             }
         } else {
             if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: no target, isClient:{}", level().isClientSide());
+                IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: no target, isClient:{}", level.isClientSide());
             }
             playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
         }
@@ -364,8 +367,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         float f = this.yBodyRot * ((float) Math.PI / 180F) + Mth.cos((float) this.tickCount * 0.6662F) * 0.25F;
         float f1 = Mth.cos(f);
         float f2 = Mth.sin(f);
-        this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() + (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() + (double) f2 * 0.6D, d0, d1, d2);
-        this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() - (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() - (double) f2 * 0.6D, d0, d1, d2);
+        this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() + (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() + (double) f2 * 0.6D, d0, d1, d2);
+        this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX() - (double) f1 * 0.6D, this.getY() + 1.8D, this.getZ() - (double) f2 * 0.6D, d0, d1, d2);
     }
 
     /**

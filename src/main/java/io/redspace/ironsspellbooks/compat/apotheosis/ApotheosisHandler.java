@@ -7,7 +7,7 @@
 //
 //public class ApotheosisHandler {
 //
-//    public static final LootCategory SPELLBOOK = LootCategory.register(LootCategory.SWORD, "spellbook", s-> s.getItem() instanceof SpellBook, s -> arr(EquipmentSlot.MAINHAND));
+//    public static final LootCategory SPELLBOOK = LootCategory.register(LootCategory.SWORD, "spellbook", s-> s.getItem() instanceof SpellBook, arr(EquipmentSlot.MAINHAND));
 //
 //    private static EquipmentSlot[] arr(EquipmentSlot... s) {
 //        return s;

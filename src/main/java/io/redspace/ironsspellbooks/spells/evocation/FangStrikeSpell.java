@@ -43,7 +43,7 @@ public class FangStrikeSpell extends AbstractSpell {
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
-        this.castTime = 20;
+        this.castTime = 15;
         this.baseManaCost = 30;
     }
 
@@ -66,7 +66,8 @@ public class FangStrikeSpell extends AbstractSpell {
             Vec3 spawn = start.add(forward.scale(i));
             spawn = new Vec3(spawn.x, getGroundLevel(world, spawn, 8), spawn.z);
             if (!world.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
-                ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, (entity.getYRot() - 90) * Mth.DEG_TO_RAD, i, entity, getDamage(entity));
+                int delay = i / 3;
+                ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, (entity.getYRot() - 90) * Mth.DEG_TO_RAD, delay, entity, getDamage(entity));
                 world.addFreshEntity(fang);
             }
 
@@ -94,7 +95,7 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     private int getCount(LivingEntity entity) {
-        return 5 + getLevel(entity);
+        return 7 + getLevel(entity);
     }
 
     private float getDamage(LivingEntity entity) {
