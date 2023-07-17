@@ -3,6 +3,7 @@
 - Added spell descriptions to tooltips in Inscription Table and Scroll Forge
 - Added config option for the cooldown multiplier of imbued weapons
 - Added entity collision to the Shield Spell
+- Added JEI descriptions on how to obtain various materials
 
 ### Changes
 - Updated apotheosis compatibility (thanks to amo) (fixes #101, #103)
