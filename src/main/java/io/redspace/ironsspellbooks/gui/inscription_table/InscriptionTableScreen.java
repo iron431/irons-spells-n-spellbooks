@@ -222,7 +222,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         for (FormattedCharSequence line : titleLines) {
             int titleWidth = font.width(line);
             int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
-            guiHelper.drawString(font, line, titleX, titleY, 0xFFFFFF);
+            guiHelper.drawString(font, line, titleX, titleY, 0xFFFFFF, false);
 
             //show description if hovering
             if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)) {
