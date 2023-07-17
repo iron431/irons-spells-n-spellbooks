@@ -2,6 +2,7 @@
 ### Additions
 - Added spell descriptions to tooltips in Inscription Table and Scroll Forge
 - Added config option for the cooldown multiplier of imbued weapons
+- Added entity collision to the Shield Spell
 
 ### Changes
 - Updated apotheosis compatibility (thanks to amo) (fixes #101, #103)
@@ -12,12 +13,11 @@
 - Fang Ward fang count now increases exponentially with its ring count
 - Updated Affinity Ring Textures
 - Imbued weapons now have half the cooldown instead of twice the cooldown
-- 
 
 ### Fixes
 - Fixed an exploit that could bypass a spell book's rarity limit when inscribing a spell (fixes #94)
 - Fixed an exploit that allowed a different focus to be used to craft a scroll (fixes #100)
-- Fixed some projectiles ignoring shield spell
+- Fixed some magic projectiles ignoring shield spell
 - Fixed aoe damage sources damaging shields multiple times
 - Fixed Magehunter not showing Counterspell until used
 - Fixed casting mobs causing null crash if casting while dying

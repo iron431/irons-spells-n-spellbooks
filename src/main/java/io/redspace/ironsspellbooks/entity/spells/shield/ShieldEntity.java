@@ -11,7 +11,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
@@ -51,7 +50,7 @@ public class ShieldEntity extends AbstractShieldEntity {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int i = x * height + y;
-                subEntities[i] = new ShieldPart(this, "part" + (i + 1), 0.5F, 0.5F);
+                subEntities[i] = new ShieldPart(this, "part" + (i + 1), 0.5F, 0.5F, true);
                 subPositions[i] = new Vec3((x - width / 2f) * .5f + .25f, (y - height / 2f) * .5f, 0);//.xRot(getXRot()).yRot(getYRot());
             }
         }

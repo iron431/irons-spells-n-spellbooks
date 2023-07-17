@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -9,6 +10,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -88,9 +91,6 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     @Override
     protected void onHit(HitResult hitresult) {
-//        if (hitresult instanceof EntityHitResult entityHitResult)
-//            if (entityHitResult.getEntity().getType() == EntityType.ENDERMAN || (entityHitResult.getEntity() instanceof LivingEntity livingEntity && PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().hasDodgeEffect()))
-//                return;
         super.onHit(hitresult);
         double x = xOld;
         double y = yOld;
@@ -135,7 +135,18 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
+    protected void onHitEntity(EntityHitResult pResult) {
+        super.onHitEntity(pResult);
+        if (!shouldPierceShields() && (pResult.getEntity() instanceof ShieldPart || pResult.getEntity() instanceof AbstractShieldEntity))
+            this.onHitBlock(new BlockHitResult(pResult.getEntity().position(), Direction.fromYRot(this.getYRot()), pResult.getEntity().blockPosition(), false));
+    }
+
+    @Override
     public boolean isOnFire() {
+        return false;
+    }
+
+    protected boolean shouldPierceShields() {
         return false;
     }
 }
