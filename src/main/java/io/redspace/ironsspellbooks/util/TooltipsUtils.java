@@ -54,7 +54,8 @@ public class TooltipsUtils {
         }
         if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get())
             lines.add(manaCost);
-        lines.add(cooldownTime);
+        if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue() > 0)
+            lines.add(cooldownTime);
         return lines;
     }
 

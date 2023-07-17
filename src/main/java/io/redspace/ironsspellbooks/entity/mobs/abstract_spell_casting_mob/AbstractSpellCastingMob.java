@@ -136,6 +136,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         super.readAdditionalSaveData(pCompound);
         var syncedSpellData = new SyncedSpellData(this);
         syncedSpellData.loadNBTData(pCompound);
+        if (syncedSpellData.isCasting())
+            this.initiateCastSpell(syncedSpellData.getCastingSpellType(), syncedSpellData.getCastingSpellLevel());
         playerMagicData.setSyncedData(syncedSpellData);
         hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
     }
@@ -156,7 +158,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
     private void castComplete() {
         if (!level.isClientSide) {
-            castingSpell.onServerCastComplete(level, this, playerMagicData, false);
+            if (castingSpell != null)
+                castingSpell.onServerCastComplete(level, this, playerMagicData, false);
         } else {
             playerMagicData.resetCastingState();
         }
