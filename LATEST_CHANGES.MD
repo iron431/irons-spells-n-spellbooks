@@ -2,6 +2,8 @@
 ### Additions
 - Added spell descriptions to tooltips in Inscription Table and Scroll Forge
 - Added config option for the cooldown multiplier of imbued weapons
+- Added compatibility for loot generation in all of Yung's Better mods
+- Added compatibility for loot generation in Structory
 
 ### Changes
 - Updated apotheosis compatibility (thanks to amo) (fixes #101, #103)

@@ -11,31 +11,7 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 1,
-                "max": 3
-              }
-            }
-          ]
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.35
-        }
-      ]
-    },
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:arcane_essence",
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 3,
+                "min": 2,
                 "max": 10
               }
             }
@@ -45,7 +21,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.25
+          "chance": 0.85
         }
       ]
     },
@@ -54,14 +30,14 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 1,
+          "weight": 3,
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.0,
-                "max": 0.3
+                "max": 0.6
               }
             }
           ]
@@ -69,12 +45,6 @@
         {
           "type": "minecraft:empty",
           "weight": 2
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.75
         }
       ]
     },
@@ -104,7 +74,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.05
+          "chance": 0.15
         }
       ]
     },
@@ -119,7 +89,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.1
+          "chance": 0.4
         }
       ]
     }
