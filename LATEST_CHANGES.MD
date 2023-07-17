@@ -1,6 +1,7 @@
 
 ### Additions
 - Added spell descriptions to tooltips in Inscription Table and Scroll Forge
+- Added config option for the cooldown multiplier of imbued weapons
 
 ### Changes
 - Updated apotheosis compatibility (thanks to amo) (fixes #101, #103)
@@ -19,3 +20,4 @@
 - Fixed some projectiles ignoring shield spell
 - Fixed aoe damage sources damaging shields multiple times
 - Fixed Magehunter not showing Counterspell until used
+- Fixed casting mobs causing null crash if casting while dying
