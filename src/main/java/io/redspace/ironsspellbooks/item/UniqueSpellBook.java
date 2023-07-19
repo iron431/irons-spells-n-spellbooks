@@ -5,10 +5,11 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class UniqueSpellBook extends SpellBook implements UniqueItem {
 
-    SpellData[] spellData = null;
+    List<SpellData> spellData = null;
     SpellDataRegistryHolder[] spellDataRegistryHolders;
 
     public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders) {
@@ -16,9 +17,9 @@ public class UniqueSpellBook extends SpellBook implements UniqueItem {
         this.spellDataRegistryHolders = spellDataRegistryHolders;
     }
 
-    public SpellData[] getSpells() {
+    public List<SpellData> getSpells() {
         if (spellData == null) {
-            spellData = (SpellData[]) Arrays.stream(spellDataRegistryHolders).map(SpellDataRegistryHolder::getSpellData).toArray();
+            spellData = Arrays.stream(spellDataRegistryHolders).map(SpellDataRegistryHolder::getSpellData).toList();
             spellDataRegistryHolders = null;
         }
         return spellData;

@@ -37,10 +37,13 @@ public class PlayerCooldowns {
     }
 
     public void tick(int actualTicks) {
-        spellCooldowns.forEach((spell, cooldown) -> {
-            if (decrementCooldown(cooldown, actualTicks))
-                spellCooldowns.remove(spell);
-        });
+        var spells = spellCooldowns.entrySet().stream().filter(x -> decrementCooldown(x.getValue(), actualTicks)).toList();
+        spells.forEach(spell -> spellCooldowns.remove(spell.getKey()));
+
+//        spellCooldowns.forEach((spell, cooldown) -> {
+//            if (decrementCooldown(cooldown, actualTicks))
+//                spellCooldowns.remove(spell);
+//        });
     }
 
     public boolean hasCooldownsActive() {

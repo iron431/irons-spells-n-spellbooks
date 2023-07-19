@@ -204,7 +204,7 @@ public class SpellBookData {
             var spellBookData = new SpellBookData(spellBook.getSpellSlots());
 
             if (spellBook instanceof UniqueSpellBook uniqueSpellBook) {
-                Arrays.stream(uniqueSpellBook.getSpells()).forEach(sd -> spellBookData.addSpell(sd.getSpell(), sd.getLevel(), null));
+                uniqueSpellBook.getSpells().forEach(sd -> spellBookData.addSpell(sd.getSpell(), sd.getLevel(), null));
             }
 
             setSpellBookData(stack, spellBookData);

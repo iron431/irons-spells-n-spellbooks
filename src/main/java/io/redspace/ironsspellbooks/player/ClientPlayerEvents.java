@@ -63,7 +63,7 @@ public class ClientPlayerEvents {
                     /*
                     Current Casting Spell Visuals
                      */
-                    if (spellData.getCastingSpellId().equals(SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId())) {
+                    if (spellData.isCasting() && spellData.getCastingSpellId().equals(SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId())) {
                         Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);
                         for (int i = 0; i < 8; i++) {
                             Vec3 motion = new Vec3(
@@ -101,7 +101,9 @@ public class ClientPlayerEvents {
         var livingEntity = event.getEntity();
         if (livingEntity instanceof Player) {
             var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
-            SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
+            if (syncedData.isCasting()) {
+                SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
+            }
         }
     }
 

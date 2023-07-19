@@ -32,6 +32,11 @@ public class ChargeSpellLayer {
         @Override
         public void render(PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight, T entity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
             var syncedSpellData = ClientMagicData.getSyncedSpellData(entity);
+
+            if (!syncedSpellData.isCasting()) {
+                return;
+            }
+
             var spellId = syncedSpellData.getCastingSpellId();
             poseStack.pushPose();
             var arm = getArmFromUseHand(entity);
