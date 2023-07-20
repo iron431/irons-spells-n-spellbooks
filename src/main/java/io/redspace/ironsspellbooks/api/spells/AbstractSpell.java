@@ -78,8 +78,6 @@ public abstract class AbstractSpell {
             spellID = resourceLocation.toString().intern();
         }
 
-        IronsSpellbooks.LOGGER.debug("AbstractSpell.getSpellId {}", spellID);
-
         return spellID;
     }
 
