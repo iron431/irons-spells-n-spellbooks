@@ -32,30 +32,42 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
 
     @Override
     public void render(AlchemistCauldronTile cauldron, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        float waterOffset = Mth.lerp(cauldron.getBlockState().getValue(AlchemistCauldronBlock.LEVEL) / (float) AlchemistCauldronBlock.MAX_LEVELS, .25f, .9f);
+
         if (cauldron.getBlockState().getValue(AlchemistCauldronBlock.LEVEL) > 0) {
-            VertexConsumer consumer = bufferSource.getBuffer(RenderType.beaconBeam(new ResourceLocation("textures/block/water_still.png"), true));
-            long color = cauldron.getAverageWaterColor();
-            var rgb = colorFromLong(color);
-
-            Matrix4f pose = poseStack.last().pose();
-            int frames = 32;
-            float frameSize = 1f / frames;
-            long frame = (cauldron.getLevel().getGameTime() / 3) % frames;
-            float min_u = 0;
-            float max_u = 1;
-            float min_v = (frameSize * frame);
-            float max_v = (frameSize * (frame + 1));
-
-
-            float yPos = Mth.lerp(cauldron.getBlockState().getValue(AlchemistCauldronBlock.LEVEL) / (float) AlchemistCauldronBlock.MAX_LEVELS, .2f, .9f);
-
-            consumer.vertex(pose, 1, yPos, 0).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(max_u, min_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
-            consumer.vertex(pose, 0, yPos, 0).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(min_u, min_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
-            consumer.vertex(pose, 0, yPos, 1).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(min_u, max_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
-            consumer.vertex(pose, 1, yPos, 1).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(max_u, max_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
-
+            renderWater(cauldron, poseStack, bufferSource, packedLight, waterOffset);
+        }
+        var floatingItems = cauldron.floatingItems;
+        for (int i = 0; i < floatingItems.size(); i++) {
+            var itemStack = floatingItems.get(i);
+            if (!itemStack.isEmpty()) {
+                renderItem(itemStack, new Vec3(.25f + (i % 2) * .5f, waterOffset, .25f + i / 2 * .5f), 0, cauldron, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
+            }
         }
 
+    }
+
+    private void renderWater(AlchemistCauldronTile cauldron, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float waterOffset) {
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.beaconBeam(new ResourceLocation("textures/block/water_still.png"), true));
+        long color = cauldron.getAverageWaterColor();
+        var rgb = colorFromLong(color);
+
+        Matrix4f pose = poseStack.last().pose();
+        int frames = 32;
+        float frameSize = 1f / frames;
+        long frame = (cauldron.getLevel().getGameTime() / 3) % frames;
+        float min_u = 0;
+        float max_u = 1;
+        float min_v = (frameSize * frame);
+        float max_v = (frameSize * (frame + 1));
+
+
+        float yPos = waterOffset;
+
+        consumer.vertex(pose, 1, yPos, 0).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(max_u, min_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
+        consumer.vertex(pose, 0, yPos, 0).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(min_u, min_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
+        consumer.vertex(pose, 0, yPos, 1).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(min_u, max_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
+        consumer.vertex(pose, 1, yPos, 1).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(max_u, max_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
     }
 
     private Vector3f colorFromLong(long color) {
@@ -66,24 +78,18 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         );
     }
 
-    private void renderItem(ItemStack itemStack, Vec3 offset, float yRot, PedestalTile pedestalTile, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    private void renderItem(ItemStack itemStack, Vec3 offset, float yRot, AlchemistCauldronTile tile, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         //renderId seems to be some kind of uuid/salt
-        int renderId = (int) pedestalTile.getBlockPos().asLong();
+        int renderId = (int) tile.getBlockPos().asLong();
         //BakedModel model = itemRenderer.getModel(itemStack, null, null, renderId);
 
         poseStack.translate(offset.x, offset.y, offset.z);
         poseStack.mulPose(Vector3f.YP.rotationDegrees(yRot));
-        if (itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof DiggerItem) {
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(-45));
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(90));
+        poseStack.scale(0.4f, 0.4f, 0.4f);
 
-        }
-        //poseStack.mulPose(Vector3f.ZP.rotationDegrees(yRot));
-
-        //poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-        poseStack.scale(0.65f, 0.65f, 0.65f);
-
-        itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.FIXED, LevelRenderer.getLightColor(pedestalTile.getLevel(), pedestalTile.getBlockPos()), packedOverlay, poseStack, bufferSource, renderId);
+        itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.FIXED, LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos()), packedOverlay, poseStack, bufferSource, renderId);
         poseStack.popPose();
     }
 
