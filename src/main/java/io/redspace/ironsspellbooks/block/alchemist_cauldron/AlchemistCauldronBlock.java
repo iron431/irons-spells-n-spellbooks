@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class AlchemistCauldronBlock extends BaseEntityBlock {
-    Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> interactions = newInteractionMap();
+    Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> interactions = AlchemistCauldronTile.newInteractionMap();
     public AlchemistCauldronBlock() {
         super(Properties.copy(Blocks.CAULDRON));
         this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(LEVEL, 0));
@@ -56,28 +56,9 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHit) {
         ItemStack itemStack = player.getItemInHand(hand);
         int currentLevel = blockState.getValue(LEVEL);
-        if (itemStack.is(Items.WATER_BUCKET)) {
-            if (currentLevel < MAX_LEVELS) {
-                this.createFilledResult(player, hand, level, blockState, pos, MAX_LEVELS, new ItemStack(Items.BUCKET), SoundEvents.BUCKET_EMPTY);
-                return InteractionResult.sidedSuccess(level.isClientSide);
-            }
-        } else if (currentLevel > 0 && itemStack.is(Items.GLASS_BOTTLE)) {
-            //TODO: safety checks?
-            var storedItems = ((AlchemistCauldronTile) level.getBlockEntity(pos)).getStoredItems();
-            if (storedItems.empty()) {
-                //No items means we only hold water, so we should create a water bottle and decrement level
-                this.createFilledResult(player, hand, level, blockState, pos, currentLevel - 1, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER), SoundEvents.BOTTLE_FILL);
-                return InteractionResult.sidedSuccess(level.isClientSide);
-            }
-        }
-        return super.use(blockState, level, pos, player, hand, blockHit);
+        return interactions.get(itemStack.getItem()).interact(blockState, level, pos, player, hand, currentLevel);
     }
 
-    private void createFilledResult(Player player, InteractionHand hand, Level level, BlockState blockState, BlockPos blockPos, int newLevel, ItemStack resultItem, SoundEvent soundEvent) {
-        player.setItemInHand(hand, ItemUtils.createFilledResult(player.getItemInHand(hand), player, resultItem));
-        level.setBlock(blockPos, blockState.setValue(LEVEL, newLevel), 3);
-        level.playSound(null, blockPos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
-    }
 
     @Nullable
     @Override
@@ -112,17 +93,6 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
     public boolean isFireSource(BlockState blockState) {
         //TODO: its a magic cauldron. why does it need a fire source?
         return true;//CampfireBlock.isLitCampfire(blockState);
-    }
-
-    interface AlchemistCauldronInteraction{
-        InteractionResult interact(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, int currentLevel);
-    }
-    static Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> newInteractionMap() {
-        return Util.make(new Object2ObjectOpenHashMap<>(), (p_175646_) -> {
-            p_175646_.defaultReturnValue((p_175739_, p_175740_, p_175741_, p_175742_, p_175743_, p_175744_) -> {
-                return InteractionResult.PASS;
-            });
-        });
     }
 
 }
