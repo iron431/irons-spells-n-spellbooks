@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +26,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -37,13 +39,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.LEVEL;
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.MAX_LEVELS;
 
-public class AlchemistCauldronTile extends BlockEntity {
+public class AlchemistCauldronTile extends BlockEntity implements WorldlyContainer {
     //basically the input container
     public final NonNullList<ItemStack> inputItems = NonNullList.withSize(MAX_LEVELS, ItemStack.EMPTY);
     //basically the output container
@@ -60,8 +63,9 @@ public class AlchemistCauldronTile extends BlockEntity {
             ItemStack itemStack = cauldronTile.inputItems.get(i);
             if (itemStack.isEmpty() || !isLit || isFull(cauldronTile.resultItems))
                 cauldronTile.cooktimes[i] = 0;
-            else
+            else {
                 cauldronTile.cooktimes[i]++;
+            }
             if (cauldronTile.cooktimes[i] > 100) {
                 cauldronTile.meltComponent(itemStack);
             }
@@ -81,6 +85,16 @@ public class AlchemistCauldronTile extends BlockEntity {
                 this.setChanged();
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
+        } else if (itemStack.isEmpty() && hand.equals(InteractionHand.MAIN_HAND)) {
+            if (!level.isClientSide) {
+                var item = grabItem(inputItems);
+                if (!item.isEmpty()) {
+                    player.setItemInHand(hand, item);
+                    this.setChanged();
+                }
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
+
         }
         return InteractionResult.PASS;
     }
@@ -93,7 +107,8 @@ public class AlchemistCauldronTile extends BlockEntity {
         }
         itemStack.shrink(1);
         setChanged();
-        level.playSound(null, this.getBlockPos(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.MASTER, 1, 1);
+        if (level != null)
+            level.playSound(null, this.getBlockPos(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.MASTER, 1, 1);
     }
 
     public Item getInkFromScroll(ItemStack scrollStack) {
@@ -112,10 +127,16 @@ public class AlchemistCauldronTile extends BlockEntity {
             return null;
     }
 
+
     @Override
     public void setChanged() {
         super.setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+    }
+
+    @Override
+    public boolean stillValid(Player pPlayer) {
+        return false;
     }
 
     public static boolean appendItem(NonNullList<ItemStack> container, ItemStack newItem) {
@@ -305,5 +326,66 @@ public class AlchemistCauldronTile extends BlockEntity {
         player.setItemInHand(hand, ItemUtils.createFilledResult(player.getItemInHand(hand), player, resultItem));
         level.setBlock(blockPos, blockState.setValue(LEVEL, newLevel), 3);
         level.playSound(null, blockPos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+    }
+
+    @Override
+    public int[] getSlotsForFace(Direction pSide) {
+        return new int[]{0, 1, 2, 3};
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int pIndex, ItemStack pItemStack, @Nullable Direction pDirection) {
+        return true;
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int pIndex, ItemStack pStack, Direction pDirection) {
+        return false;
+    }
+
+    @Override
+    public void clearContent() {
+        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.clearContents");
+    }
+
+    @Override
+    public int getContainerSize() {
+        return 4;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.isEmpty");
+        return isEmpty(inputItems);
+    }
+
+    @Override
+    public ItemStack getItem(int pSlot) {
+        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.getItem ({})", pSlot);
+        return pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.get(pSlot) : ItemStack.EMPTY;
+    }
+
+    @Override
+    public ItemStack removeItem(int pSlot, int pAmount) {
+        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.removeItem ({}, #{})", pSlot, pAmount);
+        //stack size is always one inside the cauldron, so we should be able to ignore amount
+        return pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.remove(pSlot) : ItemStack.EMPTY;
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int pSlot) {
+        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.removeItemNoUpdate ({})", pSlot);
+        return pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.remove(pSlot) : ItemStack.EMPTY;
+    }
+
+    @Override
+    public void setItem(int pSlot, ItemStack pStack) {
+        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.setItem ({}, {})", pSlot, pStack);
+        if (pSlot >= 0 && pSlot <= inputItems.size()) {
+            if (inputItems.get(pSlot).isEmpty())
+                inputItems.set(pSlot, pStack);
+            else
+                appendItem(inputItems, pStack);
+        }
     }
 }

@@ -46,12 +46,12 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
             if (!itemStack.isEmpty()) {
                 float f = cauldron.getLevel().getGameTime() + partialTick;
                 Vec2 floatOffset = getFloatingItemOffset(f, i * 587);
-                float yRot = (f + i * 213) / (i + 1);
+                float yRot = (f + i * 213) / (i + 1) * 1.5f;
                 renderItem(itemStack,
                         new Vec3(
-                                /*.25f + (i % 2) * .5f + */floatOffset.x,
+                                floatOffset.x,
                                 waterOffset + i * .01f,
-                                /*.25f + i / 2 * .5f + */floatOffset.y),
+                                floatOffset.y),
                         yRot, cauldron, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
             }
         }
@@ -59,8 +59,8 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
 
     public Vec2 getFloatingItemOffset(float time, int offset) {
         //for our case, offset never changes
-        float xspeed = offset % 2 == 0 ? .01f : .02f * (1 + (offset % 100) * .001f);
-        float yspeed = offset % 2 == 0 ? .02f : .01f * (1 + (offset % 100) * .001f);
+        float xspeed = offset % 2 == 0 ? .0075f : .025f * (1 + (offset % 88) * .001f);
+        float yspeed = offset % 2 == 0 ? .025f : .0075f * (1 + (offset % 88) * .001f);
         float x = (time + offset) * xspeed;
         x = (Math.abs((x % 2) - 1) + 1) / 2;
         float y = (time + offset + 4356) * yspeed;
