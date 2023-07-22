@@ -22,7 +22,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -510,5 +513,37 @@ public class Utils {
         }
         return false;
 
+    }
+
+    public static CompoundTag saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {
+        ListTag listtag = new ListTag();
+
+        for(int i = 0; i < pList.size(); ++i) {
+            ItemStack itemstack = pList.get(i);
+            if (!itemstack.isEmpty()) {
+                CompoundTag compoundtag = new CompoundTag();
+                compoundtag.putByte("Slot", (byte)i);
+                itemstack.save(compoundtag);
+                listtag.add(compoundtag);
+            }
+        }
+
+        if (!listtag.isEmpty()) {
+            pTag.put(location, listtag);
+        }
+
+        return pTag;
+    }
+
+    public static void loadAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {
+        ListTag listtag = pTag.getList(location, 10);
+
+        for (int i = 0; i < listtag.size(); ++i) {
+            CompoundTag compoundtag = listtag.getCompound(i);
+            int j = compoundtag.getByte("Slot") & 255;
+            if (j >= 0 && j < pList.size()) {
+                pList.set(j, ItemStack.of(compoundtag));
+            }
+        }
     }
 }

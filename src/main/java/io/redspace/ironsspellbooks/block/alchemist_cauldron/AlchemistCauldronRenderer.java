@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import io.redspace.ironsspellbooks.block.pedestal.PedestalTile;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -15,9 +15,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.phys.Vec3;
 
 
@@ -37,7 +35,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         if (cauldron.getBlockState().getValue(AlchemistCauldronBlock.LEVEL) > 0) {
             renderWater(cauldron, poseStack, bufferSource, packedLight, waterOffset);
         }
-        var floatingItems = cauldron.floatingItems;
+        var floatingItems = cauldron.inputItems;
         for (int i = 0; i < floatingItems.size(); i++) {
             var itemStack = floatingItems.get(i);
             if (!itemStack.isEmpty()) {
