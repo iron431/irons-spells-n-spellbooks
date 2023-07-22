@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
-interface AlchemistCauldronInteraction{
+public interface AlchemistCauldronInteraction{
     @Nullable
     ItemStack interact(BlockState blockState, Level level, BlockPos pos, int currentLevel, ItemStack itemStack);
 }

@@ -47,7 +47,7 @@ import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCaul
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.MAX_LEVELS;
 
 public class AlchemistCauldronTile extends BlockEntity implements WorldlyContainer {
-    Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> interactions = AlchemistCauldronTile.newInteractionMap();
+    public Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> interactions = AlchemistCauldronTile.newInteractionMap();
     //basically the input container
     public final NonNullList<ItemStack> inputItems = NonNullList.withSize(MAX_LEVELS, ItemStack.EMPTY);
     //basically the output container
@@ -333,7 +333,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     @Override
     public boolean canPlaceItemThroughFace(int pIndex, ItemStack pItemStack, @Nullable Direction pDirection) {
-        return true;
+        return pItemStack.is(ItemRegistry.SCROLL.get());
     }
 
     @Override
