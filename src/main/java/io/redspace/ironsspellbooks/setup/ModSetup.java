@@ -77,45 +77,44 @@ public class ModSetup {
         EntityDataSerializers.registerSerializer(SyncedSpellData.SYNCED_SPELL_DATA);
 
         event.enqueueWork(() ->
-        {
-            DispenserBlock.registerBehavior(Items.GLASS_BOTTLE.asItem(), new OptionalDispenseItemBehavior() {
-                private final DefaultDispenseItemBehavior defaultDispenseItemBehavior = new DefaultDispenseItemBehavior();
+                DispenserBlock.registerBehavior(Items.GLASS_BOTTLE.asItem(), new OptionalDispenseItemBehavior() {
+                    private final DefaultDispenseItemBehavior defaultDispenseItemBehavior = new DefaultDispenseItemBehavior();
+                    final DispenseItemBehavior oldBehavior = DispenserBlock.DISPENSER_REGISTRY.get(Items.GLASS_BOTTLE);
 
-                //takeLiquid copied from the other dispenser interactions
-                private ItemStack takeLiquid(BlockSource p_123447_, ItemStack p_123448_, ItemStack p_123449_) {
-                    p_123448_.shrink(1);
-                    if (p_123448_.isEmpty()) {
-                        p_123447_.getLevel().gameEvent((Entity) null, GameEvent.FLUID_PICKUP, p_123447_.getPos());
-                        return p_123449_.copy();
-                    } else {
-                        if (p_123447_.<DispenserBlockEntity>getEntity().addItem(p_123449_.copy()) < 0) {
-                            this.defaultDispenseItemBehavior.dispense(p_123447_, p_123449_.copy());
-                        }
+                    //takeLiquid copied from the other dispenser interactions
+                    private ItemStack takeLiquid(BlockSource p_123447_, ItemStack p_123448_, ItemStack p_123449_) {
+                        p_123448_.shrink(1);
+                        if (p_123448_.isEmpty()) {
+                            p_123447_.getLevel().gameEvent(null, GameEvent.FLUID_PICKUP, p_123447_.getPos());
+                            return p_123449_.copy();
+                        } else {
+                            if (p_123447_.<DispenserBlockEntity>getEntity().addItem(p_123449_.copy()) < 0) {
+                                this.defaultDispenseItemBehavior.dispense(p_123447_, p_123449_.copy());
+                            }
 
-                        return p_123448_;
-                    }
-                }
-
-                /**
-                 * Dispense the specified stack, play the dispense sound, and spawn particles.
-                 */
-                public ItemStack execute(BlockSource blockSource, ItemStack itemStack) {
-                    this.setSuccess(false);
-                    ServerLevel serverlevel = blockSource.getLevel();
-                    BlockPos blockpos = blockSource.getPos().relative(blockSource.getBlockState().getValue(DispenserBlock.FACING));
-                    BlockState blockstate = serverlevel.getBlockState(blockpos);
-                    if (AlchemistCauldronBlock.getLevel(blockstate) > 0 && serverlevel.getBlockEntity(blockpos) instanceof AlchemistCauldronTile cauldron) {
-                        var resultStack = cauldron.interactions.get(itemStack.getItem()).interact(blockstate, serverlevel, blockpos, AlchemistCauldronBlock.getLevel(blockstate), itemStack);
-                        if (resultStack != null) {
-                            this.setSuccess(true);
-                            cauldron.setChanged();
-                            return this.takeLiquid(blockSource, itemStack, resultStack);
+                            return p_123448_;
                         }
                     }
-                    return super.execute(blockSource, itemStack);
-                }
-            });
-        });
+
+                    /**
+                     * Dispense the specified stack, play the dispense sound, and spawn particles.
+                     */
+                    public ItemStack execute(BlockSource blockSource, ItemStack itemStack) {
+                        this.setSuccess(false);
+                        ServerLevel serverlevel = blockSource.getLevel();
+                        BlockPos blockpos = blockSource.getPos().relative(blockSource.getBlockState().getValue(DispenserBlock.FACING));
+                        BlockState blockstate = serverlevel.getBlockState(blockpos);
+                        if (AlchemistCauldronBlock.getLevel(blockstate) > 0 && serverlevel.getBlockEntity(blockpos) instanceof AlchemistCauldronTile cauldron) {
+                            var resultStack = cauldron.interactions.get(itemStack.getItem()).interact(blockstate, serverlevel, blockpos, AlchemistCauldronBlock.getLevel(blockstate), itemStack);
+                            if (resultStack != null) {
+                                this.setSuccess(true);
+                                cauldron.setChanged();
+                                return this.takeLiquid(blockSource, itemStack, resultStack);
+                            }
+                        }
+                        return oldBehavior.dispense(blockSource, itemStack);
+                    }
+                }));
     }
 
 

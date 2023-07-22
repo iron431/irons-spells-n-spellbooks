@@ -70,7 +70,6 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             if (cauldronTile.cooktimes[i] > 100) {
                 cauldronTile.meltComponent(itemStack);
             }
-
         }
         var random = level.getRandom();
         if (AlchemistCauldronBlock.isBoiling(blockState)) {
@@ -264,6 +263,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         //this only gets run client side
         //why do we have to clear it? isnt that what load should do? missing namespace = ignroe?? i wouldnt fucking know
         this.inputItems.clear();
+        this.resultItems.clear();
         if (tag != null) {
             load(tag);
         }
