@@ -2,10 +2,9 @@ package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.gui.overlays.ImbuedSpellOverlay;
-import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
@@ -32,22 +31,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nonnull;
-
-import java.util.Stack;
 
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.MAX_LEVELS;
 
 public class AlchemistCauldronTile extends BlockEntity {
+    //basically the input container
     public final NonNullList<ItemStack> floatingItems = NonNullList.withSize(MAX_LEVELS, ItemStack.EMPTY);
-    public final Stack<ItemStack> storedItems = new Stack<>();
+    //basically the output container
+    public final NonNullList<ItemStack> storedItems = NonNullList.withSize(MAX_LEVELS, ItemStack.EMPTY);
     private final int[] cooktimes = new int[MAX_LEVELS];
 
     public AlchemistCauldronTile(BlockPos pWorldPosition, BlockState pBlockState) {
         super(BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(), pWorldPosition, pBlockState);
     }
-
 
     public static void serverTick(Level level, BlockPos pos, BlockState blockState, AlchemistCauldronTile cauldronTile) {
         boolean isLit = AlchemistCauldronBlock.isLit(blockState);
@@ -67,13 +66,43 @@ public class AlchemistCauldronTile extends BlockEntity {
         }
     }
 
+    public InteractionResult handleUse(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (itemStack.is(ItemRegistry.SCROLL.get())) {
+            if (!level.isClientSide && this.appendItem(floatingItems, itemStack)) {
+                itemStack.shrink(1);
+                this.setChanged();
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+        return InteractionResult.PASS;
+    }
+
     public void meltComponent(ItemStack itemStack) {
-        if(itemStack.getItem() instanceof Scroll scroll){
-            var spellData = SpellData.getSpellData(itemStack);
-            SpellRarity rarity = spellData.getSpell().getRarity();
+        if (itemStack.is(ItemRegistry.SCROLL.get())) {
+            //TODO: add chance or counter or something
+            ItemStack result = new ItemStack(getInkFromScroll(itemStack));
+            appendItem(storedItems, result);
+            setChanged();
         }
         itemStack.shrink(1);
         level.playSound(null, this.getBlockPos(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.MASTER, 1, 1);
+    }
+
+    public Item getInkFromScroll(ItemStack scrollStack) {
+        if (scrollStack.getItem() instanceof Scroll scroll) {
+            var spellData = SpellData.getSpellData(scrollStack);
+            SpellRarity rarity = spellData.getSpell().getRarity();
+            return switch (rarity) {
+                case COMMON -> ItemRegistry.INK_COMMON.get();
+                case UNCOMMON -> ItemRegistry.INK_UNCOMMON.get();
+                case RARE -> ItemRegistry.INK_RARE.get();
+                case EPIC -> ItemRegistry.INK_EPIC.get();
+                case LEGENDARY -> ItemRegistry.INK_LEGENDARY.get();
+                default -> ItemRegistry.INK_COMMON.get();
+            };
+        } else
+            return null;
     }
 
     @Override
@@ -82,18 +111,38 @@ public class AlchemistCauldronTile extends BlockEntity {
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
-    public boolean addItem(ItemStack newItem) {
-        for (int i = 0; i < floatingItems.size(); i++) {
-            if (floatingItems.get(i).isEmpty()) {
+    public static boolean appendItem(NonNullList<ItemStack> container, ItemStack newItem) {
+        for (int i = 0; i < container.size(); i++) {
+            if (container.get(i).isEmpty()) {
                 var newItemCopy = newItem.copy();
                 newItemCopy.setCount(1);
-                floatingItems.set(i, newItemCopy);
-                setChanged();
-                IronsSpellbooks.LOGGER.debug("{}", floatingItems.toString());
+                container.set(i, newItemCopy);
+                IronsSpellbooks.LOGGER.debug("{}", container.toString());
                 return true;
             }
         }
         return false;
+    }
+
+    public static ItemStack grabItem(NonNullList<ItemStack> container) {
+        for (int i = container.size() - 1; i >= 0; i--) {
+            ItemStack item = container.get(i);
+            if (!item.isEmpty()) {
+                var newItem = item.copy();
+                newItem.setCount(1);
+                item.shrink(1);
+                IronsSpellbooks.LOGGER.debug("{}", container.toString());
+                return newItem;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public static boolean isEmpty(NonNullList<ItemStack> container) {
+        for (ItemStack itemStack : container)
+            if (!itemStack.isEmpty())
+                return false;
+        return true;
     }
 
     public int getItemWaterColor(ItemStack itemStack) {
@@ -121,6 +170,7 @@ public class AlchemistCauldronTile extends BlockEntity {
     @Override
     protected void saveAdditional(@Nonnull CompoundTag tag) {
         ContainerHelper.saveAllItems(tag, this.floatingItems);
+        ContainerHelper.saveAllItems(tag, this.storedItems);
         super.saveAdditional(tag);
     }
 
@@ -169,9 +219,10 @@ public class AlchemistCauldronTile extends BlockEntity {
                 return InteractionResult.PASS;
             }
         });
+        ;
         map.put(Items.BUCKET, (blockState, level, pos, player, hand, currentLevel, itemstack) -> {
             var storedItems = ((AlchemistCauldronTile) level.getBlockEntity(pos)).storedItems;
-            if (storedItems.empty() && currentLevel == MAX_LEVELS) {
+            if (isEmpty(storedItems) && currentLevel == MAX_LEVELS) {
                 createFilledResult(player, hand, level, blockState, pos, 0, new ItemStack(Items.WATER_BUCKET), SoundEvents.BUCKET_FILL);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             } else {
@@ -182,12 +233,12 @@ public class AlchemistCauldronTile extends BlockEntity {
             if (currentLevel > 0) {
                 //TODO: safety checks?
                 var storedItems = ((AlchemistCauldronTile) level.getBlockEntity(pos)).storedItems;
-                if (storedItems.empty()) {
+                if (isEmpty(storedItems)) {
                     //No items means we only hold water, so we should create a water bottle and decrement level
                     createFilledResult(player, hand, level, blockState, pos, currentLevel - 1, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER), SoundEvents.BOTTLE_FILL);
                 } else {
                     //If we have an item ready, pop it but don't change the level
-                    createFilledResult(player, hand, level, blockState, pos, currentLevel, storedItems.pop(), SoundEvents.BOTTLE_FILL_DRAGONBREATH);
+                    createFilledResult(player, hand, level, blockState, pos, currentLevel, grabItem(storedItems), SoundEvents.BOTTLE_FILL_DRAGONBREATH);
                 }
                 return InteractionResult.sidedSuccess(level.isClientSide);
 
