@@ -22,6 +22,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,6 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
+import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.LEVEL;
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.MAX_LEVELS;
 
 public class AlchemistCauldronTile extends BlockEntity {
@@ -149,7 +151,16 @@ public class AlchemistCauldronTile extends BlockEntity {
     public int getItemWaterColor(ItemStack itemStack) {
         if (this.getLevel() == null)
             return 0;
-        //TODO: ink/potion colors
+        if (itemStack.is(ItemRegistry.INK_COMMON.get()))
+            return 0x222222;
+        if (itemStack.is(ItemRegistry.INK_UNCOMMON.get()))
+            return 0x124300;
+        if (itemStack.is(ItemRegistry.INK_RARE.get()))
+            return 0x0f3844;
+        if (itemStack.is(ItemRegistry.INK_EPIC.get()))
+            return 0xa52ea0;
+        if (itemStack.is(ItemRegistry.INK_LEGENDARY.get()))
+            return 0xfcaf1c;
         return BiomeColors.getAverageWaterColor(this.getLevel(), this.getBlockPos());
     }
 
@@ -158,8 +169,21 @@ public class AlchemistCauldronTile extends BlockEntity {
 //    }
 
     public int getAverageWaterColor() {
-        //TODO: figure out how this shit is actually going to work
-        return getItemWaterColor(null);
+        float f = 0.0F;
+        float f1 = 0.0F;
+        float f2 = 0.0F;
+
+        for (ItemStack itemStack : resultItems) {
+            int k = getItemWaterColor(itemStack);
+            f += (float) ((k >> 16 & 255)) / 255.0F;
+            f1 += (float) ((k >> 8 & 255)) / 255.0F;
+            f2 += (float) ((k >> 0 & 255)) / 255.0F;
+        }
+
+        f = f / (float) 4 * 255.0F;
+        f1 = f1 / (float) 4 * 255.0F;
+        f2 = f2 / (float) 4 * 255.0F;
+        return (int) f << 16 | (int) f1 << 8 | (int) f2;
     }
 
     @Override
@@ -268,7 +292,7 @@ public class AlchemistCauldronTile extends BlockEntity {
 
     private static void createFilledResult(Player player, InteractionHand hand, Level level, BlockState blockState, BlockPos blockPos, int newLevel, ItemStack resultItem, SoundEvent soundEvent) {
         player.setItemInHand(hand, ItemUtils.createFilledResult(player.getItemInHand(hand), player, resultItem));
-        level.setBlock(blockPos, blockState.setValue(AlchemistCauldronBlock.LEVEL, newLevel), 3);
+        level.setBlock(blockPos, blockState.setValue(LEVEL, newLevel), 3);
         level.playSound(null, blockPos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 }
