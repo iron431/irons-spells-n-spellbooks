@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
@@ -12,6 +13,7 @@ import net.minecraft.Util;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.Connection;
@@ -19,6 +21,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -55,17 +58,18 @@ public class AlchemistCauldronTile extends BlockEntity {
         boolean isLit = AlchemistCauldronBlock.isLit(blockState);
         for (int i = 0; i < cauldronTile.inputItems.size(); i++) {
             ItemStack itemStack = cauldronTile.inputItems.get(i);
-            if (itemStack.isEmpty() || !isLit)
+            if (itemStack.isEmpty() || !isLit || isFull(cauldronTile.resultItems))
                 cauldronTile.cooktimes[i] = 0;
             else
                 cauldronTile.cooktimes[i]++;
             if (cauldronTile.cooktimes[i] > 100) {
-                //TODO: also check if the cauldron has space
                 cauldronTile.meltComponent(itemStack);
-                cauldronTile.setChanged();
-
             }
 
+        }
+        var random = level.getRandom();
+        if (AlchemistCauldronBlock.isBoiling(blockState)) {
+            MagicManager.spawnParticles(level, ParticleTypes.BUBBLE_POP, pos.getX() + Mth.randomBetween(random, .2f, .8f), pos.getY() + AlchemistCauldronRenderer.getWaterOffest(blockState), pos.getZ() + Mth.randomBetween(random, .2f, .8f), 1, 0, 0, 0, 0, false);
         }
     }
 
@@ -144,6 +148,13 @@ public class AlchemistCauldronTile extends BlockEntity {
     public static boolean isEmpty(NonNullList<ItemStack> container) {
         for (ItemStack itemStack : container)
             if (!itemStack.isEmpty())
+                return false;
+        return true;
+    }
+
+    public static boolean isFull(NonNullList<ItemStack> container) {
+        for (ItemStack itemStack : container)
+            if (itemStack.isEmpty())
                 return false;
         return true;
     }
