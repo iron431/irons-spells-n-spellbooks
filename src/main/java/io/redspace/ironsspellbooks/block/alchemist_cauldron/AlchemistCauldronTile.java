@@ -47,6 +47,7 @@ import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCaul
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.MAX_LEVELS;
 
 public class AlchemistCauldronTile extends BlockEntity implements WorldlyContainer {
+    Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> interactions = AlchemistCauldronTile.newInteractionMap();
     //basically the input container
     public final NonNullList<ItemStack> inputItems = NonNullList.withSize(MAX_LEVELS, ItemStack.EMPTY);
     //basically the output container
@@ -79,7 +80,12 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     public InteractionResult handleUse(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-        if (itemStack.is(ItemRegistry.SCROLL.get())) {
+        int currentLevel = blockState.getValue(LEVEL);
+        var cauldronInteractionResult = interactions.get(itemStack.getItem()).interact(blockState, level, pos, currentLevel, itemStack);
+        if (cauldronInteractionResult != null) {
+            player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, cauldronInteractionResult));
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        } else if (itemStack.is(ItemRegistry.SCROLL.get())) {
             if (!level.isClientSide && appendItem(inputItems, itemStack)) {
                 itemStack.shrink(1);
                 this.setChanged();
@@ -270,51 +276,43 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     static Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> newInteractionMap() {
         var map = Util.make(new Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction>(), (o2o) -> {
-            o2o.defaultReturnValue((blockState, level, blockPos, player, interactionHand, i, itemStack) -> {
-                return InteractionResult.PASS;
-            });
+            o2o.defaultReturnValue((blockState, level, blockPos, i, itemStack) -> null);
         });
 
-        map.put(Items.WATER_BUCKET, (blockState, level, pos, player, hand, currentLevel, itemstack) -> {
+        map.put(Items.WATER_BUCKET, (blockState, level, pos, currentLevel, itemstack) -> {
             if (currentLevel < MAX_LEVELS) {
-                createFilledResult(player, hand, level, blockState, pos, MAX_LEVELS, new ItemStack(Items.BUCKET), SoundEvents.BUCKET_EMPTY);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return createFilledResult(level, blockState, pos, MAX_LEVELS, new ItemStack(Items.BUCKET), SoundEvents.BUCKET_EMPTY);
             } else {
-                return InteractionResult.PASS;
+                return null;
             }
         });
-        ;
-        map.put(Items.BUCKET, (blockState, level, pos, player, hand, currentLevel, itemstack) -> {
-            var storedItems = ((AlchemistCauldronTile) level.getBlockEntity(pos)).resultItems;
-            if (isEmpty(storedItems) && currentLevel == MAX_LEVELS) {
-                createFilledResult(player, hand, level, blockState, pos, 0, new ItemStack(Items.WATER_BUCKET), SoundEvents.BUCKET_FILL);
-                return InteractionResult.sidedSuccess(level.isClientSide);
-            } else {
-                return InteractionResult.PASS;
+        map.put(Items.BUCKET, (blockState, level, pos, currentLevel, itemstack) -> {
+            if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile) {
+                if (isEmpty(tile.resultItems) && currentLevel == MAX_LEVELS) {
+                    return createFilledResult(level, blockState, pos, 0, new ItemStack(Items.WATER_BUCKET), SoundEvents.BUCKET_FILL);
+                }
             }
+            return null;
         });
-        map.put(Items.GLASS_BOTTLE, (blockState, level, pos, player, hand, currentLevel, itemstack) -> {
-            if (currentLevel > 0) {
-                //TODO: safety checks?
-                var storedItems = ((AlchemistCauldronTile) level.getBlockEntity(pos)).resultItems;
+        map.put(Items.GLASS_BOTTLE, (blockState, level, pos, currentLevel, itemstack) -> {
+            if (currentLevel > 0 && level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile) {
+                var storedItems = tile.resultItems;
                 if (isEmpty(storedItems)) {
                     //No items means we only hold water, so we should create a water bottle and decrement level
-                    createFilledResult(player, hand, level, blockState, pos, currentLevel - 1, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER), SoundEvents.BOTTLE_FILL);
+                    return createFilledResult(level, blockState, pos, currentLevel - 1, PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER), SoundEvents.BOTTLE_FILL);
                 } else {
                     //If we have an item ready, pop it but don't change the level
-                    createFilledResult(player, hand, level, blockState, pos, currentLevel, grabItem(storedItems), SoundEvents.BOTTLE_FILL_DRAGONBREATH);
+                    return createFilledResult(level, blockState, pos, currentLevel, grabItem(storedItems), SoundEvents.BOTTLE_FILL_DRAGONBREATH);
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
 
             }
-            return InteractionResult.PASS;
+            return null;
         });
-        map.put(Items.POTION, (blockState, level, pos, player, hand, currentLevel, itemstack) -> {
+        map.put(Items.POTION, (blockState, level, pos, currentLevel, itemstack) -> {
             if (currentLevel < MAX_LEVELS && PotionUtils.getPotion(itemstack) == Potions.WATER) {
-                createFilledResult(player, hand, level, blockState, pos, currentLevel + 1, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return createFilledResult(level, blockState, pos, currentLevel + 1, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
             }
-            return InteractionResult.PASS;
+            return null;
         });
 
 
@@ -322,10 +320,10 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
 
-    private static void createFilledResult(Player player, InteractionHand hand, Level level, BlockState blockState, BlockPos blockPos, int newLevel, ItemStack resultItem, SoundEvent soundEvent) {
-        player.setItemInHand(hand, ItemUtils.createFilledResult(player.getItemInHand(hand), player, resultItem));
+    private static ItemStack createFilledResult(Level level, BlockState blockState, BlockPos blockPos, int newLevel, ItemStack resultItem, SoundEvent soundEvent) {
         level.setBlock(blockPos, blockState.setValue(LEVEL, newLevel), 3);
         level.playSound(null, blockPos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
+        return resultItem;
     }
 
     @Override

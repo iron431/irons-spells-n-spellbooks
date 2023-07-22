@@ -8,6 +8,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.Nullable;
+
 interface AlchemistCauldronInteraction{
-    InteractionResult interact(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand, int currentLevel, ItemStack itemStack);
+    @Nullable
+    ItemStack interact(BlockState blockState, Level level, BlockPos pos, int currentLevel, ItemStack itemStack);
 }
