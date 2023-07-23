@@ -19,7 +19,7 @@ public class CommandRegistry {
 
         CreateScrollCommand.register(event.getDispatcher());
         CreateSpellBookCommand.register(event.getDispatcher());
-        //CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());
+        CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());
         CreateDebugWizardCommand.register(event.getDispatcher());
         ManaCommand.register(event.getDispatcher());
         GenerateModList.register(event.getDispatcher());
