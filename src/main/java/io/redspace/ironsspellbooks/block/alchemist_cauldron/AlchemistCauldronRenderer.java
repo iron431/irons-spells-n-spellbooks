@@ -36,7 +36,8 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
     public void render(AlchemistCauldronTile cauldron, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         float waterOffset = getWaterOffest(cauldron.getBlockState());
 
-        if (cauldron.getBlockState().getValue(AlchemistCauldronBlock.LEVEL) > 0) {
+        int waterLevel = cauldron.getBlockState().getValue(AlchemistCauldronBlock.LEVEL);
+        if (waterLevel > 0) {
             renderWater(cauldron, poseStack, bufferSource, packedLight, waterOffset);
         }
 
@@ -44,7 +45,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         for (int i = 0; i < floatingItems.size(); i++) {
             var itemStack = floatingItems.get(i);
             if (!itemStack.isEmpty()) {
-                float f = cauldron.getLevel().getGameTime() + partialTick;
+                float f = waterLevel > 0 ? cauldron.getLevel().getGameTime() + partialTick : 15;
                 Vec2 floatOffset = getFloatingItemOffset(f, i * 587);
                 float yRot = (f + i * 213) / (i + 1) * 1.5f;
                 renderItem(itemStack,

@@ -59,10 +59,9 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState blockState, AlchemistCauldronTile cauldronTile) {
-        boolean isLit = AlchemistCauldronBlock.isLit(blockState);
         for (int i = 0; i < cauldronTile.inputItems.size(); i++) {
             ItemStack itemStack = cauldronTile.inputItems.get(i);
-            if (itemStack.isEmpty() || !isLit || isFull(cauldronTile.resultItems))
+            if (itemStack.isEmpty() || !AlchemistCauldronBlock.isBoiling(blockState) || isFull(cauldronTile.resultItems))
                 cauldronTile.cooktimes[i] = 0;
             else {
                 cauldronTile.cooktimes[i]++;
@@ -86,19 +85,20 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             return InteractionResult.sidedSuccess(level.isClientSide);
         } else if (itemStack.is(ItemRegistry.SCROLL.get())) {
             if (!level.isClientSide && appendItem(inputItems, itemStack)) {
-                itemStack.shrink(1);
+                if (!player.getAbilities().instabuild)
+                    itemStack.shrink(1);
                 this.setChanged();
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
         } else if (itemStack.isEmpty() && hand.equals(InteractionHand.MAIN_HAND)) {
-            if (!level.isClientSide) {
-                var item = grabItem(inputItems);
-                if (!item.isEmpty()) {
+            var item = grabItem(inputItems);
+            if (!item.isEmpty()) {
+                if (!level.isClientSide) {
                     player.setItemInHand(hand, item);
                     this.setChanged();
                 }
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
 
         }
         return InteractionResult.PASS;
