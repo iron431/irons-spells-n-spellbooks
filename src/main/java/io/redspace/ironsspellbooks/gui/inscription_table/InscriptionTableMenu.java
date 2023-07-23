@@ -134,7 +134,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         if (spellBookItemStack.getItem() instanceof SpellBook spellBook && scrollItemStack.getItem() instanceof Scroll scroll) {
             var spellBookData = SpellBookData.getSpellBookData(spellBookItemStack);
             var scrollData = SpellData.getSpellData(scrollItemStack);
-            if (spellBookData.addSpell(scrollData.getSpell(), selectedIndex, spellBookItemStack))
+            if (spellBookData.addSpell(scrollData.getSpell(), scrollData.getLevel(), selectedIndex, spellBookItemStack))
                 getScrollSlot().remove(1);
         }
     }
