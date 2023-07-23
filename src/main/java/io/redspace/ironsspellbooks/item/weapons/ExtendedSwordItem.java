@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.item.weapons;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellDataRegistryHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -16,18 +17,17 @@ import java.util.Map;
 public class ExtendedSwordItem extends SwordItem {
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
-    private final String imbuedSpellId;
-    private final int imbuedLevel;
+    private final SpellDataRegistryHolder holder;
 
-    public String getImbuedSpellId() {
-        return imbuedSpellId;
+    public AbstractSpell getImbuedSpell() {
+        return holder.getSpellData().getSpell();
     }
 
     public int getImbuedLevel() {
-        return imbuedLevel;
+        return holder.getSpellData().getLevel();
     }
 
-    public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, AbstractSpell imbuedSpell, int imbuedLevel, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
+    public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, SpellDataRegistryHolder holder, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
         super(tier, 3, -2.4f, properties);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION));
@@ -36,9 +36,7 @@ public class ExtendedSwordItem extends SwordItem {
             builder.put(modifierEntry.getKey(), modifierEntry.getValue());
         }
         this.defaultModifiers = builder.build();
-
-        this.imbuedLevel = imbuedLevel;
-        this.imbuedSpellId = imbuedSpell.getSpellId();
+        this.holder = holder;
     }
 
     @Override

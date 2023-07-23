@@ -43,7 +43,7 @@ public class SpellData implements Comparable<SpellData> {
 
             return new SpellData(SpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
         } else if (stack.getItem() instanceof ExtendedSwordItem extendedSwordItem) {
-            var spell = SpellRegistry.getSpell(new ResourceLocation(extendedSwordItem.getImbuedSpellId()));
+            var spell = extendedSwordItem.getImbuedSpell();
             setSpellData(stack, spell, extendedSwordItem.getImbuedLevel());
             return new SpellData(spell, extendedSwordItem.getImbuedLevel());
         } else {
