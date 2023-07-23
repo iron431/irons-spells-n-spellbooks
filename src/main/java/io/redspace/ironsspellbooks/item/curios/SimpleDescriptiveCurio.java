@@ -10,26 +10,27 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SimpleDescriptiveCurio extends CurioBaseItem {
-    protected final static Component whenWornAsRing = Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD);
-    final Component description;
+    final @Nullable String slotIdentifier;
 
-    public SimpleDescriptiveCurio(Properties properties, Component description) {
+    public SimpleDescriptiveCurio(Properties properties, String slotIdentifier) {
         super(properties);
-        this.description = Component.literal(" ").append(description);
+        this.slotIdentifier = slotIdentifier;
     }
 
     public SimpleDescriptiveCurio(Properties properties) {
-        this(properties, Component.empty());
+        this(properties, null);
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.empty());
-        //currently only rings
-        pTooltipComponents.add(whenWornAsRing);
-        pTooltipComponents.add(description);
+    public List<Component> getSlotsTooltip(List<Component> tooltips, ItemStack stack) {
+        if (slotIdentifier != null) {
+            var title = Component.translatable("curios.modifiers." + this.slotIdentifier).withStyle(ChatFormatting.GOLD);
+            var description = Component.literal(" ").append(Component.translatable(this.getDescriptionId() + ".desc")).withStyle(ChatFormatting.YELLOW);
+            tooltips.add(Component.empty());
+            tooltips.add(title);
+            tooltips.add(description);
+        }
+
+        return super.getSlotsTooltip(tooltips, stack);
     }
-
-
 }

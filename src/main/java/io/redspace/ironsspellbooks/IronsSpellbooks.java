@@ -15,12 +15,19 @@ import io.redspace.ironsspellbooks.config.SpellDiscovery;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -28,11 +35,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.resource.PathPackResources;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -69,6 +78,8 @@ public class IronsSpellbooks {
         CommandArgumentRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
+        modEventBus.addListener(this::addPackFinders);
+
         //ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC,"irons_spellbooks-client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s-client.toml", IronsSpellbooks.MODID));
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s-server.toml", IronsSpellbooks.MODID));
@@ -96,6 +107,32 @@ public class IronsSpellbooks {
 
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.ARMOR_PILE_BLOCK.get(), RenderType.translucent());
+    }
+
+    public void addPackFinders(AddPackFindersEvent event) {
+        IronsSpellbooks.LOGGER.debug("addPackFinders");
+        try {
+            if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+                addBuiltinPack(event, "legacy_dead_king_resource_pack", Component.literal("Legacy Dead King"));
+            }
+        } catch (IOException ex) {
+            IronsSpellbooks.LOGGER.error("Failed to load a builtin resource pack! If you are seeing this message, please report an issue to https://github.com/iron431/Irons-Spells-n-Spellbooks/issues");
+            // throw new RuntimeException(ex);
+        }
+    }
+
+    private static void addBuiltinPack(AddPackFindersEvent event, String filename, Component displayName) throws IOException {
+        filename = "builtin_resource_packs/" + filename;
+        var resourcePath = ModList.get().getModFileById(MODID).getFile().findResource(filename);
+        var pack = new PathPackResources(ModList.get().getModFileById(MODID).getFile().getFileName() + ":" + resourcePath, resourcePath);
+        var metadataSection = pack.getMetadataSection(PackMetadataSection.SERIALIZER);
+        String id = "builtin/" + filename;
+        if (metadataSection != null) {
+            event.addRepositorySource((packConsumer, packConstructor) ->
+                    packConsumer.accept(packConstructor.create(
+                            id, displayName, false,
+                            () -> pack, metadataSection, Pack.Position.TOP, PackSource.BUILT_IN, false)));
+        }
     }
 
 //    private void setup(final FMLCommonSetupEvent event) {

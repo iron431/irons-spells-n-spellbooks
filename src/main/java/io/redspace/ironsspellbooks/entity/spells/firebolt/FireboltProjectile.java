@@ -61,7 +61,7 @@ public class FireboltProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        kill();
+        discard();
     }
 
     @Override
@@ -70,8 +70,9 @@ public class FireboltProjectile extends AbstractMagicProjectile {
         var target = entityHitResult.getEntity();
         if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.FIREBOLT_SPELL.get().getDamageSource(this, getOwner()), SchoolType.FIRE)) {
             target.setSecondsOnFire(3);
-            kill();
         }
+        discard();
+
     }
 
     @Override

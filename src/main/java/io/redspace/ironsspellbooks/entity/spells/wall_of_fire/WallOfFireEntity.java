@@ -115,7 +115,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             int steps = (int) ((start.distanceTo(end) + .5) / step);
             for (int currentStep = 0; currentStep < steps; currentStep++) {
                 //MagicManager.spawnParticles(level, ParticleTypes.DRAGON_BREATH, start.x + dirVec.x * x, start.y + dirVec.y * x, start.z + dirVec.z * x, 1, 0, 0, 0, 0, true);
-                ShieldPart part = new ShieldPart(this, "part" + i * steps + currentStep, .55f, height);
+                ShieldPart part = new ShieldPart(this, "part" + i * steps + currentStep, .55f, height, false);
                 double x = start.x + dirVec.x * currentStep;
                 double y = start.y + dirVec.y * currentStep;
                 double z = start.z + dirVec.z * currentStep;

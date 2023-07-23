@@ -42,7 +42,7 @@ public class FangWardSpell extends AbstractSpell {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
-        this.castTime = 20;
+        this.castTime = 15;
         this.baseManaCost = 45;
     }
 
@@ -79,7 +79,7 @@ public class FangWardSpell extends AbstractSpell {
         Vec3 center = entity.getEyePosition();
 
         for (int r = 0; r < rings; r++) {
-            float fangs = count + r * 2;
+            float fangs = count + r * r;
             for (int i = 0; i < fangs; i++) {
                 Vec3 spawn = center.add(new Vec3(0, 0, 1.5 * (r + 1)).yRot(entity.getYRot() * Mth.DEG_TO_RAD + ((6.281f / fangs) * i)));
                 spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevel(world, spawn, 5), spawn.z);

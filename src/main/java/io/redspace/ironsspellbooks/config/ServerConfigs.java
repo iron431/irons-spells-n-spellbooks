@@ -16,6 +16,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec SPEC;
     public static final SpellConfigParameters DEFAULT_CONFIG = new SpellConfigParameters(() -> true, () -> SchoolType.EVOCATION, () -> 10, () -> SpellRarity.COMMON, () -> 1d, () -> 1d, () -> 10d);
     public static final ForgeConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
+    public static final ForgeConfigSpec.ConfigValue<Double> SWORDS_CD_MULTIPLIER;
     public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
     public static final ForgeConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
@@ -43,6 +44,8 @@ public class ServerConfigs {
 
         BUILDER.comment("Whether or not imbued weapons require mana to be casted. Default: true");
         SWORDS_CONSUME_MANA = BUILDER.worldRestart().define("swordsConsumeMana", true);
+        BUILDER.comment("The multiplier on the cooldown of imbued weapons. Default: 0.5 (50% of default cooldown)");
+        SWORDS_CD_MULTIPLIER = BUILDER.worldRestart().define("swordsCooldownMultiplier", .5);
         BUILDER.comment("Whether or not players can harm their own magic summons. Default: false");
         CAN_ATTACK_OWN_SUMMONS = BUILDER.worldRestart().define("canAttackOwnSummons", false);
         BUILDER.comment("The maximum amount of times an applicable piece of equipment can be upgraded in the arcane anvil. Default: 3");

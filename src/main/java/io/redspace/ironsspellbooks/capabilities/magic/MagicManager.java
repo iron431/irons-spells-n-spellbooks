@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldown;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
@@ -102,9 +103,9 @@ public class MagicManager implements IMagicManager {
     public static int getEffectiveSpellCooldown(AbstractSpell spell, Player player, CastSource castSource) {
         double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION.get());
 
-        int itemCoolDownModifer = 1;
+        float itemCoolDownModifer = 1;
         if (castSource == CastSource.SWORD) {
-            itemCoolDownModifer = 2;
+            itemCoolDownModifer = ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue();
         }
         return (int) (spell.getSpellCooldown() * (2 - Utils.softCapFormula(playerCooldownModifier)) * itemCoolDownModifer);
     }

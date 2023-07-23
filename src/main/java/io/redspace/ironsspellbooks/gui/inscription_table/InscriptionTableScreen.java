@@ -79,8 +79,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     @Override
     public void onClose() {
-        resetSelectedSpell();
         super.onClose();
+        resetSelectedSpell();
     }
 
     @Override
@@ -209,7 +209,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Title
         //
-        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSlots.get(selectedSpellIndex).hasSpell() ? spellSlots.get(selectedSpellIndex).spellData.getSpell().getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
+        boolean spellSelected = selectedSpellIndex >= 0 && spellSlots.get(selectedSpellIndex).hasSpell();
+        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSelected ? spellSlots.get(selectedSpellIndex).spellData.getSpell().getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
         //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
 
         var titleLines = font.split(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
@@ -219,6 +220,13 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             int titleWidth = font.width(line);
             int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
             font.draw(poseStack, line, titleX, titleY, 0xFFFFFF);
+
+            //show description if hovering
+            if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)) {
+                renderTooltip(poseStack, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).containedSpell.getSpellType(), font), mouseX, mouseY);
+            }
+
+            //increment y for next line
             titleY += font.lineHeight;
         }
         var titleHeight = font.wordWrapHeight(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
@@ -241,12 +249,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         Component school = spell.getSchoolType().getDisplayName();
         poseStack.scale(textScale, textScale, textScale);
-
-        //
-        // Description
-        //
-//        if (isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY))
-//            renderTooltip(poseStack, Component.literal("test"), mouseX, mouseY);
 
 
         //

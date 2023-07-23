@@ -88,4 +88,9 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
 
         super.onHit(result);
     }
+
+    @Override
+    protected boolean shouldPierceShields() {
+        return true;
+    }
 }

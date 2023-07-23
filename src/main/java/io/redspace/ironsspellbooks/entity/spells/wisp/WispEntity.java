@@ -119,7 +119,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
         } else {
             var target = this.getTarget();
             if (target != null) {
-                if (this.getBoundingBox().inflate(.3).intersects(target.getBoundingBox())) {
+                if (this.getBoundingBox().intersects(target.getBoundingBox())) {
                    // IronsSpellbooks.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
                     DamageSources.applyDamage(target, damageAmount, SpellRegistry.WISP_SPELL.get().getDamageSource(this,cachedOwner), SchoolType.HOLY);
                     this.playSound(WispSpell.getImpactSound(), 1.0f, 1.0f);

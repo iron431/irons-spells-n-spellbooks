@@ -35,7 +35,7 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
         protected void onContentsChanged(int slot) {
-            updateMenuSlots();
+            updateMenuSlots(slot);
             setChanged();
         }
     };
@@ -46,9 +46,9 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
         super(BlockRegistry.SCROLL_FORGE_TILE.get(), pWorldPosition, pBlockState);
     }
 
-    private void updateMenuSlots() {
+    private void updateMenuSlots(int slot) {
         if (menu != null) {
-            menu.onSlotsChanged();
+            menu.onSlotsChanged(slot);
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }

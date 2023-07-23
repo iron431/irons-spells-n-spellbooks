@@ -73,7 +73,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
 
     @Override
     public float getSpeed() {
-        return 2f;
+        return 1.4f;
     }
 
     @Override

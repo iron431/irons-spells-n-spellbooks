@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -47,6 +48,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.NetworkHooks;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -136,7 +138,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-
+        this.hasUsedSingleAttack = false;
         //this.goalSelector.addGoal(2, new VexRandomMoveGoal());
     }
 
@@ -242,7 +244,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                     var player = level.getNearestPlayer(this, 16);
                     if (player != null)
                         lookAt(player, 360, 360);
-                    setHealth(halfHealth);
+                    if (!isDeadOrDying())
+                        setHealth(halfHealth);
                     playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get());
                     //Overriding isInvulnerable just doesn't seem to work
                     setInvulnerable(true);
@@ -261,6 +264,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 this.bossEvent.setProgress(this.getHealth() / (this.getMaxHealth() - halfHealth));
             }
         }
+    }
+
+    @Override
+    protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
+        return pDimensions.height * 0.95F;
+
     }
 
     @Override
@@ -363,6 +372,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         super.defineSynchedData();
         this.entityData.define(PHASE, 0);
         this.entityData.define(NEXT_SLAM, false);
+    }
+
+    @Override
+    public Packet<?> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     private final AnimationBuilder phase_transition_animation = new AnimationBuilder().addAnimation("dead_king_die", ILoopType.EDefaultLoopTypes.PLAY_ONCE);

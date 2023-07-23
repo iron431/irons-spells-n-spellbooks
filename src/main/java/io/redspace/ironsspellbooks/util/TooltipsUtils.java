@@ -10,9 +10,12 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -51,7 +54,8 @@ public class TooltipsUtils {
         }
         if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get())
             lines.add(manaCost);
-        lines.add(cooldownTime);
+        if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue() > 0)
+            lines.add(cooldownTime);
         return lines;
     }
 
@@ -109,5 +113,14 @@ public class TooltipsUtils {
         } else {
             return Component.translatable("tooltip.irons_spellbooks.mana_cost", manaCost);
         }
+    }
+
+    public static List<FormattedCharSequence> createSpellDescriptionTooltip(SpellType spell, Font font){
+        var name = spell.getDisplayName();
+        var description = font.split(Component.translatable(String.format("%s.guide", spell.getComponentId())).withStyle(ChatFormatting.GRAY), 180);
+        var hoverText = new ArrayList<FormattedCharSequence>();
+        hoverText.add(FormattedCharSequence.forward(name.getString(), Style.EMPTY.withUnderlined(true)));
+        hoverText.addAll(description);
+        return hoverText;
     }
 }
