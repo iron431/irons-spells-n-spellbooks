@@ -112,8 +112,10 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         }
         itemStack.shrink(1);
         setChanged();
-        if (level != null)
+        if (level != null) {
             level.playSound(null, this.getBlockPos(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.MASTER, 1, 1);
+            level.markAndNotifyBlock(this.getBlockPos(), this.level.getChunkAt(this.getBlockPos()), this.getBlockState(), this.getBlockState(), 1, 1);
+        }
     }
 
     public Item getInkFromScroll(ItemStack scrollStack) {
@@ -198,6 +200,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             return 0xa52ea0;
         if (itemStack.is(ItemRegistry.INK_LEGENDARY.get()))
             return 0xfcaf1c;
+        if (itemStack.is(ItemRegistry.BLOOD_VIAL.get()))
+            return 0x5b0716;
         return BiomeColors.getAverageWaterColor(this.getLevel(), this.getBlockPos());
     }
 

@@ -35,31 +35,6 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         super(Properties.copy(Blocks.CAULDRON), NO_WEATHER, getInteractionMap());
     }
 
-//    @Override
-//    public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
-//        if (!level.isClientSide) {
-//            irons_spellbooks.LOGGER.debug("BloodCauldronBlock.tick: {}", timer);
-//
-//            if (++timer >= 20) {
-//                timer = 0;
-//                if (CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
-//                    if (level.getBlockState(pos).getBlock() instanceof BloodCauldronBlock cauldron) {
-//                        var entities = level.getEntities(null, cauldron.getInteractionShape(blockState, level, pos).bounds().move(pos));
-//                        for (Entity victim : entities) {
-//                            if (victim instanceof LivingEntity livingEntity) {
-//                                livingEntity.hurt(DamageSource.HOT_FLOOR, 2);
-//                                if (level.random.nextDouble() <= .5 && blockState.getValue(LayeredCauldronBlock.LEVEL) != 3) {
-//                                    level.setBlockAndUpdate(pos, blockState.cycle(LayeredCauldronBlock.LEVEL));
-//                                    level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
         if (entity.tickCount % 20 == 0) {
@@ -70,7 +45,6 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         }
 
         super.entityInside(blockState, level, pos, entity);
-
     }
 
     public static void attemptCookEntity(BlockState blockState, Level level, BlockPos pos, Entity entity, CookExecution execution) {

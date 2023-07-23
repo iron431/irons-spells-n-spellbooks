@@ -1,12 +1,22 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
+import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
@@ -18,7 +28,12 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +43,9 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(LEVEL, 0));
 
     }
+
+    private static final VoxelShape INSIDE = box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+    protected static final VoxelShape SHAPE = Shapes.join(Shapes.block(), Shapes.or(box(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), box(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), box(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), INSIDE), BooleanOp.ONLY_FIRST);
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final int MAX_LEVELS = 4;
@@ -42,9 +60,14 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level pLevel, BlockEntityType<T> pServerType, BlockEntityType<? extends AlchemistCauldronTile> pClientType) {
         return pLevel.isClientSide ? null : createTickerHelper(pServerType, pClientType, AlchemistCauldronTile::serverTick);
     }
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LIT, LEVEL);
+    }
+
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        return SHAPE;
     }
 
     @Override
@@ -53,6 +76,23 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
             return tile.handleUse(blockState, level, pos, player, hand);
         }
         return super.use(blockState, level, pos, player, hand, blockHit);
+    }
+
+    @Override
+    public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
+        if (entity.tickCount % 20 == 0) {
+            if (isBoiling(blockState)) {
+                if (entity instanceof LivingEntity livingEntity && livingEntity.hurt(DamageSources.CAULDRON, 2)) {
+                    MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
+                    if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile cauldronTile) {
+                        AlchemistCauldronTile.appendItem(cauldronTile.resultItems, new ItemStack(ItemRegistry.BLOOD_VIAL.get()));
+                        cauldronTile.setChanged();
+                    }
+                }
+            }
+        }
+
+        super.entityInside(blockState, level, pos, entity);
     }
 
     @Nullable
