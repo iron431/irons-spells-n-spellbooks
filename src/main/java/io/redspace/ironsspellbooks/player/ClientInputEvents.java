@@ -73,10 +73,10 @@ public final class ClientInputEvents {
                     int direction = (int) event.getScrollDelta();
 //                    irons_spellbooks.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
 
-                    List<AbstractSpell> spells = new ArrayList<>();
+                    List<SpellData> spells = new ArrayList<>();
                     for (SpellData spellData : spellBookData.getInscribedSpells()) {
                         if (spellData != null)
-                            spells.add(spellData.getSpell());
+                            spells.add(spellData);
                     }
                     int spellCount = spellBookData.getSpellCount();
                     int scrollIndex = (spells.indexOf(spellBookData.getActiveSpell()) - direction);
