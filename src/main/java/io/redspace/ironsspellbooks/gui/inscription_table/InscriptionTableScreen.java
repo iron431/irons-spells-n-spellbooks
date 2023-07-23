@@ -223,7 +223,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
             //show description if hovering
             if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)) {
-                renderTooltip(poseStack, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).containedSpell.getSpellType(), font), mouseX, mouseY);
+                renderTooltip(poseStack, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).spellData.getSpell(), font), mouseX, mouseY);
             }
 
             //increment y for next line

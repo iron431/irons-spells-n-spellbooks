@@ -203,6 +203,10 @@ public class SyncedSpellData {
         return castingSpellId;
     }
 
+    public int getCastingSpellLevel() {
+        return castingSpellLevel;
+    }
+
     @Override
     protected SyncedSpellData clone() {
         return new SyncedSpellData(this.livingEntity);

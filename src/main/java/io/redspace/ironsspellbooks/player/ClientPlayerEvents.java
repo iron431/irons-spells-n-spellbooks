@@ -123,7 +123,7 @@ public class ClientPlayerEvents {
         - [*name* *lvl*]
          */
 
-        if (SpellData.getSpellData(stack).getSpellId() != 0) {
+        if (SpellData.getSpellData(stack) != SpellData.EMPTY) {
             var player = Minecraft.getInstance().player;
             if (player == null)
                 return;

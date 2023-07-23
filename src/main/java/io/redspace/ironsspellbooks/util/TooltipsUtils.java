@@ -115,7 +115,7 @@ public class TooltipsUtils {
         }
     }
 
-    public static List<FormattedCharSequence> createSpellDescriptionTooltip(SpellType spell, Font font){
+    public static List<FormattedCharSequence> createSpellDescriptionTooltip(AbstractSpell spell, Font font) {
         var name = spell.getDisplayName();
         var description = font.split(Component.translatable(String.format("%s.guide", spell.getComponentId())).withStyle(ChatFormatting.GRAY), 180);
         var hoverText = new ArrayList<FormattedCharSequence>();
