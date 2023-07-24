@@ -112,17 +112,15 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             return;
         IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.meltComponent: {}", itemStack.getDisplayName().getString());
         boolean shouldMelt = false;
-        SoundEvent successSound = SoundEvents.BREWING_STAND_BREW;
+        boolean success = true;
         if ( itemStack.is(ItemRegistry.SCROLL.get()) && !isFull(resultItems)) {
             if (level.random.nextFloat() < ServerConfigs.SCROLL_RECYCLE_CHANCE.get()) {
                 ItemStack result = new ItemStack(getInkFromScroll(itemStack));
                 appendItem(resultItems, result);
             } else {
-                //failure sound
-                successSound = SoundEvents.GENERIC_EXTINGUISH_FIRE;
+                success = false;
             }
             shouldMelt = true;
-
         } else if (BrewingRecipeRegistry.isValidIngredient(itemStack)) {
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialPotion = resultItems.get(i);
@@ -137,8 +135,12 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         if (shouldMelt) {
             itemStack.shrink(1);
             setChanged();
-            level.playSound(null, this.getBlockPos(), successSound, SoundSource.MASTER, 1, 1);
-            level.markAndNotifyBlock(this.getBlockPos(), this.level.getChunkAt(this.getBlockPos()), this.getBlockState(), this.getBlockState(), 1, 1);
+            if (success) {
+                level.playSound(null, this.getBlockPos(), SoundEvents.BREWING_STAND_BREW, SoundSource.MASTER, 1, 1);
+                level.markAndNotifyBlock(this.getBlockPos(), this.level.getChunkAt(this.getBlockPos()), this.getBlockState(), this.getBlockState(), 1, 1);
+            } else {
+                level.playSound(null, this.getBlockPos(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.MASTER, 1, 1);
+            }
         }
     }
 
