@@ -3,9 +3,11 @@ package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.util.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -100,19 +102,27 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 }
                 return InteractionResult.sidedSuccess(level.isClientSide);
             }
-
         }
         return InteractionResult.PASS;
     }
 
     public void meltComponent(ItemStack itemStack) {
+        //This is only called Server Side
+        if (level == null)
+            return;
         IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.meltComponent: {}", itemStack.getDisplayName().getString());
         boolean shouldMelt = false;
-        if (!isFull(resultItems) && itemStack.is(ItemRegistry.SCROLL.get())) {
-            //TODO: add chance or counter or something
-            ItemStack result = new ItemStack(getInkFromScroll(itemStack));
-            appendItem(resultItems, result);
+        SoundEvent successSound = SoundEvents.BREWING_STAND_BREW;
+        if ( itemStack.is(ItemRegistry.SCROLL.get()) && !isFull(resultItems)) {
+            if (level.random.nextFloat() < ServerConfigs.SCROLL_RECYCLE_CHANCE.get()) {
+                ItemStack result = new ItemStack(getInkFromScroll(itemStack));
+                appendItem(resultItems, result);
+            } else {
+                //failure sound
+                successSound = SoundEvents.GENERIC_EXTINGUISH_FIRE;
+            }
             shouldMelt = true;
+
         } else if (BrewingRecipeRegistry.isValidIngredient(itemStack)) {
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialPotion = resultItems.get(i);
@@ -127,12 +137,9 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         if (shouldMelt) {
             itemStack.shrink(1);
             setChanged();
-            if (level != null) {
-                level.playSound(null, this.getBlockPos(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.MASTER, 1, 1);
-                level.markAndNotifyBlock(this.getBlockPos(), this.level.getChunkAt(this.getBlockPos()), this.getBlockState(), this.getBlockState(), 1, 1);
-            }
+            level.playSound(null, this.getBlockPos(), successSound, SoundSource.MASTER, 1, 1);
+            level.markAndNotifyBlock(this.getBlockPos(), this.level.getChunkAt(this.getBlockPos()), this.getBlockState(), this.getBlockState(), 1, 1);
         }
-
     }
 
     /************************************************************

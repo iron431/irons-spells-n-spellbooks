@@ -102,6 +102,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
     }
 
     private Vector3f colorFromLong(long color) {
+        //Copied from potion utils
         return new Vector3f(
                 ((color >> 16) & 0xFF) / 255.0f,
                 ((color >> 8) & 0xFF) / 255.0f,
