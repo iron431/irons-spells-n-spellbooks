@@ -23,10 +23,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.*;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -323,11 +320,18 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         return map;
     }
 
-
     private static ItemStack createFilledResult(Level level, BlockState blockState, BlockPos blockPos, int newLevel, ItemStack resultItem, SoundEvent soundEvent) {
         level.setBlock(blockPos, blockState.setValue(LEVEL, newLevel), 3);
         level.playSound(null, blockPos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
         return resultItem;
+    }
+
+    public void drops() {
+        SimpleContainer simpleContainer = new SimpleContainer(inputItems.size());
+        for (int i = 0; i < inputItems.size(); i++) {
+            simpleContainer.setItem(i, inputItems.get(i));
+        }
+        Containers.dropContents(this.level, this.worldPosition, simpleContainer);
     }
 
     @Override
