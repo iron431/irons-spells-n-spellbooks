@@ -1,0 +1,8 @@
+{
+	"parent": "irons_spellbooks:block/template_alchemist_cauldron",
+	"textures": {
+		"0": "irons_spellbooks:block/alchemist_cauldron_lit",
+		"1": "irons_spellbooks:block/cauldron_fire_lit",
+		"particle": "irons_spellbooks:block/alchemist_cauldron"
+	}
+}
