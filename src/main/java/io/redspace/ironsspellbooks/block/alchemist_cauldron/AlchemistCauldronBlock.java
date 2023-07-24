@@ -41,8 +41,13 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
 
     }
 
-    private static final VoxelShape INSIDE = box(2.0D, 4.0D, 2.0D, 14.0D, 16.0D, 14.0D);
-    protected static final VoxelShape SHAPE = Shapes.join(Shapes.block(), Shapes.or(box(0.0D, 0.0D, 4.0D, 16.0D, 3.0D, 12.0D), box(4.0D, 0.0D, 0.0D, 12.0D, 3.0D, 16.0D), box(2.0D, 0.0D, 2.0D, 14.0D, 3.0D, 14.0D), INSIDE), BooleanOp.ONLY_FIRST);
+    private static final VoxelShape INSIDE = box(2, 4, 2, 14, 16, 14);
+    private static final VoxelShape BODY = box(0, 2, 0, 16, 16, 16);
+    private static final VoxelShape RIM_NEGATIVE = box(0, 12, 0, 16, 14, 16);
+    private static final VoxelShape RIM_INNER = box(1, 12, 1, 15, 14, 15);
+    private static final VoxelShape LOGS = Shapes.or(box(0, 0, 4, 16, 2, 6), box(0, 0, 10, 16, 2, 12), box(4, 0, 0, 6, 2, 16), box(10, 0, 0, 12, 2, 16));
+    private static final VoxelShape DETAILED_BODY = Shapes.join(Shapes.or(Shapes.join(BODY, RIM_NEGATIVE, BooleanOp.ONLY_FIRST), RIM_INNER), INSIDE, BooleanOp.ONLY_FIRST);
+    private static final VoxelShape SHAPE = Shapes.or(LOGS, DETAILED_BODY);
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final int MAX_LEVELS = 4;
