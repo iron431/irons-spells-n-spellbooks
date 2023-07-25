@@ -2,12 +2,14 @@ package io.redspace.ironsspellbooks.capabilities.spellbook;
 
 import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.datafix.DataFixerHelpers;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -32,8 +34,8 @@ public class SpellBookData {
     private int spellSlots;
     private int spellCount = 0;
 
-    public SpellBookData(CompoundTag tag) {
-        loadFromNBT(tag);
+    public SpellBookData(ItemStack stack, CompoundTag tag) {
+        loadFromNBT(stack, tag);
     }
 
     public SpellBookData(int spellSlots) {
@@ -172,14 +174,20 @@ public class SpellBookData {
         return compound;
     }
 
-    public void loadFromNBT(CompoundTag compound) {
+    public void loadFromNBT(ItemStack stack, CompoundTag compound) {
         this.spellSlots = compound.getInt(SPELL_SLOTS);
         this.transcribedSpells = new SpellData[spellSlots];
         this.activeSpellIndex = compound.getInt(ACTIVE_SPELL_INDEX);
 
         ListTag listTagSpells = (ListTag) compound.get(SPELLS);
+
         spellCount = 0;
         if (listTagSpells != null) {
+
+            if (((CompoundTag) listTagSpells.get(0)).contains(LEGACY_ID)) {
+                DataFixerHelpers.fixSpellbookData(listTagSpells);
+            }
+
             listTagSpells.forEach(tag -> {
                 CompoundTag t = (CompoundTag) tag;
                 String id = t.getString(ID);
@@ -199,7 +207,7 @@ public class SpellBookData {
         CompoundTag tag = stack.getTagElement(ISB_SPELLBOOK);
 
         if (tag != null) {
-            return new SpellBookData(tag);
+            return new SpellBookData(stack, tag);
         } else if (stack.getItem() instanceof SpellBook spellBook) {
             var spellBookData = new SpellBookData(spellBook.getSpellSlots());
 

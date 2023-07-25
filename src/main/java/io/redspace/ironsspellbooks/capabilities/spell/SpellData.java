@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.spell;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.datafix.DataFixerHelpers;
 import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -37,8 +38,7 @@ public class SpellData implements Comparable<SpellData> {
 
         if (tag != null) {
             if (tag.contains(LEGACY_SPELL_TYPE)) {
-                IronsSpellbooks.LOGGER.debug("Legacy spell type found: {}", tag.getInt(LEGACY_SPELL_TYPE));
-                //TODO: deal with this when spell type, level and registration are further along.. or deal with en mass when the world is loading?
+                DataFixerHelpers.fixScrollData(tag);
             }
 
             return new SpellData(SpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));

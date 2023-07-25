@@ -67,7 +67,7 @@ public abstract class AbstractSpell {
             spellName = resourceLocation.getPath().intern();
         }
 
-        IronsSpellbooks.LOGGER.debug("AbstractSpell.getSpellName {}", spellName);
+        //IronsSpellbooks.LOGGER.debug("AbstractSpell.getSpellName {}", spellName);
 
         return spellName;
     }
