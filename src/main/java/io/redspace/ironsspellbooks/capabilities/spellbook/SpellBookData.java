@@ -182,7 +182,7 @@ public class SpellBookData {
         ListTag listTagSpells = (ListTag) compound.get(SPELLS);
 
         spellCount = 0;
-        if (listTagSpells != null) {
+        if (listTagSpells != null && listTagSpells.size() > 0) {
 
             if (((CompoundTag) listTagSpells.get(0)).contains(LEGACY_ID)) {
                 DataFixerHelpers.fixSpellbookData(listTagSpells);
