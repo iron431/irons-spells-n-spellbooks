@@ -131,6 +131,10 @@
   "item.irons_spellbooks.affinity_ring": "Ring of %s Affinity",
   "item.irons_spellbooks.concentration_amulet": "Amulet of Concentration",
   "item.irons_spellbooks.concentration_amulet.desc": "Long Casts become uninterruptible",
+  "item.minecraft.potion.effect.mana": "Potion of Mana",
+  "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
+  "item.minecraft.lingering_potion.effect.mana": "Lingering Potion of Mana",
+  "item.minecraft.tipped_arrow.effect.mana": "Arrow of Mana",
 
   "item.irons_spellbooks.keeper_spawn_egg": "Ancient Knight Spawn Egg",
   "item.irons_spellbooks.necromancer_spawn_egg": "Necromancer Spawn Egg",
@@ -168,6 +172,7 @@
   "tooltip.irons_spellbooks.ink_tooltip": "Can Craft %s Scrolls",
   "tooltip.irons_spellbooks.upgrade_plus_format": "%s +%d",
   "tooltip.irons_spellbooks.enhance_spell_level": " +1 level to %s",
+  "tooltip.irons_spellbooks.instant_mana_description": " Restores %d Mana +%d%% Max Mana",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",
   "ui.irons_spellbooks.inscription_table_rarity_error": "This scroll is too rare for this spell book.",
@@ -524,6 +529,7 @@
   "effect.irons_spellbooks.guided": "Guided",
   "effect.irons_spellbooks.airborne": "Airborne",
   "effect.irons_spellbooks.vigor": "Vigor",
+  "effect.irons_spellbooks.instant_mana": "Instant Mana",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -544,6 +550,7 @@
   "effect.irons_spellbooks.guided.description": "Nearby projectiles are attracted towards you.",
   "effect.irons_spellbooks.airborne.description": "You are vulnerable to taking kinetic damage",
   "effect.irons_spellbooks.vigor.description": "Gain 1 additional heart of max hp per level",
+  "effect.irons_spellbooks.instant_mana.description": "Restores 25 mana +5% of your max mana per level",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
