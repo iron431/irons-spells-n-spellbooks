@@ -36,18 +36,20 @@ import org.jetbrains.annotations.Nullable;
 
 public class AlchemistCauldronBlock extends BaseEntityBlock {
     public AlchemistCauldronBlock() {
-        super(Properties.copy(Blocks.CAULDRON));
+        super(Properties.copy(Blocks.CAULDRON).lightLevel((blockState) -> 3));
         this.registerDefaultState(this.stateDefinition.any().setValue(LIT, false).setValue(LEVEL, 0));
 
     }
 
-    private static final VoxelShape INSIDE = box(2, 4, 2, 14, 16, 14);
-    private static final VoxelShape BODY = box(0, 2, 0, 16, 16, 16);
-    private static final VoxelShape RIM_NEGATIVE = box(0, 12, 0, 16, 14, 16);
-    private static final VoxelShape RIM_INNER = box(1, 12, 1, 15, 14, 15);
-    private static final VoxelShape LOGS = Shapes.or(box(0, 0, 4, 16, 2, 6), box(0, 0, 10, 16, 2, 12), box(4, 0, 0, 6, 2, 16), box(10, 0, 0, 12, 2, 16));
-    private static final VoxelShape DETAILED_BODY = Shapes.join(Shapes.or(Shapes.join(BODY, RIM_NEGATIVE, BooleanOp.ONLY_FIRST), RIM_INNER), INSIDE, BooleanOp.ONLY_FIRST);
-    private static final VoxelShape SHAPE = Shapes.or(LOGS, DETAILED_BODY);
+    //    private static final VoxelShape INSIDE = box(2, 4, 2, 14, 16, 14);
+//    private static final VoxelShape BODY = box(0, 2, 0, 16, 16, 16);
+//    private static final VoxelShape RIM_NEGATIVE = box(0, 12, 0, 16, 14, 16);
+//    private static final VoxelShape RIM_INNER = box(1, 12, 1, 15, 14, 15);
+//    private static final VoxelShape LOGS = Shapes.or(box(0, 0, 4, 16, 2, 6), box(0, 0, 10, 16, 2, 12), box(4, 0, 0, 6, 2, 16), box(10, 0, 0, 12, 2, 16));
+//    private static final VoxelShape DETAILED_BODY = Shapes.join(Shapes.or(Shapes.join(BODY, RIM_NEGATIVE, BooleanOp.ONLY_FIRST), RIM_INNER), INSIDE, BooleanOp.ONLY_FIRST);
+//    private static final VoxelShape SHAPE = Shapes.or(LOGS, DETAILED_BODY);
+    //magic shape. see comment above for legible shape
+    private static final VoxelShape SHAPE = Shapes.or(Shapes.or(box(0, 0, 4, 16, 2, 6), box(0, 0, 10, 16, 2, 12), box(4, 0, 0, 6, 2, 16), box(10, 0, 0, 12, 2, 16)), Shapes.join(Shapes.or(Shapes.join(box(0, 2, 0, 16, 16, 16), box(0, 12, 0, 16, 14, 16), BooleanOp.ONLY_FIRST), box(1, 12, 1, 15, 14, 15)), box(2, 4, 2, 14, 16, 14), BooleanOp.ONLY_FIRST));
 
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final int MAX_LEVELS = 4;

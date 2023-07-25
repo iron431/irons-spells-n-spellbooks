@@ -49,6 +49,7 @@ public class JeiPlugin implements IModPlugin {
         IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
         registration.addRecipeCategories(new ArcaneAnvilRecipeCategory(guiHelper));
         registration.addRecipeCategories(new ScrollForgeRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new AlchemistCauldronRecipeCategory(guiHelper));
     }
 
     @Override
@@ -57,11 +58,13 @@ public class JeiPlugin implements IModPlugin {
         IVanillaRecipeFactory vanillaRecipeFactory = registration.getVanillaRecipeFactory();
         registration.addRecipes(ArcaneAnvilRecipeCategory.ARCANE_ANVIL_RECIPE_RECIPE_TYPE, ArcaneAnvilRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
         registration.addRecipes(ScrollForgeRecipeCategory.SCROLL_FORGE_RECIPE_RECIPE_TYPE, ScrollForgeRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
+        registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
 
         Arrays.stream(SpellType.values()).forEach(spellType -> {
             if (spellType.isEnabled() && spellType != SpellType.NONE_SPELL)
                 IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
                         .forEach((spellLevel) -> {
+                            //TODO: addIngredientInfo can take a list. can we consolidate all levels into a single ingredient info?
                             var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
                             SpellData.setSpellData(scrollStack, spellType, spellLevel);
                             registration.addIngredientInfo(scrollStack, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spellType.getComponentId())));
@@ -91,6 +94,7 @@ public class JeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(BlockRegistry.ARCANE_ANVIL_BLOCK.get()), ArcaneAnvilRecipeCategory.ARCANE_ANVIL_RECIPE_RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(BlockRegistry.SCROLL_FORGE_BLOCK.get()), ScrollForgeRecipeCategory.SCROLL_FORGE_RECIPE_RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(BlockRegistry.ALCHEMIST_CAULDRON.get()), AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE);
     }
 
     private static final IIngredientSubtypeInterpreter<ItemStack> SCROLL_INTERPRETER = (stack, context) -> {

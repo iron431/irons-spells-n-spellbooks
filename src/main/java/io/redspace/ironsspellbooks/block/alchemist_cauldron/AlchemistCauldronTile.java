@@ -189,7 +189,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         return (int) f << 16 | (int) f1 << 8 | (int) f2;
     }
 
-    public Item getInkFromScroll(ItemStack scrollStack) {
+    public static Item getInkFromScroll(ItemStack scrollStack) {
         if (scrollStack.getItem() instanceof Scroll scroll) {
             var spellData = SpellData.getSpellData(scrollStack);
             SpellRarity rarity = spellData.getSpell().getRarity();
