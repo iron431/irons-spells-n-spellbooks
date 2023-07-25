@@ -4,27 +4,21 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
-import net.minecraft.core.Registry;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionBrewing;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-/**
- * - Upgrade scroll: (scroll level x) + (scroll level x) = (scroll level x+1)
- * - Imbue Weapon:   weapon + scroll = imbued weapon with spell/level of scroll
- * - Upgrade item:   item + upgrade orb =
- **/
 public final class AlchemistCauldronRecipeMaker {
     private AlchemistCauldronRecipeMaker() {
         //private constructor prevents anyone from instantiating this class
@@ -48,40 +42,50 @@ public final class AlchemistCauldronRecipeMaker {
                 .filter(AlchemistCauldronRecipeMaker::isIngredient)
                 .toList();
 
+        //All in one
+//        List<ItemStack> inputs = new ArrayList<>();
+//        List<ItemStack> catalysts = new ArrayList<>();
+//        List<ItemStack> outputs = new ArrayList<>();
+//        potionReagents.forEach(
+//                (reagentStack) -> ingredientManager.getAllItemStacks().stream().filter((itemStack) -> BrewingRecipeRegistry.hasOutput(itemStack, reagentStack)).forEach((baseStack) -> {
+//                    inputs.add(reagentStack);
+//                    catalysts.add(baseStack);
+//                    outputs.add(BrewingRecipeRegistry.getOutput(baseStack, reagentStack));
+//                })
+//        );
+//        return Stream.of(new AlchemistCauldronRecipe(inputs, outputs, catalysts));
+
+        //Grouped by reagent
+        return potionReagents.stream().map((reagentStack) -> {
+            List<ItemStack> catalysts = new ArrayList<>();
+            List<ItemStack> outputs = new ArrayList<>();
+            ingredientManager.getAllItemStacks().stream().filter((itemStack) -> !itemStack.is(Items.TIPPED_ARROW) && BrewingRecipeRegistry.hasOutput(itemStack, reagentStack)).forEach((baseStack) -> {
+                catalysts.add(baseStack);
+                outputs.add(BrewingRecipeRegistry.getOutput(baseStack, reagentStack));
+            });
+            return new AlchemistCauldronRecipe(List.of(reagentStack), outputs, catalysts);
+        });
+        //Grouped by catalyst
 //        List<ItemStack> potionCatalysts = ingredientManager.getAllItemStacks().stream()
-        List<ItemStack> inputs = new ArrayList<>();
-        List<ItemStack> catalysts = new ArrayList<>();
-        List<ItemStack> outputs = new ArrayList<>();
-        potionReagents.forEach(
-                (reagentStack) -> ingredientManager.getAllItemStacks().stream().filter((itemStack) -> BrewingRecipeRegistry.hasOutput(itemStack, reagentStack)).forEach((baseStack) -> {
-                    inputs.add(reagentStack);
-                    catalysts.add(baseStack);
-                    outputs.add(BrewingRecipeRegistry.getOutput(baseStack, reagentStack));
-                })
-        );
-//                .filter((itemStack -> canCreateBrewingOutput(potionReagents, itemStack)))
+//                .filter((itemStack) -> {
+//                    for (ItemStack reagentStack : potionReagents)
+//                        if (BrewingRecipeRegistry.hasOutput(itemStack, reagentStack))
+//                            return true;
+//                    return false;
+//                })
 //                .toList();
-//        var outputs = new ArrayList<ItemStack>();
-//        for (ItemStack reagent : potionReagents) {
-//            for (ItemStack catalyst : potionCatalysts) {
-//                outputs.add(BrewingRecipeRegistry.getOutput(catalyst, reagent));
-//            }
-//        }
+//        return potionCatalysts.stream().map((catalystStack) -> {
+//            List<ItemStack> reagents = new ArrayList<>();
+//            List<ItemStack> outputs = new ArrayList<>();
+//            ingredientManager.getAllItemStacks().stream().filter((reagentStack) -> BrewingRecipeRegistry.hasOutput(catalystStack, reagentStack)).forEach((baseStack) -> {
+//                //inputs.add(reagentStack);
+//                reagents.add(baseStack);
+//                outputs.add(BrewingRecipeRegistry.getOutput(catalystStack, baseStack));
+//            });
+//            return new AlchemistCauldronRecipe(reagents, outputs, List.of(catalystStack));
+//        });
 
-        return Stream.of(new AlchemistCauldronRecipe(inputs, outputs, catalysts));
-    }
 
-    private static boolean canCreateBrewingOutput(List<ItemStack> reagents, ItemStack itemInQuestion) {
-        for (ItemStack reagent : reagents) {
-            if (BrewingRecipeRegistry.hasOutput(itemInQuestion, reagent)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static Stream<AlchemistCauldronRecipe> getUpgradeRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        return Stream.empty();
     }
 
     private static List<ItemStack> enumerateScrollLevels(SpellType spellType) {
@@ -114,11 +118,6 @@ public final class AlchemistCauldronRecipeMaker {
 
         return new AlchemistCauldronRecipe(inputs, outputs, catalysts);
     }
-
-    private static List<ItemStack> getAllReagentInteractions(ItemStack reagent, IIngredientManager ingredientManager) {
-        return ingredientManager.getAllItemStacks().stream().filter((itemStack) -> BrewingRecipeRegistry.hasOutput(itemStack, reagent)).toList();
-    }
-
 
     private static ItemStack getScrollStack(ItemStack stack, SpellType spellType, int spellLevel) {
         var scrollStack = stack.copy();

@@ -3,8 +3,9 @@ package io.redspace.ironsspellbooks.jei;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -15,11 +16,13 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,17 +30,17 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
     public static final RecipeType<AlchemistCauldronRecipe> ALCHEMIST_CAULDRON_RECIPE_TYPE = RecipeType.create(IronsSpellbooks.MODID, "alchemist_cauldron", AlchemistCauldronRecipe.class);
 
     private final IDrawable background;
-    private final IDrawable icon;
+    private final IDrawable cauldron_block_icon;
     private final String inputSlotName = "inputSlot";
     private final String catalystSlotName = "catalystSlot";
     private final String outputSlotName = "outputSlot";
-    private final int paddingBottom = 15;
+    private final int paddingBottom = 20;
 
     public AlchemistCauldronRecipeCategory(IGuiHelper guiHelper) {
-        background = guiHelper.drawableBuilder(JeiPlugin.RECIPE_GUI_VANILLA, 0, 168, 125, 18)
+        background = guiHelper.drawableBuilder(JeiPlugin.ALCHEMIST_CAULDRON_GUI, 0, 0, 125, 18)
                 .addPadding(0, paddingBottom, 0, 0)
                 .build();
-        icon = guiHelper.createDrawableItemStack(new ItemStack(BlockRegistry.ALCHEMIST_CAULDRON.get()));
+        cauldron_block_icon = guiHelper.createDrawableItemStack(new ItemStack(BlockRegistry.ALCHEMIST_CAULDRON.get()));
     }
 
     @Override
@@ -57,7 +60,7 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
 
     @Override
     public IDrawable getIcon() {
-        return icon;
+        return cauldron_block_icon;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
                 .addItemStacks(inputs)
                 .setSlotName(inputSlotName);
 
-        IRecipeSlotBuilder rightInputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 50, 1)
+        IRecipeSlotBuilder rightInputSlot = builder.addSlot(RecipeIngredientRole.INPUT, 54, 1)
                 .addItemStacks(catalysts)
                 .setSlotName(catalystSlotName);
 
@@ -89,6 +92,7 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
         }
     }
 
+
     @Override
     public void draw(@NotNull AlchemistCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, @NotNull PoseStack poseStack, double mouseX, double mouseY) {
         Optional<ItemStack> leftStack = recipeSlotsView.findSlotByName(inputSlotName)
@@ -100,35 +104,22 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
         Optional<ItemStack> outputStack = recipeSlotsView.findSlotByName(outputSlotName)
                 .flatMap(IRecipeSlotView::getDisplayedItemStack);
 
-        if (leftStack.isEmpty() || rightStack.isEmpty() || outputStack.isEmpty()) {
-            return;
+        poseStack.pushPose();
+        {
+            poseStack.translate((getWidth() / 2) - 8 * 1.4f, (getHeight() / 2) - 2, 0);
+            poseStack.scale(1.4f, 1.4f, 1.4f);
+            cauldron_block_icon.draw(poseStack);
+        }
+        poseStack.popPose();
+
+        if (leftStack.isPresent() && leftStack.get().is(ItemRegistry.SCROLL.get())) {
+            var inputText = String.format("%s%%", (int) (ServerConfigs.SCROLL_RECYCLE_CHANCE.get() * 100));
+
+            var font = Minecraft.getInstance().font;
+            int y = (getHeight() / 2) - 14;
+            int x = (getWidth() - font.width(inputText)) / 2;
+            font.drawShadow(poseStack, inputText, x, y, ChatFormatting.RED.getColor());
         }
 
-        var minecraft = Minecraft.getInstance();
-        drawRecipe(minecraft, poseStack, leftStack.get(), rightStack.get(), outputStack.get());
-    }
-
-    private void drawRecipe(Minecraft minecraft, PoseStack poseStack, ItemStack inputStack, ItemStack catalystStack, ItemStack outputStack) {
-        var inputSpellData = SpellData.getSpellData(inputStack);
-        var inputText = String.format("L%d", inputSpellData.getLevel());
-        var inputColor = inputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();
-
-        var outputSpellData = SpellData.getSpellData(outputStack);
-        var outputText = String.format("L%d", outputSpellData.getLevel());
-        var outputColor = outputSpellData.getSpell().getRarity().getChatFormatting().getColor().intValue();
-
-        int y = (getHeight() / 2) + (paddingBottom / 2) + (minecraft.font.lineHeight / 2) - 4;
-
-        //Left Item
-        int x = 3;
-        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
-
-        //Right Item
-        x += 50;
-        minecraft.font.drawShadow(poseStack, inputText, x, y, inputColor);
-
-        //Output Item
-        int outputWidth = minecraft.font.width(outputText);
-        minecraft.font.drawShadow(poseStack, outputText, getWidth() - (outputWidth + 3), y, outputColor);
     }
 }

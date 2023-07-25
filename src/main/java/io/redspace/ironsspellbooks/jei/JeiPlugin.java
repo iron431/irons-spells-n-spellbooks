@@ -27,11 +27,9 @@ import java.util.stream.IntStream;
 
 @mezz.jei.api.JeiPlugin
 public class JeiPlugin implements IModPlugin {
-    public static final String TEXTURE_GUI_PATH = "textures/gui/";
-    public static final String TEXTURE_GUI_VANILLA = TEXTURE_GUI_PATH + "gui_vanilla.png";
-    public static final String TEXTURE_SCROLL_FORGE = TEXTURE_GUI_PATH + "scroll_forge.png";
-    public static final ResourceLocation RECIPE_GUI_VANILLA = new ResourceLocation(IronsSpellbooks.MODID, TEXTURE_GUI_VANILLA);
-    public static final ResourceLocation SCROLL_FORGE_GUI = new ResourceLocation(IronsSpellbooks.MODID, TEXTURE_SCROLL_FORGE);
+    public static final ResourceLocation RECIPE_GUI_VANILLA = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/gui_vanilla.png");
+    public static final ResourceLocation ALCHEMIST_CAULDRON_GUI = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/jei_alchemist_cauldron.png");
+    public static final ResourceLocation SCROLL_FORGE_GUI = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
 
     @Override
     public ResourceLocation getPluginUid() {
