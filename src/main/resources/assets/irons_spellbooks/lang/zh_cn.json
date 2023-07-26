@@ -252,8 +252,8 @@
   "attribute.irons_spellbooks.spell_resist": "法术抗性",
   "attribute.irons_spellbooks.summon_damage": "召唤伤害",
 
-  "key.irons_spellbooks.group_1": "铁质法术书 - 常规",
-  "key.irons_spellbooks.group_2": "铁质法术书 - 快捷施法",
+  "key.irons_spellbooks.group_1": "IS魔法 - 常规",
+  "key.irons_spellbooks.group_2": "IS魔法 - 快捷施法",
   "key.irons_spellbooks.spell_wheel": "打开法术轮盘",
   "key.irons_spellbooks.spell_bar_modifier": "法术卷轴修饰器",
   "key.irons_spellbooks.spell_quick_cast_1": "快捷施法槽 1",
@@ -610,11 +610,11 @@
   "entity.irons_spellbooks.priest": "牧师",
   "entity.irons_spellbooks.devour_jaw": "吞噬之牙",
 
-  "itemGroup.irons_spellbooks.spell_materials_tab": "铁质法术书：材料",
-  "itemGroup.irons_spellbooks.spell_equipment_tab": "铁质法术书：装备",
-  "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "铁质法术书：卷轴",
+  "itemGroup.irons_spellbooks.spell_materials_tab": "IS魔法：材料",
+  "itemGroup.irons_spellbooks.spell_equipment_tab": "IS魔法：装备",
+  "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "IS魔法：卷轴",
 
-  "advancements.irons_spellbooks.root.title": "铁质法术和魔法书",
+  "advancements.irons_spellbooks.root.title": "IS魔法",
   "advancements.irons_spellbooks.root.description": "在这个世界里，不要只看眼前...",
   "advancements.irons_spellbooks.make_inscription_table.title": "抄写台",
   "advancements.irons_spellbooks.make_inscription_table.description": "制作一个抄写台\n\n§7开始神奇的旅途。",
