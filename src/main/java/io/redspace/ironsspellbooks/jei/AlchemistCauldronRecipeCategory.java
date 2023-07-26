@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -22,12 +21,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
-public class AlchemistCauldronRecipeCategory implements IRecipeCategory<AlchemistCauldronRecipe> {
-    public static final RecipeType<AlchemistCauldronRecipe> ALCHEMIST_CAULDRON_RECIPE_TYPE = RecipeType.create(IronsSpellbooks.MODID, "alchemist_cauldron", AlchemistCauldronRecipe.class);
+public class AlchemistCauldronRecipeCategory implements IRecipeCategory<AlchemistCauldronJeiRecipe> {
+    public static final RecipeType<AlchemistCauldronJeiRecipe> ALCHEMIST_CAULDRON_RECIPE_TYPE = RecipeType.create(IronsSpellbooks.MODID, "alchemist_cauldron", AlchemistCauldronJeiRecipe.class);
 
     private final IDrawable background;
     private final IDrawable cauldron_block_icon;
@@ -44,7 +42,7 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
     }
 
     @Override
-    public RecipeType<AlchemistCauldronRecipe> getRecipeType() {
+    public RecipeType<AlchemistCauldronJeiRecipe> getRecipeType() {
         return ALCHEMIST_CAULDRON_RECIPE_TYPE;
     }
 
@@ -64,7 +62,7 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, AlchemistCauldronRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, AlchemistCauldronJeiRecipe recipe, IFocusGroup focuses) {
         List<ItemStack> inputs = recipe.inputs();
         List<ItemStack> catalysts = recipe.catalysts();
         List<ItemStack> outputs = recipe.outputs();
@@ -94,7 +92,7 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
 
 
     @Override
-    public void draw(@NotNull AlchemistCauldronRecipe recipe, IRecipeSlotsView recipeSlotsView, @NotNull PoseStack poseStack, double mouseX, double mouseY) {
+    public void draw(@NotNull AlchemistCauldronJeiRecipe recipe, IRecipeSlotsView recipeSlotsView, @NotNull PoseStack poseStack, double mouseX, double mouseY) {
         Optional<ItemStack> leftStack = recipeSlotsView.findSlotByName(inputSlotName)
                 .flatMap(IRecipeSlotView::getDisplayedItemStack);
 
@@ -119,6 +117,12 @@ public class AlchemistCauldronRecipeCategory implements IRecipeCategory<Alchemis
             int y = (getHeight() / 2) - 14;
             int x = (getWidth() - font.width(inputText)) / 2;
             font.drawShadow(poseStack, inputText, x, y, ChatFormatting.RED.getColor());
+        }
+        if (rightStack.isPresent() && rightStack.get().getCount() > 1 && outputStack.isPresent() && outputStack.get().getCount() == 1) {
+            var font = Minecraft.getInstance().font;
+            int y = (getHeight() / 2) - 8;
+            int x = getWidth() - 6;
+            font.drawShadow(poseStack, "1", x, y, ChatFormatting.WHITE.getColor());
         }
 
     }

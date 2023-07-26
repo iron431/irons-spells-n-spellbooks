@@ -41,6 +41,11 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.LEVEL;
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.MAX_LEVELS;
 
@@ -131,6 +136,48 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 }
                 IronsSpellbooks.LOGGER.debug("{} + {} = {} ({})", potentialPotion.getDisplayName().getString(), itemStack.getDisplayName().getString(), output.getDisplayName().getString(), shouldMelt);
             }
+        } else if (AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack)) {
+            //TODO: there are still edge cases that don't work (2 epic ink, 1 obisidian)
+            for (int i = 0; i < resultItems.size(); i++) {
+                ItemStack potentialInput = resultItems.get(i).copy();
+                List<Integer> matchingItems = new ArrayList<>(List.of(i));
+                if (!potentialInput.isEmpty()) {
+                    for (int j = 0; j < resultItems.size(); j++) {
+                        if (j != i && ItemStack.isSameItemSameTags(resultItems.get(j), potentialInput)) {
+                            //Collect matching items into a single cumulative item stack (some recipes require counts > 1), and mark them down for later
+                            int c = resultItems.get(j).getCount();
+                            potentialInput.grow(c);
+                            matchingItems.add(j);
+                        }
+                    }
+                } else {
+                    //If the input is empty, ignore it
+                    break;
+                }
+                int inputsCollected = potentialInput.getCount();
+                IronsSpellbooks.LOGGER.debug("Checking cauldron recipes. CauldronInternalIndex: {}. Original Item: {} Copycat Item: {}", i, resultItems.get(i), potentialInput);
+                ItemStack output = AlchemistCauldronRecipeRegistry.getOutput(potentialInput, itemStack.copy(), true);
+                if (!output.isEmpty()) {
+                    //If we have an output, consume inputs, and replace with as many outputs as we can fit
+                    int inputsToConsume = inputsCollected - potentialInput.getCount();
+                    for (Integer integer : matchingItems) {
+                        //Consume inputs we collected
+                        if (inputsToConsume > 0) {
+                            int c = resultItems.get(integer).getCount();
+                            resultItems.get(integer).shrink(c);
+                            inputsToConsume -= c;
+                        }
+                    }
+                    for (int j = 0; j < resultItems.size(); j++) {
+                        //Place result if this used to be a base item, and we still have outputs to distribute
+                        if (matchingItems.contains(j) && output.getCount() >= 1 && resultItems.get(j).isEmpty()) {
+                            resultItems.set(j, output.split(1));
+                        }
+                    }
+                    shouldMelt = true;
+                    break;
+                }
+            }
         }
         if (shouldMelt) {
             itemStack.shrink(1);
@@ -148,7 +195,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
      Cauldron Helpers
      ***********************************************************/
     public boolean isValidInput(ItemStack itemStack) {
-        return itemStack.is(ItemRegistry.SCROLL.get()) || BrewingRecipeRegistry.isValidIngredient(itemStack);
+        return itemStack.is(ItemRegistry.SCROLL.get()) || BrewingRecipeRegistry.isValidIngredient(itemStack) || AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack);
     }
 
     public int getItemWaterColor(ItemStack itemStack) {
