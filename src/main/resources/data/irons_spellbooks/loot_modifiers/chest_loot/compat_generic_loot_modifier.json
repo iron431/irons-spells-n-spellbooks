@@ -51,6 +51,18 @@
         {
           "condition": "forge:loot_table_id",
           "loot_table_id": "structory:harvest/manor2/loot"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "idas:chests/wizardtower/wizardtower_library"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "idas:chests/apothecary_abode/apothecary_abode"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "nova_structures:chests/badland_miner_outpost_towers"
         }
       ]
     }

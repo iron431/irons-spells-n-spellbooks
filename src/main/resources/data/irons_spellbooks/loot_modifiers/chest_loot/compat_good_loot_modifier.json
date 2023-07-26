@@ -35,6 +35,14 @@
         {
           "condition": "forge:loot_table_id",
           "loot_table_id": "structory:ruin/taiga/illager_treasure"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "idas:chests/wizardtower/wizardtower_top"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "idas:chests/tinkers_workshop/tinkers_workshop_vault"
         }
       ]
     }

@@ -24,7 +24,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 3,
+          "weight": 2,
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
@@ -63,6 +63,12 @@
         {
           "type": "minecraft:loot_table",
           "name": "irons_spellbooks:magic_items/basic_curios"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.8
         }
       ]
     }

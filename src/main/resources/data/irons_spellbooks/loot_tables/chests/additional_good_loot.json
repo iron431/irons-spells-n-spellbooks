@@ -30,7 +30,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 3,
+          "weight": 1,
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
@@ -59,7 +59,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.035
+          "chance": 0.01
         }
       ]
     },
@@ -74,7 +74,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.15
+          "chance": 0.1
         }
       ]
     },
@@ -89,7 +89,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.4
+          "chance": 0.15
         }
       ]
     }

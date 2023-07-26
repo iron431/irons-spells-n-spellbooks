@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
@@ -24,6 +25,10 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -41,6 +46,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
@@ -59,6 +65,23 @@ import java.util.Map;
 
 @Mod.EventBusSubscriber()
 public class ServerPlayerEvents {
+
+    private static final boolean debugLootTables = true;
+    @SubscribeEvent
+    public static void alertLootTable(PlayerInteractEvent.RightClickBlock event) {
+        if(debugLootTables){
+            var blockEntity = event.getLevel().getBlockEntity(event.getHitVec().getBlockPos());
+            if (blockEntity instanceof RandomizableContainerBlockEntity chest) {
+                var lootTable = chest.lootTable;
+                if (lootTable != null) {
+                    if (event.getEntity() instanceof ServerPlayer serverPlayer)
+                        serverPlayer.sendSystemMessage(Component.literal(chest.lootTable.toString()).withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, lootTable.toString()))));
+                    IronsSpellbooks.LOGGER.info("{}", chest.lootTable);
+                }
+            }
+        }
+
+    }
 
     @SubscribeEvent()
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
