@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
+import io.redspace.ironsspellbooks.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.network.FriendlyByteBuf;
@@ -101,11 +102,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     public void onSlotsChanged(int slot) {
         if (slot != 3) {
             //3 is the result slot
-            if (slot == 2)
-                //2 is the focus slot. we want to reset the scroll as to prevent focus swapping exploits
-                setRecipeSpell(SpellType.NONE_SPELL);
-            else
-                setupResultSlot(spellRecipeSelection);
+            setupResultSlot(spellRecipeSelection);
         }
         IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.slotsChanged {}", slot);
     }
@@ -117,7 +114,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && selectedSpellType != SpellType.NONE_SPELL) {
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && selectedSpellType != SpellType.NONE_SPELL && selectedSpellType.getSchoolType() == SchoolType.getSchoolFromItem(focusStack)) {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);
@@ -127,7 +124,8 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
 
         if (!ItemStack.matches(resultStack, this.resultSlot.getItem())) {
             IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.setupResultSlot new result: {}", resultStack.getDisplayName().getString());
-
+            if (resultStack.isEmpty())
+                this.spellRecipeSelection = SpellType.NONE_SPELL;
             this.resultSlot.set(resultStack);
         }
     }

@@ -119,8 +119,8 @@ public class PoisonArrow extends AbstractMagicProjectile {
                 if (entity instanceof LivingEntity livingEntity)
                     livingEntity.setArrowCount(livingEntity.getArrowCount() + 1);
                 var spawn = entityHitResult.getLocation();
-                this.discard();
             }
+            this.discard();
         } else {
             this.setDeltaMovement(this.getDeltaMovement().scale(-0.1D));
             this.setYRot(this.getYRot() + 180.0F);

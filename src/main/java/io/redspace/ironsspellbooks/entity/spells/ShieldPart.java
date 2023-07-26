@@ -12,13 +12,20 @@ public class ShieldPart extends PartEntity<AbstractShieldEntity> {
     public final AbstractShieldEntity parentEntity;
     public final String name;
     private final EntityDimensions size;
+    private final boolean hasCollision;
 
-    public ShieldPart(AbstractShieldEntity shieldEntity, String name, float scaleX, float scaleY) {
+    public ShieldPart(AbstractShieldEntity shieldEntity, String name, float scaleX, float scaleY, boolean hasCollision) {
         super(shieldEntity);
         this.size = EntityDimensions.scalable(scaleX, scaleY);
         this.refreshDimensions();
         this.parentEntity = shieldEntity;
         this.name = name;
+        this.hasCollision = hasCollision;
+    }
+
+    @Override
+    public boolean canBeCollidedWith() {
+        return hasCollision;
     }
 
     @Override
@@ -29,10 +36,10 @@ public class ShieldPart extends PartEntity<AbstractShieldEntity> {
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (!parentEntity.hurtThisTick) {
-            parentEntity.takeDamage(pSource, pAmount, this.position());
+            parentEntity.takeDamage(pSource, pAmount, this.getBoundingBox().getCenter());
             parentEntity.hurtThisTick = true;
         }
-        return true;
+        return false;
     }
 
     @Override
