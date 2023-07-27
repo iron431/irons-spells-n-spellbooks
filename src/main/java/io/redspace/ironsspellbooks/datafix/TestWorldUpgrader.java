@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.mojang.datafixers.DataFixer;
-import com.mojang.logging.LogUtils;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
@@ -15,7 +14,6 @@ import net.minecraft.ReportedException;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
@@ -128,39 +126,22 @@ public class TestWorldUpgrader {
 //                                CompoundTag newChunkNbt = chunkstorage.upgradeChunkTag(levelKey, () -> {
 //                                    return this.overworldDataStorage;
 //                                }, currentChunkNbt, chunkgenerator.getTypeNameForDataFixer());
-                                CompoundTag newChunkNbt = currentChunkNbt;
-                                IronsSpellbooks.LOGGER.debug("TestWorlderUpgrader: editable chunk nbt of chunk {}: {}", new ChunkPos(newChunkNbt.getInt("xPos"), newChunkNbt.getInt("zPos")), newChunkNbt);
-//                                //TODO: we won't be messing with chunk positions so we can probably remove this warning
-//                                ChunkPos chunkpos1 = new ChunkPos(newChunkNbt.getInt("xPos"), newChunkNbt.getInt("zPos"));
-//                                if (!chunkpos1.equals(currentChunkPos)) {
-//                                    LOGGER.warn("Chunk {} has invalid position {}", currentChunkPos, chunkpos1);
-//                                }
+                                var chunkPos = new ChunkPos(currentChunkNbt.getInt("xPos"), currentChunkNbt.getInt("zPos"));
+                                if (chunkPos.x == -32 && chunkPos.z == -32) //this chunk has my shit in it
+                                    IronsSpellbooks.LOGGER.debug("TestWorlderUpgrader: editable chunk nbt of chunk {}: {}", chunkPos, currentChunkNbt.toString());
 
                                 //TODO: replace with our own versioning
                                 int versionToCompareTo = SharedConstants.getCurrentVersion().getWorldVersion();
                                 boolean isCurrentChunkOutdated = currentChunkVersion < versionToCompareTo;
-//                                if (this.eraseCache) {
-//                                    //TODO: this is vanilla specific stuff. we can prob remove
-//                                    isCurrentChunkOutdated = isCurrentChunkOutdated || newChunkNbt.contains("Heightmaps");
-//                                    newChunkNbt.remove("Heightmaps");
-//                                    isCurrentChunkOutdated = isCurrentChunkOutdated || newChunkNbt.contains("isLightOn");
-//                                    newChunkNbt.remove("isLightOn");
-//                                    ListTag listtag = newChunkNbt.getList("sections", 10);
-//
-//                                    for(int i = 0; i < listtag.size(); ++i) {
-//                                        CompoundTag compoundtag2 = listtag.getCompound(i);
-//                                        isCurrentChunkOutdated = isCurrentChunkOutdated || compoundtag2.contains("BlockLight");
-//                                        compoundtag2.remove("BlockLight");
-//                                        isCurrentChunkOutdated = isCurrentChunkOutdated || compoundtag2.contains("SkyLight");
-//                                        compoundtag2.remove("SkyLight");
-//                                    }
-//                                }
+
+                                testSearchChunk(currentChunkNbt);
 
                                 if (isCurrentChunkOutdated) {
-                                    chunkstorage.write(currentChunkPos, newChunkNbt);
+                                    //var newChunkNbt = fix(currentChunkNbt);
+                                    //chunkstorage.write(currentChunkPos, newChunkNbt);
                                     successfulConversion = true;
                                 }
-                                if (true) {
+                                if (false) {
                                     IronsSpellbooks.LOGGER.debug("Auto returning for testing");
                                     this.cancel();
                                     return;
@@ -211,6 +192,25 @@ public class TestWorldUpgrader {
             LOGGER.info("World optimizaton finished after {} ms", (long) j);
             this.finished = true;
         }
+    }
+
+    private void testSearchChunk(CompoundTag compoundTag) {
+        var infoDump = compoundTag.toString();
+        String query = "irons_spellbooks:blood_slash";
+        if (infoDump.contains(query)) {
+            var chunkPos = new ChunkPos(compoundTag.getInt("xPos"), compoundTag.getInt("zPos"));
+            IronsSpellbooks.LOGGER.info("WorldUpgrader.testSearchChunk: Chunk {} contains {}", chunkPos, query);
+            //TODO: this will not find entities
+        }
+    }
+
+    private static CompoundTag fix(CompoundTag compoundTag) {
+        //TODO: are there entries we should specifically search or should we brute force everything?
+        //TODO: something in here literally bricks the world
+        var entries = compoundTag.getAllKeys();
+        TestTagFixer exampleFixer = new TestTagFixer("irons_spellbooks:blood_slash");
+        compoundTag.accept(exampleFixer);
+        return compoundTag;
     }
 
     private List<ChunkPos> getAllChunkPos(ResourceKey<Level> p_18831_) {
