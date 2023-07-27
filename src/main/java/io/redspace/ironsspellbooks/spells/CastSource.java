@@ -13,4 +13,8 @@ public enum CastSource {
         return this == SPELLBOOK || (this == SWORD && ServerConfigs.SWORDS_CONSUME_MANA.get());
     }
 
+    public boolean respectsCooldown() {
+        return this == SPELLBOOK || this == SWORD;
+    }
+
 }

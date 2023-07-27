@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
+import io.redspace.ironsspellbooks.network.ClientboundCastErrorMessage;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
@@ -220,13 +221,13 @@ public abstract class AbstractSpell {
             boolean hasEnoughMana = playerMana - getManaCost() >= 0;
             boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(spellType);
 
-            if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spellType.getDisplayName()).withStyle(ChatFormatting.RED)));
+            if (castSource.respectsCooldown() && isSpellOnCooldown) {
+                Messages.sendToPlayer(new ClientboundCastErrorMessage(ClientboundCastErrorMessage.ErrorType.COOLDOWN, spellType), serverPlayer);
                 return false;
             }
 
             if (castSource.consumesMana() && !hasEnoughMana) {
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_mana", spellType.getDisplayName()).withStyle(ChatFormatting.RED)));
+                Messages.sendToPlayer(new ClientboundCastErrorMessage(ClientboundCastErrorMessage.ErrorType.MANA, spellType), serverPlayer);
                 return false;
             }
 
