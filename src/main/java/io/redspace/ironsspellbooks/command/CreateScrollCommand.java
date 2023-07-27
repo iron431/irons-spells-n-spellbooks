@@ -33,14 +33,13 @@ public class CreateScrollCommand {
 
         var abstractSpell = SpellRegistry.REGISTRY.get().getValue(new ResourceLocation(spell));
 
-        if (abstractSpell == SpellRegistry.none()) {
+        if (abstractSpell == null || abstractSpell == SpellRegistry.none()) {
             throw ERROR_FAILED.create();
         }
 
-        //TODO: check spell max level
-        //        if (spellLevel > spellType.getMaxLevel()) {
-        //            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spellType, spellType.getMaxLevel())).create();
-        //        }
+        if (spellLevel > abstractSpell.getMaxLevel()) {
+            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getSpellName(), abstractSpell.getMaxLevel())).create();
+        }
 
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {

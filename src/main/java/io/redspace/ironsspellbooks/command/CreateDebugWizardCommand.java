@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -36,8 +37,11 @@ public class CreateDebugWizardCommand {
     }
 
     private static int createDebugWizard(CommandSourceStack source, String spellId, int spellLevel, boolean targetsPlayer, int cancelAfterTicks) throws CommandSyntaxException {
-        var spell = SpellRegistry.getSpell(spellId);
+        if (!spellId.contains(":")) {
+            spellId = IronsSpellbooks.MODID + ":" + spellId;
+        }
 
+        var spell = SpellRegistry.getSpell(spellId);
 
         if (spellLevel > spell.getMaxLevel()) {
             throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spell.getSpellName(), spell.getMaxLevel())).create();
