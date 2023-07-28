@@ -134,7 +134,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                     resultItems.set(i, output);
                     shouldMelt = true;
                 }
-                IronsSpellbooks.LOGGER.debug("{} + {} = {} ({})", potentialPotion.getDisplayName().getString(), itemStack.getDisplayName().getString(), output.getDisplayName().getString(), shouldMelt);
+                //IronsSpellbooks.LOGGER.debug("{} + {} = {} ({})", potentialPotion.getDisplayName().getString(), itemStack.getDisplayName().getString(), output.getDisplayName().getString(), shouldMelt);
             }
         } else if (AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack)) {
             //TODO: there are still edge cases that don't work (2 epic ink, 1 obisidian)
@@ -163,6 +163,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                     for (Integer integer : matchingItems) {
                         //Consume inputs we collected
                         if (inputsToConsume > 0) {
+                            //This code is technically not precise, but only things of stack size 1 should be allowed to make it here in the first place
                             int c = resultItems.get(integer).getCount();
                             resultItems.get(integer).shrink(c);
                             inputsToConsume -= c;
@@ -170,7 +171,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                     }
                     for (int j = 0; j < resultItems.size(); j++) {
                         //Place result if this used to be a base item, and we still have outputs to distribute
-                        if (matchingItems.contains(j) && output.getCount() >= 1 && resultItems.get(j).isEmpty()) {
+                        if (matchingItems.contains(j) && output.getCount() >= 1) {
                             resultItems.set(j, output.split(1));
                         }
                     }
@@ -431,7 +432,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     @Override
     public boolean canPlaceItemThroughFace(int pIndex, ItemStack pItemStack, @Nullable Direction pDirection) {
-        return isValidInput(pItemStack);
+        return !isFull(inputItems) && isValidInput(pItemStack);
     }
 
     @Override
@@ -451,32 +452,32 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     @Override
     public boolean isEmpty() {
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.isEmpty");
         return isEmpty(inputItems);
     }
 
     @Override
     public ItemStack getItem(int pSlot) {
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.getItem ({})", pSlot);
-        return pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.get(pSlot) : ItemStack.EMPTY;
+        /*
+        This should only be getting used by the hopper, but the hopper messing with the reference we return.
+        Therefore, we want to effectively make our stuff private because of the wacky rules the cauldron is subject to
+        This shouldn't mess with other stuff, but I'm unfortunately not familiar with the 150+ uses of the interface to say certainly. (and then there's other mods)
+         */
+        return /*pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.get(pSlot) : */ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeItem(int pSlot, int pAmount) {
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.removeItem ({}, #{})", pSlot, pAmount);
         //stack size is always one inside the cauldron, so we should be able to ignore amount
         return pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.remove(pSlot) : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int pSlot) {
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.removeItemNoUpdate ({})", pSlot);
         return pSlot >= 0 && pSlot <= inputItems.size() ? inputItems.remove(pSlot) : ItemStack.EMPTY;
     }
 
     @Override
     public void setItem(int pSlot, ItemStack pStack) {
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.setItem ({}, {})", pSlot, pStack);
         if (pSlot >= 0 && pSlot <= inputItems.size()) {
             if (inputItems.get(pSlot).isEmpty())
                 inputItems.set(pSlot, pStack);
