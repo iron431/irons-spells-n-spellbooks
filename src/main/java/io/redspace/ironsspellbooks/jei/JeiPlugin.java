@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -59,14 +60,17 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
 
         Arrays.stream(SpellType.values()).forEach(spellType -> {
-            if (spellType.isEnabled() && spellType != SpellType.NONE_SPELL)
+            if (spellType.isEnabled() && spellType != SpellType.NONE_SPELL){
+                var list = new ArrayList<ItemStack>();
                 IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
                         .forEach((spellLevel) -> {
-                            //TODO: addIngredientInfo can take a list. can we consolidate all levels into a single ingredient info?
                             var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
                             SpellData.setSpellData(scrollStack, spellType, spellLevel);
-                            registration.addIngredientInfo(scrollStack, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spellType.getComponentId())));
+                            list.add(scrollStack);
                         });
+                registration.addIngredientInfo(list, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spellType.getComponentId())));
+            }
+
         });
         registration.addItemStackInfo(new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()), Component.translatable("item.irons_spellbooks.lightning_bottle.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.BLOOD_VIAL.get()), Component.translatable("item.irons_spellbooks.blood_vial.guide"));
@@ -74,6 +78,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addItemStackInfo(new ItemStack(ItemRegistry.HOGSKIN.get()), Component.translatable("item.irons_spellbooks.hogskin.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.DRAGONSKIN.get()), Component.translatable("item.irons_spellbooks.dragonskin.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.RUINED_BOOK.get()), Component.translatable("item.irons_spellbooks.ruined_book.guide"));
+        registration.addItemStackInfo(new ItemStack(ItemRegistry.CINDER_ESSENCE.get()), Component.translatable("item.irons_spellbooks.cinder_essence.guide"));
     }
 
     @Override
