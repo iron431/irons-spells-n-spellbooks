@@ -48,6 +48,7 @@ import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
 
 public abstract class AbstractSpell {
     private String spellID = null;
+    private String deathMessageId = null;
     private String spellName = null;
     protected int baseManaCost;
     protected int manaCostPerLevel;
@@ -480,7 +481,11 @@ public abstract class AbstractSpell {
     }
 
     public DamageSource getDamageSource() {
-        return new DamageSource(getSpellId() + "_spell");
+        if (deathMessageId == null) {
+            deathMessageId = getSpellId().replace(':', '.');
+        }
+
+        return new DamageSource(deathMessageId);
     }
 
     public DamageSource getDamageSource(Entity attacker) {
