@@ -95,7 +95,7 @@ public class ServerConfigs {
 
     public static SpellConfigParameters getSpellConfig(AbstractSpell abstractSpell) {
         //IronsSpellbooks.LOGGER.debug("CFG: getSpellConfig {} {}", spellType, SPELL_CONFIGS.containsKey(spellType));
-        return SPELL_CONFIGS.getOrDefault(abstractSpell.getSpellResource().toString(), DEFAULT_CONFIG);
+        return SPELL_CONFIGS.getOrDefault(abstractSpell.getSpellId(), DEFAULT_CONFIG);
     }
 
     public static Map<String, SpellConfigParameters> getSpellConfigs() {
@@ -105,9 +105,9 @@ public class ServerConfigs {
     private static void createSpellConfig(AbstractSpell spell) {
         DefaultConfig config = spell.getDefaultConfig();
         //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
-        BUILDER.push(spell.getSpellResource().toString());
+        BUILDER.push(spell.getSpellId());
 
-        SPELL_CONFIGS.put(spell.getSpellResource().toString(), new SpellConfigParameters(
+        SPELL_CONFIGS.put(spell.getSpellId(), new SpellConfigParameters(
                 BUILDER.define("Enabled", config.enabled),
                 BUILDER.defineEnum("School", config.school),
                 BUILDER.define("MaxLevel", config.maxLevel),

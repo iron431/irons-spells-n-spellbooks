@@ -107,7 +107,7 @@ public class SpellData implements Comparable<SpellData> {
     }
 
     public int compareTo(SpellData other) {
-        int i = this.spell.getSpellResource().compareTo(other.spell.getSpellResource());
+        int i = this.spell.getSpellId().compareTo(other.spell.getSpellId());
         if (i == 0) {
             i = Integer.compare(this.spellLevel, other.spellLevel);
         }
