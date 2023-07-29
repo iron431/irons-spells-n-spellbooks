@@ -13,7 +13,7 @@
 - Priests will now heal friendly players
 - Aoe and Cone spells no longer cause knockback
 - Instant cast spells no longer spam their cooldown error if right click is held down
-- Slight loot table rebalances
+- Some loot table rebalances, including ink now dropping outside of Iron's Spellbooks structures
 
 ### Fixes
 - Fixed Aoe entities damaging summons and teammates
