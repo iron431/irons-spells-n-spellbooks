@@ -183,7 +183,7 @@ public class Messages {
         net.messageBuilder(ClientboundCastErrorMessage.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundCastErrorMessage::new)
                 .encoder(ClientboundCastErrorMessage::toBytes)
-                .consumer(ClientboundCastErrorMessage::handle)
+                .consumerMainThread(ClientboundCastErrorMessage::handle)
                 .add();
 
     }

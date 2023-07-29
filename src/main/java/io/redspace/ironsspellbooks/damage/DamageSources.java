@@ -79,7 +79,7 @@ public class DamageSources {
     private static final HashMap<LivingEntity, Integer> knockbackImmunes = new HashMap<>();
 
     public static void ignoreNextKnockback(LivingEntity livingEntity) {
-        if (!livingEntity.getLevel().isClientSide)
+        if (!livingEntity.level.isClientSide)
             knockbackImmunes.put(livingEntity, livingEntity.tickCount);
     }
 

@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -86,7 +87,7 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
         if (entity.tickCount % 20 == 0) {
             if (isBoiling(blockState)) {
-                if (entity instanceof LivingEntity livingEntity && livingEntity.hurt(DamageSources.CAULDRON, 2)) {
+                if (entity instanceof LivingEntity livingEntity && livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
                     MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
                     if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile cauldronTile) {
                         AlchemistCauldronTile.appendItem(cauldronTile.resultItems, new ItemStack(ItemRegistry.BLOOD_VIAL.get()));
