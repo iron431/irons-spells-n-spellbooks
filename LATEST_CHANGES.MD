@@ -6,11 +6,14 @@
   - Allows for production of Blood Vials
   - Supports interactions with dispensers, hoppers, and observers
 - Added Mana Potion, which can be brewed from Arcane Essence
+- Added loot integration to all of Yung's structure mods
+- Added loot integration to Structory
 
 ### Changes
 - Priests will now heal friendly players
 - Aoe and Cone spells no longer cause knockback
 - Instant cast spells no longer spam their cooldown error if right click is held down
+- Slight loot table rebalances
 
 ### Fixes
 - Fixed Aoe entities damaging summons and teammates
