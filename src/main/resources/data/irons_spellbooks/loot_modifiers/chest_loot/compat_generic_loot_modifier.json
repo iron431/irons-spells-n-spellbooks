@@ -1,0 +1,71 @@
+{
+  "type": "irons_spellbooks:append_loot",
+  "conditions": [
+    {
+      "condition": "minecraft:alternative",
+      "terms": [
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "betterdungeons:zombie_dungeon/chests/common"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "betterdungeons:skeleton_dungeon/chests/common"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "betterdungeons:spider_dungeon/chests/egg_room"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "betterstrongholds:chests/common"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "betterstrongholds:chests/grand_library"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "structory:harvest/graveyard"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "structory:harvest/graveyard2"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "structory:harvest/old_manor/common"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "structory:ruin/swamp/loot"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "structory:ruin/taiga/illager_low"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "structory:ruin/taiga/illager_high"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "structory:harvest/manor2/loot"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "idas:chests/wizardtower/wizardtower_library"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "idas:chests/apothecary_abode/apothecary_abode"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "nova_structures:chests/badland_miner_outpost_towers"
+        }
+      ]
+    }
+  ],
+  "key": "irons_spellbooks:chests/additional_generic_loot"
+}
