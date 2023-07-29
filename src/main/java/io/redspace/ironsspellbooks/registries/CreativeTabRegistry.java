@@ -187,6 +187,7 @@ public class CreativeTabRegistry {
             event.accept(ItemRegistry.ACANE_ANVIL_BLOCK_ITEM.get());
             event.accept(ItemRegistry.PEDESTAL_BLOCK_ITEM.get());
             event.accept(ItemRegistry.ARMOR_PILE_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.ALCHEMIST_CAULDRON_BLOCK_ITEM.get());
         }
 
         if (event.getTab() == CreativeModeTabs.searchTab() || event.getTab() == SCROLLS_TAB.get()) {

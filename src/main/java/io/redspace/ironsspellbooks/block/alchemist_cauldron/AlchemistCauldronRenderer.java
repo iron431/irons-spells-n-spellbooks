@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -79,7 +80,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
     }
 
     private void renderWater(AlchemistCauldronTile cauldron, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float waterOffset) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.beaconBeam(new ResourceLocation("textures/block/water_still.png"), true));
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.beaconBeam(new ResourceLocation(IronsSpellbooks.MODID, "textures/block/water_still.png"), true));
         long color = cauldron.getAverageWaterColor();
         var rgb = colorFromLong(color);
 
@@ -92,12 +93,17 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         float min_v = (frameSize * frame);
         float max_v = (frameSize * (frame + 1));
 
-
+//        if (lastv != min_v) {
+//            IronsSpellbooks.LOGGER.debug("[{} {}] [{} {}]", min_u, max_u, min_v, max_v);
+//            lastv = min_v;
+//        }
         consumer.vertex(pose, 1, waterOffset, 0).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(max_u, min_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
         consumer.vertex(pose, 0, waterOffset, 0).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(min_u, min_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
         consumer.vertex(pose, 0, waterOffset, 1).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(min_u, max_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
         consumer.vertex(pose, 1, waterOffset, 1).color(rgb.x(), rgb.y(), rgb.z(), 1f).uv(max_u, max_v).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(0, 1, 0).endVertex();
     }
+
+//    float lastv;
 
     private Vector3f colorFromLong(long color) {
         //Copied from potion utils
