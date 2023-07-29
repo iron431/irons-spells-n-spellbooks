@@ -115,7 +115,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         //This is only called Server Side
         if (level == null)
             return;
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.meltComponent: {}", itemStack.getDisplayName().getString());
+        //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.meltComponent: {}", itemStack.getDisplayName().getString());
         boolean shouldMelt = false;
         boolean success = true;
         if ( itemStack.is(ItemRegistry.SCROLL.get()) && !isFull(resultItems)) {
@@ -126,7 +126,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 success = false;
             }
             shouldMelt = true;
-        } else if (BrewingRecipeRegistry.isValidIngredient(itemStack)) {
+        } else if (isBrewable(itemStack)) {
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialPotion = resultItems.get(i);
                 ItemStack output = BrewingRecipeRegistry.getOutput(potentialPotion.isEmpty() ? PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER) : potentialPotion, itemStack);
@@ -155,7 +155,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                     break;
                 }
                 int inputsCollected = potentialInput.getCount();
-                IronsSpellbooks.LOGGER.debug("Checking cauldron recipes. CauldronInternalIndex: {}. Original Item: {} Copycat Item: {}", i, resultItems.get(i), potentialInput);
+                //IronsSpellbooks.LOGGER.debug("Checking cauldron recipes. CauldronInternalIndex: {}. Original Item: {} Copycat Item: {}", i, resultItems.get(i), potentialInput);
                 ItemStack output = AlchemistCauldronRecipeRegistry.getOutput(potentialInput, itemStack.copy(), true);
                 if (!output.isEmpty()) {
                     //If we have an output, consume inputs, and replace with as many outputs as we can fit
@@ -196,7 +196,11 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
      Cauldron Helpers
      ***********************************************************/
     public boolean isValidInput(ItemStack itemStack) {
-        return itemStack.is(ItemRegistry.SCROLL.get()) || BrewingRecipeRegistry.isValidIngredient(itemStack) || AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack);
+        return itemStack.is(ItemRegistry.SCROLL.get()) || isBrewable(itemStack) || AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack);
+    }
+
+    public static boolean isBrewable(ItemStack itemStack){
+        return ServerConfigs.ALLOW_CAULDRON_BREWING.get() && BrewingRecipeRegistry.isValidIngredient(itemStack);
     }
 
     public int getItemWaterColor(ItemStack itemStack) {
@@ -348,15 +352,14 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     @Override
     public void handleUpdateTag(CompoundTag tag) {
         //this only gets run client side
-        //why do we have to clear it? isnt that what load should do? missing namespace = ignroe?? i wouldnt fucking know
         this.inputItems.clear();
         this.resultItems.clear();
         if (tag != null) {
             load(tag);
         }
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.handleUpdateTag: tag:{}", tag);
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.handleUpdateTag: items:{}", inputItems);
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.handleUpdateTag: results:{}", resultItems);
+        //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.handleUpdateTag: tag:{}", tag);
+        //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.handleUpdateTag: items:{}", inputItems);
+        //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.handleUpdateTag: results:{}", resultItems);
 
     }
 

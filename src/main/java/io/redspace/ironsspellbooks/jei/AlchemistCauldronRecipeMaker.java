@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRec
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRecipeRegistry;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -70,6 +71,10 @@ public final class AlchemistCauldronRecipeMaker {
     }
 
     private static Stream<AlchemistCauldronJeiRecipe> getPotionRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
+        if(!ServerConfigs.ALLOW_CAULDRON_BREWING.get()) {
+            return Stream.of();
+        }
+
         List<ItemStack> potionReagents = ingredientManager.getAllItemStacks().stream()
                 .filter(AlchemistCauldronRecipeMaker::isIngredient)
                 .toList();
