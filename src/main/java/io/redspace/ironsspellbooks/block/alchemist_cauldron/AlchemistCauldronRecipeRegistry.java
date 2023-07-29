@@ -13,10 +13,11 @@ public class AlchemistCauldronRecipeRegistry {
     private static final List<AlchemistCauldronRecipe> recipes = new ArrayList<>();
 
     static {
-        IronsSpellbooks.LOGGER.debug("creating custom cauldron recipes");
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.BLOOD_VIAL.get(), ItemRegistry.HOGSKIN.get(), ItemRegistry.ARCANE_ESSENCE.get()).setBaseRequirement(4).setResultLimit(1));
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_EPIC.get(), Items.OBSIDIAN, Items.CRYING_OBSIDIAN));
-        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_LEGENDARY.get(), Items.BLUE_ORCHID, Items.DANDELION).setBaseRequirement(2).setResultLimit(2));
+        //No cool recipes for right now :(
+        //IronsSpellbooks.LOGGER.debug("creating custom cauldron recipes");
+        //recipes.add(new AlchemistCauldronRecipe(ItemRegistry.BLOOD_VIAL.get(), ItemRegistry.HOGSKIN.get(), ItemRegistry.ARCANE_ESSENCE.get()).setBaseRequirement(4).setResultLimit(1));
+        //recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_EPIC.get(), Items.OBSIDIAN, Items.CRYING_OBSIDIAN));
+        //recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_LEGENDARY.get(), Items.BLUE_ORCHID, Items.DANDELION).setBaseRequirement(2).setResultLimit(2));
     }
 
     /**
