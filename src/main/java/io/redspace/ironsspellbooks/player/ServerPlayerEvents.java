@@ -63,27 +63,10 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.Map;
 
-@Mod.EventBusSubscriber()
+@Mod.EventBusSubscriber
 public class ServerPlayerEvents {
 
-    private static final boolean debugLootTables = true;
     @SubscribeEvent
-    public static void alertLootTable(PlayerInteractEvent.RightClickBlock event) {
-        if(debugLootTables){
-            var blockEntity = event.getLevel().getBlockEntity(event.getHitVec().getBlockPos());
-            if (blockEntity instanceof RandomizableContainerBlockEntity chest) {
-                var lootTable = chest.lootTable;
-                if (lootTable != null) {
-                    if (event.getEntity() instanceof ServerPlayer serverPlayer)
-                        serverPlayer.sendSystemMessage(Component.literal(chest.lootTable.toString()).withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, lootTable.toString()))));
-                    IronsSpellbooks.LOGGER.info("{}", chest.lootTable);
-                }
-            }
-        }
-
-    }
-
-    @SubscribeEvent()
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
 
         if (event.getEntity().level.isClientSide) {
@@ -143,8 +126,6 @@ public class ServerPlayerEvents {
                 event.setDroppedExperience((int) (event.getDroppedExperience() * 1.25));
             }
         }
-
-
     }
 
     @SubscribeEvent
@@ -164,13 +145,6 @@ public class ServerPlayerEvents {
         }
     }
 
-    //This causes an issue with saving the PlayerMagicData to nbt. you can't save it if you clear it.
-//    @SubscribeEvent
-//    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-//        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-//            PlayerMagicData.getPlayerMagicData(serverPlayer).resetCastingState();
-//        }
-//    }
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         //IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
