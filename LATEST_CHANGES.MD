@@ -1,6 +1,11 @@
 
 ### Additions
-- 
+- Added the Alchemist Cauldron
+  - Allows for scrolls to be recycled into ink
+  - Allows for brewing of 4 potions at once
+  - Allows for production of Blood Vials
+  - Supports interactions with dispensers, hoppers, and observers
+- Added Mana Potion, which can be brewed from Arcane Essence
 
 ### Changes
 - Priests will now heal friendly players
