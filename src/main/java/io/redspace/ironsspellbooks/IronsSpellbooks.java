@@ -17,6 +17,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -66,6 +67,7 @@ public class IronsSpellbooks {
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
         FeatureRegistry.register(modEventBus);
+        PotionRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::addPackFinders);

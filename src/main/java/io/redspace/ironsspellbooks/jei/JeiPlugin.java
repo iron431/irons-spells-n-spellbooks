@@ -22,16 +22,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
 @mezz.jei.api.JeiPlugin
 public class JeiPlugin implements IModPlugin {
-    public static final String TEXTURE_GUI_PATH = "textures/gui/";
-    public static final String TEXTURE_GUI_VANILLA = TEXTURE_GUI_PATH + "gui_vanilla.png";
-    public static final String TEXTURE_SCROLL_FORGE = TEXTURE_GUI_PATH + "scroll_forge.png";
-    public static final ResourceLocation RECIPE_GUI_VANILLA = new ResourceLocation(IronsSpellbooks.MODID, TEXTURE_GUI_VANILLA);
-    public static final ResourceLocation SCROLL_FORGE_GUI = new ResourceLocation(IronsSpellbooks.MODID, TEXTURE_SCROLL_FORGE);
+    public static final ResourceLocation RECIPE_GUI_VANILLA = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/gui_vanilla.png");
+    public static final ResourceLocation ALCHEMIST_CAULDRON_GUI = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/jei_alchemist_cauldron.png");
+    public static final ResourceLocation SCROLL_FORGE_GUI = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -49,6 +48,7 @@ public class JeiPlugin implements IModPlugin {
         IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
         registration.addRecipeCategories(new ArcaneAnvilRecipeCategory(guiHelper));
         registration.addRecipeCategories(new ScrollForgeRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new AlchemistCauldronRecipeCategory(guiHelper));
     }
 
     @Override
@@ -57,15 +57,20 @@ public class JeiPlugin implements IModPlugin {
         IVanillaRecipeFactory vanillaRecipeFactory = registration.getVanillaRecipeFactory();
         registration.addRecipes(ArcaneAnvilRecipeCategory.ARCANE_ANVIL_RECIPE_RECIPE_TYPE, ArcaneAnvilRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
         registration.addRecipes(ScrollForgeRecipeCategory.SCROLL_FORGE_RECIPE_RECIPE_TYPE, ScrollForgeRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
+        registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
 
         Arrays.stream(SpellType.values()).forEach(spellType -> {
-            if (spellType.isEnabled() && spellType != SpellType.NONE_SPELL)
+            if (spellType.isEnabled() && spellType != SpellType.NONE_SPELL){
+                var list = new ArrayList<ItemStack>();
                 IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
                         .forEach((spellLevel) -> {
                             var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
                             SpellData.setSpellData(scrollStack, spellType, spellLevel);
-                            registration.addIngredientInfo(scrollStack, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spellType.getComponentId())));
+                            list.add(scrollStack);
                         });
+                registration.addIngredientInfo(list, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spellType.getComponentId())));
+            }
+
         });
         registration.addItemStackInfo(new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()), Component.translatable("item.irons_spellbooks.lightning_bottle.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.BLOOD_VIAL.get()), Component.translatable("item.irons_spellbooks.blood_vial.guide"));
@@ -73,6 +78,7 @@ public class JeiPlugin implements IModPlugin {
         registration.addItemStackInfo(new ItemStack(ItemRegistry.HOGSKIN.get()), Component.translatable("item.irons_spellbooks.hogskin.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.DRAGONSKIN.get()), Component.translatable("item.irons_spellbooks.dragonskin.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.RUINED_BOOK.get()), Component.translatable("item.irons_spellbooks.ruined_book.guide"));
+        registration.addItemStackInfo(new ItemStack(ItemRegistry.CINDER_ESSENCE.get()), Component.translatable("item.irons_spellbooks.cinder_essence.guide"));
     }
 
     @Override
@@ -91,6 +97,7 @@ public class JeiPlugin implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(BlockRegistry.ARCANE_ANVIL_BLOCK.get()), ArcaneAnvilRecipeCategory.ARCANE_ANVIL_RECIPE_RECIPE_TYPE);
         registration.addRecipeCatalyst(new ItemStack(BlockRegistry.SCROLL_FORGE_BLOCK.get()), ScrollForgeRecipeCategory.SCROLL_FORGE_RECIPE_RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(BlockRegistry.ALCHEMIST_CAULDRON.get()), AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE);
     }
 
     private static final IIngredientSubtypeInterpreter<ItemStack> SCROLL_INTERPRETER = (stack, context) -> {
