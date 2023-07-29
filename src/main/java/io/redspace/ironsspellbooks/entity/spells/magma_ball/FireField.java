@@ -27,6 +27,7 @@ public class FireField extends AoeEntity {
     @Override
     public void applyEffect(LivingEntity target) {
         var damageSource = DamageSources.indirectDamageSource(DAMAGE_SOURCE, this, getOwner());
+        DamageSources.ignoreNextKnockback(target);
         target.hurt(damageSource, getDamage());
         target.setSecondsOnFire(3);
     }
