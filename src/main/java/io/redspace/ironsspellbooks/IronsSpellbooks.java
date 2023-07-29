@@ -18,6 +18,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -67,6 +68,7 @@ public class IronsSpellbooks {
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
         FeatureRegistry.register(modEventBus);
+        PotionRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
@@ -97,6 +99,9 @@ public class IronsSpellbooks {
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
         MenuScreens.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
+
+        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.ARMOR_PILE_BLOCK.get(), RenderType.translucent());
 
 
     }
@@ -168,7 +173,7 @@ public class IronsSpellbooks {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
-        // LOGGER.info("HELLO from server starting");
+        LOGGER.info("HELLO from server starting");
     }
 
 //    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD

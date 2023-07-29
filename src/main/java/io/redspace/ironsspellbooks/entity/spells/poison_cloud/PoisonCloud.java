@@ -31,6 +31,7 @@ public class PoisonCloud extends AoeEntity {
         if (damageSource == null) {
             damageSource = new DamageSource(DamageSources.getHolderFromResource(target, ISSDamageTypes.DRAGON_BREATH_POOL), this, getOwner());
         }
+        DamageSources.ignoreNextKnockback(target);
         target.hurt(damageSource, getDamage());
         target.addEffect(new MobEffectInstance(MobEffects.POISON, 120, (int) getDamage()));
     }

@@ -1,25 +1,21 @@
 
 ### Additions
-- Added spell descriptions to tooltips in Inscription Table and Scroll Forge
-- Added config option for the cooldown multiplier of imbued weapons
-- Added entity collision to the Shield Spell
-- Added JEI descriptions on how to obtain various materials
+- Added the Alchemist Cauldron
+  - Allows for scrolls to be recycled into ink
+  - Allows for brewing of 4 potions at once
+  - Allows for production of Blood Vials
+  - Supports interactions with dispensers, hoppers, and observers
+- Added Mana Potion, which can be brewed from Arcane Essence
+- Added loot integration to all of Yung's structure mods
+- Added loot integration to Structory
 
 ### Changes
-- Updated apotheosis compatibility (thanks to amo) (fixes #101, #103)
-- Updated Affinity Ring Textures
-- Updated Arcane Cloth and Ingot Textures
-- Level of Vigor gained from Devour Spell is now capped at level 10 
-- Fang Strike default fang count of increased by 2
-- Fang Strike fangs now activate faster
-- Fang Strike and Fang Ward base cast time reduced to .75 seconds
-- Fang Ward fang count now increases exponentially with its ring count
-- Imbued weapons now have half the cooldown instead of twice the cooldown
+- Priests will now heal friendly players
+- Aoe and Cone spells no longer cause knockback
+- Instant cast spells no longer spam their cooldown error if right click is held down
+- Some loot table rebalances, including ink now dropping outside of Iron's Spellbooks structures
 
 ### Fixes
-- Fixed an exploit that could bypass a spell book's rarity limit when inscribing a spell (fixes #94)
-- Fixed an exploit that allowed a different focus to be used to craft a scroll (fixes #100)
-- Fixed some magic projectiles ignoring shield spell
-- Fixed aoe damage sources damaging shields multiple times
-- Fixed Magehunter not showing Counterspell until used
-- Fixed casting mobs causing null crash if casting while dying
+- Fixed Aoe entities damaging summons and teammates
+- Fixed Wall of Fire igniting summons and teammates
+- Fixed True Invisibility effect icon disappearing

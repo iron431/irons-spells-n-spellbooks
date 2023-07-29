@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
@@ -26,6 +27,10 @@ import io.redspace.ironsspellbooks.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -42,6 +47,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
@@ -59,10 +65,10 @@ import top.theillusivec4.curios.api.CuriosApi;
 import java.util.Map;
 import java.util.Set;
 
-@Mod.EventBusSubscriber()
+@Mod.EventBusSubscriber
 public class ServerPlayerEvents {
 
-    @SubscribeEvent()
+    @SubscribeEvent
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
 
         if (event.getEntity().level.isClientSide) {
@@ -122,8 +128,6 @@ public class ServerPlayerEvents {
                 event.setDroppedExperience((int) (event.getDroppedExperience() * 1.25));
             }
         }
-
-
     }
 
     @SubscribeEvent
@@ -143,13 +147,6 @@ public class ServerPlayerEvents {
         }
     }
 
-    //This causes an issue with saving the PlayerMagicData to nbt. you can't save it if you clear it.
-//    @SubscribeEvent
-//    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-//        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-//            PlayerMagicData.getPlayerMagicData(serverPlayer).resetCastingState();
-//        }
-//    }
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         //IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());

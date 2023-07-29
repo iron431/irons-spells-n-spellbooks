@@ -33,6 +33,7 @@ public class DragonBreathPool extends AoeEntity {
         if (damageSource == null) {
             damageSource = new DamageSource(DamageSources.getHolderFromResource(target, ISSDamageTypes.DRAGON_BREATH_POOL), this, getOwner());
         }
+        DamageSources.ignoreNextKnockback(target);
         target.hurt(damageSource, getDamage());
     }
 

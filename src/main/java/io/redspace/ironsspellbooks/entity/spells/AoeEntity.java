@@ -98,7 +98,7 @@ public abstract class AoeEntity extends Projectile {
 
     @Override
     protected boolean canHitEntity(Entity pTarget) {
-        return pTarget != getOwner() && super.canHitEntity(pTarget);
+        return (getOwner() != null && pTarget != getOwner() && !getOwner().isAlliedTo(pTarget)) && super.canHitEntity(pTarget);
     }
 
     /**

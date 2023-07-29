@@ -180,6 +180,12 @@ public class Messages {
                 .consumerMainThread(ClientboundSyncTargetingData::handle)
                 .add();
 
+        net.messageBuilder(ClientboundCastErrorMessage.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundCastErrorMessage::new)
+                .encoder(ClientboundCastErrorMessage::toBytes)
+                .consumer(ClientboundCastErrorMessage::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {

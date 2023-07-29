@@ -36,7 +36,7 @@ public class TrueInvisibilityEffect extends MobEffect {
     @Override
     public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
         //If we attack, we lose invis
-        if (lastHurtTimestamp != pLivingEntity.getLastHurtMobTimestamp()){
+        if (!pLivingEntity.level.isClientSide && lastHurtTimestamp != pLivingEntity.getLastHurtMobTimestamp()){
  //Ironsspellbooks.logger.debug("TrueInvisibilityEffect.applyEffectTick: entity attacked, removing effect");
             pLivingEntity.removeEffect(this);
         }

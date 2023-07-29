@@ -31,11 +31,13 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
     public static final ForgeConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
+    public static final ForgeConfigSpec.ConfigValue<Double> SCROLL_RECYCLE_CHANCE;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
 
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -63,6 +65,10 @@ public class ServerConfigs {
         MAX_UPGRADES = BUILDER.worldRestart().define("maxUpgrades", 3);
         BUILDER.comment("From 0-1, the percent of max mana a player respawns with. Default: 0.0");
         MANA_SPAWN_PERCENT = BUILDER.worldRestart().define("manaSpawnPercent", 0.0);
+        BUILDER.comment("From 0-1, the percent chance for scrolls to be successfully recycled. Default: 0.5 (50%)");
+        SCROLL_RECYCLE_CHANCE = BUILDER.worldRestart().define("scrollRecycleChance", 0.5);
+        BUILDER.comment("Whether or not potions should be allowed to be brewed in the alchemist cauldron)");
+        ALLOW_CAULDRON_BREWING = BUILDER.worldRestart().define("allowCauldronBrewing", true);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");
