@@ -79,7 +79,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         }
         var random = level.getRandom();
         if (AlchemistCauldronBlock.isBoiling(blockState)) {
-            MagicManager.spawnParticles(level, ParticleTypes.BUBBLE_POP, pos.getX() + Mth.randomBetween(random, .2f, .8f), pos.getY() + AlchemistCauldronRenderer.getWaterOffest(blockState), pos.getZ() + Mth.randomBetween(random, .2f, .8f), 1, 0, 0, 0, 0, false);
+            float waterLevel = Mth.lerp(AlchemistCauldronBlock.getLevel(blockState) / (float) AlchemistCauldronBlock.MAX_LEVELS, .25f, .9f);
+            MagicManager.spawnParticles(level, ParticleTypes.BUBBLE_POP, pos.getX() + Mth.randomBetween(random, .2f, .8f), pos.getY() + waterLevel, pos.getZ() + Mth.randomBetween(random, .2f, .8f), 1, 0, 0, 0, 0, false);
         }
     }
 
