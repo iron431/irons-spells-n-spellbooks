@@ -62,6 +62,11 @@ public class SummonedVex extends Vex implements MagicSummon {
     }
 
     @Override
+    public boolean isPreventingPlayerRest(Player pPlayer) {
+        return !this.isAlliedTo(pPlayer);
+    }
+
+    @Override
     public boolean doHurtTarget(Entity pEntity) {
         return Utils.doMeleeAttack(this, pEntity, SpellRegistry.SUMMON_VEX_SPELL.get().getDamageSource(this, getSummoner()), SchoolType.EVOCATION);
     }
