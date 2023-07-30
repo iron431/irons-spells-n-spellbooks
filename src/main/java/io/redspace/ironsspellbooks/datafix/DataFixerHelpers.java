@@ -92,8 +92,43 @@ public class DataFixerHelpers {
             .put(66, new DevourSpell().getSpellId())
             .build();
 
+    public static boolean doFixUps(CompoundTag tag) {
+        var fix1 = fixIsbSpellbook(tag);
+        var fix2 = fixIsbSpell(tag);
+        return fix1 || fix2;
+    }
+
+    public static boolean fixIsbSpellbook(CompoundTag tag) {
+        if (tag != null) {
+            var spellBookTag = (CompoundTag) tag.get(SpellBookData.ISB_SPELLBOOK);
+            if (spellBookTag != null) {
+                ListTag listTagSpells = (ListTag) spellBookTag.get(SpellBookData.SPELLS);
+                if (listTagSpells != null && !listTagSpells.isEmpty()) {
+                    if (((CompoundTag) listTagSpells.get(0)).contains(SpellBookData.LEGACY_ID)) {
+                        DataFixerHelpers.fixSpellbookData(listTagSpells);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean fixIsbSpell(CompoundTag tag) {
+        if (tag != null) {
+            var spellTag = (CompoundTag) tag.get(SpellData.ISB_SPELL);
+            if (spellTag != null) {
+                if (spellTag.contains(SpellData.LEGACY_SPELL_TYPE)) {
+                    DataFixerHelpers.fixScrollData(spellTag);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static void fixScrollData(CompoundTag tag) {
-        IronsSpellbooks.LOGGER.debug("Fixing scroll data: {}", tag);
         var legacySpellId = tag.getInt(SpellData.LEGACY_SPELL_TYPE);
         tag.remove(SpellData.LEGACY_SPELL_TYPE);
         tag.putString(SpellData.SPELL_ID, LEGACY_SPELL_MAPPING.getOrDefault(legacySpellId, "irons_spellbooks:none"));

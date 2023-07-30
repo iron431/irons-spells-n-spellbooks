@@ -90,22 +90,24 @@ public class IronsWorldUpgrader {
                 var itemTag = (CompoundTag) compoundItemTag.get("tag");
 
                 if (itemTag != null) {
-                    var spellTag = (CompoundTag) itemTag.get(SpellData.ISB_SPELL);
-                    if (spellTag != null && spellTag.contains(SpellData.LEGACY_SPELL_TYPE)) {
-                        DataFixerHelpers.fixScrollData(spellTag);
-                        updated.set(true);
-                    }
+//                    DataFixerHelpers.doFixUps(itemTag);
 
-                    var spellBookTag = (CompoundTag) itemTag.get(SpellBookData.ISB_SPELLBOOK);
-                    if (spellBookTag != null) {
-                        ListTag listTagSpells = (ListTag) spellBookTag.get(SpellBookData.SPELLS);
-                        if (listTagSpells != null && !listTagSpells.isEmpty()) {
-                            if (((CompoundTag) listTagSpells.get(0)).contains(SpellBookData.LEGACY_ID)) {
-                                DataFixerHelpers.fixSpellbookData(listTagSpells);
-                                updated.set(true);
-                            }
-                        }
-                    }
+//                    var spellTag = (CompoundTag) itemTag.get(SpellData.ISB_SPELL);
+//                    if (spellTag != null && spellTag.contains(SpellData.LEGACY_SPELL_TYPE)) {
+//                        DataFixerHelpers.fixScrollData(spellTag);
+//                        updated.set(true);
+//                    }
+//
+//                    var spellBookTag = (CompoundTag) itemTag.get(SpellBookData.ISB_SPELLBOOK);
+//                    if (spellBookTag != null) {
+//                        ListTag listTagSpells = (ListTag) spellBookTag.get(SpellBookData.SPELLS);
+//                        if (listTagSpells != null && !listTagSpells.isEmpty()) {
+//                            if (((CompoundTag) listTagSpells.get(0)).contains(SpellBookData.LEGACY_ID)) {
+//                                DataFixerHelpers.fixSpellbookData(listTagSpells);
+//                                updated.set(true);
+//                            }
+//                        }
+//                    }
                 }
             });
         });
@@ -114,6 +116,7 @@ public class IronsWorldUpgrader {
     }
 
     public void work() {
+        running = true;
         int totalChunks = 0;
         ImmutableMap.Builder<ResourceKey<Level>, ListIterator<ChunkPos>> builder = ImmutableMap.builder();
         ImmutableSet<ResourceKey<Level>> immutableset = this.worldGenSettings.levels();
@@ -146,12 +149,20 @@ public class IronsWorldUpgrader {
                         boolean updated = false;
 
                         try {
-                            CompoundTag compoundtag = chunkstorage.read(chunkpos).join().orElse((CompoundTag) null);
-                            if (compoundtag != null) {
-                                if (upgradeBlockEntities(compoundtag)) {
+                            CompoundTag chunkDataTag = chunkstorage.read(chunkpos).join().orElse((CompoundTag) null);
+                            if (chunkDataTag != null) {
+                                ListTag blockEntitiesTag = (ListTag) chunkDataTag.get("block_entities");
+                                var ironsTagTraverser = new IronsTagTraverser();
+                                ironsTagTraverser.visit(blockEntitiesTag);
+                                if (ironsTagTraverser.changesMade()) {
+                                    chunkstorage.write(chunkpos, chunkDataTag);
                                     updated = true;
-                                    chunkstorage.write(chunkpos, compoundtag);
                                 }
+
+//                                if (upgradeBlockEntities(chunkDataTag)) {
+//                                    updated = true;
+//                                    chunkstorage.write(chunkpos, chunkDataTag);
+//                                }
 
 //                                if ((chunkpos.x == -3 && chunkpos.z == -1)
 //                                        || (chunkpos.x == -3 && chunkpos.z == -2)) {
