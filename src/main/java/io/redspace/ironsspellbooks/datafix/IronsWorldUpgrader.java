@@ -49,11 +49,9 @@ public class IronsWorldUpgrader {
     private final WorldGenSettings worldGenSettings;
     private final LevelStorageSource.LevelStorageAccess levelStorage;
     private final DataFixer dataFixer;
-    private volatile boolean finished;
-    private volatile int totalChunks;
-    private volatile int converted;
-    private volatile int skipped;
-    private volatile boolean running;
+    private int converted;
+    private int skipped;
+    private boolean running;
     private final Object2FloatMap<ResourceKey<Level>> progressMap = Object2FloatMaps.synchronize(new Object2FloatOpenCustomHashMap<>(Util.identityStrategy()));
     private static final Pattern REGEX = Pattern.compile("^r\\.(-?[0-9]+)\\.(-?[0-9]+)\\.mca$");
     private final DimensionDataStorage overworldDataStorage;
@@ -109,19 +107,6 @@ public class IronsWorldUpgrader {
                         }
                     }
                 }
-
-//                var id = compoundItemTag.getString("id");
-//
-//                if ("irons_spellbooks:scroll".equals(id)) {
-//                    var itemTag = (CompoundTag) compoundItemTag.get("tag");
-//                    if (itemTag != null) {
-//                        var spellTag = (CompoundTag) itemTag.get(SpellData.ISB_SPELL);
-//                        if (spellTag != null && spellTag.contains(SpellData.LEGACY_SPELL_TYPE)) {
-//                            DataFixerHelpers.fixScrollData(spellTag);
-//                            updated.set(true);
-//                        }
-//                    }
-//                }
             });
         });
 
@@ -129,20 +114,17 @@ public class IronsWorldUpgrader {
     }
 
     public void work() {
-        this.totalChunks = 0;
+        int totalChunks = 0;
         ImmutableMap.Builder<ResourceKey<Level>, ListIterator<ChunkPos>> builder = ImmutableMap.builder();
         ImmutableSet<ResourceKey<Level>> immutableset = this.worldGenSettings.levels();
 
         for (ResourceKey<Level> resourcekey : immutableset) {
             List<ChunkPos> list = this.getAllChunkPos(resourcekey);
             builder.put(resourcekey, list.listIterator());
-            this.totalChunks += list.size();
+            totalChunks += list.size();
         }
 
-        if (this.totalChunks == 0) {
-            this.finished = true;
-        } else {
-            float f1 = (float) this.totalChunks;
+        if (totalChunks > 0) {
             ImmutableMap<ResourceKey<Level>, ListIterator<ChunkPos>> immutablemap = builder.build();
             ImmutableMap.Builder<ResourceKey<Level>, ChunkStorage> builder1 = ImmutableMap.builder();
 
@@ -166,22 +148,25 @@ public class IronsWorldUpgrader {
                         try {
                             CompoundTag compoundtag = chunkstorage.read(chunkpos).join().orElse((CompoundTag) null);
                             if (compoundtag != null) {
-
-                                if ((chunkpos.x == -3 && chunkpos.z == -1)
-                                        || (chunkpos.x == -3 && chunkpos.z == -2)) {
-                                    int x = 0;
-                                    if (upgradeBlockEntities(compoundtag)) {
-                                        updated = true;
-                                        chunkstorage.write(chunkpos, compoundtag);
-                                    }
+                                if (upgradeBlockEntities(compoundtag)) {
+                                    updated = true;
+                                    chunkstorage.write(chunkpos, compoundtag);
                                 }
+
+//                                if ((chunkpos.x == -3 && chunkpos.z == -1)
+//                                        || (chunkpos.x == -3 && chunkpos.z == -2)) {
+//                                    int x = 0;
+//                                    if (upgradeBlockEntities(compoundtag)) {
+//                                        updated = true;
+//                                        chunkstorage.write(chunkpos, compoundtag);
+//                                    }
+//                                }
                             }
                         } catch (CompletionException | ReportedException reportedexception) {
                             Throwable throwable = reportedexception.getCause();
                             if (!(throwable instanceof IOException)) {
                                 throw reportedexception;
                             }
-
                             IronsSpellbooks.LOGGER.error("Error upgrading chunk {}", chunkpos, throwable);
                         }
 
@@ -193,10 +178,6 @@ public class IronsWorldUpgrader {
 
                         processedItem = true;
                     }
-
-                    float f2 = (float) listiterator.nextIndex() / f1;
-                    this.progressMap.put(resourcekey2, f2);
-                    f += f2;
                 }
 
                 if (!processedItem) {
@@ -214,8 +195,7 @@ public class IronsWorldUpgrader {
 
             this.overworldDataStorage.save();
             millis = Util.getMillis() - millis;
-            IronsSpellbooks.LOGGER.info("Iron's World Upgrader finished after {} ms.  updated:{} skipped:{}", millis, this.converted, this.skipped);
-            this.finished = true;
+            IronsSpellbooks.LOGGER.info("Iron's World Upgrader finished after {} ms.  chunks updated:{} chunks skipped:{}", millis, this.converted, this.skipped);
         }
     }
 

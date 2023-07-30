@@ -67,7 +67,7 @@ public class ServerPlayerEvents {
         var server = event.getServer();
         var storageSource = server.storageSource;
         IronsSpellbooks.LOGGER.debug("ServerAboutToStartEvent");
-        new IronsWorldUpgrader(storageSource, null, server.getWorldData().worldGenSettings(), false).work();
+        new IronsWorldUpgrader(storageSource, null, server.getWorldData().worldGenSettings()).work();
     }
 
     @SubscribeEvent()
