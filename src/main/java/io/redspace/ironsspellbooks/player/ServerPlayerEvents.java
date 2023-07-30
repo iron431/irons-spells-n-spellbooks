@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.datafix.TestWorldUpgrader;
+import io.redspace.ironsspellbooks.datafix.IronsWorldUpgrader;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
@@ -44,7 +44,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
@@ -56,7 +55,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.Map;
@@ -69,7 +67,7 @@ public class ServerPlayerEvents {
         var server = event.getServer();
         var storageSource = server.storageSource;
         IronsSpellbooks.LOGGER.debug("ServerAboutToStartEvent");
-        TestWorldUpgrader test = new TestWorldUpgrader(storageSource, null, server.getWorldData().worldGenSettings());
+        new IronsWorldUpgrader(storageSource, null, server.getWorldData().worldGenSettings(), false).work();
     }
 
     @SubscribeEvent()
