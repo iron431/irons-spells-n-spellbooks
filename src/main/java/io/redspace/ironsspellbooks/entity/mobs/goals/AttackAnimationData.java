@@ -6,14 +6,12 @@ import java.util.List;
 public class AttackAnimationData {
     //public final int id;
     public final int lengthInTicks;
-    public final List<Integer> attackTimestamps;
+    public final int[] attackTimestamps;
 
     public AttackAnimationData(int lengthInTicks, int... attackTimestamps) {
         //this.id = id;
         this.lengthInTicks = lengthInTicks;
-        this.attackTimestamps = new ArrayList<>();
-        for (int i : attackTimestamps)
-            this.attackTimestamps.add(i);
+        this.attackTimestamps = attackTimestamps;
 
     }
 

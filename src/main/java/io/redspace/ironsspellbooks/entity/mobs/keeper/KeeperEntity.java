@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
@@ -36,14 +37,15 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 
 import javax.annotation.Nullable;
 
-public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
-    private static final EntityDataAccessor<Integer> DATA_ATTACK_TYPE = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.INT);
+public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, AnimatedAttacker {
+
+    //private static final EntityDataAccessor<Integer> DATA_ATTACK_TYPE = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.INT);
 
     public enum AttackType {
         Double_Slash,
-        Lunge,
+        Triple_Slash,
         Slash_Stab,
-        Triple_Slash
+        Lunge
     }
 
     public KeeperEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
@@ -55,25 +57,6 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
 
     public KeeperEntity(Level pLevel) {
         this(EntityRegistry.KEEPER.get(), pLevel);
-    }
-
-    public AttackType getNextAttackType() {
-        return AttackType.values()[entityData.get(DATA_ATTACK_TYPE)];
-    }
-
-    public void setNextAttackType(AttackType attackType) {
-        entityData.set(DATA_ATTACK_TYPE, attackType.ordinal());
-    }
-
-    public void randomizeNextAttack() {
-        entityData.set(DATA_ATTACK_TYPE, random.nextInt(AttackType.values().length));
- //Ironsspellbooks.logger.debug("KeeperEntity Next Attack: {}", getNextAttackType());
-    }
-
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        entityData.define(DATA_ATTACK_TYPE, 0);
     }
 
     @Override
@@ -136,11 +119,15 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
         return true;
     }
 
+
     private final AnimationBuilder doubleSlash = new AnimationBuilder().addAnimation("sword_double_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder lunge = new AnimationBuilder().addAnimation("sword_lunge", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder slashStab = new AnimationBuilder().addAnimation("sword_slash_stab", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder tripleSlash = new AnimationBuilder().addAnimation("sword_triple_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-
+    //In parallel with enum
+    private final AnimationBuilder[] animations = new AnimationBuilder[]{
+            doubleSlash, tripleSlash, slashStab, lunge
+    };
     private final AnimationController meleeController = new AnimationController(this, "keeper_animations", 2, this::predicate);
 
 
@@ -149,21 +136,34 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy {
         return super.isInvulnerableTo(pSource) || pSource.isFall();
     }
 
-    private PlayState predicate(AnimationEvent animationEvent) {
+    AnimationBuilder animationToPlay = null;
+
+    @Override
+    public void playAnimation(int animationId) {
+        if (animationId >= 0 && animationId < animations.length)
+            animationToPlay = animations[animationId];
+    }
+
+    private PlayState predicate(AnimationEvent<KeeperEntity> animationEvent) {
 //        if(true)
 //            return PlayState.STOP;
 
         var controller = animationEvent.getController();
-        if (this.swinging) {
+//        if (this.swinging) {
+//            controller.markNeedsReload();
+//            switch (getNextAttackType()) {
+//                case Double_Slash -> controller.setAnimation(doubleSlash);
+//                case Lunge -> controller.setAnimation(lunge);
+//                case Slash_Stab -> controller.setAnimation(slashStab);
+//                case Triple_Slash -> controller.setAnimation(tripleSlash);
+//            }
+//            swinging = false;
+//            return PlayState.CONTINUE;
+//        }
+        if (this.animationToPlay != null) {
             controller.markNeedsReload();
-            switch (getNextAttackType()) {
-                case Double_Slash -> controller.setAnimation(doubleSlash);
-                case Lunge -> controller.setAnimation(lunge);
-                case Slash_Stab -> controller.setAnimation(slashStab);
-                case Triple_Slash -> controller.setAnimation(tripleSlash);
-            }
-            swinging = false;
-            return PlayState.CONTINUE;
+            controller.setAnimation(animationToPlay);
+            animationToPlay = null;
         }
         return PlayState.CONTINUE;
     }

@@ -1,12 +1,16 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
+import io.redspace.ironsspellbooks.network.ClientboundSyncAnimation;
+import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Map;
+import java.util.Random;
 
 public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     final KeeperEntity keeper;
@@ -14,13 +18,14 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     public KeeperAnimatedWarlockAttackGoal(KeeperEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float meleeRange) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval, meleeRange);
         keeper = abstractSpellCastingMob;
-        currentAttack = keeper.getNextAttackType();
+        nextAttack = randomizeNextAttack(0);
         this.meleeBias = 1f;
         this.wantsToMelee = true;
     }
 
     int meleeAnimTimer = -1;
     public KeeperEntity.AttackType currentAttack;
+    public KeeperEntity.AttackType nextAttack;
     private boolean hasLunged;
     private boolean hasHitLunge;
     //measured from blockbench
@@ -38,12 +43,11 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         //mob.lookAt(target, 300, 300);
 
         if (meleeAnimTimer > 0) {
+            //We are currently attacking and are in a melee animation
             forceFaceTarget();
-            //mob.setYBodyRot(0);
-            //IronsSpellbooks.LOGGER.debug("EntityRot: {}\nHeadRot:{}\nBodyRot:{}", mob.getYRot(), mob.getYHeadRot(), mob.yBodyRot);
             meleeAnimTimer--;
-            //IronsSpellbooks.LOGGER.debug("KeeperAnimatedAttackGoal.handleLogic Frame: {} | Should attack: {}", meleeAnimTimer, attackAnimations.get(currentAttack).isHitFrame(meleeAnimTimer));
             if (attackAnimations.get(currentAttack).isHitFrame(meleeAnimTimer)) {
+                //IronsSpellbooks.LOGGER.debug("KeeperAnimatedAttack: hit frame | currentAttack: {}", currentAttack);
                 if (currentAttack == KeeperEntity.AttackType.Lunge) {
                     if (!hasLunged) {
                         Vec3 lunge = target.position().subtract(mob.position()).normalize().multiply(2.4, .5, 2.4).add(0, 0.15, 0);
@@ -68,33 +72,39 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
             }
         } else if (meleeAnimTimer == 0) {
+            //Reset animations/attack
+            nextAttack = randomizeNextAttack(distance);
             resetAttackTimer(distanceSquared);
-            keeper.randomizeNextAttack();
             meleeAnimTimer = -1;
         } else {
             //Handling attack delay
-            //this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
             mob.lookAt(target, 15, 15);
-            if (distance < meleeRange * (keeper.getNextAttackType() == KeeperEntity.AttackType.Lunge ? 3 : 1)) {
-                //IronsSpellbooks.LOGGER.debug("KeeperAnimatedAttackGoal.handleLogic: IN RANGE");
+            if (distance < meleeRange * (nextAttack == KeeperEntity.AttackType.Lunge ? 3 : 1)) {
                 if (--this.attackTime == 0) {
                     this.mob.swing(InteractionHand.MAIN_HAND);
                     doMeleeAction();
                 } else if (this.attackTime < 0) {
                     resetAttackTimer(distanceSquared);
-
                 }
             } else if (--this.attackTime < 0) {
                 //Always keep the clock running, eventually he'll lunge to close distance. Otherwise he can be kited incredibly easily
                 resetAttackTimer(distanceSquared);
-                keeper.randomizeNextAttack();
+                nextAttack = randomizeNextAttack(distance);
             }
+        }
+    }
+
+    private KeeperEntity.AttackType randomizeNextAttack(float distance) {
+        //Lunge is the last enum. If we are close, no need to lunge.
+        if (distance < meleeRange * 1.5f) {
+            return KeeperEntity.AttackType.values()[mob.getRandom().nextInt(3)];
+        } else {
+            return KeeperEntity.AttackType.values()[mob.getRandom().nextInt(4)];
         }
     }
 
 
     private void forceFaceTarget() {
-
         if (hasLunged)
             return;
         double d0 = target.getX() - mob.getX();
@@ -108,11 +118,13 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     @Override
     protected void doMeleeAction() {
         //anim duration
-        currentAttack = keeper.getNextAttackType();
-        meleeAnimTimer = attackAnimations.get(currentAttack).lengthInTicks;
-        hasLunged = false;
-        hasHitLunge = false;
-
+        currentAttack = nextAttack;
+        if (currentAttack != null) {
+            meleeAnimTimer = attackAnimations.get(currentAttack).lengthInTicks;
+            hasLunged = false;
+            hasHitLunge = false;
+            Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.ordinal(), keeper), keeper);
+        }
     }
 
     @Override
@@ -123,5 +135,11 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             else
                 this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
         }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        this.meleeAnimTimer = -1;
     }
 }
