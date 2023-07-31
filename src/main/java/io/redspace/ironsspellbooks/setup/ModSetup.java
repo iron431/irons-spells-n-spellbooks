@@ -73,9 +73,6 @@ public class ModSetup {
 
         CompatHandler.init();
 
-        EntityDataSerializers.registerSerializer(MobSyncedCastingData.MOB_SYNCED_CASTING_DATA);
-        EntityDataSerializers.registerSerializer(SyncedSpellData.SYNCED_SPELL_DATA);
-
         event.enqueueWork(() ->
                 DispenserBlock.registerBehavior(Items.GLASS_BOTTLE.asItem(), new OptionalDispenseItemBehavior() {
                     private final DefaultDispenseItemBehavior defaultDispenseItemBehavior = new DefaultDispenseItemBehavior();
