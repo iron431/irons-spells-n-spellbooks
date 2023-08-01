@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.util.function.BiFunction;
 
 @Mixin(LevelStorageSource.class)
-public abstract class DataFixersMixin {
+public abstract class DataFixLevelStorageSourceMixin {
     @Unique
     private static final Object iron_sSpells_nSpellbooks$sync = new Object();
 
@@ -37,11 +37,11 @@ public abstract class DataFixersMixin {
 
                     if (ironsTraverser.changesMade()) {
                         NbtIo.writeCompressed(compoundTag1, path.toFile());
-                        IronsSpellbooks.LOGGER.debug("DataFixersMixin: Single player inventory updated: {} updates", ironsTraverser.totalChanges());
+                        IronsSpellbooks.LOGGER.debug("DataFixLevelStorageSourceMixin: Single player inventory updated: {} updates", ironsTraverser.totalChanges());
                     }
                 }
             } catch (Exception exception) {
-                IronsSpellbooks.LOGGER.warn("Irons Data Fixer, failed to load {}", path);
+                IronsSpellbooks.LOGGER.warn("DataFixLevelStorageSourceMixin failed to load {}", path);
             }
         }
     }

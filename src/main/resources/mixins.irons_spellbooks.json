@@ -11,7 +11,8 @@
     "SmithingMenuMixin",
     "TetraBladedItemMixin",
     "TridentItemMixin",
-    "DataFixersMixin"
+    "DataFixLevelStorageSourceMixin",
+    "DataFixPlayerDataStorageMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",
