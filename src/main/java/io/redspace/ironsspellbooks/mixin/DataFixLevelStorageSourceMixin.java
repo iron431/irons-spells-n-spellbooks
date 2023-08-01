@@ -41,7 +41,7 @@ public abstract class DataFixLevelStorageSourceMixin {
                     }
                 }
             } catch (Exception exception) {
-                IronsSpellbooks.LOGGER.warn("DataFixLevelStorageSourceMixin failed to load {}", path);
+                IronsSpellbooks.LOGGER.warn("DataFixLevelStorageSourceMixin failed to load {}, {}", path, exception.getMessage());
             }
         }
     }

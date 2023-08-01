@@ -50,7 +50,7 @@ public abstract class DataFixPlayerDataStorageMixin {
                     }
                 }
             } catch (Exception exception) {
-                IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Failed to load player data for {}", pPlayer.getName().getString());
+                IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Failed to load player data for {} {}", pPlayer.getName().getString(), exception.getMessage());
             }
         }
     }
