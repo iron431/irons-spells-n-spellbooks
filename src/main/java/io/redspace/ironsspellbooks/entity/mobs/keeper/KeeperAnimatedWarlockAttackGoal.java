@@ -29,6 +29,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     public KeeperEntity.AttackType queueCombo;
     private boolean hasLunged;
     private boolean hasHitLunge;
+    private Vec3 oldLungePos;
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
@@ -47,11 +48,12 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                         Vec3 lunge = target.position().subtract(mob.position()).normalize().multiply(2.4, .5, 2.4).add(0, 0.15, 0);
                         mob.push(lunge.x, lunge.y, lunge.z);
                         hasLunged = true;
+                        oldLungePos = mob.position();
                     }
                     if (!hasHitLunge && distance <= meleeRange * .6f) {
                         this.mob.doHurtTarget(target);
-                        target.knockback(1, Mth.sin(mob.getYRot() * ((float) Math.PI / 180F)), -Mth.cos(mob.getYRot() * ((float) Math.PI / 180F)));
-
+                        Vec3 knockback = oldLungePos.subtract(target.position());
+                        target.knockback(1, knockback.x, knockback.z);
                         hasHitLunge = true;
                     }
                 } else {
@@ -67,7 +69,6 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                         }
                     }
                 }
-
             }
         } else if (queueCombo != null) {
             nextAttack = queueCombo;
@@ -100,6 +101,8 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         int i;
         if (distance < meleeRange * 1.5f) {
             i = KeeperEntity.AttackType.values().length - 1;
+        } else if (mob.getRandom().nextFloat() < .25f && distance > meleeRange * 2.5f) {
+            return KeeperEntity.AttackType.Lunge;
         } else {
             i = KeeperEntity.AttackType.values().length;
         }
@@ -145,5 +148,6 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     public void stop() {
         super.stop();
         this.meleeAnimTimer = -1;
+        this.queueCombo = null;
     }
 }

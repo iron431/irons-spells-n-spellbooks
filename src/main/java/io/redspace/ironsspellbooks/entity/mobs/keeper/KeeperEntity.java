@@ -48,7 +48,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         Single_Horizontal(28, "sword_single_horizontal", 12),
         Single_Horizontal_Fast(24, "sword_single_horizontal_fast", 12),
         Single_Stab(21, "sword_stab", 11),
-        Lunge(43, "sword_lunge", 34, 35, 36, 37);
+        Lunge(96, "sword_lunge", 65, 66, 67, 68, 69, 70);
 
         AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
             this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);
