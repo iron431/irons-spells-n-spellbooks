@@ -36,6 +36,7 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
         IBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
         IBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
         IBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+        IBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
 
         float pLimbSwingAmount = 0.0F;
         float pLimbSwing = 0.0F;
@@ -47,12 +48,16 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
             if (pLimbSwingAmount > 1.0F) {
                 pLimbSwingAmount = 1.0F;
             }
+            if (entity.hurtTime > 0) {
+                pLimbSwingAmount *= .25f;
+            }
         }
 //        rightLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
         if (!(entity.isPassenger() && entity.getVehicle().shouldRiderSit())) {
             float strength = .75f;
             updatePosition(rightLeg, 0, Mth.cos(pLimbSwing * 0.6662F) * 4  * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount);
             updatePosition(leftLeg, 0, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount);
+            updatePosition(body, 0, Mth.cos(pLimbSwing * 1.2662F - Mth.PI * .5f) * 1 * strength * pLimbSwingAmount, 0);
             if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs() && lastTick != entity.tickCount) {
                 legTween = Mth.lerp(.9f, 0, 1);
                 lastTick = entity.tickCount;

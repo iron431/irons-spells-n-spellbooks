@@ -25,4 +25,8 @@ public class AttackAnimationData {
                 return true;
         return false;
     }
+
+    public boolean isSingleHit() {
+        return attackTimestamps.length == 1;
+    }
 }

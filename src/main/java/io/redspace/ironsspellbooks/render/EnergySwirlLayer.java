@@ -88,6 +88,11 @@ public class EnergySwirlLayer {
                 });
                 this.getRenderer().render(model, entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
                         vertexconsumer, packedLightIn, OverlayTexture.NO_OVERLAY, .5f, .5f, .5f, 1f);
+                model.getBone("body").ifPresent((rootBone) -> {
+                    rootBone.childBones.forEach(bone -> {
+                        bone.setScale(1f, 1f, 1f);
+                    });
+                });
                 matrixStackIn.popPose();
             }
         }

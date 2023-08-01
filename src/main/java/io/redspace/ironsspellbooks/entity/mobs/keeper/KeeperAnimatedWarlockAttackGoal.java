@@ -26,6 +26,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     int meleeAnimTimer = -1;
     public KeeperEntity.AttackType currentAttack;
     public KeeperEntity.AttackType nextAttack;
+    public KeeperEntity.AttackType queueCombo;
     private boolean hasLunged;
     private boolean hasHitLunge;
 
@@ -58,12 +59,20 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.55f)/*.add(0, 0.2, 0)*/;
                     mob.push(lunge.x, lunge.y, lunge.z);
                     if (distance <= meleeRange) {
-                        this.mob.doHurtTarget(target);
+                        boolean flag = this.mob.doHurtTarget(target);
                         target.invulnerableTime = 0;
+                        if (currentAttack.data.isSingleHit() && ((flag && mob.getRandom().nextFloat() < .75f) || target.isBlocking())) {
+                            //Attack again! combos!
+                            queueCombo = randomizeNextAttack(0);
+                        }
                     }
                 }
 
             }
+        } else if (queueCombo != null) {
+            nextAttack = queueCombo;
+            queueCombo = null;
+            doMeleeAction();
         } else if (meleeAnimTimer == 0) {
             //Reset animations/attack
             nextAttack = randomizeNextAttack(distance);
@@ -74,7 +83,6 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             mob.lookAt(target, 15, 15);
             if (distance < meleeRange * (nextAttack == KeeperEntity.AttackType.Lunge ? 3 : 1)) {
                 if (--this.attackTime == 0) {
-                    this.mob.swing(InteractionHand.MAIN_HAND);
                     doMeleeAction();
                 } else if (this.attackTime < 0) {
                     resetAttackTimer(distanceSquared);
@@ -115,6 +123,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         //anim duration
         currentAttack = nextAttack;
         if (currentAttack != null) {
+            this.mob.swing(InteractionHand.MAIN_HAND);
             meleeAnimTimer = currentAttack.data.lengthInTicks;
             hasLunged = false;
             hasHitLunge = false;
