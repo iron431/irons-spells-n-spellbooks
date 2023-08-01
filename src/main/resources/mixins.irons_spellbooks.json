@@ -10,7 +10,8 @@
     "LivingEntityMixin",
     "SmithingMenuMixin",
     "TetraBladedItemMixin",
-    "TridentItemMixin"
+    "TridentItemMixin",
+    "DataFixersMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",

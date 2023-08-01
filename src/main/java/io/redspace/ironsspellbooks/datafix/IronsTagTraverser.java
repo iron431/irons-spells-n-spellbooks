@@ -17,7 +17,7 @@ public class IronsTagTraverser implements TagVisitor {
         changeCount = new AtomicInteger(0);
     }
 
-    public IronsTagTraverser(AtomicInteger changeCount) {
+    private IronsTagTraverser(AtomicInteger changeCount) {
         this.changeCount = changeCount;
     }
 

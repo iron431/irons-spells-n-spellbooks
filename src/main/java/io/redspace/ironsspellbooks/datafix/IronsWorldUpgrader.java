@@ -153,7 +153,7 @@ public class IronsWorldUpgrader {
                             if (chunkDataTag != null) {
                                 ListTag blockEntitiesTag = (ListTag) chunkDataTag.get("block_entities");
                                 var ironsTagTraverser = new IronsTagTraverser();
-                                ironsTagTraverser.visit(blockEntitiesTag);
+                                //ironsTagTraverser.visit(blockEntitiesTag);
                                 if (ironsTagTraverser.changesMade()) {
                                     chunkstorage.write(chunkpos, chunkDataTag);
                                     updated = true;

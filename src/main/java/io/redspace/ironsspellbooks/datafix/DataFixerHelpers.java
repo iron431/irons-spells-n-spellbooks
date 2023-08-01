@@ -92,6 +92,9 @@ public class DataFixerHelpers {
             .put(66, new DevourSpell().getSpellId())
             .build();
 
+    /**
+     * Returns true if data was updated
+     */
     public static boolean doFixUps(CompoundTag tag) {
         var fix1 = fixIsbSpellbook(tag);
         var fix2 = fixIsbSpell(tag);
