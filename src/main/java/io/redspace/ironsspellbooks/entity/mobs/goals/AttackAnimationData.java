@@ -6,10 +6,11 @@ import java.util.List;
 public class AttackAnimationData {
     //public final int id;
     public final int lengthInTicks;
+    public final String animationId;
     public final int[] attackTimestamps;
 
-    public AttackAnimationData(int lengthInTicks, int... attackTimestamps) {
-        //this.id = id;
+    public AttackAnimationData(int lengthInTicks, String animationId, int... attackTimestamps) {
+        this.animationId = animationId;
         this.lengthInTicks = lengthInTicks;
         this.attackTimestamps = attackTimestamps;
 

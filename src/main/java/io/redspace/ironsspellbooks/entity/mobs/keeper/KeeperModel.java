@@ -27,13 +27,15 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
     @Override
     public void setCustomAnimations(AbstractSpellCastingMob entity, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(entity, instanceId, animationEvent);
-        if (Minecraft.getInstance().isPaused() || !entity.shouldBeExtraAnimated())
+        if (Minecraft.getInstance().isPaused())
             return;
 
         float partialTick = animationEvent.getPartialTick();
 
         IBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
         IBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+        IBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+        IBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
 
         float pLimbSwingAmount = 0.0F;
         float pLimbSwing = 0.0F;
@@ -60,6 +62,12 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
             }
             rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * legTween * strength);
             leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * legTween * strength);
+        }
+
+        //Super stops bobbing arms when animating, but this causes noticable pop with the melee animations, so we make up for it here
+        if (entity.isAnimating()) {
+            bobBone(rightArm, entity.tickCount, 1);
+            bobBone(leftArm, entity.tickCount, -1);
         }
     }
 

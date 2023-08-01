@@ -28,13 +28,6 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     public KeeperEntity.AttackType nextAttack;
     private boolean hasLunged;
     private boolean hasHitLunge;
-    //measured from blockbench
-    Map<KeeperEntity.AttackType, AttackAnimationData> attackAnimations = Map.of(
-            KeeperEntity.AttackType.Double_Slash, new AttackAnimationData(28, 12, 21),
-            KeeperEntity.AttackType.Lunge, new AttackAnimationData(43, 34, 35, 36, 37),
-            KeeperEntity.AttackType.Slash_Stab, new AttackAnimationData(38, 13, 33),
-            KeeperEntity.AttackType.Triple_Slash, new AttackAnimationData(41, 11, 21, 35)
-    );
 
     @Override
     protected void handleAttackLogic(double distanceSquared) {
@@ -46,7 +39,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             //We are currently attacking and are in a melee animation
             forceFaceTarget();
             meleeAnimTimer--;
-            if (attackAnimations.get(currentAttack).isHitFrame(meleeAnimTimer)) {
+            if (currentAttack.data.isHitFrame(meleeAnimTimer)) {
                 //IronsSpellbooks.LOGGER.debug("KeeperAnimatedAttack: hit frame | currentAttack: {}", currentAttack);
                 if (currentAttack == KeeperEntity.AttackType.Lunge) {
                     if (!hasLunged) {
@@ -96,11 +89,13 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     private KeeperEntity.AttackType randomizeNextAttack(float distance) {
         //Lunge is the last enum. If we are close, no need to lunge.
+        int i;
         if (distance < meleeRange * 1.5f) {
-            return KeeperEntity.AttackType.values()[mob.getRandom().nextInt(3)];
+            i = KeeperEntity.AttackType.values().length - 1;
         } else {
-            return KeeperEntity.AttackType.values()[mob.getRandom().nextInt(4)];
+            i = KeeperEntity.AttackType.values().length;
         }
+        return KeeperEntity.AttackType.values()[mob.getRandom().nextInt(i)];
     }
 
 
@@ -120,7 +115,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         //anim duration
         currentAttack = nextAttack;
         if (currentAttack != null) {
-            meleeAnimTimer = attackAnimations.get(currentAttack).lengthInTicks;
+            meleeAnimTimer = currentAttack.data.lengthInTicks;
             hasLunged = false;
             hasHitLunge = false;
             Messages.sendToPlayersTrackingEntity(new ClientboundSyncAnimation<>(currentAttack.ordinal(), keeper), keeper);

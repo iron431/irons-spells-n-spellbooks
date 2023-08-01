@@ -2,11 +2,9 @@ package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
 import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -42,10 +40,22 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
     //private static final EntityDataAccessor<Integer> DATA_ATTACK_TYPE = SynchedEntityData.defineId(KeeperEntity.class, EntityDataSerializers.INT);
 
     public enum AttackType {
-        Double_Slash,
-        Triple_Slash,
-        Slash_Stab,
-        Lunge
+        //data measured from blockbench
+        Double_Slash(43, "sword_double_slash", 13, 29),
+        //Triple_Slash(41, "sword_triple_slash", 11, 21, 35),
+        //Slash_Stab(38, "sword_slash_stab", 13, 33),
+        Single_Upward(26, "sword_single_upward", 13),
+        Single_Horizontal(28, "sword_single_horizontal", 12),
+        Single_Horizontal_Fast(24, "sword_single_horizontal_fast", 12),
+        Single_Stab(21, "sword_stab", 11),
+        Lunge(43, "sword_lunge", 34, 35, 36, 37);
+
+        AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
+            this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);
+        }
+
+        public final AttackAnimationData data;
+
     }
 
     public KeeperEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
@@ -120,15 +130,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
     }
 
 
-    private final AnimationBuilder doubleSlash = new AnimationBuilder().addAnimation("sword_double_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder lunge = new AnimationBuilder().addAnimation("sword_lunge", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder slashStab = new AnimationBuilder().addAnimation("sword_slash_stab", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    private final AnimationBuilder tripleSlash = new AnimationBuilder().addAnimation("sword_triple_slash", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    //In parallel with enum
-    private final AnimationBuilder[] animations = new AnimationBuilder[]{
-            doubleSlash, tripleSlash, slashStab, lunge
-    };
-    private final AnimationController meleeController = new AnimationController(this, "keeper_animations", 2, this::predicate);
+    private final AnimationController meleeController = new AnimationController(this, "keeper_animations", 0, this::predicate);
 
 
     @Override
@@ -140,8 +142,8 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
 
     @Override
     public void playAnimation(int animationId) {
-        if (animationId >= 0 && animationId < animations.length)
-            animationToPlay = animations[animationId];
+        if (animationId >= 0 && animationId < AttackType.values().length)
+            animationToPlay = new AnimationBuilder().addAnimation(AttackType.values()[animationId].data.animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     }
 
     private PlayState predicate(AnimationEvent<KeeperEntity> animationEvent) {
@@ -183,11 +185,6 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
     @Override
     public boolean shouldAlwaysAnimateLegs() {
         return false;
-    }
-
-    @Override
-    public boolean shouldBeExtraAnimated() {
-        return true/*!isAnimating()*/;
     }
 
     //    @Override
