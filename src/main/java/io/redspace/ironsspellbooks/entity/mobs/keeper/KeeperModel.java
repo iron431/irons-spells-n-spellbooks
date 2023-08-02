@@ -38,6 +38,9 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
         IBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
         IBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
 
+        boolean tick = lastTick != entity.tickCount;
+        lastTick = entity.tickCount;
+
         float pLimbSwingAmount = 0.0F;
         float pLimbSwing = 0.0F;
         if (entity.isAlive()) {
@@ -52,25 +55,22 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
                 pLimbSwingAmount *= .25f;
             }
         }
-//        rightLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount / f);
         if (!(entity.isPassenger() && entity.getVehicle().shouldRiderSit())) {
             float strength = .75f;
-            updatePosition(rightLeg, 0, Mth.cos(pLimbSwing * 0.6662F) * 4  * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount);
+            updatePosition(rightLeg, 0, Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount);
             updatePosition(leftLeg, 0, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount);
             updatePosition(body, 0, Mth.cos(pLimbSwing * 1.2662F - Mth.PI * .5f) * 1 * strength * pLimbSwingAmount, 0);
-            if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs() && lastTick != entity.tickCount) {
-                legTween = Mth.lerp(.9f, 0, 1);
-                lastTick = entity.tickCount;
-            } else if (lastTick != entity.tickCount) {
-                legTween = Mth.lerp(.9f, 1, 0);
-                lastTick = entity.tickCount;
+            if (tick) {
+                if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
+                    legTween = Mth.lerp(.9f, 0, 1);
+                } else {
+                    legTween = Mth.lerp(.9f, 1, 0);
+                }
             }
             rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * legTween * strength);
             leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * legTween * strength);
         }
-
-        //Super stops bobbing arms when animating, but this causes noticable pop with the melee animations, so we make up for it here
-        if (entity.isAnimating()) {
+        if (entity.isAnimating()){
             bobBone(rightArm, entity.tickCount, 1);
             bobBone(leftArm, entity.tickCount, -1);
         }
@@ -83,5 +83,11 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
         bone.setPositionX(x);
         bone.setPositionY(y);
         bone.setPositionZ(z);
+    }
+
+    private static void updateRotation(IBone bone, float x, float y, float z) {
+        bone.setRotationX(x);
+        bone.setRotationY(y);
+        bone.setRotationZ(z);
     }
 }

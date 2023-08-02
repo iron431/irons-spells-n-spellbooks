@@ -7,9 +7,11 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -21,6 +23,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -130,8 +133,29 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
     }
 
 
-    private final AnimationController meleeController = new AnimationController(this, "keeper_animations", 0, this::predicate);
-
+    private final AnimationController<KeeperEntity> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
+    private final AnimationBuilder deflect_animation = new AnimationBuilder().addAnimation("sword_deflect_1", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+//
+//    @Override
+//    public boolean hurt(DamageSource pSource, float pAmount) {
+//        if (pSource.getDirectEntity() instanceof Projectile projectile) {
+//            if (random.nextFloat() < .8f) {
+//                this.animationToPlay = deflect_animation;
+//                if (pSource.getEntity() != null) {
+//                    var entity = pSource.getEntity();
+//                    double d0 = entity.getX() - this.getX();
+//                    double d1 = entity.getZ() - this.getZ();
+//                    float yRot = (float) (Mth.atan2(d1, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
+//                    this.setYBodyRot(yRot);
+//                    this.setYHeadRot(yRot);
+//                    this.setYRot(yRot);
+//                    this.setOldPosAndRot();
+//                }
+//                return false;
+//            }
+//        }
+//        return super.hurt(pSource, pAmount);
+//    }
 
     @Override
     public boolean isInvulnerableTo(DamageSource pSource) {
@@ -147,21 +171,8 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
     }
 
     private PlayState predicate(AnimationEvent<KeeperEntity> animationEvent) {
-//        if(true)
-//            return PlayState.STOP;
-
         var controller = animationEvent.getController();
-//        if (this.swinging) {
-//            controller.markNeedsReload();
-//            switch (getNextAttackType()) {
-//                case Double_Slash -> controller.setAnimation(doubleSlash);
-//                case Lunge -> controller.setAnimation(lunge);
-//                case Slash_Stab -> controller.setAnimation(slashStab);
-//                case Triple_Slash -> controller.setAnimation(tripleSlash);
-//            }
-//            swinging = false;
-//            return PlayState.CONTINUE;
-//        }
+
         if (this.animationToPlay != null) {
             controller.markNeedsReload();
             controller.setAnimation(animationToPlay);
