@@ -353,5 +353,23 @@
     "sounds": [
       "irons_spellbooks:fiery_swing"
     ]
+  },
+  "entity.citadel_keeper.step": {
+    "sounds": [
+      "irons_spellbooks:vanguard_step_01",
+      "irons_spellbooks:vanguard_step_02",
+      "irons_spellbooks:vanguard_step_03",
+      "irons_spellbooks:vanguard_step_04"
+    ]
+  },
+  "entity.citadel_keeper.death": {
+    "sounds": [
+      "irons_spellbooks:keeper_death"
+    ]
+  },
+  "entity.citadel_keeper.hurt": {
+    "sounds": [
+      "irons_spellbooks:keeper_hurt"
+    ]
   }
 }

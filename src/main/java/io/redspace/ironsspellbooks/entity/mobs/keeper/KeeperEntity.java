@@ -1,9 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -28,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -92,15 +96,11 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
     }
 
     protected SoundEvent getHurtSound(DamageSource pDamageSource) {
-        return SoundEvents.SKELETON_HURT;
+        return SoundRegistry.KEEPER_HURT.get();
     }
 
     protected SoundEvent getDeathSound() {
-        return SoundEvents.SKELETON_DEATH;
-    }
-
-    protected SoundEvent getStepSound() {
-        return SoundEvents.SKELETON_STEP;
+        return SoundRegistry.KEEPER_DEATH.get();
     }
 
     @Override
@@ -156,6 +156,16 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
 //        }
 //        return super.hurt(pSource, pAmount);
 //    }
+
+    @Override
+    protected void playStepSound(BlockPos pPos, BlockState pState) {
+        super.playStepSound(pPos, pState);
+        if (!pState.getMaterial().isLiquid()) {
+            IronsSpellbooks.LOGGER.debug("Stepsound move speed: {}", this.getDeltaMovement().horizontalDistanceSqr());
+            IronsSpellbooks.LOGGER.debug("Stepsound walk anim state: {}", this.animationPosition - this.animationSpeed);
+            this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, 1f);
+        }
+    }
 
     @Override
     public boolean isInvulnerableTo(DamageSource pSource) {
