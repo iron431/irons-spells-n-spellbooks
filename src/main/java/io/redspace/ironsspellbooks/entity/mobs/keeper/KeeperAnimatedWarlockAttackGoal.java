@@ -32,8 +32,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     protected void handleAttackLogic(double distanceSquared) {
         //Handling Animation hit frames
         float distance = Mth.sqrt((float) distanceSquared);
-        //mob.lookAt(target, 300, 300);
-
+        mob.getLookControl().setLookAt(target);
         if (meleeAnimTimer > 0) {
             //We are currently attacking and are in a melee animation
             forceFaceTarget();
@@ -43,23 +42,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     playSwingSound();
                 }
             } else if (currentAttack.data.isHitFrame(meleeAnimTimer)) {
-                //IronsSpellbooks.LOGGER.debug("KeeperAnimatedAttack: hit frame | currentAttack: {}", currentAttack);
-                if (currentAttack == KeeperEntity.AttackType.Lunge) {
-                    IronsSpellbooks.LOGGER.debug("" + meleeAnimTimer);
-                    if (!hasLunged) {
-                        Vec3 lunge = target.position().subtract(mob.position()).normalize().multiply(2.4, .5, 2.4).add(0, 0.15, 0);
-                        mob.push(lunge.x, lunge.y, lunge.z);
-                        hasLunged = true;
-                        oldLungePos = mob.position();
-                        playSwingSound();
-                    }
-                    if (!hasHitLunge && distance <= meleeRange * .6f) {
-                        this.mob.doHurtTarget(target);
-                        Vec3 knockback = oldLungePos.subtract(target.position());
-                        target.knockback(1, knockback.x, knockback.z);
-                        hasHitLunge = true;
-                    }
-                } else {
+                if(currentAttack != KeeperEntity.AttackType.Lunge){
                     //mob.lookAt(target, 300, 300);
                     Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.55f)/*.add(0, 0.2, 0)*/;
                     mob.push(lunge.x, lunge.y, lunge.z);
@@ -70,6 +53,21 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                             //Attack again! combos!
                             queueCombo = randomizeNextAttack(0);
                         }
+                    }
+                }else{
+                    if (!hasLunged) {
+                        Vec3 lunge = target.position().subtract(mob.position()).normalize().multiply(2.4, .5, 2.4).add(0, 0.15, 0);
+                        mob.push(lunge.x, lunge.y, lunge.z);
+                        oldLungePos = mob.position();
+                        mob.getNavigation().stop();
+                        hasLunged = true;
+                        playSwingSound();
+                    }
+                    if (!hasHitLunge && distance <= meleeRange * .6f) {
+                        this.mob.doHurtTarget(target);
+                        Vec3 knockback = oldLungePos.subtract(target.position());
+                        target.knockback(1, knockback.x, knockback.z);
+                        hasHitLunge = true;
                     }
                 }
             }
@@ -84,7 +82,6 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeAnimTimer = -1;
         } else {
             //Handling attack delay
-            mob.lookAt(target, 15, 15);
             if (distance < meleeRange * (nextAttack == KeeperEntity.AttackType.Lunge ? 3 : 1)) {
                 if (--this.attackTime == 0) {
                     doMeleeAction();
