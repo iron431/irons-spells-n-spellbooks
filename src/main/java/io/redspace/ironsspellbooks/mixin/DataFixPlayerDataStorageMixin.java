@@ -1,13 +1,11 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import com.mojang.datafixers.DataFixer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.datafix.IronsTagTraverser;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.PlayerDataStorage;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,9 +16,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.function.BiFunction;
 
 @Mixin(PlayerDataStorage.class)
 public abstract class DataFixPlayerDataStorageMixin {
@@ -46,7 +41,7 @@ public abstract class DataFixPlayerDataStorageMixin {
 
                     if (ironsTraverser.changesMade()) {
                         NbtIo.writeCompressed(compoundTag1, file1);
-                        IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Single player inventory updated: {} updates", ironsTraverser.totalChanges());
+                        IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Player inventory updated: {} updates", ironsTraverser.totalChanges());
                     }
                 }
             } catch (Exception exception) {
