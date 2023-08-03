@@ -20,6 +20,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
     public static final ForgeConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> RUN_WORLD_UPGRADER;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
@@ -52,6 +53,8 @@ public class ServerConfigs {
         MAX_UPGRADES = BUILDER.worldRestart().define("maxUpgrades", 3);
         BUILDER.comment("From 0-1, the percent of max mana a player respawns with. Default: 0.0");
         MANA_SPAWN_PERCENT = BUILDER.worldRestart().define("manaSpawnPercent", 0.0);
+        BUILDER.comment("If true the world will attempt to be upgraded from an older version of ISS");
+        RUN_WORLD_UPGRADER = BUILDER.worldRestart().define("runWorldUpgrader", true);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");

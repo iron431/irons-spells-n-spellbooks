@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.mixin;
 
 import com.mojang.datafixers.DataFixer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.datafix.IronsTagTraverser;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
@@ -30,10 +31,9 @@ public abstract class DataFixLevelStorageSourceMixin {
                     var compoundTag1 = NbtIo.readCompressed(path.toFile());
                     var compoundTag2 = compoundTag1.getCompound("Data");
                     var compoundTag3 = compoundTag2.getCompound("Player");
-                    var compoundTag4 = compoundTag3.getList("Inventory", Tag.TAG_COMPOUND);
 
                     var ironsTraverser = new IronsTagTraverser();
-                    ironsTraverser.visit(compoundTag4);
+                    ironsTraverser.visit(compoundTag3);
 
                     if (ironsTraverser.changesMade()) {
                         NbtIo.writeCompressed(compoundTag1, path.toFile());

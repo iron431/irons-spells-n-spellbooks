@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.datafix.IronsTagTraverser;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -28,24 +29,24 @@ public abstract class DataFixPlayerDataStorageMixin {
 
     @Inject(method = "load", at = @At("HEAD"))
     private void load(Player pPlayer, CallbackInfoReturnable<CompoundTag> cir) {
+        if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
+            File file1 = new File(this.playerDir, pPlayer.getStringUUID() + ".dat");
+            if (file1.exists() && file1.isFile()) {
+                try {
+                    synchronized (iron_sSpells_nSpellbooks$sync) {
+                        var compoundTag1 = NbtIo.readCompressed(file1);
 
-        File file1 = new File(this.playerDir, pPlayer.getStringUUID() + ".dat");
-        if (file1.exists() && file1.isFile()) {
-            try {
-                synchronized (iron_sSpells_nSpellbooks$sync) {
-                    var compoundTag1 = NbtIo.readCompressed(file1);
-                    var compoundTag2 = compoundTag1.getList("Inventory", Tag.TAG_COMPOUND);
+                        var ironsTraverser = new IronsTagTraverser();
+                        ironsTraverser.visit(compoundTag1);
 
-                    var ironsTraverser = new IronsTagTraverser();
-                    ironsTraverser.visit(compoundTag2);
-
-                    if (ironsTraverser.changesMade()) {
-                        NbtIo.writeCompressed(compoundTag1, file1);
-                        IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Player inventory updated: {} updates", ironsTraverser.totalChanges());
+                        if (ironsTraverser.changesMade()) {
+                            NbtIo.writeCompressed(compoundTag1, file1);
+                            IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Player inventory updated: {} updates", ironsTraverser.totalChanges());
+                        }
                     }
+                } catch (Exception exception) {
+                    IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Failed to load player data for {} {}", pPlayer.getName().getString(), exception.getMessage());
                 }
-            } catch (Exception exception) {
-                IronsSpellbooks.LOGGER.debug("DataFixPlayerDataStorageMixin: Failed to load player data for {} {}", pPlayer.getName().getString(), exception.getMessage());
             }
         }
     }

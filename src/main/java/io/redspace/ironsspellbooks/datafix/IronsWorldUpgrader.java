@@ -4,7 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixer;
+import com.mojang.datafixers.DataFixerBuilder;
+import com.mojang.datafixers.schemas.Schema;
+import com.mojang.serialization.Dynamic;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
@@ -13,15 +17,16 @@ import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.storage.ChunkStorage;
 import net.minecraft.world.level.chunk.storage.RegionFile;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.LevelStorageSource;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,23 +50,32 @@ public class IronsWorldUpgrader {
     private final Object2FloatMap<ResourceKey<Level>> progressMap = Object2FloatMaps.synchronize(new Object2FloatOpenCustomHashMap<>(Util.identityStrategy()));
     private static final Pattern REGEX = Pattern.compile("^r\\.(-?[0-9]+)\\.(-?[0-9]+)\\.mca$");
     private final DimensionDataStorage overworldDataStorage;
+    private final IronsSpellBooksWorldData ironsSpellBooksWorldData;
+
+
 
     /*
        DimensionDataStorage storage = level.getServer().overworld().getDataStorage();
-       magicManager = storage.computeIfAbsent(MagicManager::new, MagicManager::new, MAGIC_MANAGER);
+       magicManager = storage./(MagicManager::new, MagicManager::new, MAGIC_MANAGER);
      */
 
-    public IronsWorldUpgrader(LevelStorageSource.LevelStorageAccess pLevelStorage, DataFixer pDataFixer, WorldGenSettings pWorldGenSettings) {
-        //TODO: need to tag the level as upgraded so we don't run this every time we load it (DimensionDataStorage)
+    public IronsWorldUpgrader(LevelStorageSource.LevelStorageAccess pLevelStorage, WorldGenSettings pWorldGenSettings) {
         this.worldGenSettings = pWorldGenSettings;
-        this.dataFixer = pDataFixer;
         this.levelStorage = pLevelStorage;
-        this.overworldDataStorage = new DimensionDataStorage(this.levelStorage.getDimensionPath(Level.OVERWORLD).resolve("data").toFile(), pDataFixer);
+        this.dataFixer = new DataFixerBuilder(1).buildUnoptimized();
+        this.overworldDataStorage = new DimensionDataStorage(this.levelStorage.getDimensionPath(Level.OVERWORLD).resolve("data").toFile(), dataFixer);
+        this.ironsSpellBooksWorldData = overworldDataStorage.computeIfAbsent(
+                IronsSpellBooksWorldData::load,
+                IronsSpellBooksWorldData::new,
+                "IronsSpellBooksWorldData");
+    }
+
+    public boolean worldNeedsUpgrading() {
+        return !ironsSpellBooksWorldData.isUpgraded();
     }
 
     public void runUpgrade() {
-        //TODO: change this to check for the world already upgraded flag
-        if (true) {
+        if (worldNeedsUpgrading()) {
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting upgrade");
             long millis = Util.getMillis();
             doWork(REGION_FOLDER, "block_entities");
@@ -76,8 +90,10 @@ public class IronsWorldUpgrader {
             millis = Util.getMillis();
             fixDimensionStorage();
             millis = Util.getMillis() - millis;
-            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished fixDimensionStorage after {} mx. tags fixed:{} ", millis, this.fixes);
+            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished fixDimensionStorage after {} ms. tags fixed:{} ", millis, this.fixes);
 
+            this.ironsSpellBooksWorldData.setDataVersion(1);
+            this.ironsSpellBooksWorldData.setUpgraded(true);
             this.overworldDataStorage.save();
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader completed");
         }

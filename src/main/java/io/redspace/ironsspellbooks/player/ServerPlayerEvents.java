@@ -63,11 +63,12 @@ import java.util.Map;
 public class ServerPlayerEvents {
 
     @SubscribeEvent
-    public static void test(ServerAboutToStartEvent event) {
-        var server = event.getServer();
-        var storageSource = server.storageSource;
-        IronsSpellbooks.LOGGER.debug("ServerAboutToStartEvent");
-        new IronsWorldUpgrader(storageSource, null, server.getWorldData().worldGenSettings()).runUpgrade();
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+        if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
+            var server = event.getServer();
+            var storageSource = server.storageSource;
+            new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings()).runUpgrade();
+        }
     }
 
     @SubscribeEvent()
