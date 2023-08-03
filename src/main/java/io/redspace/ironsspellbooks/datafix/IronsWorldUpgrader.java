@@ -99,6 +99,12 @@ public class IronsWorldUpgrader {
                         var compoundTag = NbtIo.readCompressed(file);
                         var ironsTraverser = new IronsTagTraverser();
                         ironsTraverser.visit(compoundTag);
+
+                        if (ironsTraverser.changesMade()) {
+                            NbtIo.writeCompressed(compoundTag, file);
+                            IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader: fixDimensionStorage updating file: {}, {}", file.getPath(), ironsTraverser.totalChanges());
+                        }
+
                         fixes += ironsTraverser.totalChanges();
                     } catch (Exception exception) {
                         IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader: fixDimensionStorage error: {}", exception.getMessage());
