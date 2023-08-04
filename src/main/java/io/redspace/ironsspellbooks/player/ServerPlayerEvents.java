@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -106,20 +107,15 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
         var itemStack = event.getItemStack();
-        if (!UpgradeUtils.isUpgraded(itemStack))
+        if (!UpgradeData.hasUpgradeData(itemStack))
             return;
+        var upgradeData = UpgradeData.getUpgradeData(itemStack);
 
         var slot = event.getSlotType();
-        if (UpgradeUtils.getUpgradedSlot(itemStack) != slot)
+        if (upgradeData.getUpgradedSlot() != slot)
             return;
 
-        var upgrades = UpgradeUtils.deserializeUpgrade(itemStack);
-        for (Map.Entry<UpgradeType, Integer> entry : upgrades.entrySet()) {
-            UpgradeType upgradeType = entry.getKey();
-            int count = entry.getValue();
-            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, upgradeType.attribute, upgradeType.operation);
-            event.addModifier(upgradeType.attribute, new AttributeModifier(UpgradeUtils.UUIDForSlot(slot), "upgrade", baseAmount + upgradeType.amountPerUpgrade * count, entry.getKey().operation));
-        }
+        UpgradeUtils.handleAttributeEvent(event, upgradeData);
     }
 
     @SubscribeEvent

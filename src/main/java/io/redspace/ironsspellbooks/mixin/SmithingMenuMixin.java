@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
@@ -46,8 +47,8 @@ public abstract class SmithingMenuMixin {
             if (SpellData.hasSpellData(result)) {
                 result.removeTagKey(SpellData.ISB_SPELL);
                 flag = true;
-            } else if (UpgradeUtils.isUpgraded(result)) {
-                result.removeTagKey(UpgradeUtils.Upgrades);
+            } else if (UpgradeData.hasUpgradeData(result)) {
+                UpgradeData.removeUpgradeData(result);
                 flag = true;
             }
             if (flag) {
