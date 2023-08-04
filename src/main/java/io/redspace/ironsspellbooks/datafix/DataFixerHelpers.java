@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.datafix;
 
 import com.google.common.collect.ImmutableMap;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.spells.blood.*;
@@ -18,7 +16,6 @@ import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 
@@ -92,13 +89,19 @@ public class DataFixerHelpers {
             .put(66, new DevourSpell().getSpellId())
             .build();
 
+    static final Map<String, String> LEGACY_ITEM_IDS = ImmutableMap.<String, String>builder()
+            .put("irons_spellbooks:poison_rune", "irons_spellbooks:fire_rune")
+            .build();
+
+
     /**
      * Returns true if data was updated
      */
     public static boolean doFixUps(CompoundTag tag) {
         var fix1 = fixIsbSpellbook(tag);
         var fix2 = fixIsbSpell(tag);
-        return fix1 || fix2;
+        var fix3 = fixItemsNames(tag);
+        return fix1 || fix2 || fix3;
     }
 
     public static boolean fixIsbSpellbook(CompoundTag tag) {
@@ -128,6 +131,20 @@ public class DataFixerHelpers {
             }
         }
 
+        return false;
+    }
+
+    public static boolean fixItemsNames(CompoundTag tag) {
+        //itemStack.save saves a compound tag with id "id". it can probably be safely assumed that all items are saved like this
+        //8 is string tag
+        if (tag != null && tag.contains("id", 8)) {
+            String itemName = tag.getString("id");
+            String newName = LEGACY_ITEM_IDS.get(itemName);
+            if (newName != null) {
+                tag.putString("id", newName);
+                return true;
+            }
+        }
         return false;
     }
 

@@ -127,7 +127,7 @@ dependencies {
     //    jarJar.ranged(it, "[0.3.0,)")
     //}
 
-    runtimeOnly fg.deobf("com.refinedmods:refinedstorage:1.11.6")
+    //runtimeOnly fg.deobf("com.refinedmods:refinedstorage:1.11.6")
 
     //Dimensional-Threading-Reforged-1.19.2-1.2.7.jar
     //runtimeOnly fg.deobf('wearblackallday.dimthread:Dimensional-Threading-Reforged:1.19.2-1.2.7')
