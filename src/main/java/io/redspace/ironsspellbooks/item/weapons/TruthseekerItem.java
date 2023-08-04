@@ -2,12 +2,10 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.render.SpecialItemRenderer;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
@@ -17,14 +15,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class MagehunterItem extends ExtendedSwordItem {
 
-    public MagehunterItem() {
-        super(Tiers.DIAMOND, 6, -2.4f,
-            Map.of(
-                AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .15, AttributeModifier.Operation.MULTIPLY_BASE)
-            ),
-            (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).rarity(Rarity.EPIC));
+public class TruthseekerItem extends ExtendedSwordItem {
+    //TODO: custom tier
+    public TruthseekerItem() {
+        super(Tiers.IRON, 11, -3, Map.of(), new Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
     }
 
     @Override
@@ -34,7 +29,7 @@ public class MagehunterItem extends ExtendedSwordItem {
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return new SpecialItemRenderer(Minecraft.getInstance().getItemRenderer(),
                         Minecraft.getInstance().getEntityModels(),
-                        "magehunter");
+                        "truthseeker");
             }
         });
     }

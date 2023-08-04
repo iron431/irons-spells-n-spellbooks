@@ -302,6 +302,12 @@ public class ClientSetup {
         event.register(IronsSpellbooks.id("item/claymore_normal"));
         event.register(IronsSpellbooks.id("item/keeper_flamberge_gui"));
         event.register(IronsSpellbooks.id("item/keeper_flamberge_normal"));
+        event.register(IronsSpellbooks.id("item/magehunter_gui"));
+        event.register(IronsSpellbooks.id("item/magehunter_normal"));
+        event.register(IronsSpellbooks.id("item/spellbreaker_gui"));
+        event.register(IronsSpellbooks.id("item/spellbreaker_normal"));
+        event.register(IronsSpellbooks.id("item/truthseeker_gui"));
+        event.register(IronsSpellbooks.id("item/truthseeker_normal"));
     }
 }
 

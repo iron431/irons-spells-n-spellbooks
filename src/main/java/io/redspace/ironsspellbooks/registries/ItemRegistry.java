@@ -6,10 +6,7 @@ import io.redspace.ironsspellbooks.item.armor.*;
 import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import io.redspace.ironsspellbooks.item.spell_books.VillagerSpellBook;
-import io.redspace.ironsspellbooks.item.weapons.BloodStaffItem;
-import io.redspace.ironsspellbooks.item.weapons.KeeperFlambergeItem;
-import io.redspace.ironsspellbooks.item.weapons.MagehunterItem;
-import io.redspace.ironsspellbooks.item.weapons.TestClaymoreItem;
+import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellRarity;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -58,9 +55,11 @@ public class ItemRegistry {
     public static final RegistryObject<Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.ENDER_SPELL_POWER.get(), .10));
     public static final RegistryObject<Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", VillagerSpellBook::new);
     public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new BloodStaffItem(new AbstractSpell[]{new WitherSkullSpell(6), new RayOfSiphoningSpell(6), new BloodStepSpell(3), new BloodSlashSpell(6), new BlazeStormSpell(6)}));
-    public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", () -> new MagehunterItem(SpellType.COUNTERSPELL_SPELL, 1));
+    public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", MagehunterItem::new);
+    public static final RegistryObject<Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new SpellbreakerItem(SpellType.COUNTERSPELL_SPELL, 1));
     public static final RegistryObject<Item> TEST_CLAYMORE = ITEMS.register("claymore", TestClaymoreItem::new);
     public static final RegistryObject<Item> KEEPER_FLAMBERGE = ITEMS.register("keeper_flamberge", KeeperFlambergeItem::new);
+    public static final RegistryObject<Item> TRUTHSEEKER = ITEMS.register("truthseeker", TruthseekerItem::new);
     public static final RegistryObject<Item> SCROLL = ITEMS.register("scroll", Scroll::new);
 
     /**
