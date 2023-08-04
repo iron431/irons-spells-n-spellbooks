@@ -22,7 +22,7 @@ import se.mickelus.tetra.gui.stats.getter.TooltipGetterPercentage;
 import se.mickelus.tetra.items.modular.ModularItem;
 import se.mickelus.tetra.items.modular.impl.holo.gui.craft.HoloStatsGui;
 
-import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 
 public class ManaSiphonTetraEffect {
     public static final ItemEffect manaSiphon = ItemEffect.get(IronsSpellbooks.MODID + ":mana_siphon");

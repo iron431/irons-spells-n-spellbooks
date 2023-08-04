@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.registries;
+package io.redspace.ironsspellbooks.api.registry;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.world.entity.ai.attributes.Attribute;

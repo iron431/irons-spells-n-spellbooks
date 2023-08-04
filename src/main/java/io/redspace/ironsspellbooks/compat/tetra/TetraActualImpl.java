@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.compat.tetra;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.compat.tetra.effects.FreezeTetraEffect;
 import io.redspace.ironsspellbooks.compat.tetra.effects.ManaSiphonTetraEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;

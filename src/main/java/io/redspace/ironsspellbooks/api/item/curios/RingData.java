@@ -1,10 +1,8 @@
 package io.redspace.ironsspellbooks.api.item.curios;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.AbstractCollection;
 
 public class RingData {
     public static final String nbtKey = "ISBEnhance";

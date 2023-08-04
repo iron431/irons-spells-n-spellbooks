@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.damage;
 
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.world.damagesource.DamageSource;

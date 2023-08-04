@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.api;
+package io.redspace.ironsspellbooks.api.config;
 
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;

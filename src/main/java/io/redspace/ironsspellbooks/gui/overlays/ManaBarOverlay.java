@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
-import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 
 public class ManaBarOverlay {
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");

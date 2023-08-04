@@ -4,7 +4,7 @@ package io.redspace.ironsspellbooks.loot;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
