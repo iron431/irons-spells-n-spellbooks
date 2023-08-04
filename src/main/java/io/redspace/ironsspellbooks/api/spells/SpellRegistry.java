@@ -143,6 +143,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> POISON_SPLASH_SPELL = registerSpell(new PoisonSplashSpell());
     public static final RegistryObject<AbstractSpell> ROOT_SPELL = registerSpell(new RootSpell());
     public static final RegistryObject<AbstractSpell> SPIDER_ASPECT_SPELL = registerSpell(new SpiderAspectSpell());
+    public static final RegistryObject<AbstractSpell> FIREFLY_SWARM_SPELL = registerSpell(new FireflySwarmSpell());
 
     //VOID
     public static final RegistryObject<AbstractSpell> ABYSSAL_SHROUD_SPELL = registerSpell(new AbyssalShroudSpell());

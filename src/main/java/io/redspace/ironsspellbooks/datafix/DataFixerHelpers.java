@@ -93,6 +93,7 @@ public class DataFixerHelpers {
             .build();
 
     static final Map<String, String> LEGACY_ITEM_IDS = ImmutableMap.<String, String>builder()
+            //TODO: actually put in nature runes
             .put("irons_spellbooks:poison_rune", "irons_spellbooks:fire_rune")
             .build();
 

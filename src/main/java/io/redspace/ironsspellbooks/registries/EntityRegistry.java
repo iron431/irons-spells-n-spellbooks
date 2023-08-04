@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEnti
 import io.redspace.ironsspellbooks.entity.spells.ChainLightning;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
+import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.entity.spells.HealingAoe;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
@@ -410,4 +411,10 @@ public class EntityRegistry {
                     .sized(2f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "devour_jaw").toString()));
+
+    public static final RegistryObject<EntityType<FireflySwarmProjectile>> FIREFLY_SWARM =
+            ENTITIES.register("firefly_swarm", () -> EntityType.Builder.<FireflySwarmProjectile>of(FireflySwarmProjectile::new, MobCategory.MISC)
+                    .sized(2f, 2f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "firefly_swarm").toString()));
 }

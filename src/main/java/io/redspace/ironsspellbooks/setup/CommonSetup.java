@@ -76,6 +76,8 @@ public class CommonSetup {
         event.put(EntityRegistry.CRYOMANCER.get(), CryomancerEntity.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_FROG.get(), SummonedFrog.createAttributes().build());
         event.put(EntityRegistry.ROOT.get(), RootEntity.createLivingAttributes().build());
+
+        event.put(EntityRegistry.FIREFLY_SWARM.get(), WispEntity.prepareAttributes().build());
     }
 
     @SubscribeEvent
