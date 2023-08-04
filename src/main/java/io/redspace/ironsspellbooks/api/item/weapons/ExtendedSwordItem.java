@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.item.weapons;
+package io.redspace.ironsspellbooks.api.item.weapons;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
