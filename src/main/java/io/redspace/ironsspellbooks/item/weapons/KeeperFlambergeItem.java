@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 public class KeeperFlambergeItem extends ExtendedSwordItem {
     //TODO: custom tier
     public KeeperFlambergeItem() {
-        super(Tiers.IRON, 11, -3, Map.of(AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier(UUID.fromString("c552273e-6669-4cd2-80b3-a703b7616336"), "weapon mod", .2, AttributeModifier.Operation.MULTIPLY_BASE)), new Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
+        super(Tiers.IRON, 10, -2.7, Map.of(AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier(UUID.fromString("c552273e-6669-4cd2-80b3-a703b7616336"), "weapon mod", .2, AttributeModifier.Operation.MULTIPLY_BASE)), new Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
     }
 
     @Override

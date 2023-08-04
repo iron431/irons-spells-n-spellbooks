@@ -1,3 +1,6 @@
 {
-  "parent": "builtin/entity"
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "irons_spellbooks:item/spellbreaker"
+  }
 }

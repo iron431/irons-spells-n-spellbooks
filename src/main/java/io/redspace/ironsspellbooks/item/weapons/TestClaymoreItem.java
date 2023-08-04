@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 public class TestClaymoreItem extends ExtendedSwordItem {
     public TestClaymoreItem() {
-        super(Tiers.IRON, 11, -3, Map.of(), new Item.Properties().stacksTo(1));
+        super(Tiers.IRON, 9, -2.7, Map.of(), new Item.Properties().stacksTo(1));
     }
 
     @Override
