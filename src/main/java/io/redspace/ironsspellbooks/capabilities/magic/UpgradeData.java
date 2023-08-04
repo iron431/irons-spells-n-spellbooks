@@ -63,7 +63,7 @@ public class UpgradeData {
             }
             return;
         }
-        ListTag upgrades = itemStack.getOrCreateTag().getList(Upgrades, 10);
+        ListTag upgrades = new ListTag();
 
         for (ImmutableMap.Entry<UpgradeType, Integer> upgradeInstance : upgradeData.upgrades.entrySet()) {
             CompoundTag upgradeTag = new CompoundTag();

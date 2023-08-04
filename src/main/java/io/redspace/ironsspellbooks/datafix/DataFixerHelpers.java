@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.datafix;
 
 import com.google.common.collect.ImmutableMap;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.spells.blood.*;
@@ -16,6 +18,7 @@ import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 
 import java.util.Map;
 
@@ -93,6 +96,11 @@ public class DataFixerHelpers {
             .put("irons_spellbooks:poison_rune", "irons_spellbooks:fire_rune")
             .build();
 
+    static final Map<String, String> LEGACY_UPGRADE_TYPE_IDS = ImmutableMap.<String, String>builder()
+            //TODO: should probably namespace and fix all of them
+            .put("poison_power", "melee_damage")
+            .build();
+
 
     /**
      * Returns true if data was updated
@@ -101,7 +109,8 @@ public class DataFixerHelpers {
         var fix1 = fixIsbSpellbook(tag);
         var fix2 = fixIsbSpell(tag);
         var fix3 = fixItemsNames(tag);
-        return fix1 || fix2 || fix3;
+        var fix4 = fixUpgradeType(tag);
+        return fix1 || fix2 || fix3 || fix4;
     }
 
     public static boolean fixIsbSpellbook(CompoundTag tag) {
@@ -143,6 +152,24 @@ public class DataFixerHelpers {
             if (newName != null) {
                 tag.putString("id", newName);
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean fixUpgradeType(CompoundTag tag) {
+        if (tag != null && tag.contains(UpgradeData.Upgrades)) {
+            //IronsSpellbooks.LOGGER.debug("fixUpgradeType: found tag with upgrades {}",tag);
+            ListTag upgrades = tag.getList(UpgradeData.Upgrades, 10);
+            for (Tag t : upgrades) {
+                CompoundTag upgrade = (CompoundTag) t;
+                String upgradeKey = upgrade.getString(UpgradeData.Upgrade_Key);
+                //IronsSpellbooks.LOGGER.debug("fixUpgradeType: {} | needsFixing: {}", upgradeKey, LEGACY_UPGRADE_TYPE_IDS.get(upgradeKey) != null);
+                String newKey = LEGACY_UPGRADE_TYPE_IDS.get(upgradeKey);
+                if (newKey != null) {
+                    upgrade.putString(UpgradeData.Upgrade_Key, newKey);
+                    return true;
+                }
             }
         }
         return false;
