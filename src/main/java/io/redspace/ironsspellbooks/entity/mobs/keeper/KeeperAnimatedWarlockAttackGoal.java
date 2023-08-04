@@ -71,7 +71,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     }
                 }
             }
-        } else if (queueCombo != null) {
+        } else if (queueCombo != null && target != null && !target.isDeadOrDying()) {
             nextAttack = queueCombo;
             queueCombo = null;
             doMeleeAction();
@@ -142,6 +142,11 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             else
                 this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
         }
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        return super.canContinueToUse() || meleeAnimTimer > 0;
     }
 
     @Override
