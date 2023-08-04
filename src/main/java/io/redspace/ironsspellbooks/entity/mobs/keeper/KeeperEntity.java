@@ -19,6 +19,7 @@ import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
@@ -70,7 +71,25 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         super(pEntityType, pLevel);
         xpReward = 25;
         maxUpStep = 1f;
+    }
 
+    @Override
+    protected BodyRotationControl createBodyControl() {
+        return new BodyRotationControl(this) {
+            @Override
+            public void clientTick() {
+                if (KeeperEntity.this.isAggressive()) {
+                    KeeperEntity.this.yBodyRot = KeeperEntity.this.getYRot();
+                }else {
+                    super.clientTick();
+                }
+            }
+        };
+    }
+
+    @Override
+    protected float getStandingEyeHeight(Pose pPose, EntityDimensions pDimensions) {
+        return pDimensions.height;
     }
 
     public KeeperEntity(Level pLevel) {
@@ -118,7 +137,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
 
     public static AttributeSupplier.Builder prepareAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.ATTACK_DAMAGE, 12.0)
+                .add(Attributes.ATTACK_DAMAGE, 10.0)
                 .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 25.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
