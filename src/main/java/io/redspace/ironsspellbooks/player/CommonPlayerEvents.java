@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -29,7 +29,7 @@ public class CommonPlayerEvents {
             var spell = SpellData.getSpellData(stack).getSpell();
             var entity = event.getEntity();
 
-            if (spell != SpellRegistry.none()) {
+            if (spell != IronsSpellRegistry.none()) {
                 entity.stopUsingItem();
                 Utils.releaseUsingHelper(entity, stack, event.getDuration());
             }

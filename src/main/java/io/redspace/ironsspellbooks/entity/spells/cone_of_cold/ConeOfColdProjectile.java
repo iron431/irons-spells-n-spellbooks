@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.cone_of_cold;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -56,7 +56,7 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         //irons_spellbooks.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         var entity = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(entity, damage, SpellRegistry.CONE_OF_COLD_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ICE)  && !level.isClientSide && entity.canFreeze())
+        if (DamageSources.applyDamage(entity, damage, IronsSpellRegistry.CONE_OF_COLD_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ICE)  && !level.isClientSide && entity.canFreeze())
             entity.setTicksFrozen(entity.getTicksFrozen() + 80);
     }
 

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.item.curios;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import net.minecraft.world.item.ItemStack;
 
 public class RingData {
@@ -16,7 +16,7 @@ public class RingData {
         if (hasRingData(stack)) {
             return new RingData(stack.getOrCreateTag().getString(nbtKey));
         } else {
-            return new RingData(SpellRegistry.none().getSpellId());
+            return new RingData(IronsSpellRegistry.none().getSpellId());
         }
     }
 
@@ -30,6 +30,6 @@ public class RingData {
     }
 
     public AbstractSpell getSpell() {
-        return SpellRegistry.getSpell(spellId);
+        return IronsSpellRegistry.getSpell(spellId);
     }
 }

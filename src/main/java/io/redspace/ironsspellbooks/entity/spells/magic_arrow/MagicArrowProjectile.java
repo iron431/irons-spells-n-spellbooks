@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.magic_arrow;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -68,7 +68,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
         if (!victims.contains(entity)) {
-            DamageSources.applyDamage(entity, damage, SpellRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ENDER);
+            DamageSources.applyDamage(entity, damage, IronsSpellRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ENDER);
             victims.add(entity);
         }
     }

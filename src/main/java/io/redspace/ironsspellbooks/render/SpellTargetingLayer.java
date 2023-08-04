@@ -6,7 +6,7 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.model.EntityModel;
@@ -62,11 +62,11 @@ public class SpellTargetingLayer {
 
     private static Vector3f getColor(String spellId) {
         //Specific Spells
-        if (spellId.equals(SpellRegistry.BLESSING_OF_LIFE_SPELL.get().getSpellId()) || spellId.equals(SpellRegistry.HEALING_CIRCLE_SPELL.get().getSpellId())) {
+        if (spellId.equals(IronsSpellRegistry.BLESSING_OF_LIFE_SPELL.get().getSpellId()) || spellId.equals(IronsSpellRegistry.HEALING_CIRCLE_SPELL.get().getSpellId())) {
             return new Vector3f(.85f, 0, 0);
         }
         //By School Otherwise
-        return switch (SpellRegistry.getSpell(spellId).getSchoolType()) {
+        return switch (IronsSpellRegistry.getSpell(spellId).getSchoolType()) {
             case HOLY -> new Vector3f(.85f, .75f, .25f);
             case ICE -> new Vector3f(.25f, .25f, 1f);
             case POISON -> new Vector3f(.41f, .88f, .22f);

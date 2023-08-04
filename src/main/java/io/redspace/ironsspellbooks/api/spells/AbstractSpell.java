@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -426,7 +426,7 @@ public abstract class AbstractSpell {
     private volatile List<Double> rarityWeights;
 
     private void initializeRarityWeights() {
-        synchronized (SpellRegistry.none()) {
+        synchronized (IronsSpellRegistry.none()) {
             if (rarityWeights == null) {
                 int minRarity = getMinRarity();
                 int maxRarity = getMaxRarity();

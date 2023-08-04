@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
@@ -65,7 +65,7 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
                 }
 
                 if (los) {
-                    DamageSources.applyDamage(livingentity, this.getDamage(), SpellRegistry.FIRECRACKER_SPELL.get().getDamageSource(this, getOwner()), SchoolType.EVOCATION);
+                    DamageSources.applyDamage(livingentity, this.getDamage(), IronsSpellRegistry.FIRECRACKER_SPELL.get().getDamageSource(this, getOwner()), SchoolType.EVOCATION);
                 }
             }
         }

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.core.BlockPos;
@@ -36,7 +36,7 @@ public class WizardAttackGoal extends Goal {
     protected int attackTime = -1;
     protected int projectileCount;
 
-    protected AbstractSpell singleUseSpell = SpellRegistry.none();
+    protected AbstractSpell singleUseSpell = IronsSpellRegistry.none();
     protected int singleUseDelay;
     protected int singleUseLevel;
 
@@ -262,7 +262,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
-        if (!mob.hasUsedSingleAttack && singleUseSpell != SpellRegistry.none() && singleUseDelay <= 0) {
+        if (!mob.hasUsedSingleAttack && singleUseSpell != IronsSpellRegistry.none() && singleUseDelay <= 0) {
             mob.hasUsedSingleAttack = true;
             mob.initiateCastSpell(singleUseSpell, singleUseLevel);
         } else {
@@ -310,13 +310,13 @@ public class WizardAttackGoal extends Goal {
                 if (supportSpells.isEmpty() || mob.getRandom().nextFloat() < .5f) {
                     //IronsSpellbooks.LOGGER.debug("Drinking Potion");
                     mob.startDrinkingPotion();
-                    return SpellRegistry.none();
+                    return IronsSpellRegistry.none();
                 }
             }
             return spellList.get(mob.getRandom().nextInt(spellList.size()));
         } else {
             //IronsSpellbooks.LOGGER.debug("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} (no spell)", attackWeight, defenseWeight, movementWeight, supportWeight);
-            return SpellRegistry.none();
+            return IronsSpellRegistry.none();
         }
     }
 

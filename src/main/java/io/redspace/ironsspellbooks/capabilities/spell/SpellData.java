@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.capabilities.spell;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -17,7 +17,7 @@ public class SpellData implements Comparable<SpellData> {
     public static final String LEGACY_SPELL_TYPE = "type";
     public static final String SPELL_ID = "id";
     public static final String SPELL_LEVEL = "level";
-    public static final SpellData EMPTY = new SpellData(SpellRegistry.none(), 0);
+    public static final SpellData EMPTY = new SpellData(IronsSpellRegistry.none(), 0);
     private MutableComponent displayName;
     private final AbstractSpell spell;
     private final int spellLevel;
@@ -39,7 +39,7 @@ public class SpellData implements Comparable<SpellData> {
 //                DataFixerHelpers.fixScrollData(tag);
 //            }
 
-            return new SpellData(SpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
+            return new SpellData(IronsSpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
         } else if (stack.getItem() instanceof ExtendedSwordItem extendedSwordItem) {
             var spell = extendedSwordItem.getImbuedSpell();
             setSpellData(stack, spell, extendedSwordItem.getImbuedLevel());
@@ -71,7 +71,7 @@ public class SpellData implements Comparable<SpellData> {
 
     public AbstractSpell getSpell() {
         if (spell == null) {
-            return SpellRegistry.none();
+            return IronsSpellRegistry.none();
         }
         return spell;
     }

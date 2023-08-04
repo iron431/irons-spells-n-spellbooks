@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.ResourceLocation;
 
@@ -36,7 +36,7 @@ public class SpellArgument implements ArgumentType<String> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
-        var registeredSpells = SpellRegistry.REGISTRY.get().getEntries().stream().map(entry -> {
+        var registeredSpells = IronsSpellRegistry.REGISTRY.get().getEntries().stream().map(entry -> {
             if (entry.getKey().location().getNamespace().equals(IronsSpellbooks.MODID)) {
                 return entry.getKey().location().getPath();
             } else {

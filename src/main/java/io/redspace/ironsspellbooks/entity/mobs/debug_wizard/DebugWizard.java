@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.debug_wizard;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.DebugTargetClosestEntityGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.DebugWizardAttackGoal;
@@ -85,7 +85,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        spell = SpellRegistry.getSpell(pCompound.getString("spellId"));
+        spell = IronsSpellRegistry.getSpell(pCompound.getString("spellId"));
         spellLevel = pCompound.getInt("spellLevel");
         targetsPlayer = pCompound.getBoolean("targetsPlayer");
         cancelCastAfterTicks = pCompound.getInt("cancelCastAfterTicks");

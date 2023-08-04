@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.black_hole;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
@@ -123,7 +123,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 entity.push(diff.x, diff.y, diff.z);
                 if (this.tickCount % 10 == 0) {
                     if (distance < 3f && canHitEntity(entity))
-                        DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()), SchoolType.VOID);
+                        DamageSources.applyDamage(entity, damage, IronsSpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()), SchoolType.VOID);
                 }
                 entity.resetFallDistance();
             }

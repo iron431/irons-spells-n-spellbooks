@@ -4,7 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
@@ -40,7 +40,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
 
             var spellList = getWeightedSpellList(applicableSpells.getApplicableSpells());
             int total = spellList.floorKey(Integer.MAX_VALUE);
-            AbstractSpell abstractSpell = SpellRegistry.none();
+            AbstractSpell abstractSpell = IronsSpellRegistry.none();
             if (!spellList.isEmpty()) {
                 abstractSpell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
             }
@@ -61,7 +61,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         NavigableMap<Integer, AbstractSpell> weightedSpells = new TreeMap<>();
 
         for (AbstractSpell entry : entries) {
-            if (entry != SpellRegistry.none() && entry.isEnabled()) {
+            if (entry != IronsSpellRegistry.none() && entry.isEnabled()) {
                 total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
                 weightedSpells.put(total, entry);
             }

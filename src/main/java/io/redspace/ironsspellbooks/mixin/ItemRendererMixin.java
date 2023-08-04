@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.mixin;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.Tesselator;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -40,7 +40,7 @@ public class ItemRendererMixin {
     }
 
     private void renderSpellCooldown(int one, int two, AbstractSpell spell) {
-        if (!spell.equals(SpellRegistry.none())) {
+        if (!spell.equals(IronsSpellRegistry.none())) {
             float f = ClientMagicData.getCooldownPercent(spell);
 
             if (f > 0.0F) {

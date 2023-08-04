@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -116,7 +116,7 @@ public class BurningDashSpell extends AbstractSpell {
         //Deal Shockwave Damage and particles
         world.getEntities(entity, entity.getBoundingBox().inflate(4)).forEach((target) -> {
             if (target.distanceToSqr(entity) < 16) {
-                if (DamageSources.applyDamage(target, getDamage(spellLevel, entity), SpellRegistry.BURNING_DASH_SPELL.get().getDamageSource(entity), SchoolType.FIRE))
+                if (DamageSources.applyDamage(target, getDamage(spellLevel, entity), IronsSpellRegistry.BURNING_DASH_SPELL.get().getDamageSource(entity), SchoolType.FIRE))
                     target.setSecondsOnFire(3);
             }
         });

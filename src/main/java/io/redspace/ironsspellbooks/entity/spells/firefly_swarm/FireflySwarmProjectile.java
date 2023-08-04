@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.firefly_swarm;
 
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
@@ -68,7 +68,7 @@ public class FireflySwarmProjectile extends PathfinderMob {
             this.level.getEntities(this, this.getBoundingBox(), this::canHitEntity).forEach(
                     (entity) -> {
                         if (canHitEntity(entity)) {
-                            boolean hit = DamageSources.applyDamage(entity, 2, SpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.POISON);
+                            boolean hit = DamageSources.applyDamage(entity, 2, IronsSpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.POISON);
                             if (hit) {
                                 if (target == null) {
                                     setTarget(entity);

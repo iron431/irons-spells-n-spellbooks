@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
@@ -36,8 +36,8 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     private static Stream<ArcaneAnvilRecipe> getScrollRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        return SpellRegistry.REGISTRY.get().getValues().stream()
-                .filter(spell -> spell != SpellRegistry.none() && spell.isEnabled())
+        return IronsSpellRegistry.REGISTRY.get().getValues().stream()
+                .filter(spell -> spell != IronsSpellRegistry.none() && spell.isEnabled())
                 .sorted(Comparator.comparing(AbstractSpell::getSpellId))
                 .map(ArcaneAnvilRecipeMaker::enumerateScrollCombinations)
                 .filter(ArcaneAnvilRecipe::isValid); //Filter out any blank recipes created where min and max spell level are equal
@@ -49,8 +49,8 @@ public final class ArcaneAnvilRecipeMaker {
         var rightInputs = new ArrayList<ItemStack>();
         var outputs = new ArrayList<ItemStack>();
 
-        SpellRegistry.REGISTRY.get().getValues().stream()
-                .filter(spell -> spell != SpellRegistry.none() && spell.isEnabled())
+        IronsSpellRegistry.REGISTRY.get().getValues().stream()
+                .filter(spell -> spell != IronsSpellRegistry.none() && spell.isEnabled())
                 .sorted(Comparator.comparing(AbstractSpell::getSpellId))
                 .forEach((spellType) -> {
                     Registry.ITEM.stream().filter((k) -> k instanceof SwordItem).forEach((swordItem) -> {

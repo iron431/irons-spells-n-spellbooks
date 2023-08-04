@@ -7,7 +7,7 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
@@ -167,7 +167,7 @@ public class ClientSpellCastHelper {
      * Network Handling Wrapper
      */
     public static void handleClientboundOnClientCast(String spellId, int level, CastSource castSource, ICastData castData) {
-        var spell = SpellRegistry.getSpell(spellId);
+        var spell = IronsSpellRegistry.getSpell(spellId);
         spell.onClientCast(Minecraft.getInstance().player.level, level, Minecraft.getInstance().player, castData);
     }
 
@@ -194,7 +194,7 @@ public class ClientSpellCastHelper {
 
     public static void handleClientBoundOnCastStarted(UUID castingEntityId, String spellId, int spellLevel) {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
-        var spell = SpellRegistry.getSpell(spellId);
+        var spell = IronsSpellRegistry.getSpell(spellId);
         spell.getCastStartAnimation().getForPlayer().ifPresent((resourceLocation -> animatePlayerStart(player, resourceLocation)));
         spell.onClientPreCast(player.level, spellLevel, player, player.getUsedItemHand(), null);
     }
@@ -203,7 +203,7 @@ public class ClientSpellCastHelper {
         ClientMagicData.resetClientCastState(castingEntityId);
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
 
-        var spell = SpellRegistry.getSpell(spellId);
+        var spell = IronsSpellRegistry.getSpell(spellId);
         spell.getCastFinishAnimation()
                 .getForPlayer()
                 .ifPresent((resourceLocation -> {

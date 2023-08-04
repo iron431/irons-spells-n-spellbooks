@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import io.redspace.ironsspellbooks.item.InkItem;
@@ -40,7 +40,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private List<SpellCardInfo> availableSpells;
     private ItemStack[] oldMenuSlots = {ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
 
-    private AbstractSpell selectedSpell = SpellRegistry.none();
+    private AbstractSpell selectedSpell = IronsSpellRegistry.none();
     private int scrollOffset;
 
     public ScrollForgeScreen(ScrollForgeMenu menu, Inventory inventory, Component title) {
@@ -58,14 +58,14 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     @Override
     public void onClose() {
-        setSelectedSpell(SpellRegistry.none());
+        setSelectedSpell(IronsSpellRegistry.none());
         resetList();
         super.onClose();
     }
 
     private void resetList() {
         if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(ServerConfigs.getSpellConfig(selectedSpell).minRarity()) >= 0)))
-            setSelectedSpell(SpellRegistry.none());
+            setSelectedSpell(IronsSpellRegistry.none());
         //TODO: reorder setting old focus to test if we actually need to reset the spell... or just give ink its own path since we dont even need to regenerate the list anyways
         //TODO: update: what the fuck does that mean
         scrollOffset = 0;
@@ -162,7 +162,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         if (!focusStack.isEmpty() && focusStack.is(ModTags.SCHOOL_FOCUS)) {
             SchoolType school = SchoolType.getSchoolFromItem(focusStack);
             //irons_spellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.school: {}", school.toString());
-            var spells = SpellRegistry.getSpellsForSchool(school);
+            var spells = IronsSpellRegistry.getSpellsForSchool(school);
             for (int i = 0; i < spells.size(); i++) {
                 //int id = spells[i].getValue();
                 int tempIndex = i;
@@ -227,7 +227,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 screen.blit(poseStack, x, y, 0, 185, 108, 19);
                 //font.drawWordWrap(, x + 2, y + 2, maxWidth, 0xFFFFFF);
             }
-            setTexture(this.button.active ? spell.getSpellIconResource() : SpellRegistry.none().getSpellIconResource());
+            setTexture(this.button.active ? spell.getSpellIconResource() : IronsSpellRegistry.none().getSpellIconResource());
             screen.blit(poseStack, x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
 
             int maxWidth = 108 - 20;

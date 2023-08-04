@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.magma_ball;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -70,7 +70,7 @@ public class FireBomb extends AbstractMagicProjectile {
                 if (Utils.hasLineOfSight(level, hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.MAGMA_BOMB_SPELL.get().getDamageSource(this, getOwner()), SchoolType.FIRE);
+                    DamageSources.applyDamage(entity, damage, IronsSpellRegistry.MAGMA_BOMB_SPELL.get().getDamageSource(this, getOwner()), SchoolType.FIRE);
                 }
             }
         }

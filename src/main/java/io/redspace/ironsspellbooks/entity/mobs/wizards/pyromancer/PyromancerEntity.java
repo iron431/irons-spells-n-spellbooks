@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
@@ -37,13 +37,13 @@ public class PyromancerEntity extends AbstractSpellCastingMob implements Enemy {
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.25f, 25, 50)
                 .setSpells(
-                        List.of(SpellRegistry.FIREBOLT_SPELL.get(), SpellRegistry.FIREBOLT_SPELL.get(), SpellRegistry.FIREBOLT_SPELL.get(), SpellRegistry.FIRE_BREATH_SPELL.get(), SpellRegistry.BLAZE_STORM_SPELL.get()),
+                        List.of(IronsSpellRegistry.FIREBOLT_SPELL.get(), IronsSpellRegistry.FIREBOLT_SPELL.get(), IronsSpellRegistry.FIREBOLT_SPELL.get(), IronsSpellRegistry.FIRE_BREATH_SPELL.get(), IronsSpellRegistry.BLAZE_STORM_SPELL.get()),
                         List.of(),
-                        List.of(SpellRegistry.BURNING_DASH_SPELL.get()),
+                        List.of(IronsSpellRegistry.BURNING_DASH_SPELL.get()),
                         List.of()
                 )
                 .setDrinksPotions()
-                .setSingleUseSpell(SpellRegistry.MAGMA_BOMB_SPELL.get(), 80, 200, 4, 6)
+                .setSingleUseSpell(IronsSpellRegistry.MAGMA_BOMB_SPELL.get(), 80, 200, 4, 6)
         );
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));

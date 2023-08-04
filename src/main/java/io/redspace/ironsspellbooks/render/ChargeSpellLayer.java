@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.render;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
@@ -42,20 +42,20 @@ public class ChargeSpellLayer {
             var arm = getArmFromUseHand(entity);
             this.getParentModel().translateToHand(arm, poseStack);
             boolean flag = arm == HumanoidArm.LEFT;
-            if (spellId.equals(SpellRegistry.LIGHTNING_LANCE_SPELL.get().getSpellId())) {
+            if (spellId.equals(IronsSpellRegistry.LIGHTNING_LANCE_SPELL.get().getSpellId())) {
                 poseStack.translate((double) ((float) (flag ? -1 : 1) / 32.0F) - .125, .5, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 float castCompletion = Utils.smoothstep(.35f, 1, ClientMagicData.getCastCompletionPercent());
                 poseStack.scale(castCompletion, castCompletion, castCompletion);
                 LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
-            } else if (spellId.equals(SpellRegistry.MAGIC_ARROW_SPELL.get().getSpellId())) {
+            } else if (spellId.equals(IronsSpellRegistry.MAGIC_ARROW_SPELL.get().getSpellId())) {
                 poseStack.translate(((float) (flag ? -1 : 1) / 32.0F), .5, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
                 float castCompletion = Utils.smoothstep(.65f, 1, ClientMagicData.getCastCompletionPercent());
                 poseStack.scale(castCompletion, castCompletion, castCompletion);
                 MagicArrowRenderer.renderModel(poseStack, bufferSource);
-            } else if (spellId.equals(SpellRegistry.POISON_ARROW_SPELL.get().getSpellId())) {
+            } else if (spellId.equals(IronsSpellRegistry.POISON_ARROW_SPELL.get().getSpellId())) {
                 poseStack.translate(((float) (flag ? -1 : 1) / 32.0F), 1, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
@@ -91,19 +91,19 @@ public class ChargeSpellLayer {
             boolean flag = arm == HumanoidArm.LEFT;
 
 
-            if (spellId.equals(SpellRegistry.LIGHTNING_LANCE_SPELL.get().getSpellId())) {
+            if (spellId.equals(IronsSpellRegistry.LIGHTNING_LANCE_SPELL.get().getSpellId())) {
                 poseStack.translate(-(((flag ? -1 : 1) / 32.0F) - .125), .5, 0);
                 poseStack.translate(0, -bone.getPivotY() / 16, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
                 LightningLanceRenderer.renderModel(poseStack, bufferSource, entity.tickCount);
-            } else if (spellId.equals(SpellRegistry.MAGIC_ARROW_SPELL.get().getSpellId())) {
+            } else if (spellId.equals(IronsSpellRegistry.MAGIC_ARROW_SPELL.get().getSpellId())) {
                 poseStack.translate(0, -bone.getPivotY() / 16, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
                 poseStack.translate(-((flag ? -1 : 1) / 32.0F), .5, -.55);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 MagicArrowRenderer.renderModel(poseStack, bufferSource);
-            } else if (spellId.equals(SpellRegistry.POISON_ARROW_SPELL.get().getSpellId())) {
+            } else if (spellId.equals(IronsSpellRegistry.POISON_ARROW_SPELL.get().getSpellId())) {
                 poseStack.translate(0, -bone.getPivotY() / 16, 0);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));

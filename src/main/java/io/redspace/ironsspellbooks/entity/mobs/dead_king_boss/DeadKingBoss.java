@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -104,15 +104,15 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
         return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 3.5f).setSpellQuality(.3f, .5f).setSpells(
                 List.of(
-                        SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
-                        SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
-                        SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(),
-                        SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(),
-                        SpellRegistry.POISON_ARROW_SPELL.get(), SpellRegistry.POISON_ARROW_SPELL.get(),
-                        SpellRegistry.BLIGHT_SPELL.get(),
-                        SpellRegistry.ACID_ORB_SPELL.get()
+                        IronsSpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
+                        IronsSpellRegistry.BLOOD_SLASH_SPELL.get(), IronsSpellRegistry.BLOOD_SLASH_SPELL.get(),
+                        IronsSpellRegistry.WITHER_SKULL_SPELL.get(), IronsSpellRegistry.WITHER_SKULL_SPELL.get(), IronsSpellRegistry.WITHER_SKULL_SPELL.get(),
+                        IronsSpellRegistry.FANG_STRIKE_SPELL.get(), IronsSpellRegistry.FANG_STRIKE_SPELL.get(),
+                        IronsSpellRegistry.POISON_ARROW_SPELL.get(), IronsSpellRegistry.POISON_ARROW_SPELL.get(),
+                        IronsSpellRegistry.BLIGHT_SPELL.get(),
+                        IronsSpellRegistry.ACID_ORB_SPELL.get()
                 ),
-                List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.BLOOD_STEP_SPELL.get()),
+                List.of(IronsSpellRegistry.FANG_WARD_SPELL.get(), IronsSpellRegistry.BLOOD_STEP_SPELL.get()),
                 List.of(/*SpellType.BLOOD_STEP_SPELL*/),
                 List.of()
         ).setMeleeBias(0.75f);
@@ -121,10 +121,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     protected void setFirstPhaseGoals() {
         this.goalSelector.removeAllGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 3, 5, 600, 900, 1));
-        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
-        this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 10, 50, 8, 8));
+        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, IronsSpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, IronsSpellRegistry.RAISE_DEAD_SPELL.get(), 3, 5, 600, 900, 1));
+        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, IronsSpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(IronsSpellRegistry.RAISE_DEAD_SPELL.get(), 10, 50, 8, 8));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 
@@ -132,10 +132,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     protected void setFinalPhaseGoals() {
         this.goalSelector.removeAllGoals();
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
-        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
-        this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
+        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, IronsSpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, IronsSpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
+        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, IronsSpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(IronsSpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.hasUsedSingleAttack = false;
