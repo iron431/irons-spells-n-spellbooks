@@ -371,5 +371,12 @@
     "sounds": [
       "irons_spellbooks:keeper_hurt"
     ]
+  },
+  "entity.citadel_keeper.sword_impact": {
+    "sounds": [
+      "irons_spellbooks:sword_cut_07",
+      "irons_spellbooks:sword_cut_08",
+      "irons_spellbooks:sword_cut_11"
+    ]
   }
 }

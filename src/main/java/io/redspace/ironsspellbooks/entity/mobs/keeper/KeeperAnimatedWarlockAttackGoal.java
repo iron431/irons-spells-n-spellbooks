@@ -49,9 +49,12 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     if (distance <= meleeRange) {
                         boolean flag = this.mob.doHurtTarget(target);
                         target.invulnerableTime = 0;
-                        if (currentAttack.data.isSingleHit() && ((flag && mob.getRandom().nextFloat() < .75f) || target.isBlocking())) {
-                            //Attack again! combos!
-                            queueCombo = randomizeNextAttack(0);
+                        if (flag) {
+                            playImpactSound();
+                            if (currentAttack.data.isSingleHit() && ((mob.getRandom().nextFloat() < .75f) || target.isBlocking())) {
+                                //Attack again! combos!
+                                queueCombo = randomizeNextAttack(0);
+                            }
                         }
                     }
                 }else{
@@ -158,5 +161,9 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     public void playSwingSound() {
         mob.playSound(SoundRegistry.KEEPER_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
+    }
+
+    public void playImpactSound() {
+        mob.playSound(SoundRegistry.KEEPER_SWORD_IMPACT.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
 }
