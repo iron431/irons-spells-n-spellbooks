@@ -67,7 +67,7 @@ public class VanillaAnvilRecipeMaker {
         var registryItems = ItemRegistry.getIronsItems();
         List<TieredItem> items = new ArrayList<>();
         for (RegistryObject<Item> item : registryItems)
-            if (item.get() instanceof TieredItem tieredItem && tieredItem.getItemCategory() != null)
+            if (item.get() instanceof TieredItem tieredItem)
                 items.add(tieredItem);
         return items;
     }
@@ -76,7 +76,7 @@ public class VanillaAnvilRecipeMaker {
         var registryItems = ItemRegistry.getIronsItems();
         List<ArmorItem> items = new ArrayList<>();
         for (RegistryObject<Item> item : registryItems)
-            if (item.get() instanceof ArmorItem tieredItem && tieredItem.getItemCategory() != null)
+            if (item.get() instanceof ArmorItem tieredItem)
                 items.add(tieredItem);
         return items;
     }

@@ -7,8 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
+import net.minecraft.world.entity.WalkAnimationState;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 
 public class KeeperModel extends AbstractSpellCastingMobModel {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/keeper/keeper.png");
@@ -25,29 +26,28 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
     }
 
     @Override
-    public void setCustomAnimations(AbstractSpellCastingMob entity, int instanceId, AnimationEvent animationEvent) {
-        super.setCustomAnimations(entity, instanceId, animationEvent);
+    public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
+        super.setCustomAnimations(entity, instanceId, animationState);
         if (Minecraft.getInstance().isPaused())
             return;
 
-        float partialTick = animationEvent.getPartialTick();
+        float partialTick = animationState.getPartialTick();
 
-        IBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-        IBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
-        IBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        IBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-        IBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+        CoreGeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
+        CoreGeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+        CoreGeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
+        CoreGeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
+        CoreGeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
 
         boolean tick = lastTick != entity.tickCount;
         lastTick = entity.tickCount;
 
+        WalkAnimationState walkAnimationState = entity.walkAnimation;
         float pLimbSwingAmount = 0.0F;
         float pLimbSwing = 0.0F;
         if (entity.isAlive()) {
-            pLimbSwingAmount = Mth.lerp(partialTick, entity.animationSpeedOld, entity.animationSpeed);
-            pLimbSwing = entity.animationPosition - entity.animationSpeed * (1.0F - partialTick);
-            //pLimbSwingAmount *= .75f;
-            //pLimbSwing *= .75f;
+            pLimbSwingAmount = walkAnimationState.speed(partialTick);
+            pLimbSwing = walkAnimationState.position(partialTick);
             if (pLimbSwingAmount > 1.0F) {
                 pLimbSwingAmount = 1.0F;
             }
@@ -57,9 +57,9 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
         }
         if (!(entity.isPassenger() && entity.getVehicle().shouldRiderSit())) {
             float strength = .75f;
-            updatePosition(rightLeg, 0, Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount);
-            updatePosition(leftLeg, 0, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount);
-            updatePosition(body, 0, Mth.cos(pLimbSwing * 1.2662F - Mth.PI * .5f) * 1 * strength * pLimbSwingAmount, 0);
+            rightLeg.updatePosition(0, Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount);
+            leftLeg.updatePosition(0, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount);
+            body.updatePosition(0, Mth.cos(pLimbSwing * 1.2662F - Mth.PI * .5f) * 1 * strength * pLimbSwingAmount, 0);
             if (tick) {
                 if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
                     legTween = Mth.lerp(.9f, 0, 1);
@@ -67,27 +67,16 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
                     legTween = Mth.lerp(.9f, 1, 0);
                 }
             }
-            rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * legTween * strength);
-            leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * legTween * strength);
+            rightLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * legTween * strength);
+            leftLeg.setRotX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * legTween * strength);
         }
         if (entity.isAnimating()){
-            bobBone(rightArm, entity.tickCount, 1);
-            bobBone(leftArm, entity.tickCount, -1);
+            bobBone(rightArm, entity.tickCount, false);
+            bobBone(leftArm, entity.tickCount, true);
         }
     }
 
     private int lastTick;
     private float legTween = 1f;
 
-    private static void updatePosition(IBone bone, float x, float y, float z) {
-        bone.setPositionX(x);
-        bone.setPositionY(y);
-        bone.setPositionZ(z);
-    }
-
-    private static void updateRotation(IBone bone, float x, float y, float z) {
-        bone.setRotationX(x);
-        bone.setRotationY(y);
-        bone.setRotationZ(z);
-    }
 }

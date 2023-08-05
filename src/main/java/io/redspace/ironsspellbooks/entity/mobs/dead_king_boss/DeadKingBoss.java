@@ -375,11 +375,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     private final RawAnimation melee = RawAnimation.begin().thenPlay("dead_king_melee");
     private final RawAnimation slam = RawAnimation.begin().thenPlay("dead_king_slam");
 
-    private final AnimationController transitionController = new AnimationController(this, "dead_king_transition", 0, this::transitionPredicate);
-    private final AnimationController meleeController = new AnimationController(this, "dead_king_animations", 0, this::predicate);
-    private final AnimationController idleController = new AnimationController(this, "dead_king_idle", 0, this::idlePredicate);
+    private final AnimationController<DeadKingBoss> transitionController = new AnimationController<>(this, "dead_king_transition", 0, this::transitionPredicate);
+    private final AnimationController<DeadKingBoss> meleeController = new AnimationController<>(this, "dead_king_animations", 0, this::predicate);
+    private final AnimationController<DeadKingBoss> idleController = new AnimationController<>(this, "dead_king_idle", 0, this::idlePredicate);
 
-    private PlayState predicate(AnimationState animationEvent) {
+    private PlayState predicate(AnimationState<DeadKingBoss> animationEvent) {
         var controller = animationEvent.getController();
 //        if (isPhaseTransitioning() && controller.getAnimationState() == AnimationState.Stopped) {
 //            controller.markNeedsReload();

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;

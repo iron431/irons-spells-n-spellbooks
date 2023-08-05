@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -33,8 +32,10 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 
@@ -129,7 +130,6 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         };
     }
 
-    @NotNull
     protected SoundEvent getAmbientSound() {
         return SoundRegistry.KEEPER_IDLE.get();
     }
@@ -187,10 +187,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
 
     @Override
     protected void playStepSound(BlockPos pPos, BlockState pState) {
-        super.playStepSound(pPos, pState);
-        if (!pState.getMaterial().isLiquid()) {
-            this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, 1f);
-        }
+        this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, 1f);
     }
 
     @Override
@@ -203,19 +200,19 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         return super.isInvulnerableTo(pSource) || pSource.is(DamageTypeTags.IS_FALL);
     }
 
-    AnimationBuilder animationToPlay = null;
+    RawAnimation animationToPlay = null;
 
     @Override
     public void playAnimation(int animationId) {
         if (animationId >= 0 && animationId < AttackType.values().length)
-            animationToPlay = new AnimationBuilder().addAnimation(AttackType.values()[animationId].data.animationId, ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+            animationToPlay = RawAnimation.begin().thenPlay(AttackType.values()[animationId].data.animationId);
     }
 
-    private PlayState predicate(AnimationEvent<KeeperEntity> animationEvent) {
+    private PlayState predicate(AnimationState<KeeperEntity> animationEvent) {
         var controller = animationEvent.getController();
 
         if (this.animationToPlay != null) {
-            controller.markNeedsReload();
+            controller.forceAnimationReset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }

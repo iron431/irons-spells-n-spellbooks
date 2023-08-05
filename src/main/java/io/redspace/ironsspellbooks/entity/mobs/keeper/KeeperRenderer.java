@@ -33,8 +33,8 @@ public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
     }
 
     @Override
-    public int getOverlay(AbstractSpellCastingMob entity, float u) {
-        //This is what makes them flash red when hurt or dying. Only dying for keepers
+    public int getPackedOverlay(AbstractSpellCastingMob entity, float u) {
         return OverlayTexture.pack(OverlayTexture.u(u), OverlayTexture.v(entity.deathTime > 0));
     }
+
 }

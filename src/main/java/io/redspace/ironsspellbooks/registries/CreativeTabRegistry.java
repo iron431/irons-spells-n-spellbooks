@@ -50,6 +50,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.VILLAGER_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.BLOOD_STAFF.get());
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
+                entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
 
                 entries.accept(ItemRegistry.WANDERING_MAGICIAN_HELMET.get());
                 entries.accept(ItemRegistry.WANDERING_MAGICIAN_CHESTPLATE.get());
