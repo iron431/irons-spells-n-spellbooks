@@ -83,6 +83,13 @@ public class IronsWorldUpgrader {
     public void runUpgrade() {
         if (worldNeedsUpgrading()) {
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting upgrade");
+
+            try {
+                levelStorage.makeWorldBackup();
+            } catch (Exception exception) {
+                IronsSpellbooks.LOGGER.error("IronsWorldUpgrader Level Backup failed: {}", exception.getMessage());
+            }
+
             long millis = Util.getMillis();
             doWork(REGION_FOLDER, "block_entities");
             millis = Util.getMillis() - millis;
