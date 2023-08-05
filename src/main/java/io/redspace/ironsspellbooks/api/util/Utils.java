@@ -476,7 +476,7 @@ public class Utils {
     }
 
     /**
-     * From the given start position, this finds the first air block within +/- maxSteps
+     * From the given start position, this finds the first non-suffocating y level within +/- maxSteps, biased towards the ground
      */
     public static int findRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
         if (level.getBlockState(new BlockPos(start)).isSuffocating(level, new BlockPos(start))) {
