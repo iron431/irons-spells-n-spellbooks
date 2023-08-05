@@ -414,7 +414,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<FireflySwarmProjectile>> FIREFLY_SWARM =
             ENTITIES.register("firefly_swarm", () -> EntityType.Builder.<FireflySwarmProjectile>of(FireflySwarmProjectile::new, MobCategory.MISC)
-                    .sized(2f, 2f)
+                    .sized(.9f, .9f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "firefly_swarm").toString()));
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -52,20 +53,22 @@ public class FireflySwarmProjectile extends PathfinderMob {
 
         LivingEntity target = getTarget();
         if (target != null) {
-            //this.navigation.moveTo(target, 5);
-            this.moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), 5);
+            this.navigation.moveTo(target, 5);
+            //this.moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), 5);
         }
-        if (level.collidesWithSuffocatingBlock(this, this.getBoundingBox().inflate(-.5f))) {
-            this.setDeltaMovement(this.getDeltaMovement().add(0, 0.003, 0));
-        } else {
-            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.001, 0));
+        if(this.tickCount % 8 == 0) {
+            if (level.collidesWithSuffocatingBlock(this, this.getBoundingBox().move(0, -1, 0))) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0, 0.02, 0));
+            } else {
+                this.setDeltaMovement(this.getDeltaMovement().add(0, -0.008, 0));
+            }
         }
         if (!this.moveControl.hasWanted()) {
             this.setDeltaMovement(this.getDeltaMovement().multiply(.95f, 1, .95f));
         }
         if (this.tickCount % 15 == 0) {
             //Damage tick
-            this.level.getEntities(this, this.getBoundingBox(), this::canHitEntity).forEach(
+            this.level.getEntities(this, this.getBoundingBox().inflate(.75f), this::canHitEntity).forEach(
                     (entity) -> {
                         if (canHitEntity(entity)) {
                             boolean hit = DamageSources.applyDamage(entity, 2, IronsSpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.POISON);

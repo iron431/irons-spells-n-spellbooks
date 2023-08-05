@@ -57,6 +57,7 @@ import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import javax.print.DocFlavor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -478,16 +479,27 @@ public class Utils {
      * From the given start position, this finds the first air block within +/- maxSteps
      */
     public static int findRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
-        if (!level.getBlockState(new BlockPos(start)).isAir()) {
+        if (level.getBlockState(new BlockPos(start)).isSuffocating(level, new BlockPos(start))) {
             for (int i = 0; i < maxSteps; i++) {
                 start = start.add(0, 1, 0);
-                if (level.getBlockState(new BlockPos(start)).isAir())
-                    break;
+                BlockPos pos = new BlockPos(start);
+                if (!level.getBlockState(pos).isSuffocating(level, pos)) {
+                    return pos.getY();
+                }
             }
         }
-        //Vec3 upper = level.clip(new ClipContext(start, start.add(0, maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
-        Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
-        return (int) (lower.y + .76f);
+//        //Vec3 upper = level.clip(new ClipContext(start, start.add(0, maxSteps, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+//        Vec3 lower = level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+//        return (int) (lower.y + .76f);
+        for (int i = 0; i < maxSteps; i++) {
+            BlockPos pos = new BlockPos(start).below();
+            if (level.getBlockState(pos).isSuffocating(level, pos)) {
+                break;
+            }
+            start = start.add(0, -1, 0);
+        }
+        return (int) start.y;
+
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {

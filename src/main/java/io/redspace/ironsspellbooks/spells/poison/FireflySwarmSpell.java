@@ -100,9 +100,9 @@ public class FireflySwarmSpell extends AbstractSpell {
             }
         }
 
-        FireflySwarmProjectile poisonSplash = new FireflySwarmProjectile(level, entity, target);
-        poisonSplash.moveTo(spawn);
-        level.addFreshEntity(poisonSplash);
+        FireflySwarmProjectile fireflies = new FireflySwarmProjectile(level, entity, target);
+        fireflies.moveTo(spawn.add(0, .5, 0));
+        level.addFreshEntity(fireflies);
 
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
