@@ -4,11 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
-import com.mojang.datafixers.schemas.Schema;
-import com.mojang.serialization.Dynamic;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
@@ -23,10 +20,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.storage.ChunkStorage;
 import net.minecraft.world.level.chunk.storage.RegionFile;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
-import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.LevelStorageSource;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +58,18 @@ public class IronsWorldUpgrader {
         this.worldGenSettings = pWorldGenSettings;
         this.levelStorage = pLevelStorage;
         this.dataFixer = new DataFixerBuilder(1).buildUnoptimized();
-        this.overworldDataStorage = new DimensionDataStorage(this.levelStorage.getDimensionPath(Level.OVERWORLD).resolve("data").toFile(), dataFixer);
+
+        var file = this.levelStorage.getDimensionPath(Level.OVERWORLD).resolve("data").toFile();
+
+        try {
+            if (!file.exists()) {
+                file.mkdir();
+            }
+        } catch (Exception e) {
+
+        }
+
+        this.overworldDataStorage = new DimensionDataStorage(file, dataFixer);
         this.ironsSpellBooksWorldData = overworldDataStorage.computeIfAbsent(
                 IronsSpellBooksWorldData::load,
                 IronsSpellBooksWorldData::new,
