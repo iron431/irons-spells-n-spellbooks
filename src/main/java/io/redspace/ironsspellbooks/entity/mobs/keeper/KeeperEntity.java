@@ -20,6 +20,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
@@ -73,6 +74,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         xpReward = 25;
         maxUpStep = 1f;
         this.lookControl = createLookControl();
+        this.moveControl = createMoveControl();
     }
 
     @Override
@@ -103,9 +105,27 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
 
     protected LookControl createLookControl() {
         return new LookControl(this) {
+            //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
             @Override
             protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
                 return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
+            }
+        };
+    }
+
+    protected MoveControl createMoveControl() {
+        return new MoveControl(this) {
+            //This fixes a bug where a mob tries to path into the block it's already standing, and spins around trying to look "forward"
+            //We nullify our rotation calculation if we are close to block we are trying to get to
+            @Override
+            protected float rotlerp(float pSourceAngle, float pTargetAngle, float pMaximumChange) {
+                double d0 = this.wantedX - this.mob.getX();
+                double d1 = this.wantedZ - this.mob.getZ();
+                if (d0 * d0 + d1 * d1 < .5f) {
+                    return pSourceAngle;
+                } else {
+                    return super.rotlerp(pSourceAngle, pTargetAngle, pMaximumChange * .25f);
+                }
             }
         };
     }
