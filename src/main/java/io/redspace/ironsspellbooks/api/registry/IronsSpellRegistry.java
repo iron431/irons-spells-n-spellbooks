@@ -48,6 +48,14 @@ public class IronsSpellRegistry {
         return getSpell(new ResourceLocation(spellId));
     }
 
+    public static List<AbstractSpell> getEnabledSpells(){
+        return IronsSpellRegistry.REGISTRY.get()
+                .getValues()
+                .stream()
+                .filter(AbstractSpell::isEnabled)
+                .toList();
+    }
+
     public static List<AbstractSpell> getSpellsForSchool(SchoolType schoolType) {
         var groupedBySchool = IronsSpellRegistry.REGISTRY.get()
                 .getValues()

@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -31,7 +31,7 @@ public class InstantManaEffect extends MobEffect {
         int i = pAmplifier + 1;
         int maxMana = (int) livingEntity.getAttributeValue(AttributeRegistry.MAX_MANA.get());
         int manaAdd = (int) (i * manaPerAmplifier + (maxMana * (i * manaPerAmplifierPercent)));
-        PlayerMagicData pmg = PlayerMagicData.getPlayerMagicData(livingEntity);
+        MagicData pmg = MagicData.getPlayerMagicData(livingEntity);
         IronsSpellbooks.LOGGER.debug("old mana: {}", pmg.getMana());
         pmg.setMana(pmg.getMana() + manaAdd);
         if (livingEntity instanceof ServerPlayer serverPlayer) {

@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -8,8 +10,6 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.SpellRarity;
-import io.redspace.ironsspellbooks.util.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.BiomeColors;
@@ -119,7 +119,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.meltComponent: {}", itemStack.getDisplayName().getString());
         boolean shouldMelt = false;
         boolean success = true;
-        if ( itemStack.is(ItemRegistry.SCROLL.get()) && !isFull(resultItems)) {
+        if (itemStack.is(ItemRegistry.SCROLL.get()) && !isFull(resultItems)) {
             if (level.random.nextFloat() < ServerConfigs.SCROLL_RECYCLE_CHANCE.get()) {
                 ItemStack result = new ItemStack(getInkFromScroll(itemStack));
                 appendItem(resultItems, result);
@@ -200,7 +200,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         return itemStack.is(ItemRegistry.SCROLL.get()) || isBrewable(itemStack) || AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack);
     }
 
-    public static boolean isBrewable(ItemStack itemStack){
+    public static boolean isBrewable(ItemStack itemStack) {
         return ServerConfigs.ALLOW_CAULDRON_BREWING.get() && BrewingRecipeRegistry.isValidIngredient(itemStack);
     }
 
@@ -243,9 +243,9 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public static Item getInkFromScroll(ItemStack scrollStack) {
-        if (scrollStack.getItem() instanceof Scroll scroll) {
+        if (scrollStack.getItem() instanceof Scroll) {
             var spellData = SpellData.getSpellData(scrollStack);
-            SpellRarity rarity = spellData.getSpell().getRarity();
+            SpellRarity rarity = spellData.getSpell().getRarity(spellData.getLevel());
             return switch (rarity) {
                 case COMMON -> ItemRegistry.INK_COMMON.get();
                 case UNCOMMON -> ItemRegistry.INK_UNCOMMON.get();
