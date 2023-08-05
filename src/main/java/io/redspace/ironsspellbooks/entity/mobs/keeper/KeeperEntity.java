@@ -79,7 +79,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
             @Override
             public void clientTick() {
                 if (KeeperEntity.this.isAggressive()) {
-                    KeeperEntity.this.yBodyRot = KeeperEntity.this.getYRot();
+                    KeeperEntity.this.yBodyRot = Mth.clamp(KeeperEntity.this.getYRot(), yHeadRot - 25, yHeadRot + 25);
                 }else {
                     super.clientTick();
                 }
@@ -179,8 +179,6 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
     protected void playStepSound(BlockPos pPos, BlockState pState) {
         super.playStepSound(pPos, pState);
         if (!pState.getMaterial().isLiquid()) {
-            IronsSpellbooks.LOGGER.debug("Stepsound move speed: {}", this.getDeltaMovement().horizontalDistanceSqr());
-            IronsSpellbooks.LOGGER.debug("Stepsound walk anim state: {}", this.animationPosition - this.animationSpeed);
             this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, 1f);
         }
     }
