@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
@@ -63,7 +62,6 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         /*
             Crazy Vanilla Magic Calculations (LivingEntityRenderer:116 & HumanoidModel#setupAnim
          */
-        //Parchment not finished yet
         WalkAnimationState walkAnimationState = entity.walkAnimation;
         float pLimbSwingAmount = 0.0F;
         float pLimbSwing = 0.0F;
@@ -126,7 +124,6 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
                 addRotationZ(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? 15 : -15) * Mth.DEG_TO_RAD);
                 addRotationY(entity.isLeftHanded() ? leftArm : rightArm, (entity.isLeftHanded() ? -25 : 25) * Mth.DEG_TO_RAD);
             }
-
         } else if (entity.shouldPointArmsWhileCasting()) {
             addRotationX(rightArm, -entity.getXRot() * Mth.DEG_TO_RAD);
             addRotationX(leftArm, -entity.getXRot() * Mth.DEG_TO_RAD);
@@ -144,7 +141,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
 
     }
 
-    private void bobBone(CoreGeoBone bone, int offset, boolean inverted) {
+    protected void bobBone(CoreGeoBone bone, int offset, boolean inverted) {
         //Copied from AnimationUtils#bobLimb
         float z = (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = Mth.sin(offset * 0.067F) * 0.05F;
@@ -153,15 +150,15 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         addRotationZ(bone, (inverted ? -1 : 1) * z);
     }
 
-    private void addRotationX(CoreGeoBone bone, float rotation) {
+    protected void addRotationX(CoreGeoBone bone, float rotation) {
         bone.setRotX(wrapRadians(bone.getRotX() + rotation));
     }
 
-    private void addRotationZ(CoreGeoBone bone, float rotation) {
+    protected void addRotationZ(CoreGeoBone bone, float rotation) {
         bone.setRotZ(wrapRadians(bone.getRotZ() + rotation));
     }
 
-    private void addRotationY(CoreGeoBone bone, float rotation) {
+    protected void addRotationY(CoreGeoBone bone, float rotation) {
         bone.setRotY(wrapRadians(bone.getRotY() + rotation));
     }
 

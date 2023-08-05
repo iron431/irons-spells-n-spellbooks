@@ -13,21 +13,9 @@ import net.minecraft.world.item.Tier;
 import java.util.Map;
 
 public class ExtendedSwordItem extends SwordItem {
-    float attackDamage;
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
-    private final SpellType imbuedSpell;
-    private final int imbuedLevel;
-
-    public SpellType getImbuedSpell() {
-        return imbuedSpell;
-    }
-
-    public int getImbuedLevel() {
-        return imbuedLevel;
-    }
-
-    public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, SpellType imbuedSpell, int imbuedLevel, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
+    public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
         super(tier, 3, -2.4f, properties);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION));
@@ -36,9 +24,6 @@ public class ExtendedSwordItem extends SwordItem {
             builder.put(modifierEntry.getKey(), modifierEntry.getValue());
         }
         this.defaultModifiers = builder.build();
-
-        this.imbuedLevel = imbuedLevel;
-        this.imbuedSpell = imbuedSpell;
     }
 
     @Override

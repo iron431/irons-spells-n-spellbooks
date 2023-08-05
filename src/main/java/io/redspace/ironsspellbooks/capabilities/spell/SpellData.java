@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.spell;
 
 import io.redspace.ironsspellbooks.item.weapons.ExtendedSwordItem;
+import io.redspace.ironsspellbooks.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.spells.SpellType;
@@ -35,8 +36,8 @@ public class SpellData {
 
         if (tag != null) {
             return new SpellData(SpellType.getTypeFromValue(tag.getInt(SPELL_TYPE)), tag.getInt(SPELL_LEVEL));
-        } else if (stack.getItem() instanceof ExtendedSwordItem extendedSwordItem) {
-            var spellData = new SpellData(extendedSwordItem.getImbuedSpell(), extendedSwordItem.getImbuedLevel());
+        } else if (stack.getItem() instanceof MagicSwordItem magicSwordItem) {
+            var spellData = new SpellData(magicSwordItem.getImbuedSpell(), magicSwordItem.getImbuedLevel());
             setSpellData(stack, spellData.spellId, spellData.spellLevel);
             return spellData;
         } else {

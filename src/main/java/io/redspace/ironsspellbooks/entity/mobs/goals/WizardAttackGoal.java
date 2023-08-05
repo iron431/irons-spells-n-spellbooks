@@ -14,10 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public class WizardAttackGoal extends Goal {
     protected final AbstractSpellCastingMob mob;
@@ -58,6 +55,7 @@ public class WizardAttackGoal extends Goal {
     }
 
     public WizardAttackGoal(AbstractSpellCastingMob abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
         this.mob = abstractSpellCastingMob;
         this.speedModifier = pSpeedModifier;
         this.attackIntervalMin = pAttackIntervalMin;
@@ -239,19 +237,22 @@ public class WizardAttackGoal extends Goal {
             }
 
             int strafeDir = strafingClockwise ? 1 : -1;
-            if (distanceSquared < attackRadiusSqr * .5f)
+            if (distanceSquared < attackRadiusSqr * .5f) {
                 mob.getMoveControl().strafe(-(float) speed, (float) speed * strafeDir);
-            else
+            } else {
                 mob.getMoveControl().strafe(0, (float) speed * strafeDir);
-            if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f)
+            }
+            if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f) {
                 tryJump();
-
+            }
             mob.lookAt(target, 30, 30);
         } else {
-            if (isFlying)
+            if (isFlying) {
                 this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
-            else
+            }
+            else {
                 this.mob.getNavigation().moveTo(this.target, speed);
+            }
         }
     }
 

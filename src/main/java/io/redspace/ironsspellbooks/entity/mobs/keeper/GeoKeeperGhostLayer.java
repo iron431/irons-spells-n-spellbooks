@@ -27,7 +27,10 @@ public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob>
 
     @Override
     public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType2, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        float f = (float) animatable.tickCount + partialTick;
+        int hurtTime = entityLivingBaseIn.hurtTime;
+        if (hurtTime > 0) {
+            float alpha = (float) hurtTime / entityLivingBaseIn.hurtDuration;
+            float f = (float) animatable.tickCount + partialTick;
         var renderType = RenderType.energySwirl(TEXTURE, f * 0.02F % 1.0F, f * 0.01F % 1.0F);
 
         VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);

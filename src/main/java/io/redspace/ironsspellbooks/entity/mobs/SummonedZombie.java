@@ -80,6 +80,11 @@ public class SummonedZombie extends Zombie implements MagicSummon, GeoAnimatable
     }
 
     @Override
+    public boolean isPreventingPlayerRest(Player pPlayer) {
+        return !this.isAlliedTo(pPlayer);
+    }
+
+    @Override
     protected boolean isSunSensitive() {
         return false;
     }

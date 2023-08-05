@@ -78,6 +78,11 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, GeoAnimat
     }
 
     @Override
+    public boolean isPreventingPlayerRest(Player pPlayer) {
+        return !this.isAlliedTo(pPlayer);
+    }
+
+    @Override
     public LivingEntity getSummoner() {
         return OwnerHelper.getAndCacheOwner(level(), cachedSummoner, summonerUUID);
     }
