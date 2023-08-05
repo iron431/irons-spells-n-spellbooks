@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 public class DragonBreathPool extends AoeEntity {
 
-    public static final DamageSource DAMAGE_SOURCE = new DamageSource(IronsSpellRegistry.DRAGON_BREATH_SPELL.get().getSpellId() + "_pool").setMagic();
+    public static final DamageSource DAMAGE_SOURCE = new DamageSource(IronsSpellRegistry.DRAGON_BREATH_SPELL.get().getDeathMessageId() + "_pool").setMagic();
 
     public DragonBreathPool(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);

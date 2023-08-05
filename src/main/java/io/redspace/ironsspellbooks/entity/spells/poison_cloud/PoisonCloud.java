@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.poison_cloud;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.Level;
 
 public class PoisonCloud extends AoeEntity {
 
-    public static final DamageSource DAMAGE_SOURCE = new DamageSource("poison_cloud");
+    public static final DamageSource DAMAGE_SOURCE = new DamageSource(String.format("%s.%s", IronsSpellbooks.MODID, "poison_cloud"));
 
     public PoisonCloud(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);

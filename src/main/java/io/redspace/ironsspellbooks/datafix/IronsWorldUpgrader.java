@@ -67,7 +67,7 @@ public class IronsWorldUpgrader {
         this.ironsSpellBooksWorldData = overworldDataStorage.computeIfAbsent(
                 IronsSpellBooksWorldData::load,
                 IronsSpellBooksWorldData::new,
-                "IronsSpellBooksWorldData");
+                IronsSpellbooks.MODID);
     }
 
     public boolean worldNeedsUpgrading() {

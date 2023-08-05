@@ -412,6 +412,7 @@
   "death.attack.blood_magic.item": "%1$s blood magic 2",
   "death.attack.blood_magic.player": "%1$s blood magic 3",
   "death.attack.blood_cauldron": "%1$s was cooked alive",
+  "death.attack.bleed_effect": "%1$s bled to death",
   "death.attack.blood_cauldron.player": "%1$s was sacrificed by %2$s",
   "death.attack.heartstop": "%1$s's heart ruptured",
   "death.attack.heartstop.player": "%1$s's heart was ruptured by %2$s",

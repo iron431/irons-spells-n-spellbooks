@@ -482,11 +482,15 @@ public abstract class AbstractSpell {
     }
 
     public DamageSource getDamageSource() {
+        return new DamageSource(getDeathMessageId());
+    }
+
+    public String getDeathMessageId() {
         if (deathMessageId == null) {
             deathMessageId = getSpellId().replace(':', '.');
         }
 
-        return new DamageSource(deathMessageId);
+        return deathMessageId;
     }
 
     public DamageSource getDamageSource(Entity attacker) {

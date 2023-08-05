@@ -12,6 +12,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.BitSet;
+
 public class SyncedSpellData {
     //syncedEffectFlags
     public static final long ANGEL_WINGS = 1;
