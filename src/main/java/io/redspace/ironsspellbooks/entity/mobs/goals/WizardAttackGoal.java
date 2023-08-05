@@ -236,19 +236,22 @@ public class WizardAttackGoal extends Goal {
             }
 
             int strafeDir = strafingClockwise ? 1 : -1;
-            if (distanceSquared < attackRadiusSqr * .5f)
+            if (distanceSquared < attackRadiusSqr * .5f) {
                 mob.getMoveControl().strafe(-(float) speed, (float) speed * strafeDir);
-            else
+            } else {
                 mob.getMoveControl().strafe(0, (float) speed * strafeDir);
-            if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f)
+            }
+            if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f) {
                 tryJump();
-
+            }
             mob.lookAt(target, 30, 30);
         } else {
-            if (isFlying)
+            if (isFlying) {
                 this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
-            else
+            }
+            else {
                 this.mob.getNavigation().moveTo(this.target, speed);
+            }
         }
     }
 

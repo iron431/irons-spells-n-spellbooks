@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
@@ -54,7 +55,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         Single_Horizontal(28, "sword_single_horizontal", 12),
         Single_Horizontal_Fast(24, "sword_single_horizontal_fast", 12),
         Single_Stab(21, "sword_stab", 11),
-        Lunge(96, "sword_lunge", 65, 66, 67, 68, 69, 70);
+        Lunge(76, "sword_lunge", 57, 58, 59, 60, 61, 62);
 
         AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
             this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);
@@ -94,18 +95,24 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
 
     @Override
     protected BodyRotationControl createBodyControl() {
-        return new BodyRotationControl(this) {
+        return new BodyRotationControl(this) /*{
             @Override
             public void clientTick() {
-                if (isAggressive()) {
-                    //"rotateTowards" method
-                    float f = Mth.degreesDifference(yBodyRot, yHeadRot);
-                    float f1 = Mth.clamp(f, -45, 45);
-                    yBodyRot = yBodyRot + f1;
-                }
                 super.clientTick();
+                if (isAggressive()) {
+
+                    float f = Mth.degreesDifference(yBodyRot, yHeadRot);
+                    float f1 = f / 45;
+                    f1 *= f1;
+                    //float f1 = Mth.clamp(f, -45, 45);
+                    yBodyRot = yBodyRot + f * f1;
+                    if (tickCount % 3 == 0) {
+                        IronsSpellbooks.LOGGER.debug("\n\n----------\nKeeperBodyControl\nhead->body diff: {}\nabitrary strength: {}\nnew rot: {}", f, f1, yBodyRot);
+                    }
+                } else {
+                }
             }
-        };
+        }*/;
     }
 
     protected LookControl createLookControl() {

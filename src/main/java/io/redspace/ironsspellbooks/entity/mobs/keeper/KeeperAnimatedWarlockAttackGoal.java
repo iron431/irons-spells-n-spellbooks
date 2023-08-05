@@ -142,9 +142,6 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     @Override
     protected void doMovement(double distanceSquared) {
         if (distanceSquared > meleeRange * meleeRange) {
-            if (isFlying)
-                this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), this.speedModifier * 1.3f);
-            else
                 this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
         }
     }

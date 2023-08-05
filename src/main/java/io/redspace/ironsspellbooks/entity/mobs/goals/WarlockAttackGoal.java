@@ -38,9 +38,6 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             return;
         }
 
-        if (target.isDeadOrDying()) {
-            this.mob.getNavigation().stop();
-        } else {
             float strafeBackwards = 0;
 
             if (distanceSquared > meleeRange * meleeRange) {
@@ -62,7 +59,6 @@ public class WarlockAttackGoal extends WizardAttackGoal {
 
             float strafeDir = strafingClockwise ? 1f : -1f;
             mob.getMoveControl().strafe(strafeBackwards, (float) speedModifier * strafeDir);
-        }
     }
 
     @Override
