@@ -1,15 +1,11 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultimap;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
@@ -53,7 +49,7 @@ public class UpgradeData {
     }
 
     public static boolean hasUpgradeData(ItemStack itemStack) {
-        return itemStack.getOrCreateTag().contains(Upgrades);
+        return itemStack.getTag() != null && itemStack.getTag().contains(Upgrades);
     }
 
     public static void setUpgradeData(ItemStack itemStack, UpgradeData upgradeData) {

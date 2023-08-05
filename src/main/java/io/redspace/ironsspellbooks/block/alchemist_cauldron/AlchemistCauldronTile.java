@@ -275,11 +275,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         for (int i = container.size() - 1; i >= 0; i--) {
             ItemStack item = container.get(i);
             if (!item.isEmpty()) {
-                var newItem = item.copy();
-                newItem.setCount(1);
-                item.shrink(1);
-                IronsSpellbooks.LOGGER.debug("{}", container.toString());
-                return newItem;
+                return item.split(1);
             }
         }
         return ItemStack.EMPTY;
