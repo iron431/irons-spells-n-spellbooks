@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.spell;
 
-import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
-import io.redspace.ironsspellbooks.item.weapons.MagicSwordItem;
+import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;

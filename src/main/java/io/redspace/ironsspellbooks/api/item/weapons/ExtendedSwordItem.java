@@ -17,17 +17,6 @@ import java.util.Map;
 public class ExtendedSwordItem extends SwordItem {
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
-    private final SpellDataRegistryHolder holder;
-
-    public AbstractSpell getImbuedSpell() {
-        return holder.getSpellData().getSpell();
-    }
-
-    public int getImbuedLevel() {
-        return holder.getSpellData().getLevel();
-    }
-
-    public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, SpellDataRegistryHolder holder, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
     public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
         super(tier, 3, -2.4f, properties);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
@@ -37,7 +26,6 @@ public class ExtendedSwordItem extends SwordItem {
             builder.put(modifierEntry.getKey(), modifierEntry.getValue());
         }
         this.defaultModifiers = builder.build();
-        this.holder = holder;
     }
 
     @Override
