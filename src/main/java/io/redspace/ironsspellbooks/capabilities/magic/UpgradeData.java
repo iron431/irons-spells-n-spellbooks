@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
@@ -38,7 +39,7 @@ public class UpgradeData {
                 if (upgradedSlot == null) {
                     upgradedSlot = EquipmentSlot.byName(compoundTag.getString(Slot_Key));
                 }
-                String upgradeKey = compoundTag.getString(Upgrade_Key);
+                var upgradeKey = new ResourceLocation(compoundTag.getString(Upgrade_Key));
                 UpgradeType.getUpgrade(upgradeKey).ifPresent((upgrade) -> map.put(upgrade, compoundTag.getInt(Upgrade_Count)));
             }
             //Optional<Attribute> optional = Registry.ATTRIBUTE.getOptional(ResourceLocation.tryParse(attributeName));
@@ -63,7 +64,7 @@ public class UpgradeData {
 
         for (ImmutableMap.Entry<UpgradeType, Integer> upgradeInstance : upgradeData.upgrades.entrySet()) {
             CompoundTag upgradeTag = new CompoundTag();
-            upgradeTag.putString(Upgrade_Key, upgradeInstance.getKey().key);
+            upgradeTag.putString(Upgrade_Key, upgradeInstance.getKey().getId().toString());
             upgradeTag.putString(Slot_Key, upgradeData.upgradedSlot.getName());
             upgradeTag.putInt(Upgrade_Count, upgradeInstance.getValue());
             upgrades.add(upgradeTag);

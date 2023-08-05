@@ -40,8 +40,8 @@ public class UpgradeUtils {
         for (Map.Entry<UpgradeType, Integer> entry : upgrades.entrySet()) {
             UpgradeType upgradeType = entry.getKey();
             int count = entry.getValue();
-            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, upgradeType.attribute, upgradeType.operation);
-            event.addModifier(upgradeType.attribute, new AttributeModifier(UpgradeUtils.UUIDForSlot(event.getSlotType()), "upgrade", baseAmount + upgradeType.amountPerUpgrade * count, entry.getKey().operation));
+            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, upgradeType.getAttribute(), upgradeType.getOperation());
+            event.addModifier(upgradeType.getAttribute(), new AttributeModifier(UpgradeUtils.UUIDForSlot(event.getSlotType()), "upgrade", baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
         }
     }
 

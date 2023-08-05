@@ -98,8 +98,21 @@ public class DataFixerHelpers {
             .build();
 
     static final Map<String, String> LEGACY_UPGRADE_TYPE_IDS = ImmutableMap.<String, String>builder()
-            //TODO: should probably namespace and fix all of them
-            .put("poison_power", "melee_damage")
+            //TODO: poison->nature
+            .put("fire_power", "irons_spellbooks:fire_power")
+            .put("ice_power", "irons_spellbooks:ice_power")
+            .put("lightning_power", "irons_spellbooks:lightning_power")
+            .put("holy_power", "irons_spellbooks:holy_power")
+            .put("ender_power", "irons_spellbooks:ender_power")
+            .put("blood_power", "irons_spellbooks:blood_power")
+            .put("evocation_power", "irons_spellbooks:evocation_power")
+            .put("poison_power", "irons_spellbooks:poison_power")
+            .put("cooldown", "irons_spellbooks:cooldown")
+            .put("spell_resistance", "irons_spellbooks:spell_resistance")
+            .put("mana", "irons_spellbooks:mana")
+            .put("melee_damage", "irons_spellbooks:melee_damage")
+            .put("melee_speed", "irons_spellbooks:melee_speed")
+            .put("health", "irons_spellbooks:health")
             .build();
 
 
