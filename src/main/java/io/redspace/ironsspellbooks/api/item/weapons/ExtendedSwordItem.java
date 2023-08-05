@@ -28,6 +28,7 @@ public class ExtendedSwordItem extends SwordItem {
     }
 
     public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, SpellDataRegistryHolder holder, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
+    public ExtendedSwordItem(Tier tier, double attackDamage, double attackSpeed, Map<Attribute, AttributeModifier> additionalAttributes, Properties properties) {
         super(tier, 3, -2.4f, properties);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION));

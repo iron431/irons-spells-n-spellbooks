@@ -6,14 +6,13 @@ import java.util.List;
 public class AttackAnimationData {
     //public final int id;
     public final int lengthInTicks;
-    public final List<Integer> attackTimestamps;
+    public final String animationId;
+    public final int[] attackTimestamps;
 
-    public AttackAnimationData(int lengthInTicks, int... attackTimestamps) {
-        //this.id = id;
+    public AttackAnimationData(int lengthInTicks, String animationId, int... attackTimestamps) {
+        this.animationId = animationId;
         this.lengthInTicks = lengthInTicks;
-        this.attackTimestamps = new ArrayList<>();
-        for (int i : attackTimestamps)
-            this.attackTimestamps.add(i);
+        this.attackTimestamps = attackTimestamps;
 
     }
 
@@ -25,5 +24,9 @@ public class AttackAnimationData {
             if (tickCount == lengthInTicks - i)
                 return true;
         return false;
+    }
+
+    public boolean isSingleHit() {
+        return attackTimestamps.length == 1;
     }
 }

@@ -122,7 +122,7 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
 
     }
 
-    private void bobBone(IBone bone, int offset, float multiplier) {
+    protected void bobBone(IBone bone, int offset, float multiplier) {
         //Copied from AnimationUtils#bobLimb
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
@@ -133,15 +133,15 @@ public abstract class AbstractSpellCastingMobModel extends AnimatedGeoModel<Abst
 
     }
 
-    private void addRotationX(IBone bone, float rotation) {
+    protected void addRotationX(IBone bone, float rotation) {
         bone.setRotationX(wrapRadians(bone.getRotationX() + rotation));
     }
 
-    private void addRotationZ(IBone bone, float rotation) {
+    protected void addRotationZ(IBone bone, float rotation) {
         bone.setRotationZ(wrapRadians(bone.getRotationZ() + rotation));
     }
 
-    private void addRotationY(IBone bone, float rotation) {
+    protected void addRotationY(IBone bone, float rotation) {
         bone.setRotationY(wrapRadians(bone.getRotationY() + rotation));
     }
 

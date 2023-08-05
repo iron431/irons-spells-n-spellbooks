@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.spell;
 
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
+import io.redspace.ironsspellbooks.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
@@ -40,10 +41,10 @@ public class SpellData implements Comparable<SpellData> {
 //            }
 
             return new SpellData(IronsSpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
-        } else if (stack.getItem() instanceof ExtendedSwordItem extendedSwordItem) {
-            var spell = extendedSwordItem.getImbuedSpell();
-            setSpellData(stack, spell, extendedSwordItem.getImbuedLevel());
-            return new SpellData(spell, extendedSwordItem.getImbuedLevel());
+        } else if (stack.getItem() instanceof MagicSwordItem magicSwordItem) {
+            var spell = magicSwordItem.getImbuedSpell();
+            setSpellData(stack, spell, magicSwordItem.getImbuedLevel());
+            return new SpellData(spell, magicSwordItem.getImbuedLevel());
         } else {
             return EMPTY;
         }

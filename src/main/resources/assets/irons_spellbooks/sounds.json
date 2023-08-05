@@ -348,5 +348,40 @@
     "sounds": [
       "irons_spellbooks:devour"
     ]
+  },
+  "entity.citadel_keeper.swing": {
+    "sounds": [
+      "irons_spellbooks:fiery_swing"
+    ]
+  },
+  "entity.citadel_keeper.step": {
+    "sounds": [
+      "irons_spellbooks:tower_guard_step_01",
+      "irons_spellbooks:tower_guard_step_02",
+      "irons_spellbooks:tower_guard_step_03"
+    ]
+  },
+  "entity.citadel_keeper.death": {
+    "sounds": [
+      "irons_spellbooks:keeper_death"
+    ]
+  },
+  "entity.citadel_keeper.hurt": {
+    "sounds": [
+      "irons_spellbooks:keeper_hurt"
+    ]
+  },
+  "entity.citadel_keeper.sword_impact": {
+    "sounds": [
+      "irons_spellbooks:sword_cut_07",
+      "irons_spellbooks:sword_cut_08",
+      "irons_spellbooks:sword_cut_11"
+    ]
+  },
+  "entity.citadel_keeper.idle": {
+    "sounds": [
+      "irons_spellbooks:keeper_idle_01",
+      "irons_spellbooks:keeper_idle_02"
+    ]
   }
 }
