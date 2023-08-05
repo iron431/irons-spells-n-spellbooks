@@ -356,10 +356,9 @@
   },
   "entity.citadel_keeper.step": {
     "sounds": [
-      "irons_spellbooks:vanguard_step_01",
-      "irons_spellbooks:vanguard_step_02",
-      "irons_spellbooks:vanguard_step_03",
-      "irons_spellbooks:vanguard_step_04"
+      "irons_spellbooks:tower_guard_step_01",
+      "irons_spellbooks:tower_guard_step_02",
+      "irons_spellbooks:tower_guard_step_03"
     ]
   },
   "entity.citadel_keeper.death": {
@@ -377,6 +376,12 @@
       "irons_spellbooks:sword_cut_07",
       "irons_spellbooks:sword_cut_08",
       "irons_spellbooks:sword_cut_11"
+    ]
+  },
+  "entity.citadel_keeper.idle": {
+    "sounds": [
+      "irons_spellbooks:keeper_idle_01",
+      "irons_spellbooks:keeper_idle_02"
     ]
   }
 }

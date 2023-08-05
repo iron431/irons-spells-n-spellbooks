@@ -28,10 +28,12 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -124,8 +126,14 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         };
     }
 
+    @NotNull
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.SKELETON_AMBIENT;
+        return SoundRegistry.KEEPER_IDLE.get();
+    }
+
+    @Override
+    public void playAmbientSound() {
+        this.playSound(getAmbientSound(), 1, Mth.randomBetweenInclusive(getRandom(), 5, 10) * .1f);
     }
 
     protected SoundEvent getHurtSound(DamageSource pDamageSource) {
@@ -155,7 +163,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
                 .add(Attributes.FOLLOW_RANGE, 25.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, 2.0)
-                .add(Attributes.MOVEMENT_SPEED, .185);
+                .add(Attributes.MOVEMENT_SPEED, .19);
     }
 
     @Override
@@ -165,28 +173,14 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
 
 
     private final AnimationController<KeeperEntity> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
-    private final AnimationBuilder deflect_animation = new AnimationBuilder().addAnimation("sword_deflect_1", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-//
-//    @Override
-//    public boolean hurt(DamageSource pSource, float pAmount) {
-//        if (pSource.getDirectEntity() instanceof Projectile projectile) {
-//            if (random.nextFloat() < .8f) {
-//                this.animationToPlay = deflect_animation;
-//                if (pSource.getEntity() != null) {
-//                    var entity = pSource.getEntity();
-//                    double d0 = entity.getX() - this.getX();
-//                    double d1 = entity.getZ() - this.getZ();
-//                    float yRot = (float) (Mth.atan2(d1, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
-//                    this.setYBodyRot(yRot);
-//                    this.setYHeadRot(yRot);
-//                    this.setYRot(yRot);
-//                    this.setOldPosAndRot();
-//                }
-//                return false;
-//            }
-//        }
-//        return super.hurt(pSource, pAmount);
-//    }
+
+    @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        if (pSource.getDirectEntity() instanceof Projectile projectile) {
+            pAmount *= .75f;
+        }
+        return super.hurt(pSource, pAmount);
+    }
 
     @Override
     protected void playStepSound(BlockPos pPos, BlockState pState) {
