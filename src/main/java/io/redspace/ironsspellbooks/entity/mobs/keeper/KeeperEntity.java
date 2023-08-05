@@ -33,6 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.PlayState;
@@ -57,7 +58,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         Single_Horizontal(28, "sword_single_horizontal", 12),
         Single_Horizontal_Fast(24, "sword_single_horizontal_fast", 12),
         Single_Stab(21, "sword_stab", 11),
-        Lunge(76, "sword_lunge", 57, 58, 59, 60, 61, 62);
+        Lunge(76, "sword_lunge", 57, 58, 59, 60, 61, 62, 63, 64);
 
         AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
             this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);
@@ -97,24 +98,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
 
     @Override
     protected BodyRotationControl createBodyControl() {
-        return new BodyRotationControl(this) /*{
-            @Override
-            public void clientTick() {
-                super.clientTick();
-                if (isAggressive()) {
-
-                    float f = Mth.degreesDifference(yBodyRot, yHeadRot);
-                    float f1 = f / 45;
-                    f1 *= f1;
-                    //float f1 = Mth.clamp(f, -45, 45);
-                    yBodyRot = yBodyRot + f * f1;
-                    if (tickCount % 3 == 0) {
-                        IronsSpellbooks.LOGGER.debug("\n\n----------\nKeeperBodyControl\nhead->body diff: {}\nabitrary strength: {}\nnew rot: {}", f, f1, yBodyRot);
-                    }
-                } else {
-                }
-            }
-        }*/;
+        return new BodyRotationControl(this);
     }
 
     protected LookControl createLookControl() {
@@ -188,6 +172,11 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         if (!pState.getMaterial().isLiquid()) {
             this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, 1f);
         }
+    }
+
+    @Override
+    protected float nextStep() {
+        return moveDist + .8f;
     }
 
     @Override
