@@ -25,8 +25,8 @@ public class RingData {
         spellTag.putString(nbtKey, spell.getSpellId());
     }
 
-    public static boolean hasRingData(ItemStack stack) {
-        return stack.getOrCreateTag().contains(nbtKey);
+    public static boolean hasRingData(ItemStack itemStack) {
+        return itemStack.getTag() != null && itemStack.getTag().contains(nbtKey);
     }
 
     public AbstractSpell getSpell() {
