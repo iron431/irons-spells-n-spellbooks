@@ -8527,7 +8527,7 @@
 							"vector": [0, 0, 0]
 						},
 						"0.56": {
-							"vector": [60, 0, 0],
+							"vector": [20, 0, 0],
 							"easing": "easeInOutSine"
 						},
 						"0.92": {

@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.AnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.AttackAnimationData;
@@ -10,7 +9,6 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -34,7 +32,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.PlayState;
@@ -59,7 +56,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
         Single_Horizontal(28, "sword_single_horizontal", 12),
         Single_Horizontal_Fast(24, "sword_single_horizontal_fast", 12),
         Single_Stab(21, "sword_stab", 11),
-        Lunge(76, "sword_lunge", 57, 58, 59, 60, 61, 62, 63, 64);
+        Lunge(76, "sword_lunge", 56, 57, 58, 59, 60, 61, 62, 63, 64);
 
         AttackType(int lengthInTicks, String animationId, int... attackTimestamps) {
             this.data = new AttackAnimationData(lengthInTicks, animationId, attackTimestamps);

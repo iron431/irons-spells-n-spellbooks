@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.network.ClientboundSyncAnimation;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -141,8 +140,10 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
 
     @Override
     protected void doMovement(double distanceSquared) {
-        if (distanceSquared > meleeRange * meleeRange) {
-                this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
+        if (target.isDeadOrDying()) {
+            this.mob.getNavigation().stop();
+        } else if (distanceSquared > meleeRange * meleeRange) {
+            this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
         }
     }
 
