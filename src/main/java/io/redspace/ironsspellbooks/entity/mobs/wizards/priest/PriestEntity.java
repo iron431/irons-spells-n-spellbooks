@@ -91,9 +91,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
         this.supportTargetSelector = new GoalSelector(this.level.getProfilerSupplier());
-        this.supportTargetSelector.addGoal(0, new FindSupportableTargetGoal<>(this, Mob.class, true, (mob) -> {
-            return !isAngryAt(mob) && mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob.getType().is(ModTags.VILLAGE_ALLIES) || mob instanceof Player);
-        }));
+        this.supportTargetSelector.addGoal(0, new FindSupportableTargetGoal<>(this, LivingEntity.class, true,
+                (mob) -> !isAngryAt(mob) && mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob.getType().is(ModTags.VILLAGE_ALLIES) || mob instanceof Player))
+        );
     }
 
     @Override

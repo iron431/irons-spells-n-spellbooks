@@ -75,6 +75,7 @@ public class IronsSpellbooks {
         ParticleRegistry.register(modEventBus);
         SoundRegistry.register(modEventBus);
         FeatureRegistry.register(modEventBus);
+        PotionRegistry.register(modEventBus);
         CommandArgumentRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
@@ -96,7 +97,6 @@ public class IronsSpellbooks {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
-
     }
 
     @SuppressWarnings("removal")

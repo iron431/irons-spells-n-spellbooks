@@ -49,7 +49,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             int maxLevel = abstractSpell.getMaxLevel();
             float quality = qualityRange.getFloat(lootContext);
             //https://www.desmos.com/calculator/ablc1wg06w
-            quality = quality * (float) Math.sin(1.57 * quality * quality);
+            //quality = quality * (float) Math.sin(1.57 * quality * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
             SpellData.setSpellData(itemStack, spellId, spellLevel);
         }

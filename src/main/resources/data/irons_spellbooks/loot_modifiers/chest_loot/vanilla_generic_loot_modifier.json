@@ -38,10 +38,6 @@
         },
         {
           "condition": "forge:loot_table_id",
-          "loot_table_id": "minecraft:chests/simple_dungeon"
-        },
-        {
-          "condition": "forge:loot_table_id",
           "loot_table_id": "minecraft:chests/underwater_ruin_big"
         },
         {
@@ -63,6 +59,10 @@
         {
           "condition": "forge:loot_table_id",
           "loot_table_id": "minecraft:chests/ruined_portal"
+        },
+        {
+          "condition": "forge:loot_table_id",
+          "loot_table_id": "minecraft:chests/abandoned_mineshaft"
         }
       ]
     }

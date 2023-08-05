@@ -21,11 +21,13 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
     public static final ForgeConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
     public static final ForgeConfigSpec.ConfigValue<Boolean> RUN_WORLD_UPGRADER;
+    public static final ForgeConfigSpec.ConfigValue<Double> SCROLL_RECYCLE_CHANCE;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_WHITELIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> UPGRADE_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_WHITELIST;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
 
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -55,6 +57,10 @@ public class ServerConfigs {
         MANA_SPAWN_PERCENT = BUILDER.worldRestart().define("manaSpawnPercent", 0.0);
         BUILDER.comment("If true the world will attempt to be upgraded from an older version of ISS");
         RUN_WORLD_UPGRADER = BUILDER.worldRestart().define("runWorldUpgrader", true);
+        BUILDER.comment("From 0-1, the percent chance for scrolls to be successfully recycled. Default: 0.5 (50%)");
+        SCROLL_RECYCLE_CHANCE = BUILDER.worldRestart().define("scrollRecycleChance", 0.5);
+        BUILDER.comment("Whether or not potions should be allowed to be brewed in the alchemist cauldron)");
+        ALLOW_CAULDRON_BREWING = BUILDER.worldRestart().define("allowCauldronBrewing", true);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");

@@ -1,12 +1,16 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
+import io.redspace.ironsspellbooks.effect.InstantManaEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.PotionRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
@@ -17,10 +21,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -28,7 +35,9 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.checkerframework.checker.units.qual.C;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -145,33 +154,36 @@ public class ClientPlayerEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void customPotionTooltips(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        var mobEffects = PotionUtils.getMobEffects(stack);
+        if (mobEffects.size() > 0) {
+            for (MobEffectInstance mobEffectInstance : mobEffects) {
+                if (mobEffectInstance.getEffect() == MobEffectRegistry.INSTANT_MANA.get()) {
+                    int amp = mobEffectInstance.getAmplifier() + 1;
+                    int addition = amp * InstantManaEffect.manaPerAmplifier;
+                    int percent = (int) (amp * InstantManaEffect.manaPerAmplifierPercent * 100);
+                    var description = Component.translatable("tooltip.irons_spellbooks.instant_mana_description", addition, percent).withStyle(ChatFormatting.BLUE);
 
-//    @SubscribeEvent
-//    public static void createSpellTooltips(RenderTooltipEvent.GatherComponents event) {
-//        //List<Either<FormattedText, TooltipComponent>> eventTooltipElements = event.getTooltipElements();
-//        ItemStack stack = event.getItemStack();
-//
-//        List<Component> additionalLines;
-//        boolean flag = false;
-//        if (stack.getItem() instanceof SpellBook) {
-//            additionalLines = formatActiveSpellTooltip(stack, Minecraft.getInstance().player);
-//            flag = true;
-//            //lines.forEach((line) -> eventTooltipElements.add(Either.left(line)));
-//
-//        } else if (SpellData.hasSpellData(stack)) {
-//
-//            if (stack.getItem() instanceof Scroll) {
-//
-//            } else {
-//                additionalLines = formatActiveSpellTooltip(stack, Minecraft.getInstance().player);
-//                flag = true;
-//                //lines.forEach((line) -> eventTooltipElements.add(Either.left(line)));
-//            }
-//        }
-//        if(flag){
-//            if()
-//        }
-//    }
+                    var header = Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE);
+                    var tooltip = event.getToolTip();
+                    var newLines = new ArrayList<Component>();
+                    int i = tooltip.indexOf(header);
 
-
+                    if (i < 0) {
+                        newLines.add(Component.empty());
+                        newLines.add(header);
+                        newLines.add(description);
+                        i = event.getFlags().isAdvanced() ? tooltip.size() - 2 : tooltip.size();
+                    } else {
+                        newLines.add(description);
+                        i++;
+                    }
+                    tooltip.addAll(i, newLines);
+                    return;
+                }
+            }
+        }
+    }
 }
