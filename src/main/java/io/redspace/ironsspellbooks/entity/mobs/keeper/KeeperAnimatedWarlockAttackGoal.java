@@ -66,8 +66,10 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                         hasLunged = true;
                         playSwingSound();
                     }
-                    if (!hasHitLunge && distance <= meleeRange * .6f) {
-                        this.mob.doHurtTarget(target);
+                    if (!hasHitLunge && distance <= meleeRange * .45f) {
+                        if (this.mob.doHurtTarget(target)) {
+                            playImpactSound();
+                        }
                         Vec3 knockback = oldLungePos.subtract(target.position());
                         target.knockback(1, knockback.x, knockback.z);
                         hasHitLunge = true;

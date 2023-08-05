@@ -38,29 +38,31 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             return;
         }
 
-        float strafeBackwards = 0;
-
-        if (distanceSquared > meleeRange * meleeRange) {
-            if (isFlying)
-                this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), this.speedModifier * 1.3f);
-            else
-                this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
-            strafeBackwards = 0f;
+        if (target.isDeadOrDying()) {
+            this.mob.getNavigation().stop();
         } else {
-            strafeBackwards = (float) (-speedModifier * .25f);
-        }
-        //we do a little strafing
-        if (++strafeTime > 25) {
-            if (mob.getRandom().nextDouble() < .1) {
-                strafingClockwise = !strafingClockwise;
-                strafeTime = 0;
+            float strafeBackwards = 0;
+
+            if (distanceSquared > meleeRange * meleeRange) {
+                if (isFlying)
+                    this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY(), target.getZ(), this.speedModifier * 1.3f);
+                else
+                    this.mob.getNavigation().moveTo(this.target, this.speedModifier * 1.3f);
+                strafeBackwards = 0f;
+            } else {
+                strafeBackwards = (float) (-speedModifier * .25f);
             }
+            //we do a little strafing
+            if (++strafeTime > 25) {
+                if (mob.getRandom().nextDouble() < .1) {
+                    strafingClockwise = !strafingClockwise;
+                    strafeTime = 0;
+                }
+            }
+
+            float strafeDir = strafingClockwise ? 1f : -1f;
+            mob.getMoveControl().strafe(strafeBackwards, (float) speedModifier * strafeDir);
         }
-
-        float strafeDir = strafingClockwise ? 1f : -1f;
-        mob.getMoveControl().strafe(strafeBackwards, (float) speedModifier * strafeDir);
-        mob.lookAt(target, 30, 30);
-
     }
 
     @Override

@@ -17,14 +17,15 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class MagehunterItem extends ExtendedSwordItem {
+public class MagehunterItem extends MagicSwordItem {
 
     public MagehunterItem() {
-        super(Tiers.DIAMOND, 6, -2.4f,
-            Map.of(
-                AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .15, AttributeModifier.Operation.MULTIPLY_BASE)
-            ),
-            (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).rarity(Rarity.EPIC));
+        super(ExtendedWeaponTiers.METAL_MAGEHUNTER, 6, -2.4f,
+                SpellType.COUNTERSPELL_SPELL, 1,
+                Map.of(
+                        AttributeRegistry.SPELL_RESIST.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .15, AttributeModifier.Operation.MULTIPLY_BASE)
+                ),
+                (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).rarity(Rarity.EPIC));
     }
 
     @Override
