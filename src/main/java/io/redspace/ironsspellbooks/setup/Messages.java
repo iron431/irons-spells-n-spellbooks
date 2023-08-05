@@ -186,6 +186,12 @@ public class Messages {
                 .consumer(ClientboundCastErrorMessage::handle)
                 .add();
 
+        net.messageBuilder(ClientboundSyncAnimation.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncAnimation::new)
+                .encoder(ClientboundSyncAnimation::toBytes)
+                .consumerMainThread(ClientboundSyncAnimation::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {

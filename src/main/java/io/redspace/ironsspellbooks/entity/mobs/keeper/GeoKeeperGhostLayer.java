@@ -24,43 +24,47 @@ public class GeoKeeperGhostLayer extends GeoLayerRenderer<AbstractSpellCastingMo
 
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        float f = (float) (entityLivingBaseIn.tickCount + partialTicks) * .6f;
-        var renderType = RenderType.energySwirl(TEXTURE, f * 0.02F % 1.0F, f * 0.01F % 1.0F);
-        //renderType = RenderType.endGateway();
-        VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
-        matrixStackIn.pushPose();
-        var model = getEntityModel().getModel(KeeperModel.modelResource);
+        int hurtTime = entityLivingBaseIn.hurtTime;
+        if (hurtTime > 0) {
+            float alpha = (float) hurtTime / entityLivingBaseIn.hurtDuration;
+            float f = (float) (entityLivingBaseIn.tickCount + partialTicks) * .6f;
+            var renderType = RenderType.energySwirl(TEXTURE, f * 0.02F % 1.0F, f * 0.01F % 1.0F);
+            //renderType = RenderType.endGateway();
+            VertexConsumer vertexconsumer = bufferIn.getBuffer(renderType);
+            matrixStackIn.pushPose();
+            var model = getEntityModel().getModel(KeeperModel.modelResource);
 //        var bone = model.getBone("head");
 //        bone.ifPresent((b) -> b.setHidden(true));
-        float scale = 1 / (1.3f);
-        matrixStackIn.scale(scale, scale, scale);
+            float scale = 1 / (1.3f);
+            matrixStackIn.scale(scale, scale, scale);
 
-        model.getBone("body").ifPresent((rootBone) -> {
-            rootBone.childBones.forEach(bone -> {
-                //IronsSpellbooks.LOGGER.debug("{}", bone.getName());
-                if (bone.getName().equals("head")){
-                    bone.setScale(.75f, .75f, .75f);
-                }
-                else
-                    bone.setScale(.95f, .99f, .95f);
+            model.getBone("body").ifPresent((rootBone) -> {
+                rootBone.childBones.forEach(bone -> {
+                    //IronsSpellbooks.LOGGER.debug("{}", bone.getName());
+                    if (bone.getName().equals("head")) {
+                        bone.setScale(.65f, .65f, .65f);
+                    } else
+                        bone.setScale(.95f, .99f, .95f);
+                });
             });
-        });
 
 
-        this.getRenderer().render(
-                model,
-                entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
-                vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .05f, .06f, 0.1f, 1f
-        );
+            this.getRenderer().render(
+                    model,
+                    entityLivingBaseIn, partialTicks, renderType, matrixStackIn, bufferIn,
+                    vertexconsumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .15f * alpha, .02f * alpha, 0.0f * alpha, 1f
+            );
 //        bone.ifPresent((b) -> b.setHidden(false));
-        model.getBone("body").ifPresent((rootBone) -> {
-            rootBone.childBones.forEach(bone -> {
-                //IronsSpellbooks.LOGGER.debug("{}", bone.getName());
+            model.getBone("body").ifPresent((rootBone) -> {
+                rootBone.childBones.forEach(bone -> {
+                    //IronsSpellbooks.LOGGER.debug("{}", bone.getName());
 
-                    bone.setScale(1,1,1);
+                    bone.setScale(1, 1, 1);
+                });
             });
-        });
-        matrixStackIn.popPose();
+            matrixStackIn.popPose();
+        }
+
     }
 
 

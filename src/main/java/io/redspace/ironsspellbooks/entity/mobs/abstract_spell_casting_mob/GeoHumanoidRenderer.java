@@ -184,6 +184,9 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
     protected void preRenderItem(PoseStack poseStack, ItemStack itemStack, String boneName, T animatable, IBone bone) {
         var mainHandItem = animatable.getMainHandItem();
         var offHandItem = animatable.getOffhandItem();
+        poseStack.translate(0, 0, -0.0625);
+        poseStack.translate(0, -0.0625, 0);
+
         if (itemStack == mainHandItem) {
             poseStack.mulPose(Vector3f.XP.rotationDegrees(-90f));
 

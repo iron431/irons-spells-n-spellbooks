@@ -71,11 +71,13 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -268,34 +270,42 @@ public class ClientSetup {
     @SubscribeEvent
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag()))));
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
-                (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue())
-        );
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("spell"),
-                (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getValue())
-        );
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("school"),
-                (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue())
-        );
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("spell"),
-                (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpellId())
-        );
+        e.enqueueWork(() -> {
+            ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"),
+                    new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag())));
 
+            ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
+                    (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue());
+            ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("spell"),
+                    (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getValue());
+            ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("school"),
+                    (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue());
+            ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("spell"),
+                    (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpellId());
+
+        });
+
+        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
+                AbstractSpell.ANIMATION_RESOURCE,
+                42,
+                AbstractClientPlayerMixinHelper::playerMixinInit);
 
         TetraProxy.PROXY.initClient();
-
 
         //TODO: Citadel reimplementation
         //e.enqueueWork(() -> ItemProperties.register(ItemRegistry.ANTIQUATED_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> AntiquatedCompass.getCitadelLocation(entity, itemStack.getOrCreateTag()))));
     }
 
     @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
-                AbstractSpell.ANIMATION_RESOURCE,
-                42,
-                AbstractClientPlayerMixinHelper::playerMixinInit);
+    public static void registerSpecialModels(ModelEvent.RegisterAdditional event) {
+        event.register(IronsSpellbooks.id("item/claymore_gui"));
+        event.register(IronsSpellbooks.id("item/claymore_normal"));
+        event.register(IronsSpellbooks.id("item/keeper_flamberge_gui"));
+        event.register(IronsSpellbooks.id("item/keeper_flamberge_normal"));
+        event.register(IronsSpellbooks.id("item/magehunter_gui"));
+        event.register(IronsSpellbooks.id("item/magehunter_normal"));
+        event.register(IronsSpellbooks.id("item/truthseeker_gui"));
+        event.register(IronsSpellbooks.id("item/truthseeker_normal"));
     }
 }
 
