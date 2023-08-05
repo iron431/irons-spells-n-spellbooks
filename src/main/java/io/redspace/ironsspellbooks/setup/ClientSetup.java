@@ -269,23 +269,20 @@ public class ClientSetup {
     @SubscribeEvent
     public static void clientSetup(final FMLClientSetupEvent e) {
         //Item Properties
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag()))));
+        e.enqueueWork(() -> {
+            ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"),
+                    new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag())));
 
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
-                (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue())
-        );
+            ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
+                    (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue());
+            //ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("spell"),
+            //        (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getValue());
+            ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("school"),
+                    (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue());
+            //ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("spell"),
+            //        (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpellId());
 
-//        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("spell"),
-//                (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSpellId())
-//        );
-
-        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("school"),
-                (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue())
-        );
-//        e.enqueueWork(() -> ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("spell"),
-//                (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getLegacySpellId())
-//        );
-
+        });
 
         TetraProxy.PROXY.initClient();
 
