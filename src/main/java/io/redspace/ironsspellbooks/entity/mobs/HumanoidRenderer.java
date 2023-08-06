@@ -42,6 +42,7 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
     public HumanoidRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {
         super(renderManager, model);
         addRenderLayer(new ItemArmorGeoLayer<>(this) {
+
             @Nullable
             @Override
             protected ItemStack getArmorItemForBone(GeoBone bone, T animatable) {
@@ -84,6 +85,7 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                     default -> super.getModelPartForBone(bone, slot, stack, animatable, baseModel);
                 };
             }
+
         });
 
         // Add some held item rendering
@@ -120,6 +122,9 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
             @Override
             protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, T animatable,
                                               MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
+                poseStack.translate(0, 0, -0.0625);
+                poseStack.translate(0, -0.0625, 0);
+
                 if (stack.getItem() instanceof PotionItem) {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
                 }

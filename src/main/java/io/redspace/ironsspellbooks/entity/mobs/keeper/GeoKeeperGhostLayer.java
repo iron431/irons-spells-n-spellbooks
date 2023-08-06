@@ -25,6 +25,37 @@ public class GeoKeeperGhostLayer extends GeoRenderLayer<AbstractSpellCastingMob>
         super(entityRendererIn);
     }
 
+//    @Override
+//    public void renderForBone(PoseStack poseStack, AbstractSpellCastingMob animatable, GeoBone bone, RenderType renderType2, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+//        int hurtTime = animatable.hurtTime;
+//        if (hurtTime > 0) {
+//            float alpha = (float) hurtTime / animatable.hurtDuration;
+//            float f = (float) animatable.tickCount + partialTick;
+//            var renderType = RenderType.energySwirl(TEXTURE, f * 0.02F % 1.0F, f * 0.01F % 1.0F);
+//
+//            VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
+//            poseStack.pushPose();
+//            //float scale = 1 / (1.3f);
+//            //poseStack.scale(scale, scale, scale);
+//
+//            //IronsSpellbooks.LOGGER.debug("{}", bone.getName());
+//            if (bone.getName().equals("head")) {
+//                bone.updateScale(.75f, .75f, .75f);
+//            } else {
+//                bone.updateScale(.95f, .99f, .95f);
+//            }
+//            BakedGeoModel model = getGeoModel().getBakedModel(getGeoModel().getModelResource(animatable));
+//            getRenderer().reRender(model, poseStack, bufferSource, animatable, renderType, vertexconsumer, partialTick, packedLight, packedOverlay, 1f, 1f, 1f, 1f);
+//            //getRenderer().defaultRender(poseStack, animatable, bufferSource, renderType, vertexconsumer, 0, partialTick, packedLight);
+////
+////            this.getRenderer().renderb(poseStack, animatable, bakedModel, renderType, bufferSource, vertexconsumer, true, partialTick,
+////                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, .15f * alpha, .02f * alpha, 0.0f * alpha, 1f);
+//
+//            bone.updateScale(1f, 1f, 1f);
+//            poseStack.popPose();
+//        }
+//    }
+
     @Override
     public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType2, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         int hurtTime = animatable.hurtTime;
