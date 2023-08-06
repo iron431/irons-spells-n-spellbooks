@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.datafix;
 
 import com.google.common.collect.ImmutableMap;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
@@ -124,7 +125,22 @@ public class DataFixerHelpers {
         var fix2 = fixIsbSpell(tag);
         var fix3 = fixItemsNames(tag);
         var fix4 = fixUpgradeType(tag);
-        return fix1 || fix2 || fix3 || fix4;
+        var fix5 = fixIsbEnhance(tag);
+        return fix1 || fix2 || fix3 || fix4 || fix5;
+    }
+
+    public static boolean fixIsbEnhance(CompoundTag tag) {
+        if (tag != null) {
+            if (tag.contains(RingData.ISB_ENHANCE)) {
+                var ringTag = tag.get(RingData.ISB_ENHANCE);
+                if (ringTag instanceof IntTag legacyRingTag) {
+                    tag.remove(RingData.ISB_ENHANCE);
+                    tag.putString(RingData.ISB_ENHANCE, LEGACY_SPELL_MAPPING.getOrDefault(legacyRingTag.getAsInt(), "irons_spellbooks:none"));
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static boolean fixIsbSpellbook(CompoundTag tag) {
