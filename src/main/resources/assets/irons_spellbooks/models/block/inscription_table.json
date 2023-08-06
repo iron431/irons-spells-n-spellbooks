@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "block/block",
 	"render_type": "minecraft:cutout",
-	"ambientocclusion": false,
+	"ambientocclusion": true,
 	"textures": {
 		"0": "irons_spellbooks:block/inscription_table_side",
 		"1": "irons_spellbooks:block/inscription_table_top",
