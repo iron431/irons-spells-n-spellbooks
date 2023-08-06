@@ -4,6 +4,7 @@ package io.redspace.ironsspellbooks.registries;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.ArmorPileBlock;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
+import io.redspace.ironsspellbooks.block.BookStackBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;
@@ -14,9 +15,12 @@ import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeBlock;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeTile;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -40,6 +44,7 @@ public class BlockRegistry {
     public static final RegistryObject<Block> ARCANE_DEBRIS = BLOCKS.register("arcane_debris", () -> new Block(BlockBehaviour.Properties.of().mapColor(DyeColor.WHITE).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final RegistryObject<Block> ARMOR_PILE_BLOCK = BLOCKS.register("armor_pile", ArmorPileBlock::new);
     public static final RegistryObject<Block> ALCHEMIST_CAULDRON = BLOCKS.register("alchemist_cauldron", AlchemistCauldronBlock::new);
+    public static final RegistryObject<Block> BOOK_STACK = BLOCKS.register("book_stack", BookStackBlock::new);
 
 
     //public static final RegistryObject<BlockEntityType<InscriptionTableTile>> INSCRIPTION_TABLE_TILE = BLOCK_ENTITIES.register("inscription_table", () -> BlockEntityType.Builder.of(InscriptionTableTile::new, INSCRIPTION_TABLE_BLOCK.get()).build(null));
