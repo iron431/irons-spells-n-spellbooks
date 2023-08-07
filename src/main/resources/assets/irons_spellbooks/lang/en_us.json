@@ -98,6 +98,7 @@
   "item.irons_spellbooks.blood_staff": "The Blood Staff",
   "item.irons_spellbooks.wayward_compass": "Wayward Compass",
   "item.irons_spellbooks.wayward_compass_desc": "The trapped soul points toward its home",
+  "item.irons_spellbooks.wayward_compass.error": "No catacombs found! [%s] to search again",
   "item.irons_spellbooks.antiquated_compass": "Antiquated Compass",
   "item.irons_spellbooks.antiquated_compass_desc": "A magical resonance pulls strongly towards... Something.",
   "item.irons_spellbooks.magehunter": "Magehunter",
