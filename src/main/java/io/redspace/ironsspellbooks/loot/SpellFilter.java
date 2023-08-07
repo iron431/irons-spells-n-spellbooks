@@ -38,7 +38,7 @@ public class SpellFilter {
         else if (schoolType != null)
             return IronsSpellRegistry.getSpellsForSchool(schoolType);
         else
-            return IronsSpellRegistry.REGISTRY.get().getValues().stream().filter(spell -> spell.getSchoolType() != SchoolType.VOID).toList();
+            return IronsSpellRegistry.REGISTRY.get().getValues().stream().toList();
     }
 
     public AbstractSpell getRandomSpell(RandomSource random, Predicate<AbstractSpell> filter) {
@@ -58,7 +58,7 @@ public class SpellFilter {
                 case "ender" -> new SpellFilter(SchoolType.ENDER);
                 case "blood" -> new SpellFilter(SchoolType.BLOOD);
                 case "evocation" -> new SpellFilter(SchoolType.EVOCATION);
-                case "void" -> new SpellFilter(SchoolType.VOID);
+                //case "void" -> new SpellFilter(SchoolType.VOID);
                 case "nature" -> new SpellFilter(SchoolType.NATURE);
                 default -> new SpellFilter();
             };

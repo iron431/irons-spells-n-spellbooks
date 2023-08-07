@@ -16,13 +16,6 @@ import java.util.Optional;
 
 public class NoneSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "none");
-    private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.VOID)
-            .setMaxLevel(1)
-            .setEnabled(false)
-            .setCooldownSeconds(0)
-            .build();
 
     public NoneSpell() {
         this.baseManaCost = 0;
@@ -38,7 +31,8 @@ public class NoneSpell extends AbstractSpell {
 
     @Override
     public DefaultConfig getDefaultConfig() {
-        return defaultConfig;
+        //This class is not discoverable, so this shouldn't ever be accessed :)
+        return null;
     }
 
     @Override

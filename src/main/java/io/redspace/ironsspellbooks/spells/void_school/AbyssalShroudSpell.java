@@ -30,9 +30,10 @@ public class AbyssalShroudSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
-            .setSchool(SchoolType.VOID)
+            .setSchool(SchoolType.ENDER)
             .setMaxLevel(3)
             .setCooldownSeconds(300)
+            .setEnabled(false)
             .build();
 
     public AbyssalShroudSpell() {

@@ -105,7 +105,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
 
     public boolean dealDamage(LivingEntity target) {
         if (target != getOwner())
-            if (DamageSources.applyDamage(target, damage, IronsSpellRegistry.VOID_TENTACLES_SPELL.get().getDamageSource(this, getOwner()), SchoolType.VOID)) {
+            if (DamageSources.applyDamage(target, damage, IronsSpellRegistry.VOID_TENTACLES_SPELL.get().getDamageSource(this, getOwner()), IronsSpellRegistry.VOID_TENTACLES_SPELL.get().getSchoolType())) {
                 target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
                 return true;
             }
