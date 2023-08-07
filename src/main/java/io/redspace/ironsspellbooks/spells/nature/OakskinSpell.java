@@ -10,14 +10,23 @@ import io.redspace.ironsspellbooks.effect.OakskinEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +79,20 @@ public class OakskinSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.SPIDER_ASPECT_CAST.get());
+        return Optional.of(SoundRegistry.OAKSKIN_CAST.get());
+    }
+
+    @Override
+    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
+        RandomSource randomsource = entity.getRandom();
+        for (int i = 0; i < 50; ++i) {
+            double d0 = Mth.randomBetween(randomsource, -0.5F, 0.5F);
+            double d1 = Mth.randomBetween(randomsource, 0F, 2f);
+            double d2 = Mth.randomBetween(randomsource, -0.5F, 0.5F);
+            var particleType = randomsource.nextFloat() < .1f ? ParticleHelper.FIREFLY : new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OAK_WOOD.defaultBlockState());
+            level.addParticle(particleType, entity.getX() + d0, entity.getY() + d1, entity.getZ() + d2, d0 * .05, 0.05, d1 * .05);
+        }
+        super.onClientCast(level, spellLevel, entity, castData);
     }
 
     @Override

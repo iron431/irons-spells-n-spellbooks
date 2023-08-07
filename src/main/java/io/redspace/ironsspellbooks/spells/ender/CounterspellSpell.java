@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -42,7 +43,8 @@ public class CounterspellSpell extends AbstractSpell {
                     MobEffectRegistry.FORTIFY.get(),
                     MobEffectRegistry.REND.get(),
                     MobEffectRegistry.SPIDER_ASPECT.get(),
-                    MobEffectRegistry.BLIGHT.get()
+                    MobEffectRegistry.BLIGHT.get(),
+                    MobEffectRegistry.OAKSKIN.get()
             ));
 
     public CounterspellSpell() {

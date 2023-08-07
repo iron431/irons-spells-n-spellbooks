@@ -383,5 +383,10 @@
       "irons_spellbooks:keeper_idle_01",
       "irons_spellbooks:keeper_idle_02"
     ]
+  },
+  "spell.oakskin.cast": {
+    "sounds": [
+      "irons_spellbooks:oakskin_cast"
+    ]
   }
 }
