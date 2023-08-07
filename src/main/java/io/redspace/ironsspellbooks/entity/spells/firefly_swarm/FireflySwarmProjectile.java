@@ -1,9 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.firefly_swarm;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +21,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class FireflySwarmProjectile extends PathfinderMob {
+public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSusceptible {
 
     public FireflySwarmProjectile(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -189,5 +192,10 @@ public class FireflySwarmProjectile extends PathfinderMob {
         }
         this.tickCount = pCompound.getInt("Age");
         this.damage = pCompound.getFloat("Damage");
+    }
+
+    @Override
+    public void onAntiMagic(MagicData playerMagicData) {
+        this.discard();
     }
 }
