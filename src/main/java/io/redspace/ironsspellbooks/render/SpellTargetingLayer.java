@@ -69,7 +69,7 @@ public class SpellTargetingLayer {
         return switch (IronsSpellRegistry.getSpell(spellId).getSchoolType()) {
             case HOLY -> new Vector3f(.85f, .75f, .25f);
             case ICE -> new Vector3f(.25f, .25f, 1f);
-            case POISON -> new Vector3f(.41f, .88f, .22f);
+            case NATURE -> new Vector3f(.41f, .88f, .22f);
             default -> new Vector3f(.8f, .8f, .8f);
         };
     }

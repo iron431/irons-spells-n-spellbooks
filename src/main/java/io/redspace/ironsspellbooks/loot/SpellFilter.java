@@ -59,7 +59,7 @@ public class SpellFilter {
                 case "blood" -> new SpellFilter(SchoolType.BLOOD);
                 case "evocation" -> new SpellFilter(SchoolType.EVOCATION);
                 case "void" -> new SpellFilter(SchoolType.VOID);
-                case "poison" -> new SpellFilter(SchoolType.POISON);
+                case "nature" -> new SpellFilter(SchoolType.NATURE);
                 default -> new SpellFilter();
             };
         } else if (GsonHelper.isArrayNode(json, "spells")) {

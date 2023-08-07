@@ -1,5 +1,5 @@
 {
-  "key": "irons_spellbooks_poison_rune_socket",
+  "key": "irons_spellbooks_nature_rune_socket",
   "hidden": false,
   "category": "socket",
   "primary": 0,
@@ -21,10 +21,10 @@
   ],
   "material": {
     "items": [
-      "irons_spellbooks:poison_rune"
+      "irons_spellbooks:nature_rune"
     ]
   },
   "attributes": {
-    "**irons_spellbooks:poison_spell_power": 0.05
+    "**irons_spellbooks:nature_spell_power": 0.05
   }
 }

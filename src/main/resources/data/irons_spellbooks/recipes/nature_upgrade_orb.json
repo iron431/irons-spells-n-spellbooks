@@ -10,11 +10,11 @@
       "item": "irons_spellbooks:upgrade_orb"
     },
     "R": {
-      "item": "irons_spellbooks:poison_rune"
+      "item": "irons_spellbooks:nature_rune"
     }
   },
   "result": {
-    "item": "irons_spellbooks:poison_upgrade_orb",
+    "item": "irons_spellbooks:nature_upgrade_orb",
     "count": 1
   }
 }

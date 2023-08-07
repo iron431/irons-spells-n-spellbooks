@@ -11,7 +11,6 @@ import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -71,7 +70,7 @@ public class FireflySwarmProjectile extends PathfinderMob {
             this.level.getEntities(this, this.getBoundingBox().inflate(.75f), this::canHitEntity).forEach(
                     (entity) -> {
                         if (canHitEntity(entity)) {
-                            boolean hit = DamageSources.applyDamage(entity, 2, IronsSpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.POISON);
+                            boolean hit = DamageSources.applyDamage(entity, 2, IronsSpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE);
                             if (hit) {
                                 if (target == null) {
                                     setTarget(entity);

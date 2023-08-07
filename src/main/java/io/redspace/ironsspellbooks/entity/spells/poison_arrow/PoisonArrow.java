@@ -109,7 +109,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         if (level.isClientSide)
             return;
         Entity entity = entityHitResult.getEntity();
-        boolean hit = DamageSources.applyDamage(entity, getDamage(), IronsSpellRegistry.POISON_ARROW_SPELL.get().getDamageSource(this, getOwner()), SchoolType.POISON);
+        boolean hit = DamageSources.applyDamage(entity, getDamage(), IronsSpellRegistry.POISON_ARROW_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE);
         //TODO: add evasion and stuff. Also do this for all other projectiles?
         boolean ignore = entity.getType() == EntityType.ENDERMAN;
         if (hit) {

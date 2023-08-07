@@ -92,11 +92,11 @@ dependencies {
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
 
     // TETRA ******************************************************************************************************
-    compileOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
+    //compileOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
     compileOnly fg.deobf("curse.maven:tetra-${tetra_version}")
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
-    //runtimeOnly fg.deobf("curse.maven:tetra-${tetra_version}")
-    //implementation fg.deobf("se.mickelus.mutil:mutil:${minecraft_version}-${mutil_version}")
+    runtimeOnly fg.deobf("curse.maven:tetra-${tetra_version}")
+    implementation fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
 
     // JEI ********************************************************************************************************
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
@@ -118,8 +118,8 @@ dependencies {
 
     // APOTHEOSIS
     compileOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
-    //runtimeOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
-    //runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
+    runtimeOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
+    runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
 
 
     // JSON ******************************************************************************************************

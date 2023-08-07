@@ -44,7 +44,7 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> ENDER_SPELL_POWER = newPowerAttribute("ender");
     public static final RegistryObject<Attribute> BLOOD_SPELL_POWER = newPowerAttribute("blood");
     public static final RegistryObject<Attribute> EVOCATION_SPELL_POWER = newPowerAttribute("evocation");
-    public static final RegistryObject<Attribute> POISON_SPELL_POWER = newPowerAttribute("poison");
+    public static final RegistryObject<Attribute> NATURE_SPELL_POWER = newPowerAttribute("nature");
 
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
@@ -71,7 +71,7 @@ public class AttributeRegistry {
             e.add(entity, ENDER_SPELL_POWER.get());
             e.add(entity, BLOOD_SPELL_POWER.get());
             e.add(entity, EVOCATION_SPELL_POWER.get());
-            e.add(entity, POISON_SPELL_POWER.get());
+            e.add(entity, NATURE_SPELL_POWER.get());
         });
     }
 

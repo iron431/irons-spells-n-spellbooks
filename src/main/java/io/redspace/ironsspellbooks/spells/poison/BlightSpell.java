@@ -36,7 +36,7 @@ public class BlightSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.POISON)
+            .setSchool(SchoolType.NATURE)
             .setMaxLevel(8)
             .setCooldownSeconds(35)
             .build();

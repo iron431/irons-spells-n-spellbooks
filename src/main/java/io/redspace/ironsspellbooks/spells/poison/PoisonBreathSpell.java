@@ -39,7 +39,7 @@ public class PoisonBreathSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.POISON)
+            .setSchool(SchoolType.NATURE)
             .setMaxLevel(10)
             .setCooldownSeconds(12)
             .build();

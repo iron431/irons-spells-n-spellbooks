@@ -92,7 +92,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> ENDER_CAST = registerSoundEvent("cast.generic.ender");
     public static RegistryObject<SoundEvent> BLOOD_CAST = registerSoundEvent("cast.generic.blood");
     public static RegistryObject<SoundEvent> EVOCATION_CAST = registerSoundEvent("cast.generic.evocation");
-    public static RegistryObject<SoundEvent> POISON_CAST = registerSoundEvent("cast.generic.poison");
+    public static RegistryObject<SoundEvent> NATURE_CAST = registerSoundEvent("cast.generic.nature");
 
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {

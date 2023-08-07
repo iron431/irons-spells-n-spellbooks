@@ -95,7 +95,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> ENDER_UPGRADE_ORB = ITEMS.register("ender_upgrade_orb", () -> new UpgradeOrbItem(UpgradeTypes.ENDER_SPELL_POWER, (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> BLOOD_UPGRADE_ORB = ITEMS.register("blood_upgrade_orb", () -> new UpgradeOrbItem(UpgradeTypes.BLOOD_SPELL_POWER, (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> EVOCATION_UPGRADE_ORB = ITEMS.register("evocation_upgrade_orb", () -> new UpgradeOrbItem(UpgradeTypes.EVOCATION_SPELL_POWER, (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.UNCOMMON)));
-    public static final RegistryObject<Item> POISON_UPGRADE_ORB = ITEMS.register("poison_upgrade_orb", () -> new UpgradeOrbItem(UpgradeTypes.POISON_SPELL_POWER, (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> POISON_UPGRADE_ORB = ITEMS.register("poison_upgrade_orb", () -> new UpgradeOrbItem(UpgradeTypes.NATURE_SPELL_POWER, (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> NATURE_UPGRADE_ORB = ITEMS.register("nature_upgrade_orb", () -> new UpgradeOrbItem(UpgradeTypes.NATURE_SPELL_POWER, (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> MANA_UPGRADE_ORB = ITEMS.register("mana_upgrade_orb", () -> new UpgradeOrbItem(UpgradeTypes.MANA, (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> COOLDOWN_UPGRADE_ORB = ITEMS.register("cooldown_upgrade_orb", () -> new UpgradeOrbItem(UpgradeTypes.COOLDOWN, (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> PROTECTION_UPGRADE_ORB = ITEMS.register("protection_upgrade_orb", () -> new UpgradeOrbItem(UpgradeTypes.SPELL_RESISTANCE, (new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).rarity(Rarity.UNCOMMON)));
@@ -122,6 +123,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> MANA_RUNE = ITEMS.register("arcane_rune", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> COOLDOWN_RUNE = ITEMS.register("cooldown_rune", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> PROTECTION_RUNE = ITEMS.register("protection_rune", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
+    //TODO: remove posion rune when finished
     public static final RegistryObject<Item> POISON_RUNE = ITEMS.register("poison_rune", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> NATURE_RUNE = ITEMS.register("nature_rune", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> WAYWARD_COMPASS = ITEMS.register("wayward_compass", WaywardCompass::new);

@@ -7,14 +7,14 @@
   ],
   "key": {
     "F": {
-      "tag": "irons_spellbooks:poison_focus"
+      "tag": "irons_spellbooks:nature_focus"
     },
     "R": {
       "item": "irons_spellbooks:blank_rune"
     }
   },
   "result": {
-    "item": "irons_spellbooks:poison_rune",
+    "item": "irons_spellbooks:nature_rune",
     "count": 1
   }
 }

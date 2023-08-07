@@ -148,9 +148,9 @@
       "irons_spellbooks:generic/holy_cast"
     ]
   },
-  "cast.generic.poison": {
+  "cast.generic.nature": {
     "sounds": [
-      "irons_spellbooks:generic/poison_cast"
+      "irons_spellbooks:generic/nature_cast"
     ]
   },
   "cast.blood_step": {

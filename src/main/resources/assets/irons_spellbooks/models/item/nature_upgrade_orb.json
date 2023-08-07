@@ -3,6 +3,6 @@
   "textures": {
     "layer0": "irons_spellbooks:item/upgrade_orb_base",
     "layer1": "irons_spellbooks:item/upgrade_orb_swirl",
-    "layer2": "irons_spellbooks:item/upgrade_orb_poison"
+    "layer2": "irons_spellbooks:item/upgrade_orb_nature"
   }
 }
