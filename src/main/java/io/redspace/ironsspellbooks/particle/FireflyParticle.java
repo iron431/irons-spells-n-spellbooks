@@ -90,10 +90,12 @@ public class FireflyParticle extends TextureSheetParticle {
 
     @Override
     protected int getLightColor(float pPartialTick) {
-        float litColor = LightTexture.FULL_BRIGHT;
-        float darkColor = super.getLightColor(pPartialTick);
 
-        return (int) Mth.lerp(litTween, darkColor, litColor);
+        return LightTexture.FULL_BRIGHT;
+//        float litColor = LightTexture.FULL_BRIGHT;
+//        float darkColor = super.getLightColor(pPartialTick);
+//
+//        return (int) Mth.lerp(litTween, darkColor, litColor);
     }
 
     @OnlyIn(Dist.CLIENT)
