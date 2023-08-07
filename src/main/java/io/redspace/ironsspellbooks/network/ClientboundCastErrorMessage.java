@@ -1,14 +1,12 @@
 package io.redspace.ironsspellbooks.network;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -41,7 +39,7 @@ public class ClientboundCastErrorMessage {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            var spell = IronsSpellRegistry.getSpell(spellId);
+            var spell = SpellRegistry.getSpell(spellId);
             if (errorType == ErrorType.COOLDOWN) {
                 //ignore cooldown message if we are simply holding right click.
                 if (ClientInputEvents.hasReleasedSinceCasting)

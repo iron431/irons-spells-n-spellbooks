@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.player;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
@@ -106,7 +106,7 @@ public class ClientMagicData {
     }
 
     public static void setClientCastState(String spellId, int spellLevel, int castDuration, CastSource castSource) {
-        playerMagicData.initiateCast(IronsSpellRegistry.getSpell(spellId), spellLevel, castDuration, castSource);
+        playerMagicData.initiateCast(SpellRegistry.getSpell(spellId), spellLevel, castDuration, castSource);
     }
 
     public static void resetClientCastState(UUID playerUUID) {

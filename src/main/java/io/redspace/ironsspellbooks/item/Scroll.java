@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.item;
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -36,7 +36,7 @@ public class Scroll extends Item implements IScroll {
     @Override
     public void fillItemCategory(@NotNull CreativeModeTab category, @NotNull NonNullList<ItemStack> items) {
         if (/*category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ||*/ category == CreativeModeTab.TAB_SEARCH) {
-            IronsSpellRegistry.REGISTRY.get().getValues().stream()
+            SpellRegistry.REGISTRY.get().getValues().stream()
                     .filter(AbstractSpell::isEnabled)
                     .forEach(spell -> {
                         int min = category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ? spell.getMaxLevel() : spell.getMinLevel();

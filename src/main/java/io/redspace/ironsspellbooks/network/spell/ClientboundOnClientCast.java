@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.network.spell;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import net.minecraft.network.FriendlyByteBuf;
@@ -28,7 +28,7 @@ public class ClientboundOnClientCast {
         level = buf.readInt();
         castSource = buf.readEnum(CastSource.class);
         if (buf.readBoolean()) {
-            var tmp = IronsSpellRegistry.getSpell(spellId).getEmptyCastData();
+            var tmp = SpellRegistry.getSpell(spellId).getEmptyCastData();
             tmp.readFromStream(buf);
             castData = tmp;
         }

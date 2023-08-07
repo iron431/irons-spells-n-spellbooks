@@ -6,7 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.commands.CommandSourceStack;
@@ -40,7 +40,7 @@ public class CreateDebugWizardCommand {
             spellId = IronsSpellbooks.MODID + ":" + spellId;
         }
 
-        var spell = IronsSpellRegistry.getSpell(spellId);
+        var spell = SpellRegistry.getSpell(spellId);
 
         if (spellLevel > spell.getMaxLevel()) {
             throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spell.getSpellName(), spell.getMaxLevel())).create();

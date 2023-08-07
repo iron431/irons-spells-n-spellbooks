@@ -6,7 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 //import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandBuildContext;
@@ -48,7 +48,7 @@ public class CreateImbuedSwordCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        var abstractSpell = IronsSpellRegistry.REGISTRY.get().getValue(new ResourceLocation(spell));
+        var abstractSpell = SpellRegistry.REGISTRY.get().getValue(new ResourceLocation(spell));
 
         if (spellLevel > abstractSpell.getMaxLevel()) {
             throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getSpellName(), abstractSpell.getMaxLevel())).create();

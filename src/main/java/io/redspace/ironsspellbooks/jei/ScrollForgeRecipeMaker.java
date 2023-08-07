@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.jei;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -43,16 +42,16 @@ public final class ScrollForgeRecipeMaker {
                     var paperInput = new ItemStack(Items.PAPER);
                     var focusInput = new ItemStack(item);
                     var school = SchoolType.getSchoolFromItem(focusInput);
-                    var spells = IronsSpellRegistry.getSpellsForSchool(school);
+                    var spells = SpellRegistry.getSpellsForSchool(school);
                     var scrollOutputs = new ArrayList<ItemStack>();
                     var inkOutputs = new ArrayList<ItemStack>();
 
                     inkItems.forEach(ink -> {
                         var string = new StringBuilder();
-                        IronsSpellRegistry.REGISTRY.get().getValues().forEach((AbstractSpell)-> string.append(AbstractSpell.getSpellId()).append(", "));
+                        SpellRegistry.REGISTRY.get().getValues().forEach((AbstractSpell)-> string.append(AbstractSpell.getSpellId()).append(", "));
                         for(AbstractSpell spell : spells){
                             var spellLevel = spell.getMinLevelForRarity(ink.getRarity());
-                            if (spell != IronsSpellRegistry.none()) {
+                            if (spell != SpellRegistry.none()) {
                                 inkOutputs.add(new ItemStack(ink));
                                 scrollOutputs.add(getScrollStack(spell, spell.getLevel(spellLevel, null)));
                             }

@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.devour_jaw;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -36,7 +36,7 @@ public class DevourJaw extends AoeEntity {
     @Override
     public void applyEffect(LivingEntity target) {
         if (target == this.target) {
-            if (DamageSources.applyDamage(target, getDamage(), IronsSpellRegistry.DEVOUR_SPELL.get().getDamageSource(this, getOwner()), IronsSpellRegistry.DEVOUR_SPELL.get().getSchoolType()) && getOwner() instanceof LivingEntity livingOwner) {
+            if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.DEVOUR_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.DEVOUR_SPELL.get().getSchoolType()) && getOwner() instanceof LivingEntity livingOwner) {
                 livingOwner.heal(getDamage() * .15f);
                 if (target.isDeadOrDying()) {
                     var oldVigor = livingOwner.getEffect(MobEffectRegistry.VIGOR.get());

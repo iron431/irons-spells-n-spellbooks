@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldown;
@@ -54,7 +54,7 @@ public class MagicManager implements IMagicManager {
 
                 if (playerMagicData.isCasting()) {
                     playerMagicData.handleCastDuration();
-                    var spell = IronsSpellRegistry.getSpell(playerMagicData.getCastingSpellId());
+                    var spell = SpellRegistry.getSpell(playerMagicData.getCastingSpellId());
                     if (spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
                             spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);

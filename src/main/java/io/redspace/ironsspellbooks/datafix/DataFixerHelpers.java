@@ -12,7 +12,7 @@ import io.redspace.ironsspellbooks.spells.fire.*;
 import io.redspace.ironsspellbooks.spells.holy.*;
 import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.*;
-import io.redspace.ironsspellbooks.spells.poison.*;
+import io.redspace.ironsspellbooks.spells.nature.*;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;

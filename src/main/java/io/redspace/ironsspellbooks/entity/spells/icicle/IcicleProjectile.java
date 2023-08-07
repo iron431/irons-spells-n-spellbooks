@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.icicle;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -45,7 +45,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), IronsSpellRegistry.ICICLE_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ICE);
+        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.ICICLE_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ICE);
  //Ironsspellbooks.logger.debug("IcilePorjectile: Hit: {}",hit);
         if (hit && entityHitResult.getEntity() instanceof LivingEntity target && !level.isClientSide && target.canFreeze()) {
             target.setTicksFrozen(target.getTicksFrozen() + 165);

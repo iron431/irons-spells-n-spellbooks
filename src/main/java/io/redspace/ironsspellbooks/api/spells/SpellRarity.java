@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -83,7 +83,7 @@ public enum SpellRarity {
 
     public static void rarityTest() {
         var sb = new StringBuilder();
-        IronsSpellRegistry.REGISTRY.get().getValues().forEach(s -> {
+        SpellRegistry.REGISTRY.get().getValues().forEach(s -> {
             sb.append(String.format("\nSpellType:%s\n", s));
             sb.append(String.format("\tMinRarity:%s, MaxRarity:%s\n", s.getMinRarity(), s.getMaxRarity()));
             sb.append(String.format("\tMinLevel:%s, MaxLevel:%s\n", s.getMinLevel(), s.getMaxLevel()));

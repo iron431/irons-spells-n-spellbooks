@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.wall_of_fire;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
@@ -91,7 +91,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             } else {
                 for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
                     if (livingentity != getOwner()) {
-                        if(DamageSources.applyDamage(livingentity, damage, IronsSpellRegistry.WALL_OF_FIRE_SPELL.get().getDamageSource(this,getOwner()), SchoolType.FIRE)) {
+                        if(DamageSources.applyDamage(livingentity, damage, SpellRegistry.WALL_OF_FIRE_SPELL.get().getDamageSource(this,getOwner()), SchoolType.FIRE)) {
                             livingentity.setSecondsOnFire(3);
                         }
                     }

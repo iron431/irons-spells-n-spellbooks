@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -176,7 +176,7 @@ public class SummonedSkeleton extends Skeleton implements MagicSummon, IAnimatab
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
-        return Utils.doMeleeAttack(this, pEntity, IronsSpellRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this, getSummoner()), null);
+        return Utils.doMeleeAttack(this, pEntity, SpellRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this, getSummoner()), null);
     }
 
     @Override

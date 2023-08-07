@@ -1,13 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -105,7 +104,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
 
     public boolean dealDamage(LivingEntity target) {
         if (target != getOwner())
-            if (DamageSources.applyDamage(target, damage, IronsSpellRegistry.VOID_TENTACLES_SPELL.get().getDamageSource(this, getOwner()), IronsSpellRegistry.VOID_TENTACLES_SPELL.get().getSchoolType())) {
+            if (DamageSources.applyDamage(target, damage, SpellRegistry.VOID_TENTACLES_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.VOID_TENTACLES_SPELL.get().getSchoolType())) {
                 target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
                 return true;
             }

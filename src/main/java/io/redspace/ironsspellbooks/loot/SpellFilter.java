@@ -4,7 +4,7 @@ package io.redspace.ironsspellbooks.loot;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
@@ -36,9 +36,9 @@ public class SpellFilter {
         if (spells.size() > 0)
             return spells;
         else if (schoolType != null)
-            return IronsSpellRegistry.getSpellsForSchool(schoolType);
+            return SpellRegistry.getSpellsForSchool(schoolType);
         else
-            return IronsSpellRegistry.REGISTRY.get().getValues().stream().toList();
+            return SpellRegistry.REGISTRY.get().getValues().stream().toList();
     }
 
     public AbstractSpell getRandomSpell(RandomSource random, Predicate<AbstractSpell> filter) {
@@ -68,9 +68,9 @@ public class SpellFilter {
             for (JsonElement element : spellsFromJson) {
                 String spellId = element.getAsString();
 
-                var spell = IronsSpellRegistry.getSpell(spellId);
+                var spell = SpellRegistry.getSpell(spellId);
 
-                if (spell != IronsSpellRegistry.none()) {
+                if (spell != SpellRegistry.none()) {
                     applicableSpellList.add(spell);
                 }
             }

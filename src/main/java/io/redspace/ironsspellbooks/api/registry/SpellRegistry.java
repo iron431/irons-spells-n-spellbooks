@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.spells.evocation.*;
 import io.redspace.ironsspellbooks.spells.fire.*;
 import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.*;
-import io.redspace.ironsspellbooks.spells.poison.*;
+import io.redspace.ironsspellbooks.spells.nature.*;
 import io.redspace.ironsspellbooks.spells.void_school.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class IronsSpellRegistry {
+public class SpellRegistry {
     public static final ResourceKey<Registry<AbstractSpell>> SPELL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(IronsSpellbooks.MODID, "spells"));
     public static final DeferredRegister<AbstractSpell> SPELLS = DeferredRegister.create(SPELL_REGISTRY_KEY, IronsSpellbooks.MODID);
     public static final Supplier<IForgeRegistry<AbstractSpell>> REGISTRY = SPELLS.makeRegistry(() -> new RegistryBuilder<AbstractSpell>().disableSaving().disableOverrides());
@@ -49,7 +49,7 @@ public class IronsSpellRegistry {
     }
 
     public static List<AbstractSpell> getEnabledSpells(){
-        return IronsSpellRegistry.REGISTRY.get()
+        return SpellRegistry.REGISTRY.get()
                 .getValues()
                 .stream()
                 .filter(AbstractSpell::isEnabled)
@@ -58,7 +58,7 @@ public class IronsSpellRegistry {
 
     public static List<AbstractSpell> getSpellsForSchool(SchoolType schoolType) {
 
-        var groupedBySchool = IronsSpellRegistry.REGISTRY.get()
+        var groupedBySchool = SpellRegistry.REGISTRY.get()
                 .getValues()
                 .stream()
                 .collect(Collectors.groupingBy(AbstractSpell::getSchoolType));
@@ -146,7 +146,7 @@ public class IronsSpellRegistry {
     public static final RegistryObject<AbstractSpell> LIGHTNING_BOLT_SPELL = registerSpell(new LightningBoltSpell());
     public static final RegistryObject<AbstractSpell> LIGHTNING_LANCE_SPELL = registerSpell(new LightningLanceSpell());
 
-    //POISON
+    // NATURE
     public static final RegistryObject<AbstractSpell> ACID_ORB_SPELL = registerSpell(new AcidOrbSpell());
     public static final RegistryObject<AbstractSpell> BLIGHT_SPELL = registerSpell(new BlightSpell());
     public static final RegistryObject<AbstractSpell> POISON_ARROW_SPELL = registerSpell(new PoisonArrowSpell());
@@ -155,6 +155,7 @@ public class IronsSpellRegistry {
     public static final RegistryObject<AbstractSpell> ROOT_SPELL = registerSpell(new RootSpell());
     public static final RegistryObject<AbstractSpell> SPIDER_ASPECT_SPELL = registerSpell(new SpiderAspectSpell());
     public static final RegistryObject<AbstractSpell> FIREFLY_SWARM_SPELL = registerSpell(new FireflySwarmSpell());
+    public static final RegistryObject<AbstractSpell> OAKSKIN_SPELL = registerSpell(new OakskinSpell());
 
     //VOID
     public static final RegistryObject<AbstractSpell> ABYSSAL_SHROUD_SPELL = registerSpell(new AbyssalShroudSpell());

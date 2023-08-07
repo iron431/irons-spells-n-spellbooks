@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.spells.poison;
+package io.redspace.ironsspellbooks.spells.nature;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;

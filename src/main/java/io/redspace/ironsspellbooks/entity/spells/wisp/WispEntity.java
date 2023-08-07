@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.wisp;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WispAttackGoal;
@@ -121,7 +121,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
             if (target != null) {
                 if (this.getBoundingBox().intersects(target.getBoundingBox())) {
                    // IronsSpellbooks.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
-                    DamageSources.applyDamage(target, damageAmount, IronsSpellRegistry.WISP_SPELL.get().getDamageSource(this,cachedOwner), SchoolType.HOLY);
+                    DamageSources.applyDamage(target, damageAmount, SpellRegistry.WISP_SPELL.get().getDamageSource(this,cachedOwner), SchoolType.HOLY);
                     this.playSound(WispSpell.getImpactSound(), 1.0f, 1.0f);
                     var p = target.getEyePosition();
                     MagicManager.spawnParticles(level, ParticleHelper.WISP, p.x, p.y, p.z, 25, 0, 0, 0, .18, true);

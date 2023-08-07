@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks;
 import com.mojang.logging.LogUtils;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -64,7 +64,7 @@ public class IronsSpellbooks {
 
         modEventBus.addListener(OverlayRegistry::onRegisterOverlays);
 
-        IronsSpellRegistry.register(modEventBus);
+        SpellRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);

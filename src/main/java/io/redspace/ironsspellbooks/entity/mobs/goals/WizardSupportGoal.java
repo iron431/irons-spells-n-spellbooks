@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -193,7 +193,7 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
 
     protected AbstractSpell getSpell(List<AbstractSpell> spells) {
         if (spells.size() < 1)
-            return IronsSpellRegistry.none();
+            return SpellRegistry.none();
         return spells.get(mob.getRandom().nextInt(spells.size()));
     }
 

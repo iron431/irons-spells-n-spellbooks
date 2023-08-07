@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_block;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -108,7 +108,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
             return;
         if (!canHitEntity(target) || victims.contains(target))
             return;
-        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, IronsSpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ICE);
+        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ICE);
         if (flag) {
             if(target.canFreeze())
                 target.setTicksFrozen(200);
@@ -129,7 +129,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
                     float damage = (float) (this.damage * p);
  //Ironsspellbooks.logger.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
 
-                    if (DamageSources.applyDamage(entity, damage, IronsSpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ICE)  && entity.canFreeze())
+                    if (DamageSources.applyDamage(entity, damage, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ICE)  && entity.canFreeze())
                         entity.setTicksFrozen(200);
                 }
             }

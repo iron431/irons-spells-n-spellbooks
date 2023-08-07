@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
@@ -40,15 +40,15 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, IronsSpellRegistry.SUMMON_VEX_SPELL.get(), 3, 4, 80, 300, 1));
+        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 4, 80, 300, 1));
         this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 65, 100)
                 .setSpells(
-                    List.of(IronsSpellRegistry.FANG_STRIKE_SPELL.get(), IronsSpellRegistry.FIRECRACKER_SPELL.get()),
-                    List.of(IronsSpellRegistry.FANG_WARD_SPELL.get(), IronsSpellRegistry.SHIELD_SPELL.get()),
+                    List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FIRECRACKER_SPELL.get()),
+                    List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.SHIELD_SPELL.get()),
                     List.of(),
                     List.of())
                 .setSpellQuality(.6f, .8f)
-                .setSingleUseSpell(IronsSpellRegistry.INVISIBILITY_SPELL.get(), 40, 80, 5, 5)
+                .setSingleUseSpell(SpellRegistry.INVISIBILITY_SPELL.get(), 40, 80, 5, 5)
                 .setDrinksPotions());
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));

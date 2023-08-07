@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.armor.*;
@@ -54,18 +54,18 @@ public class ItemRegistry {
 
     public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new BloodStaffItem(
             new SpellDataRegistryHolder[]{
-                    new SpellDataRegistryHolder(IronsSpellRegistry.WITHER_SKULL_SPELL, 6),
-                    new SpellDataRegistryHolder(IronsSpellRegistry.RAY_OF_SIPHONING_SPELL, 6),
-                    new SpellDataRegistryHolder(IronsSpellRegistry.BLOOD_STEP_SPELL, 3),
-                    new SpellDataRegistryHolder(IronsSpellRegistry.BLOOD_SLASH_SPELL, 6),
-                    new SpellDataRegistryHolder(IronsSpellRegistry.BLAZE_STORM_SPELL, 6)})
+                    new SpellDataRegistryHolder(SpellRegistry.WITHER_SKULL_SPELL, 6),
+                    new SpellDataRegistryHolder(SpellRegistry.RAY_OF_SIPHONING_SPELL, 6),
+                    new SpellDataRegistryHolder(SpellRegistry.BLOOD_STEP_SPELL, 3),
+                    new SpellDataRegistryHolder(SpellRegistry.BLOOD_SLASH_SPELL, 6),
+                    new SpellDataRegistryHolder(SpellRegistry.BLAZE_STORM_SPELL, 6)})
     );
 
     public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(SpellRarity.COMMON,
             new SpellDataRegistryHolder[]{
-                    new SpellDataRegistryHolder(IronsSpellRegistry.FANG_STRIKE_SPELL, 6),
-                    new SpellDataRegistryHolder(IronsSpellRegistry.FANG_WARD_SPELL, 4),
-                    new SpellDataRegistryHolder(IronsSpellRegistry.SUMMON_VEX_SPELL, 4)})
+                    new SpellDataRegistryHolder(SpellRegistry.FANG_STRIKE_SPELL, 6),
+                    new SpellDataRegistryHolder(SpellRegistry.FANG_WARD_SPELL, 4),
+                    new SpellDataRegistryHolder(SpellRegistry.SUMMON_VEX_SPELL, 4)})
     );
 
     public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", MagehunterItem::new);

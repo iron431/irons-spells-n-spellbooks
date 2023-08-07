@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.spellbook;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
@@ -190,7 +190,7 @@ public class SpellBookData {
                 String id = t.getString(ID);
                 int level = t.getInt(LEVEL);
                 int index = t.getInt(SLOT);
-                transcribedSpells[index] = new SpellData(IronsSpellRegistry.getSpell(id), level);
+                transcribedSpells[index] = new SpellData(SpellRegistry.getSpell(id), level);
                 spellCount++;
             });
         }

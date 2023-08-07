@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.api.util;
 
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
@@ -57,7 +57,6 @@ import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import javax.print.DocFlavor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -442,7 +441,7 @@ public class Utils {
     public static InteractionResultHolder<ItemStack> onUseCastingHelper(@NotNull Level level, Player player, @NotNull InteractionHand hand, ItemStack stack, SpellData spellData) {
         //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.1");
         var spell = spellData.getSpell();
-        if (spell != IronsSpellRegistry.none()) {
+        if (spell != SpellRegistry.none()) {
             //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.2");
             if (level.isClientSide) {
                 //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.3");

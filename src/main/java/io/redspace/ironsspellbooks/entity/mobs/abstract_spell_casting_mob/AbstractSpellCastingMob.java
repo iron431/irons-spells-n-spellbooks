@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -140,7 +140,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         var syncedSpellData = new SyncedSpellData(this);
         syncedSpellData.loadNBTData(pCompound);
         if (syncedSpellData.isCasting()) {
-            var spell = IronsSpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
+            var spell = SpellRegistry.getSpell(syncedSpellData.getCastingSpellId());
             this.initiateCastSpell(spell, syncedSpellData.getCastingSpellLevel());
         }
         playerMagicData.setSyncedData(syncedSpellData);
@@ -267,7 +267,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
             IronsSpellbooks.LOGGER.debug("ASCM.initiateCastSpell: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, level.isClientSide);
         }
 
-        if (spell == IronsSpellRegistry.none()) {
+        if (spell == SpellRegistry.none()) {
             castingSpell = null;
             return;
         }
@@ -292,11 +292,11 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
             return;
         }
 
-        if (spell == IronsSpellRegistry.TELEPORT_SPELL.get() || spell == IronsSpellRegistry.FROST_STEP_SPELL.get()) {
+        if (spell == SpellRegistry.TELEPORT_SPELL.get() || spell == SpellRegistry.FROST_STEP_SPELL.get()) {
             setTeleportLocationBehindTarget(10);
-        } else if (spell == IronsSpellRegistry.BLOOD_STEP_SPELL.get()) {
+        } else if (spell == SpellRegistry.BLOOD_STEP_SPELL.get()) {
             setTeleportLocationBehindTarget(3);
-        } else if (spell == IronsSpellRegistry.BURNING_DASH_SPELL.get()) {
+        } else if (spell == SpellRegistry.BURNING_DASH_SPELL.get()) {
             setBurningDashDirectionData();
         }
 
@@ -386,8 +386,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
      **/
 
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
-    private AbstractSpell lastCastSpellType = IronsSpellRegistry.none();
-    private AbstractSpell instantCastSpellType = IronsSpellRegistry.none();
+    private AbstractSpell lastCastSpellType = SpellRegistry.none();
+    private AbstractSpell instantCastSpellType = SpellRegistry.none();
     private boolean cancelCastAnimation = false;
     private final AnimationBuilder idle = new AnimationBuilder().addAnimation("blank", ILoopType.EDefaultLoopTypes.LOOP);
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
@@ -418,9 +418,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         }
 
         var controller = event.getController();
-        if (instantCastSpellType != IronsSpellRegistry.none() && controller.getAnimationState() == AnimationState.Stopped) {
+        if (instantCastSpellType != SpellRegistry.none() && controller.getAnimationState() == AnimationState.Stopped) {
             setStartAnimationFromSpell(controller, instantCastSpellType);
-            instantCastSpellType = IronsSpellRegistry.none();
+            instantCastSpellType = SpellRegistry.none();
         }
         return PlayState.CONTINUE;
     }
@@ -478,7 +478,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         spell.getCastFinishAnimation().getForMob().ifPresent(animationBuilder -> {
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
-            lastCastSpellType = IronsSpellRegistry.none();
+            lastCastSpellType = SpellRegistry.none();
             cancelCastAnimation = false;
         });
     }

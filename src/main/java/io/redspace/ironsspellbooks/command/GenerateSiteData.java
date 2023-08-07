@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
@@ -330,8 +330,8 @@ public class GenerateSiteData {
         try {
             var sb = new StringBuilder();
 
-            IronsSpellRegistry.REGISTRY.get().getValues().stream()
-                    .filter(st -> (st.isEnabled() && st != IronsSpellRegistry.none()))
+            SpellRegistry.REGISTRY.get().getValues().stream()
+                    .filter(st -> (st.isEnabled() && st != SpellRegistry.none()))
                     .forEach(spellType -> {
                         var spellMin = spellType.getMinLevel();
                         var spellMax = spellType.getMaxLevel();

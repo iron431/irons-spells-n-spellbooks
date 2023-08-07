@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.commands.CommandSourceStack;
@@ -31,9 +31,9 @@ public class CreateScrollCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        var abstractSpell = IronsSpellRegistry.REGISTRY.get().getValue(new ResourceLocation(spell));
+        var abstractSpell = SpellRegistry.REGISTRY.get().getValue(new ResourceLocation(spell));
 
-        if (abstractSpell == null || abstractSpell == IronsSpellRegistry.none()) {
+        if (abstractSpell == null || abstractSpell == SpellRegistry.none()) {
             throw ERROR_FAILED.create();
         }
 

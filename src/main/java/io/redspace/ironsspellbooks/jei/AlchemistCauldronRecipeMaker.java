@@ -1,10 +1,9 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRecipeRegistry;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
@@ -14,7 +13,6 @@ import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 
@@ -147,7 +145,7 @@ public final class AlchemistCauldronRecipeMaker {
         var outputs = new ArrayList<ItemStack>();
         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
 
-        IronsSpellRegistry.getEnabledSpells().forEach(spell -> {
+        SpellRegistry.getEnabledSpells().forEach(spell -> {
             IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
                     .filter(spellLevel -> spell.getRarity(spellLevel) == spellRarity)
                     .forEach(filteredLevel -> {

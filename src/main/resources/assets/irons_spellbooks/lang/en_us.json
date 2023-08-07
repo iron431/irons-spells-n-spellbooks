@@ -209,6 +209,7 @@
   "ui.irons_spellbooks.absorption": "%d Temporary HP",
   "ui.irons_spellbooks.reduced_healing": "%d%% Reduced Healing",
   "ui.irons_spellbooks.reduced_damage": "%d%% Reduced Damage",
+  "ui.irons_spellbooks.damage_reduction": "%d%% Damage Reduction",
   "ui.irons_spellbooks.rend": "%d%% Reduced Armor",
   "ui.irons_spellbooks.summon_count": "%d Summons",
   "ui.irons_spellbooks.shatter_damage": "%d Shatter Damage",

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
@@ -16,21 +16,15 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
-import mezz.jei.api.recipe.vanilla.IJeiAnvilRecipe;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @mezz.jei.api.JeiPlugin
 public class JeiPlugin implements IModPlugin {
@@ -66,8 +60,8 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
         registration.addRecipes(RecipeTypes.ANVIL, VanillaAnvilRecipeMaker.getAnvilRepairRecipes(vanillaRecipeFactory));
 
-        IronsSpellRegistry.REGISTRY.get().getValues().stream().forEach(spell -> {
-            if (spell.isEnabled() && spell != IronsSpellRegistry.none()) {
+        SpellRegistry.REGISTRY.get().getValues().stream().forEach(spell -> {
+            if (spell.isEnabled() && spell != SpellRegistry.none()) {
                 var list = new ArrayList<ItemStack>();
                 IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
                         .forEach((spellLevel) -> {

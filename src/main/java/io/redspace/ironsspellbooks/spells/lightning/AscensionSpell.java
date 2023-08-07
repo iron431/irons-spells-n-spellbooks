@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.spells.lightning;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.ImpulseCastData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -116,7 +116,7 @@ public class AscensionSpell extends AbstractSpell {
             double distance = target.distanceToSqr(strikePos);
             if (distance < radius * radius) {
                 float finalDamage = (float) (getDamage(spellLevel, entity) * (1 - distance / (radius * radius)));
-                DamageSources.applyDamage(target, finalDamage, IronsSpellRegistry.ASCENSION_SPELL.get().getDamageSource(lightningBolt, entity), SchoolType.LIGHTNING);
+                DamageSources.applyDamage(target, finalDamage, SpellRegistry.ASCENSION_SPELL.get().getDamageSource(lightningBolt, entity), SchoolType.LIGHTNING);
                 if (target instanceof Creeper creeper)
                     creeper.thunderHit((ServerLevel) level, lightningBolt);
             }

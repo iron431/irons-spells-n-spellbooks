@@ -1,11 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.firefly_swarm;
 
-import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -20,7 +18,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSusceptible/*, NoKnockbackProjectile*/ {
 
@@ -98,7 +95,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
             this.level.getEntities(this, this.getBoundingBox().inflate(inflate), this::canHitEntity).forEach(
                     (entity) -> {
                         if (canHitEntity(entity)) {
-                            boolean hit = DamageSources.applyDamage(entity, damage, IronsSpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE);
+                            boolean hit = DamageSources.applyDamage(entity, damage, SpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE);
                             if (hit) {
                                 if (target == null) {
                                     setTarget(entity);

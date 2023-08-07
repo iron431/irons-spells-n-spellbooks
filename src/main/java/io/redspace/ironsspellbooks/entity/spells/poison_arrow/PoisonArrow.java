@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.poison_arrow;
 
-import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -109,7 +109,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         if (level.isClientSide)
             return;
         Entity entity = entityHitResult.getEntity();
-        boolean hit = DamageSources.applyDamage(entity, getDamage(), IronsSpellRegistry.POISON_ARROW_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE);
+        boolean hit = DamageSources.applyDamage(entity, getDamage(), SpellRegistry.POISON_ARROW_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE);
         //TODO: add evasion and stuff. Also do this for all other projectiles?
         boolean ignore = entity.getType() == EntityType.ENDERMAN;
         if (hit) {
