@@ -24,4 +24,6 @@ public class ParticleHelper {
     public static final ParticleOptions COMET_FOG = new FogParticleOptions(new Vector3f(.75f, .55f, 1f), 1.5f);
     public static final ParticleOptions POISON_CLOUD = new FogParticleOptions(new Vector3f(.08f, 0.64f, .16f), 1f);
     public static final ParticleOptions SUNBEAM = new FogParticleOptions(new Vector3f(0.95f, 0.97f, 0.36f), 1f);
+    public static final ParticleOptions FIREFLY = ParticleRegistry.FIREFLY_PARTICLE.get();
+
 }

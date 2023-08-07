@@ -2,8 +2,10 @@ package io.redspace.ironsspellbooks.entity.spells.firefly_swarm;
 
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
@@ -14,9 +16,11 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FireflySwarmProjectile extends PathfinderMob {
 
+    static final int maxLife = 12 * 20;
     public FireflySwarmProjectile(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.moveControl = new FlyingMoveControl(this, 15, true);
@@ -47,15 +51,30 @@ public class FireflySwarmProjectile extends PathfinderMob {
     }
 
     @Override
+    public void tick() {
+        if (level.isClientSide) {
+            for (int i = 0; i < 2; i++) {
+                var motion = Utils.getRandomVec3(.05f).add(this.getDeltaMovement());
+                var spawn = Utils.getRandomVec3(.25f);
+                level.addParticle(ParticleHelper.FIREFLY, getX() + spawn.x, getY() + this.getBbHeight() * .5f + spawn.z, getZ() + spawn.z, motion.x, motion.y, motion.z);
+            }
+        }
+        super.tick();
+        if (this.tickCount > maxLife) {
+            this.discard();
+        }
+    }
+
+    @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
 
         LivingEntity target = getTarget();
         if (target != null) {
-            this.navigation.moveTo(target, 5);
+            this.navigation.moveTo(target, 7);
             //this.moveControl.setWantedPosition(target.getX(), target.getY(), target.getZ(), 5);
         }
-        if(this.tickCount % 8 == 0) {
+        if (this.tickCount % 8 == 0) {
             if (level.collidesWithSuffocatingBlock(this, this.getBoundingBox().move(0, -1, 0))) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, 0.02, 0));
             } else {
@@ -67,6 +86,7 @@ public class FireflySwarmProjectile extends PathfinderMob {
         }
         if (this.tickCount % 15 == 0) {
             //Damage tick
+            AtomicBoolean didHit = new AtomicBoolean(false);
             this.level.getEntities(this, this.getBoundingBox().inflate(.75f), this::canHitEntity).forEach(
                     (entity) -> {
                         if (canHitEntity(entity)) {
@@ -77,10 +97,14 @@ public class FireflySwarmProjectile extends PathfinderMob {
                                 } else if (target != entity) {
                                     nextTarget = entity;
                                 }
+                                didHit.set(true);
                             }
                         }
                     }
             );
+            if (didHit.get()) {
+                tickCount += 10;
+            }
             if (getTarget() == null || getTarget().isDeadOrDying()) {
                 setTarget(nextTarget);
                 if (nextTarget != null && nextTarget.isRemoved()) {
@@ -153,6 +177,7 @@ public class FireflySwarmProjectile extends PathfinderMob {
         if (this.ownerUUID != null) {
             pCompound.putUUID("Owner", this.ownerUUID);
         }
+        pCompound.putInt("Age", this.tickCount);
     }
 
     public void readAdditionalSaveData(CompoundTag pCompound) {
@@ -162,5 +187,6 @@ public class FireflySwarmProjectile extends PathfinderMob {
         if (pCompound.hasUUID("Owner")) {
             this.ownerUUID = pCompound.getUUID("Owner");
         }
+        this.tickCount = pCompound.getInt("Age");
     }
 }
