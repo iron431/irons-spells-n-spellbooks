@@ -20,25 +20,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FireflySwarmProjectile extends PathfinderMob {
 
-    static final int maxLife = 12 * 20;
     public FireflySwarmProjectile(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.moveControl = new FlyingMoveControl(this, 15, true);
         this.noPhysics = true;
         this.setNoGravity(true);
     }
-
-    public FireflySwarmProjectile(Level level, @Nullable Entity owner, @Nullable Entity target) {
+    public FireflySwarmProjectile(Level level, @Nullable Entity owner, @Nullable Entity target, float damage) {
         this(EntityRegistry.FIREFLY_SWARM.get(), level);
         setOwner(owner);
         setTarget(target);
+        this.damage = damage;
     }
 
+
+    static final int maxLife = 15 * 20;
+    public static final float radius = 2f;
     UUID targetUUID;
     Entity cachedTarget;
     UUID ownerUUID;
     Entity cachedOwner;
     Entity nextTarget;
+    float damage;
 
     @Override
     public boolean isPickable() {
@@ -86,25 +89,21 @@ public class FireflySwarmProjectile extends PathfinderMob {
         }
         if (this.tickCount % 15 == 0) {
             //Damage tick
-            AtomicBoolean didHit = new AtomicBoolean(false);
-            this.level.getEntities(this, this.getBoundingBox().inflate(.75f), this::canHitEntity).forEach(
+            float inflate = radius - this.getBbWidth() * .5f;
+            this.level.getEntities(this, this.getBoundingBox().inflate(inflate), this::canHitEntity).forEach(
                     (entity) -> {
                         if (canHitEntity(entity)) {
-                            boolean hit = DamageSources.applyDamage(entity, 2, IronsSpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE);
+                            boolean hit = DamageSources.applyDamage(entity, damage, IronsSpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE);
                             if (hit) {
                                 if (target == null) {
                                     setTarget(entity);
                                 } else if (target != entity) {
                                     nextTarget = entity;
                                 }
-                                didHit.set(true);
                             }
                         }
                     }
             );
-            if (didHit.get()) {
-                tickCount += 10;
-            }
             if (getTarget() == null || getTarget().isDeadOrDying()) {
                 setTarget(nextTarget);
                 if (nextTarget != null && nextTarget.isRemoved()) {
@@ -178,6 +177,7 @@ public class FireflySwarmProjectile extends PathfinderMob {
             pCompound.putUUID("Owner", this.ownerUUID);
         }
         pCompound.putInt("Age", this.tickCount);
+        pCompound.putFloat("Damage", this.damage);
     }
 
     public void readAdditionalSaveData(CompoundTag pCompound) {
@@ -188,5 +188,6 @@ public class FireflySwarmProjectile extends PathfinderMob {
             this.ownerUUID = pCompound.getUUID("Owner");
         }
         this.tickCount = pCompound.getInt("Age");
+        this.damage = pCompound.getFloat("Damage");
     }
 }

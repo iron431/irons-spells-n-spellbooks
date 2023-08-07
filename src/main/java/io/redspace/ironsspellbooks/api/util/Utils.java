@@ -523,10 +523,13 @@ public class Utils {
         var target = Utils.raycastForEntity(caster.level, caster, range, true, aimAssist);
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
-            if (caster instanceof ServerPlayer serverPlayer)
+            if (caster instanceof ServerPlayer serverPlayer) {
                 Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spell), serverPlayer);
-            if (livingTarget instanceof ServerPlayer serverPlayer)
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), spell.getDisplayName()).withStyle(ChatFormatting.GREEN)));
+            }
+            if (livingTarget instanceof ServerPlayer serverPlayer) {
                 Utils.sendTargetedNotification(serverPlayer, caster, spell);
+            }
             return true;
         } else if (sendFailureMessage && caster instanceof ServerPlayer serverPlayer) {
             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_target").withStyle(ChatFormatting.RED)));

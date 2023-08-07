@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.jei;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
@@ -47,13 +48,18 @@ public final class ScrollForgeRecipeMaker {
                     var inkOutputs = new ArrayList<ItemStack>();
 
                     inkItems.forEach(ink -> {
-                        spells.forEach(spell -> {
+                        var string = new StringBuilder();
+                        IronsSpellRegistry.REGISTRY.get().getValues().forEach((AbstractSpell)-> string.append(AbstractSpell.getSpellId()).append(", "));
+                        for(AbstractSpell spell : spells){
                             var spellLevel = spell.getMinLevelForRarity(ink.getRarity());
                             if (spell != IronsSpellRegistry.none()) {
                                 inkOutputs.add(new ItemStack(ink));
                                 scrollOutputs.add(getScrollStack(spell, spell.getLevel(spellLevel, null)));
                             }
-                        });
+                        }
+//                        spells.forEach(spell -> {
+//
+//                        });
                     });
 
                     return new ScrollForgeRecipe(inkOutputs, paperInput, focusInput, scrollOutputs);

@@ -57,6 +57,7 @@ public class IronsSpellRegistry {
     }
 
     public static List<AbstractSpell> getSpellsForSchool(SchoolType schoolType) {
+
         var groupedBySchool = IronsSpellRegistry.REGISTRY.get()
                 .getValues()
                 .stream()

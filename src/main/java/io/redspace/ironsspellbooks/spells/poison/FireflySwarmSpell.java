@@ -30,8 +30,8 @@ public class FireflySwarmSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.radius", FireflySwarmProjectile.radius)
         );
     }
 
@@ -44,7 +44,7 @@ public class FireflySwarmSpell extends AbstractSpell {
 
     public FireflySwarmSpell() {
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 8;
+        this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
         this.castTime = 15;
         this.baseManaCost = 40;
@@ -77,8 +77,7 @@ public class FireflySwarmSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
-        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f, false);
-        return true;
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class FireflySwarmSpell extends AbstractSpell {
             }
         }
 
-        FireflySwarmProjectile fireflies = new FireflySwarmProjectile(level, entity, target);
+        FireflySwarmProjectile fireflies = new FireflySwarmProjectile(level, entity, target, getDamage(spellLevel, entity));
         fireflies.moveTo(spawn.add(0, .5, 0));
         level.addFreshEntity(fireflies);
 
@@ -108,10 +107,6 @@ public class FireflySwarmSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return this.getSpellPower(spellLevel, entity);
-    }
-
-    private int getDuration(int spellLevel, LivingEntity entity) {
-        return 100 + getLevel(spellLevel, entity) * 40;
+        return this.getSpellPower(spellLevel, entity) / 3f;
     }
 }

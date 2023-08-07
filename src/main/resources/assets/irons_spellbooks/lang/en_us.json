@@ -227,6 +227,7 @@
   "ui.irons_spellbooks.cast_error_target": "This spell requires a target.",
   "ui.irons_spellbooks.summon_despawn_message": "%s faded from this world.",
   "ui.irons_spellbooks.spell_target_warning": "%s is targeting you with %s!",
+  "ui.irons_spellbooks.spell_target_success": "%s targted with %s",
   "school.irons_spellbooks.fire": "Fire",
   "school.irons_spellbooks.ice": "Ice",
   "school.irons_spellbooks.lightning": "Lightning",
@@ -350,6 +351,7 @@
   "spell.irons_spellbooks.gust": "Gust",
   "spell.irons_spellbooks.chain_lightning": "Chain Lightning",
   "spell.irons_spellbooks.devour": "Devour",
+  "spell.irons_spellbooks.firefly_swarm": "Firefly Swarm",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -418,6 +420,7 @@
   "spell.irons_spellbooks.gust.guide": "Conjure a strong gust of wind, knocking back creatures in a conical shape, causing damage if they impact a wall",
   "spell.irons_spellbooks.chain_lightning.guide": "Start a chain of lightning from a targeted creature, causing waves of zapping magic to cascade to nearby creatures",
   "spell.irons_spellbooks.devour.guide": "Pull in a nearby creature and attack them with a bite, leeching 15% of damage done as health. If the creature is killed, you temporarily gain additional max HP. Created by the ancient magician known as Yorhavich",
+  "spell.irons_spellbooks.firefly_swarm.guide": "Emanate a swarm of violent fireflies, following a targeted creature and dealing aoe damage. If the initial target dies, the last harmed creature will be targeted.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -471,6 +474,7 @@
   "death.attack.irons_spellbooks.guiding_bolt": "%1$s was led to the grave by %2$s",
   "death.attack.irons_spellbooks.chain_lightning": "%1$s was zapped to death by %2$s",
   "death.attack.irons_spellbooks.devour": "%1$s was devoured by %2$s",
+  "death.attack.irons_spellbooks.firefly_swarm": "%1$s was swarmed by %2$s",
 
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
@@ -516,6 +520,7 @@
   "death.attack.irons_spellbooks.guiding_bolt.item": "%1$s was led to the grave by %2$s's %3$s",
   "death.attack.irons_spellbooks.chain_lightning.item": "%1$s was zapped to death by %2$s's %3$s",
   "death.attack.irons_spellbooks.devour.item": "%1$s was devoured by %2$s while using %3$s",
+  "death.attack.irons_spellbooks.firefly_swarm.item": "%1$s was swarmed by %2$s while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -623,6 +628,7 @@
   "entity.irons_spellbooks.gust": "Gust",
   "entity.irons_spellbooks.priest": "Priest",
   "entity.irons_spellbooks.devour_jaw": "Devour Jaw",
+  "entity.irons_spellbooks.firefly_swarm": "Firefly Swarm",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
