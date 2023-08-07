@@ -90,7 +90,7 @@ public class OakskinSpell extends AbstractSpell {
             double d1 = Mth.randomBetween(randomsource, 0F, 2f);
             double d2 = Mth.randomBetween(randomsource, -0.5F, 0.5F);
             var particleType = randomsource.nextFloat() < .1f ? ParticleHelper.FIREFLY : new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OAK_WOOD.defaultBlockState());
-            level.addParticle(particleType, entity.getX() + d0, entity.getY() + d1, entity.getZ() + d2, d0 * .05, 0.05, d1 * .05);
+            level.addParticle(particleType, entity.getX() + d0, entity.getY() + d1, entity.getZ() + d2, d0 * .05, 0.05, d2 * .05);
         }
         super.onClientCast(level, spellLevel, entity, castData);
     }

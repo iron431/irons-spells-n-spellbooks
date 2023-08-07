@@ -58,7 +58,7 @@ public class FireflyParticle extends TextureSheetParticle {
         float zj = (this.random.nextFloat() * .001f * wander * (this.random.nextBoolean() ? 1 : -1));
         wander *= .98f;
         if (onGround) {
-            yj = Math.abs(yj);
+            yd = Math.abs(yd);
         }
         this.xd += xj;
         this.yd += yj;
