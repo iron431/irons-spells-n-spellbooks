@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +16,7 @@ import net.minecraftforge.fluids.FluidType;
 
 import java.util.List;
 
-public abstract class AoeEntity extends Projectile {
+public abstract class AoeEntity extends Projectile implements NoKnockbackProjectile {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> DATA_CIRCULAR = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.BOOLEAN);
 

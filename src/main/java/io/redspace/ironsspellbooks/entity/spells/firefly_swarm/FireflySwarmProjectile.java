@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.firefly_swarm;
 
+import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.registry.IronsSpellRegistry;
@@ -21,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSusceptible {
+public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSusceptible/*, NoKnockbackProjectile*/ {
 
     public FireflySwarmProjectile(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -29,6 +30,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
         this.noPhysics = true;
         this.setNoGravity(true);
     }
+
     public FireflySwarmProjectile(Level level, @Nullable Entity owner, @Nullable Entity target, float damage) {
         this(EntityRegistry.FIREFLY_SWARM.get(), level);
         setOwner(owner);
@@ -37,7 +39,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
     }
 
 
-    static final int maxLife = 15 * 20;
+    static final int maxLife = 10 * 20;
     public static final float radius = 2f;
     UUID targetUUID;
     Entity cachedTarget;

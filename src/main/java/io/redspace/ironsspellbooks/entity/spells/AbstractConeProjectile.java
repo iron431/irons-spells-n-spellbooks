@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class AbstractConeProjectile extends Projectile{
+public abstract class AbstractConeProjectile extends Projectile implements NoKnockbackProjectile {
     protected static final int FAILSAFE_EXPIRE_TIME = 20 * 20;
     protected int age;
     protected float damage;
