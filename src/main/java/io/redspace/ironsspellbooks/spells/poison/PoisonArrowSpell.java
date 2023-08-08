@@ -77,4 +77,8 @@ public class PoisonArrowSpell extends AbstractSpell {
         return MagicArrowSpell.BOW_CHARGE_ANIMATION;
     }
 
+    @Override
+    public AnimationHolder getCastFinishAnimation() {
+        return AnimationHolder.none();
+    }
 }
