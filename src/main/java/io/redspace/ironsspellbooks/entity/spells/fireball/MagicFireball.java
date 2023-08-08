@@ -71,7 +71,7 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
                 if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), SchoolType.FIRE);
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.FIREBALL_SPELL.get().getSchoolType());
                 }
             }
             boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());

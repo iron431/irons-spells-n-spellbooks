@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.damage;
 
 import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
@@ -49,6 +50,9 @@ public class DamageSources {
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource, @Nullable SchoolType damageSchool) {
         if (target instanceof LivingEntity livingTarget) {
             //Todo: should this be handled in damage event? (would by where enchantments and stuff also get put)
+
+
+
             float adjustedDamage = baseAmount * getResist(livingTarget, damageSchool);
             boolean fromSummon = false;
             if (damageSource.getDirectEntity() instanceof MagicSummon summon) {
@@ -115,19 +119,9 @@ public class DamageSources {
      * Returns the resistance multiplier of the entity. (If they are resistant, the value is < 1)
      */
     public static float getResist(LivingEntity entity, SchoolType damageSchool) {
-//        if (damageSchool == null)
-//            return 1;
-//        else
-        return 2 - (float) Utils.softCapFormula(entity.getAttributeValue(AttributeRegistry.SPELL_RESIST.get()));
-//        return switch (damageSchool) {
-//            case FIRE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.FIRE_MAGIC_RESIST.get());
-//            case ICE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ICE_MAGIC_RESIST.get());
-//            case LIGHTNING -> 2 - (float) entity.getAttributeValue(AttributeRegistry.LIGHTNING_MAGIC_RESIST.get());
-//            case HOLY -> 2 - (float) entity.getAttributeValue(AttributeRegistry.HOLY_MAGIC_RESIST.get());
-//            case ENDER -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ENDER_MAGIC_RESIST.get());
-//            case BLOOD -> 2 - (float) entity.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
-//            case EVOCATION -> 2 - (float) entity.getAttributeValue(AttributeRegistry.EVOCATION_MAGIC_RESIST.get());
-//            default -> 1;
-//        };
+        if (damageSchool == null)
+            return 1;
+        else
+            return 2 - (float) Utils.softCapFormula(damageSchool.getResistanceFor(entity));
     }
 }

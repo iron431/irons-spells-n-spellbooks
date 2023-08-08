@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.nature;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
@@ -37,7 +39,7 @@ public class RootSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.NATURE)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.NATURE))
             .setMaxLevel(10)
             .setCooldownSeconds(35)
             .build();

@@ -61,7 +61,7 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.LIGHTNING_LANCE_SPELL.get().getDamageSource(this, getOwner()), SchoolType.LIGHTNING);
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.LIGHTNING_LANCE_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.LIGHTNING_LANCE_SPELL.get().getSchoolType());
 
     }
 

@@ -3,9 +3,11 @@ package io.redspace.ironsspellbooks.loot;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 
@@ -50,18 +52,7 @@ public class SpellFilter {
     public static SpellFilter deserializeSpellFilter(JsonObject json) {
         if (GsonHelper.isValidNode(json, "school")) {
             var schoolType = GsonHelper.getAsString(json, "school");
-            return switch (schoolType.toLowerCase()) {
-                case "fire" -> new SpellFilter(SchoolType.FIRE);
-                case "ice" -> new SpellFilter(SchoolType.ICE);
-                case "lightning" -> new SpellFilter(SchoolType.LIGHTNING);
-                case "holy" -> new SpellFilter(SchoolType.HOLY);
-                case "ender" -> new SpellFilter(SchoolType.ENDER);
-                case "blood" -> new SpellFilter(SchoolType.BLOOD);
-                case "evocation" -> new SpellFilter(SchoolType.EVOCATION);
-                //case "void" -> new SpellFilter(SchoolType.VOID);
-                case "nature" -> new SpellFilter(SchoolType.NATURE);
-                default -> new SpellFilter();
-            };
+            return new SpellFilter(SchoolRegistry.getSchool(new ResourceLocation(schoolType)));
         } else if (GsonHelper.isArrayNode(json, "spells")) {
             var spellsFromJson = GsonHelper.getAsJsonArray(json, "spells");
             List<AbstractSpell> applicableSpellList = new ArrayList<>();

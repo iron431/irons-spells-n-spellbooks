@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.holy;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
 import io.redspace.ironsspellbooks.network.spell.ClientboundRegenCloudParticles;
@@ -35,7 +37,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.HOLY)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.HOLY))
             .setMaxLevel(5)
             .setCooldownSeconds(35)
             .setEnabled(false)

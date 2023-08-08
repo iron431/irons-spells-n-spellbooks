@@ -65,7 +65,8 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
                 }
 
                 if (los) {
-                    DamageSources.applyDamage(livingentity, this.getDamage(), SpellRegistry.FIRECRACKER_SPELL.get().getDamageSource(this, getOwner()), SchoolType.EVOCATION);
+                    var spell = SpellRegistry.FIRECRACKER_SPELL.get();
+                    DamageSources.applyDamage(livingentity, this.getDamage(), spell.getDamageSource(this, getOwner()), spell.getSchoolType());
                 }
             }
         }

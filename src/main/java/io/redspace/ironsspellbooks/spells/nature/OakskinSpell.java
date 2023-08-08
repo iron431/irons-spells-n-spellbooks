@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.nature;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -44,7 +46,7 @@ public class OakskinSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.NATURE)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.NATURE))
             .setMaxLevel(8)
             .setCooldownSeconds(35)
             .build();

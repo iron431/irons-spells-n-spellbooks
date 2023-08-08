@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.gui.scroll_forge;
 
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -112,7 +113,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && !spell.equals(SpellRegistry.none())&& spell.getSchoolType() == SchoolType.getSchoolFromItem(focusStack)) {
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && !spell.equals(SpellRegistry.none())&& spell.getSchoolType() == SchoolRegistry.getSchoolFromFocus(focusStack)) {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);

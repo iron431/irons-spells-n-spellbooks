@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.spells.lightning;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -33,7 +35,7 @@ public class ChainLightningSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.LIGHTNING)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.LIGHTNING))
             .setMaxLevel(10)
             .setCooldownSeconds(20)
             .build();

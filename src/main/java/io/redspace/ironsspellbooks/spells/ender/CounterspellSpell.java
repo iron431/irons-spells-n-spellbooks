@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.ender;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
@@ -57,7 +59,7 @@ public class CounterspellSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.ENDER)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ENDER))
             .setMaxLevel(1)
             .setCooldownSeconds(15)
             .build();

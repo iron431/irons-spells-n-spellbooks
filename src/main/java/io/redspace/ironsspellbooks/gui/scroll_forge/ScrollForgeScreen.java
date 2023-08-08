@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui.scroll_forge;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -160,7 +161,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         ItemStack focusStack = menu.getFocusSlot().getItem();
         IronsSpellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.focus: {}", focusStack.getItem());
         if (!focusStack.isEmpty() && focusStack.is(ModTags.SCHOOL_FOCUS)) {
-            SchoolType school = SchoolType.getSchoolFromItem(focusStack);
+            SchoolType school = SchoolRegistry.getSchoolFromFocus(focusStack);
             //irons_spellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.school: {}", school.toString());
             var spells = SpellRegistry.getSpellsForSchool(school);
             for (int i = 0; i < spells.size(); i++) {

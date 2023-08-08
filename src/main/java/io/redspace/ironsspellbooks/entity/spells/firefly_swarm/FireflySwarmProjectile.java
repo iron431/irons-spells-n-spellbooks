@@ -95,7 +95,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
             this.level.getEntities(this, this.getBoundingBox().inflate(inflate), this::canHitEntity).forEach(
                     (entity) -> {
                         if (canHitEntity(entity)) {
-                            boolean hit = DamageSources.applyDamage(entity, damage, SpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE);
+                            boolean hit = DamageSources.applyDamage(entity, damage, SpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.FIREFLY_SWARM_SPELL.get().getSchoolType());
                             if (hit) {
                                 if (target == null) {
                                     setTarget(entity);

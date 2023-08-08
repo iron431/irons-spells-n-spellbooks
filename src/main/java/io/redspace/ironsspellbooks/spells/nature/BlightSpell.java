@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.spells.nature;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -36,7 +38,7 @@ public class BlightSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.NATURE)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.NATURE))
             .setMaxLevel(8)
             .setCooldownSeconds(35)
             .build();

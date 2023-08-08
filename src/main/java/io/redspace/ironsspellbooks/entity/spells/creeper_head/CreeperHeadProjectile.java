@@ -100,7 +100,7 @@ public class CreeperHeadProjectile extends WitherSkull implements AntiMagicSusce
                     if (entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying() && !canHitEntity(entity))
                         break;
                     float damage = (float) (this.damage * (1 - Math.pow(distance / (explosionRadius), 2)));
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.LOB_CREEPER_SPELL.get().getDamageSource(this, getOwner()), SchoolType.EVOCATION);
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.LOB_CREEPER_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.LOB_CREEPER_SPELL.get().getSchoolType());
                     entity.invulnerableTime = 0;
                     if (chainOnKill && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying())
                         ChainCreeperSpell.summonCreeperRing(this.level, this.getOwner() instanceof LivingEntity livingOwner ? livingOwner : null, livingEntity.getEyePosition(), this.damage * .85f, 3);

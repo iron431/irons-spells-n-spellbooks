@@ -46,7 +46,7 @@ public class Sunbeam extends AoeEntity implements AntiMagicSusceptible {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        DamageSources.applyDamage(target, getDamage(), SpellRegistry.SUNBEAM_SPELL.get().getDamageSource(this, getOwner()), SchoolType.HOLY);
+        DamageSources.applyDamage(target, getDamage(), SpellRegistry.SUNBEAM_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.SUNBEAM_SPELL.get().getSchoolType());
     }
 
     @Override

@@ -79,7 +79,7 @@ public class Comet extends AbstractMagicProjectile {
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
                 if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.STARFALL_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ENDER);
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.STARFALL_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.STARFALL_SPELL.get().getSchoolType());
                 }
             }
             this.discard();

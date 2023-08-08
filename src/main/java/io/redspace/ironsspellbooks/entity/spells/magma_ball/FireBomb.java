@@ -70,7 +70,7 @@ public class FireBomb extends AbstractMagicProjectile {
                 if (Utils.hasLineOfSight(level, hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.MAGMA_BOMB_SPELL.get().getDamageSource(this, getOwner()), SchoolType.FIRE);
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.MAGMA_BOMB_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.MAGMA_BOMB_SPELL.get().getSchoolType());
                 }
             }
         }

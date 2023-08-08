@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.config;
 
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 
@@ -7,7 +8,7 @@ import java.util.function.Consumer;
 
 public class DefaultConfig {
     public SpellRarity minRarity;
-    public SchoolType school;
+    public SchoolRegistryHolder school;
     public int maxLevel = -1;
     public boolean enabled = true;
     public double cooldownInSeconds = -1;
@@ -40,7 +41,7 @@ public class DefaultConfig {
         return this;
     }
 
-    public DefaultConfig setSchool(SchoolType school) {
+    public DefaultConfig setSchool(SchoolRegistryHolder school) {
         this.school = school;
         return this;
     }

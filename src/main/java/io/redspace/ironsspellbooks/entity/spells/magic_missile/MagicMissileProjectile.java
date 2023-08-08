@@ -65,7 +65,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
         super.onHitEntity(entityHitResult);
         //irons_spellbooks.LOGGER.debug("MagicMissileProjectile.onHitEntity");
 
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.MAGIC_MISSILE_SPELL.get().getDamageSource(this, getOwner()), SchoolType.ENDER);
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.MAGIC_MISSILE_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.MAGIC_MISSILE_SPELL.get().getSchoolType());
         discard();
 
     }

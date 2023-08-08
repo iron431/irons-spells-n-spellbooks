@@ -124,7 +124,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void replaceRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityType.SMALL_FIREBALL, (context) -> new ReplacedFireballRenderer(context, 0.75f, .75f));
-        event.registerEntityRenderer(EntityType.FIREBALL, (context) -> new ReplacedFireballRenderer(context, 1.75f, 3f));
+        event.registerEntityRenderer(EntityType.FIREBALL, (context) -> new ReplacedFireballRenderer(context, 1.25f, 3f));
     }
 
     @SubscribeEvent
@@ -215,7 +215,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoidRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SMALL_FIREBALL_PROJECTILE.get(), (context) -> new FireballRenderer(context, 0.75f));
         event.registerEntityRenderer(EntityRegistry.COMET.get(), (context) -> new CometRenderer(context, 0.75f));
-        event.registerEntityRenderer(EntityRegistry.MAGIC_FIREBALL.get(), (context) -> new FireballRenderer(context, 1.75f));
+        event.registerEntityRenderer(EntityRegistry.MAGIC_FIREBALL.get(), (context) -> new FireballRenderer(context, 1.25f));
         event.registerEntityRenderer(EntityRegistry.SUMMONED_POLAR_BEAR.get(), PolarBearRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEAD_KING.get(), DeadKingRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingRenderer::new);
@@ -276,12 +276,12 @@ public class ClientSetup {
             ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"),
                     new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag())));
 
-            ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
-                    (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue());
+            //ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
+            //        (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue());
             //ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("spell"),
             //        (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getValue());
-            ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("school"),
-                    (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue());
+            //ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("school"),
+            //        (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue());
             //ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("spell"),
             //        (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpellId());
 

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.jei;
 
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
@@ -41,7 +42,7 @@ public final class ScrollForgeRecipeMaker {
                 .map(item -> {
                     var paperInput = new ItemStack(Items.PAPER);
                     var focusInput = new ItemStack(item);
-                    var school = SchoolType.getSchoolFromItem(focusInput);
+                    var school = SchoolRegistry.getSchoolFromFocus(focusInput);
                     var spells = SpellRegistry.getSpellsForSchool(school);
                     var scrollOutputs = new ArrayList<ItemStack>();
                     var inkOutputs = new ArrayList<ItemStack>();

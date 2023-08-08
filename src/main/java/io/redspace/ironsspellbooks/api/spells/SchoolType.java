@@ -1,56 +1,81 @@
 package io.redspace.ironsspellbooks.api.spells;
 
-import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
 
-public enum SchoolType {
-    FIRE(0),
-    ICE(1),
-    LIGHTNING(2),
-    HOLY(3),
-    ENDER(4),
-    BLOOD(5),
-    EVOCATION(6),
-    //VOID(7),
-    NATURE(8);
+import java.util.Optional;
 
-    private final int value;
+public class SchoolType {
+//    FIRE(0),
+//    ICE(1),
+//    LIGHTNING(2),
+//    HOLY(3),
+//    ENDER(4),
+//    BLOOD(5),
+//    EVOCATION(6),
+//    //VOID(7),
+//    NATURE(8);
 
-    SchoolType(final int newValue) {
-        value = newValue;
+    final ResourceLocation id;
+    final TagKey<Item> focus;
+    final Component displayName;
+    final Style displayStyle;
+//    final PlaceholderDamageType damageType;
+    final LazyOptional<Attribute> powerAttribute;
+    final LazyOptional<Attribute> resistanceAttribute;
+    final LazyOptional<SoundEvent> defaultCastSound;
+
+    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, LazyOptional<Attribute> powerAttribute, LazyOptional<Attribute> resistanceAttribute, LazyOptional<SoundEvent> defaultCastSound) {
+        this.id = id;
+        this.focus = focus;
+        this.displayName = displayName;
+        this.displayStyle = displayName.getStyle();
+        this.powerAttribute = powerAttribute;
+        this.resistanceAttribute = resistanceAttribute;
+        this.defaultCastSound = defaultCastSound;
     }
 
-    public int getValue() {
-        return value;
+    public double getResistanceFor(LivingEntity livingEntity) {
+        var resistanceAttribute = this.resistanceAttribute.orElse(null);
+        if (resistanceAttribute != null) {
+            return livingEntity.getAttributeValue(resistanceAttribute);
+        } else {
+            return 1;
+        }
+    }
+
+    public double getPowerFor(LivingEntity livingEntity) {
+        var powerAttribute = this.powerAttribute.orElse(null);
+        if (powerAttribute != null) {
+            return livingEntity.getAttributeValue(powerAttribute);
+        } else {
+            return 1;
+        }
+    }
+
+    public SoundEvent getCastSound() {
+        return defaultCastSound.resolve().get();
+    }
+
+    public ResourceLocation getId() {
+        return id;
     }
 
     public Component getDisplayName() {
-        return DISPLAYS[getValue()];
+        return displayName;
     }
 
-    public static SchoolType getSchoolFromItem(ItemStack stack) {
-        if (stack.is(ModTags.FIRE_FOCUS)) {
-            return FIRE;
-        } else if (stack.is(ModTags.ICE_FOCUS)) {
-            return ICE;
-        } else if (stack.is(ModTags.LIGHTNING_FOCUS)) {
-            return LIGHTNING;
-        } else if (stack.is(ModTags.HOLY_FOCUS)) {
-            return HOLY;
-        } else if (stack.is(ModTags.ENDER_FOCUS)) {
-            return ENDER;
-        } else if (stack.is(ModTags.BLOOD_FOCUS)) {
-            return BLOOD;
-        } else if (stack.is(ModTags.EVOCATION_FOCUS)) {
-            return EVOCATION;
-//        }else if (stack.is(ModTags.VOID_FOCUS)) {
-//            return VOID;
-        }else if (stack.is(ModTags.NATURE_FOCUS)) {
-            return NATURE;
-        } else return null;
+    public boolean isFocus(ItemStack itemStack) {
+        return itemStack.is(focus);
     }
 
     public static final Component DISPLAY_FIRE = Component.translatable("school.irons_spellbooks.fire").withStyle(ChatFormatting.GOLD);

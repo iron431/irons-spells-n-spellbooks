@@ -173,28 +173,19 @@ public abstract class AbstractSpell {
 
     public float getSpellPower(int spellLevel, @Nullable Entity sourceEntity) {
 
-        float entitySpellPowerModifier = 1;
-        float entitySchoolPowerModifier = 1;
+        double entitySpellPowerModifier = 1;
+        double entitySchoolPowerModifier = 1;
 
         float configPowerModifier = (float) ServerConfigs.getSpellConfig(this).powerMultiplier();
         int level = getLevel(spellLevel, null);
         if (sourceEntity instanceof LivingEntity livingEntity) {
             level = getLevel(spellLevel, livingEntity);
             entitySpellPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
-            switch (this.getSchoolType()) {
-                case FIRE -> entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.FIRE_SPELL_POWER.get());
-                case ICE -> entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.ICE_SPELL_POWER.get());
-                case LIGHTNING -> entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.LIGHTNING_SPELL_POWER.get());
-                case HOLY -> entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.HOLY_SPELL_POWER.get());
-                case ENDER -> entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.ENDER_SPELL_POWER.get());
-                case BLOOD -> entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER.get());
-                case EVOCATION -> entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.EVOCATION_SPELL_POWER.get());
-                case NATURE -> entitySchoolPowerModifier = (float) livingEntity.getAttributeValue(AttributeRegistry.NATURE_SPELL_POWER.get());
-            }
+            entitySchoolPowerModifier = this.getSchoolType().getPowerFor(livingEntity);
         }
 
 
-        return (baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier;
+        return (float) ((baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier);
     }
 
     public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
@@ -344,18 +335,7 @@ public abstract class AbstractSpell {
     }
 
     private SoundEvent defaultCastSound() {
-        return switch (this.getSchoolType()) {
-
-            case FIRE -> SoundRegistry.FIRE_CAST.get();
-            case ICE -> SoundRegistry.ICE_CAST.get();
-            case LIGHTNING -> SoundRegistry.LIGHTNING_CAST.get();
-            case HOLY -> SoundRegistry.HOLY_CAST.get();
-            case ENDER -> SoundRegistry.ENDER_CAST.get();
-            case BLOOD -> SoundRegistry.BLOOD_CAST.get();
-            case EVOCATION -> SoundRegistry.EVOCATION_CAST.get();
-            case NATURE -> SoundRegistry.NATURE_CAST.get();
-            default -> SoundRegistry.EVOCATION_CAST.get();
-        };
+        return this.getSchoolType().getCastSound();
     }
 
     /**

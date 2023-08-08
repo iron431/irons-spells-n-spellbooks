@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.particle.ZapParticleOption;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class ChainLightning extends AbstractMagicProjectile {
     List<Entity> allVictims;
@@ -32,6 +34,7 @@ public class ChainLightning extends AbstractMagicProjectile {
     public int maxConnections = 4;
     public int maxConnectionsPerWave = 3;
     public float range = 3f;
+    private final static Supplier<AbstractSpell> SPELL = SpellRegistry.CHAIN_LIGHTNING_SPELL;
 
     public ChainLightning(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -89,7 +92,7 @@ public class ChainLightning extends AbstractMagicProjectile {
 
     public void doHurt(Entity victim) {
         hits++;
-        DamageSources.applyDamage(victim, damage, SpellRegistry.CHAIN_LIGHTNING_SPELL.get().getDamageSource(this, getOwner()), SchoolType.LIGHTNING);
+        DamageSources.applyDamage(victim, damage, SPELL.get().getDamageSource(this, getOwner()), SPELL.get().getSchoolType());
         MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, victim.getX(), victim.getY() + victim.getBbHeight() / 2, victim.getZ(), 10, victim.getBbWidth() / 3, victim.getBbHeight() / 3, victim.getBbWidth() / 3, 0.1, false);
 
         lastVictims.add(victim);

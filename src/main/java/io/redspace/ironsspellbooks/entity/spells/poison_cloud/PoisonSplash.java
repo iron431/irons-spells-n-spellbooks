@@ -76,7 +76,7 @@ public class PoisonSplash extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.POISON_SPLASH_SPELL.get().getDamageSource(this, getOwner()), SchoolType.NATURE))
+        if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.POISON_SPLASH_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.POISON_SPLASH_SPELL.get().getSchoolType()))
             target.addEffect(new MobEffectInstance(MobEffects.POISON, getEffectDuration(), 0));
     }
 

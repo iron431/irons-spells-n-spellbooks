@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
@@ -35,7 +37,7 @@ public class BurningDashSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.FIRE)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.FIRE))
             .setMaxLevel(10)
             .setCooldownSeconds(10)
             .build();
@@ -116,7 +118,7 @@ public class BurningDashSpell extends AbstractSpell {
         //Deal Shockwave Damage and particles
         world.getEntities(entity, entity.getBoundingBox().inflate(4)).forEach((target) -> {
             if (target.distanceToSqr(entity) < 16) {
-                if (DamageSources.applyDamage(target, getDamage(spellLevel, entity), SpellRegistry.BURNING_DASH_SPELL.get().getDamageSource(entity), SchoolType.FIRE))
+                if (DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity), getSchoolType()))
                     target.setSecondsOnFire(3);
             }
         });

@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.blood;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.network.spell.ClientboundBloodSiphonParticles;
@@ -28,7 +30,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "ray_of_siphoning");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.BLOOD)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.BLOOD))
             .setMaxLevel(10)
             .setCooldownSeconds(15)
             .build();
@@ -78,7 +80,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
-                if (DamageSources.applyDamage(target, getTickDamage(spellLevel, entity), getDamageSource(entity), SchoolType.BLOOD)) {
+                if (DamageSources.applyDamage(target, getTickDamage(spellLevel, entity), getDamageSource(entity), getSchoolType())) {
                     entity.heal(getTickDamage(spellLevel, entity));
                     Messages.sendToPlayersTrackingEntity(new ClientboundBloodSiphonParticles(target.position().add(0, target.getBbHeight() / 2, 0), entity.position().add(0, entity.getBbHeight() / 2, 0)), entity, true);
                 }

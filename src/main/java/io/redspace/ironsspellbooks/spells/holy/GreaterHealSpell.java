@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
@@ -29,7 +31,7 @@ public class GreaterHealSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.HOLY)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.HOLY))
             .setMaxLevel(1)
             .setCooldownSeconds(45)
             .build();

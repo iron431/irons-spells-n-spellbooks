@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
@@ -23,7 +25,7 @@ public class BloodNeedlesSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_needles");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.BLOOD))
             .setMaxLevel(10)
             .setCooldownSeconds(10)
             .build();

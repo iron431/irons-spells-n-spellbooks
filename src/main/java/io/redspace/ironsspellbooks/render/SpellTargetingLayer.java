@@ -66,10 +66,11 @@ public class SpellTargetingLayer {
             return new Vector3f(.85f, 0, 0);
         }
         //By School Otherwise
-        return switch (SpellRegistry.getSpell(spellId).getSchoolType()) {
-            case HOLY -> new Vector3f(.85f, .75f, .25f);
-            case ICE -> new Vector3f(.25f, .25f, 1f);
-            case NATURE -> new Vector3f(.41f, .88f, .22f);
+        return switch (SpellRegistry.getSpell(spellId).getSchoolType().getId().getPath()) {
+            //TODO: store target color on school
+            case "holy" -> new Vector3f(.85f, .75f, .25f);
+            case "ice" -> new Vector3f(.25f, .25f, 1f);
+            case "nature" -> new Vector3f(.41f, .88f, .22f);
             default -> new Vector3f(.8f, .8f, .8f);
         };
     }

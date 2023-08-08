@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -35,7 +37,7 @@ public class BloodStepSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_step");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.BLOOD))
             .setMaxLevel(5)
             .setCooldownSeconds(5)
             .build();

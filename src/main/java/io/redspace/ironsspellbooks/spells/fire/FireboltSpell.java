@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -27,7 +29,7 @@ public class FireboltSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.FIRE)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.FIRE))
             .setMaxLevel(10)
             .setCooldownSeconds(1)
             .build();

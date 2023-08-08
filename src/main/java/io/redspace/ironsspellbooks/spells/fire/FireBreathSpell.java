@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
@@ -31,7 +33,7 @@ public class FireBreathSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.FIRE)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.FIRE))
             .setMaxLevel(10)
             .setCooldownSeconds(12)
             .build();

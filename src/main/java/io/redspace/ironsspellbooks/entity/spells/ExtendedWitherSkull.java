@@ -38,13 +38,6 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
-        Entity entity = pResult.getEntity();
-        DamageSources.applyDamage(entity, damage, SpellRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this, getOwner()), SchoolType.BLOOD);
- //Ironsspellbooks.logger.debug("hmm.");
-    }
-
-    @Override
     protected void onHit(HitResult hitResult) {
 
         if (!this.level.isClientSide) {
@@ -54,7 +47,8 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
                 double distance = entity.distanceToSqr(hitResult.getLocation());
                 if (distance < explosionRadius * explosionRadius  && canHitEntity(entity)) {
                     float damage = (float) (this.damage * (1 - distance / (explosionRadius * explosionRadius)));
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this, getOwner()), SchoolType.BLOOD);
+                    var spell = SpellRegistry.WITHER_SKULL_SPELL.get();
+                    DamageSources.applyDamage(entity, damage, spell.getDamageSource(this, getOwner()), spell.getSchoolType());
                 }
             }
 

@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.lightning;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLightningBolt;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -31,7 +33,7 @@ public class LightningBoltSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
-            .setSchool(SchoolType.LIGHTNING)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.LIGHTNING))
             .setMaxLevel(10)
             .setCooldownSeconds(25)
             .build();

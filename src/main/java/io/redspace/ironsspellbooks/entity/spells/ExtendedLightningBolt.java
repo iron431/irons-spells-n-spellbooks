@@ -36,7 +36,8 @@ public class ExtendedLightningBolt extends LightningBolt {
                 List<Entity> list1 = this.level.getEntities(this, new AABB(this.getX() - 3.0D, this.getY() - 3.0D, this.getZ() - 3.0D, this.getX() + 3.0D, this.getY() + 6.0D + 3.0D, this.getZ() + 3.0D), Entity::isAlive);
 
                 for (Entity entity : list1) {
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.LIGHTNING_BOLT_SPELL.get().getDamageSource(owner), SchoolType.LIGHTNING);
+                    var spell = SpellRegistry.LIGHTNING_BOLT_SPELL.get();
+                    DamageSources.applyDamage(entity, damage, spell.getDamageSource(owner), spell.getSchoolType());
                 }
             }
         }

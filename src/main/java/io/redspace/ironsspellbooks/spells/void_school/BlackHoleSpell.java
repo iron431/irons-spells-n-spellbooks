@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.spells.void_school;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -37,7 +39,7 @@ public class BlackHoleSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
-            .setSchool(SchoolType.ENDER)
+            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ENDER))
             .setMaxLevel(6)
             .setCooldownSeconds(120)
             .build();
