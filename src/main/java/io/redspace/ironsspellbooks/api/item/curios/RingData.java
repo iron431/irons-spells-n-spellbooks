@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.api.item.curios;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class RingData {
@@ -31,5 +32,9 @@ public class RingData {
 
     public AbstractSpell getSpell() {
         return SpellRegistry.getSpell(spellId);
+    }
+
+    public String getNameForItem(){
+        return getSpell() == SpellRegistry.none() ? Component.translatable("tooltip.irons_spellbooks.no_affinity").getString() : getSpell().getSchoolType().getDisplayName().getString();
     }
 }

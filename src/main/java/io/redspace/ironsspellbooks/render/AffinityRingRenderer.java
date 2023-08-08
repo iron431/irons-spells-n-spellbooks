@@ -16,35 +16,45 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public class SpecialItemRenderer extends BlockEntityWithoutLevelRenderer {
+public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
+
 
     private final ItemRenderer renderer;
-    public final BakedModel guiModel;
-    public final BakedModel normalModel;
+    private final ResourceLocation defaultModel = IronsSpellbooks.id("item/affinity_ring_evocation");
 
-    public SpecialItemRenderer(ItemRenderer renderDispatcher, EntityModelSet modelSet, String name) {
+    public AffinityRingRenderer(ItemRenderer renderDispatcher, EntityModelSet modelSet) {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), modelSet);
         this.renderer = renderDispatcher;
-        this.guiModel = renderer.getItemModelShaper().getModelManager().getModel(new ResourceLocation(IronsSpellbooks.MODID, "item/" + name + "_gui"));
-        this.normalModel = renderer.getItemModelShaper().getModelManager().getModel(new ResourceLocation(IronsSpellbooks.MODID, "item/" + name + "_normal"));
     }
 
     @Override
     public void renderByItem(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f);
+
         BakedModel model;
+        if (!RingData.hasRingData(itemStack)) {
+            model = renderer.getItemModelShaper().getModelManager().getModel(defaultModel);
+        } else {
+            ResourceLocation modelResource = getAffinityRingModelLocation(RingData.getRingData(itemStack).getSpell().getSchoolType().getId());
+            model = renderer.getItemModelShaper().getModelManager().getModel(modelResource);
+        }
+
         if (transformType == ItemTransforms.TransformType.GUI) {
             Lighting.setupForFlatItems();
-            model = this.guiModel;
             renderer.render(itemStack, transformType, false, poseStack, bufferSource, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, model);
             Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
             Lighting.setupFor3DItems();
         } else {
-            model = this.normalModel;
             boolean leftHand = transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
             renderer.render(itemStack, transformType, leftHand, poseStack, bufferSource, combinedLightIn, combinedOverlayIn, model);
         }
         poseStack.popPose();
+    }
+
+    public static ResourceLocation getAffinityRingModelLocation(ResourceLocation schoolResource) {
+        String namespace = schoolResource.getNamespace();
+        String schoolName = schoolResource.getPath();
+        return new ResourceLocation(namespace, "item/affinity_ring_" + schoolName);
     }
 }

@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.spells.AutoSchoolConfig;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.render.AffinityRingRenderer;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
@@ -14,8 +15,10 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -24,7 +27,6 @@ import net.minecraftforge.registries.RegistryObject;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-@AutoSchoolConfig
 public class SchoolRegistry {
     public static final ResourceKey<Registry<SchoolType>> SCHOOL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(IronsSpellbooks.MODID, "schools"));
     private static final DeferredRegister<SchoolType> SCHOOLS = DeferredRegister.create(SCHOOL_REGISTRY_KEY, IronsSpellbooks.MODID);
@@ -32,6 +34,7 @@ public class SchoolRegistry {
 
     public static void register(IEventBus eventBus) {
         SCHOOLS.register(eventBus);
+        eventBus.addListener(SchoolRegistry::clientSetup);
     }
 
     /**
@@ -71,5 +74,11 @@ public class SchoolRegistry {
             }
         }
         return null;
+    }
+
+    public static void clientSetup(ModelEvent.RegisterAdditional event) {
+        for (SchoolType schoolType : REGISTRY.get().getValues()) {
+            event.register(AffinityRingRenderer.getAffinityRingModelLocation(schoolType.getId()));
+        }
     }
 }

@@ -177,6 +177,8 @@
   "tooltip.irons_spellbooks.ink_tooltip": "Can Craft %s Scrolls",
   "tooltip.irons_spellbooks.upgrade_plus_format": "%s +%d",
   "tooltip.irons_spellbooks.enhance_spell_level": " +1 level to %s",
+  "tooltip.irons_spellbooks.empty_affinity_ring": "This ring seems to be empty",
+  "tooltip.irons_spellbooks.no_affinity": "No",
   "tooltip.irons_spellbooks.instant_mana_description": " Restores %d Mana +%d%% Max Mana",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",
