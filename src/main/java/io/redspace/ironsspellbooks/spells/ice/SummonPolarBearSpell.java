@@ -35,7 +35,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ICE))
+            .setSchool(SchoolRegistry.SCHOOL_ICE)
             .setMaxLevel(10)
             .setCooldownSeconds(180)
             .build();

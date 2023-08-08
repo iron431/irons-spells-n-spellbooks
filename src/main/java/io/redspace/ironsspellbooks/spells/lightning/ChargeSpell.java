@@ -37,7 +37,7 @@ public class ChargeSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.LIGHTNING))
+            .setSchool(SchoolRegistry.SCHOOL_LIGHTNING)
             .setMaxLevel(3)
             .setCooldownSeconds(40)
             .build();

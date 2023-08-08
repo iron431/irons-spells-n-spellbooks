@@ -33,7 +33,7 @@ public class LightningBoltSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.LIGHTNING))
+            .setSchool(SchoolRegistry.SCHOOL_LIGHTNING)
             .setMaxLevel(10)
             .setCooldownSeconds(25)
             .build();

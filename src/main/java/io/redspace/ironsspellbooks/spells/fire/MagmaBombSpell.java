@@ -35,7 +35,7 @@ public class MagmaBombSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.FIRE))
+            .setSchool(SchoolRegistry.SCHOOL_FIRE)
             .setMaxLevel(8)
             .setCooldownSeconds(12)
             .build();

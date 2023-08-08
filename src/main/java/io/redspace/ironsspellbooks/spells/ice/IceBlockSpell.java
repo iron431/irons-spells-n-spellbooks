@@ -36,7 +36,7 @@ public class IceBlockSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ICE))
+            .setSchool(SchoolRegistry.SCHOOL_ICE)
             .setMaxLevel(6)
             .setCooldownSeconds(15)
             .build();

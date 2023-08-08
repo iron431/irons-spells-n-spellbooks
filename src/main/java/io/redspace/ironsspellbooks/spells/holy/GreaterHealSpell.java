@@ -31,7 +31,7 @@ public class GreaterHealSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.HOLY))
+            .setSchool(SchoolRegistry.SCHOOL_HOLY)
             .setMaxLevel(1)
             .setCooldownSeconds(45)
             .build();

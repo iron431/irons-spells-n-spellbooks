@@ -33,7 +33,7 @@ public class LobCreeperSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.EVOCATION))
+            .setSchool(SchoolRegistry.SCHOOL_EVOCATION)
             .setMaxLevel(10)
             .setCooldownSeconds(2)
             .build();

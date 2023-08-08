@@ -25,7 +25,7 @@ public class PoisonArrowSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "poison_arrow");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.NATURE))
+            .setSchool(SchoolRegistry.SCHOOL_NATURE)
             .setMaxLevel(10)
             .setCooldownSeconds(15)
             .build();

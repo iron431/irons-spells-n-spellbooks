@@ -37,7 +37,7 @@ public class ChainCreeperSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.EVOCATION))
+            .setSchool(SchoolRegistry.SCHOOL_EVOCATION)
             .setMaxLevel(6)
             .setCooldownSeconds(15)
             .build();

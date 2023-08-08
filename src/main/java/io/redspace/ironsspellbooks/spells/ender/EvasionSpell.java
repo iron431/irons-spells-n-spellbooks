@@ -29,7 +29,7 @@ public class EvasionSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ENDER))
+            .setSchool(SchoolRegistry.SCHOOL_ENDER)
             .setMaxLevel(5)
             .setCooldownSeconds(180)
             .build();

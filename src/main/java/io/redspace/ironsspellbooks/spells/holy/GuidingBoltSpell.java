@@ -31,7 +31,7 @@ public class GuidingBoltSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.HOLY))
+            .setSchool(SchoolRegistry.SCHOOL_HOLY)
             .setMaxLevel(10)
             .setCooldownSeconds(8)
             .build();

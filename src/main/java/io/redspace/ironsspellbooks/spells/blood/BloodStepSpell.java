@@ -37,7 +37,7 @@ public class BloodStepSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_step");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.BLOOD))
+            .setSchool(SchoolRegistry.SCHOOL_BLOOD)
             .setMaxLevel(5)
             .setCooldownSeconds(5)
             .build();

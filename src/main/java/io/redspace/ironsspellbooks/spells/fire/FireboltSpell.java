@@ -29,7 +29,7 @@ public class FireboltSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.FIRE))
+            .setSchool(SchoolRegistry.SCHOOL_FIRE)
             .setMaxLevel(10)
             .setCooldownSeconds(1)
             .build();

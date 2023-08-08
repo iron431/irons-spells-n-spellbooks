@@ -35,7 +35,7 @@ public class ChainLightningSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.LIGHTNING))
+            .setSchool(SchoolRegistry.SCHOOL_LIGHTNING)
             .setMaxLevel(10)
             .setCooldownSeconds(20)
             .build();

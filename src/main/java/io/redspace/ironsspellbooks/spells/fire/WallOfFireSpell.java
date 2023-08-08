@@ -42,7 +42,7 @@ public class WallOfFireSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.FIRE))
+            .setSchool(SchoolRegistry.SCHOOL_FIRE)
             .setMaxLevel(5)
             .setCooldownSeconds(20)
             .build();

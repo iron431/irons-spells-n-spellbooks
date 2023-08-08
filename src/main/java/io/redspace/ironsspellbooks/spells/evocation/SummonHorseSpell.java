@@ -36,7 +36,7 @@ public class SummonHorseSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.EVOCATION))
+            .setSchool(SchoolRegistry.SCHOOL_EVOCATION)
             .setMaxLevel(5)
             .setCooldownSeconds(20)
             .build();

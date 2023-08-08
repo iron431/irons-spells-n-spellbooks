@@ -38,7 +38,7 @@ public class PoisonSplashSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.NATURE))
+            .setSchool(SchoolRegistry.SCHOOL_NATURE)
             .setMaxLevel(10)
             .setCooldownSeconds(20)
             .build();

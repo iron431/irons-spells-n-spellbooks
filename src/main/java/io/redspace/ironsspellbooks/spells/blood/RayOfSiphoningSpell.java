@@ -30,7 +30,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "ray_of_siphoning");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.BLOOD))
+            .setSchool(SchoolRegistry.SCHOOL_BLOOD)
             .setMaxLevel(10)
             .setCooldownSeconds(15)
             .build();

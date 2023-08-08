@@ -36,7 +36,7 @@ public class SunbeamSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.HOLY))
+            .setSchool(SchoolRegistry.SCHOOL_HOLY)
             .setMaxLevel(10)
             .setCooldownSeconds(20)
             .setEnabled(false)

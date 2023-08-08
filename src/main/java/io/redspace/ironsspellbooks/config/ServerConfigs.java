@@ -95,8 +95,8 @@ public class ServerConfigs {
                 .stream()
                 .collect(Collectors.groupingBy(x -> x.getDefaultConfig().school))
                 .forEach((school, spells) -> {
-                    //TODO: be able to register schools
-                    //BUILDER.comment(school.get().getDisplayName().getString().toLowerCase());
+//                    TODO: be able to register schools
+                    BUILDER.comment(school.getDisplayName().getString().toLowerCase());
                     spells.forEach(ServerConfigs::createSpellConfig);
                 });
 
@@ -122,7 +122,7 @@ public class ServerConfigs {
 
         SPELL_CONFIGS.put(spell.getSpellId(), new SpellConfigParameters(
                 BUILDER.define("Enabled", config.enabled),
-                BUILDER.define("School", "irons_spellbooks:ender"),
+                BUILDER.define("School", config.school.getId().toString()),
                 BUILDER.define("MaxLevel", config.maxLevel),
                 BUILDER.defineEnum("MinRarity", config.minRarity),
                 BUILDER.define("ManaCostMultiplier", 1d),

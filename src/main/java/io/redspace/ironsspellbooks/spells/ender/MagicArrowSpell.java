@@ -31,7 +31,7 @@ public class MagicArrowSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ENDER))
+            .setSchool(SchoolRegistry.SCHOOL_ENDER)
             .setMaxLevel(10)
             .setCooldownSeconds(8)
             .build();

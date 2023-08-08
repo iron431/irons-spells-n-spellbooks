@@ -38,7 +38,7 @@ public class SpectralHammerSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.EVOCATION))
+            .setSchool(SchoolRegistry.SCHOOL_EVOCATION)
             .setMaxLevel(5)
             .setCooldownSeconds(10)
             .build();

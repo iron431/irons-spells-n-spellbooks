@@ -39,7 +39,7 @@ public class VoidTentaclesSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ENDER))
+            .setSchool(SchoolRegistry.SCHOOL_ENDER)
             .setMaxLevel(3)
             .setCooldownSeconds(30)
             .build();

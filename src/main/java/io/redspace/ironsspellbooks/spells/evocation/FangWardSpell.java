@@ -35,7 +35,7 @@ public class FangWardSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.EVOCATION))
+            .setSchool(SchoolRegistry.SCHOOL_EVOCATION)
             .setMaxLevel(8)
             .setCooldownSeconds(15)
             .build();

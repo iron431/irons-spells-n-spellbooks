@@ -33,7 +33,7 @@ public class ElectrocuteSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.LIGHTNING))
+            .setSchool(SchoolRegistry.SCHOOL_LIGHTNING)
             .setMaxLevel(10)
             .setCooldownSeconds(12)
             .build();

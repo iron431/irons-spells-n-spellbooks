@@ -24,7 +24,7 @@ public class BloodSlashSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_slash");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.BLOOD))
+            .setSchool(SchoolRegistry.SCHOOL_BLOOD)
             .setMaxLevel(5)
             .setCooldownSeconds(10)
             .build();

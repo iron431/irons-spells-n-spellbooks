@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 public class DefaultConfig {
     public SpellRarity minRarity;
-    public SchoolRegistryHolder school;
+    public SchoolType school;
     public int maxLevel = -1;
     public boolean enabled = true;
     public double cooldownInSeconds = -1;
@@ -41,7 +41,7 @@ public class DefaultConfig {
         return this;
     }
 
-    public DefaultConfig setSchool(SchoolRegistryHolder school) {
+    public DefaultConfig setSchool(SchoolType school) {
         this.school = school;
         return this;
     }

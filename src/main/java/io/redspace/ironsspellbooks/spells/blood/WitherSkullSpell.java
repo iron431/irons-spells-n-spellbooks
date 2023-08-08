@@ -25,7 +25,7 @@ public class WitherSkullSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "wither_skull");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.BLOOD))
+            .setSchool(SchoolRegistry.SCHOOL_BLOOD)
             .setMaxLevel(10)
             .setCooldownSeconds(1)
             .build();

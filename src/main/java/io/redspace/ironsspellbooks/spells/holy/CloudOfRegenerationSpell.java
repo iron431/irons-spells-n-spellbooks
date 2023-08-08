@@ -37,7 +37,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.HOLY))
+            .setSchool(SchoolRegistry.SCHOOL_HOLY)
             .setMaxLevel(5)
             .setCooldownSeconds(35)
             .setEnabled(false)

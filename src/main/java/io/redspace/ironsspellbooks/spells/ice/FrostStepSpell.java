@@ -41,7 +41,7 @@ public class FrostStepSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ICE))
+            .setSchool(SchoolRegistry.SCHOOL_ICE)
             .setMaxLevel(8)
             .setCooldownSeconds(10)
             .build();

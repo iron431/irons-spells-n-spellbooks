@@ -29,7 +29,7 @@ public class IcicleSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ICE))
+            .setSchool(SchoolRegistry.SCHOOL_ICE)
             .setMaxLevel(10)
             .setCooldownSeconds(1)
             .build();

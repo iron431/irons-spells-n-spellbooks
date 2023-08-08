@@ -36,7 +36,7 @@ public class SpiderAspectSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.NATURE))
+            .setSchool(SchoolRegistry.SCHOOL_NATURE)
             .setMaxLevel(8)
             .setCooldownSeconds(90)
             .build();

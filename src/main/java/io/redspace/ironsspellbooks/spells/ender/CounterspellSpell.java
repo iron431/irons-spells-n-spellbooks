@@ -59,7 +59,7 @@ public class CounterspellSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ENDER))
+            .setSchool(SchoolRegistry.SCHOOL_ENDER)
             .setMaxLevel(1)
             .setCooldownSeconds(15)
             .build();

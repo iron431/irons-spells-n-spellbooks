@@ -34,7 +34,7 @@ public class FireballSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.FIRE))
+            .setSchool(SchoolRegistry.SCHOOL_FIRE)
             .setMaxLevel(3)
             .setCooldownSeconds(25)
             .build();

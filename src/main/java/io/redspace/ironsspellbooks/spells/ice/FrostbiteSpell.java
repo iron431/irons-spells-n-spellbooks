@@ -34,7 +34,7 @@ public class FrostbiteSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.ICE))
+            .setSchool(SchoolRegistry.SCHOOL_ICE)
             .setMaxLevel(0)
             .setCooldownSeconds(0)
             .setEnabled(false)

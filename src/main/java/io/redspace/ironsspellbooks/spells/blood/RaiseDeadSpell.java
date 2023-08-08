@@ -39,7 +39,7 @@ public class RaiseDeadSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "raise_dead");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.BLOOD))
+            .setSchool(SchoolRegistry.SCHOOL_BLOOD)
             .setMaxLevel(6)
             .setCooldownSeconds(150)
             .build();

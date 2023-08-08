@@ -54,6 +54,14 @@ public class SchoolRegistry {
     public static final RegistryObject<SchoolType> EVOCATION = registerSchool(SchoolEvocation::new);
     public static final RegistryObject<SchoolType> NATURE = registerSchool(SchoolNature::new);
 
+    public static final SchoolType SCHOOL_FIRE = new SchoolFire();
+    public static final SchoolType SCHOOL_ICE = new SchoolIce();
+    public static final SchoolType SCHOOL_LIGHTNING = new SchoolLightning();
+    public static final SchoolType SCHOOL_HOLY = new SchoolHoly();
+    public static final SchoolType SCHOOL_ENDER = new SchoolEnder();
+    public static final SchoolType SCHOOL_BLOOD = new SchoolBlood();
+    public static final SchoolType SCHOOL_EVOCATION = new SchoolEvocation();
+    public static final SchoolType SCHOOL_NATURE = new SchoolNature();
 
     @Nullable
     public static SchoolType getSchoolFromFocus(ItemStack focusStack) {

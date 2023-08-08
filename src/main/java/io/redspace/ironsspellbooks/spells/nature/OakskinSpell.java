@@ -46,7 +46,7 @@ public class OakskinSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(new SchoolRegistryHolder(SchoolRegistry.NATURE))
+            .setSchool(SchoolRegistry.SCHOOL_NATURE)
             .setMaxLevel(8)
             .setCooldownSeconds(35)
             .build();
