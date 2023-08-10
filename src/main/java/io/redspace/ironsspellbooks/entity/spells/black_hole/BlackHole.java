@@ -108,7 +108,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     @Override
     public void tick() {
         super.tick();
-        int update = (int) (getRadius() / 2);
+        int update = Math.max((int) (getRadius() / 2), 2);
         //prevent lag from giagantic black holes
         if (tickCount % update == 0)
             updateTrackingEntities();
