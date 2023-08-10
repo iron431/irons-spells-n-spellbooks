@@ -137,6 +137,9 @@
   "item.irons_spellbooks.affinity_ring": "Ring of %s Affinity",
   "item.irons_spellbooks.concentration_amulet": "Amulet of Concentration",
   "item.irons_spellbooks.concentration_amulet.desc": "Long Casts become uninterruptible",
+  "item.irons_spellbooks.invisibility_ring": "Ring of Invisibility",
+  "item.irons_spellbooks.invisibility_ring.desc": "I would say read the fine print, but I can't see it",
+
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
   "item.minecraft.lingering_potion.effect.mana": "Lingering Potion of Mana",
