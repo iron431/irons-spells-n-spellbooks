@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
