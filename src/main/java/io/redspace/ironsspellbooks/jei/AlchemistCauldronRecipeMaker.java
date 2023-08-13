@@ -13,6 +13,8 @@ import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 
@@ -96,7 +98,7 @@ public final class AlchemistCauldronRecipeMaker {
         return potionReagents.stream().map((reagentStack) -> {
             List<ItemStack> catalysts = new ArrayList<>();
             List<ItemStack> outputs = new ArrayList<>();
-            ingredientManager.getAllItemStacks().stream().filter((itemStack) -> !itemStack.is(Items.TIPPED_ARROW) && BrewingRecipeRegistry.hasOutput(itemStack, reagentStack)).forEach((baseStack) -> {
+            ingredientManager.getAllItemStacks().stream().filter((itemStack) -> itemStack.getItem() instanceof PotionItem && BrewingRecipeRegistry.hasOutput(itemStack, reagentStack)).forEach((baseStack) -> {
                 catalysts.add(baseStack);
                 outputs.add(BrewingRecipeRegistry.getOutput(baseStack, reagentStack));
             });

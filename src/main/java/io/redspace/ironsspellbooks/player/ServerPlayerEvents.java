@@ -53,17 +53,30 @@ import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.checkerframework.common.returnsreceiver.qual.This;
 import top.theillusivec4.curios.api.CuriosApi;
 import java.util.Map;
 
 @Mod.EventBusSubscriber
 public class ServerPlayerEvents {
+
+//    @SubscribeEvent
+//    public static void onPlayerAttack(AttackEntityEvent event) {
+//        TODO: this only gets called when the player successfully hits something. we want it to cancel if they even try.
+//              granted, the input even should be cancelled already, but better combat skips that due to custom weapon handling.
+//        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+//            if (PlayerMagicData.getPlayerMagicData(serverPlayer).isCasting()) {
+//                Utils.serverSideCancelCast(serverPlayer);
+//            }
+//        }
+//    }
 
     @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {

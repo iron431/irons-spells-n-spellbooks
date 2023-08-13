@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
@@ -110,8 +111,14 @@ public final class ClientInputEvents {
 
     @SubscribeEvent
     public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
+        IronsSpellbooks.LOGGER.debug("InteractionKeyMappingTriggered: {}", event.getKeyMapping().getName());
         if (event.isUseItem()) {
             if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
+                event.setSwingHand(false);
+                event.setCanceled(true);
+            }
+        } else if (event.isAttack()) {
+            if (ClientMagicData.isCasting()) {
                 event.setSwingHand(false);
                 event.setCanceled(true);
             }

@@ -99,6 +99,7 @@
   "item.irons_spellbooks.blood_staff": "The Blood Staff",
   "item.irons_spellbooks.wayward_compass": "Wayward Compass",
   "item.irons_spellbooks.wayward_compass_desc": "The trapped soul points toward its home",
+  "item.irons_spellbooks.wayward_compass.error": "No catacombs found! [%s] to search again",
   "item.irons_spellbooks.antiquated_compass": "Antiquated Compass",
   "item.irons_spellbooks.antiquated_compass_desc": "A magical resonance pulls strongly towards... Something.",
   "item.irons_spellbooks.magehunter": "Magehunter",
@@ -137,6 +138,8 @@
   "item.irons_spellbooks.affinity_ring": "Ring of %s Affinity",
   "item.irons_spellbooks.concentration_amulet": "Amulet of Concentration",
   "item.irons_spellbooks.concentration_amulet.desc": "Long Casts become uninterruptible",
+  "item.irons_spellbooks.invisibility_ring": "Ring of Invisibility",
+  "item.irons_spellbooks.invisibility_ring.desc": "I would say read the fine print, but I can't see it",
   "item.irons_spellbooks.casters_tea": "Caster's Tea",
   "item.irons_spellbooks.casters_tea.desc": " Reduces Active Spell Cooldowns by 15%",
 
@@ -439,7 +442,7 @@
   "death.attack.blood_cauldron.player": "%1$s was sacrificed by %2$s",
   "death.attack.heartstop": "%1$s's heart ruptured",
   "death.attack.heartstop.player": "%1$s's heart was ruptured by %2$s",
-  
+
   "death.attack.irons_spellbooks.raise_dead": "%1$s was mauled by %2$s's undead",
   "death.attack.irons_spellbooks.summon_vex": "%1$s was eviscerated by %2$s's vexes",
   "death.attack.irons_spellbooks.summon_polar_bear": "%1$s was mauled by %2$s's polar bear",

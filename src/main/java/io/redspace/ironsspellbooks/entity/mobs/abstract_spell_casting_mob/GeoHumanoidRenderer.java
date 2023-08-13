@@ -8,6 +8,8 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +23,7 @@ import software.bernie.example.client.DefaultBipedBoneIdents;
 import software.bernie.example.client.EntityResources;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
+import software.bernie.geckolib3.core.util.Color;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.item.GeoArmorItem;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -223,4 +226,13 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
 
     }
 
+    @Override
+    public Color getRenderColor(T animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight) {
+        return animatable.isInvisible() ? Color.ofRGBA(1f, 1f, 1f, .3f) : super.getRenderColor(animatable, partialTick, poseStack, bufferSource, buffer, packedLight);
+    }
+
+    @Override
+    public RenderType getRenderType(T animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
+        return animatable.isInvisible() ? RenderType.entityTranslucent(texture) : RenderType.entityCutout(texture);
+    }
 }

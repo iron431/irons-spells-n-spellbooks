@@ -84,5 +84,8 @@ public class MagicArrowSpell extends AbstractSpell {
         return SpellAnimations.BOW_CHARGE_ANIMATION;
     }
 
-
+    @Override
+    public AnimationHolder getCastFinishAnimation() {
+        return AnimationHolder.none();
+    }
 }
