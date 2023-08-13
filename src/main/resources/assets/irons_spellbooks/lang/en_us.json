@@ -12,6 +12,7 @@
   "item.irons_spellbooks.gold_spell_book": "Apprentice's Spell Book",
   "item.irons_spellbooks.iron_spell_book": "Ironbound Tome",
   "item.irons_spellbooks.copper_spell_book": "Flimsy Journal",
+  "item.irons_spellbooks.druidic_spell_book": "Druidic Tome",
   "item.irons_spellbooks.scroll": "Scroll",
   "item.irons_spellbooks.common_ink": "Common Ink",
   "item.irons_spellbooks.uncommon_ink": "Uncommon Ink",
@@ -136,6 +137,9 @@
   "item.irons_spellbooks.affinity_ring": "Ring of %s Affinity",
   "item.irons_spellbooks.concentration_amulet": "Amulet of Concentration",
   "item.irons_spellbooks.concentration_amulet.desc": "Long Casts become uninterruptible",
+  "item.irons_spellbooks.casters_tea": "Caster's Tea",
+  "item.irons_spellbooks.casters_tea.desc": " Reduces Active Spell Cooldowns by 15%",
+
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
   "item.minecraft.lingering_potion.effect.mana": "Lingering Potion of Mana",

@@ -3,8 +3,10 @@ package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 import com.google.common.collect.ImmutableList;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.PotionRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ public class AlchemistCauldronRecipeRegistry {
         //recipes.add(new AlchemistCauldronRecipe(ItemRegistry.BLOOD_VIAL.get(), ItemRegistry.HOGSKIN.get(), ItemRegistry.ARCANE_ESSENCE.get()).setBaseRequirement(4).setResultLimit(1));
         //recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_EPIC.get(), Items.OBSIDIAN, Items.CRYING_OBSIDIAN));
         //recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_LEGENDARY.get(), Items.BLUE_ORCHID, Items.DANDELION).setBaseRequirement(2).setResultLimit(2));
+        recipes.add(new AlchemistCauldronRecipe(PotionUtils.setPotion(new ItemStack(Items.POTION), PotionRegistry.INSTANT_MANA_ONE.get()), new ItemStack(Items.FLOWERING_AZALEA_LEAVES), new ItemStack(ItemRegistry.CASTERS_TEA.get())));
     }
 
     /**

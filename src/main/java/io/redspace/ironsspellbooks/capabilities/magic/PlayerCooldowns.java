@@ -78,7 +78,7 @@ public class PlayerCooldowns {
         return spellCooldowns.getOrDefault(spell.getSpellId(), new CooldownInstance(0)).getCooldownPercent();
     }
 
-    private boolean decrementCooldown(CooldownInstance c, int amount) {
+    public boolean decrementCooldown(CooldownInstance c, int amount) {
         c.decrementBy(amount);
         return c.getCooldownRemaining() <= tickBuffer;
     }
