@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.item;
+package io.redspace.ironsspellbooks.item.consumables;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;

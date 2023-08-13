@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.item;
+package io.redspace.ironsspellbooks.item.consumables;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import net.minecraft.server.level.ServerPlayer;

@@ -142,6 +142,8 @@
   "item.irons_spellbooks.invisibility_ring.desc": "I would say read the fine print, but I can't see it",
   "item.irons_spellbooks.casters_tea": "Caster's Tea",
   "item.irons_spellbooks.casters_tea.desc": " Reduces Active Spell Cooldowns by 15%",
+  "item.irons_spellbooks.oakskin_elixir": "Oakskin Elixir",
+  "item.irons_spellbooks.greater_oakskin_elixir": "Greater Oakskin Elixir",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
@@ -187,6 +189,7 @@
   "tooltip.irons_spellbooks.empty_affinity_ring": "This ring seems to be empty",
   "tooltip.irons_spellbooks.no_affinity": "No",
   "tooltip.irons_spellbooks.instant_mana_description": " Restores %d Mana +%d%% Max Mana",
+  "tooltip.irons_spellbooks.oakskin_description": "+%d%% Damage Reduction",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",
   "ui.irons_spellbooks.inscription_table_rarity_error": "This scroll is too rare for this spell book.",

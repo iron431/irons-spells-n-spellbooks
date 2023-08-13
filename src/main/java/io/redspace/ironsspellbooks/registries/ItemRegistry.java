@@ -1,13 +1,14 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.armor.*;
+import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.*;
+import io.redspace.ironsspellbooks.item.consumables.CastersTea;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import io.redspace.ironsspellbooks.item.spell_books.VillagerSpellBook;
 import io.redspace.ironsspellbooks.item.weapons.BloodStaffItem;
@@ -16,10 +17,9 @@ import io.redspace.ironsspellbooks.item.weapons.KeeperFlambergeItem;
 import io.redspace.ironsspellbooks.item.weapons.MagehunterItem;
 import io.redspace.ironsspellbooks.item.weapons.TestClaymoreItem;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -89,6 +89,8 @@ public class ItemRegistry {
      * Potions
      */
     public static final RegistryObject<Item> CASTERS_TEA = ITEMS.register("casters_tea", () -> new CastersTea(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(4)));
+    public static final RegistryObject<Item> OAKSKIN_ELIXIR = ITEMS.register("oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 900, 1)));
+    public static final RegistryObject<Item> GREATER_OAKSKIN_ELIXIR = ITEMS.register("greater_oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 1800, 5), true));
 
     /**
      * Upgrade Orbs

@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -127,7 +128,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 success = false;
             }
             shouldMelt = true;
-        } else if (isBrewable(itemStack)) {
+        }
+        if (!shouldMelt && isBrewable(itemStack)) {
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialPotion = resultItems.get(i);
                 ItemStack output = BrewingRecipeRegistry.getOutput(potentialPotion.isEmpty() ? PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER) : potentialPotion, itemStack);
@@ -137,8 +139,9 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 }
                 //IronsSpellbooks.LOGGER.debug("{} + {} = {} ({})", potentialPotion.getDisplayName().getString(), itemStack.getDisplayName().getString(), output.getDisplayName().getString(), shouldMelt);
             }
-        } else if (AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack)) {
-            //TODO: there are still edge cases that don't work (2 epic ink, 1 obisidian)
+        }
+        if (!shouldMelt && AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack)) {
+            IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: custom recipe for: {}", itemStack.toString());
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialInput = resultItems.get(i).copy();
                 List<Integer> matchingItems = new ArrayList<>(List.of(i));
@@ -151,13 +154,14 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                             matchingItems.add(j);
                         }
                     }
-                } else {
-                    //If the input is empty, ignore it
-                    break;
                 }
+                IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: collecting results {}: {}", i, potentialInput);
+
                 int inputsCollected = potentialInput.getCount();
                 //IronsSpellbooks.LOGGER.debug("Checking cauldron recipes. CauldronInternalIndex: {}. Original Item: {} Copycat Item: {}", i, resultItems.get(i), potentialInput);
                 ItemStack output = AlchemistCauldronRecipeRegistry.getOutput(potentialInput, itemStack.copy(), true);
+                IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: {} + {} = {}", itemStack, potentialInput, output);
+
                 if (!output.isEmpty()) {
                     //If we have an output, consume inputs, and replace with as many outputs as we can fit
                     int inputsToConsume = inputsCollected - potentialInput.getCount();
@@ -207,6 +211,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     public int getItemWaterColor(ItemStack itemStack) {
         if (this.getLevel() == null)
             return 0;
+        if (itemStack.getItem() instanceof SimpleElixir simpleElixir)
+            return simpleElixir.getMobEffect().getEffect().getColor();
         if (itemStack.is(ItemRegistry.INK_COMMON.get()))
             return 0x222222;
         if (itemStack.is(ItemRegistry.INK_UNCOMMON.get()))

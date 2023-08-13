@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
+import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.InstantManaEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -156,28 +157,8 @@ public class ClientPlayerEvents {
         var mobEffects = PotionUtils.getMobEffects(stack);
         if (mobEffects.size() > 0) {
             for (MobEffectInstance mobEffectInstance : mobEffects) {
-                if (mobEffectInstance.getEffect() == MobEffectRegistry.INSTANT_MANA.get()) {
-                    int amp = mobEffectInstance.getAmplifier() + 1;
-                    int addition = amp * InstantManaEffect.manaPerAmplifier;
-                    int percent = (int) (amp * InstantManaEffect.manaPerAmplifierPercent * 100);
-                    var description = Component.translatable("tooltip.irons_spellbooks.instant_mana_description", addition, percent).withStyle(ChatFormatting.BLUE);
-
-                    var header = Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE);
-                    var tooltip = event.getToolTip();
-                    var newLines = new ArrayList<Component>();
-                    int i = tooltip.indexOf(header);
-
-                    if (i < 0) {
-                        newLines.add(Component.empty());
-                        newLines.add(header);
-                        newLines.add(description);
-                        i = event.getFlags().isAdvanced() ? tooltip.size() - 2 : tooltip.size();
-                    } else {
-                        newLines.add(description);
-                        i++;
-                    }
-                    tooltip.addAll(i, newLines);
-                    return;
+                if (mobEffectInstance.getEffect() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
+                    CustomDescriptionMobEffect.handleCustomPotionTooltip(stack, event.getToolTip(), event.getFlags().isAdvanced(), mobEffectInstance, customDescriptionMobEffect);
                 }
             }
         }

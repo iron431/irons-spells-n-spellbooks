@@ -30,8 +30,8 @@ public final class AlchemistCauldronRecipeMaker {
     public static List<AlchemistCauldronJeiRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
         return Stream.of(
                         getScrollRecipes(vanillaRecipeFactory, ingredientManager),
-                        getPotionRecipes(vanillaRecipeFactory, ingredientManager),
-                        getCustomRecipes(vanillaRecipeFactory, ingredientManager))
+                        getCustomRecipes(vanillaRecipeFactory, ingredientManager),
+                        getPotionRecipes(vanillaRecipeFactory, ingredientManager))
                 .flatMap(x -> x)
                 .toList();
     }
