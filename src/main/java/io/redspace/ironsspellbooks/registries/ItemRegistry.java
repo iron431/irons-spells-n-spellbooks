@@ -18,6 +18,7 @@ import io.redspace.ironsspellbooks.item.weapons.MagehunterItem;
 import io.redspace.ironsspellbooks.item.weapons.TestClaymoreItem;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.*;
@@ -88,9 +89,10 @@ public class ItemRegistry {
     /**
      * Potions
      */
-    public static final RegistryObject<Item> CASTERS_TEA = ITEMS.register("casters_tea", () -> new CastersTea(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(4)));
-    public static final RegistryObject<Item> OAKSKIN_ELIXIR = ITEMS.register("oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 900, 1)));
-    public static final RegistryObject<Item> GREATER_OAKSKIN_ELIXIR = ITEMS.register("greater_oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 1800, 5), true));
+    public static final RegistryObject<Item> CASTERS_TEA = ITEMS.register("casters_tea", () -> new CastersTea(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).stacksTo(4)));
+    public static final RegistryObject<Item> OAKSKIN_ELIXIR = ITEMS.register("oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 900, 1)));
+    public static final RegistryObject<Item> GREATER_OAKSKIN_ELIXIR = ITEMS.register("greater_oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 1800, 3), true));
+    public static final RegistryObject<Item> GREATER_HEALING_POTION = ITEMS.register("greater_healing_potion", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffects.HEAL, 1, 2), true));
 
     /**
      * Upgrade Orbs

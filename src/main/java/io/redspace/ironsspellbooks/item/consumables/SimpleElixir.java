@@ -60,6 +60,11 @@ public class SimpleElixir extends DrinkableItem {
         }
     }
 
+    @Override
+    public int getMaxStackSize(ItemStack stack) {
+        return Items.POTION.getMaxStackSize();
+    }
+
     public static void addPotionTooltip(MobEffectInstance mobeffectinstance, List<Component> pTooltips, float pDurationFactor) {
         /**
          * adapted from PotionUtils.addPotionTooltip

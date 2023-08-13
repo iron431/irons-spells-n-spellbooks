@@ -144,6 +144,7 @@
   "item.irons_spellbooks.casters_tea.desc": " Reduces Active Spell Cooldowns by 15%",
   "item.irons_spellbooks.oakskin_elixir": "Oakskin Elixir",
   "item.irons_spellbooks.greater_oakskin_elixir": "Greater Oakskin Elixir",
+  "item.irons_spellbooks.greater_healing_potion": "Greater Potion of Healing",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
