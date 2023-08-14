@@ -24,7 +24,7 @@ public class EvasionSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(spellLevel, caster)));
+        return List.of(Component.translatable("ui.irons_spellbooks.hits_dodged", (int) getSpellPower(spellLevel, caster) + 1));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -36,7 +36,7 @@ public class EvasionSpell extends AbstractSpell {
 
     public EvasionSpell() {
         this.manaCostPerLevel = 20;
-        this.baseSpellPower = 1;
+        this.baseSpellPower = 0;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 40;

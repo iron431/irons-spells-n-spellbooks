@@ -59,8 +59,9 @@ public class EvasionEffect extends MobEffect {
 
         var data = MagicData.getPlayerMagicData(livingEntity).getSyncedData();
         data.subtractEvasionHit();
-        if (data.getEvasionHitsRemaining() == 0)
+        if (data.getEvasionHitsRemaining() < 0) {
             livingEntity.removeEffect(MobEffectRegistry.EVASION.get());
+        }
 
         double d0 = livingEntity.getX();
         double d1 = livingEntity.getY();
