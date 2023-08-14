@@ -43,13 +43,13 @@ public class BlazeStormSpell extends AbstractSpell {
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
-        this.castTime = 80 + 5;
+        this.castTime = 60 - 5;
         this.baseManaCost = 5;
     }
 
     @Override
     public int getCastTime(int spellLevel) {
-        return castTime * spellLevel;
+        return castTime + 5 * spellLevel;
     }
 
     @Override

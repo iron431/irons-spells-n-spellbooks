@@ -93,6 +93,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> OAKSKIN_ELIXIR = ITEMS.register("oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 900, 1)));
     public static final RegistryObject<Item> GREATER_OAKSKIN_ELIXIR = ITEMS.register("greater_oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 1800, 3), true));
     public static final RegistryObject<Item> GREATER_HEALING_POTION = ITEMS.register("greater_healing_potion", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffects.HEAL, 1, 2), true));
+    public static final RegistryObject<Item> INVISIBILITY_ELIXIR = ITEMS.register("invisibility_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), 20 * 15, 0, false, false, true)));
+    public static final RegistryObject<Item> GREATER_INVISIBILITY_ELIXIR = ITEMS.register("greater_invisibility_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), 20 * 40, 0, false, false, true), true));
 
     /**
      * Upgrade Orbs

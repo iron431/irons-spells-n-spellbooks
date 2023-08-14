@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEnti
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
 import io.redspace.ironsspellbooks.entity.spells.ChainLightning;
+import io.redspace.ironsspellbooks.entity.spells.EarthquakeAoe;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
@@ -381,6 +382,12 @@ public class EntityRegistry {
                     .sized(4f, .8f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "healing_aoe").toString()));
+
+    public static final RegistryObject<EntityType<EarthquakeAoe>> EARTHQUAKE_AOE =
+            ENTITIES.register("earthquake_aoe", () -> EntityType.Builder.<EarthquakeAoe>of(EarthquakeAoe::new, MobCategory.MISC)
+                    .sized(4f, .8f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "earthquake_aoe").toString()));
 
     public static final RegistryObject<EntityType<PriestEntity>> PRIEST =
             ENTITIES.register("priest", () -> EntityType.Builder.of(PriestEntity::new, MobCategory.CREATURE)

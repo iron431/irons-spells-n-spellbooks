@@ -145,6 +145,8 @@
   "item.irons_spellbooks.oakskin_elixir": "Oakskin Elixir",
   "item.irons_spellbooks.greater_oakskin_elixir": "Greater Oakskin Elixir",
   "item.irons_spellbooks.greater_healing_potion": "Greater Potion of Healing",
+  "item.irons_spellbooks.invisibility_elixir": "Invisibility Elixir",
+  "item.irons_spellbooks.greater_invisibility_elixir": "Greater Invisibility Elixir",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",

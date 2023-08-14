@@ -244,6 +244,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.CHAIN_LIGHTNING.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEVOUR_JAW.get(), DevourJawRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIREFLY_SWARM.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.EARTHQUAKE_AOE.get(), NoopRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

@@ -25,6 +25,9 @@ public class AlchemistCauldronRecipeRegistry {
         recipes.add(new AlchemistCauldronRecipe(Potions.STRONG_HEALING, Items.OAK_LOG, ItemRegistry.OAKSKIN_ELIXIR.get()).setBaseRequirement(2).setResultLimit(1));
         recipes.add(new AlchemistCauldronRecipe(ItemRegistry.OAKSKIN_ELIXIR.get(), Items.AMETHYST_SHARD, ItemRegistry.GREATER_OAKSKIN_ELIXIR.get()).setBaseRequirement(2).setResultLimit(1));
         recipes.add(new AlchemistCauldronRecipe(Potions.STRONG_HEALING, Items.AMETHYST_SHARD, ItemRegistry.GREATER_HEALING_POTION.get()).setBaseRequirement(4).setResultLimit(1));
+        recipes.add(new AlchemistCauldronRecipe(Potions.INVISIBILITY, ItemRegistry.SHRIVING_STONE.get(), ItemRegistry.INVISIBILITY_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
+        recipes.add(new AlchemistCauldronRecipe(Potions.LONG_INVISIBILITY, ItemRegistry.SHRIVING_STONE.get(), ItemRegistry.INVISIBILITY_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
+        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INVISIBILITY_ELIXIR.get(), Items.AMETHYST_CLUSTER, ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get()));
     }
 
     /**
