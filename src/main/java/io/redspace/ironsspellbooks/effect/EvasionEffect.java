@@ -5,8 +5,10 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -14,6 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Set;
 
-public class EvasionEffect extends MobEffect {
+public class EvasionEffect extends CustomDescriptionMobEffect {
 
     public static Set<DamageSource> excludeDamageSources = Set.of(
             DamageSource.ON_FIRE,
@@ -36,6 +39,12 @@ public class EvasionEffect extends MobEffect {
 
     public EvasionEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
+    }
+
+    @Override
+    public Component getDescriptionLine(MobEffectInstance instance) {
+        int amp = instance.getAmplifier() + 1;
+        return Component.translatable("tooltip.irons_spellbooks.evasion_description", amp).withStyle(ChatFormatting.BLUE);
     }
 
     @Override

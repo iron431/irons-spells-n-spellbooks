@@ -141,7 +141,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             }
         }
         if (!shouldMelt && AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack)) {
-            IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: custom recipe for: {}", itemStack.toString());
+            //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: custom recipe for: {}", itemStack.toString());
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialInput = resultItems.get(i).copy();
                 List<Integer> matchingItems = new ArrayList<>(List.of(i));
@@ -155,12 +155,12 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                         }
                     }
                 }
-                IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: collecting results {}: {}", i, potentialInput);
+                //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: collecting results {}: {}", i, potentialInput);
 
                 int inputsCollected = potentialInput.getCount();
                 //IronsSpellbooks.LOGGER.debug("Checking cauldron recipes. CauldronInternalIndex: {}. Original Item: {} Copycat Item: {}", i, resultItems.get(i), potentialInput);
                 ItemStack output = AlchemistCauldronRecipeRegistry.getOutput(potentialInput, itemStack.copy(), true);
-                IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: {} + {} = {}", itemStack, potentialInput, output);
+                //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: {} + {} = {}", itemStack, potentialInput, output);
 
                 if (!output.isEmpty()) {
                     //If we have an output, consume inputs, and replace with as many outputs as we can fit

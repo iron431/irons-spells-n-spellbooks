@@ -147,6 +147,8 @@
   "item.irons_spellbooks.greater_healing_potion": "Greater Potion of Healing",
   "item.irons_spellbooks.invisibility_elixir": "Invisibility Elixir",
   "item.irons_spellbooks.greater_invisibility_elixir": "Greater Invisibility Elixir",
+  "item.irons_spellbooks.evasion_elixir": "Evasion Elixir",
+  "item.irons_spellbooks.greater_evasion_elixir": "Greater Evasion Elixir",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
@@ -193,6 +195,7 @@
   "tooltip.irons_spellbooks.no_affinity": "No",
   "tooltip.irons_spellbooks.instant_mana_description": " Restores %d Mana +%d%% Max Mana",
   "tooltip.irons_spellbooks.oakskin_description": "+%d%% Damage Reduction",
+  "tooltip.irons_spellbooks.evasion_description": " Allows %d Hits to be Evaded",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",
   "ui.irons_spellbooks.inscription_table_rarity_error": "This scroll is too rare for this spell book.",
