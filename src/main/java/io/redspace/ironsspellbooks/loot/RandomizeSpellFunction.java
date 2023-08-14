@@ -36,8 +36,13 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof Scroll || Utils.canImbue(itemStack)) {
-
-            var spellList = getWeightedSpellList(applicableSpells.getApplicableSpells());
+            var applicableSpells = this.applicableSpells.getApplicableSpells();
+            if (applicableSpells.isEmpty()) {
+                //Return empty item stack
+                itemStack.setCount(0);
+                return itemStack;
+            }
+            var spellList = getWeightedSpellList(applicableSpells);
             int total = spellList.floorKey(Integer.MAX_VALUE);
             SpellType spellType = SpellType.NONE_SPELL;
             if (!spellList.isEmpty()) {
