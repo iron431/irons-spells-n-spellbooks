@@ -31,6 +31,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     public AoeEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.noPhysics = true;
+        this.blocksBuilding = false;
     }
 
     protected float particleYOffset(){

@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.armor.*;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorRenderer;
@@ -245,6 +246,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.DEVOUR_JAW.get(), DevourJawRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIREFLY_SWARM.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.EARTHQUAKE_AOE.get(), NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.FALLING_BLOCK.get(), VisualFallingBlockRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
