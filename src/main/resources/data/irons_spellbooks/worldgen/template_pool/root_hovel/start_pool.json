@@ -1,0 +1,15 @@
+{
+  "name": "irons_spellbooks:root_hovel_start_pool",
+  "fallback": "irons_spellbooks:catacombs_fallback_pool",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:root_hovel/origin",
+        "processors": "irons_spellbooks:root_hovel_origin_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}
