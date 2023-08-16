@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -28,7 +29,6 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         this.reapplicationDelay = 30;
         this.setCircular();
     }
-
     public EarthquakeAoe(Level level) {
         this(EntityRegistry.EARTHQUAKE_AOE.get(), level);
     }
@@ -38,7 +38,17 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         var damageSource = SpellRegistry.EARTHQUAKE_SPELL.get().getDamageSource(this, getOwner());
         DamageSources.ignoreNextKnockback(target);
         target.hurt(damageSource, getDamage());
-        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, (int) getDamage()));
+        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, slownessAmplifier));
+    }
+
+    private int slownessAmplifier;
+
+    public int getSlownessAmplifier() {
+        return slownessAmplifier;
+    }
+
+    public void setSlownessAmplifier(int slownessAmplifier) {
+        this.slownessAmplifier = slownessAmplifier;
     }
 
     @Override
@@ -99,4 +109,15 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         discard();
     }
 
+    @Override
+    protected void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.putInt("Slowness", slownessAmplifier);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.slownessAmplifier = pCompound.getInt("Slowness");
+    }
 }

@@ -188,6 +188,12 @@ public abstract class AbstractSpell {
         return (float) ((baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier);
     }
 
+    public float getEntityPowerMultiplier(LivingEntity entity) {
+        var entitySpellPowerModifier = (float) entity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
+        var entitySchoolPowerModifier = this.getSchoolType().getPowerFor(entity);
+        return (float) (entitySpellPowerModifier * entitySchoolPowerModifier);
+    }
+
     public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
         double entityCastTimeModifier = 1;
         if (entity != null) {

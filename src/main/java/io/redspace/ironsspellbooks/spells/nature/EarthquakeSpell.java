@@ -15,6 +15,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -29,7 +30,8 @@ public class EarthquakeSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.slowness_effect", getSlownessAmplifier(spellLevel, caster) + 1),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1))
         );
     }
@@ -98,6 +100,7 @@ public class EarthquakeSpell extends AbstractSpell {
         aoeEntity.setRadius(radius);
         aoeEntity.setDuration(duration);
         aoeEntity.setDamage(getDamage(spellLevel, entity));
+        aoeEntity.setSlownessAmplifier(getSlownessAmplifier(spellLevel, entity));
         aoeEntity.setPos(spawn);
         world.addFreshEntity(aoeEntity);
 
@@ -105,11 +108,15 @@ public class EarthquakeSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {
-        return getSpellPower(spellLevel, caster) * .5f;
+        return getSpellPower(spellLevel, caster) * .25f;
     }
 
     private float getRadius(int spellLevel, LivingEntity caster) {
-        return 8;
+        return 8 * getEntityPowerMultiplier(caster);
+    }
+
+    private int getSlownessAmplifier(int spellLevel, LivingEntity caster) {
+        return Math.max(0, (int) getDamage(spellLevel, caster) - 2);
     }
 
     @Override
