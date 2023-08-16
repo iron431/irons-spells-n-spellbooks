@@ -11,16 +11,10 @@
               "function": "minecraft:set_count",
               "count": {
                 "min": 0,
-                "max": 8
+                "max": 6
               }
             }
           ]
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance",
-          "chance": 0.65
         }
       ]
     },
@@ -52,7 +46,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.4
+          "chance": 0.45
         }
       ]
     },
@@ -120,20 +114,6 @@
               "count": {
                 "min": 1,
                 "max": 4
-              }
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:bone",
-          "weight": 2,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "min": 1,
-                "max": 3
               }
             }
           ]

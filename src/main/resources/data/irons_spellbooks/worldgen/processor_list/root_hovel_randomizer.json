@@ -4,6 +4,31 @@
       "processor_type": "minecraft:rule",
       "rules": [
         {
+          "location_predicate": {
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:air"
+          },
+          "input_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        },
+        {
+          "input_predicate": {
+            "block": "irons_spellbooks:firefly_jar",
+            "predicate_type": "minecraft:random_block_match",
+            "probability": 0.70
+          },
+          "location_predicate": {
+            "predicate_type": "minecraft:always_true"
+          },
+          "output_state": {
+            "Name": "minecraft:air"
+          }
+        },
+        {
           "input_predicate": {
             "block": "minecraft:coarse_dirt",
             "predicate_type": "minecraft:random_block_match",

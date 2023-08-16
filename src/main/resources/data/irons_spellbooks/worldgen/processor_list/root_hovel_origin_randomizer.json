@@ -4,6 +4,19 @@
       "processor_type": "minecraft:rule",
       "rules": [
         {
+          "location_predicate": {
+            "predicate_type": "minecraft:block_match",
+            "block": "minecraft:dirt"
+          },
+          "input_predicate": {
+            "block": "minecraft:grass_block",
+            "predicate_type": "minecraft:block_match"
+          },
+          "output_state": {
+            "Name": "minecraft:dirt"
+          }
+        },
+        {
           "input_predicate": {
             "block": "minecraft:coarse_dirt",
             "predicate_type": "minecraft:random_block_match",
