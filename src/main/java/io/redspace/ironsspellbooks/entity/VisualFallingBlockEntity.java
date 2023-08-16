@@ -15,12 +15,32 @@ public class VisualFallingBlockEntity extends FallingBlockEntity {
         super(pEntityType, pLevel);
     }
 
+    private double originalX;
+    private double originalY;
+    private double originalZ;
+    private double ticks;
+
+    @Override
+    public void setOnGround(boolean pOnGround) {
+    }
+
+    @Override
+    public boolean isOnGround() {
+        return this.position().y < originalY;
+    }
+
     public VisualFallingBlockEntity(Level pLevel, double pX, double pY, double pZ, BlockState pState) {
         this(EntityRegistry.FALLING_BLOCK.get(), pLevel);
+
+        originalX = pX;
+        originalY = pY;
+        originalZ = pZ;
+        ticks = 0;
+
         this.blocksBuilding = false;
         this.blockState = pState;
         this.setPos(pX, pY, pZ);
-        this.setDeltaMovement(Vec3.ZERO);
+        setDeltaMovement(0, .25, 0);
         this.xo = pX;
         this.yo = pY;
         this.zo = pZ;
@@ -30,6 +50,14 @@ public class VisualFallingBlockEntity extends FallingBlockEntity {
         this.cancelDrop = true;
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+
+        if(ticks++ >= 3){
+            setDeltaMovement(0, -.25, 0);
+        }
+    }
 
     @Override
     public boolean isPickable() {

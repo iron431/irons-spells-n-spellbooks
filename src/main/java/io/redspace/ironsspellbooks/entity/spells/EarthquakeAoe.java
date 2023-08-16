@@ -59,9 +59,10 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
             Vec3 vec3 = this.position().add(Mth.randomBetween(this.random, -radius, radius), 0, Mth.randomBetween(this.random, -radius, radius));
             BlockPos blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, vec3, 4)).below();
             if (level.getBlockState(blockPos.below()).isFaceSturdy(level, blockPos, Direction.UP)) {
-                FallingBlockEntity fallingblockentity = FallingBlockEntity.fall(level, blockPos, level.getBlockState(blockPos));
-                fallingblockentity.setPos(fallingblockentity.position().add(0, 1, 0));
-                fallingblockentity.setDeltaMovement(0, .25, 0);
+                var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos));
+                fallingblockentity.setNoGravity(true);
+                //fallingblockentity.setPos(fallingblockentity.position().add(0, 1, 0));
+                level.addFreshEntity(fallingblockentity);
             }
             //IronsSpellbooks.LOGGER.debug("Earthquake ghostFallingblock: {} {}", blockPos, level.getBlockState(blockPos));
             //VisualFallingBlockEntity fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX() + 0.5D, blockPos.getY() + 0.55, blockPos.getZ() + 0.5D, level.getBlockState(blockPos));
