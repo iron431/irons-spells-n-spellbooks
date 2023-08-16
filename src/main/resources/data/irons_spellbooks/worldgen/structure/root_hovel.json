@@ -3,7 +3,7 @@
   "start_pool": "irons_spellbooks:root_hovel/start_pool",
   "size": 7,
 
-  "biomes": "#irons_spellbooks:has_structure/catacombs",
+  "biomes": "#irons_spellbooks:has_structure/root_hovel",
   "terrain_adaptation": "none",
   "use_expansion_hack": false,
 
