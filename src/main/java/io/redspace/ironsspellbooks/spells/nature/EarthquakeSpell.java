@@ -45,11 +45,11 @@ public class EarthquakeSpell extends AbstractSpell {
             .build();
 
     public EarthquakeSpell() {
-        this.manaCostPerLevel = 1;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
-        this.castTime = 50;
-        this.baseManaCost = 5;
+        this.castTime = 40;
+        this.baseManaCost = 50;
     }
 
     @Override
@@ -78,6 +78,12 @@ public class EarthquakeSpell extends AbstractSpell {
     }
 
     @Override
+    public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
+        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .15f, false);
+        return true;
+    }
+
+    @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 spawn = null;
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
@@ -92,7 +98,7 @@ public class EarthquakeSpell extends AbstractSpell {
 
         spawn = spawn.subtract(0, 1, 0);
 
-        int duration = 300;//getDuration(spellLevel, entity);
+        int duration = 20 * 12;//getDuration(spellLevel, entity);
         float radius = getRadius(spellLevel, entity);
 
         EarthquakeAoe aoeEntity = new EarthquakeAoe(world);
@@ -118,11 +124,6 @@ public class EarthquakeSpell extends AbstractSpell {
 
     private int getSlownessAmplifier(int spellLevel, LivingEntity caster) {
         return Math.max(0, (int) getDamage(spellLevel, caster) - 2);
-    }
-
-    @Override
-    public AnimationHolder getCastStartAnimation() {
-        return SpellAnimations.ANIMATION_CONTINUOUS_OVERHEAD;
     }
 
 }

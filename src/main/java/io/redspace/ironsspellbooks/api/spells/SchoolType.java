@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.spells;
 
+import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -78,16 +79,15 @@ public class SchoolType {
         return itemStack.is(focus);
     }
 
-    public static final Component DISPLAY_FIRE = Component.translatable("school.irons_spellbooks.fire").withStyle(ChatFormatting.GOLD);
-    public static final Component DISPLAY_ICE = Component.translatable("school.irons_spellbooks.ice").withStyle(Style.EMPTY.withColor(0xd0f9ff));
-    public static final Component DISPLAY_LIGHTNING = Component.translatable("school.irons_spellbooks.lightning").withStyle(ChatFormatting.AQUA);
-    public static final Component DISPLAY_HOLY = Component.translatable("school.irons_spellbooks.holy").withStyle(Style.EMPTY.withColor(0xfff8d4));
-    public static final Component DISPLAY_ENDER = Component.translatable("school.irons_spellbooks.ender").withStyle(ChatFormatting.LIGHT_PURPLE);
-    public static final Component DISPLAY_BLOOD = Component.translatable("school.irons_spellbooks.blood").withStyle(ChatFormatting.DARK_RED);
-    public static final Component DISPLAY_EVOCATION = Component.translatable("school.irons_spellbooks.evocation").withStyle(ChatFormatting.WHITE);
-    public static final Component DISPLAY_VOID = Component.translatable("school.irons_spellbooks.void").withStyle(Style.EMPTY.withColor(0x490059));
-    public static final Component DISPLAY_NATURE = Component.translatable("school.irons_spellbooks.nature").withStyle(ChatFormatting.GREEN);
-    public static final Component[] DISPLAYS = {DISPLAY_FIRE, DISPLAY_ICE, DISPLAY_LIGHTNING, DISPLAY_HOLY, DISPLAY_ENDER, DISPLAY_BLOOD, DISPLAY_EVOCATION, DISPLAY_VOID, DISPLAY_NATURE};
+    public Vector3f getTargetingColor() {
+        int decimal = this.displayStyle.getColor().getValue();
+        //Copied from potion utils
+        return new Vector3f(
+                ((decimal >> 16) & 0xFF) / 255.0f,
+                ((decimal >> 8) & 0xFF) / 255.0f,
+                (decimal & 0xFF) / 255.0f
+        );
+    }
 
 
 }

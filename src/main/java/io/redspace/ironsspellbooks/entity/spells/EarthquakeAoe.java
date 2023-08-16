@@ -74,6 +74,13 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         }
         if (!level.isClientSide) {
             var radius = this.getRadius();
+            var level = this.level;
+            int intensity = (int) (radius * radius * .09f);
+            for (int i = 0; i < intensity; i++) {
+                Vec3 vec3 = this.position().add(uniformlyDistributedPointInRadius(radius));
+                BlockPos blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, vec3, 4)).below();
+                createTremorBlock(blockPos);
+            }
             if (waveAnim >= 0) {
                 var circumference = waveAnim * 2 * 3.14f;
                 int blocks = (int) circumference;
@@ -89,18 +96,12 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
                 }
                 if (waveAnim++ >= radius) {
                     waveAnim = -1;
+                    if (tickCount + reapplicationDelay >= duration) {
+                        this.discard();
+                        //end ourselves smoothly with the last bang instead of timing out awkwardly
+                    }
                 }
             }
-            var level = this.level;
-            int intensity = (int) (radius * radius * .09f);
-            for (int i = 0; i < intensity; i++) {
-                Vec3 vec3 = this.position().add(uniformlyDistributedPointInRadius(radius));
-                BlockPos blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, vec3, 4)).below();
-                createTremorBlock(blockPos);
-            }
-            //IronsSpellbooks.LOGGER.debug("Earthquake ghostFallingblock: {} {}", blockPos, level.getBlockState(blockPos));
-            //VisualFallingBlockEntity fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX() + 0.5D, blockPos.getY() + 0.55, blockPos.getZ() + 0.5D, level.getBlockState(blockPos));
-            //level.addFreshEntity(fallingblockentity);
         }
     }
 

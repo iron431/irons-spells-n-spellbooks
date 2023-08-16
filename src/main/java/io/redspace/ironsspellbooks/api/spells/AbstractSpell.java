@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
@@ -115,6 +116,10 @@ public abstract class AbstractSpell {
 
     public SchoolType getSchoolType() {
         return ServerConfigs.getSpellConfig(this).school();
+    }
+
+    public Vector3f getTargetingColor() {
+        return this.getSchoolType().getTargetingColor();
     }
 
     public int getLevel(int level, @Nullable LivingEntity caster) {

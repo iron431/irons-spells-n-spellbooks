@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -102,4 +103,8 @@ public class BlessingOfLifeSpell extends AbstractSpell {
         }
     }
 
+    @Override
+    public Vector3f getTargetingColor() {
+        return new Vector3f(.85f, 0, 0);
+    }
 }
