@@ -93,15 +93,13 @@ public class ServerConfigs {
 
         SpellDiscovery.getSpellsForConfig()
                 .stream()
-                .collect(Collectors.groupingBy(x -> x.getDefaultConfig().school))
+                .collect(Collectors.groupingBy(x -> x.getDefaultConfig().schoolResource))
                 .forEach((school, spells) -> {
-//                    TODO: be able to register schools
-                    BUILDER.comment(school.getDisplayName().getString().toLowerCase());
+                    BUILDER.comment(school.toString());
                     spells.forEach(ServerConfigs::createSpellConfig);
                 });
 
         BUILDER.pop();
-
 
         SPEC = BUILDER.build();
     }
@@ -122,7 +120,7 @@ public class ServerConfigs {
 
         SPELL_CONFIGS.put(spell.getSpellId(), new SpellConfigParameters(
                 BUILDER.define("Enabled", config.enabled),
-                BUILDER.define("School", config.school.getId().toString()),
+                BUILDER.define("School", config.schoolResource.toString()),
                 BUILDER.define("MaxLevel", config.maxLevel),
                 BUILDER.defineEnum("MinRarity", config.minRarity),
                 BUILDER.define("ManaCostMultiplier", 1d),
