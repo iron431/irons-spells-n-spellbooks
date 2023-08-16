@@ -9,27 +9,15 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.EarthquakeAoe;
-import io.redspace.ironsspellbooks.entity.spells.HealingAoe;
-import io.redspace.ironsspellbooks.entity.spells.comet.Comet;
-import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
-import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.TargetAreaCastData;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +36,7 @@ public class EarthquakeSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolRegistry.SCHOOL_NATURE)
+            .setSchoolResource(SchoolRegistry.NATURE_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(16)
             .build();

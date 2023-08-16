@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
@@ -35,7 +34,7 @@ public class DragonBreathSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolRegistry.SCHOOL_ENDER)
+            .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(12)
             .build();

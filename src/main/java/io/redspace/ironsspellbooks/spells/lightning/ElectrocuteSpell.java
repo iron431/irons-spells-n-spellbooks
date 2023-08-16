@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.spells.lightning;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
@@ -33,7 +32,7 @@ public class ElectrocuteSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolRegistry.SCHOOL_LIGHTNING)
+            .setSchoolResource(SchoolRegistry.LIGHTNING_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(12)
             .build();

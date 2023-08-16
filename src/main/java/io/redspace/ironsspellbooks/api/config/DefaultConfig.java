@@ -1,14 +1,13 @@
 package io.redspace.ironsspellbooks.api.config;
 
-import io.redspace.ironsspellbooks.api.registry.SchoolRegistryHolder;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
 public class DefaultConfig {
     public SpellRarity minRarity;
-    public SchoolType school;
+    public ResourceLocation schoolResource;
     public int maxLevel = -1;
     public boolean enabled = true;
     public double cooldownInSeconds = -1;
@@ -41,8 +40,8 @@ public class DefaultConfig {
         return this;
     }
 
-    public DefaultConfig setSchool(SchoolType school) {
-        this.school = school;
+    public DefaultConfig setSchoolResource(ResourceLocation schoolResource) {
+        this.schoolResource = schoolResource;
         return this;
     }
 
@@ -54,7 +53,7 @@ public class DefaultConfig {
     }
 
     private boolean validate() {
-        return minRarity != null && maxLevel >= 0 && school != null && cooldownInSeconds >= 0;
+        return minRarity != null && maxLevel >= 0 && schoolResource != null && cooldownInSeconds >= 0;
     }
 }
 
