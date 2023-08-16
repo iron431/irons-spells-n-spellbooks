@@ -26,6 +26,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     public EarthquakeAoe(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.reapplicationDelay = 30;
+        this.setCircular();
     }
 
     public EarthquakeAoe(Level level) {
@@ -56,18 +57,31 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         if (!level.isClientSide) {
             var level = this.level;
             var radius = this.getRadius();
-            Vec3 vec3 = this.position().add(Mth.randomBetween(this.random, -radius, radius), 0, Mth.randomBetween(this.random, -radius, radius));
-            BlockPos blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, vec3, 4)).below();
-            if (level.getBlockState(blockPos.below()).isFaceSturdy(level, blockPos, Direction.UP)) {
-                var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos));
-                fallingblockentity.setNoGravity(true);
-                //fallingblockentity.setPos(fallingblockentity.position().add(0, 1, 0));
-                level.addFreshEntity(fallingblockentity);
+            int intensity = (int) (radius * radius * .08125f);
+            IronsSpellbooks.LOGGER.debug("Earthquake aoe: radius: {} intensity: {}", radius, intensity);
+            for (int i = 0; i < intensity; i++) {
+                Vec3 vec3 = this.position().add(uniformlyDistributedPointInRadius(radius));
+                BlockPos blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, vec3, 4)).below();
+                if (level.getBlockState(blockPos.below()).isFaceSturdy(level, blockPos, Direction.UP)) {
+                    var fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), level.getBlockState(blockPos));
+                    fallingblockentity.setDeltaMovement(0, .1 + random.nextFloat() * .2, 0);
+                    level.addFreshEntity(fallingblockentity);
+                }
             }
             //IronsSpellbooks.LOGGER.debug("Earthquake ghostFallingblock: {} {}", blockPos, level.getBlockState(blockPos));
             //VisualFallingBlockEntity fallingblockentity = new VisualFallingBlockEntity(level, blockPos.getX() + 0.5D, blockPos.getY() + 0.55, blockPos.getZ() + 0.5D, level.getBlockState(blockPos));
             //level.addFreshEntity(fallingblockentity);
         }
+    }
+
+    protected Vec3 uniformlyDistributedPointInRadius(float r) {
+        var distance = r * (1 - this.random.nextFloat() * this.random.nextFloat());
+        var theta = this.random.nextFloat() * 6.282f; // two pi :nerd:
+        return new Vec3(
+                distance * Mth.cos(theta),
+                .2f,
+                distance * Mth.sin(theta)
+        );
     }
 
     @Override

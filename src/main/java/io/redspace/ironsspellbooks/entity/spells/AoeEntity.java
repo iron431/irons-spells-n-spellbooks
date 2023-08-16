@@ -124,8 +124,13 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
             var r = getRadius();
             Vec3 pos;
             if (isCircular()) {
-                float distance = (1 - this.random.nextFloat() * this.random.nextFloat()) * r;
-                pos = new Vec3(0, 0, distance).yRot(this.random.nextFloat() * 360);
+                var distance = r * (1 - this.random.nextFloat() * this.random.nextFloat());
+                var theta = this.random.nextFloat() * 6.282f; // two pi :nerd:
+                pos = new Vec3(
+                        distance * Mth.cos(theta),
+                        .2f,
+                        distance * Mth.sin(theta)
+                );
             } else {
                 pos = new Vec3(
                         Utils.getRandomScaled(r * .85f),

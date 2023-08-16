@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 
 @OnlyIn(Dist.CLIENT)
 public class VisualFallingBlockRenderer extends EntityRenderer<VisualFallingBlockEntity> {
@@ -33,13 +34,15 @@ public class VisualFallingBlockRenderer extends EntityRenderer<VisualFallingBloc
       BlockState blockstate = entity.getBlockState();
       if (blockstate.getRenderShape() == RenderShape.MODEL) {
          Level level = entity.getLevel();
-         //if (blockstate != level.getBlockState(entity.blockPosition()) && blockstate.getRenderShape() != RenderShape.INVISIBLE) {
-            pMatrixStack.pushPose();
-            pMatrixStack.translate(-0.5D, 0.0D, -0.5D);
-            this.dispatcher.renderSingleBlock(entity.getBlockState(), pMatrixStack, pBuffer, pPackedLight, OverlayTexture.NO_OVERLAY);
-            pMatrixStack.popPose();
-            super.render(entity, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
-         //}
+//         if (blockstate != level.getBlockState(pEntity.blockPosition()) && blockstate.getRenderShape() != RenderShape.INVISIBLE) {
+         pMatrixStack.pushPose();
+         BlockPos blockpos = new BlockPos(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
+         pMatrixStack.translate(-0.5D, 0.0D, -0.5D);
+         var model = this.dispatcher.getBlockModel(blockstate);
+         for (var renderType : model.getRenderTypes(blockstate, RandomSource.create(blockstate.getSeed(entity.getStartPos())), ModelData.EMPTY))
+            this.dispatcher.getModelRenderer().tesselateBlock(level, model, blockstate, blockpos, pMatrixStack, pBuffer.getBuffer(renderType), false, RandomSource.create(), blockstate.getSeed(entity.getStartPos()), OverlayTexture.NO_OVERLAY, ModelData.EMPTY, renderType);
+         pMatrixStack.popPose();
+         super.render(entity, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
       }
    }
 

@@ -73,7 +73,7 @@ public class DevourSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
-        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 6, .1f);
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 9, .1f);
     }
 
     @Override
@@ -81,8 +81,6 @@ public class DevourSpell extends AbstractSpell {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
-                targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(targetEntity.position().subtract(entity.position()).scale(-.25f)));
-                targetEntity.hurtMarked = true;
                 DevourJaw devour = new DevourJaw(world, entity, targetEntity);
                 devour.setPos(targetEntity.position());
                 devour.setYRot(entity.getYRot());
