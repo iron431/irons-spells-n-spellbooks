@@ -1,11 +1,11 @@
 {
   "name": "irons_spellbooks:root_hovel_hallway_pool",
-  "fallback": "irons_spellbooks:catacombs_fallback_pool",
+  "fallback": "irons_spellbooks:root_hovel/room_pool",
   "elements": [
     {
       "weight": 1,
       "element": {
-        "location": "irons_spellbooks:root_hovel/hallways/fork_01",
+        "location": "irons_spellbooks:root_hovel/hallways/fork_02",
         "processors": "irons_spellbooks:root_hovel_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
@@ -57,7 +57,7 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:root_hovel/rooms/room_dead_end",
         "processors": "irons_spellbooks:root_hovel_randomizer",

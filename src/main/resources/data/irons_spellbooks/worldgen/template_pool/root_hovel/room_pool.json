@@ -1,0 +1,42 @@
+{
+  "name": "irons_spellbooks:root_hovel_hallway_pool",
+  "fallback": "irons_spellbooks:catacombs_fallback_pool",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:root_hovel/rooms/room_bees",
+        "processors": "irons_spellbooks:root_hovel_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "location": "irons_spellbooks:root_hovel/rooms/room_dead_end",
+        "processors": "irons_spellbooks:root_hovel_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:root_hovel/rooms/room_hovels",
+        "processors": "irons_spellbooks:root_hovel_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "location": "irons_spellbooks:root_hovel/rooms/room_small_mushroom",
+        "processors": "irons_spellbooks:root_hovel_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

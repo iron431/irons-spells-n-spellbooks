@@ -1,11 +1,11 @@
 {
   "name": "irons_spellbooks:root_hovel_hallway_pool",
-  "fallback": "irons_spellbooks:catacombs_fallback_pool",
+  "fallback": "irons_spellbooks:root_hovel/room_pool",
   "elements": [
     {
       "weight": 1,
       "element": {
-        "location": "irons_spellbooks:root_hovel/hallways/fork_01",
+        "location": "irons_spellbooks:root_hovel/hallways/downward_spiral",
         "processors": "irons_spellbooks:root_hovel_randomizer",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
