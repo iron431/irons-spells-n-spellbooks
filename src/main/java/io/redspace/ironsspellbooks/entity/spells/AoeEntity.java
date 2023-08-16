@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidType;
 
@@ -77,11 +78,11 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     protected void checkHits() {
         if (level.isClientSide)
             return;
-        List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation()));
+        List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation().x, this.getInflation().y, this.getInflation().z));
         boolean hit = false;
         for (LivingEntity target : targets) {
             if (canHitEntity(target) && (!isCircular() || target.distanceTo(this) < getRadius())) {
-                if (target.isOnGround() || target.getY() - getY() < .5) {
+                if (canHitTargetForGroundContext(target)) {
                     applyEffect(target);
                     hit = true;
                 }
@@ -94,8 +95,15 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         }
     }
 
-    protected float getInflation() {
-        return 0;
+    protected Vec3 getInflation() {
+        return Vec3.ZERO;
+    }
+
+    /**
+     * Little bit of logic to fix the area effect cloud issue of not hitting mobs unless they're on the exact same Y. can be overridden for Aoe's with weird-shaped hitboxes.
+     */
+    protected boolean canHitTargetForGroundContext(LivingEntity target) {
+        return target.isOnGround() || target.getY() - getY() < .5;
     }
 
     @Override

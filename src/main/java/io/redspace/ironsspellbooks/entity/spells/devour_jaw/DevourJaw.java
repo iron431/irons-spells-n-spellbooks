@@ -80,8 +80,8 @@ public class DevourJaw extends AoeEntity {
     }
 
     @Override
-    protected float getInflation() {
-        return 2f;
+    protected Vec3 getInflation() {
+        return new Vec3(2, 2, 2);
     }
 
     @Override

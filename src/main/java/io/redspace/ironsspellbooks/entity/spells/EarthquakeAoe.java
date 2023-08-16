@@ -36,8 +36,11 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     public void applyEffect(LivingEntity target) {
         var damageSource = SpellRegistry.EARTHQUAKE_SPELL.get().getDamageSource(this, getOwner());
         DamageSources.ignoreNextKnockback(target);
-        target.hurt(damageSource, getDamage());
-        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, slownessAmplifier));
+        if (target.hurt(damageSource, getDamage())) {
+            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, slownessAmplifier));
+            target.setDeltaMovement(target.getDeltaMovement().add(0, .5, 0));
+            target.hurtMarked = true;
+        }
     }
 
     private int slownessAmplifier;
@@ -103,6 +106,16 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean canHitTargetForGroundContext(LivingEntity target) {
+        return true;
+    }
+
+    @Override
+    protected Vec3 getInflation() {
+        return new Vec3(0, 3, 0);
     }
 
     protected void createTremorBlock(BlockPos blockPos) {
