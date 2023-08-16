@@ -75,6 +75,9 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> KEEPER_SWORD_IMPACT = registerSoundEvent("entity.citadel_keeper.sword_impact");
     public static RegistryObject<SoundEvent> KEEPER_IDLE = registerSoundEvent("entity.citadel_keeper.idle");
     public static RegistryObject<SoundEvent> OAKSKIN_CAST = registerSoundEvent("spell.oakskin.cast");
+    public static RegistryObject<SoundEvent> EARTHQUAKE_LOOP = registerSoundEvent("entity.earthquake_aoe.loop");
+    public static RegistryObject<SoundEvent> EARTHQUAKE_IMPACT = registerSoundEvent("entity.earthquake_aoe.impact");
+    public static RegistryObject<SoundEvent> EARTHQUAKE_CAST = registerSoundEvent("spell.earthquake.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

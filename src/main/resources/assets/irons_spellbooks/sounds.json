@@ -388,5 +388,20 @@
     "sounds": [
       "irons_spellbooks:oakskin_cast"
     ]
+  },
+  "entity.earthquake_aoe.loop": {
+    "sounds": [
+      "irons_spellbooks:earthquake_loop"
+    ]
+  },
+  "entity.earthquake_aoe.impact": {
+    "sounds": [
+      "irons_spellbooks:earthquake_impact"
+    ]
+  },
+  "spell.earthquake.cast": {
+    "sounds": [
+      "irons_spellbooks:earthquake_cast"
+    ]
   }
 }
