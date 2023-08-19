@@ -96,8 +96,6 @@ public class EarthquakeSpell extends AbstractSpell {
             spawn = Utils.moveToRelativeGroundLevel(world, spawn, 6);
         }
 
-        spawn = spawn.subtract(0, 1, 0);
-
         int duration = 20 * 12;//getDuration(spellLevel, entity);
         float radius = getRadius(spellLevel, entity);
 

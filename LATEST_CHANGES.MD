@@ -1,4 +1,5 @@
 ### Additions
+- Added Earthquake Spell
 - Added Firefly Spell
 - Added Oakskin Spell
 - Added Oakskin Elixir
@@ -9,6 +10,7 @@
 
 ### Changes
 - Devour spell no longer pulls enemies in, and has had its range extended
+- Long casts can no longer be held to cast
 
 ### Fixes
 - 

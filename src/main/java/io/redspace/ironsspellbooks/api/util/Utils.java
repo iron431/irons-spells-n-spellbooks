@@ -264,14 +264,8 @@ public class Utils {
         if (entity instanceof ServerPlayer serverPlayer) {
             var pmd = MagicData.getPlayerMagicData(serverPlayer);
             if (pmd.isCasting()) {
-                if ((pmd.getCastType() != CastType.LONG)
-                        || (pmd.getCastType() == CastType.LONG
-                        && (pmd.getCastDurationRemaining() > 0 && !(itemStack.getUseDuration() - ticksUsed < 4))
-                        //If it is a long cast, we refrain from cancelling if the cast is complete (duh) or if they only clicked (4 tick window)
-                )) {
-                    Utils.serverSideCancelCast(serverPlayer);
-                    serverPlayer.stopUsingItem();
-                }
+                Utils.serverSideCancelCast(serverPlayer);
+                serverPlayer.stopUsingItem();
             }
         }
     }
@@ -540,11 +534,11 @@ public class Utils {
     public static CompoundTag saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {
         ListTag listtag = new ListTag();
 
-        for(int i = 0; i < pList.size(); ++i) {
+        for (int i = 0; i < pList.size(); ++i) {
             ItemStack itemstack = pList.get(i);
             if (!itemstack.isEmpty()) {
                 CompoundTag compoundtag = new CompoundTag();
-                compoundtag.putByte("Slot", (byte)i);
+                compoundtag.putByte("Slot", (byte) i);
                 itemstack.save(compoundtag);
                 listtag.add(compoundtag);
             }

@@ -130,7 +130,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
 
     @Override
     protected Vec3 getInflation() {
-        return new Vec3(0, 3, 0);
+        return new Vec3(0, 5, 0);
     }
 
     protected void createTremorBlock(BlockPos blockPos, float impulseStrength) {
@@ -197,7 +197,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         List<EarthquakeAoe> closestPositions = clientEarthquakeOrigins.stream().sorted((o1, o2) -> (int) (o1.position().distanceToSqr(player.position()) - o2.position().distanceToSqr(player.position()))).toList();
         var closestPos = closestPositions.get(0).position();
         //.0039f is 1/15^2
-        float intensity = (float) Mth.lerp(closestPos.distanceToSqr(player.position()) * 0.0039f, 1, 0);
+        float intensity = (float) Mth.clampedLerp(1, 0, closestPos.distanceToSqr(player.position()) * 0.0039f);
         float f = (float) (player.tickCount + event.getPartialTick());
         float yaw = Mth.cos(f * 1.5f) * intensity * .35f;
         float pitch = Mth.cos(f * 2f) * intensity * .35f;

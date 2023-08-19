@@ -17,7 +17,11 @@ public enum CastType {
         return value;
     }
 
-    public boolean holdToCast(){
-        return this == CONTINUOUS || this == LONG;
+    public boolean holdToCast() {
+        return this == CONTINUOUS/* || this == LONG*/;
+    }
+
+    public boolean immediatelySuppressRightClicks() {
+        return this == LONG;
     }
 }

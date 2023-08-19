@@ -17,6 +17,9 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastStarted;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.player.ClientInputEvents;
+import io.redspace.ironsspellbooks.player.ClientPlayerEvents;
+import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
@@ -369,6 +372,9 @@ public abstract class AbstractSpell {
     public void onClientPreCast(Level level, int spellLevel, LivingEntity entity, InteractionHand hand, @Nullable MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
+        }
+        if (this.getCastType().immediatelySuppressRightClicks()) {
+            ClientSpellCastHelper.setSuppressRightClicks(true);
         }
         playSound(getCastStartSound(), entity);
     }
