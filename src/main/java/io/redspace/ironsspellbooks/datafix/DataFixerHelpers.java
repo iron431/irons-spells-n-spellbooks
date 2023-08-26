@@ -125,7 +125,8 @@ public class DataFixerHelpers {
         var fix4 = fixUpgradeType(tag);
         var fix5 = fixIsbEnhance(tag);
         var fix6 = fixTetra(tag);
-        return fix1 || fix2 || fix3 || fix4 || fix5 || fix6;
+        var fix7 = fixApoth(tag);
+        return fix1 || fix2 || fix3 || fix4 || fix5 || fix6 || fix7;
     }
 
     public static boolean fixIsbEnhance(CompoundTag tag) {
@@ -158,6 +159,24 @@ public class DataFixerHelpers {
         }
         return false;
     }
+
+    public static boolean fixApoth(CompoundTag tag) {
+        if (tag != null) {
+            if (tag.get("affix_data") instanceof CompoundTag affixTag) {
+                if (affixTag.get("gems") instanceof ListTag gemList) {
+                    for (Tag gem : gemList) {
+                        var itemTag = ((CompoundTag) gem).getCompound("tag");
+                        if (itemTag.getString("gem").equals("irons_spellbooks:poison")) {
+                            itemTag.putString("gem", "irons_spellbooks:nature");
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 
     public static boolean fixIsbSpellbook(CompoundTag tag) {
         if (tag != null) {
