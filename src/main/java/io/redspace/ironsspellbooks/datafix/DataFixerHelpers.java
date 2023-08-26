@@ -16,10 +16,7 @@ import io.redspace.ironsspellbooks.spells.nature.*;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
 import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 
 import java.util.Map;
 
@@ -127,7 +124,8 @@ public class DataFixerHelpers {
         var fix3 = fixItemsNames(tag);
         var fix4 = fixUpgradeType(tag);
         var fix5 = fixIsbEnhance(tag);
-        return fix1 || fix2 || fix3 || fix4 || fix5;
+        var fix6 = fixTetra(tag);
+        return fix1 || fix2 || fix3 || fix4 || fix5 || fix6;
     }
 
     public static boolean fixIsbEnhance(CompoundTag tag) {
@@ -137,6 +135,23 @@ public class DataFixerHelpers {
                 if (ringTag instanceof IntTag legacyRingTag) {
                     tag.remove(RingData.ISB_ENHANCE);
                     tag.putString(RingData.ISB_ENHANCE, LEGACY_SPELL_MAPPING.getOrDefault(legacyRingTag.getAsInt(), "irons_spellbooks:none"));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean fixTetra(CompoundTag tag) {
+        String key = "sword/socket_material";
+        String poison = "sword_socket/irons_spellbooks_poison_rune_socket";
+        String nature = "sword_socket/irons_spellbooks_nature_rune_socket";
+        if (tag != null) {
+            if (tag.contains(key)) {
+                var socketTag = tag.get(key);
+                if (socketTag instanceof StringTag entry && entry.getAsString().equals(poison)) {
+                    tag.remove(key);
+                    tag.putString(key, nature);
                     return true;
                 }
             }
