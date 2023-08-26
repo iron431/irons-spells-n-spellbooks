@@ -376,6 +376,7 @@
   "spell.irons_spellbooks.firefly_swarm": "Firefly Swarm",
   "spell.irons_spellbooks.oakskin": "Oakskin",
   "spell.irons_spellbooks.earthquake": "Earthquake",
+  "spell.irons_spellbooks.summon_ender_chest": "Summon Ender Chest",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -446,7 +447,8 @@
   "spell.irons_spellbooks.devour.guide": "Pull in a nearby creature and attack them with a bite, leeching 15% of damage done as health. If the creature is killed, you temporarily gain additional max HP. Created by the ancient magician known as Yorhavich",
   "spell.irons_spellbooks.firefly_swarm.guide": "Emanate a swarm of violent fireflies, following a targeted creature and dealing aoe damage. If the initial target dies, the last harmed creature will be targeted.",
   "spell.irons_spellbooks.oakskin.guide": "The great power of oak infuses itself into your skin, granting damage reduction of any incoming damage for a duration.",
-  "spell.irons_spellbooks.earthquake.guide": "Around a targeted creature or location, create an earthquake causing tremors through the ground for 12 seconds, damaging and slowing creatures in the area.",
+  "spell.irons_spellbooks.earthquake.guide": "Conjure an earthquake around a targeted creature or location, causing tremors to ripple through the ground, damaging and slowing creatures in the area.",
+  "spell.irons_spellbooks.summon_ender_chest.guide": "Apparate your Ender Chest inventory upon casting.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
