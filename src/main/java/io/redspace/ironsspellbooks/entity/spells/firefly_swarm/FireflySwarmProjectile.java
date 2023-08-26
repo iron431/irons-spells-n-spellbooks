@@ -7,9 +7,11 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
@@ -89,6 +91,10 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
         if (!this.moveControl.hasWanted()) {
             this.setDeltaMovement(this.getDeltaMovement().multiply(.95f, 1, .95f));
         }
+        if ((this.tickCount & 7) == 0) {
+            float fade = 1 - Mth.clamp((tickCount - maxLife + 40) / (float) (maxLife), 0, 1f);
+            this.playSound(SoundRegistry.FIREFLY_SWARM_IDLE.get(), .25f * fade, .95f + this.level.random.nextFloat() * .1f);
+        }
         if (this.tickCount % 15 == 0) {
             //Damage tick
             float inflate = radius - this.getBbWidth() * .5f;
@@ -97,6 +103,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
                         if (canHitEntity(entity)) {
                             boolean hit = DamageSources.applyDamage(entity, damage, SpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.FIREFLY_SWARM_SPELL.get().getSchoolType());
                             if (hit) {
+                                this.playSound(SoundRegistry.FIREFLY_SWARM_ATTACK.get(), .75f, .9f + this.level.random.nextFloat() * .2f);
                                 if (target == null) {
                                     setTarget(entity);
                                 } else if (target != entity) {

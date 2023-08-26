@@ -153,6 +153,11 @@
       "irons_spellbooks:generic/nature_cast"
     ]
   },
+  "cast.generic.poison": {
+    "sounds": [
+      "irons_spellbooks:generic/poison_cast"
+    ]
+  },
   "cast.blood_step": {
     "sounds": [
       "irons_spellbooks:blood_step_teleport"
@@ -402,6 +407,24 @@
   "spell.earthquake.cast": {
     "sounds": [
       "irons_spellbooks:earthquake_cast"
+    ]
+  },
+  "entity.firefly_swarm.idle": {
+    "sounds": [
+      "irons_spellbooks:bee_bzz_07",
+      "irons_spellbooks:bee_bzz_08",
+      "irons_spellbooks:bee_bzz_09",
+      "irons_spellbooks:bee_bzz_10"
+    ]
+  },
+  "entity.firefly_swarm.attack": {
+    "sounds": [
+      "irons_spellbooks:bee_sting_01"
+    ]
+  },
+  "spell.firefly_swarm.prepare": {
+    "sounds": [
+      "irons_spellbooks:firefly_spell_prepare"
     ]
   }
 }

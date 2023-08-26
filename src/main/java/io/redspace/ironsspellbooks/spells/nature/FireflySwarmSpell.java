@@ -47,7 +47,7 @@ public class FireflySwarmSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
-        this.castTime = 15;
+        this.castTime = 30;
         this.baseManaCost = 40;
     }
 
@@ -68,7 +68,7 @@ public class FireflySwarmSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.POISON_SPLASH_BEGIN.get());
+        return Optional.of(SoundRegistry.FIREFLY_SPELL_PREPARE.get());
     }
 
     @Override

@@ -72,7 +72,7 @@ public class BlightSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.POISON_CAST.get());
     }
 
 

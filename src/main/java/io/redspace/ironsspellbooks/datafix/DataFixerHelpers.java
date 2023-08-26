@@ -143,12 +143,12 @@ public class DataFixerHelpers {
     }
 
     public static boolean fixTetra(CompoundTag tag) {
-        String key = "sword/socket_material";
-        String poison = "sword_socket/irons_spellbooks_poison_rune_socket";
-        String nature = "sword_socket/irons_spellbooks_nature_rune_socket";
         if (tag != null) {
+            String key = "sword/socket_material";
             if (tag.contains(key)) {
                 var socketTag = tag.get(key);
+                String poison = "sword_socket/irons_spellbooks_poison_rune_socket";
+                String nature = "sword_socket/irons_spellbooks_nature_rune_socket";
                 if (socketTag instanceof StringTag entry && entry.getAsString().equals(poison)) {
                     tag.remove(key);
                     tag.putString(key, nature);

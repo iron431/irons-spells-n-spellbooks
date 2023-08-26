@@ -78,6 +78,9 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> EARTHQUAKE_LOOP = registerSoundEvent("entity.earthquake_aoe.loop");
     public static RegistryObject<SoundEvent> EARTHQUAKE_IMPACT = registerSoundEvent("entity.earthquake_aoe.impact");
     public static RegistryObject<SoundEvent> EARTHQUAKE_CAST = registerSoundEvent("spell.earthquake.cast");
+    public static RegistryObject<SoundEvent> FIREFLY_SWARM_IDLE = registerSoundEvent("entity.firefly_swarm.idle");
+    public static RegistryObject<SoundEvent> FIREFLY_SWARM_ATTACK = registerSoundEvent("entity.firefly_swarm.attack");
+    public static RegistryObject<SoundEvent> FIREFLY_SPELL_PREPARE = registerSoundEvent("spell.firefly_swarm.prepare");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
@@ -97,6 +100,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> BLOOD_CAST = registerSoundEvent("cast.generic.blood");
     public static RegistryObject<SoundEvent> EVOCATION_CAST = registerSoundEvent("cast.generic.evocation");
     public static RegistryObject<SoundEvent> NATURE_CAST = registerSoundEvent("cast.generic.nature");
+    public static RegistryObject<SoundEvent> POISON_CAST = registerSoundEvent("cast.generic.poison");
 
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {
