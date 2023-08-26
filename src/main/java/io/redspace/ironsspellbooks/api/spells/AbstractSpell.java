@@ -196,7 +196,10 @@ public abstract class AbstractSpell {
         return (float) ((baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier);
     }
 
-    public float getEntityPowerMultiplier(LivingEntity entity) {
+    public float getEntityPowerMultiplier(@Nullable LivingEntity entity) {
+        if (entity == null) {
+            return 1f;
+        }
         var entitySpellPowerModifier = (float) entity.getAttributeValue(AttributeRegistry.SPELL_POWER.get());
         var entitySchoolPowerModifier = this.getSchoolType().getPowerFor(entity);
         return (float) (entitySpellPowerModifier * entitySchoolPowerModifier);
@@ -374,7 +377,7 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
         }
         if (this.getCastType().immediatelySuppressRightClicks()) {
-            if(ClientInputEvents.isUseKeyDown) {
+            if (ClientInputEvents.isUseKeyDown) {
                 ClientSpellCastHelper.setSuppressRightClicks(true);
             }
         }

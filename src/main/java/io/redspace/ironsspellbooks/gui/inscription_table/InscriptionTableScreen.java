@@ -204,7 +204,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private void renderLorePage(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
         int x = leftPos + LORE_PAGE_X;
         int y = topPos;
-        int margin = 5;
+        int margin = 2;
         var textColor = Style.EMPTY.withColor(0x322c2a);
         //
         // Title
