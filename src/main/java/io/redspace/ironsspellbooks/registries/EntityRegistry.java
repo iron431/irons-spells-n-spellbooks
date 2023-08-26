@@ -47,6 +47,7 @@ import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.entity.spells.poison_breath.PoisonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonSplash;
+import io.redspace.ironsspellbooks.entity.spells.ray_of_frost.RayOfFrostVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
@@ -421,6 +422,12 @@ public class EntityRegistry {
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "chain_lightning").toString()));
+
+    public static final RegistryObject<EntityType<RayOfFrostVisualEntity>> RAY_OF_FROST_VISUAL_ENTITY =
+            ENTITIES.register("ray_of_frost", () -> EntityType.Builder.<RayOfFrostVisualEntity>of(RayOfFrostVisualEntity::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "ray_of_frost").toString()));
 
     public static final RegistryObject<EntityType<DevourJaw>> DEVOUR_JAW =
             ENTITIES.register("devour_jaw", () -> EntityType.Builder.<DevourJaw>of(DevourJaw::new, MobCategory.MISC)

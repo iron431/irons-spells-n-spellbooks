@@ -225,6 +225,7 @@
   "ui.irons_spellbooks.strength": "%d Strength",
   "ui.irons_spellbooks.max_victims": "%d Max Hits",
   "ui.irons_spellbooks.distance": "%d Block Range",
+  "ui.irons_spellbooks.freeze_time": "%s Freeze Time",
   "ui.irons_spellbooks.dimensions": "%dx%dx%d",
   "ui.irons_spellbooks.radius": "%d Block Radius",
   "ui.irons_spellbooks.absorption": "%d Temporary HP",
