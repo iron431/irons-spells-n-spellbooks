@@ -109,9 +109,4 @@ public class RayOfFrostSpell extends AbstractSpell {
     private int getFreezeTime(int spellLevel, LivingEntity caster) {
         return (int) (getSpellPower(spellLevel, caster) * 30);
     }
-
-    @Override
-    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
-        return mob.distanceToSqr(target) > (getRange(getLevel(spellLevel, mob)) * getRange(getLevel(spellLevel, mob))) * 1.2;
-    }
 }

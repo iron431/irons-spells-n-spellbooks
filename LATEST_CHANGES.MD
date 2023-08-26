@@ -6,7 +6,8 @@
 - Added Invisibility Elixir
 - Added Evasion Elixir
 - Added Greater Potion of Healing
-- Added Caster's tea (wip name)
+- Added Summon Ender Chest Spell
+- Added Ray of Frost Spell
 
 ### Changes
 - Devour spell no longer pulls enemies in, and has had its range extended
