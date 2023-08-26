@@ -374,7 +374,9 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientPreCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
         }
         if (this.getCastType().immediatelySuppressRightClicks()) {
-            ClientSpellCastHelper.setSuppressRightClicks(true);
+            if(ClientInputEvents.isUseKeyDown) {
+                ClientSpellCastHelper.setSuppressRightClicks(true);
+            }
         }
         playSound(getCastStartSound(), entity);
     }
