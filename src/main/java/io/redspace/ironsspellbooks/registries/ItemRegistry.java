@@ -51,7 +51,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> ROTTEN_SPELL_BOOK = ITEMS.register("rotten_spell_book", () -> new SpellBook(3, SpellRarity.RARE));
     public static final RegistryObject<Item> BLAZE_SPELL_BOOK = ITEMS.register("blaze_spell_book", () -> new SimpleAttributeSpellBook(5, SpellRarity.EPIC, AttributeRegistry.FIRE_SPELL_POWER.get(), .10));
     public static final RegistryObject<Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.ENDER_SPELL_POWER.get(), .10));
-    public static final RegistryObject<Item> DRUIDIC_SPELL_BOOK = ITEMS.register("druidic_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.NATURE_SPELL_POWER.get(), .10));
+    public static final RegistryObject<Item> DRUIDIC_SPELL_BOOK = ITEMS.register("druidic_spell_book", () -> new SimpleAttributeSpellBook(6, SpellRarity.EPIC, AttributeRegistry.NATURE_SPELL_POWER.get(), .10));
     public static final RegistryObject<Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", VillagerSpellBook::new);
 
     public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new BloodStaffItem(
@@ -89,7 +89,7 @@ public class ItemRegistry {
     /**
      * Potions
      */
-    public static final RegistryObject<Item> CASTERS_TEA = ITEMS.register("casters_tea", () -> new CastersTea(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).stacksTo(4)));
+//    public static final RegistryObject<Item> CASTERS_TEA = ITEMS.register("casters_tea", () -> new CastersTea(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).stacksTo(4)));
     public static final RegistryObject<Item> OAKSKIN_ELIXIR = ITEMS.register("oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 900, 1)));
     public static final RegistryObject<Item> GREATER_OAKSKIN_ELIXIR = ITEMS.register("greater_oakskin_elixir", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), 1800, 3), true));
     public static final RegistryObject<Item> GREATER_HEALING_POTION = ITEMS.register("greater_healing_potion", () -> new SimpleElixir(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB), () -> new MobEffectInstance(MobEffects.HEAL, 1, 2), true));

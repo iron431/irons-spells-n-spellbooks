@@ -170,6 +170,8 @@
   "block.irons_spellbooks.arcane_debris": "Arcane Debris",
   "block.irons_spellbooks.armor_pile": "Armor Pile",
   "block.irons_spellbooks.alchemist_cauldron": "Alchemist Cauldron",
+  "block.irons_spellbooks.firefly_jar": "Firefly Jar",
+
   "tooltip.irons_spellbooks.level": "Level %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
   "tooltip.irons_spellbooks.scroll_tooltip": "When in Spell Book:",
