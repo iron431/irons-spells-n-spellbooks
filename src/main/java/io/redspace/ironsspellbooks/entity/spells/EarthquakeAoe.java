@@ -23,23 +23,21 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
-    public static List<EarthquakeAoe> clientEarthquakeOrigins = new ArrayList<>();
+    public static Map<UUID, EarthquakeAoe> clientEarthquakeOrigins = new HashMap<>();
 
     public EarthquakeAoe(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.reapplicationDelay = 25;
         this.setCircular();
-        if (this.level.isClientSide) {
-            clientEarthquakeOrigins.add(this);
-        }
+
     }
 
     public EarthquakeAoe(Level level) {
@@ -81,6 +79,13 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
 
     @Override
     public void tick() {
+        if(tickCount == 1){
+            if (this.level.isClientSide && !this.isRemoved()) {
+                clientEarthquakeOrigins.put(this.uuid, this);
+                IronsSpellbooks.LOGGER.debug("{} adding earthquake on client:", this.uuid);
+                clientEarthquakeOrigins.forEach((key, value) -> IronsSpellbooks.LOGGER.debug("{}:{}", key, value));
+            }
+        }
         super.tick();
         if (tickCount % 20 == 1) {
             this.playSound(SoundRegistry.EARTHQUAKE_LOOP.get(), 2f, .9f + random.nextFloat() * .15f);
@@ -155,7 +160,9 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     @Override
     public void onClientRemoval() {
         if (level.isClientSide) {
-            clientEarthquakeOrigins.remove(this);
+            clientEarthquakeOrigins.remove(this.uuid);
+            IronsSpellbooks.LOGGER.debug("{} removing earthquake on client:", this.uuid);
+            clientEarthquakeOrigins.forEach((key, value) -> IronsSpellbooks.LOGGER.debug("{}:{}", key, value));
         }
         super.onClientRemoval();
     }
@@ -194,7 +201,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
             return;
         }
         var player = event.getCamera().getEntity();
-        List<EarthquakeAoe> closestPositions = clientEarthquakeOrigins.stream().sorted((o1, o2) -> (int) (o1.position().distanceToSqr(player.position()) - o2.position().distanceToSqr(player.position()))).toList();
+        List<EarthquakeAoe> closestPositions = clientEarthquakeOrigins.values().stream().sorted((o1, o2) -> (int) (o1.position().distanceToSqr(player.position()) - o2.position().distanceToSqr(player.position()))).toList();
         var closestPos = closestPositions.get(0).position();
         //.0039f is 1/15^2
         float intensity = (float) Mth.clampedLerp(1, 0, closestPos.distanceToSqr(player.position()) * 0.0039f);
