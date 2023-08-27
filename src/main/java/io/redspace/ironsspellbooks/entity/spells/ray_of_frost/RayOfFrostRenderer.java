@@ -71,9 +71,9 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(TEXTURE_OVERLAY));
             {
                 poseStack.pushPose();
-                float expansion = 1 + f * .25f;
+                float expansion = .8f + f * .125f;
                 poseStack.scale(expansion, 1, expansion);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(f * 10));
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(45));
                 this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, alpha);
                 poseStack.popPose();
             }
@@ -83,7 +83,7 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
                 poseStack.pushPose();
                 float expansion = Mth.clampedLerp(1, 0, f / (lifetime - 8));
                 poseStack.scale(expansion, 1, expansion);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(f * -5));
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(f * -10));
                 this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
                 poseStack.popPose();
             }

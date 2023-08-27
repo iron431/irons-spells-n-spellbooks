@@ -507,6 +507,7 @@
   "death.attack.irons_spellbooks.devour": "%1$s was devoured by %2$s",
   "death.attack.irons_spellbooks.firefly_swarm": "%1$s was swarmed by %2$s",
   "death.attack.irons_spellbooks.earthquake": "%1$s was decimated in %2$s's earthquake",
+  "death.attack.irons_spellbooks.ray_of_frost": "%1$s was blasted by %2$s's ray of frost",
 
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
@@ -554,6 +555,7 @@
   "death.attack.irons_spellbooks.devour.item": "%1$s was devoured by %2$s while using %3$s",
   "death.attack.irons_spellbooks.firefly_swarm.item": "%1$s was swarmed by %2$s while using %3$s",
   "death.attack.irons_spellbooks.earthquake.item": "%1$s was decimated in %2$s's earthquake caused by %3$s",
+  "death.attack.irons_spellbooks.ray_of_frost.item": "%1$s was blasted by %2$s's ray of frost while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -664,6 +666,8 @@
   "entity.irons_spellbooks.priest": "Priest",
   "entity.irons_spellbooks.devour_jaw": "Devour Jaw",
   "entity.irons_spellbooks.firefly_swarm": "Firefly Swarm",
+  "entity.irons_spellbooks.earthquake_aoe": "Earthquake",
+  "entity.irons_spellbooks.ray_of_frost": "Ray of Frost",
 
   "itemGroup.spell_materials_tab": "Iron's Spellbooks Materials",
   "itemGroup.spell_equipment_tab": "Iron's Spellbooks Equipment",
