@@ -1,6 +1,9 @@
 {
   "processors": [
     {
+      "processor_type": "irons_spellbooks:remove_water"
+    },
+    {
       "processor_type": "minecraft:rule",
       "rules": [
         {
