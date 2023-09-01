@@ -426,5 +426,10 @@
     "sounds": [
       "irons_spellbooks:firefly_spell_prepare"
     ]
+  },
+  "spell.ray_of_frost.cast": {
+    "sounds": [
+      "irons_spellbooks:ray_of_frost"
+    ]
   }
 }

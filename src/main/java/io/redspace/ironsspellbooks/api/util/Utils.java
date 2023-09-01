@@ -48,6 +48,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -290,7 +291,10 @@ public class Utils {
             hits.sort((o1, o2) -> (int) (o1.getLocation().distanceToSqr(start) - o2.getLocation().distanceToSqr(start)));
             return hits.get(0);
         } else {
-            return BlockHitResult.miss(end, Direction.UP, new BlockPos(end));
+            if (new BlockCollisions(level, null, AABB.ofSize(end, .1f, .1f, .1f), true).hasNext())
+                return new BlockHitResult(end, Direction.UP, new BlockPos(end), false);
+            else
+                return BlockHitResult.miss(end, Direction.UP, new BlockPos(end));
         }
     }
 
