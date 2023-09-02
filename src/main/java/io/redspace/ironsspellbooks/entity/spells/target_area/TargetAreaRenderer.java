@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.render.SpellTargetingLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -37,12 +38,10 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
         Matrix3f normalMatrix = pose.normal();
 
         float radius = entity.getRadius();
-        float circumference = 2 * radius * Mth.PI;
         int segments = (int) (5 * radius + 9);
         float angle = 2 * Mth.PI / segments;
-        float segmentWidth = (circumference / segments);
+        float entityY = (float) Mth.lerp(pPartialTick, entity.yOld, entity.getY());
 
-        RenderSystem.disableTexture();
         for (int i = 0; i < segments; i++) {
             float theta = angle * i;
             float theta2 = angle * (i + 1);
@@ -50,14 +49,14 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
             float x2 = radius * Mth.cos(theta2);
             float z1 = radius * Mth.sin(theta);
             float z2 = radius * Mth.sin(theta2);
-            //drawPlane(consumer, color, poseMatrix, normalMatrix, light, segmentWidth, radius);
-            //poseStack.mulPose(Vector3f.YP.rotationDegrees(angle));
-            consumer.vertex(poseMatrix, x2, 0, z2).color(color.x(), color.y(), color.z(), 1).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, x2, 0.6f, z2).color(0, 0, 0, 1).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, x1, 0.6f, z1).color(0, 0, 0, 1).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
-            consumer.vertex(poseMatrix, x1, 0, z1).color(color.x(), color.y(), color.z(), 1).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+
+            float y1 = Utils.findRelativeGroundLevel(entity.level, entity.position().add(x1, entity.getBbHeight(), z1), (int) (entity.getBbHeight() * 2.5)) - entityY;
+            float y2 = Utils.findRelativeGroundLevel(entity.level, entity.position().add(x2, entity.getBbHeight(), z2), (int) (entity.getBbHeight() * 2.5)) - entityY;
+            consumer.vertex(poseMatrix, x2, y2, z2).color(color.x(), color.y(), color.z(), 1).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+            consumer.vertex(poseMatrix, x2, y2 + 0.6f, z2).color(0, 0, 0, 1).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+            consumer.vertex(poseMatrix, x1, y1 + 0.6f, z1).color(0, 0, 0, 1).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+            consumer.vertex(poseMatrix, x1, y1, z1).color(color.x(), color.y(), color.z(), 1).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light * 4).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         }
-        RenderSystem.enableTexture();
         poseStack.popPose();
     }
 }

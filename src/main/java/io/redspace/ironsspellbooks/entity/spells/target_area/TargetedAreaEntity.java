@@ -76,9 +76,9 @@ public class TargetedAreaEntity extends Entity {
         zOld = getZ();
         if (owner != null) {
             setPos(owner.position());
-            this.xo = owner.xo;
-            this.yo = owner.yo;
-            this.zo = owner.zo;
+            this.xOld = owner.xOld;
+            this.yOld = owner.yOld;
+            this.zOld = owner.zOld;
         }
         if (!level.isClientSide
                 && (duration > 0 && tickCount > duration
