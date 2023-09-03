@@ -12,6 +12,8 @@
 ### Changes
 - Devour spell no longer pulls enemies in, and has had its range extended
 - Long casts can no longer be held to cast
+- Long casts must be clicked again to cancel mid-cast
+- The visuals of the Target Area Outline (used in spells like Healing Circle) have been improved
 
 ### Fixes
 - 
