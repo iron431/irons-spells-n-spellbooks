@@ -2,10 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.WizardAttackGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.WizardRecoverGoal;
+import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.nbt.CompoundTag;
@@ -41,13 +38,14 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 4, 80, 300, 1));
-        this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 65, 100)
+        this.goalSelector.addGoal(1, new GustDefenseGoal(this));
+        this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 30, 80)
                 .setSpells(
-                    List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FIRECRACKER_SPELL.get()),
-                    List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.SHIELD_SPELL.get()),
-                    List.of(),
-                    List.of())
-                .setSpellQuality(.6f, .8f)
+                        List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FIRECRACKER_SPELL.get()),
+                        List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.SHIELD_SPELL.get()),
+                        List.of(),
+                        List.of())
+                .setSpellQuality(.4f, .6f)
                 .setSingleUseSpell(SpellRegistry.INVISIBILITY_SPELL.get(), 40, 80, 5, 5)
                 .setDrinksPotions());
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
@@ -79,10 +77,10 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
-                .add(Attributes.MAX_HEALTH, 50.0)
+                .add(Attributes.MAX_HEALTH, 60.0)
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(AttributeRegistry.CAST_TIME_REDUCTION.get(), 1.5)
-                .add(Attributes.MOVEMENT_SPEED, .3);
+                .add(Attributes.MOVEMENT_SPEED, .25);
     }
 
     protected SoundEvent getAmbientSound() {

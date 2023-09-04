@@ -55,7 +55,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private final MagicData playerMagicData = new MagicData(true);
-    private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.5D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.15D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
     private @Nullable SpellData castingSpell;
     private final HashMap<String, AbstractSpell> spells = Maps.newHashMap();
@@ -311,45 +311,48 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         return playerMagicData.isCasting();
     }
 
-    public void setTeleportLocationBehindTarget(int distance) {
+    public boolean setTeleportLocationBehindTarget(int distance) {
         var target = getTarget();
+        boolean valid = false;
         if (target != null) {
             var rotation = target.getLookAngle().normalize().scale(-distance);
             var pos = target.position();
             var teleportPos = rotation.add(pos);
 
-            boolean valid = false;
             for (int i = 0; i < 24; i++) {
-                teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD));
+                Vec3 randomness = Utils.getRandomVec3(.15f * i).multiply(1, 0, 1);
+                teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD)).add(randomness);
                 int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 5);
-                teleportPos = new Vec3(teleportPos.x, y, teleportPos.z);
-                var bb = this.getBoundingBox().inflate(.5f);
-                var reposBB = bb.move(teleportPos.subtract(this.position()));
-                if (!level.collidesWithSuffocatingBlock(this, reposBB)) {
-                    IronsSpellbooks.LOGGER.debug("\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\nsetTeleportLocationBehindTarget: {} {} {} empty. teleporting\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n", reposBB.minX, reposBB.minY, reposBB.minZ);
+                teleportPos = new Vec3(teleportPos.x, y + .1f, teleportPos.z);
+                var reposBB = this.getBoundingBox().move(teleportPos.subtract(this.position()));
+                IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget attempt to teleport to {}:", reposBB.getCenter());
+                if (!level.collidesWithSuffocatingBlock(this, reposBB.inflate(-.05f))) {
+                    //IronsSpellbooks.LOGGER.debug("\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\nsetTeleportLocationBehindTarget: {} {} {} empty. teleporting\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n", reposBB.minX, reposBB.minY, reposBB.minZ);
                     valid = true;
                     break;
                 }
+                IronsSpellbooks.LOGGER.debug("fail");
 
             }
             if (valid) {
                 if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: valid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
+                    //IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: valid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
                 }
                 playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
             } else {
                 if (Log.SPELL_DEBUG) {
-                    IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
+                    //IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
                 }
                 playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
 
             }
         } else {
             if (Log.SPELL_DEBUG) {
-                IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: no target, isClient:{}", level.isClientSide());
+                //IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: no target, isClient:{}", level.isClientSide());
             }
             playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
         }
+        return valid;
     }
 
     public void setBurningDashDirectionData() {

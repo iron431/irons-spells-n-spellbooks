@@ -4,12 +4,14 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -38,6 +40,7 @@ public class WizardAttackGoal extends Goal {
     protected int singleUseLevel;
 
     protected boolean isFlying;
+    protected boolean shouldFlee;
 
     protected final ArrayList<AbstractSpell> attackSpells = new ArrayList<>();
     protected final ArrayList<AbstractSpell> defenseSpells = new ArrayList<>();
@@ -46,7 +49,7 @@ public class WizardAttackGoal extends Goal {
     protected ArrayList<AbstractSpell> lastSpellCategory = attackSpells;
 
     protected float minSpellQuality = .1f;
-    protected float maxSpellQuality = .3f;
+    protected float maxSpellQuality = .4f;
 
     protected boolean drinksPotions;
 
@@ -62,6 +65,7 @@ public class WizardAttackGoal extends Goal {
         this.attackIntervalMax = pAttackIntervalMax;
         this.attackRadius = 20;
         this.attackRadiusSqr = attackRadius * attackRadius;
+        shouldFlee = true;
     }
 
     public WizardAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
@@ -98,6 +102,11 @@ public class WizardAttackGoal extends Goal {
 
     public WizardAttackGoal setDrinksPotions() {
         drinksPotions = true;
+        return this;
+    }
+
+    public WizardAttackGoal setShouldFlee(boolean shouldFlee) {
+        this.shouldFlee = shouldFlee;
         return this;
     }
 
@@ -205,10 +214,18 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doMovement(double distanceSquared) {
-        double speed = mob.isCasting() ? .2f : 1f * speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
-
-        //move closer to target or strafe around
-        if (distanceSquared < attackRadiusSqr && seeTime >= 5) {
+        double speed = mob.isCasting() ? .75f : 1f * speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
+        mob.lookAt(target, 30, 30);
+        //make distance (flee), move into range, or strafe around
+        float fleeDist = .35f;
+        if (shouldFlee && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
+            Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
+            if (flee != null) {
+                this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);
+            } else {
+                mob.getMoveControl().strafe(-(float) speed, (float) speed);
+            }
+        } else if (distanceSquared < attackRadiusSqr && seeTime >= 5) {
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.1: distanceSquared: {},attackRadiusSqr: {}, seeTime: {}, attackTime: {}", distanceSquared, attackRadiusSqr, seeTime, attackTime);
             this.mob.getNavigation().stop();
             if (++strafeTime > 25) {
@@ -219,20 +236,14 @@ public class WizardAttackGoal extends Goal {
             }
 
             int strafeDir = strafingClockwise ? 1 : -1;
-            if (distanceSquared < attackRadiusSqr * .5f) {
-                mob.getMoveControl().strafe(-(float) speed, (float) speed * strafeDir);
-            } else {
-                mob.getMoveControl().strafe(0, (float) speed * strafeDir);
-            }
+            mob.getMoveControl().strafe(0, (float) speed * strafeDir);
             if (mob.horizontalCollision && mob.getRandom().nextFloat() < .1f) {
                 tryJump();
             }
-            mob.lookAt(target, 30, 30);
         } else {
             if (isFlying) {
                 this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
-            }
-            else {
+            } else {
                 this.mob.getNavigation().moveTo(this.target, speed);
             }
         }
@@ -330,9 +341,8 @@ public class WizardAttackGoal extends Goal {
     protected int getAttackWeight() {
         //We want attack to be a common action in any circumstance, but the more "confident" we are the more likely we are to attack (we have health or our target is weak)
         int baseWeight = 80;
-
-        if (target == null) {
-            return baseWeight;
+        if (!hasLineOfSight || target == null) {
+            return 0;
         }
 
         float targetHealth = target.getHealth() / target.getMaxHealth();
@@ -341,10 +351,7 @@ public class WizardAttackGoal extends Goal {
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         int distanceWeight = (int) (1 - (distanceSquared / attackRadiusSqr) * -60);
 
-        if (hasLineOfSight)
-            return baseWeight + targetHealthWeight + distanceWeight;
-        else
-            return 0;
+        return baseWeight + targetHealthWeight + distanceWeight;
     }
 
     protected int getDefenseWeight() {
@@ -399,10 +406,16 @@ public class WizardAttackGoal extends Goal {
             return baseWeight;
         }
 
+
         float health = 1 - mob.getHealth() / mob.getMaxHealth();
         int healthWeight = (int) (200 * health);
 
-        return baseWeight + healthWeight;
+        //If our target is close we should probably not drink a potion right in front of them
+        double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
+        double distancePercent = Mth.clamp(distanceSquared / attackRadiusSqr, 0, 1);
+        int distanceWeight = (int) ((1 - distancePercent) * -75);
+
+        return baseWeight + healthWeight + distanceWeight;
     }
 
 }

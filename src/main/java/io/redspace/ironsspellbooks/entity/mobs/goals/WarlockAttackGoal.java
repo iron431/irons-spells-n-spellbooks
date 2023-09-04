@@ -19,6 +19,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         this.meleeRange = meleeRange;
         meleeTimeDelay = abstractSpellCastingMob.getRandom().nextIntBetweenInclusive(80, 200);
         meleeBias = .5f;
+        this.shouldFlee = false;
     }
 
     @Override
