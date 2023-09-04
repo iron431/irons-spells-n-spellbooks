@@ -52,7 +52,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_spell",
-              "school": "holy",
+              "school": "irons_spellbooks:holy",
               "quality": {
                 "min": 0.1,
                 "max": 0.65

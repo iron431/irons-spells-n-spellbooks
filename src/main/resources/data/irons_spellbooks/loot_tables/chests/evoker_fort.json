@@ -101,7 +101,7 @@
                 "min": 0.1,
                 "max": 0.75
               },
-              "school": "evocation"
+              "school": "irons_spellbooks:evocation"
             }
           ]
         }
