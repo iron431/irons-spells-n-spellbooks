@@ -192,6 +192,12 @@ public class Messages {
                 .consumerMainThread(ClientboundSyncAnimation::handle)
                 .add();
 
+        net.messageBuilder(ClientboundOakskinParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundOakskinParticles::new)
+                .encoder(ClientboundOakskinParticles::toBytes)
+                .consumerMainThread(ClientboundOakskinParticles::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {

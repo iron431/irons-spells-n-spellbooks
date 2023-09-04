@@ -8,8 +8,11 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.OakskinEffect;
+import io.redspace.ironsspellbooks.network.spell.ClientboundFrostStepParticles;
+import io.redspace.ironsspellbooks.network.spell.ClientboundOakskinParticles;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -80,21 +83,9 @@ public class OakskinSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
-        RandomSource randomsource = entity.getRandom();
-        for (int i = 0; i < 50; ++i) {
-            double d0 = Mth.randomBetween(randomsource, -0.5F, 0.5F);
-            double d1 = Mth.randomBetween(randomsource, 0F, 2f);
-            double d2 = Mth.randomBetween(randomsource, -0.5F, 0.5F);
-            var particleType = randomsource.nextFloat() < .1f ? ParticleHelper.FIREFLY : new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OAK_WOOD.defaultBlockState());
-            level.addParticle(particleType, entity.getX() + d0, entity.getY() + d1, entity.getZ() + d2, d0 * .05, 0.05, d2 * .05);
-        }
-        super.onClientCast(level, spellLevel, entity, castData);
-    }
-
-    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.OAKSKIN.get(), (int) (getSpellPower(spellLevel, entity) * 20), this.getLevel(spellLevel, entity) - 1, false, false, true));
+        Messages.sendToPlayersTrackingEntity(new ClientboundOakskinParticles(entity.position()), entity, true);
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
