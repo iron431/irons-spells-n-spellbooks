@@ -111,7 +111,7 @@ public final class ClientInputEvents {
 
     @SubscribeEvent
     public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
-        IronsSpellbooks.LOGGER.debug("InteractionKeyMappingTriggered: {}", event.getKeyMapping().getName());
+        //IronsSpellbooks.LOGGER.debug("InteractionKeyMappingTriggered: {}", event.getKeyMapping().getName());
         if (event.isUseItem()) {
             if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
                 event.setSwingHand(false);
