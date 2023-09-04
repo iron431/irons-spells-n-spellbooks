@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.network.ClientboundSyncPlayerData;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -29,6 +30,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -62,6 +66,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.checkerframework.common.returnsreceiver.qual.This;
 import top.theillusivec4.curios.api.CuriosApi;
+
 import java.util.Map;
 
 @Mod.EventBusSubscriber
@@ -162,14 +167,16 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void onLivingDeathEvent(LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            Utils.serverSideCancelCast(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
-        //IronsSpellbooks.LOGGER.debug("onPlayerCloned: {} {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying(), event.isWasDeath());
         if (event.isWasDeath()) {
             if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
-                //newServerPlayer.clearFire();
-                //newServerPlayer.setTicksFrozen(0);
-
-                //IronsSpellbooks.LOGGER.debug("onPlayerCloned: original player effects:\n ------------------------");
                 //Persist summon timers across death
                 event.getOriginal().getActiveEffects().forEach((effect -> {
                     //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
@@ -178,17 +185,6 @@ public class ServerPlayerEvents {
                     }
                 }));
             }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onLivingDeathEvent(LivingDeathEvent event) {
-        //IronsSpellbooks.LOGGER.debug("onLivingDeathEvent: {} {}", event.getEntity().getName().getString(), event.getEntity().isDeadOrDying());
-//        event.getEntity().clearFire();
-//        event.getEntity().setTicksFrozen(0);
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            //IronsSpellbooks.LOGGER.debug("onLivingDeathEvent: {}", serverPlayer.getName().getString());
-            Utils.serverSideCancelCast(serverPlayer);
         }
     }
 
@@ -204,17 +200,23 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            //serverPlayer.clearFire();
-            //serverPlayer.setTicksFrozen(0);
 
+            //Clear fire and frozen
+            serverPlayer.clearFire();
+            serverPlayer.setTicksFrozen(0);
+            serverPlayer.connection.send(new ClientboundSetEntityDataPacket(serverPlayer.getId(), serverPlayer.getEntityData(), true));
 
+            //Cancel casting
             Utils.serverSideCancelCast(serverPlayer);
 
+            //Sync effects
             serverPlayer.getActiveEffects().forEach((effect -> {
                 if (effect.getEffect() instanceof SummonTimer) {
                     serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), effect));
                 }
             }));
+
+            //Set respawn mana
             MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA.get()) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
         }
     }
@@ -261,14 +263,6 @@ public class ServerPlayerEvents {
 //            }
 //        }
 //    }
-
-    @SubscribeEvent
-    public static void onLivingDeath(LivingDeathEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            serverPlayer.clearFire();
-            serverPlayer.setTicksFrozen(0);
-        }
-    }
 
     @SubscribeEvent
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
