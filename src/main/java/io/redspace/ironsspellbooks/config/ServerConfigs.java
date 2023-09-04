@@ -175,14 +175,14 @@ public class ServerConfigs {
             this.P_MULT = P_MULT;
             this.CS = CS;
             this.ACTUAL_SCHOOL = LazyOptional.of(() -> {
-                try {
+                if (ResourceLocation.isValidResourceLocation(SCHOOL.get())) {
                     var school = SchoolRegistry.getSchool(new ResourceLocation(SCHOOL.get()));
-                    Objects.requireNonNull(school);
-                    return school;
-                } catch (Exception e) {
-                    IronsSpellbooks.LOGGER.warn("Bad school config entry: {}. Reverting to default ({}).", SCHOOL.get(), defaultConfig.schoolResource);
-                    return SchoolRegistry.getSchool(defaultConfig.schoolResource);
+                    if (school != null) {
+                        return school;
+                    }
                 }
+                IronsSpellbooks.LOGGER.warn("Bad school config entry: {}. Reverting to default ({}).", SCHOOL.get(), defaultConfig.schoolResource);
+                return SchoolRegistry.getSchool(defaultConfig.schoolResource);
             });
         }
 
