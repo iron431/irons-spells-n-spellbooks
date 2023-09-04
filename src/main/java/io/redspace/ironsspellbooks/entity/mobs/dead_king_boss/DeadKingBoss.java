@@ -35,6 +35,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -119,6 +120,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     protected void setFirstPhaseGoals() {
+        this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
@@ -131,6 +133,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     protected void setFinalPhaseGoals() {
+        this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals();
         this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
