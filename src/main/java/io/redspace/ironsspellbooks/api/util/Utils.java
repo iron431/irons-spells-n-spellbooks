@@ -271,12 +271,13 @@ public class Utils {
     }
 
     private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
-        AABB range = originEntity.getBoundingBox().expandTowards(end.subtract(start));
 
+        BlockHitResult blockHitResult = null;
         if (checkForBlocks) {
-            BlockHitResult blockHitResult = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity));
+            blockHitResult = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity));
             end = blockHitResult.getLocation();
         }
+        AABB range = originEntity.getBoundingBox().expandTowards(end.subtract(start));
 
         List<HitResult> hits = new ArrayList<>();
         List<? extends Entity> entities = level.getEntities(originEntity, range, filter);
@@ -286,15 +287,13 @@ public class Utils {
                 hits.add(hit);
         }
 
-        if (hits.size() > 0) {
+        if (!hits.isEmpty()) {
             hits.sort((o1, o2) -> (int) (o1.getLocation().distanceToSqr(start) - o2.getLocation().distanceToSqr(start)));
             return hits.get(0);
-        } else {
-            if (new BlockCollisions(level, null, AABB.ofSize(end, .1f, .1f, .1f), true).hasNext())
-                return new BlockHitResult(end, Direction.UP, new BlockPos(end), false);
-            else
-                return BlockHitResult.miss(end, Direction.UP, new BlockPos(end));
+        } else if (checkForBlocks) {
+            return blockHitResult;
         }
+        return BlockHitResult.miss(end, Direction.UP, new BlockPos(end));
     }
 
     public static void serverSideCancelCast(ServerPlayer serverPlayer) {
