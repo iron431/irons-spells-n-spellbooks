@@ -466,7 +466,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     }
 
     private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        spell.getCastStartAnimation().getForMob().ifPresent(animationBuilder -> {
+        spell.getCastStartAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell {}", animationBuilder);
             }
@@ -474,17 +474,27 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
             controller.setAnimation(animationBuilder);
             lastCastSpellType = spell;
             cancelCastAnimation = false;
+        }, () -> {
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell cancelCastAnimation");
+            }
+            cancelCastAnimation = true;
         });
     }
 
     private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-
         spell.getCastFinishAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("ASCM.setFinishAnimationFromSpell {}", animationBuilder);
+            }
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
             lastCastSpellType = SpellRegistry.none();
             cancelCastAnimation = false;
         }, () -> {
+            if (Log.SPELL_DEBUG) {
+                IronsSpellbooks.LOGGER.debug("ASCM.setFinishAnimationFromSpell cancelCastAnimation");
+            }
             cancelCastAnimation = true;
         });
     }
