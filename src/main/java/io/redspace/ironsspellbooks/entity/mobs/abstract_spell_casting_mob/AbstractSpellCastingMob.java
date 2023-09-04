@@ -478,9 +478,14 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     }
 
     private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        spell.getCastFinishAnimation().getForMob().ifPresent(animationBuilder -> {
+        spell.getCastFinishAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
             controller.markNeedsReload();
             controller.setAnimation(animationBuilder);
+            lastCastSpellType = SpellRegistry.none();
+            cancelCastAnimation = false;
+        }, () -> {
+            controller.markNeedsReload();
+            controller.setAnimation(idle);
             lastCastSpellType = SpellRegistry.none();
             cancelCastAnimation = false;
         });
