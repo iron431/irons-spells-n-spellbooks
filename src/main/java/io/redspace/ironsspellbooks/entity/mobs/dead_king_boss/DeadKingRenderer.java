@@ -32,6 +32,11 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
     }
 
     @Override
+    public void render(AbstractSpellCastingMob animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        super.render(animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    }
+
+    @Override
     public void renderEarly(AbstractSpellCastingMob animatable, PoseStack poseStack, float partialTick, MultiBufferSource bufferSource, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float partialTicks) {
         if (animatable instanceof DeadKingBoss)
             poseStack.scale(1.3f, 1.3f, 1.3f);
@@ -40,8 +45,6 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
 
     @Override
     public RenderType getRenderType(AbstractSpellCastingMob animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-        return RenderType.entityCutoutNoCull(texture);
+        return animatable.isInvisible() ? RenderType.entityTranslucent(texture) : RenderType.entityCutoutNoCull(texture);
     }
-
-
 }

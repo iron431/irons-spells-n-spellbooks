@@ -34,7 +34,7 @@ public class DeadKingEmissiveLayer extends GeoLayerRenderer<AbstractSpellCasting
 
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, AbstractSpellCastingMob entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityLivingBaseIn instanceof DeadKingCorpseEntity)
+        if (entityLivingBaseIn instanceof DeadKingCorpseEntity || entityLivingBaseIn.isInvisible())
             return;
         var model = getEntityModel().getModel(currentModel(entityLivingBaseIn));
 
