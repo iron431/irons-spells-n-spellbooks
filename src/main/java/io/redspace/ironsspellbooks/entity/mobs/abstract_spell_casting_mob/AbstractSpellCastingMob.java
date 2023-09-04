@@ -438,7 +438,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
             setStartAnimationFromSpell(controller, castingSpell.getSpell());
         }
 
-        if (!isCasting() /*&& lastCastSpellType.getCastType() == CastType.LONG*/) {
+        if (!isCasting() && lastCastSpellType.getCastType() == CastType.LONG) {
             setFinishAnimationFromSpell(controller, lastCastSpellType);
         }
 

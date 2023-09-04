@@ -115,7 +115,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.BLOOD_STEP_SPELL.get()),
                 List.of(/*SpellType.BLOOD_STEP_SPELL*/),
                 List.of()
-        ).setMeleeBias(0.75f);
+        ).setMeleeBias(0.75f).setShouldFlee(false);
     }
 
     protected void setFirstPhaseGoals() {
@@ -228,12 +228,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                                 (this.random.nextFloat() * 2 - 1) * radius
                         ));
                         level.addParticle(ParticleTypes.SMOKE, random.x, random.y, random.z, 0, -.1, 0);
-
                     }
-
                 }
             }
-
         } else {
             //irons_spellbooks.LOGGER.debug("DeadKingBoss.tick | Phase: {} | isTransitioning: {} | TransitionTime: {}", getPhase(), isPhaseTransitioning(), transitionAnimationTime);
             float halfHealth = this.getMaxHealth() / 2;
@@ -242,10 +239,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 if (this.getHealth() <= halfHealth) {
                     setPhase(Phases.Transitioning);
                     var player = level.getNearestPlayer(this, 16);
-                    if (player != null)
+                    if (player != null) {
                         lookAt(player, 360, 360);
-                    if (!isDeadOrDying())
+                    }
+                    if (!isDeadOrDying()) {
                         setHealth(halfHealth);
+                    }
                     playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get());
                     //Overriding isInvulnerable just doesn't seem to work
                     setInvulnerable(true);
@@ -412,10 +411,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         var controller = animationEvent.getController();
         if (isPhaseTransitioning()) {
             controller.setAnimation(phase_transition_animation);
-            return PlayState.CONTINUE;
         }
 
-        return PlayState.STOP;
+        return PlayState.CONTINUE;
     }
 
     private PlayState idlePredicate(AnimationEvent animationEvent) {
