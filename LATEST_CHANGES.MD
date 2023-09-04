@@ -17,6 +17,7 @@
 - Cryomancer, Pyromancer, and Archevoker max health increased by 10
 - Cryomancer, Pyromancer, and Archevoker will now attempt to flee from melee combat
 - Archevoker will now use the Gust spell
+- Potions can now be put into the Alchemist Cauldron
 
 ### Fixes
 - Fixed an issue causing casting mobs to have a difficult time teleporting around non-flat terrain

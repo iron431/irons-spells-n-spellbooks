@@ -412,8 +412,16 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             return null;
         });
         map.put(Items.POTION, (blockState, level, pos, currentLevel, itemstack) -> {
-            if (currentLevel < MAX_LEVELS && PotionUtils.getPotion(itemstack) == Potions.WATER) {
-                return createFilledResult(level, blockState, pos, currentLevel + 1, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
+            //If we are a water bottle, put additional water level
+            if (PotionUtils.getPotion(itemstack) == Potions.WATER) {
+                if (currentLevel < MAX_LEVELS) {
+                    return createFilledResult(level, blockState, pos, currentLevel + 1, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
+                }
+            }
+            //Otherwise, put potion in
+            else if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile && !isFull(tile.resultItems)) {
+                appendItem(tile.resultItems, itemstack.split(1));
+                return createFilledResult(level, blockState, pos, Math.min(currentLevel + 1, MAX_LEVELS), new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
             }
             return null;
         });
