@@ -100,13 +100,13 @@ public class EarthquakeSpell extends AbstractSpell {
         float radius = getRadius(spellLevel, entity);
 
         EarthquakeAoe aoeEntity = new EarthquakeAoe(world);
+        aoeEntity.moveTo(spawn);
         aoeEntity.setOwner(entity);
         aoeEntity.setCircular();
         aoeEntity.setRadius(radius);
         aoeEntity.setDuration(duration);
         aoeEntity.setDamage(getDamage(spellLevel, entity));
         aoeEntity.setSlownessAmplifier(getSlownessAmplifier(spellLevel, entity));
-        aoeEntity.setPos(spawn);
         world.addFreshEntity(aoeEntity);
 
         super.onCast(world, spellLevel, entity, playerMagicData);

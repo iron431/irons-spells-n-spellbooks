@@ -198,6 +198,12 @@ public class Messages {
                 .consumerMainThread(ClientboundOakskinParticles::handle)
                 .add();
 
+        net.messageBuilder(ClientboundSyncCameraShake.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncCameraShake::new)
+                .encoder(ClientboundSyncCameraShake::toBytes)
+                .consumerMainThread(ClientboundSyncCameraShake::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {
