@@ -1,15 +1,21 @@
 ### Additions
-- Added Earthquake Spell
-- Added Firefly Spell
-- Added Oakskin Spell
-- Added Oakskin Elixir
-- Added Invisibility Elixir
-- Added Evasion Elixir
-- Added Greater Potion of Healing
-- Added Summon Ender Chest Spell
-- Added Ray of Frost Spell
+- New Spells
+  - Added Earthquake Spell
+  - Added Ray of Frost Spell
+  - Added Summon Ender Chest Spell
+  - Added Firefly Spell
+  - Added Oakskin Spell
+- Added Elixirs
+  - Added Oakskin Elixir
+  - Added Invisibility Elixir
+  - Added Evasion Elixir
+  - Added Greater Potion of Healing
+- Added Firefly Jar block
+- Added spell targeting success notification
 
 ### Changes
+- Poison School has been replaced by the Nature School
+- Void school has been temporarily removed while it is being redefined
 - Devour spell no longer pulls enemies in, and has had its range extended
 - Long casts can no longer be held to cast
 - Long casts must be clicked again to cancel mid-cast
@@ -18,6 +24,10 @@
 - Cryomancer, Pyromancer, and Archevoker will now attempt to flee from melee combat
 - Archevoker will now use the Gust spell
 - Potions can now be put into the Alchemist Cauldron
+- Updated Anicent Codex, Enchanted Spell Book, and Grimoire of Evokation textures
+- Updated Inscription Table's Lore Page texture
 
 ### Fixes
 - Fixed an issue causing casting mobs to have a difficult time teleporting around non-flat terrain
+- Fixed input issues caused by hybrid long casting inputs
+- (Are these issues on main?): Fix Dead King invisibility issues, Fix Dead King Goals breaking
