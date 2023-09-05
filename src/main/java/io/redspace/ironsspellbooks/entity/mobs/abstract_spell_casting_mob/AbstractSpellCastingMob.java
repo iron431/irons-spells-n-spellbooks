@@ -206,7 +206,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
             initiateCastSpell(spell, playerMagicData.getCastingSpellLevel());
 
-            //TODO: why is this using casting spell but the check above is using playerMagicData.getCastingSpell()
             if (castingSpell.getSpell().getCastType() == CastType.INSTANT) {
                 instantCastSpellType = castingSpell.getSpell();
                 castingSpell.getSpell().onClientPreCast(level, castingSpell.getLevel(), this, InteractionHand.MAIN_HAND, playerMagicData);

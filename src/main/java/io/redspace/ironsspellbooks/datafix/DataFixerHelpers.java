@@ -104,8 +104,6 @@ public class DataFixerHelpers {
             .put("blood_power", "irons_spellbooks:blood_power")
             .put("evocation_power", "irons_spellbooks:evocation_power")
             .put("poison_power", "irons_spellbooks:nature_power")
-            //TODO: remove this one for release ("irons_spellbooks:poison_power" doesnt exist outside of testing)
-            .put("irons_spellbooks:poison_power", "irons_spellbooks:nature_power")
             .put("cooldown", "irons_spellbooks:cooldown")
             .put("spell_resistance", "irons_spellbooks:spell_resistance")
             .put("mana", "irons_spellbooks:mana")
