@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
@@ -19,20 +20,24 @@ import java.util.List;
 //TODO: make IManager and shit
 @Mod.EventBusSubscriber
 public class CameraShakeManager {
-    public static final List<CameraShakeData> cameraShakeData = new ArrayList<>();
-    public static final List<CameraShakeData> clientCameraShakeData = new ArrayList<>();
+    public static final ArrayList<CameraShakeData> cameraShakeData = new ArrayList<>();
+    public static ArrayList<CameraShakeData> clientCameraShakeData = new ArrayList<>();
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.LevelTickEvent event) {
-        if (!event.level.isClientSide && event.phase == TickEvent.Phase.END && event.level instanceof ServerLevel serverLevel) {
-            ArrayList<CameraShakeData> finished = new ArrayList<>();
+        if (event.phase != TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
+            ServerLevel serverLevel = (ServerLevel) event.level;
+            ArrayList<CameraShakeData> complete = new ArrayList<>();
+            IronsSpellbooks.LOGGER.debug("CameraShakeManager.onWorldTick: tick");
             for (CameraShakeData data : cameraShakeData) {
+                IronsSpellbooks.LOGGER.debug("{}/{}", data.tickCount, data.duration);
                 if (data.tickCount++ >= data.duration) {
-                    finished.add(data);
+                    complete.add(data);
                 }
             }
-            if (!finished.isEmpty()) {
-                cameraShakeData.removeAll(finished);
+            if (!complete.isEmpty()) {
+                IronsSpellbooks.LOGGER.debug("CameraShakeManager.onWorldTick: removing complete data");
+                cameraShakeData.removeAll(complete);
                 doSync(serverLevel);
             }
         }
@@ -43,11 +48,13 @@ public class CameraShakeManager {
         doSync(level);
     }
 
-    public static void removeCameraShake(CameraShakeData data) {
-        cameraShakeData.remove(data);
+    public static void removeCameraShake(ServerLevel level, CameraShakeData data) {
+        if (cameraShakeData.remove(data))
+            doSync(level);
     }
 
     private static void doSync(ServerLevel serverLevel) {
+        IronsSpellbooks.LOGGER.debug("syncing camera shake data ({})", cameraShakeData.size());
         serverLevel.players().forEach(serverPlayer -> Messages.sendToPlayer(new ClientboundSyncCameraShake(cameraShakeData), serverPlayer));
     }
 

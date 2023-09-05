@@ -58,6 +58,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         }
     }
 
+    private CameraShakeData cameraShakeData;
     private int slownessAmplifier;
 
     public int getSlownessAmplifier() {
@@ -84,9 +85,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     public void tick() {
         super.tick();
         if (tickCount == 1) {
-            //createScreenShake();
-            if (level instanceof ServerLevel serverLevel)
-                CameraShakeManager.addCameraShake(serverLevel, new CameraShakeData(12 * 20, this.position()));
+            createScreenShake();
         }
         if (tickCount % 20 == 1) {
             this.playSound(SoundRegistry.EARTHQUAKE_LOOP.get(), 2f, .9f + random.nextFloat() * .15f);
@@ -149,10 +148,9 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     }
 
     protected void createScreenShake() {
-        if (this.level.isClientSide && !this.isRemoved()) {
-            clientEarthquakeOrigins.put(this.uuid, this);
-            IronsSpellbooks.LOGGER.debug("{} adding earthquake on client:", this.uuid);
-            clientEarthquakeOrigins.forEach((key, value) -> IronsSpellbooks.LOGGER.debug("{}:{}", key, value));
+        if (!this.level.isClientSide && !this.isRemoved()) {
+            this.cameraShakeData = new CameraShakeData(this.duration - this.tickCount, this.position());
+            CameraShakeManager.addCameraShake((ServerLevel) level, cameraShakeData);
         }
     }
 
@@ -167,13 +165,11 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     }
 
     @Override
-    public void onClientRemoval() {
-        if (level.isClientSide) {
-            clientEarthquakeOrigins.remove(this.uuid);
-            IronsSpellbooks.LOGGER.debug("{} removing earthquake on client:", this.uuid);
-            clientEarthquakeOrigins.forEach((key, value) -> IronsSpellbooks.LOGGER.debug("{}:{}", key, value));
+    public void remove(RemovalReason pReason) {
+        super.remove(pReason);
+        if (!level.isClientSide) {
+            CameraShakeManager.removeCameraShake((ServerLevel) this.level, this.cameraShakeData);
         }
-        super.onClientRemoval();
     }
 
     @Override
@@ -202,37 +198,6 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         super.readAdditionalSaveData(pCompound);
         this.slownessAmplifier = pCompound.getInt("Slowness");
         IronsSpellbooks.LOGGER.debug("EarthquakeAoe readAdditionalSaveData");
-
         createScreenShake();
     }
-
-//    @SubscribeEvent
-//    @OnlyIn(Dist.CLIENT)
-//    public static void handleCameraShake(ViewportEvent.ComputeCameraAngles event) {
-//        if (clientEarthquakeOrigins.isEmpty()) {
-//            return;
-//        }
-//        var player = event.getCamera().getEntity();
-//        List<EarthquakeAoe> closestPositions = clientEarthquakeOrigins.values().stream().sorted((o1, o2) -> (int) (o1.position().distanceToSqr(player.position()) - o2.position().distanceToSqr(player.position()))).toList();
-//        if (closestPositions.get(0).tickCount > closestPositions.get(0).duration) {
-//            clientEarthquakeOrigins.remove(closestPositions.get(0).getUUID());
-//            return;
-//        }
-//        var closestPos = closestPositions.get(0).position();
-//        //.0039f is 1/15^2
-//        float intensity = (float) Mth.clampedLerp(1, 0, closestPos.distanceToSqr(player.position()) * 0.0039f);
-//        float f = (float) (player.tickCount + event.getPartialTick());
-//        float yaw = Mth.cos(f * 1.5f) * intensity * .35f;
-//        float pitch = Mth.cos(f * 2f) * intensity * .35f;
-//        float roll = Mth.sin(f * 2.2f) * intensity * .35f;
-//        event.setYaw(event.getYaw() + yaw);
-//        event.setRoll(event.getRoll() + roll);
-//        event.setPitch(event.getPitch() + pitch);
-//    }
-//    @SubscribeEvent
-//    @OnlyIn(Dist.CLIENT)
-//    public static void test(NetworkEvent.ClientCustomPayloadLoginEvent event){
-//        IronsSpellbooks.LOGGER.debug("NetworkEvent.ClientCustomPayloadLoginEvent event");
-//        clientEarthquakeOrigins.clear();
-//    }
 }
