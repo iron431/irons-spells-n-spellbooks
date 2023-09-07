@@ -150,7 +150,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     protected void createScreenShake() {
         if (!this.level.isClientSide && !this.isRemoved()) {
             this.cameraShakeData = new CameraShakeData(this.duration - this.tickCount, this.position());
-            CameraShakeManager.addCameraShake((ServerLevel) level, cameraShakeData);
+            CameraShakeManager.addCameraShake(cameraShakeData);
         }
     }
 
@@ -168,7 +168,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     public void remove(RemovalReason pReason) {
         super.remove(pReason);
         if (!level.isClientSide) {
-            CameraShakeManager.removeCameraShake((ServerLevel) this.level, this.cameraShakeData);
+            CameraShakeManager.removeCameraShake(this.cameraShakeData);
         }
     }
 

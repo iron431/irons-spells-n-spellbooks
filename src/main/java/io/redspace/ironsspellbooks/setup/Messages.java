@@ -212,6 +212,11 @@ public class Messages {
 
     public static <MSG> void sendToPlayer(MSG message, ServerPlayer player) {
         INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
+
+    }
+
+    public static <MSG> void sendToAllPlayers(MSG message) {
+        INSTANCE.send(PacketDistributor.ALL.noArg(), message);
     }
 
     public static <MSG> void sendToPlayersTrackingEntity(MSG message, Entity entity) {
