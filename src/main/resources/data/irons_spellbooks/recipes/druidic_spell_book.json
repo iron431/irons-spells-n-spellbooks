@@ -1,0 +1,41 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    " SC",
+    "HRA",
+    "CG "
+  ],
+  "key":
+  {
+    "R":
+    {
+      "item": "irons_spellbooks:rotten_spell_book"
+    },
+    "A":
+    {
+      "item": "minecraft:amethyst_cluster"
+    },
+    "H":
+    {
+      "item": "minecraft:honey_bottle"
+    },
+    "S":
+    {
+      "item": "minecraft:spore_blossom"
+    },
+    "G":
+    {
+      "item": "minecraft:glow_ink_sac"
+    },
+    "C":
+    {
+      "item": "irons_spellbooks:magic_cloth"
+    }
+  },
+  "result":
+  {
+    "item": "irons_spellbooks:druidic_spell_book",
+    "count": 1
+  }
+}
