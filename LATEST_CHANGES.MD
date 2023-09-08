@@ -21,11 +21,12 @@
 - Long casts must be clicked again to cancel mid-cast
 - The visuals of the Target Area Outline (used in spells like Healing Circle) have been improved
 - Cryomancer, Pyromancer, and Archevoker max health increased by 10
-- Cryomancer, Pyromancer, and Archevoker will now attempt to flee from melee combat
+- Cryomancer, Pyromancer, Archevoker, and Necromancer will now attempt to flee from melee combat
 - Archevoker will now use the Gust spell
 - Potions can now be put into the Alchemist Cauldron
 - Updated Anicent Codex, Enchanted Spell Book, and Grimoire of Evokation textures
 - Updated Inscription Table's Lore Page texture
+- Update Amulet of Concentration's texture
 
 ### Fixes
 - Fixed an issue causing casting mobs to have a difficult time teleporting around non-flat terrain
