@@ -16,6 +16,9 @@
 ### Changes
 - Poison School has been replaced by the Nature School
 - Void school has been temporarily removed while it is being redefined
+  - Black Hole is now an Ender spell
+  - Void Tentacles is now an Ender spell
+  - Abyssal shroud is now disabled by default (configurable)
 - Devour spell no longer pulls enemies in, and has had its range extended
 - Long casts can no longer be held to cast
 - Long casts must be clicked again to cancel mid-cast
@@ -23,6 +26,7 @@
 - Cryomancer, Pyromancer, and Archevoker max health increased by 10
 - Cryomancer, Pyromancer, Archevoker, and Necromancer will now attempt to flee from melee combat
 - Archevoker will now use the Gust spell
+- Increased Arcane Essence drop quantity from the Necromancer
 - Potions can now be put into the Alchemist Cauldron
 - Updated Anicent Codex, Enchanted Spell Book, and Grimoire of Evokation textures
 - Updated Inscription Table's Lore Page texture
