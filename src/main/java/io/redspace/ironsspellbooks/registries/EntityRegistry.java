@@ -277,11 +277,11 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "citadel_keeper").toString()));
 
-    public static final RegistryObject<EntityType<VoidTentacle>> VOID_TENTACLE =
-            ENTITIES.register("void_tentacle", () -> EntityType.Builder.<VoidTentacle>of(VoidTentacle::new, MobCategory.MISC)
+    public static final RegistryObject<EntityType<VoidTentacle>> SCULK_TENTACLE =
+            ENTITIES.register("sculk_tentacle", () -> EntityType.Builder.<VoidTentacle>of(VoidTentacle::new, MobCategory.MISC)
                     .sized(2.5f, 5.5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "void_tentacle").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "sculk_tentacle").toString()));
 
     public static final RegistryObject<EntityType<IceBlockProjectile>> ICE_BLOCK_PROJECTILE =
             ENTITIES.register("ice_block_projectile", () -> EntityType.Builder.<IceBlockProjectile>of(IceBlockProjectile::new, MobCategory.MISC)

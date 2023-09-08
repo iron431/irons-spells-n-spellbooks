@@ -51,7 +51,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
     }
 
     public VoidTentacle(Level level, LivingEntity owner, float damage) {
-        this(EntityRegistry.VOID_TENTACLE.get(), level);
+        this(EntityRegistry.SCULK_TENTACLE.get(), level);
         setOwner(owner);
         setDamage(damage);
     }
@@ -104,7 +104,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
 
     public boolean dealDamage(LivingEntity target) {
         if (target != getOwner())
-            if (DamageSources.applyDamage(target, damage, SpellRegistry.VOID_TENTACLES_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.VOID_TENTACLES_SPELL.get().getSchoolType())) {
+            if (DamageSources.applyDamage(target, damage, SpellRegistry.SCULK_TENTACLES_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.SCULK_TENTACLES_SPELL.get().getSchoolType())) {
                 target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
                 return true;
             }
@@ -213,17 +213,18 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
         //if (controller.getAnimationState() == AnimationState.Stopped) {
         //}
         //IronsSpellbooks.LOGGER.debug("TentacleAnimOffset: {}", controller.tickOffset);
-        if (age > 250 && level.random.nextFloat() < .04f) {
+        if (age > 220 && level.random.nextFloat() < .04f) {
             controller.setAnimation(ANIMATION_RETREAT);
         } else if (controller.getAnimationState() == AnimationState.Stopped) {
-            controller.setAnimationSpeed((2 + this.level.random.nextFloat()) / 2f);
-            int animation = random.nextInt(3);
-            //IronsSpellbooks.LOGGER.debug("Choosing new animation ({})", animation);
-            switch (animation) {
-                case 0 -> controller.setAnimation(ANIMATION_FLAIL);
-                case 1 -> controller.setAnimation(ANIMATION_FLAIL2);
-                case 2 -> controller.setAnimation(ANIMATION_FLAIL3);
-            }
+//            controller.setAnimationSpeed((2 + this.level.random.nextFloat()) / 2f);
+//            int animation = random.nextInt(3);
+//            //IronsSpellbooks.LOGGER.debug("Choosing new animation ({})", animation);
+//            switch (animation) {
+//                case 0 -> controller.setAnimation(ANIMATION_FLAIL);
+//                case 1 -> controller.setAnimation(ANIMATION_FLAIL2);
+//                case 2 -> controller.setAnimation(ANIMATION_FLAIL3);
+//            }
+            controller.setAnimation(ANIMATION_IDLE);
         }
 
         return PlayState.CONTINUE;
@@ -241,7 +242,6 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
         if (age < 10) {
             controller.setAnimation(ANIMATION_RISE);
             return PlayState.CONTINUE;
-
         } else
             return PlayState.STOP;
 
@@ -251,6 +251,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
 
     private final AnimationBuilder ANIMATION_RISE = new AnimationBuilder().addAnimation("rise", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     private final AnimationBuilder ANIMATION_RETREAT = new AnimationBuilder().addAnimation("retreat", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
+    private final AnimationBuilder ANIMATION_IDLE = new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.HOLD_ON_LAST_FRAME);
     private final AnimationBuilder ANIMATION_FLAIL = new AnimationBuilder().addAnimation("flail", ILoopType.EDefaultLoopTypes.LOOP);
     private final AnimationBuilder ANIMATION_FLAIL2 = new AnimationBuilder().addAnimation("flail2", ILoopType.EDefaultLoopTypes.LOOP);
     private final AnimationBuilder ANIMATION_FLAIL3 = new AnimationBuilder().addAnimation("flail3", ILoopType.EDefaultLoopTypes.LOOP);

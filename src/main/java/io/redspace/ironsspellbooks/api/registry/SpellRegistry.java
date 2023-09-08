@@ -163,5 +163,5 @@ public class SpellRegistry {
     //VOID
     public static final RegistryObject<AbstractSpell> ABYSSAL_SHROUD_SPELL = registerSpell(new AbyssalShroudSpell());
     public static final RegistryObject<AbstractSpell> BLACK_HOLE_SPELL = registerSpell(new BlackHoleSpell());
-    public static final RegistryObject<AbstractSpell> VOID_TENTACLES_SPELL = registerSpell(new VoidTentaclesSpell());
+    public static final RegistryObject<AbstractSpell> SCULK_TENTACLES_SPELL = registerSpell(new SculkTentaclesSpell());
 }

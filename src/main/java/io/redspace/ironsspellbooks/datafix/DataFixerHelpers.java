@@ -15,7 +15,7 @@ import io.redspace.ironsspellbooks.spells.lightning.*;
 import io.redspace.ironsspellbooks.spells.nature.*;
 import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
-import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
+import io.redspace.ironsspellbooks.spells.void_school.SculkTentaclesSpell;
 import net.minecraft.nbt.*;
 
 import java.util.Map;
@@ -68,7 +68,7 @@ public class DataFixerHelpers {
             .put(44, new CounterspellSpell().getSpellId())
             .put(45, new SpectralHammerSpell().getSpellId())
             .put(46, new ChargeSpell().getSpellId())
-            .put(47, new VoidTentaclesSpell().getSpellId())
+            .put(47, new SculkTentaclesSpell().getSpellId())
             .put(48, new IceBlockSpell().getSpellId())
             .put(49, new PoisonBreathSpell().getSpellId())
             .put(50, new PoisonArrowSpell().getSpellId())

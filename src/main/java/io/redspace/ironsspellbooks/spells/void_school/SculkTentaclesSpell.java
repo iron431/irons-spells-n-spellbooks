@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class VoidTentaclesSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "void_tentacles");
+public class SculkTentaclesSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "sculk_tentacles");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -38,12 +38,12 @@ public class VoidTentaclesSpell extends AbstractSpell {
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
-            .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
+            .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)
             .setMaxLevel(3)
             .setCooldownSeconds(30)
             .build();
 
-    public VoidTentaclesSpell() {
+    public SculkTentaclesSpell() {
         this.manaCostPerLevel = 50;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 2;

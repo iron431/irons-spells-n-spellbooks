@@ -853,6 +853,36 @@
 					}
 				}
 			}
+		},
+		"idle": {
+			"loop": true,
+			"bones": {
+				"root": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"segment_1": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"segment_2": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"segment_3": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"segment_4": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2
