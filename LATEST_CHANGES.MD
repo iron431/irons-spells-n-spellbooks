@@ -11,6 +11,7 @@
   - Added Evasion Elixir
   - Added Greater Potion of Healing
 - Added Firefly Jar block
+- Added the Druidic Tome, an epic Nature spell book 
 - Added spell targeting success notification
 
 ### Changes
