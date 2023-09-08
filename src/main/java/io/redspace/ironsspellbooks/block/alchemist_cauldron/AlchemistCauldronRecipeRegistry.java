@@ -30,6 +30,11 @@ public class AlchemistCauldronRecipeRegistry {
         recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INVISIBILITY_ELIXIR.get(), Items.AMETHYST_CLUSTER, ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get()));
         recipes.add(new AlchemistCauldronRecipe(PotionRegistry.INSTANT_MANA_THREE.get(), Items.ENDER_PEARL, ItemRegistry.EVASION_ELIXIR.get()).setBaseRequirement(4).setResultLimit(1));
         recipes.add(new AlchemistCauldronRecipe(ItemRegistry.EVASION_ELIXIR.get(), Items.DRAGON_BREATH, ItemRegistry.GREATER_EVASION_ELIXIR.get()));
+        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_COMMON.get(), Items.COPPER_INGOT, ItemRegistry.INK_UNCOMMON.get()).setBaseRequirement(4).setResultLimit(1));
+        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_UNCOMMON.get(), Items.IRON_INGOT, ItemRegistry.INK_RARE.get()).setBaseRequirement(4).setResultLimit(1));
+        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_RARE.get(), Items.AMETHYST_SHARD, ItemRegistry.INK_EPIC.get()).setBaseRequirement(4).setResultLimit(1));
+        recipes.add(new AlchemistCauldronRecipe(ItemRegistry.INK_EPIC.get(), Items.GOLD_INGOT, ItemRegistry.INK_LEGENDARY.get()).setBaseRequirement(4).setResultLimit(1));
+
     }
 
     /**
