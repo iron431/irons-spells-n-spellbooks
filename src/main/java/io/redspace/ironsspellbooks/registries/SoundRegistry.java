@@ -82,6 +82,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> FIREFLY_SWARM_ATTACK = registerSoundEvent("entity.firefly_swarm.attack");
     public static RegistryObject<SoundEvent> FIREFLY_SPELL_PREPARE = registerSoundEvent("spell.firefly_swarm.prepare");
     public static RegistryObject<SoundEvent> RAY_OF_FROST = registerSoundEvent("spell.ray_of_frost.cast");
+    public static RegistryObject<SoundEvent> SONIC_BOOM = registerSoundEvent("spell.sonic_boom.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

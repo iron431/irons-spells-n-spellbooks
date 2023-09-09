@@ -6,6 +6,8 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.CameraShakeData;
+import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -35,8 +37,8 @@ public class SonicBoomSpell extends AbstractSpell {
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)
-            .setMaxLevel(5)
-            .setCooldownSeconds(15)
+            .setMaxLevel(3)
+            .setCooldownSeconds(25)
             .build();
 
     @Override
@@ -49,9 +51,9 @@ public class SonicBoomSpell extends AbstractSpell {
 
     public SonicBoomSpell() {
         this.manaCostPerLevel = 50;
-        this.baseSpellPower = 12;
-        this.spellPowerPerLevel = 3;
-        this.castTime = 40;
+        this.baseSpellPower = 20;
+        this.spellPowerPerLevel = 8;
+        this.castTime = 30;
         this.baseManaCost = 150;
     }
 
@@ -77,11 +79,12 @@ public class SonicBoomSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.WARDEN_SONIC_BOOM);
+        return Optional.of(SoundRegistry.SONIC_BOOM.get());
     }
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        CameraShakeManager.addCameraShake(new CameraShakeData(10, entity.position(), 20));
         var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), false, .15f);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
@@ -101,8 +104,18 @@ public class SonicBoomSpell extends AbstractSpell {
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
+    @Override
+    protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
+        if (sound == getCastFinishSound()) {
+            entity.playSound(sound.get(), 3.5f, .9f + entity.level.random.nextFloat() * .2f);
+        } else {
+            super.playSound(sound, entity, playDefaultSound);
+        }
+
+    }
+
     public static float getRange(int level, LivingEntity caster) {
-        return 15 + 3 * level;
+        return 15 + 5 * level;
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {

@@ -431,5 +431,10 @@
     "sounds": [
       "irons_spellbooks:ray_of_frost"
     ]
+  },
+  "spell.sonic_boom.cast": {
+    "sounds": [
+      "irons_spellbooks:sonic_boom"
+    ]
   }
 }
