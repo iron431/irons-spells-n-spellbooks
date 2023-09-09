@@ -48,7 +48,7 @@ public class SpellRegistry {
         return getSpell(new ResourceLocation(spellId));
     }
 
-    public static List<AbstractSpell> getEnabledSpells(){
+    public static List<AbstractSpell> getEnabledSpells() {
         return SpellRegistry.REGISTRY.get()
                 .getValues()
                 .stream()
@@ -63,7 +63,7 @@ public class SpellRegistry {
                 .stream()
                 .collect(Collectors.groupingBy(AbstractSpell::getSchoolType));
 
-        return  groupedBySchool.get(schoolType);
+        return groupedBySchool.get(schoolType);
     }
 
     public static AbstractSpell getSpell(ResourceLocation resourceLocation) {
@@ -165,4 +165,5 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> BLACK_HOLE_SPELL = registerSpell(new BlackHoleSpell());
     public static final RegistryObject<AbstractSpell> SCULK_TENTACLES_SPELL = registerSpell(new SculkTentaclesSpell());
     public static final RegistryObject<AbstractSpell> SONIC_BOOM_SPELL = registerSpell(new SonicBoomSpell());
+    public static final RegistryObject<AbstractSpell> ELDRITCH_BLAST_SPELL = registerSpell(new EldritchBlastSpell());
 }
