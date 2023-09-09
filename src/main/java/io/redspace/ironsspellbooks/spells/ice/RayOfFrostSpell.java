@@ -84,7 +84,7 @@ public class RayOfFrostSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), true, .15f);
+        var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), true, .25f);
         level.addFreshEntity(new RayOfFrostVisualEntity(level, entity.getEyePosition(), hitResult.getLocation(), entity));
         if (hitResult.getType() == HitResult.Type.ENTITY || hitResult.getType() == HitResult.Type.BLOCK) {
             MagicManager.spawnParticles(level, ParticleHelper.ICY_FOG, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, 4, 0, 0, 0, .3, true);
