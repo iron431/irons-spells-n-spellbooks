@@ -1,6 +1,5 @@
-package io.redspace.ironsspellbooks.entity.spells.ray_of_frost;
+package io.redspace.ironsspellbooks.entity.spells.eldritch_blast;
 
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,16 +12,16 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 
-public class RayOfFrostVisualEntity extends Entity implements IEntityAdditionalSpawnData {
+public class EldritchBlastVisualEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final int lifetime = 15;
-    public RayOfFrostVisualEntity(EntityType<?> pEntityType, Level pLevel) {
+    public EldritchBlastVisualEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
     public float distance;
 
-    public RayOfFrostVisualEntity(Level level, Vec3 start, Vec3 end, LivingEntity owner) {
-        super(EntityRegistry.RAY_OF_FROST_VISUAL_ENTITY.get(), level);
+    public EldritchBlastVisualEntity(Level level, Vec3 start, Vec3 end, LivingEntity owner) {
+        super(EntityRegistry.ELDRITCH_BLAST_VISUAL_ENTITY.get(), level);
         this.setPos(start.subtract(0, .75f, 0));
         this.distance = (float) start.distanceTo(end);
         this.setRot(owner.getYRot(), owner.getXRot());
