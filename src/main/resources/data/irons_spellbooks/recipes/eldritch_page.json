@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "irons_spellbooks:lost_knowledge_fragment"
+    },
+    {
+      "item": "irons_spellbooks:lost_knowledge_fragment"
+    },
+    {
+      "item": "minecraft:echo_shard"
+    }
+  ],
+  "result": {
+    "item": "irons_spellbooks:eldritch_page"
+  }
+}
