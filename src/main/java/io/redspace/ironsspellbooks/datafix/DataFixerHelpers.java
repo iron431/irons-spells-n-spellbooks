@@ -13,9 +13,9 @@ import io.redspace.ironsspellbooks.spells.holy.*;
 import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.*;
 import io.redspace.ironsspellbooks.spells.nature.*;
-import io.redspace.ironsspellbooks.spells.void_school.AbyssalShroudSpell;
-import io.redspace.ironsspellbooks.spells.void_school.BlackHoleSpell;
-import io.redspace.ironsspellbooks.spells.void_school.SculkTentaclesSpell;
+import io.redspace.ironsspellbooks.spells.eldritch.AbyssalShroudSpell;
+import io.redspace.ironsspellbooks.spells.eldritch.BlackHoleSpell;
+import io.redspace.ironsspellbooks.spells.eldritch.SculkTentaclesSpell;
 import net.minecraft.nbt.*;
 
 import java.util.Map;

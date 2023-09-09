@@ -12,7 +12,7 @@ import io.redspace.ironsspellbooks.spells.fire.*;
 import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.*;
 import io.redspace.ironsspellbooks.spells.nature.*;
-import io.redspace.ironsspellbooks.spells.void_school.*;
+import io.redspace.ironsspellbooks.spells.eldritch.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -164,4 +164,5 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> ABYSSAL_SHROUD_SPELL = registerSpell(new AbyssalShroudSpell());
     public static final RegistryObject<AbstractSpell> BLACK_HOLE_SPELL = registerSpell(new BlackHoleSpell());
     public static final RegistryObject<AbstractSpell> SCULK_TENTACLES_SPELL = registerSpell(new SculkTentaclesSpell());
+    public static final RegistryObject<AbstractSpell> SONIC_BOOM_SPELL = registerSpell(new SonicBoomSpell());
 }
