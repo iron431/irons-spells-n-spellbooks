@@ -144,8 +144,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> ARCANE_SALVAGE = ITEMS.register("arcane_salvage", ArcaneSalvageItem::new);
     public static final RegistryObject<Item> ARCANE_INGOT = ITEMS.register("arcane_ingot", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
     public static final RegistryObject<Item> SHRIVING_STONE = ITEMS.register("shriving_stone", ShrivingStoneItem::new);
-    public static final RegistryObject<Item> ELDRITCH_PAGE = ITEMS.register("eldritch_page", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
-    public static final RegistryObject<Item> LOST_KNOWLEDGE_FRAGMENT = ITEMS.register("lost_knowledge_fragment", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
+    public static final RegistryObject<Item> ELDRITCH_PAGE = ITEMS.register("eldritch_manuscript", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
+    public static final RegistryObject<Item> LOST_KNOWLEDGE_FRAGMENT = ITEMS.register("torn_ancient_text", () -> new Item((new Item.Properties()).tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB)));
 
     /**
      * Block Items

@@ -165,5 +165,5 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> BLACK_HOLE_SPELL = registerSpell(new BlackHoleSpell());
     public static final RegistryObject<AbstractSpell> SCULK_TENTACLES_SPELL = registerSpell(new SculkTentaclesSpell());
     public static final RegistryObject<AbstractSpell> SONIC_BOOM_SPELL = registerSpell(new SonicBoomSpell());
-    public static final RegistryObject<AbstractSpell> ELDRITCH_BLAST_SPELL = registerSpell(new EldritchBlastSpell());
+    //public static final RegistryObject<AbstractSpell> ELDRITCH_BLAST_SPELL = registerSpell(new EldritchBlastSpell());
 }

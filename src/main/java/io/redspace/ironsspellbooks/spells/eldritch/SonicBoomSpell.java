@@ -31,7 +31,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class SonicBoomSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "soninc_boom");
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "sonic_boom");
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)
@@ -88,6 +88,7 @@ public class SonicBoomSpell extends AbstractSpell {
             if (target instanceof LivingEntity) {
                 if (DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity), getSchoolType())) {
                     //TODO: some kind of on hit effect?
+                    //deafen warden or something would be cool
                 }
             }
         }

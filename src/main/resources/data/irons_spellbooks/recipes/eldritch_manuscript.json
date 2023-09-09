@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "irons_spellbooks:lost_knowledge_fragment"
+      "item": "irons_spellbooks:torn_ancient_text"
     },
     {
-      "item": "irons_spellbooks:lost_knowledge_fragment"
+      "item": "irons_spellbooks:torn_ancient_text"
     },
     {
       "item": "minecraft:echo_shard"
     }
   ],
   "result": {
-    "item": "irons_spellbooks:eldritch_page"
+    "item": "irons_spellbooks:eldritch_manuscript"
   }
 }
