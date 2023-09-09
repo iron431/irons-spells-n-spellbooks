@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
@@ -48,18 +49,17 @@ public final class ScrollForgeRecipeMaker {
                     var inkOutputs = new ArrayList<ItemStack>();
 
                     inkItems.forEach(ink -> {
-                        var string = new StringBuilder();
-                        SpellRegistry.REGISTRY.get().getValues().forEach((AbstractSpell)-> string.append(AbstractSpell.getSpellId()).append(", "));
-                        for(AbstractSpell spell : spells){
-                            var spellLevel = spell.getMinLevelForRarity(ink.getRarity());
-                            if (spell != SpellRegistry.none()) {
-                                inkOutputs.add(new ItemStack(ink));
-                                scrollOutputs.add(getScrollStack(spell, spell.getLevel(spellLevel, null)));
+                        //var string = new StringBuilder();
+                        //SpellRegistry.REGISTRY.get().getValues().forEach((AbstractSpell)-> string.append(AbstractSpell.getSpellId()).append(", "));
+                        for (AbstractSpell spell : spells) {
+                            if (spell.isEnabled()) {
+                                var spellLevel = spell.getMinLevelForRarity(ink.getRarity());
+                                if (spellLevel > 0 && spell != SpellRegistry.none()) {
+                                    inkOutputs.add(new ItemStack(ink));
+                                    scrollOutputs.add(getScrollStack(spell, spell.getLevel(spellLevel, null)));
+                                }
                             }
                         }
-//                        spells.forEach(spell -> {
-//
-//                        });
                     });
 
                     return new ScrollForgeRecipe(inkOutputs, paperInput, focusInput, scrollOutputs);
