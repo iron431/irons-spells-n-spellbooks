@@ -120,11 +120,11 @@ public class Utils {
 //    }
 
     /**
-     * X should be between 0-2, and has a horizontal asymptote of 2 applied to soft-cap it for reductive attribute calculations
+     * adds a horizontal asymptote of y = 2 to soft-cap reductive attribute calculations
      */
     public static double softCapFormula(double x) {
-        //Softcap (https://www.desmos.com/calculator/cokngo3opu)
-        return x <= 1.7 ? x : 2 - Math.pow(Math.E, -(x - 0.6) * (x - 0.6));
+        //Softcap (https://www.desmos.com/calculator/tuooig12pf)
+        return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
     }
 
     public static boolean isPlayerHoldingSpellBook(Player player) {
