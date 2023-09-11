@@ -13,6 +13,8 @@
 - Added Firefly Jar block
 - Added the Druidic Tome, an epic Nature spell book 
 - Added spell targeting success notification
+- Added school based resistance attributes
+  - While these are not used in the game yet, they can be used by modpack makers or addon mods
 
 
 ### Changes
