@@ -5,17 +5,25 @@
   - Added Summon Ender Chest Spell
   - Added Firefly Spell
   - Added Oakskin Spell
+  - Added Sonic Boom Spell
+  - Added Echolocation Spell
 - Added Elixirs
-  - Added Oakskin Elixir
-  - Added Invisibility Elixir
-  - Added Evasion Elixir
+  - Added Oakskin and Greater Oakskin Elixir
+  - Added Invisibility and Greater Invisibility Elixir
+  - Added Evasion and Greater Evasion Elixir
   - Added Greater Potion of Healing
 - Added Firefly Jar block
 - Added spell targeting success notification
+- Added Nature School, a replacement to the Poison School
+- Added Eldritch School, a replacement to the Void School
+  - Added Lost Eldritch Manuscripts, the focus to the Eldritch School
+  - Added Forgotten Knowledge Shards, crafting components of Lost Eldritch Manuscripts
 
 ### Changes
 - Poison School has been replaced by the Nature School
-- Void school has been temporarily removed while it is being redefined
+- Void school has been replaced by the Eldritch School
+- Black Hole Spell is now an Ender Spell
+- Void Tentacles Spell is now Sculk Tentacles Spell
 - Devour spell no longer pulls enemies in, and has had its range extended
 - Long casts can no longer be held to cast
 - Long casts must be clicked again to cancel mid-cast
