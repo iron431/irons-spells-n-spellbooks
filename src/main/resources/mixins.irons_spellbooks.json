@@ -5,23 +5,24 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
+    "DataFixLevelStorageSourceMixin",
+    "DataFixPlayerDataStorageMixin",
     "EntityMixin",
     "ItemMixin",
     "LivingEntityMixin",
     "SmithingMenuMixin",
     "TetraBladedItemMixin",
-    "TridentItemMixin",
-    "DataFixLevelStorageSourceMixin",
-    "DataFixPlayerDataStorageMixin"
+    "TridentItemMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",
+    "EntityRendererMixin",
     "GuiMixin",
     "ItemRendererMixin",
     "LocalPlayerMixin",
-    "SpinAttackEffectLayerMixin",
+    "MinecraftMixin",
     "ParticleMixin",
-    "EntityRendererMixin"
+    "SpinAttackEffectLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

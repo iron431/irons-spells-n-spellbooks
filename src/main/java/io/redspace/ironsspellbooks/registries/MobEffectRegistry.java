@@ -43,6 +43,7 @@ public class MobEffectRegistry {
     public static final RegistryObject<MobEffect> VIGOR = MOB_EFFECT_DEFERRED_REGISTER.register("vigor", () -> new MobEffect(MobEffectCategory.BENEFICIAL, 0x850d0d) {}.addAttributeModifier(Attributes.MAX_HEALTH, "d2b7228b-3ded-412e-940b-8f9f1e2cf882", 2, AttributeModifier.Operation.ADDITION));
     public static final RegistryObject<MobEffect> INSTANT_MANA = MOB_EFFECT_DEFERRED_REGISTER.register("instant_mana", () -> new InstantManaEffect(MobEffectCategory.BENEFICIAL, 0x00b7ec) );
     public static final RegistryObject<MobEffect> OAKSKIN = MOB_EFFECT_DEFERRED_REGISTER.register("oakskin", () -> new OakskinEffect(MobEffectCategory.BENEFICIAL, 0xffef95) );
+    public static final RegistryObject<MobEffect> ECHOLOCATION = MOB_EFFECT_DEFERRED_REGISTER.register("echolocation", () -> new EcholocationEffect(MobEffectCategory.BENEFICIAL, 0x6c42f5));
     //public static final RegistryObject<MobEffect> ROOT = MOB_EFFECT_DEFERRED_REGISTER.register("root", () -> new RootEffect(MobEffectCategory.HARMFUL, 0x604730));
     //public static final RegistryObject<MobEffect> ENCHANTED_WARD = MOB_EFFECT_DEFERRED_REGISTER.register("enchanted_ward", () -> new EnchantedWardEffect(MobEffectCategory.HARMFUL, 3311322));
 }
