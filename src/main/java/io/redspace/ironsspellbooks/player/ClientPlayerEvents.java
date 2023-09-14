@@ -166,10 +166,17 @@ public class ClientPlayerEvents {
     @SubscribeEvent
     public static void changeFogColor(ViewportEvent.ComputeFogColor event) {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())) {
-            var color = SpellRegistry.PLANAR_SIGHT_SPELL.get().getSchoolType().getTargetingColor();
-            event.setRed(color.x() * .15f);
-            event.setGreen(color.y() * .15f);
-            event.setBlue(color.z() * .15f);
+            var color = MobEffectRegistry.PLANAR_SIGHT.get().getColor();
+            float f = 0.0F;
+            float f1 = 0.0F;
+            float f2 = 0.0F;
+
+            f += (float) ((color >> 16 & 255)) / 255.0F;
+            f1 += (float) ((color >> 8 & 255)) / 255.0F;
+            f2 += (float) ((color >> 0 & 255)) / 255.0F;
+            event.setRed(f * .15f);
+            event.setGreen(f1 * .15f);
+            event.setBlue(f2 * .15f);
         }
     }
 }

@@ -38,9 +38,14 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         poseStack.scale(.5f * entityScale, .5f * entityScale, .5f * entityScale);
         poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
         poseStack.mulPose(Vector3f.YP.rotationDegrees(90f));
-        poseStack.translate(1, 0, 0);
+        poseStack.translate(5, 0, 0);
+//        poseStack.translate(0, 0, -3);
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(CENTER_TEXTURE));
+//        if (Minecraft.getInstance().player != null) {
+//            Vec3 backwards = Minecraft.getInstance().player.position().subtract(entity.getPosition(partialTicks)).normalize().scale(-2);
+//            poseStack.translate(backwards.x, backwards.y, backwards.z);
+//        }
 
         consumer.vertex(poseMatrix, 0, -8, -8).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         consumer.vertex(poseMatrix, 0, 8, -8).color(255, 255, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
@@ -48,10 +53,6 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         consumer.vertex(poseMatrix, 0, -8, 8).color(255, 255, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(LightTexture.FULL_BRIGHT).normal(normalMatrix, 0f, 1f, 0f).endVertex();
         poseStack.popPose();
         poseStack.pushPose();
-        if (Minecraft.getInstance().player != null) {
-            Vec3 backwards = Minecraft.getInstance().player.position().subtract(entity.getPosition(partialTicks)).normalize().scale(-2);
-            poseStack.translate(backwards.x, backwards.y, backwards.z);
-        }
 
         poseStack.translate(0, entity.getBoundingBox().getYsize() / 2, 0);
         float animationProgress = (entity.tickCount + partialTicks) / 200.0F;
