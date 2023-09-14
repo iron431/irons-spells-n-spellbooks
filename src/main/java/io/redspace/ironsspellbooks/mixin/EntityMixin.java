@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
-import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +45,7 @@ public abstract class EntityMixin {
      */
     @Inject(method = "getTeamColor", at = @At(value = "HEAD"), cancellable = true)
     public void changeGlowOutline(CallbackInfoReturnable<Integer> cir){
-        if(ClientSpellCastHelper.hasEcholocation()){
+        if(Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())){
             cir.setReturnValue(0x6c42f5);
         }
     }

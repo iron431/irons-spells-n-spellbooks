@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -19,7 +18,7 @@ public class MinecraftMixin {
      */
     @Inject(method = "shouldEntityAppearGlowing", at = @At(value = "HEAD"), cancellable = true)
     public void changeGlowOutline(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
-        if (ClientSpellCastHelper.hasEcholocation() && Minecraft.getInstance().player != null && Mth.abs((float) (pEntity.getY() - Minecraft.getInstance().player.getY())) < 18) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get()) && pEntity instanceof LivingEntity && Mth.abs((float) (pEntity.getY() - Minecraft.getInstance().player.getY())) < 18) {
             cir.setReturnValue(true);
         }/* else if (pEntity instanceof LivingEntity entity && entity.hasEffect(MobEffectRegistry.GUIDING_BOLT.get())) {
             cir.setReturnValue(true);

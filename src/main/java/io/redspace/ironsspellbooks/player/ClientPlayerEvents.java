@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
-import io.redspace.ironsspellbooks.effect.InstantManaEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -29,12 +28,12 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -161,6 +160,16 @@ public class ClientPlayerEvents {
                     CustomDescriptionMobEffect.handleCustomPotionTooltip(stack, event.getToolTip(), event.getFlags().isAdvanced(), mobEffectInstance, customDescriptionMobEffect);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void changeFogColor(ViewportEvent.ComputeFogColor event) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())) {
+            var color = SpellRegistry.PLANAR_SIGHT_SPELL.get().getSchoolType().getTargetingColor();
+            event.setRed(color.x() * .15f);
+            event.setGreen(color.y() * .15f);
+            event.setBlue(color.z() * .15f);
         }
     }
 }

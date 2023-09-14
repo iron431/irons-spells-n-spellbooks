@@ -385,7 +385,7 @@
   "spell.irons_spellbooks.summon_ender_chest": "Summon Ender Chest",
   "spell.irons_spellbooks.ray_of_frost": "Ray of Frost",
   "spell.irons_spellbooks.sonic_boom": "Sonic Boom",
-  "spell.irons_spellbooks.echolocation": "Echolocation",
+  "spell.irons_spellbooks.planar_sight": "Planar Sight",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -461,7 +461,7 @@
   "spell.irons_spellbooks.summon_ender_chest.guide": "Apparate your Ender Chest inventory upon casting.",
   "spell.irons_spellbooks.ray_of_frost.guide": "Fire a beam of cold energy, dealing low damage but immediately applying freeze to the creature hit.",
   "spell.irons_spellbooks.sonic_boom.guide": "Blast forth a sonic boom of immense power, passing through solid material with ease and harming the first creature in its path.",
-  "spell.irons_spellbooks.echolocation.guide": "Become temporarily blind, but gain the ability to see creatures through solid material.",
+  "spell.irons_spellbooks.planar_sight.guide": "Shift your vision partially into a different plane to gain the ability to see creatures through solid material.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -593,7 +593,7 @@
   "effect.irons_spellbooks.vigor": "Vigor",
   "effect.irons_spellbooks.instant_mana": "Instant Mana",
   "effect.irons_spellbooks.oakskin": "Oakskin",
-  "effect.irons_spellbooks.echolocation": "Echolocation",
+  "effect.irons_spellbooks.planar_sight": "Shift your vision partially into a different plane to gain the ability to see creatures through solid material.",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -616,7 +616,7 @@
   "effect.irons_spellbooks.vigor.description": "Gain 1 additional heart of max hp per level",
   "effect.irons_spellbooks.instant_mana.description": "Restores 25 mana +5% of your max mana per level",
   "effect.irons_spellbooks.oakskin.description": "Grants 15% damage reduction, and an addition 5% per level",
-  "effect.irons_spellbooks.echolocation.description": "Become temporarily blind, but gain the ability to see creatures through solid material",
+  "effect.irons_spellbooks.planar_sight.description": "Become temporarily blind, but gain the ability to see creatures through solid material",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",

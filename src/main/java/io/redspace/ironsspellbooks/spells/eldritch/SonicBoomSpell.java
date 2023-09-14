@@ -85,7 +85,7 @@ public class SonicBoomSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         CameraShakeManager.addCameraShake(new CameraShakeData(10, entity.position(), 20));
-        var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), false, .15f);
+        var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), false, .25f);
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {

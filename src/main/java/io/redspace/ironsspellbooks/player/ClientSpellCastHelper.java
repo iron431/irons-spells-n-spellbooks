@@ -50,19 +50,6 @@ public class ClientSpellCastHelper {
     }
 
     /**
-     * Echolocation tracking
-     */
-    private static boolean hasEcholocation;
-
-    public static boolean hasEcholocation() {
-        return hasEcholocation;
-    }
-
-    public static void setHasEcholocation(boolean hasEcholocation) {
-        ClientSpellCastHelper.hasEcholocation = hasEcholocation;
-    }
-
-    /**
      * Handle Network Triggered Particles
      */
     public static void handleClientboundBloodSiphonParticles(Vec3 pos1, Vec3 pos2) {
