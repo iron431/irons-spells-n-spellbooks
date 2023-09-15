@@ -63,8 +63,8 @@ public class CryomancerEntity extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.CRYOMANCER_BOOTS.get()));
-        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.CRYOMANCER_BOOTS.get()));
+        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.CRYOMANCER_HELMET.get()));
+        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ItemRegistry.CRYOMANCER_CHESTPLATE.get()));
         this.setDropChance(EquipmentSlot.HEAD, 0.0F);
         this.setDropChance(EquipmentSlot.CHEST, 0.0F);
     }
