@@ -94,11 +94,9 @@ dependencies {
     // TETRA ******************************************************************************************************
     //compileOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
     compileOnly fg.deobf("curse.maven:tetra-${tetra_version}")
-    compileOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
-
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
     runtimeOnly fg.deobf("curse.maven:tetra-${tetra_version}")
-    runtimeOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
+    implementation fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
 
     // JEI ********************************************************************************************************
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
