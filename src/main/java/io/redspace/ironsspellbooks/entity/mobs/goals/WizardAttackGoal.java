@@ -217,7 +217,7 @@ public class WizardAttackGoal extends Goal {
         double speed = mob.isCasting() ? .75f : 1f * speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
-        float fleeDist = .35f;
+        float fleeDist = .275f;
         if (shouldFlee && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
             Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
             if (flee != null) {
