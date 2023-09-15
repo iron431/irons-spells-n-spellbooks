@@ -11,9 +11,14 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenCustomHashMap;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -86,6 +91,7 @@ public class IronsWorldUpgrader {
 
             try {
                 levelStorage.makeWorldBackup();
+                Minecraft.getInstance().getToasts().addToast(new SystemToast(SystemToast.SystemToastIds.WORLD_BACKUP, Component.literal("TEXT ONE "),  Component.literal("TEXT TWO ")));
             } catch (Exception exception) {
                 IronsSpellbooks.LOGGER.error("IronsWorldUpgrader Level Backup failed: {}", exception.getMessage());
             }
@@ -109,6 +115,7 @@ public class IronsWorldUpgrader {
             this.ironsSpellBooksWorldData.setUpgraded(true);
             this.overworldDataStorage.save();
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader completed");
+
         }
     }
 
@@ -145,6 +152,7 @@ public class IronsWorldUpgrader {
 
     private void doWork(String regionFolder, String filterTag) {
         running = true;
+
         converted = 0;
         skipped = 0;
         fixes = 0;
