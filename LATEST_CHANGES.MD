@@ -14,13 +14,13 @@
 - Added the Druidic Tome, an epic Nature spell book 
 - Added spell targeting success notification
 - Added school based resistance attributes
-  - While these are not used in the game yet, they can be used by modpack makers or addon mods
+  - While these are not used in the game yet, they can be used by modpacks or addons
 
 
 ### Changes
 - Schools
   - Poison School has been replaced by the Nature School
-  - Void school has been temporarily removed while it is being redefined
+  - Void school has been temporarily removed while it is being reworked
     - Black Hole is now an Ender spell
     - Void Tentacles is now an Ender spell
     - Abyssal shroud is now disabled by default (configurable)
@@ -37,6 +37,7 @@
   - Updated Anicent Codex, Enchanted Spell Book, and Grimoire of Evokation textures
   - Updated Inscription Table's Lore Page texture
   - Update Amulet of Concentration's texture
+  - Updated Wandering Magician, Priest, and Electromancer Chestplate icons to better match their armor model
 - Misc
   - Potions can now be put into the Alchemist Cauldron
   - Ink can now be put into the Alchemist Cauldron
@@ -46,4 +47,5 @@
 ### Fixes
 - Fixed an issue causing casting mobs to have a difficult time teleporting around non-flat terrain
 - Fixed input issues caused by hybrid long casting inputs
+- Fixed Cyromancer's armor attribute not reflecting his worn armor
 - (Are these issues on main?): Fix Dead King invisibility issues, Fix Dead King Goals breaking
