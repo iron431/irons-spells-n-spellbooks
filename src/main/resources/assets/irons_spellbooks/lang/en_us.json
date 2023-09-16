@@ -14,6 +14,7 @@
   "item.irons_spellbooks.copper_spell_book": "Flimsy Journal",
   "item.irons_spellbooks.druidic_spell_book": "Druidic Tome",
   "item.irons_spellbooks.scroll": "Scroll",
+  "item.irons_spellbooks.scroll.unlearned": "Unlearned Scroll",
   "item.irons_spellbooks.common_ink": "Common Ink",
   "item.irons_spellbooks.uncommon_ink": "Uncommon Ink",
   "item.irons_spellbooks.rare_ink": "Rare Ink",
@@ -200,6 +201,7 @@
   "tooltip.irons_spellbooks.instant_mana_description": " Restores %d Mana +%d%% Max Mana",
   "tooltip.irons_spellbooks.oakskin_description": "+%d%% Damage Reduction",
   "tooltip.irons_spellbooks.evasion_description": " Allows %d Hits to be Evaded",
+  "ui.irons_spellbooks.unlearned_spell": "Unlearned Spell",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",
   "ui.irons_spellbooks.inscription_table_rarity_error": "This scroll is too rare for this spell book.",
@@ -593,7 +595,7 @@
   "effect.irons_spellbooks.vigor": "Vigor",
   "effect.irons_spellbooks.instant_mana": "Instant Mana",
   "effect.irons_spellbooks.oakskin": "Oakskin",
-  "effect.irons_spellbooks.planar_sight": "Shift your vision partially into a different plane to gain the ability to see creatures through solid material.",
+  "effect.irons_spellbooks.planar_sight": "Planar Sight",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -616,7 +618,7 @@
   "effect.irons_spellbooks.vigor.description": "Gain 1 additional heart of max hp per level",
   "effect.irons_spellbooks.instant_mana.description": "Restores 25 mana +5% of your max mana per level",
   "effect.irons_spellbooks.oakskin.description": "Grants 15% damage reduction, and an addition 5% per level",
-  "effect.irons_spellbooks.planar_sight.description": "Become temporarily blind, but gain the ability to see creatures through solid material",
+  "effect.irons_spellbooks.planar_sight.description": "Shift your vision partially into a different plane to gain the ability to see creatures through solid material",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",

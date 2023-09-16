@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class SculkTentaclesSpell extends AbstractSpell {
+public class SculkTentaclesSpell extends AbstractEldritchSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "sculk_tentacles");
 
     @Override
