@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceR
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRenderer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -140,15 +140,14 @@ public class SpellWheelOverlay implements IGuiOverlay {
             var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getSpell().getManaCost(selectedSpell.getLevel(), null)).withStyle(ChatFormatting.AQUA);
 //            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));
 
-            drawTextBackground(poseStack, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
-//guiHelper.drawString(font
-            font.drawShadow(poseStack, title, (float) (centerX - font.width(title) / 2), (float) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF);
-            font.drawShadow(poseStack, level, (float) (centerX - font.width(level) - textCenterMargin), (float) (centerY - (ringOuterEdge + textHeight) + font.lineHeight + textTitleMargin), 0xFFFFFF);
-            font.drawShadow(poseStack, mana, (float) (centerX - font.width(mana) - textCenterMargin), (float) (centerY - (ringOuterEdge + textHeight) + font.lineHeight * 2 + textTitleMargin), 0xFFFFFF);
+            drawTextBackground(guiHelper, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
+            guiHelper.drawString(font, title, (int) (centerX - font.width(title) / 2), (int) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF, true);
+            guiHelper.drawString(font, level, (int) (centerX - font.width(level) - textCenterMargin), (int) (centerY - (ringOuterEdge + textHeight) + font.lineHeight + textTitleMargin), 0xFFFFFF, true);
+            guiHelper.drawString(font, mana, (int) (centerX - font.width(mana) - textCenterMargin), (int) (centerY - (ringOuterEdge + textHeight) + font.lineHeight * 2 + textTitleMargin), 0xFFFFFF, true);
 
             for (int i = 0; i < info.size(); i++) {
                 var line = info.get(i);
-                font.drawShadow(poseStack, line, (float) (centerX + textCenterMargin), (float) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b);
+                guiHelper.drawString(font, line, (int) (centerX + textCenterMargin), (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b, true);
             }
         }
 
@@ -195,9 +194,8 @@ public class SpellWheelOverlay implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    private void drawTextBackground(PoseStack poseStack, double centerX, double centerY, double textYOffset, int textCenterMargin, int textHeight) {
-        fill(poseStack, 0, 0, (int) (centerX * 2), (int) (centerY * 2), 0);
-        RenderSystem.disableTexture();
+    private void drawTextBackground(GuiGraphics guiHelper, double centerX, double centerY, double textYOffset, int textCenterMargin, int textHeight) {
+        guiHelper.fill(0, 0, (int) (centerX * 2), (int) (centerY * 2), 0);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         final Tesselator tesselator = Tesselator.getInstance();
@@ -222,15 +220,15 @@ public class SpellWheelOverlay implements IGuiOverlay {
 
         widthMin = -1;
         widthMax = 1;
-        buffer.vertex(centerX + widthMin, centerY + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-        buffer.vertex(centerX + widthMin, centerY + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+        buffer.vertex(centerX + widthMin, centerY + heightMin, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+        buffer.vertex(centerX + widthMin, centerY + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMin, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
 
-        buffer.vertex(centerX + widthMin, centerY + heightMin + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
-        buffer.vertex(centerX + widthMin, centerY + heightMax + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMax + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-        buffer.vertex(centerX + widthMax, centerY + heightMin + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+        buffer.vertex(centerX + widthMin, centerY + heightMin + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+        buffer.vertex(centerX + widthMin, centerY + heightMax + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMax + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMin + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
 //
 //        buffer.vertex(centerX - widthMax, centerY - heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
 //        buffer.vertex(centerX - widthMax, centerY - heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
@@ -240,8 +238,6 @@ public class SpellWheelOverlay implements IGuiOverlay {
 
         tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
-
     }
 
     private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex, List<SpellData> spells) {

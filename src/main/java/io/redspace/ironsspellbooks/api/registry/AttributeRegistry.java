@@ -65,6 +65,7 @@ public class AttributeRegistry {
             e.add(entity, ENDER_MAGIC_RESIST.get());
             e.add(entity, BLOOD_MAGIC_RESIST.get());
             e.add(entity, EVOCATION_MAGIC_RESIST.get());
+            e.add(entity, NATURE_MAGIC_RESIST.get());
 
             e.add(entity, FIRE_SPELL_POWER.get());
             e.add(entity, ICE_SPELL_POWER.get());

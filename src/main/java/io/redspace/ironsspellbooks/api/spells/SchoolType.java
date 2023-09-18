@@ -1,19 +1,18 @@
 package io.redspace.ironsspellbooks.api.spells;
 
-import com.mojang.math.Vector3f;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
-
-import java.util.Optional;
+import org.joml.Vector3f;
 
 public class SchoolType {
 //    FIRE(0),
@@ -30,12 +29,13 @@ public class SchoolType {
     final TagKey<Item> focus;
     final Component displayName;
     final Style displayStyle;
-//    final PlaceholderDamageType damageType;
+    //    final PlaceholderDamageType damageType;
     final LazyOptional<Attribute> powerAttribute;
     final LazyOptional<Attribute> resistanceAttribute;
     final LazyOptional<SoundEvent> defaultCastSound;
+    final ResourceKey<DamageType> damageType;
 
-    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, LazyOptional<Attribute> powerAttribute, LazyOptional<Attribute> resistanceAttribute, LazyOptional<SoundEvent> defaultCastSound) {
+    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, LazyOptional<Attribute> powerAttribute, LazyOptional<Attribute> resistanceAttribute, LazyOptional<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
         this.id = id;
         this.focus = focus;
         this.displayName = displayName;
@@ -43,6 +43,7 @@ public class SchoolType {
         this.powerAttribute = powerAttribute;
         this.resistanceAttribute = resistanceAttribute;
         this.defaultCastSound = defaultCastSound;
+        this.damageType = damageType;
     }
 
     public double getResistanceFor(LivingEntity livingEntity) {
@@ -65,6 +66,10 @@ public class SchoolType {
 
     public SoundEvent getCastSound() {
         return defaultCastSound.resolve().get();
+    }
+
+    public ResourceKey<DamageType> getDamageType() {
+        return damageType;
     }
 
     public ResourceLocation getId() {

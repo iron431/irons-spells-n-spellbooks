@@ -1,23 +1,16 @@
 package io.redspace.ironsspellbooks.command;
 
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.blocks.BlockInput;
 import net.minecraft.commands.arguments.blocks.BlockPredicateArgument;
-import net.minecraft.commands.arguments.blocks.BlockStateArgument;
-import net.minecraft.commands.arguments.item.ItemArgument;
-import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import net.minecraftforge.server.command.EnumArgument;
 
 import java.util.function.Predicate;
 

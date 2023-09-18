@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
-import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
@@ -11,6 +10,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.damage.SpellMagicDamageSource;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
@@ -18,9 +18,7 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastStarted;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
-import io.redspace.ironsspellbooks.player.ClientPlayerEvents;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
-import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
@@ -41,6 +39,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
@@ -483,10 +482,6 @@ public abstract class AbstractSpell {
         return SpellRarity.COMMON;
     }
 
-    public DamageSource getDamageSource() {
-        return new DamageSource(getDeathMessageId());
-    }
-
     public String getDeathMessageId() {
         if (deathMessageId == null) {
             deathMessageId = getSpellId().replace(':', '.');
@@ -496,11 +491,11 @@ public abstract class AbstractSpell {
     }
 
     public DamageSource getDamageSource(Entity attacker) {
-        return DamageSources.directDamageSource(getDamageSource(), attacker);
+        return SpellMagicDamageSource.source(attacker, this);
     }
 
     public DamageSource getDamageSource(Entity projectile, Entity attacker) {
-        return DamageSources.indirectDamageSource(getDamageSource(), projectile, attacker);
+        return SpellMagicDamageSource.source(projectile, attacker, this);
     }
 
     public boolean isEnabled() {

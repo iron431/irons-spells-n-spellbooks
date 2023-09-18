@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.damage;
 
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SpellMagicDamageSource extends DamageSource {
-    SpellType spellType;
+    AbstractSpell spell;
 
-    protected SpellMagicDamageSource(@NotNull Entity directEntity, @NotNull Entity causingEntity, @Nullable Vec3 damageSourcePosition, SpellType spellType) {
-        super(getHolderFromResource(directEntity, spellType.getSchoolType().getDamageType()), directEntity, causingEntity, damageSourcePosition);
-        this.spellType = spellType;
+    protected SpellMagicDamageSource(@NotNull Entity directEntity, @NotNull Entity causingEntity, @Nullable Vec3 damageSourcePosition, AbstractSpell spell) {
+        super(getHolderFromResource(directEntity, spell.getSchoolType().getDamageType()), directEntity, causingEntity, damageSourcePosition);
+        this.spell = spell;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class SpellMagicDamageSource extends DamageSource {
 //            return livingentity1 != null ? Component.translatable(s1, pLivingEntity.getDisplayName(), livingentity1.getDisplayName()) : Component.translatable(s, pLivingEntity.getDisplayName());
 //        }
 
-        String s = "death.attack." + spellType.getFullId();
+        String s = "death.attack." + spell.getDeathMessageId();
         Component component = this.causingEntity == null ? this.directEntity.getDisplayName() : this.causingEntity.getDisplayName();
         return Component.translatable(s, pLivingEntity.getDisplayName(), component);
     }
@@ -44,11 +44,11 @@ public class SpellMagicDamageSource extends DamageSource {
         }
     }
 
-    public static DamageSource source(@NotNull Entity entity, @NotNull SpellType spellType) {
-        return new SpellMagicDamageSource(entity, entity, null, spellType);
+    public static DamageSource source(@NotNull Entity entity, @NotNull AbstractSpell spell) {
+        return new SpellMagicDamageSource(entity, entity, null, spell);
     }
 
-    public static DamageSource source(@NotNull Entity directEntity, @NotNull Entity causingEntity, @NotNull SpellType spellType) {
-        return new SpellMagicDamageSource(directEntity, causingEntity, null, spellType);
+    public static DamageSource source(@NotNull Entity directEntity, @NotNull Entity causingEntity, @NotNull AbstractSpell spell) {
+        return new SpellMagicDamageSource(directEntity, causingEntity, null, spell);
     }
 }

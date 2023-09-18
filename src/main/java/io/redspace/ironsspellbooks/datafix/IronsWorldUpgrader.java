@@ -117,115 +117,115 @@ public class IronsWorldUpgrader {
         converted = 0;
         skipped = 0;
         fixes = 0;
-
-        worldGenSettings.levels().stream().map(resourceKey -> {
-            return this.levelStorage.getDimensionPath(resourceKey).resolve("data").toFile();
-        }).forEach(dir -> {
-            var files = dir.listFiles();
-            if (files != null) {
-                Arrays.stream(files).toList().forEach(file -> {
-                    try {
-                        var compoundTag = NbtIo.readCompressed(file);
-                        var ironsTraverser = new IronsTagTraverser();
-                        ironsTraverser.visit(compoundTag);
-
-                        if (ironsTraverser.changesMade()) {
-                            NbtIo.writeCompressed(compoundTag, file);
-                            IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader: fixDimensionStorage updating file: {}, {}", file.getPath(), ironsTraverser.totalChanges());
-                        }
-
-                        fixes += ironsTraverser.totalChanges();
-                    } catch (Exception exception) {
-                        IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader: fixDimensionStorage error: {}", exception.getMessage());
-                    }
-                });
-            }
-        });
+//            //TODO: port world upgrader
+//        worldGenSettings.levels().stream().map(resourceKey -> {
+//            return this.levelStorage.getDimensionPath(resourceKey).resolve("data").toFile();
+//        }).forEach(dir -> {
+//            var files = dir.listFiles();
+//            if (files != null) {
+//                Arrays.stream(files).toList().forEach(file -> {
+//                    try {
+//                        var compoundTag = NbtIo.readCompressed(file);
+//                        var ironsTraverser = new IronsTagTraverser();
+//                        ironsTraverser.visit(compoundTag);
+//
+//                        if (ironsTraverser.changesMade()) {
+//                            NbtIo.writeCompressed(compoundTag, file);
+//                            IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader: fixDimensionStorage updating file: {}, {}", file.getPath(), ironsTraverser.totalChanges());
+//                        }
+//
+//                        fixes += ironsTraverser.totalChanges();
+//                    } catch (Exception exception) {
+//                        IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader: fixDimensionStorage error: {}", exception.getMessage());
+//                    }
+//                });
+//            }
+//        });
     }
 
     private void doWork(String regionFolder, String filterTag) {
-        running = true;
-        converted = 0;
-        skipped = 0;
-        fixes = 0;
-        int totalChunks = 0;
-
-        ImmutableMap.Builder<ResourceKey<Level>, ListIterator<ChunkPos>> builder = ImmutableMap.builder();
-        ImmutableSet<ResourceKey<Level>> immutableset = this.worldGenSettings.levels();
-
-        for (ResourceKey<Level> resourcekey : immutableset) {
-            List<ChunkPos> list = this.getAllChunkPos(resourcekey, regionFolder);
-            builder.put(resourcekey, list.listIterator());
-            totalChunks += list.size();
-        }
-
-        if (totalChunks > 0) {
-            ImmutableMap<ResourceKey<Level>, ListIterator<ChunkPos>> immutablemap = builder.build();
-            ImmutableMap.Builder<ResourceKey<Level>, ChunkStorage> builder1 = ImmutableMap.builder();
-
-            for (ResourceKey<Level> resourcekey1 : immutableset) {
-                Path path = this.levelStorage.getDimensionPath(resourcekey1);
-                builder1.put(resourcekey1, new ChunkStorage(path.resolve(regionFolder), this.dataFixer, true));
-            }
-
-            ImmutableMap<ResourceKey<Level>, ChunkStorage> immutablemap1 = builder1.build();
-            while (this.running) {
-                boolean processedItem = false;
-
-                for (ResourceKey<Level> resourcekey2 : immutableset) {
-                    ListIterator<ChunkPos> listiterator = immutablemap.get(resourcekey2);
-                    ChunkStorage chunkstorage = immutablemap1.get(resourcekey2);
-                    if (listiterator.hasNext()) {
-                        ChunkPos chunkpos = listiterator.next();
-                        boolean updated = false;
-
-                        try {
-                            CompoundTag chunkDataTag = chunkstorage.read(chunkpos).join().orElse(null);
-                            if (chunkDataTag != null) {
-                                ListTag blockEntitiesTag;
-
-                                if (filterTag != null) {
-                                    blockEntitiesTag = (ListTag) chunkDataTag.get(filterTag);
-                                } else {
-                                    blockEntitiesTag = new ListTag();
-                                    blockEntitiesTag.add(chunkDataTag);
-                                }
-
-                                var ironsTagTraverser = new IronsTagTraverser();
-                                ironsTagTraverser.visit(blockEntitiesTag);
-                                if (ironsTagTraverser.changesMade()) {
-                                    chunkstorage.write(chunkpos, chunkDataTag);
-                                    this.fixes = ironsTagTraverser.totalChanges();
-                                    updated = true;
-                                }
-                            }
-                        } catch (Exception exception) {
-                            IronsSpellbooks.LOGGER.error("IronsWorldUpgrader: Error upgrading chunk {}, {}", chunkpos, exception.getMessage());
-                        }
-
-                        if (updated) {
-                            ++this.converted;
-                        } else {
-                            ++this.skipped;
-                        }
-
-                        processedItem = true;
-                    }
-                }
-
-                if (!processedItem) {
-                    this.running = false;
-                }
-            }
-
-            for (ChunkStorage chunkstorage1 : immutablemap1.values()) {
-                try {
-                    chunkstorage1.close();
-                } catch (IOException ioexception) {
-                    IronsSpellbooks.LOGGER.error("IronsWorldUpgrader: Error closing chunk storage: {}", ioexception.getMessage());
-                }
-            }
-        }
+//        running = true;
+//        converted = 0;
+//        skipped = 0;
+//        fixes = 0;
+//        int totalChunks = 0;
+//
+//        ImmutableMap.Builder<ResourceKey<Level>, ListIterator<ChunkPos>> builder = ImmutableMap.builder();
+//        ImmutableSet<ResourceKey<Level>> immutableset = this.worldGenSettings.levels();
+//
+//        for (ResourceKey<Level> resourcekey : immutableset) {
+//            List<ChunkPos> list = this.getAllChunkPos(resourcekey, regionFolder);
+//            builder.put(resourcekey, list.listIterator());
+//            totalChunks += list.size();
+//        }
+//
+//        if (totalChunks > 0) {
+//            ImmutableMap<ResourceKey<Level>, ListIterator<ChunkPos>> immutablemap = builder.build();
+//            ImmutableMap.Builder<ResourceKey<Level>, ChunkStorage> builder1 = ImmutableMap.builder();
+//
+//            for (ResourceKey<Level> resourcekey1 : immutableset) {
+//                Path path = this.levelStorage.getDimensionPath(resourcekey1);
+//                builder1.put(resourcekey1, new ChunkStorage(path.resolve(regionFolder), this.dataFixer, true));
+//            }
+//
+//            ImmutableMap<ResourceKey<Level>, ChunkStorage> immutablemap1 = builder1.build();
+//            while (this.running) {
+//                boolean processedItem = false;
+//
+//                for (ResourceKey<Level> resourcekey2 : immutableset) {
+//                    ListIterator<ChunkPos> listiterator = immutablemap.get(resourcekey2);
+//                    ChunkStorage chunkstorage = immutablemap1.get(resourcekey2);
+//                    if (listiterator.hasNext()) {
+//                        ChunkPos chunkpos = listiterator.next();
+//                        boolean updated = false;
+//
+//                        try {
+//                            CompoundTag chunkDataTag = chunkstorage.read(chunkpos).join().orElse(null);
+//                            if (chunkDataTag != null) {
+//                                ListTag blockEntitiesTag;
+//
+//                                if (filterTag != null) {
+//                                    blockEntitiesTag = (ListTag) chunkDataTag.get(filterTag);
+//                                } else {
+//                                    blockEntitiesTag = new ListTag();
+//                                    blockEntitiesTag.add(chunkDataTag);
+//                                }
+//
+//                                var ironsTagTraverser = new IronsTagTraverser();
+//                                ironsTagTraverser.visit(blockEntitiesTag);
+//                                if (ironsTagTraverser.changesMade()) {
+//                                    chunkstorage.write(chunkpos, chunkDataTag);
+//                                    this.fixes = ironsTagTraverser.totalChanges();
+//                                    updated = true;
+//                                }
+//                            }
+//                        } catch (Exception exception) {
+//                            IronsSpellbooks.LOGGER.error("IronsWorldUpgrader: Error upgrading chunk {}, {}", chunkpos, exception.getMessage());
+//                        }
+//
+//                        if (updated) {
+//                            ++this.converted;
+//                        } else {
+//                            ++this.skipped;
+//                        }
+//
+//                        processedItem = true;
+//                    }
+//                }
+//
+//                if (!processedItem) {
+//                    this.running = false;
+//                }
+//            }
+//
+//            for (ChunkStorage chunkstorage1 : immutablemap1.values()) {
+//                try {
+//                    chunkstorage1.close();
+//                } catch (IOException ioexception) {
+//                    IronsSpellbooks.LOGGER.error("IronsWorldUpgrader: Error closing chunk storage: {}", ioexception.getMessage());
+//                }
+//            }
+//        }
     }
 
     private List<ChunkPos> getAllChunkPos(ResourceKey<Level> p_18831_, String folder) {
@@ -277,7 +277,7 @@ public class IronsWorldUpgrader {
         }
     }
 
-    public ImmutableSet<ResourceKey<Level>> levels() {
-        return this.worldGenSettings.levels();
-    }
+//    public ImmutableSet<ResourceKey<Level>> levels() {
+//        return this.worldGenSettings.levels();
+//    }
 }

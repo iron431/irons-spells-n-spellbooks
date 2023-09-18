@@ -34,7 +34,7 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
     public static final TagKey<DamageType> BLOOD_MAGIC = create("blood_magic");
     public static final TagKey<DamageType> EVOCATION_MAGIC = create("evocation_magic");
     public static final TagKey<DamageType> VOID_MAGIC = create("void_magic");
-    public static final TagKey<DamageType> POISON_MAGIC = create("poison_magic");
+    public static final TagKey<DamageType> NATURE_MAGIC = create("nature_magic");
 
     protected void addTags(@NotNull Provider provider) {
         tag(FIRE_MAGIC).add(ISSDamageTypes.FIRE_MAGIC);
@@ -45,7 +45,7 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
         tag(BLOOD_MAGIC).add(ISSDamageTypes.BLOOD_MAGIC);
         tag(EVOCATION_MAGIC).add(ISSDamageTypes.EVOCATION_MAGIC);
         tag(VOID_MAGIC).add(ISSDamageTypes.VOID_MAGIC);
-        tag(POISON_MAGIC).add(ISSDamageTypes.POISON_MAGIC);
+        tag(NATURE_MAGIC).add(ISSDamageTypes.NATURE_MAGIC);
 
         tag(BYPASS_EVASION).add(
                 DamageTypes.ON_FIRE,

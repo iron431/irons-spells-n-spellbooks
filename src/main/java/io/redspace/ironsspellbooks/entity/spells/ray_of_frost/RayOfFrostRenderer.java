@@ -2,10 +2,8 @@ package io.redspace.ironsspellbooks.entity.spells.ray_of_frost;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
-import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -57,8 +55,8 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
         float length = 32 * scalar * scalar;
         float f = entity.tickCount + partialTicks;
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getYRot() - 180.0F));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-entity.getXRot() - 90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot() - 180.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-entity.getXRot() - 90));
         poseStack.scale(scalar, scalar, scalar);
 
         //float scale = Mth.lerp(Mth.clamp(f / 6f, 0, 1), 1, 2.3f);
@@ -73,9 +71,9 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
             {
                 poseStack.pushPose();
                 float expansion = Mth.clampedLerp(1.2f, 0, f / (lifetime));
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(f * 5));
+                poseStack.mulPose(Axis.YP.rotationDegrees(f * 5));
                 poseStack.scale(expansion, 1, expansion);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(45));
+                poseStack.mulPose(Axis.YP.rotationDegrees(45));
                 this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, alpha);
                 poseStack.popPose();
             }
@@ -85,7 +83,7 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
                 poseStack.pushPose();
                 float expansion = Mth.clampedLerp(1, 0, f / (lifetime - 8));
                 poseStack.scale(expansion, 1, expansion);
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(f * -10));
+                poseStack.mulPose(Axis.YP.rotationDegrees(f * -10));
                 this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
                 poseStack.popPose();
             }

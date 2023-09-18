@@ -33,10 +33,10 @@ public class VisualFallingBlockRenderer extends EntityRenderer<VisualFallingBloc
    public void render(VisualFallingBlockEntity entity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
       BlockState blockstate = entity.getBlockState();
       if (blockstate.getRenderShape() == RenderShape.MODEL) {
-         Level level = entity.getLevel();
+         Level level = entity.level;
 //         if (blockstate != level.getBlockState(pEntity.blockPosition()) && blockstate.getRenderShape() != RenderShape.INVISIBLE) {
          pMatrixStack.pushPose();
-         BlockPos blockpos = new BlockPos(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
+         BlockPos blockpos = BlockPos.containing(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
          pMatrixStack.translate(-0.5D, 0.0D, -0.5D);
          var model = this.dispatcher.getBlockModel(blockstate);
          for (var renderType : model.getRenderTypes(blockstate, RandomSource.create(blockstate.getSeed(entity.getStartPos())), ModelData.EMPTY))

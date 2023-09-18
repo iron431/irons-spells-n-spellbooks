@@ -28,7 +28,7 @@ public class VisualFallingBlockEntity extends FallingBlockEntity {
     }
 
     @Override
-    public boolean isOnGround() {
+    public boolean onGround() {
         return tickCount > 1 && (this.position().y <= originalY || this.getDeltaMovement().lengthSqr() < .001f);
     }
 
@@ -60,7 +60,7 @@ public class VisualFallingBlockEntity extends FallingBlockEntity {
     @Override
     public void tick() {
 //        super.tick();
-        if (this.blockState.isAir() || this.isOnGround() || tickCount > maxAge) {
+        if (this.blockState.isAir() || this.onGround() || tickCount > maxAge) {
             this.discard();
         } else {
             this.move(MoverType.SELF, this.getDeltaMovement());

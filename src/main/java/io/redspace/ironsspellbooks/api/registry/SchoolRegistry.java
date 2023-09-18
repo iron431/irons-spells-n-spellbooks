@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.api.registry;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.AffinityRingRenderer;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -56,7 +57,9 @@ public class SchoolRegistry {
             Component.translatable("school.irons_spellbooks.fire").withStyle(ChatFormatting.GOLD),
             LazyOptional.of(AttributeRegistry.FIRE_SPELL_POWER::get),
             LazyOptional.of(AttributeRegistry.FIRE_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.FIRE_CAST::get)));
+            LazyOptional.of(SoundRegistry.FIRE_CAST::get),
+            ISSDamageTypes.FIRE_MAGIC
+            ));
 
     public static final RegistryObject<SchoolType> ICE = registerSchool(new SchoolType(
             ICE_RESOURCE,
@@ -64,7 +67,8 @@ public class SchoolRegistry {
             Component.translatable("school.irons_spellbooks.ice").withStyle(Style.EMPTY.withColor(0xd0f9ff)),
             LazyOptional.of(AttributeRegistry.ICE_SPELL_POWER::get),
             LazyOptional.of(AttributeRegistry.ICE_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.ICE_CAST::get)
+            LazyOptional.of(SoundRegistry.ICE_CAST::get),
+            ISSDamageTypes.ICE_MAGIC
     ));
 
     public static final RegistryObject<SchoolType> LIGHTNING = registerSchool(new SchoolType(
@@ -73,7 +77,8 @@ public class SchoolRegistry {
             Component.translatable("school.irons_spellbooks.lightning").withStyle(ChatFormatting.AQUA),
             LazyOptional.of(AttributeRegistry.LIGHTNING_SPELL_POWER::get),
             LazyOptional.of(AttributeRegistry.LIGHTNING_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.LIGHTNING_CAST::get)
+            LazyOptional.of(SoundRegistry.LIGHTNING_CAST::get),
+            ISSDamageTypes.LIGHTNING_MAGIC
     ));
 
     public static final RegistryObject<SchoolType> HOLY = registerSchool(new SchoolType(
@@ -82,7 +87,8 @@ public class SchoolRegistry {
             Component.translatable("school.irons_spellbooks.holy").withStyle(Style.EMPTY.withColor(0xfff8d4)),
             LazyOptional.of(AttributeRegistry.HOLY_SPELL_POWER::get),
             LazyOptional.of(AttributeRegistry.HOLY_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.HOLY_CAST::get)
+            LazyOptional.of(SoundRegistry.HOLY_CAST::get),
+            ISSDamageTypes.HOLY_MAGIC
     ));
 
     public static final RegistryObject<SchoolType> ENDER = registerSchool(new SchoolType(
@@ -91,7 +97,8 @@ public class SchoolRegistry {
             Component.translatable("school.irons_spellbooks.ender").withStyle(ChatFormatting.LIGHT_PURPLE),
             LazyOptional.of(AttributeRegistry.ENDER_SPELL_POWER::get),
             LazyOptional.of(AttributeRegistry.ENDER_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.ENDER_CAST::get)
+            LazyOptional.of(SoundRegistry.ENDER_CAST::get),
+            ISSDamageTypes.ENDER_MAGIC
     ));
 
     public static final RegistryObject<SchoolType> BLOOD = registerSchool(new SchoolType(
@@ -100,7 +107,8 @@ public class SchoolRegistry {
             Component.translatable("school.irons_spellbooks.blood").withStyle(ChatFormatting.DARK_RED),
             LazyOptional.of(AttributeRegistry.BLOOD_SPELL_POWER::get),
             LazyOptional.of(AttributeRegistry.BLOOD_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.BLOOD_CAST::get)));
+            LazyOptional.of(SoundRegistry.BLOOD_CAST::get),
+            ISSDamageTypes.BLOOD_MAGIC));
 
     public static final RegistryObject<SchoolType> EVOCATION = registerSchool(new SchoolType(
             EVOCATION_RESOURCE,
@@ -108,7 +116,8 @@ public class SchoolRegistry {
             Component.translatable("school.irons_spellbooks.evocation").withStyle(ChatFormatting.WHITE),
             LazyOptional.of(AttributeRegistry.EVOCATION_SPELL_POWER::get),
             LazyOptional.of(AttributeRegistry.EVOCATION_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.EVOCATION_CAST::get)
+            LazyOptional.of(SoundRegistry.EVOCATION_CAST::get),
+            ISSDamageTypes.EVOCATION_MAGIC
     ));
 
     public static final RegistryObject<SchoolType> NATURE = registerSchool(new SchoolType(
@@ -117,7 +126,8 @@ public class SchoolRegistry {
             Component.translatable("school.irons_spellbooks.nature").withStyle(ChatFormatting.GREEN),
             LazyOptional.of(AttributeRegistry.NATURE_SPELL_POWER::get),
             LazyOptional.of(AttributeRegistry.NATURE_MAGIC_RESIST::get),
-            LazyOptional.of(SoundRegistry.NATURE_CAST::get)
+            LazyOptional.of(SoundRegistry.NATURE_CAST::get),
+            ISSDamageTypes.NATURE_MAGIC
     ));
 
     @Nullable

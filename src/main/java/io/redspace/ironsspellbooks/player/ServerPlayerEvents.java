@@ -92,7 +92,8 @@ public class ServerPlayerEvents {
         if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
             var server = event.getServer();
             var storageSource = server.storageSource;
-            new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings()).runUpgrade();
+            //TODO: port world upgrader
+//            new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings()).runUpgrade();
         }
     }
 
@@ -208,7 +209,10 @@ public class ServerPlayerEvents {
             //Clear fire and frozen
             serverPlayer.clearFire();
             serverPlayer.setTicksFrozen(0);
-            serverPlayer.connection.send(new ClientboundSetEntityDataPacket(serverPlayer.getId(), serverPlayer.getEntityData(), true));
+            var data = serverPlayer.getEntityData().packDirty();
+            if(data != null) {
+                serverPlayer.connection.send(new ClientboundSetEntityDataPacket(serverPlayer.getId(), data));
+            }
 
             //Cancel casting
             Utils.serverSideCancelCast(serverPlayer);

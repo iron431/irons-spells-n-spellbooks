@@ -1,28 +1,21 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import software.bernie.geckolib.GeckoLib;
-
 import java.util.Arrays;
-import java.util.List;
 
 
 @Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -106,6 +99,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.CONJURERS_TALISMAN.get());
                 entries.accept(ItemRegistry.AFFINITY_RING.get());
                 entries.accept(ItemRegistry.CONCENTRATION_AMULET.get());
+                entries.accept(ItemRegistry.INVISIBILITY_RING.get());
 
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
             })
@@ -130,7 +124,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.ENDER_UPGRADE_ORB.get());
                 entries.accept(ItemRegistry.BLOOD_UPGRADE_ORB.get());
                 entries.accept(ItemRegistry.EVOCATION_UPGRADE_ORB.get());
-                entries.accept(ItemRegistry.POISON_UPGRADE_ORB.get());
+                entries.accept(ItemRegistry.NATURE_UPGRADE_ORB.get());
                 entries.accept(ItemRegistry.MANA_UPGRADE_ORB.get());
                 entries.accept(ItemRegistry.COOLDOWN_UPGRADE_ORB.get());
                 entries.accept(ItemRegistry.PROTECTION_UPGRADE_ORB.get());
@@ -161,7 +155,15 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.MANA_RUNE.get());
                 entries.accept(ItemRegistry.COOLDOWN_RUNE.get());
                 entries.accept(ItemRegistry.PROTECTION_RUNE.get());
-                entries.accept(ItemRegistry.POISON_RUNE.get());
+                entries.accept(ItemRegistry.NATURE_RUNE.get());
+
+                entries.accept(ItemRegistry.OAKSKIN_ELIXIR.get());
+                entries.accept(ItemRegistry.GREATER_OAKSKIN_ELIXIR.get());
+                entries.accept(ItemRegistry.GREATER_HEALING_POTION.get());
+                entries.accept(ItemRegistry.INVISIBILITY_ELIXIR.get());
+                entries.accept(ItemRegistry.GREATER_INVISIBILITY_ELIXIR.get());
+                entries.accept(ItemRegistry.EVASION_ELIXIR.get());
+                entries.accept(ItemRegistry.GREATER_EVASION_ELIXIR.get());
 
                 entries.accept(ItemRegistry.KEEPER_SPAWN_EGG.get());
                 entries.accept(ItemRegistry.DEAD_KING_CORPSE_SPAWN_EGG.get());
@@ -189,15 +191,16 @@ public class CreativeTabRegistry {
             event.accept(ItemRegistry.PEDESTAL_BLOCK_ITEM.get());
             event.accept(ItemRegistry.ARMOR_PILE_BLOCK_ITEM.get());
             event.accept(ItemRegistry.ALCHEMIST_CAULDRON_BLOCK_ITEM.get());
+            event.accept(ItemRegistry.FIREFLY_JAR_ITEM.get());
         }
 
         if (event.getTab() == CreativeModeTabs.searchTab() || event.getTab() == SCROLLS_TAB.get()) {
-            Arrays.stream(SpellType.values())
-                    .filter(spellType -> spellType != SpellType.NONE_SPELL && spellType.isEnabled())
-                    .forEach(spellType -> {
-                        for (int i = spellType.getMinLevel(); i <= spellType.getMaxLevel(); i++) {
+            SpellRegistry.getEnabledSpells().stream()
+                    .filter(spellType -> spellType != SpellRegistry.none())
+                    .forEach(spell -> {
+                        for (int i = spell.getMinLevel(); i <= spell.getMaxLevel(); i++) {
                             var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                            SpellData.setSpellData(itemstack, spellType, i);
+                            SpellData.setSpellData(itemstack, spell, i);
                             event.accept(itemstack);
                         }
                     });

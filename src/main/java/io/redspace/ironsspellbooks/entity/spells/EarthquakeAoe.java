@@ -101,7 +101,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
             int intensity = (int) (radius * radius * .09f);
             for (int i = 0; i < intensity; i++) {
                 Vec3 vec3 = this.position().add(uniformlyDistributedPointInRadius(radius));
-                BlockPos blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, vec3, 4)).below();
+                BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, vec3, 4)).below();
                 createTremorBlock(blockPos, .1f + random.nextFloat() * .2f);
             }
             if (waveAnim >= 0) {
@@ -114,7 +114,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
                             0,
                             waveAnim * Mth.sin(anglePerBlock * i)
                     );
-                    BlockPos blockPos = new BlockPos(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 4)).below();
+                    BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, position().add(vec3), 4)).below();
                     createTremorBlock(blockPos, .1f + random.nextFloat() * .2f);
                 }
                 if (waveAnim++ >= radius) {

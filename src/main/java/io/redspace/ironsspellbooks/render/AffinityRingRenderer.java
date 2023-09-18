@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
@@ -28,7 +29,7 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
     }
 
     @Override
-    public void renderByItem(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
+    public void renderByItem(ItemStack itemStack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLightIn, int combinedOverlayIn) {
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f, 0.5f);
 
@@ -40,13 +41,13 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
             model = renderer.getItemModelShaper().getModelManager().getModel(modelResource);
         }
 
-        if (transformType == ItemTransforms.TransformType.GUI) {
+        if (transformType == ItemDisplayContext.GUI) {
             Lighting.setupForFlatItems();
             renderer.render(itemStack, transformType, false, poseStack, bufferSource, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, model);
             Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
             Lighting.setupFor3DItems();
         } else {
-            boolean leftHand = transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
+            boolean leftHand = transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || transformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
             renderer.render(itemStack, transformType, leftHand, poseStack, bufferSource, combinedLightIn, combinedOverlayIn, model);
         }
         poseStack.popPose();

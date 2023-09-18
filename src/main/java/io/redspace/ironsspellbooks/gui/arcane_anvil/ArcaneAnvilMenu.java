@@ -98,9 +98,9 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         result = baseItemStack.copy();
                         result.removeTagKey(SpellData.ISB_SPELL);
 
-                    } else if (UpgradeUtils.isUpgraded(baseItemStack)) {
+                    } else if (UpgradeData.hasUpgradeData(baseItemStack)) {
                         result = baseItemStack.copy();
-                        result.removeTagKey(UpgradeUtils.Upgrades);
+                        result.removeTagKey(UpgradeData.Upgrades);
 
                     }
                 }

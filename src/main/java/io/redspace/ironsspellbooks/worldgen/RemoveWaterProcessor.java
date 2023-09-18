@@ -32,17 +32,17 @@ public class RemoveWaterProcessor extends StructureProcessor {
     @Nullable
     @Override
     public StructureTemplate.StructureBlockInfo process(@Nonnull LevelReader level, @Nonnull BlockPos jigsawPiecePos, @Nonnull BlockPos jigsawPieceBottomCenterPos, @Nonnull StructureTemplate.StructureBlockInfo blockInfoLocal, @Nonnull StructureTemplate.StructureBlockInfo blockInfoGlobal, @Nonnull StructurePlaceSettings settings, @Nullable StructureTemplate template) {
-        if (blockInfoGlobal.state.hasProperty(BlockStateProperties.WATERLOGGED) && !blockInfoGlobal.state.getValue(BlockStateProperties.WATERLOGGED)) {
-            ChunkPos chunkPos = new ChunkPos(blockInfoGlobal.pos);
+        if (blockInfoGlobal.state().hasProperty(BlockStateProperties.WATERLOGGED) && !blockInfoGlobal.state().getValue(BlockStateProperties.WATERLOGGED)) {
+            ChunkPos chunkPos = new ChunkPos(blockInfoGlobal.pos());
             ChunkAccess chunk = level.getChunk(chunkPos.x, chunkPos.z);
-            int sectionIndex = chunk.getSectionIndex(blockInfoGlobal.pos.getY());
+            int sectionIndex = chunk.getSectionIndex(blockInfoGlobal.pos().getY());
 
             // if section index is < 0 we are out of bounds
             if (sectionIndex >= 0) {
                 LevelChunkSection section = chunk.getSection(sectionIndex);
                 // if we are waterlogged, reset us to our original state
-                if (this.getFluidState(section, blockInfoGlobal.pos).is(FluidTags.WATER)) {
-                    this.setBlock(section, blockInfoGlobal.pos, blockInfoGlobal.state);
+                if (this.getFluidState(section, blockInfoGlobal.pos()).is(FluidTags.WATER)) {
+                    this.setBlock(section, blockInfoGlobal.pos(), blockInfoGlobal.state());
                 }
             }
         }

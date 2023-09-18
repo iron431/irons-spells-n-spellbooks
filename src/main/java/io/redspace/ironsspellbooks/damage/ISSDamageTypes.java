@@ -22,7 +22,7 @@ public class ISSDamageTypes {
     public static final ResourceKey<DamageType> BLOOD_MAGIC = register("blood_magic");
     public static final ResourceKey<DamageType> EVOCATION_MAGIC = register("evocation_magic");
     public static final ResourceKey<DamageType> VOID_MAGIC = register("void_magic");
-    public static final ResourceKey<DamageType> POISON_MAGIC = register("poison_magic");
+    public static final ResourceKey<DamageType> NATURE_MAGIC = register("nature_magic");
 
     // Entity & Effect Related
     public static final ResourceKey<DamageType> CAULDRON = register("blood_cauldron");
@@ -40,7 +40,7 @@ public class ISSDamageTypes {
         context.register(BLOOD_MAGIC, new DamageType(BLOOD_MAGIC.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
         context.register(EVOCATION_MAGIC, new DamageType(EVOCATION_MAGIC.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
         context.register(VOID_MAGIC, new DamageType(VOID_MAGIC.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
-        context.register(POISON_MAGIC, new DamageType(POISON_MAGIC.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
+        context.register(NATURE_MAGIC, new DamageType(NATURE_MAGIC.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
 
         context.register(CAULDRON, new DamageType(CAULDRON.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
         context.register(HEARTSTOP, new DamageType(HEARTSTOP.location().getPath(), DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER, 0f));
