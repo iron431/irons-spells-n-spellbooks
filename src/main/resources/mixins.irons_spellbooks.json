@@ -9,7 +9,9 @@
     "ItemMixin",
     "LivingEntityMixin",
     "TetraBladedItemMixin",
-    "TridentItemMixin"
+    "TridentItemMixin",
+    "DataFixLevelStorageSourceMixin",
+    "DataFixPlayerDataStorageMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",

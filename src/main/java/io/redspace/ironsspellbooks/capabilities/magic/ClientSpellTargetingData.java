@@ -6,13 +6,13 @@ import java.util.UUID;
 
 public class ClientSpellTargetingData {
     public UUID targetUUID;
-    public int spellId;
+    public String spellId;
 
     public ClientSpellTargetingData() {
         targetUUID = null;
     }
 
-    public ClientSpellTargetingData(UUID targetUUID, int spellId) {
+    public ClientSpellTargetingData(UUID targetUUID, String spellId) {
         this.targetUUID = targetUUID;
         this.spellId = spellId;
     }

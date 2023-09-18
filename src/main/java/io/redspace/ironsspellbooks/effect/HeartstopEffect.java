@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
@@ -25,18 +25,18 @@ public class HeartstopEffect extends MobEffect {
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.HEARTSTOP);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.HEARTSTOP);
     }
 
     @Override
     public void removeAttributeModifiers(@NotNull LivingEntity pLivingEntity, @NotNull AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        var playerMagicData = PlayerMagicData.getPlayerMagicData(pLivingEntity);
+        var playerMagicData = MagicData.getPlayerMagicData(pLivingEntity);
         playerMagicData.getSyncedData().removeEffects(SyncedSpellData.HEARTSTOP);
 
         //Whether or not player has spawn immunity (we want to damage them regardless)
         if (pLivingEntity.tickCount > 60) {
-            pLivingEntity.hurt(DamageSources.get(pLivingEntity.level(), ISSDamageTypes.HEARTSTOP), playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
+            pLivingEntity.hurt(DamageSources.get(pLivingEntity.level, ISSDamageTypes.HEARTSTOP), playerMagicData.getSyncedData().getHeartstopAccumulatedDamage());
             //irons_spellbooks.LOGGER.debug("{} had no spawn immunity", pLivingEntity.getName().getString());
 
         } else {
@@ -56,7 +56,7 @@ public class HeartstopEffect extends MobEffect {
         //irons_spellbooks.LOGGER.debug("{} ticks existed: {}", pLivingEntity.getName().getString(), pLivingEntity.tickCount);
 
         //Heart beats once every 2 seconds at 0% damage, and 2 times per second at 100% damage (relative to health)
-        if (pLivingEntity.level().isClientSide) {
+        if (pLivingEntity.level.isClientSide) {
             if (pLivingEntity instanceof Player player) {
                 float damage = ClientMagicData.getSyncedSpellData(player).getHeartstopAccumulatedDamage();
                 float f = 1 - Mth.clamp(damage / player.getHealth(), 0, 1);

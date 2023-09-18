@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -20,14 +19,14 @@ public class AscensionEffect extends MobEffect {
     @Override
     public void removeAttributeModifiers(LivingEntity livingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(livingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.ASCENSION);
+        MagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.ASCENSION);
         livingEntity.resetFallDistance();
     }
 
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ASCENSION);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.ASCENSION);
     }
 
     @Override

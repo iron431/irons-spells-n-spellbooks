@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.network.chat.Component;
@@ -21,21 +22,21 @@ public abstract class ItemMixin {
     @Inject(method = "getName", at = @At("TAIL"), cancellable = true)
     public void getHoverName(ItemStack stack, CallbackInfoReturnable<Component> cir) {
         //IronsSpellbooks.LOGGER.info("{}", cir.getReturnValue().getString());
-        if (UpgradeUtils.isUpgraded(stack)) {
-            cir.setReturnValue(Component.translatable("tooltip.irons_spellbooks.upgrade_plus_format", cir.getReturnValue(), UpgradeUtils.getUpgradeCount(stack)));
+        if (UpgradeData.hasUpgradeData(stack)) {
+            cir.setReturnValue(Component.translatable("tooltip.irons_spellbooks.upgrade_plus_format", cir.getReturnValue(), UpgradeData.getUpgradeData(stack).getCount()));
         }
     }
 
     @Inject(method = "getUseDuration", at = @At("HEAD"), cancellable = true)
     public void getUseDuration(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
-        if (SpellData.getSpellData(stack).getSpellId() > 0) {
+        if (!SpellData.getSpellData(stack).equals(SpellData.EMPTY)) {
             cir.setReturnValue(7200);
         }
     }
 
     @Inject(method = "getUseAnimation", at = @At("HEAD"), cancellable = true)
     public void getUseAnimation(ItemStack stack, CallbackInfoReturnable<UseAnim> cir) {
-        if (SpellData.getSpellData(stack).getSpellId() > 0) {
+        if (!SpellData.getSpellData(stack).equals(SpellData.EMPTY)) {
             cir.setReturnValue(UseAnim.BOW);
         }
     }

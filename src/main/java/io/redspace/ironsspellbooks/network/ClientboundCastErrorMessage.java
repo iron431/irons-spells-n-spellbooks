@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.network;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -18,28 +18,28 @@ public class ClientboundCastErrorMessage {
     }
 
     private final ErrorType errorType;
-    private final int spellType;
+    private final String spellId;
 
-    public ClientboundCastErrorMessage(ErrorType errorType, SpellType spellType) {
-        this.spellType = spellType.getValue();
+    public ClientboundCastErrorMessage(ErrorType errorType, AbstractSpell spell) {
+        this.spellId = spell.getSpellId();
         this.errorType = errorType;
     }
 
     public ClientboundCastErrorMessage(FriendlyByteBuf buf) {
         errorType = buf.readEnum(ErrorType.class);
-        spellType = buf.readInt();
+        spellId = buf.readUtf();
 
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeEnum(errorType);
-        buf.writeInt(spellType);
+        buf.writeUtf(spellId);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            SpellType spell = SpellType.getTypeFromValue(spellType);
+            var spell = SpellRegistry.getSpell(spellId);
             if (errorType == ErrorType.COOLDOWN) {
                 //ignore cooldown message if we are simply holding right click.
                 if (ClientInputEvents.hasReleasedSinceCasting)

@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class AbstractConeProjectile extends Projectile{
+public abstract class AbstractConeProjectile extends Projectile implements NoKnockbackProjectile {
     protected static final int FAILSAFE_EXPIRE_TIME = 20 * 20;
     protected int age;
     protected float damage;
@@ -34,7 +35,8 @@ public abstract class AbstractConeProjectile extends Projectile{
 
     public AbstractConeProjectile(EntityType<? extends AbstractConeProjectile> entityType, Level level) {
         super(entityType, level);
-        this.setNoGravity(true);
+        this.noPhysics = true;
+        this.blocksBuilding = false;
 
         //TODO: dynamically generate cone parts based off of input for overall cone length/width
         this.subEntities = new ConePart[]{
@@ -43,7 +45,7 @@ public abstract class AbstractConeProjectile extends Projectile{
                 new ConePart(this, "part3", 3.5F, 2.0F),
                 new ConePart(this, "part4", 4.5F, 3.0F)
         };
- //Ironsspellbooks.logger.debug("AbstractConeProjectile: Creating sub-entities");
+        //Ironsspellbooks.logger.debug("AbstractConeProjectile: Creating sub-entities");
 
         //this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Forge: Fix MC-158205: Make sure part ids are successors of parent mob id
     }

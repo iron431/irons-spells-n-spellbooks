@@ -1,7 +1,11 @@
 package io.redspace.ironsspellbooks.damage;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.AttributeRegistry;
@@ -12,12 +16,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;
-
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.List;
 
 //https://github.com/cleannrooster/Spellblade-1.19.2/search?q=MobEffect
 //https://github.com/LittleEzra/Augment-1.19.2/blob/334dc95462a3e6b25e6f73d3d909d012d63be109/src/main/java/com/littleezra/augment/item/enchantment/RecoilCurseEnchantment.java
@@ -57,7 +57,7 @@ public class DamageSources {
                 fromSummon = true;
                 if (summon.getSummoner() != null)
                     adjustedDamage *= summon.getSummoner().getAttributeValue(AttributeRegistry.SUMMON_DAMAGE.get());
-            } else if (damageSource.getDirectEntity() instanceof AoeEntity || damageSource.getDirectEntity() instanceof AbstractConeProjectile) {
+            } else if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
                 ignoreNextKnockback(livingTarget);
             }
             if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
@@ -120,19 +120,9 @@ public class DamageSources {
      * Returns the resistance multiplier of the entity. (If they are resistant, the value is < 1)
      */
     public static float getResist(LivingEntity entity, SchoolType damageSchool) {
-//        if (damageSchool == null)
-//            return 1;
-//        else
-        return 2 - (float) Utils.softCapFormula(entity.getAttributeValue(AttributeRegistry.SPELL_RESIST.get()));
-//        return switch (damageSchool) {
-//            case FIRE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.FIRE_MAGIC_RESIST.get());
-//            case ICE -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ICE_MAGIC_RESIST.get());
-//            case LIGHTNING -> 2 - (float) entity.getAttributeValue(AttributeRegistry.LIGHTNING_MAGIC_RESIST.get());
-//            case HOLY -> 2 - (float) entity.getAttributeValue(AttributeRegistry.HOLY_MAGIC_RESIST.get());
-//            case ENDER -> 2 - (float) entity.getAttributeValue(AttributeRegistry.ENDER_MAGIC_RESIST.get());
-//            case BLOOD -> 2 - (float) entity.getAttributeValue(AttributeRegistry.BLOOD_MAGIC_RESIST.get());
-//            case EVOCATION -> 2 - (float) entity.getAttributeValue(AttributeRegistry.EVOCATION_MAGIC_RESIST.get());
-//            default -> 1;
-//        };
+        if (damageSchool == null)
+            return 1;
+        else
+            return 2 - (float) Utils.softCapFormula(damageSchool.getResistanceFor(entity));
     }
 }

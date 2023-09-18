@@ -1,11 +1,15 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedLightningBolt;
-import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -17,32 +21,43 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class LightningBoltSpell extends AbstractSpell {
-    public LightningBoltSpell() {
-        this(1);
-    }
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "lightning_bolt");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)));
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.EPIC)
-            .setSchool(SchoolType.LIGHTNING)
+            .setSchoolResource(SchoolRegistry.LIGHTNING_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(25)
             .build();
 
-    public LightningBoltSpell(int level) {
-        super(SpellType.LIGHTNING_BOLT_SPELL);
-        this.setLevel(level);
+    public LightningBoltSpell() {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 2;
         this.castTime = 0;
         this.baseManaCost = 75;
+    }
 
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
+    }
+
+    @Override
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
+        return spellId;
     }
 
     @Override
@@ -56,14 +71,14 @@ public class LightningBoltSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 pos = Utils.raycastForEntity(level, entity, 100, true).getLocation();
-        LightningBolt lightningBolt = new ExtendedLightningBolt(level, entity, getSpellPower(entity));
+        LightningBolt lightningBolt = new ExtendedLightningBolt(level, entity, getSpellPower(spellLevel, entity));
         //lightningBolt.setDamage(getSpellPower(entity));
         lightningBolt.setPos(pos);
         if (entity instanceof ServerPlayer serverPlayer)
             lightningBolt.setCause(serverPlayer);
         level.addFreshEntity(lightningBolt);
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 }

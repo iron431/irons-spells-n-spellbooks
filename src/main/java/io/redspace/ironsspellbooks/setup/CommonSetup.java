@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
@@ -19,7 +20,7 @@ import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Vindicator;
@@ -37,15 +38,15 @@ public class CommonSetup {
     @SubscribeEvent
     public static void onModConfigLoadingEvent(ModConfigEvent.Loading event) {
         IronsSpellbooks.LOGGER.debug("onModConfigLoadingEvent");
-        if(event.getConfig().getType() == ModConfig.Type.SERVER){
-//            SpellType.resolveSchools();
+        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
+
         }
     }
 
     @SubscribeEvent
     public static void onModConfigReloadingEvent(ModConfigEvent.Reloading event) {
         IronsSpellbooks.LOGGER.debug("onModConfigReloadingEvent");
-        if(event.getConfig().getType() == ModConfig.Type.SERVER){
+        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
 //            SpellType.resolveSchools();
         }
     }
@@ -73,6 +74,8 @@ public class CommonSetup {
         event.put(EntityRegistry.VOID_TENTACLE.get(), VoidTentacle.createLivingAttributes().build());
         event.put(EntityRegistry.CRYOMANCER.get(), CryomancerEntity.prepareAttributes().build());
         event.put(EntityRegistry.ROOT.get(), RootEntity.createLivingAttributes().build());
+
+        event.put(EntityRegistry.FIREFLY_SWARM.get(), WispEntity.prepareAttributes().build());
     }
 
     @SubscribeEvent

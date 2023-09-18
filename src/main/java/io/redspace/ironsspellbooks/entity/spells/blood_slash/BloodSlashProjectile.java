@@ -1,15 +1,14 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_slash;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -191,11 +190,13 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            var hit = DamageSources.applyDamage(entity, damage, SpellType.BLOOD_SLASH_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
+            var school = SpellRegistry.BLOOD_SLASH_SPELL.get().getSchoolType();
+
+            var hit = DamageSources.applyDamage(entity, damage, SpellRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this, getOwner()), school);
             if (hit && entity instanceof LivingEntity livingEntity) {
                 //livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
                 if (getOwner() instanceof LivingEntity livingOwner) {
-                    livingOwner.heal(damage * .15f * DamageSources.getResist(livingEntity, SchoolType.BLOOD));
+                    livingOwner.heal(damage * .15f * DamageSources.getResist(livingEntity, school));
                 }
             }
             victims.add(entity);
@@ -234,7 +235,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
     }
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData playerMagicData) {
         this.discard();
     }
 

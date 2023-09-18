@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.world.InteractionHand;
 
 import java.util.List;
@@ -19,6 +19,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         this.meleeRange = meleeRange;
         meleeTimeDelay = abstractSpellCastingMob.getRandom().nextIntBetweenInclusive(80, 200);
         meleeBias = .5f;
+        this.shouldFlee = false;
     }
 
     @Override
@@ -87,22 +88,22 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     }
 
     @Override
-    public WarlockAttackGoal setSpells(List<SpellType> attackSpells, List<SpellType> defenseSpells, List<SpellType> movementSpells, List<SpellType> supportSpells) {
-        return (WarlockAttackGoal)super.setSpells(attackSpells, defenseSpells, movementSpells, supportSpells);
+    public WarlockAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
+        return (WarlockAttackGoal) super.setSpells(attackSpells, defenseSpells, movementSpells, supportSpells);
     }
 
     @Override
     public WarlockAttackGoal setSpellQuality(float minSpellQuality, float maxSpellQuality) {
-        return (WarlockAttackGoal)super.setSpellQuality(minSpellQuality, maxSpellQuality);
+        return (WarlockAttackGoal) super.setSpellQuality(minSpellQuality, maxSpellQuality);
     }
 
     @Override
-    public WarlockAttackGoal setSingleUseSpell(SpellType spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
-        return (WarlockAttackGoal)super.setSingleUseSpell(spellType, minDelay, maxDelay, minLevel, maxLevel);
+    public WarlockAttackGoal setSingleUseSpell(AbstractSpell spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+        return (WarlockAttackGoal) super.setSingleUseSpell(spellType, minDelay, maxDelay, minLevel, maxLevel);
     }
 
     @Override
     public WarlockAttackGoal setIsFlying() {
-        return (WarlockAttackGoal)super.setIsFlying();
+        return (WarlockAttackGoal) super.setIsFlying();
     }
 }

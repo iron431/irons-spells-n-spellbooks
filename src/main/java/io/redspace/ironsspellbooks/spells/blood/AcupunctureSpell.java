@@ -1,12 +1,16 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
-import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -17,35 +21,44 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class AcupunctureSpell extends AbstractSpell {
-    public AcupunctureSpell() {
-        this(1);
-    }
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "acupuncture");
 
-    @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 2)),
-                Component.translatable("ui.irons_spellbooks.projectile_count", getCount(caster)));
-
-    }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.BLOOD)
+            .setSchoolResource(SchoolRegistry.BLOOD_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(20)
             .build();
 
-    public AcupunctureSpell(int level) {
-        super(SpellType.ACUPUNCTURE_SPELL);
-        this.setLevel(level);
+    @Override
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.projectile_count", getCount(spellLevel, caster)));
+    }
+
+    public AcupunctureSpell() {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 0;
         this.castTime = 0;
         this.baseManaCost = 25;
+    }
 
+    @Override
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
 
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
+        return spellId;
     }
 
     @Override
@@ -59,17 +72,17 @@ public class AcupunctureSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        return Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 32, .15f);
+    public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .15f);
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
-                int count = getCount(entity);
-                float damage = getDamage(entity);
+                int count = getCount(spellLevel, entity);
+                float damage = getDamage(spellLevel, entity);
                 Vec3 center = targetEntity.position().add(0, targetEntity.getEyeHeight() / 2, 0);
                 float degreesPerNeedle = 360f / count;
                 for (int i = 0; i < count; i++) {
@@ -87,15 +100,15 @@ public class AcupunctureSpell extends AbstractSpell {
             }
         }
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
 
-    private int getCount(LivingEntity caster) {
-        return (int) ((4 + getLevel(caster)) * getSpellPower(caster));
+    private int getCount(int spellLevel, LivingEntity caster) {
+        return (int) ((4 + getLevel(spellLevel, caster)) * getSpellPower(spellLevel, caster));
     }
 
-    private float getDamage(LivingEntity caster) {
-        return 1 + getSpellPower(caster);
+    private float getDamage(int spellLevel, LivingEntity caster) {
+        return 1 + getSpellPower(spellLevel, caster);
     }
 }

@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.spells;
 
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
 import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nonnull;
 
-public class EntityCastData implements CastData {
+public class EntityCastData implements ICastData {
     private final Entity castingEntity;
 
     public EntityCastData(@Nonnull Entity entity) {

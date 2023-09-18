@@ -1,10 +1,9 @@
 package io.redspace.ironsspellbooks.network;
 
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicHelper;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.spells.CastType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -15,7 +14,6 @@ public class ServerboundCancelCast {
     private final boolean triggerCooldown;
 
     public ServerboundCancelCast(boolean triggerCooldown) {
-
         this.triggerCooldown = triggerCooldown;
     }
 
@@ -28,7 +26,6 @@ public class ServerboundCancelCast {
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
- //Ironsspellbooks.logger.debug("PacketCancelCast.handle");
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.getSender();
@@ -39,20 +36,19 @@ public class ServerboundCancelCast {
 
     public static void cancelCast(ServerPlayer serverPlayer, boolean triggerCooldown) {
         if (serverPlayer != null) {
-            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
+            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()) {
- //Ironsspellbooks.logger.debug("PacketCancelCast.cancelCast currently casting");
-                int spellId = playerMagicData.getCastingSpellId();
+                var spellData = playerMagicData.getCastingSpell();
 
                 if (triggerCooldown) {
-                    MagicManager.get(serverPlayer.level()).addCooldown(serverPlayer, SpellType.values()[spellId], playerMagicData.getCastSource());
+                    MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, spellData.getSpell(), playerMagicData.getCastSource());
                 }
 
- //Ironsspellbooks.logger.debug("ServerBoundCancelCast.cancelCast");
-                playerMagicData.getCastingSpell().onServerCastComplete(serverPlayer.level(), serverPlayer, playerMagicData, true);
-                serverPlayer.stopUsingItem();
-                if (SpellType.values()[spellId].getCastType() == CastType.CONTINUOUS)
+                playerMagicData.getCastingSpell().getSpell().onServerCastComplete(serverPlayer.level, spellData.getLevel(), serverPlayer, playerMagicData, true);
+
+                if (spellData.getSpell().getCastType() == CastType.CONTINUOUS) {
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
+                }
             }
         }
     }

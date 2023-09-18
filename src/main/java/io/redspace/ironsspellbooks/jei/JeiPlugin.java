@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
@@ -9,28 +10,21 @@ import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
-import mezz.jei.api.recipe.vanilla.IJeiAnvilRecipe;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @mezz.jei.api.JeiPlugin
 public class JeiPlugin implements IModPlugin {
@@ -66,18 +60,17 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, ingredientManager));
         registration.addRecipes(RecipeTypes.ANVIL, VanillaAnvilRecipeMaker.getAnvilRepairRecipes(vanillaRecipeFactory));
 
-        Arrays.stream(SpellType.values()).forEach(spellType -> {
-            if (spellType.isEnabled() && spellType != SpellType.NONE_SPELL){
+        SpellRegistry.REGISTRY.get().getValues().stream().forEach(spell -> {
+            if (spell.isEnabled() && spell != SpellRegistry.none()) {
                 var list = new ArrayList<ItemStack>();
-                IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
+                IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
                         .forEach((spellLevel) -> {
                             var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-                            SpellData.setSpellData(scrollStack, spellType, spellLevel);
+                            SpellData.setSpellData(scrollStack, spell, spellLevel);
                             list.add(scrollStack);
                         });
-                registration.addIngredientInfo(list, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spellType.getComponentId())));
+                registration.addIngredientInfo(list, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spell.getComponentId())));
             }
-
         });
         registration.addItemStackInfo(new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()), Component.translatable("item.irons_spellbooks.lightning_bottle.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.BLOOD_VIAL.get()), Component.translatable("item.irons_spellbooks.blood_vial.guide"));
@@ -109,11 +102,9 @@ public class JeiPlugin implements IModPlugin {
     }
 
     private static final IIngredientSubtypeInterpreter<ItemStack> SCROLL_INTERPRETER = (stack, context) -> {
-        //IronsSpellbooks.LOGGER.debug("SCROLL_INTERPRETER: stack.tag:{} context:{}", stack.getTag(), context);
-
         if (stack.hasTag()) {
             var spellData = SpellData.getSpellData(stack);
-            return String.format("scroll:%d:%d", spellData.getSpellId(), spellData.getLevel());
+            return String.format("scroll:%s:%d", spellData.getSpell().getSpellId(), spellData.getLevel());
         }
 
         return IIngredientSubtypeInterpreter.NONE;

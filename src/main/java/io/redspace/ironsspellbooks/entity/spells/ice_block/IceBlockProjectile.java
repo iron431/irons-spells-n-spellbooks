@@ -1,14 +1,14 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_block;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -70,8 +70,8 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     public Entity getTarget() {
         if (this.cachedTarget != null && !this.cachedTarget.isRemoved()) {
             return this.cachedTarget;
-        } else if (this.targetUUID != null && this.level() instanceof ServerLevel) {
-            this.cachedTarget = ((ServerLevel) this.level()).getEntity(this.targetUUID);
+        } else if (this.targetUUID != null && this.level instanceof ServerLevel) {
+            this.cachedTarget = ((ServerLevel) this.level).getEntity(this.targetUUID);
             return this.cachedTarget;
         } else {
             return null;
@@ -100,16 +100,16 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
                     0,
                     Utils.getRandomScaled(this.getBbWidth() * .5f)
             );
-            level().addParticle(ParticleTypes.SNOWFLAKE, getX() + random.x, getY(), getZ() + random.z, 0, -.05, 0);
+            level.addParticle(ParticleTypes.SNOWFLAKE, getX() + random.x, getY(), getZ() + random.z, 0, -.05, 0);
         }
     }
 
     private void doFallingDamage(Entity target) {
-        if (level().isClientSide)
+        if (level.isClientSide)
             return;
         if (!canHitEntity(target) || victims.contains(target))
             return;
-        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
+        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.ICE_BLOCK_SPELL.get().getSchoolType());
         if (flag) {
             if (target.canFreeze())
                 target.setTicksFrozen(200);
@@ -122,7 +122,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
 
     private void doImpactDamage() {
         float explosionRadius = 3.5f;
-        level().getEntities(this, this.getBoundingBox().inflate(explosionRadius)).forEach((entity) -> {
+        level.getEntities(this, this.getBoundingBox().inflate(explosionRadius)).forEach((entity) -> {
             if (canHitEntity(entity)) {
                 double distance = entity.distanceToSqr(position());
                 if (distance < explosionRadius * explosionRadius) {
@@ -130,7 +130,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
                     float damage = (float) (this.damage * p);
                     //Ironsspellbooks.logger.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
 
-                    if (DamageSources.applyDamage(entity, damage, SpellType.ICE_BLOCK_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE) && entity.canFreeze())
+                    if (DamageSources.applyDamage(entity, damage, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.ICE_BLOCK_SPELL.get().getSchoolType())  && entity.canFreeze())
                         entity.setTicksFrozen(200);
                 }
             }
@@ -151,7 +151,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         zOld = getZ();
         yRotO = getYRot();
         xRotO = getXRot();
-        if (!level().isClientSide) {
+        if (!level.isClientSide) {
             if (airTime <= 0) {
                 //Falling
                 if (onGround()) {
@@ -160,7 +160,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
                     impactParticles(getX(), getY(), getZ());
                     discard();
                 } else {
-                    level().getEntities(this, getBoundingBox().inflate(0.35)).forEach(this::doFallingDamage);
+                    level.getEntities(this, getBoundingBox().inflate(0.35)).forEach(this::doFallingDamage);
                 }
             }
             if (airTime-- > 0) {
@@ -178,7 +178,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
 
                 } else {
                     if (airTime % 3 == 0) {
-                        HitResult ground = Utils.raycastForBlock(level(), position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
+                        HitResult ground = Utils.raycastForBlock(level, position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
                         if (ground.getType() == HitResult.Type.MISS) {
                             tooHigh = true;
                         } else if (Math.abs(position().y - ground.getLocation().y) < 4) {
@@ -225,8 +225,8 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level(), ParticleTypes.SNOWFLAKE, x, y, z, 50, .8, .1, .8, 0.2, false);
-        MagicManager.spawnParticles(level(), ParticleHelper.SNOWFLAKE, x, y, z, 25, .5, .1, .5, 0.3, false);
+        MagicManager.spawnParticles(level, ParticleTypes.SNOWFLAKE, x, y, z, 50, .8, .1, .8, 0.2, false);
+        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 25, .5, .1, .5, 0.3, false);
     }
 
     @Override

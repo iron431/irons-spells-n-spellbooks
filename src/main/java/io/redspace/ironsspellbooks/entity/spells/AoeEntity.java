@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -10,12 +11,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidType;
 
 import java.util.List;
 
-public abstract class AoeEntity extends Projectile {
+public abstract class AoeEntity extends Projectile implements NoKnockbackProjectile {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> DATA_CIRCULAR = SynchedEntityData.defineId(AoeEntity.class, EntityDataSerializers.BOOLEAN);
 
@@ -30,6 +32,7 @@ public abstract class AoeEntity extends Projectile {
     public AoeEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.noPhysics = true;
+        this.blocksBuilding = false;
     }
 
     protected float particleYOffset(){
@@ -60,8 +63,8 @@ public abstract class AoeEntity extends Projectile {
             discard();
             return;
         }
-        if (!level().isClientSide) {
-            if (tickCount % reapplicationDelay == 0) {
+        if (!level.isClientSide) {
+            if (tickCount % reapplicationDelay == 1) {
                 checkHits();
             }
             if (tickCount % 5 == 0)
@@ -73,13 +76,13 @@ public abstract class AoeEntity extends Projectile {
     }
 
     protected void checkHits() {
-        if (level().isClientSide)
+        if (level.isClientSide)
             return;
-        List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation()));
+        List<LivingEntity> targets = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation().x, this.getInflation().y, this.getInflation().z));
         boolean hit = false;
         for (LivingEntity target : targets) {
             if (canHitEntity(target) && (!isCircular() || target.distanceTo(this) < getRadius())) {
-                if (target.onGround() || target.getY() - getY() < .5) {
+                if (canHitTargetForGroundContext(target)) {
                     applyEffect(target);
                     hit = true;
                 }
@@ -92,8 +95,15 @@ public abstract class AoeEntity extends Projectile {
         }
     }
 
-    protected float getInflation() {
-        return 0;
+    protected Vec3 getInflation() {
+        return Vec3.ZERO;
+    }
+
+    /**
+     * Little bit of logic to fix the area effect cloud issue of not hitting mobs unless they're on the exact same Y. can be overridden for Aoe's with weird-shaped hitboxes.
+     */
+    protected boolean canHitTargetForGroundContext(LivingEntity target) {
+        return target.onGround() || target.getY() - getY() < .5;
     }
 
     @Override
@@ -111,7 +121,7 @@ public abstract class AoeEntity extends Projectile {
     public abstract void applyEffect(LivingEntity target);
 
     public void ambientParticles() {
-        if (!level().isClientSide)
+        if (!level.isClientSide)
             return;
 
         float f = getParticleCount();
@@ -122,8 +132,13 @@ public abstract class AoeEntity extends Projectile {
             var r = getRadius();
             Vec3 pos;
             if (isCircular()) {
-                float distance = (1 - this.random.nextFloat() * this.random.nextFloat()) * r;
-                pos = new Vec3(0, 0, distance).yRot(this.random.nextFloat() * 360);
+                var distance = r * (1 - this.random.nextFloat() * this.random.nextFloat());
+                var theta = this.random.nextFloat() * 6.282f; // two pi :nerd:
+                pos = new Vec3(
+                        distance * Mth.cos(theta),
+                        .2f,
+                        distance * Mth.sin(theta)
+                );
             } else {
                 pos = new Vec3(
                         Utils.getRandomScaled(r * .85f),
@@ -137,7 +152,7 @@ public abstract class AoeEntity extends Projectile {
                     Utils.getRandomScaled(.03f)
             ).scale(this.getParticleSpeedModifier());
 
-            level().addParticle(getParticle(), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, motion.x, motion.y, motion.z);
+            level.addParticle(getParticle(), getX() + pos.x, getY() + pos.y + particleYOffset(), getZ() + pos.z, motion.x, motion.y, motion.z);
         }
     }
 
@@ -172,13 +187,13 @@ public abstract class AoeEntity extends Projectile {
     }
 
     public void setRadius(float pRadius) {
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(pRadius, 0.0F, 32.0F));
         }
     }
 
     public void setDuration(int duration){
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             this.duration = duration;
         }
     }

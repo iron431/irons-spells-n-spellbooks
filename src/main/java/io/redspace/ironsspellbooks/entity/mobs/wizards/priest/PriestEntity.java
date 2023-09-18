@@ -1,13 +1,13 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.priest;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -64,18 +64,18 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(0, new OpenDoorGoal(this, true));
-        this.goalSelector.addGoal(1, new PriestDefenseGoal(this));
+        this.goalSelector.addGoal(1, new GustDefenseGoal(this));
         this.goalSelector.addGoal(2, new WizardSupportGoal<>(this, 1.5f, 100, 180)
                 .setSpells(
-                        List.of(SpellType.BLESSING_OF_LIFE_SPELL, SpellType.BLESSING_OF_LIFE_SPELL, SpellType.HEALING_CIRCLE_SPELL),
-                        List.of(SpellType.FORTIFY_SPELL)
+                        List.of(SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.HEALING_CIRCLE_SPELL.get()),
+                        List.of(SpellRegistry.FORTIFY_SPELL.get())
                 ));
         this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.5f, 35, 70)
                 .setSpells(
-                        List.of(SpellType.WISP_SPELL, SpellType.GUIDING_BOLT_SPELL, SpellType.GUIDING_BOLT_SPELL),
-                        List.of(SpellType.GUST_SPELL),
+                        List.of(SpellRegistry.WISP_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get()),
+                        List.of(SpellRegistry.GUST_SPELL.get()),
                         List.of(),
-                        List.of(SpellType.HEAL_SPELL))
+                        List.of(SpellRegistry.HEAL_SPELL.get()))
                 .setSpellQuality(0.3f, 0.5f)
                 .setDrinksPotions());
         this.goalSelector.addGoal(5, new RoamVillageGoal(this, 30, 1f));
@@ -253,64 +253,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         deserializeHome(this, pCompound);
     }
 
-    class PriestDefenseGoal extends Goal {
-        protected final PriestEntity mob;
-        protected int attackCooldown = 0;
 
-        public PriestDefenseGoal(PriestEntity abstractSpellCastingMob) {
-            this.mob = abstractSpellCastingMob;
-        }
-
-        public boolean canUse() {
-            LivingEntity livingentity = this.mob.getTarget();
-            //IronsSpellbooks.LOGGER.debug("{} PriestDefenseGoal.canUse:", attackCooldown);
-            if (livingentity != null && --attackCooldown <= 0 && livingentity.isAlive() && shouldAreaAttack(livingentity)) {
-                //IronsSpellbooks.LOGGER.debug("true ({})", livingentity.getName().getString());
-                return false;
-            } else {
-                return false;
-            }
-        }
-
-        public boolean shouldAreaAttack(LivingEntity livingEntity) {
-            if (mob.isCasting()) {
-                //IronsSpellbooks.LOGGER.debug("shouldAreaAttack: already casting");
-                return false;
-            }
-            var d = livingEntity.distanceToSqr(mob);
-            var inRange = d < 5 * 5;
-            if (!inRange)
-                return false;
-            //IronsSpellbooks.LOGGER.debug("shouldAreaAttack: in range");
-
-            if (livingEntity.getType() == EntityType.VINDICATOR) {
-                //IronsSpellbooks.LOGGER.debug("VINDICATOR!");
-                start();
-                return false;
-            }
-
-            //anti-rush
-            if (this.mob.getHealth() / this.mob.getMaxHealth() < .25f && mob.level.getEntities(mob, mob.getBoundingBox().inflate(3f), (entity -> entity instanceof Enemy)).size() > 1) {
-                start();
-                return false;
-            }
-
-            //swarm control
-            int mobCount = livingEntity.level.getEntities(livingEntity, livingEntity.getBoundingBox().inflate(6f), (entity -> entity instanceof Enemy)).size();
-            if (mobCount >= 2)
-                start();
-            return false;
-        }
-
-        @Override
-        public void start() {
-            this.attackCooldown = 40 + mob.random.nextInt(30);
-            int spellLevel = (int) (SpellType.GUST_SPELL.getMaxLevel() * .5f);
-            var spellType = SpellType.GUST_SPELL;
-
-            mob.initiateCastSpell(spellType, spellLevel);
-        }
-    }
 
     /*
     Brain Testing

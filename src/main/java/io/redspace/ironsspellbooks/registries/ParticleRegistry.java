@@ -50,4 +50,6 @@ public class ParticleRegistry {
             return ZapParticleOption.CODEC;
         }
     });
+    public static final RegistryObject<SimpleParticleType> FIREFLY_PARTICLE = PARTICLE_TYPES.register("firefly", () -> new SimpleParticleType(false));
+
 }

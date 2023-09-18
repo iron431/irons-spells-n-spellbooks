@@ -3,10 +3,10 @@ package io.redspace.ironsspellbooks.loot;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.curios.AffinityRing;
-import io.redspace.ironsspellbooks.item.curios.RingData;
+import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -25,7 +25,7 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
         //irons_spellbooks.LOGGER.debug("RandomizeScrollFunction.run {}", itemStack.hashCode());
         if (itemStack.getItem() instanceof AffinityRing) {
-            RingData.setRingData(itemStack, spellFilter.getRandomSpell(lootContext.getRandom(), (spellType -> spellType.isEnabled() && spellType != SpellType.NONE_SPELL)));
+            RingData.setRingData(itemStack, spellFilter.getRandomSpell(lootContext.getRandom(), (spell -> spell.isEnabled() && spell != SpellRegistry.none())));
         }
         return itemStack;
     }

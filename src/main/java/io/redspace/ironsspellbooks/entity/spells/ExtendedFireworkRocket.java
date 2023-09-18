@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -34,14 +34,14 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
 
     @Override
     public void tick() {
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             this.explode();
         }
     }
 
     private void explode() {
         //Copied from private FireworkRocketEntity explode
-        this.level().broadcastEntityEvent(this, (byte) 17);
+        this.level.broadcastEntityEvent(this, (byte) 17);
         this.gameEvent(GameEvent.EXPLODE, this.getOwner());
         this.dealExplosionDamage();
         this.discard();
@@ -52,12 +52,12 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
         Vec3 pos = this.position();
         boolean los = false;
         double explosionRadius = 2;
-        for (LivingEntity livingentity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(explosionRadius))) {
-            if (this.distanceToSqr(livingentity) <= explosionRadius * explosionRadius  && canHitEntity(livingentity)) {
+        for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(explosionRadius))) {
+            if (this.distanceToSqr(livingentity) <= explosionRadius * explosionRadius && canHitEntity(livingentity)) {
 
                 for (int i = 0; i < 2; ++i) {
                     Vec3 targetPos = new Vec3(livingentity.getX(), livingentity.getY(0.5D * (double) i), livingentity.getZ());
-                    HitResult hitresult = this.level().clip(new ClipContext(pos, targetPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                    HitResult hitresult = this.level.clip(new ClipContext(pos, targetPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     if (hitresult.getType() == HitResult.Type.MISS) {
                         los = true;
                         break;
@@ -65,7 +65,8 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
                 }
 
                 if (los) {
-                    DamageSources.applyDamage(livingentity, this.getDamage(), SpellType.FIRECRACKER_SPELL.getDamageSource(this,getOwner()), SchoolType.EVOCATION);
+                    var spell = SpellRegistry.FIRECRACKER_SPELL.get();
+                    DamageSources.applyDamage(livingentity, this.getDamage(), spell.getDamageSource(this, getOwner()), spell.getSchoolType());
                 }
             }
         }
@@ -73,7 +74,7 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
     }
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData playerMagicData) {
         this.discard();
     }
 }

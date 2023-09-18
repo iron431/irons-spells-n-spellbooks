@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,11 +16,11 @@ import javax.annotation.Nullable;
 
 public class PlayerMagicProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-    public static Capability<PlayerMagicData> PLAYER_MAGIC = CapabilityManager.get(new CapabilityToken<>() {
+    public static Capability<MagicData> PLAYER_MAGIC = CapabilityManager.get(new CapabilityToken<>() {
     });
 
-    private PlayerMagicData playerMagicData = null;
-    private final LazyOptional<PlayerMagicData> opt = LazyOptional.of(this::createPlayerMagicData);
+    private MagicData playerMagicData = null;
+    private final LazyOptional<MagicData> opt = LazyOptional.of(this::createPlayerMagicData);
     private ServerPlayer serverPlayer;
 
     public PlayerMagicProvider(ServerPlayer serverPlayer) {
@@ -30,9 +28,9 @@ public class PlayerMagicProvider implements ICapabilityProvider, INBTSerializabl
     }
 
     @Nonnull
-    private PlayerMagicData createPlayerMagicData() {
+    private MagicData createPlayerMagicData() {
         if (playerMagicData == null) {
-            playerMagicData = new PlayerMagicData(serverPlayer);
+            playerMagicData = new MagicData(serverPlayer);
         }
         return playerMagicData;
     }

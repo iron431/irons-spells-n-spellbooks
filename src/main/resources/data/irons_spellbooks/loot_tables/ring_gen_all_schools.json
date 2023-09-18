@@ -9,7 +9,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
-              "school": "fire"
+              "school": "irons_spellbooks:fire"
             }
           ]
         }
@@ -24,7 +24,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
-              "school": "ice"
+              "school": "irons_spellbooks:ice"
             }
           ]
         }
@@ -39,7 +39,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
-              "school": "lightning"
+              "school": "irons_spellbooks:lightning"
             }
           ]
         }
@@ -54,7 +54,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
-              "school": "holy"
+              "school": "irons_spellbooks:holy"
             }
           ]
         }
@@ -69,7 +69,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
-              "school": "ender"
+              "school": "irons_spellbooks:ender"
             }
           ]
         }
@@ -84,7 +84,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
-              "school": "blood"
+              "school": "irons_spellbooks:blood"
             }
           ]
         }
@@ -99,7 +99,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
-              "school": "evocation"
+              "school": "irons_spellbooks:evocation"
             }
           ]
         }
@@ -114,22 +114,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_ring_enhancement",
-              "school": "poison"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "rolls": 1,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "irons_spellbooks:affinity_ring",
-          "functions": [
-            {
-              "function": "irons_spellbooks:randomize_ring_enhancement",
-              "school": "void"
+              "school": "irons_spellbooks:nature"
             }
           ]
         }

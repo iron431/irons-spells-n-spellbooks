@@ -1,62 +1,71 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-public class EvasionEffect extends MobEffect {
-    public EvasionEffect(MobEffectCategory mobEffectCategory, int color) {
+public class EvasionEffect extends CustomDescriptionMobEffect {
+        public EvasionEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
+    }
+
+    @Override
+    public Component getDescriptionLine(MobEffectInstance instance) {
+        int amp = instance.getAmplifier() + 1;
+        return Component.translatable("tooltip.irons_spellbooks.evasion_description", amp).withStyle(ChatFormatting.BLUE);
     }
 
     @Override
     public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.EVASION);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.EVASION);
     }
 
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.EVASION);
-        PlayerMagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.EVASION);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().setEvasionHitsRemaining(pAmplifier);
 
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (livingEntity.level().isClientSide
+        if (livingEntity.level.isClientSide
                 || damageSource.is(DamageTypeTags.IS_FALL)
                 || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)
                 || damageSource.is(DamageTypeTagGenerator.BYPASS_EVASION)) {
             return false;
         }
 
-        var data = PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData();
+        var data = MagicData.getPlayerMagicData(livingEntity).getSyncedData();
         data.subtractEvasionHit();
-        if (data.getEvasionHitsRemaining() == 0)
+        if (data.getEvasionHitsRemaining() < 0) {
             livingEntity.removeEffect(MobEffectRegistry.EVASION.get());
+        }
 
         double d0 = livingEntity.getX();
         double d1 = livingEntity.getY();
         double d2 = livingEntity.getZ();
         double maxRadius = 18d;
-        var level = livingEntity.level();
+        var level = livingEntity.level;
         var random = livingEntity.getRandom();
 
         for (int i = 0; i < 16; ++i) {
@@ -93,7 +102,7 @@ public class EvasionEffect extends MobEffect {
 
     private static void particleCloud(LivingEntity entity) {
         Vec3 pos = entity.position().add(0, entity.getBbHeight() / 2, 0);
-        MagicManager.spawnParticles(entity.level(), ParticleTypes.PORTAL, pos.x, pos.y, pos.z, 70, entity.getBbWidth() / 4, entity.getBbHeight() / 5, entity.getBbWidth() / 4, .035, false);
+        MagicManager.spawnParticles(entity.level, ParticleTypes.PORTAL, pos.x, pos.y, pos.z, 70, entity.getBbWidth() / 4, entity.getBbHeight() / 5, entity.getBbWidth() / 4, .035, false);
     }
 
 }

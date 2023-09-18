@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.fireball;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -73,7 +73,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
         if (!this.level().isClientSide) {
             var target = pResult.getEntity();
             var owner = getOwner();
-            if (DamageSources.applyDamage(target, damage, SpellType.BLAZE_STORM_SPELL.getDamageSource(this, owner), SchoolType.FIRE))
+            if (DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this, owner), SpellRegistry.BLAZE_STORM_SPELL.get().getSchoolType()))
                 target.setSecondsOnFire(5);
         }
     }

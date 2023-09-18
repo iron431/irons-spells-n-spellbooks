@@ -1,15 +1,16 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.SpellRarity;
-import io.redspace.ironsspellbooks.util.Utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.BiomeColors;
@@ -37,6 +38,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -119,7 +121,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.meltComponent: {}", itemStack.getDisplayName().getString());
         boolean shouldMelt = false;
         boolean success = true;
-        if ( itemStack.is(ItemRegistry.SCROLL.get()) && !isFull(resultItems)) {
+        if (itemStack.is(ItemRegistry.SCROLL.get()) && !isFull(resultItems)) {
             if (level.random.nextFloat() < ServerConfigs.SCROLL_RECYCLE_CHANCE.get()) {
                 ItemStack result = new ItemStack(getInkFromScroll(itemStack));
                 appendItem(resultItems, result);
@@ -127,7 +129,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 success = false;
             }
             shouldMelt = true;
-        } else if (isBrewable(itemStack)) {
+        }
+        if (!shouldMelt && isBrewable(itemStack)) {
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialPotion = resultItems.get(i);
                 ItemStack output = BrewingRecipeRegistry.getOutput(potentialPotion.isEmpty() ? PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER) : potentialPotion, itemStack);
@@ -137,8 +140,9 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 }
                 //IronsSpellbooks.LOGGER.debug("{} + {} = {} ({})", potentialPotion.getDisplayName().getString(), itemStack.getDisplayName().getString(), output.getDisplayName().getString(), shouldMelt);
             }
-        } else if (AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack)) {
-            //TODO: there are still edge cases that don't work (2 epic ink, 1 obisidian)
+        }
+        if (!shouldMelt && AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack)) {
+            //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: custom recipe for: {}", itemStack.toString());
             for (int i = 0; i < resultItems.size(); i++) {
                 ItemStack potentialInput = resultItems.get(i).copy();
                 List<Integer> matchingItems = new ArrayList<>(List.of(i));
@@ -151,13 +155,14 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                             matchingItems.add(j);
                         }
                     }
-                } else {
-                    //If the input is empty, ignore it
-                    break;
                 }
+                //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: collecting results {}: {}", i, potentialInput);
+
                 int inputsCollected = potentialInput.getCount();
                 //IronsSpellbooks.LOGGER.debug("Checking cauldron recipes. CauldronInternalIndex: {}. Original Item: {} Copycat Item: {}", i, resultItems.get(i), potentialInput);
                 ItemStack output = AlchemistCauldronRecipeRegistry.getOutput(potentialInput, itemStack.copy(), true);
+                //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile: {} + {} = {}", itemStack, potentialInput, output);
+
                 if (!output.isEmpty()) {
                     //If we have an output, consume inputs, and replace with as many outputs as we can fit
                     int inputsToConsume = inputsCollected - potentialInput.getCount();
@@ -200,13 +205,15 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         return itemStack.is(ItemRegistry.SCROLL.get()) || isBrewable(itemStack) || AlchemistCauldronRecipeRegistry.isValidIngredient(itemStack);
     }
 
-    public static boolean isBrewable(ItemStack itemStack){
+    public static boolean isBrewable(ItemStack itemStack) {
         return ServerConfigs.ALLOW_CAULDRON_BREWING.get() && BrewingRecipeRegistry.isValidIngredient(itemStack);
     }
 
     public int getItemWaterColor(ItemStack itemStack) {
         if (this.getLevel() == null)
             return 0;
+        if (itemStack.getItem() instanceof SimpleElixir simpleElixir)
+            return simpleElixir.getMobEffect().getEffect().getColor();
         if (itemStack.is(ItemRegistry.INK_COMMON.get()))
             return 0x222222;
         if (itemStack.is(ItemRegistry.INK_UNCOMMON.get()))
@@ -243,9 +250,9 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public static Item getInkFromScroll(ItemStack scrollStack) {
-        if (scrollStack.getItem() instanceof Scroll scroll) {
+        if (scrollStack.getItem() instanceof Scroll) {
             var spellData = SpellData.getSpellData(scrollStack);
-            SpellRarity rarity = spellData.getSpell().getRarity();
+            SpellRarity rarity = spellData.getSpell().getRarity(spellData.getLevel());
             return switch (rarity) {
                 case COMMON -> ItemRegistry.INK_COMMON.get();
                 case UNCOMMON -> ItemRegistry.INK_UNCOMMON.get();
@@ -406,14 +413,38 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             return null;
         });
         map.put(Items.POTION, (blockState, level, pos, currentLevel, itemstack) -> {
-            if (currentLevel < MAX_LEVELS && PotionUtils.getPotion(itemstack) == Potions.WATER) {
-                return createFilledResult(level, blockState, pos, currentLevel + 1, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
+            //If we are a water bottle, put additional water level
+            if (PotionUtils.getPotion(itemstack) == Potions.WATER) {
+                if (currentLevel < MAX_LEVELS) {
+                    return createFilledResult(level, blockState, pos, currentLevel + 1, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
+                }
+            }
+            //Otherwise, put potion in
+            else if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile && !isFull(tile.resultItems)) {
+                appendItem(tile.resultItems, itemstack);
+                return createFilledResult(level, blockState, pos, Math.min(currentLevel + 1, MAX_LEVELS), new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
             }
             return null;
         });
-
+        createInkInteraction(map, ItemRegistry.INK_COMMON);
+        createInkInteraction(map, ItemRegistry.INK_UNCOMMON);
+        createInkInteraction(map, ItemRegistry.INK_RARE);
+        createInkInteraction(map, ItemRegistry.INK_EPIC);
+        createInkInteraction(map, ItemRegistry.INK_LEGENDARY);
 
         return map;
+    }
+
+    private static void createInkInteraction(Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> map, RegistryObject<Item> ink) {
+        map.put(ink.get(), (blockState, level, pos, currentLevel, itemstack) -> {
+            if (currentLevel > 0 && level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile) {
+                if (!isFull(tile.resultItems)) {
+                    appendItem(tile.resultItems, itemstack);
+                    return createFilledResult(level, blockState, pos, currentLevel, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
+                }
+            }
+            return null;
+        });
     }
 
     private static ItemStack createFilledResult(Level level, BlockState blockState, BlockPos blockPos, int newLevel, ItemStack resultItem, SoundEvent soundEvent) {

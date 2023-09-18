@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -67,7 +67,7 @@ public class SpellBarOverlay implements IGuiOverlay {
         for (int i = 0; i < locations.size(); i++) {
             if (spells[i] != null) {
                 //setOpaqueTexture(spells[i].getSpellType().getResourceLocation());
-                guiHelper.blit(spells[i].getSpellType().getResourceLocation(), centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
+                guiHelper.blit(spells[i].getSpell().getSpellIconResource(), centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
             }
         }
         //Border + Cooldowns
@@ -76,7 +76,7 @@ public class SpellBarOverlay implements IGuiOverlay {
             if (i != spellBookData.getActiveSpellIndex())
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22, 84, 22, 22);
 
-            float f = spells[i] == null ? 0 : ClientMagicData.getCooldownPercent(spells[i].getSpellType());
+            float f = spells[i] == null ? 0 : ClientMagicData.getCooldownPercent(spells[i].getSpell());
             if (f > 0) {
                 int pixels = (int) (16 * f + 1f);
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47, 87, 16, pixels);

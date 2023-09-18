@@ -1,13 +1,14 @@
 package io.redspace.ironsspellbooks.gui.scroll_forge;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeTile;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
@@ -40,7 +41,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     private final Slot focusSlot;
     private final Slot resultSlot;
 
-    private SpellType spellRecipeSelection = SpellType.NONE_SPELL;
+    private AbstractSpell spellRecipeSelection = SpellRegistry.none();
 
     //private List<SpellCardInfo> spellCards;
 
@@ -95,8 +96,6 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         this.addSlot(blankScrollSlot);
         this.addSlot(focusSlot);
         this.addSlot(resultSlot);
-
-
     }
 
     public void onSlotsChanged(int slot) {
@@ -104,35 +103,36 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
             //3 is the result slot
             setupResultSlot(spellRecipeSelection);
         }
-        IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.slotsChanged {}", slot);
+        //IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.slotsChanged {}", slot);
     }
 
-    private void setupResultSlot(SpellType selectedSpellType) {
-        IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.setupResultSlot: {}", selectedSpellType);
+    private void setupResultSlot(AbstractSpell spell) {
+        //Ironsspellbooks.logger.debug("ScrollForgeMenu.setupResultSlot");
 
         ItemStack scrollStack = this.blankScrollSlot.getItem();
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
         ItemStack resultStack = ItemStack.EMPTY;
-        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && selectedSpellType != SpellType.NONE_SPELL && selectedSpellType.getSchoolType() == SchoolType.getSchoolFromItem(focusStack)) {
+        if (!scrollStack.isEmpty() && !inkStack.isEmpty() && !focusStack.isEmpty() && !spell.equals(SpellRegistry.none())&& spell.getSchoolType() == SchoolRegistry.getSchoolFromFocus(focusStack)) {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);
-                SpellData.setSpellData(resultStack, selectedSpellType.getSpellForRarity(inkItem.getRarity()));
+                SpellData.setSpellData(resultStack, spell, spell.getMinLevelForRarity(inkItem.getRarity()));
             }
         }
 
         if (!ItemStack.matches(resultStack, this.resultSlot.getItem())) {
-            IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.setupResultSlot new result: {}", resultStack.getDisplayName().getString());
-            if (resultStack.isEmpty())
-                this.spellRecipeSelection = SpellType.NONE_SPELL;
+            //IronsSpellbooks.LOGGER.debug("ScrollForgeMenu.setupResultSlot new result: {}", resultStack.getDisplayName().getString());
+            if (resultStack.isEmpty()) {
+                this.spellRecipeSelection = SpellRegistry.none();
+            }
             this.resultSlot.set(resultStack);
         }
     }
 
-    public void setRecipeSpell(SpellType typeFromValue) {
+    public void setRecipeSpell(AbstractSpell typeFromValue) {
         this.spellRecipeSelection = typeFromValue;
- //Ironsspellbooks.logger.debug("Setting selected Spell");
+        //Ironsspellbooks.logger.debug("Setting selected Spell");
         setupResultSlot(typeFromValue);
     }
 

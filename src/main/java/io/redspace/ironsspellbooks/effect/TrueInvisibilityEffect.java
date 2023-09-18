@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.effect;
 
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.world.effect.MobEffect;
@@ -22,7 +21,7 @@ public class TrueInvisibilityEffect extends MobEffect {
     public void addAttributeModifiers(LivingEntity livingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(livingEntity, pAttributeMap, pAmplifier);
         if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
-            PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().addEffects(SyncedSpellData.TRUE_INVIS);
+            MagicData.getPlayerMagicData(livingEntity).getSyncedData().addEffects(SyncedSpellData.TRUE_INVIS);
         }
         this.lastHurtTimestamp = livingEntity.getLastHurtMobTimestamp();
 
@@ -46,7 +45,7 @@ public class TrueInvisibilityEffect extends MobEffect {
     public void removeAttributeModifiers(LivingEntity livingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(livingEntity, pAttributeMap, pAmplifier);
         if (livingEntity instanceof Player || livingEntity instanceof AbstractSpellCastingMob) {
-            PlayerMagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.TRUE_INVIS);
+            MagicData.getPlayerMagicData(livingEntity).getSyncedData().removeEffects(SyncedSpellData.TRUE_INVIS);
         }
     }
 }

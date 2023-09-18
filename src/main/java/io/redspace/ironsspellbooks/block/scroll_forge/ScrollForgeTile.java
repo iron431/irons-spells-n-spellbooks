@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.block.scroll_forge;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -73,8 +73,8 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
         return menu;
     }
 
-    public void setRecipeSpell(int spellId) {
-        menu.setRecipeSpell(SpellType.getTypeFromValue(spellId));
+    public void setRecipeSpell(String spellId) {
+        menu.setRecipeSpell(SpellRegistry.getSpell(spellId));
     }
 
 //    @Override

@@ -36,7 +36,7 @@ public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMo
 
     @Override
     public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        if (animatable instanceof DeadKingCorpseEntity)
+        if (animatable instanceof DeadKingCorpseEntity || animatable.isInvisible())
             return;
         var model = this.getGeoModel().getBakedModel(currentModel(animatable));
 
@@ -47,19 +47,4 @@ public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMo
                 LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         poseStack.popPose();
     }
-//
-//    @Override
-//    public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-//        if (animatable instanceof DeadKingCorpseEntity)
-//            return;
-//        var model = this.getGeoModel().getBakedModel(currentModel(animatable));
-//
-//        poseStack.pushPose();
-//        renderType = renderType(currentTexture(animatable));
-//        VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
-//        this.getRenderer().reRender(model, poseStack, bufferSource, animatable, renderType, vertexconsumer, partialTick,
-//                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0.1f, 0.1f, 0.1f,/*.05f, .06f, 0.1f,*/ 1f);
-//        poseStack.popPose();
-//    }
-
 }

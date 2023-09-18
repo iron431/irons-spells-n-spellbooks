@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
-import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 
 public class ManaBarOverlay implements IGuiOverlay {
     public static final ManaBarOverlay instance = new ManaBarOverlay();

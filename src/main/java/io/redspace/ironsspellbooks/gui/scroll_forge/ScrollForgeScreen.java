@@ -1,13 +1,15 @@
 package io.redspace.ironsspellbooks.gui.scroll_forge;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellRarity;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.client.gui.Font;
@@ -38,7 +40,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private List<SpellCardInfo> availableSpells;
     private ItemStack[] oldMenuSlots = {ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
 
-    private SpellType selectedSpell = SpellType.NONE_SPELL;
+    private AbstractSpell selectedSpell = SpellRegistry.none();
     private int scrollOffset;
 
     public ScrollForgeScreen(ScrollForgeMenu menu, Inventory inventory, Component title) {
@@ -56,23 +58,22 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     @Override
     public void onClose() {
-        setSelectedSpell(SpellType.NONE_SPELL);
+        setSelectedSpell(SpellRegistry.none());
         resetList();
         super.onClose();
     }
 
     private void resetList() {
         if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(ServerConfigs.getSpellConfig(selectedSpell).minRarity()) >= 0)))
-            setSelectedSpell(SpellType.NONE_SPELL);
+            setSelectedSpell(SpellRegistry.none());
         //TODO: reorder setting old focus to test if we actually need to reset the spell... or just give ink its own path since we dont even need to regenerate the list anyways
         //TODO: update: what the fuck does that mean
         scrollOffset = 0;
 
-        for (SpellCardInfo s : availableSpells)
+        for (SpellCardInfo s : availableSpells) {
             removeWidget(s.button);
+        }
         availableSpells.clear();
-
-        //Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpell.getValue()));
     }
 
     @Override
@@ -135,6 +136,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 spellCard.button.active = false;
             }
         }
+
         if (additionalTooltip != null) {
             guiHelper.renderTooltip(font, additionalTooltip, mouseX, mouseY);
         }
@@ -158,9 +160,9 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         ItemStack focusStack = menu.getFocusSlot().getItem();
         IronsSpellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.focus: {}", focusStack.getItem());
         if (!focusStack.isEmpty() && focusStack.is(ModTags.SCHOOL_FOCUS)) {
-            SchoolType school = SchoolType.getSchoolFromItem(focusStack);
+            SchoolType school = SchoolRegistry.getSchoolFromFocus(focusStack);
             //irons_spellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.school: {}", school.toString());
-            var spells = SpellType.getSpellsFromSchool(school);
+            var spells = SpellRegistry.getSpellsForSchool(school);
             for (int i = 0; i < spells.size(); i++) {
                 //int id = spells[i].getValue();
                 int tempIndex = i;
@@ -173,39 +175,31 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
     }
 
-    private void setSelectedSpell(SpellType spell) {
+    private void setSelectedSpell(AbstractSpell spell) {
         selectedSpell = spell;
-        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), spell.getValue()));
-
-        //irons_spellbooks.LOGGER.debug("ScrollForgeScreen: setting selected spell: {}", availableSpells.get(index).getDisplayName());
+        Messages.sendToServer(new ServerboundScrollForgeSelectSpell(this.menu.blockEntity.getBlockPos(), spell.getSpellId()));
     }
 
     private SpellRarity getRarityFromInk(Item ink) {
-        if (ink instanceof InkItem inkItem)
+        if (ink instanceof InkItem inkItem) {
             return inkItem.getRarity();
-        else
+        } else {
             return null;
-
+        }
     }
 
-    public SpellType getSelectedSpell() {
+    public AbstractSpell getSelectedSpell() {
         return selectedSpell;
     }
 
-//    private void setTexture(ResourceLocation texture) {
-//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-//        RenderSystem.setShaderTexture(0, texture);
-//    }
-
     private class SpellCardInfo {
-        SpellType spell;
+        AbstractSpell spell;
         int spellLevel;
         SpellRarity rarity;
         Button button;
         int index;
 
-        SpellCardInfo(SpellType spell, int spellLevel, int index, Button button) {
+        SpellCardInfo(AbstractSpell spell, int spellLevel, int index, Button button) {
             this.spell = spell;
             this.spellLevel = spellLevel;
             this.index = index;
@@ -219,21 +213,16 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                     guiHelper.blit(TEXTURE, x, y, 0, 204, 108, 19);
                 else
                     guiHelper.blit(TEXTURE, x, y, 0, 166, 108, 19);
-
             } else {
                 guiHelper.blit(TEXTURE, x, y, 0, 185, 108, 19);
-                //font.drawWordWrap(, x + 2, y + 2, maxWidth, 0xFFFFFF);
             }
-            //setTexture(this.button.active ? spell.getResourceLocation() : SpellType.NONE_SPELL.getResourceLocation());
-            guiHelper.blit(this.button.active ? spell.getResourceLocation() : SpellType.NONE_SPELL.getResourceLocation(), x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
+            guiHelper.blit(this.button.active ? spell.getSpellIconResource() : SpellRegistry.none().getSpellIconResource(), x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
 
             int maxWidth = 108 - 20;
             var text = trimText(font, getDisplayName().withStyle(this.button.active ? Style.EMPTY : Style.EMPTY.withFont(RUNIC_FONT)), maxWidth);
             int textX = x + 2;
             int textY = y + 3;
             guiHelper.drawWordWrap(font, text, textX, textY, maxWidth, 0xFFFFFF);
-
-            //button.render(poseStack,mouseX,mouseY,1);
         }
 
         @Nullable
@@ -246,7 +235,6 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             } else {
                 return null;
             }
-
         }
 
         List<FormattedCharSequence> getHoverText() {

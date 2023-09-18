@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
+import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -8,7 +9,7 @@ import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -67,13 +68,12 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             //Scroll Merging
             if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof Scroll) {
-                var scrollData1 = SpellData.getSpellData(baseItemStack);
-                var scrollData2 = SpellData.getSpellData(modifierItemStack);
-                if (scrollData1.getSpellId() == scrollData2.getSpellId() && scrollData1.getLevel() == scrollData2.getLevel()) {
-                    if (scrollData1.getLevel() < ServerConfigs.getSpellConfig(scrollData1.getSpellId()).maxLevel()) {
+                var spellData1 = SpellData.getSpellData(baseItemStack);
+                var spellData2 = SpellData.getSpellData(modifierItemStack);
+                if (spellData1.equals(spellData2)) {
+                    if (spellData1.getLevel() < ServerConfigs.getSpellConfig(spellData1.getSpell()).maxLevel()) {
                         result = new ItemStack(ItemRegistry.SCROLL.get());
-
-                        SpellData.setSpellData(result, scrollData1.getSpellId(), scrollData1.getLevel() + 1);
+                        SpellData.setSpellData(result, spellData1.getSpell(), spellData1.getLevel() + 1);
                     }
                 }
 
@@ -82,13 +82,13 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
                 result = baseItemStack.copy();
                 var scrollData = SpellData.getSpellData(modifierItemStack);
-                SpellData.setSpellData(result, scrollData.getSpell());
+                SpellData.setSpellData(result, scrollData);
             }
             //Upgrade System
-            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeUtils.getUpgradeCount(baseItemStack) < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
+            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getCount() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
                 result = baseItemStack.copy();
-                EquipmentSlot slot = UpgradeUtils.getAssignedEquipmentSlot(result);
-                UpgradeUtils.appendUpgrade(result, upgradeOrb.getUpgradeType(), slot);
+                EquipmentSlot slot = UpgradeUtils.getRelevantEquipmentSlot(result);
+                UpgradeData.getUpgradeData(result).addUpgrade(result, upgradeOrb.getUpgradeType(), slot) ;
                 //IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
             }
             //Shriving Stone

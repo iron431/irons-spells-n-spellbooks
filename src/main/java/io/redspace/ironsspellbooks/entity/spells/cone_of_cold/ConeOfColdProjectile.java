@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.cone_of_cold;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EntityType;
@@ -26,7 +26,7 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
     @Override
     public void spawnParticles() {
         var owner = getOwner();
-        if (!level().isClientSide || owner == null) {
+        if (!level.isClientSide || owner == null) {
             return;
         }
         Vec3 rotation = owner.getLookAngle().normalize();
@@ -46,7 +46,7 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
             double angularness = .8;
             Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random()  * 2 * angularness - angularness, Math.random()  * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level().addParticle(Math.random() > .05 ? ParticleTypes.SNOWFLAKE : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level.addParticle(Math.random() > .05 ? ParticleTypes.SNOWFLAKE : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }
 
 
@@ -56,7 +56,7 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         //irons_spellbooks.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         var entity = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(entity, damage, SpellType.CONE_OF_COLD_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE)  && !level().isClientSide && entity.canFreeze())
+        if (DamageSources.applyDamage(entity, damage, SpellRegistry.CONE_OF_COLD_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.CONE_OF_COLD_SPELL.get().getSchoolType()) && !level.isClientSide && entity.canFreeze())
             entity.setTicksFrozen(entity.getTicksFrozen() + 80);
     }
 

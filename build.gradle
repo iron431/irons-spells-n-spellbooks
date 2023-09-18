@@ -19,35 +19,14 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 
 minecraft {
-    // The mappings can be changed at any time and must be in the following format.
-    // Channel:   Version:
-    // official   MCVersion             Official field/method names from Mojang mapping files
-    // parchment  YYYY.MM.DD-MCVersion  Open community-sourced parameter names and javadocs layered on top of official
-    //
-    // You must be aware of the Mojang license when using the 'official' or 'parchment' mappings.
-    // See more information here: https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
-    //
-    // Parchment is an unofficial project maintained by ParchmentMC, separate from MinecraftForge
-    // Additional setup is needed to use their mappings: https://github.com/ParchmentMC/Parchment/wiki/Getting-Started
-    //
-    // Use non-default mappings at your own risk. They may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
-
-    //mappings channel: 'official', version: '1.18.2'
-    //mappings channel: 'official', version: '1.19.4'
-    //https://ldtteam.jfrog.io/ui/native/parchmentmc-public/org/parchmentmc/data/
     mappings channel: mapping_channel, version: mapping_version
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    // This property allows configuring Gradle's ProcessResources task(s) to run on IDE output locations before launching the game.
-    // It is REQUIRED to be set to true for this template to function.
-    // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
     copyIdeResources = true
 
     runs {
         client {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.markers', 'REGISTRIES' //SCAN, REGISTRYDUMP
             property 'forge.logging.console.level', 'debug'
             property 'forge.enabledGameTestNamespaces', mod_id
             mods { "${mod_id}" { source sourceSets.main } }
@@ -87,7 +66,6 @@ repositories {
         dir 'libs'
     }
 
-    maven { url = "https://code.redspace.io/releases" }
     maven { url = "https://maven.enginehub.org/repo/" }
     maven { url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
     maven { url = "https://maven.theillusivec4.top" }
@@ -114,10 +92,11 @@ dependencies {
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_animator_version}")
 
     // TETRA ******************************************************************************************************
+    //compileOnly fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
     compileOnly fg.deobf("curse.maven:tetra-${tetra_version}")
     // If you want to run with tetra in dev comment the above line and uncomment the following 2 lines
-    //runtimeOnly fg.deobf("curse.maven:tetra-${tetra_version}")
-    //implementation fg.deobf("se.mickelus.mutil:mutil:${minecraft_version}-${mutil_version}")
+    runtimeOnly fg.deobf("curse.maven:tetra-${tetra_version}")
+    implementation fg.deobf("se.mickelus.mutil:mutil:${mutil_version}")
 
     // JEI ********************************************************************************************************
     compileOnly fg.deobf("mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}")
@@ -129,12 +108,21 @@ dependencies {
     //Uncomment the following line to run with Curios in dev
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
-    // PATCHOULI **************************************************************************************************
+    // BETTER COMBAT **********************************************************************************************
+    runtimeOnly fg.deobf("curse.maven:better-combat-by-daedelus-${better_combat_version}")
+    runtimeOnly fg.deobf("curse.maven:cloth-config-348521:4633416")
 
+    // PATCHOULI **************************************************************************************************
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
-    // JSON *******************************************************************************************************
+    // APOTHEOSIS
+    compileOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
+//    runtimeOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
+//    runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
+
+
+    // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"
 
     // LOCAL LIBS FOR TESTING (put the jar in /libs/ folder
@@ -142,6 +130,8 @@ dependencies {
     //jarJar(implementation(fg.deobf("ignored:defaultresources-forge:1.19.2-0.3.0"))) {
     //    jarJar.ranged(it, "[0.3.0,)")
     //}
+
+    //runtimeOnly fg.deobf("com.refinedmods:refinedstorage:1.11.6")
 
     //Dimensional-Threading-Reforged-1.19.2-1.2.7.jar
     //runtimeOnly fg.deobf('wearblackallday.dimthread:Dimensional-Threading-Reforged:1.19.2-1.2.7')
@@ -157,10 +147,9 @@ dependencies {
     //runtimeOnly fg.deobf('com.stal111.valhelsia_structures:valhelsia_structures-forge:1.19.2-1.0.2')
 
     //Apotheosis
-    //    runtimeOnly fg.deobf('shadows:Apotheosis:1.19.2-6.1.5')
-    //    runtimeOnly fg.deobf('shadows:Placebo:1.19.2-7.1.8')
-    //    runtimeOnly fg.deobf('vazkii:Patchouli:1.19.2-77')
-    //runtimeOnly fg.deobf('me.shedaniel:REIPluginCompatibilities-forge:9.0.48')
+    //compileOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
+    //runtimeOnly fg.deobf("curse.maven:apotheosis-${apotheosis_version}")
+    //runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
 
     //Blue Skies
     //runtimeOnly fg.deobf('com.legacy:blue_skies:1.19.2-1.3.20')
@@ -179,7 +168,8 @@ def replaceProperties = [
         loader_version_range: loader_version_range,
         mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
         mod_authors         : mod_authors, mod_description: mod_description, mod_credits: mod_credits,
-        mod_issue_tracker   : mod_issue_tracker, mod_display_url: mod_display_url, mod_logo_file: mod_logo_file
+        mod_issue_tracker   : mod_issue_tracker, mod_display_url: mod_display_url,
+        mod_logo_file       : mod_logo_file
 ]
 
 processResources {
@@ -219,20 +209,40 @@ java {
     //withJavadocJar()
 }
 
+tasks.register('apiJar', Jar) {
+    archiveClassifier.set('api')
+    include 'io/redspace/ironsspellbooks/api/**/*'
+    from sourceSets.main.allSource
+    from sourceSets.main.output
+}
+
+artifacts {
+    archives apiJar
+    archives sourcesJar
+}
+
 publishing {
+    tasks.publish.dependsOn 'build'
     publications {
+
         mavenJava(MavenPublication) {
-            groupId project.group
             artifactId project.archivesBaseName
-            version project.version
-            from components.java
+            artifact jar
+            artifact sourcesJar
+            artifact apiJar
         }
     }
 
     repositories {
         maven {
             name = "redspace"
-            url uri("https://code.redspace.io/releases")
+
+            if (project.version.endsWith('-SNAPSHOT')) {
+                url uri("https://code.redspace.io/snapshots")
+            } else {
+                url uri("https://code.redspace.io/releases")
+            }
+
             credentials {
                 username = System.getenv("MAVEN_USER")
                 password = System.getenv("MAVEN_PASS")
@@ -249,9 +259,9 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.register('copyAnimations', Copy) {
-    from 'src/main/resources/assets/irons_spellbooks/player_animation'
+    from "src/main/resources/assets/${mod_id}/player_animation"
     include 'casting_animations.json'
-    into 'src/main/resources/assets/irons_spellbooks/animations'
+    into "src/main/resources/assets/${mod_id}/animations"
 }
 
 tasks.classes.dependsOn(tasks.copyAnimations)

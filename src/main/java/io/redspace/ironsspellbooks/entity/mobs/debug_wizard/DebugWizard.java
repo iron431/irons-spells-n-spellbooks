@@ -1,15 +1,15 @@
 package io.redspace.ironsspellbooks.entity.mobs.debug_wizard;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.DebugTargetClosestEntityGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.DebugWizardAttackGoal;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.Level;
 
 public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
-    private SpellType spellType;
+    private AbstractSpell spell;
     private int spellLevel;
     private boolean targetsPlayer;
     private String spellInfo = "No Spell Found";
@@ -29,12 +29,12 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         super(pEntityType, pLevel);
     }
 
-    public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel, SpellType spellType, int spellLevel, boolean targetsPlayer, int cancelCastAfterTicks) {
+    public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel, AbstractSpell spell, int spellLevel, boolean targetsPlayer, int cancelCastAfterTicks) {
         super(pEntityType, pLevel);
 
         this.targetsPlayer = targetsPlayer;
         this.spellLevel = spellLevel;
-        this.spellType = spellType;
+        this.spell = spell;
         this.cancelCastAfterTicks = cancelCastAfterTicks;
         initGoals();
     }
@@ -63,19 +63,19 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     }
 
     private void initGoals() {
-        this.goalSelector.addGoal(1, new DebugWizardAttackGoal(this, spellType, spellLevel, cancelCastAfterTicks));
+        this.goalSelector.addGoal(1, new DebugWizardAttackGoal(this, spell, spellLevel, cancelCastAfterTicks));
 
         if (this.targetsPlayer) {
             IronsSpellbooks.LOGGER.debug("DebugWizard: Adding DebugTargetClosestEntityGoal");
             this.targetSelector.addGoal(1, new DebugTargetClosestEntityGoal(this));
         }
-        entityData.set(DEBUG_SPELL_INFO, String.format("%s (L%s)", spellType.name(), spellLevel));
+        entityData.set(DEBUG_SPELL_INFO, String.format("%s (L%s)", spell.getSpellName(), spellLevel));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.putInt("spellType", spellType.getValue());
+        pCompound.putString("spellId", spell.getSpellId());
         pCompound.putInt("spellLevel", spellLevel);
         pCompound.putBoolean("targetsPlayer", targetsPlayer);
         pCompound.putInt("cancelCastAfterTicks", cancelCastAfterTicks);
@@ -84,7 +84,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        spellType = SpellType.getTypeFromValue(pCompound.getInt("spellType"));
+        spell = SpellRegistry.getSpell(pCompound.getString("spellId"));
         spellLevel = pCompound.getInt("spellLevel");
         targetsPlayer = pCompound.getBoolean("targetsPlayer");
         cancelCastAfterTicks = pCompound.getInt("cancelCastAfterTicks");

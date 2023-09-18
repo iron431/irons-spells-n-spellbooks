@@ -1,15 +1,16 @@
 package io.redspace.ironsspellbooks.spells.holy;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProjectile;
-import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonSplash;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
-import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,33 +22,46 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class SunbeamSpell extends AbstractSpell {
-    public SunbeamSpell() {
-        this(1);
-    }
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "sunbeam");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1))
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1))
         );
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.HOLY)
+            .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(20)
+            .setEnabled(false)
             .build();
 
-    public SunbeamSpell(int level) {
-        super(SpellType.SUNBEAM_SPELL);
-        this.setLevel(level);
+    public SunbeamSpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 1;
         this.castTime = 15;
         this.baseManaCost = 40;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
+    }
+
+    @Override
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
+        return spellId;
     }
 
     @Override
@@ -61,13 +75,13 @@ public class SunbeamSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean checkPreCastConditions(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
-        Utils.preCastTargetHelper(level, entity, playerMagicData, getSpellType(), 32, .35f, false);
+    public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
+        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f, false);
         return true;
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 spawn = null;
 
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
@@ -85,18 +99,18 @@ public class SunbeamSpell extends AbstractSpell {
         Sunbeam sunbeam = new Sunbeam(level);
         sunbeam.setOwner(entity);
         sunbeam.moveTo(spawn);
-        sunbeam.setDamage(getDamage(entity));
-        sunbeam.setEffectDuration(getDuration(entity));
+        sunbeam.setDamage(getDamage(spellLevel, entity));
+        sunbeam.setEffectDuration(getDuration(spellLevel, entity));
         level.addFreshEntity(sunbeam);
 
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    private float getDamage(LivingEntity entity) {
-        return this.getSpellPower(entity);
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return this.getSpellPower(spellLevel, entity);
     }
 
-    private int getDuration(LivingEntity entity) {
-        return 100 + getLevel(entity) * 40;
+    private int getDuration(int spellLevel, LivingEntity entity) {
+        return 100 + getLevel(spellLevel, entity) * 40;
     }
 }

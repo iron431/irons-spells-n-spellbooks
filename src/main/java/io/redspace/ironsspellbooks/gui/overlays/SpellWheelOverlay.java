@@ -3,14 +3,15 @@ package io.redspace.ironsspellbooks.gui.overlays;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,7 +34,6 @@ public class SpellWheelOverlay implements IGuiOverlay {
     public static SpellWheelOverlay instance = new SpellWheelOverlay();
 
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
-    public final static ResourceLocation WHEEL = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/spell_wheel.png");
 
     private final Vector4f lineColor = new Vector4f(1f, .85f, .7f, 1f);
     private final Vector4f radialButtonColor = new Vector4f(.04f, .03f, .01f, .6f);
@@ -87,8 +87,8 @@ public class SpellWheelOverlay implements IGuiOverlay {
 
         ItemStack spellBookStack = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
         spellBookData = SpellBookData.getSpellBookData(spellBookStack);
-        List<AbstractSpell> spells = spellBookData.getActiveInscribedSpells();
-        int spellCount = spells.size();
+        List<SpellData> spellData = spellBookData.getActiveInscribedSpells();
+        int spellCount = spellData.size();
         if (spellCount == 0) {
             close();
             return;
@@ -101,58 +101,73 @@ public class SpellWheelOverlay implements IGuiOverlay {
         float mouseRotation = (Utils.getAngle(mousePos, screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
 
         selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, spellCount - 1);
-        if (mousePos.distanceToSqr(screenCenter) < ringOuterEdgeMin * ringOuterEdgeMin)
+        if (mousePos.distanceToSqr(screenCenter) < ringOuterEdgeMin * ringOuterEdgeMin) {
             selection = Math.max(0, spellBookData.getActiveSpellIndex());
-        var currentSpell = spells.get(selection);
+        }
+        var currentSpell = spellData.get(selection);
         selectedSpellIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), currentSpell);
 
-//        int mouseXX = (int) (minecraft.mouseHandler.xpos() * (double) minecraft.getWindow().getGuiScaledWidth() / (double) minecraft.getWindow().getScreenWidth());
-//        int mouseYY = (int) (minecraft.mouseHandler.ypos() * (double) minecraft.getWindow().getGuiScaledHeight() / (double) minecraft.getWindow().getScreenHeight());
-//        final double mouseXCenter = mouseXX - centerX;
-//        final double mouseYCenter = mouseYY - centerY;
-//        double mouseRadians = Math.atan2(mouseYCenter, mouseXCenter);
-
         guiHelper.fill(0, 0, screenWidth, screenHeight, 0);
-        //RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         final Tesselator tesselator = Tesselator.getInstance();
         final BufferBuilder buffer = tesselator.getBuilder();
-        final double quarterCircle = Math.PI / 2; //Original
-
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        drawRadialBackgrounds(buffer, centerX, centerY, selection, spells);
-        drawDividingLines(buffer, centerX, centerY, spells);
 
+        drawRadialBackgrounds(buffer, centerX, centerY, selection, spellData);
+        drawDividingLines(buffer, centerX, centerY, spellData);
+
+//        boolean drawText = selectedSpell != null;
+//        if (drawText) {
+//            var info = selectedSpell.getSpell().getUniqueInfo(selectedSpell.getLevel(), minecraft.player);
+//            textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
+//            drawTextBackground(buffer, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
+//        }
+
+        tesselator.end();
+        RenderSystem.disableBlend();
+
+        //Text
+        var selectedSpell = spellData.get(selection);
+        if (selectedSpell != null) {
+            var font = gui.getFont();
+            var info = selectedSpell.getSpell().getUniqueInfo(selectedSpell.getLevel(), minecraft.player);
+            int textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
+            int textCenterMargin = 5;
+            int textTitleMargin = 5;
+            var title = currentSpell.getSpell().getDisplayName().withStyle(Style.EMPTY.withUnderlined(true));
+            var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player).withStyle(selectedSpell.getSpell().getRarity(selectedSpell.getLevel()).getDisplayName().getStyle()));
+            var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getSpell().getManaCost(selectedSpell.getLevel(), null)).withStyle(ChatFormatting.AQUA);
+//            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));
+
+            drawTextBackground(poseStack, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
+//guiHelper.drawString(font
+            font.drawShadow(poseStack, title, (float) (centerX - font.width(title) / 2), (float) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF);
+            font.drawShadow(poseStack, level, (float) (centerX - font.width(level) - textCenterMargin), (float) (centerY - (ringOuterEdge + textHeight) + font.lineHeight + textTitleMargin), 0xFFFFFF);
+            font.drawShadow(poseStack, mana, (float) (centerX - font.width(mana) - textCenterMargin), (float) (centerY - (ringOuterEdge + textHeight) + font.lineHeight * 2 + textTitleMargin), 0xFFFFFF);
+
+            for (int i = 0; i < info.size(); i++) {
+                var line = info.get(i);
+                font.drawShadow(poseStack, line, (float) (centerX + textCenterMargin), (float) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b);
+            }
+        }
+
+        //Spell Icons
         float scale = Mth.clamp(1 + (15 - spellCount) / 15f, 1, 2) * .65f;
-        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (spells.size() / 15f));
-
+        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (spellData.size() / 15f));
         Vec2[] locations = new Vec2[spellCount];
         for (int i = 0; i < locations.length; i++) {
             locations[i] = new Vec2((float) (Math.sin(radiansPerSpell * i) * radius), (float) (-Math.cos(radiansPerSpell * i) * radius));
         }
-
-        //var locations = drawRadialBackgrounds(buffer, centerX, centerY, mouseXCenter, mouseYCenter, mouseRadians, quarterCircle, spells);
-        tesselator.end();
-        RenderSystem.disableBlend();
-        //RenderSystem.enableTexture();
-
-
-        //Spell Icons
         for (int i = 0; i < locations.length; i++) {
-            var spell = spells.get(i);
+            var spell = spellData.get(i);
             if (spell != null) {
-                var texture = spells.get(i).getSpellType().getResourceLocation();
-               // setOpaqueTexture();
+                var texture = spellData.get(i).getSpell().getSpellIconResource();
                 poseStack.pushPose();
                 poseStack.translate(centerX, centerY, 0);
-
-                /*
-                Icon
-                 */
-                //scale = 1 + i * .1f;
                 poseStack.scale(scale, scale, scale);
 
+                //Icon
                 int iconWidth = 16 / 2;
                 int borderWidth = 32 / 2;
                 int cdWidth = 16 / 2;
@@ -161,12 +176,11 @@ public class SpellWheelOverlay implements IGuiOverlay {
                 /*
                 Border
                  */
-                setTranslucentTexture(TEXTURE);
                 guiHelper.blit(TEXTURE, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, selection == i ? 32 : 0, 106, 32, 32);
                 /*
                 Cooldown
                  */
-                float f = spells.get(i) == null ? 0 : ClientMagicData.getCooldownPercent(spells.get(i).getSpellType());
+                float f = spellData.get(i) == null ? 0 : ClientMagicData.getCooldownPercent(spellData.get(i).getSpell());
                 if (f > 0) {
                     int pixels = (int) (16 * f + 1f);
 //                    gui.blit(poseStack, centerX + (int) locations[i].x + 3, centerY + (int) locations[i].y + 19 - pixels, 47, 87, 16, pixels);
@@ -177,86 +191,88 @@ public class SpellWheelOverlay implements IGuiOverlay {
             }
         }
 
-        //Text
-        var selectedSpell = spells.get(selection);
-        if (selectedSpell != null) {
 
-            var font = gui.getFont();
-            var title = currentSpell.getSpellType().getDisplayName().withStyle(Style.EMPTY.withUnderlined(true));
-            var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player)).withStyle(selectedSpell.getSpellType().getRarity(selectedSpell.getLevel(null)).getDisplayName().getStyle());
-            var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getManaCost()).withStyle(ChatFormatting.AQUA);
-//            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));
-            int height = 2 * font.lineHeight + 5;
-
-            guiHelper.drawString(font, title, (int) (centerX - font.width(title) / 2), (int) (centerY - (ringOuterEdge + height)), 0xFFFFFF);
-            guiHelper.drawString(font, level, (int) (centerX - font.width(level) - 5), (int) (centerY - (ringOuterEdge + height) + font.lineHeight + 5), 0xFFFFFF);
-            guiHelper.drawString(font, mana, (centerX + 5), (int)(centerY - (ringOuterEdge + height) + font.lineHeight + 5), 0xFFFFFF);
-
-            var info = selectedSpell.getUniqueInfo(minecraft.player);
-            for (int i = 0; i < info.size(); i++) {
-                var line = info.get(i);
-                guiHelper.drawString(font, line.withStyle(ChatFormatting.GREEN), (int) (centerX - font.width(line) / 2f), (int) (centerY + ringOuterEdgeMax + font.lineHeight * i), 0xFFFFFF);
-
-            }
-
-//                setTranslucentTexture(TEXTURE);
-//                gui.blit(poseStack, centerX + (int) locations[i].x, centerY + (int) locations[i].y, 176, 84, 22, 22);
-        }
         poseStack.popPose();
+    }
+
+    private void drawTextBackground(PoseStack poseStack, double centerX, double centerY, double textYOffset, int textCenterMargin, int textHeight) {
+        fill(poseStack, 0, 0, (int) (centerX * 2), (int) (centerY * 2), 0);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        final Tesselator tesselator = Tesselator.getInstance();
+        final BufferBuilder buffer = tesselator.getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+
+        centerY = centerY - textYOffset - 2;
+        int heightMax = textHeight / 2 + 4;
+        int heightMin = 0;
+        int widthMax = 70;
+        int widthMin = 0;
+
+//        buffer.vertex(centerX + widthMin, y + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+//        buffer.vertex(centerX + widthMin, y + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+//        buffer.vertex(centerX + widthMax, y + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+//        buffer.vertex(centerX + widthMax, y + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+//
+//        buffer.vertex(centerX - widthMax, y + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+//        buffer.vertex(centerX - widthMax, y + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+//        buffer.vertex(centerX + widthMin, y + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+//        buffer.vertex(centerX + widthMin, y + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+
+        widthMin = -1;
+        widthMax = 1;
+        buffer.vertex(centerX + widthMin, centerY + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+        buffer.vertex(centerX + widthMin, centerY + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+
+        buffer.vertex(centerX + widthMin, centerY + heightMin + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+        buffer.vertex(centerX + widthMin, centerY + heightMax + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMax + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMin + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+//
+//        buffer.vertex(centerX - widthMax, centerY - heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+//        buffer.vertex(centerX - widthMax, centerY - heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+//        buffer.vertex(centerX + widthMin, centerY - heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+//        buffer.vertex(centerX + widthMin, centerY - heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+
+
+        tesselator.end();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
 
     }
 
-    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex, List<AbstractSpell> spells) {
-
-//        final int spellCount = spells.size();
-//        final int spellSegments = 15/*Math.max(3, spells.size())*/;
+    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex, List<SpellData> spells) {
         double quarterCircle = Math.PI / 2;
         int segments;
-        if (spells.size() < 6)
+        if (spells.size() < 6) {
             segments = spells.size() % 2 == 1 ? 15 : 12;
-        else
+        } else {
             segments = spells.size() * 2;
-        //int segments = Math.max((spells.size() % 2 == 1 ? 15 : 12), `spells.size() * 2);
+        }
         double radiansPerObject = 2 * Math.PI / segments;
         double radiansPerSpell = 2 * Math.PI / spells.size();
         ringOuterEdge = Math.max(ringOuterEdgeMin, ringOuterEdgeMax);
-        final double fragment = /*Math.PI * 0.005*/0; //gap between buttons in radians at inner edge
-        final double fragment2 = /*Math.PI * 0.0025*/0; //gap between buttons in radians at outer edge
-//        final double radiansPerObject = 2.0 * Math.PI / spellSegments;
-//        Vec2[] locations = new Vec2[spellCount];
-
-        //irons_spellbooks.LOGGER.debug("centerX:{}, centerY:{}, mouseX:{}, mouseY:{}, mouseRad:{}, ringOuter: {}", centerX, centerY, mouseXCenter, mouseYCenter, mouseRadians, ringOuterEdge);
-
         for (int i = 0; i < segments; i++) {
-            var spell = i > spells.size() - 1 ? null : spells.get(i);
-
             final double beginRadians = i * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
             final double endRadians = (i + 1) * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
 
-            final double x1m1 = Math.cos(beginRadians + fragment) * ringInnerEdge;
-            final double x2m1 = Math.cos(endRadians - fragment) * ringInnerEdge;
-            final double y1m1 = Math.sin(beginRadians + fragment) * ringInnerEdge;
-            final double y2m1 = Math.sin(endRadians - fragment) * ringInnerEdge;
+            final double x1m1 = Math.cos(beginRadians) * ringInnerEdge;
+            final double x2m1 = Math.cos(endRadians) * ringInnerEdge;
+            final double y1m1 = Math.sin(beginRadians) * ringInnerEdge;
+            final double y2m1 = Math.sin(endRadians) * ringInnerEdge;
 
-            final double x1m2 = Math.cos(beginRadians + fragment2) * ringOuterEdge;
-            final double x2m2 = Math.cos(endRadians - fragment2) * ringOuterEdge;
-            final double y1m2 = Math.sin(beginRadians + fragment2) * ringOuterEdge;
-            final double y2m2 = Math.sin(endRadians - fragment2) * ringOuterEdge;
+            final double x1m2 = Math.cos(beginRadians) * ringOuterEdge;
+            final double x2m2 = Math.cos(endRadians) * ringOuterEdge;
+            final double y1m2 = Math.sin(beginRadians) * ringOuterEdge;
+            final double y2m2 = Math.sin(endRadians) * ringOuterEdge;
 
-            final boolean isSelected = spell != null && spellBookData.getActiveSpell().getID() == spell.getID();
-
-            final int extendBy = 10;
-//            final boolean isHighlighted = inTriangle(x1m1, y1m1, x2m2 * extendBy, y2m2 * extendBy, x2m1, y2m1, mouseXCenter, mouseYCenter)
-//                    || inTriangle(x1m1, y1m1, x1m2 * extendBy, y1m2 * extendBy, x2m2 * extendBy, y2m2 * extendBy, mouseXCenter, mouseYCenter);
             boolean isHighlighted = (i * spells.size()) / segments == selectedSpellIndex;
-            //final boolean isHighlighted = beginRadians <= mouseRadians && mouseRadians <= endRadians && isMouseInQuad;
-
-            //irons_spellbooks.LOGGER.debug("i:{}, begin: {}, end: {}, rpo: {}, highlight:{}", i, beginRadians, endRadians, radiansPerObject, isHighlighted);
 
             Vector4f color = radialButtonColor;
-            //if (isSelected) color = selectedColor;
             if (isHighlighted) color = highlightColor;
-            //if (isSelected && isHighlighted) color = highlightSelectedColor;
 
             buffer.vertex(centerX + x1m1, centerY + y1m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
             buffer.vertex(centerX + x2m1, centerY + y2m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
@@ -264,32 +280,23 @@ public class SpellWheelOverlay implements IGuiOverlay {
             buffer.vertex(centerX + x1m2, centerY + y1m2, 0).color(color.x(), color.y(), color.z(), 0).endVertex();
 
             //Category line
-            color = /*new Vector4f(0.12f, 0.03f, 0.47f, .5f)*/lineColor;
+            color = lineColor;
             final double categoryLineOuterEdge = ringInnerEdge + categoryLineWidth;
 
-            final double x1m3 = Math.cos(beginRadians + fragment) * categoryLineOuterEdge;
-            final double x2m3 = Math.cos(endRadians - fragment) * categoryLineOuterEdge;
-            final double y1m3 = Math.sin(beginRadians + fragment) * categoryLineOuterEdge;
-            final double y2m3 = Math.sin(endRadians - fragment) * categoryLineOuterEdge;
+            final double x1m3 = Math.cos(beginRadians) * categoryLineOuterEdge;
+            final double x2m3 = Math.cos(endRadians) * categoryLineOuterEdge;
+            final double y1m3 = Math.sin(beginRadians) * categoryLineOuterEdge;
+            final double y2m3 = Math.sin(endRadians) * categoryLineOuterEdge;
 
             buffer.vertex(centerX + x1m1, centerY + y1m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
             buffer.vertex(centerX + x2m1, centerY + y2m1, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
             buffer.vertex(centerX + x2m3, centerY + y2m3, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
             buffer.vertex(centerX + x1m3, centerY + y1m3, 0).color(color.x(), color.y(), color.z(), color.w()).endVertex();
 
-
-//            if (spell != null) {
-//                var radius = Math.cos((endRadians - beginRadians) / 2) * (ringOuterEdge - ringInnerEdge);
-//                locations[i] = new Vec2((float) (Math.sin(radiansPerObject * i) * radius), (float) (-Math.cos(radiansPerObject * i) * radius)).add(-11);
-//            }
         }
-
-        //irons_spellbooks.LOGGER.debug("");
-
-//        return locations;
     }
 
-    private void drawDividingLines(BufferBuilder buffer, double centerX, double centerY, List<AbstractSpell> spells) {
+    private void drawDividingLines(BufferBuilder buffer, double centerX, double centerY, List<SpellData> spells) {
 
         if (spells.size() <= 1)
             return;

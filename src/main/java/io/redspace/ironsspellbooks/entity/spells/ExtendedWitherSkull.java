@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
@@ -39,13 +39,6 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
-        Entity entity = pResult.getEntity();
-        DamageSources.applyDamage(entity, damage, SpellType.WITHER_SKULL_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
- //Ironsspellbooks.logger.debug("hmm.");
-    }
-
-    @Override
     protected void onHit(HitResult hitResult) {
 
         if (!this.level().isClientSide) {
@@ -55,7 +48,8 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
                 double distance = entity.distanceToSqr(hitResult.getLocation());
                 if (distance < explosionRadius * explosionRadius  && canHitEntity(entity)) {
                     float damage = (float) (this.damage * (1 - distance / (explosionRadius * explosionRadius)));
-                    DamageSources.applyDamage(entity, damage, SpellType.WITHER_SKULL_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
+                    var spell = SpellRegistry.WITHER_SKULL_SPELL.get();
+                    DamageSources.applyDamage(entity, damage, spell.getDamageSource(this, getOwner()), spell.getSchoolType());
                 }
             }
 
@@ -70,7 +64,7 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
     }
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData playerMagicData) {
         this.discard();
     }
 }

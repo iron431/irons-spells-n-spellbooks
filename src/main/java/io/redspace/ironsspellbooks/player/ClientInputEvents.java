@@ -2,13 +2,13 @@ package io.redspace.ironsspellbooks.player;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -36,9 +36,10 @@ public final class ClientInputEvents {
     public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
 
+    public static int test = 0;
+
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
-
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player == null)
@@ -71,10 +72,10 @@ public final class ClientInputEvents {
                     int direction = (int) event.getScrollDelta();
 //                    irons_spellbooks.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
 
-                    List<AbstractSpell> spells = new ArrayList<>();
-                    for (AbstractSpell spell : spellBookData.getInscribedSpells()) {
-                        if (spell != null)
-                            spells.add(spell);
+                    List<SpellData> spells = new ArrayList<>();
+                    for (SpellData spellData : spellBookData.getInscribedSpells()) {
+                        if (spellData != null)
+                            spells.add(spellData);
                     }
                     int spellCount = spellBookData.getSpellCount();
                     int scrollIndex = (spells.indexOf(spellBookData.getActiveSpell()) - direction);
@@ -110,7 +111,7 @@ public final class ClientInputEvents {
 
     @SubscribeEvent
     public static void onUseInput(InputEvent.InteractionKeyMappingTriggered event) {
-        IronsSpellbooks.LOGGER.debug("InteractionKeyMappingTriggered: {}", event.getKeyMapping().getName());
+        //IronsSpellbooks.LOGGER.debug("InteractionKeyMappingTriggered: {}", event.getKeyMapping().getName());
         if (event.isUseItem()) {
             if (ClientSpellCastHelper.shouldSuppressRightClicks()) {
                 event.setSwingHand(false);

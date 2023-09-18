@@ -1,15 +1,19 @@
 package io.redspace.ironsspellbooks.spells.ender;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -23,7 +27,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class CounterspellSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "counterspell");
+
     public static final LazyOptional<List<MobEffect>> LAZY_MAGICAL_EFFECTS = LazyOptional.of(() ->
             List.of(MobEffectRegistry.ABYSSAL_SHROUD.get(),
                     MobEffectRegistry.ASCENSION.get(),
@@ -36,30 +43,39 @@ public class CounterspellSpell extends AbstractSpell {
                     MobEffectRegistry.FORTIFY.get(),
                     MobEffectRegistry.REND.get(),
                     MobEffectRegistry.SPIDER_ASPECT.get(),
-                    MobEffectRegistry.BLIGHT.get()
+                    MobEffectRegistry.BLIGHT.get(),
+                    MobEffectRegistry.OAKSKIN.get()
             ));
 
     public CounterspellSpell() {
-        this(1);
-    }
-
-    public CounterspellSpell(int level) {
-        super(SpellType.COUNTERSPELL_SPELL);
-        this.setLevel(level);
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 50;
-
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.ENDER)
+            .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
             .setMaxLevel(1)
             .setCooldownSeconds(15)
             .build();
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
+    }
+
+    @Override
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
+        return spellId;
+    }
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
@@ -72,7 +88,7 @@ public class CounterspellSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 start = entity.getEyePosition();
         Vec3 end = start.add(entity.getForward().normalize().scale(80));
         HitResult hitResult = Utils.raycastForEntity(entity.level(), entity, start, end, true, 0.35f, Utils::validAntiMagicTarget);
@@ -93,7 +109,7 @@ public class CounterspellSpell extends AbstractSpell {
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity)
                 for (MobEffect mobEffect : LAZY_MAGICAL_EFFECTS.resolve().get())
                     livingEntity.removeEffect(mobEffect);
-        }else{
+        } else {
             for (float i = 1; i < 40; i += .5f) {
                 Vec3 pos = entity.getEyePosition().add(forward.scale(i));
                 MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
@@ -101,8 +117,6 @@ public class CounterspellSpell extends AbstractSpell {
                     break;
             }
         }
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
-
-
 }

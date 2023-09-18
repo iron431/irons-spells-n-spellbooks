@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_needle;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -16,7 +16,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -85,12 +84,13 @@ public class BloodNeedle extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellType.BlOOD_NEEDLES_SPELL.getDamageSource(this, getOwner()), SchoolType.BLOOD);
+        var school = SpellRegistry.BLOOD_NEEDLES_SPELL.get().getSchoolType();
+        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.BLOOD_NEEDLES_SPELL.get().getDamageSource(this, getOwner()), school);
         if (hit && entityHitResult.getEntity() instanceof LivingEntity target && getOwner() instanceof LivingEntity livingOwner) {
-            livingOwner.heal(getDamage() * DamageSources.getResist(target, SchoolType.BLOOD) * .25f);
+            //you know. this shit doesn't *actually* work
+            livingOwner.heal(getDamage() * DamageSources.getResist(target, school) * .25f);
         }
         entityHitResult.getEntity().invulnerableTime = 0;
-
     }
 
     @Override

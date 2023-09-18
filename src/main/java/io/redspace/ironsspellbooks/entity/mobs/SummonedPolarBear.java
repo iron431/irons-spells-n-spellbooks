@@ -2,13 +2,13 @@ package io.redspace.ironsspellbooks.entity.mobs;
 
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -76,12 +76,12 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
         if (pPlayer == getSummoner()) {
             this.doPlayerRide(pPlayer);
         }
-        return InteractionResult.sidedSuccess(this.level().isClientSide);
+        return InteractionResult.sidedSuccess(this.level.isClientSide);
     }
 
     protected void doPlayerRide(Player pPlayer) {
         this.setStanding(false);
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             pPlayer.setYRot(this.getYRot());
             pPlayer.setXRot(this.getXRot());
             pPlayer.startRiding(this);
@@ -91,7 +91,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public LivingEntity getSummoner() {
-        return OwnerHelper.getAndCacheOwner(level(), cachedSummoner, summonerUUID);
+        return OwnerHelper.getAndCacheOwner(level, cachedSummoner, summonerUUID);
     }
 
     public void setSummoner(@Nullable LivingEntity owner) {
@@ -127,7 +127,7 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
-        return Utils.doMeleeAttack(this, pEntity, SpellType.SUMMON_POLAR_BEAR_SPELL.getDamageSource(this, getSummoner()), null);
+        return Utils.doMeleeAttack(this, pEntity, SpellRegistry.SUMMON_POLAR_BEAR_SPELL.get().getDamageSource(this, getSummoner()), null);
     }
 
     @Override
@@ -137,8 +137,8 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
 
     @Override
     public void onUnSummon() {
-        if (!level().isClientSide) {
-            MagicManager.spawnParticles(level(), ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
+        if (!level.isClientSide) {
+            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             discard();
         }
     }
@@ -158,27 +158,6 @@ public class SummonedPolarBear extends PolarBear implements MagicSummon {
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
                 .add(Attributes.ATTACK_DAMAGE, 6.0D);
     }
-
-//    @Override
-//    public void travel(Vec3 pTravelVector) {
-//        Entity conductor = this.getControllingPassenger();
-//        if (this.isVehicle() && conductor instanceof LivingEntity livingEntity) {
-//            this.yRotO = this.getYRot();
-//            this.setYRot(livingEntity.getYRot());
-//            this.setXRot(livingEntity.getXRot());
-//            this.setRot(this.getYRot(), this.getXRot());
-//            this.yBodyRot = this.yRotO;
-//            this.yHeadRot = this.getYRot();
-//            float f = livingEntity.xxa * 0.5F;
-//            float f1 = livingEntity.zza;
-//            if (this.isControlledByLocalInstance()) {
-//                this.setSpeed((float) this.getAttributeValue(Attributes.MOVEMENT_SPEED) * .55f);
-//                super.travel(new Vec3((double) f, pTravelVector.y, (double) f1));
-//            }
-//        } else {
-//            super.travel(pTravelVector);
-//        }
-//    }
 
     @Nullable
     public LivingEntity getControllingPassenger() {

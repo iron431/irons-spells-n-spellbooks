@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.entity.spells.devour_jaw;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.protocol.Packet;
@@ -36,9 +36,11 @@ public class DevourJaw extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        if (target == this.target)
-            if (DamageSources.applyDamage(target, getDamage(), SpellType.DEVOUR_SPELL.getDamageSource(this, getOwner()), SpellType.DEVOUR_SPELL.getSchoolType()) && getOwner() instanceof LivingEntity livingOwner) {
+        if (target == this.target) {
+            if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.DEVOUR_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.DEVOUR_SPELL.get().getSchoolType()) && getOwner() instanceof LivingEntity livingOwner) {
                 livingOwner.heal(getDamage() * .15f);
+                target.setDeltaMovement(target.getDeltaMovement().add(0, .5f, 0));
+                target.hurtMarked = true;
                 if (target.isDeadOrDying()) {
                     var oldVigor = livingOwner.getEffect(MobEffectRegistry.VIGOR.get());
                     var addition = 0;
@@ -48,7 +50,7 @@ public class DevourJaw extends AoeEntity {
                     livingOwner.heal((vigorLevel + 1) * 2);
                 }
             }
-
+        }
     }
 
     public final int waitTime = 5;
@@ -79,8 +81,8 @@ public class DevourJaw extends AoeEntity {
     }
 
     @Override
-    protected float getInflation() {
-        return 2f;
+    protected Vec3 getInflation() {
+        return new Vec3(2, 2, 2);
     }
 
     @Override

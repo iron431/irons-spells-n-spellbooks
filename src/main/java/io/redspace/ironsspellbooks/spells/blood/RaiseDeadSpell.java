@@ -1,15 +1,19 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -29,32 +33,43 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class RaiseDeadSpell extends AbstractSpell {
-    public RaiseDeadSpell() {
-        this(1);
-    }
-
-    @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.summon_count", getLevel(caster)));
-    }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "raise_dead");
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
+            .setSchoolResource(SchoolRegistry.BLOOD_RESOURCE)
             .setMaxLevel(6)
             .setCooldownSeconds(150)
             .build();
 
-    public RaiseDeadSpell(int level) {
-        super(SpellType.RAISE_DEAD_SPELL);
-        this.setLevel(level);
+    @Override
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.summon_count", getLevel(spellLevel, caster)));
+    }
+
+    public RaiseDeadSpell() {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 3;
         this.castTime = 30;
         this.baseManaCost = 50;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
+    }
+
+    @Override
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
+        return spellId;
     }
 
     @Override
@@ -68,12 +83,12 @@ public class RaiseDeadSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
-        int level = getLevel(entity);
+        int level = getLevel(spellLevel, entity);
         for (int i = 0; i < level; i++) {
             boolean isSkeleton = world.random.nextDouble() < .3;
-            var equipment = getEquipment(getSpellPower(entity), world.getRandom());
+            var equipment = getEquipment(getSpellPower(spellLevel, entity), world.getRandom());
 
             Monster undead = isSkeleton ? new SummonedSkeleton(world, entity, true) : new SummonedZombie(world, entity, true);
             undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
@@ -94,11 +109,11 @@ public class RaiseDeadSpell extends AbstractSpell {
         }
 
         int effectAmplifier = level - 1;
-        if(entity.hasEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()))
+        if (entity.hasEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()))
             effectAmplifier += entity.getEffect(MobEffectRegistry.RAISE_DEAD_TIMER.get()).getAmplifier() + 1;
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, effectAmplifier, false, false, true));
 
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     private void equip(Mob mob, ItemStack[] equipment) {
@@ -118,7 +133,7 @@ public class RaiseDeadSpell extends AbstractSpell {
         Item[] iron = {Items.IRON_BOOTS, Items.IRON_LEGGINGS, Items.IRON_CHESTPLATE, Items.IRON_HELMET};
 
         int minQuality = 12;
-        int maxQuality = SpellType.RAISE_DEAD_SPELL.getMaxLevel() * spellPowerPerLevel + 15;
+        int maxQuality = getMaxLevel() * spellPowerPerLevel + 15;
 
         ItemStack[] result = new ItemStack[4];
         for (int i = 0; i < 4; i++) {

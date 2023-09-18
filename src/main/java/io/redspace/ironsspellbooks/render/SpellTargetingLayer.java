@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,9 +24,6 @@ import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
-
-import static io.redspace.ironsspellbooks.spells.SpellType.BLESSING_OF_LIFE_SPELL;
-import static io.redspace.ironsspellbooks.spells.SpellType.HEALING_CIRCLE_SPELL;
 
 public class SpellTargetingLayer {
     public static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/entity/target/heal.png");
@@ -66,17 +63,8 @@ public class SpellTargetingLayer {
         }
     }
 
-    private static Vector3f getColor(int spellId) {
-        //Specific Spells
-        if(spellId == BLESSING_OF_LIFE_SPELL.getValue() || spellId == HEALING_CIRCLE_SPELL.getValue())
-            return new Vector3f(.85f, 0, 0);
-        //By School Otherwise
-        return switch (SpellType.getTypeFromValue(spellId).getSchoolType()) {
-            case HOLY -> new Vector3f(.85f, .75f, .25f);
-            case ICE -> new Vector3f(.25f, .25f, 1f);
-            case POISON -> new Vector3f(.41f, .88f, .22f);
-            default -> new Vector3f(.8f, .8f, .8f);
-        };
+    private static Vector3f getColor(String spellId) {
+        return SpellRegistry.getSpell(spellId).getTargetingColor();
     }
 
     public static void renderTargetLayer(PoseStack poseStack, MultiBufferSource bufferSource, LivingEntity entity) {

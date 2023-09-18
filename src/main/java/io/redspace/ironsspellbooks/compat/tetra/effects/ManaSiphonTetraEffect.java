@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.compat.tetra.effects;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,7 +22,7 @@ import se.mickelus.tetra.gui.stats.getter.TooltipGetterPercentage;
 import se.mickelus.tetra.items.modular.ModularItem;
 import se.mickelus.tetra.items.modular.impl.holo.gui.craft.HoloStatsGui;
 
-import static io.redspace.ironsspellbooks.registries.AttributeRegistry.MAX_MANA;
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 
 public class ManaSiphonTetraEffect {
     public static final ItemEffect manaSiphon = ItemEffect.get(IronsSpellbooks.MODID + ":mana_siphon");
@@ -51,7 +51,7 @@ public class ManaSiphonTetraEffect {
                     level *= .01f;
                     int increment = (int) Math.min(level * event.getAmount(), 50);
                     int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
-                    var playerMagicData = PlayerMagicData.getPlayerMagicData(player);
+                    var playerMagicData = MagicData.getPlayerMagicData(player);
                     int newMana = Math.min(increment + playerMagicData.getMana(), maxMana);
                     playerMagicData.setMana(newMana);
                     Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), player);

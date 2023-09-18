@@ -43,7 +43,7 @@
                 "min": 0.25,
                 "max": 0.85
               },
-              "school": "evocation"
+              "school": "irons_spellbooks:evocation"
             }
           ]
         }

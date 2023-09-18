@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.compat.tetra;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.compat.tetra.effects.FreezeTetraEffect;
 import io.redspace.ironsspellbooks.compat.tetra.effects.ManaSiphonTetraEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -36,7 +36,7 @@ public class TetraActualImpl implements ITetraProxy {
         createPercentAttributeBar(AttributeRegistry.ENDER_SPELL_POWER.get(), "ender_spell_power");
         createPercentAttributeBar(AttributeRegistry.BLOOD_SPELL_POWER.get(), "blood_spell_power");
         createPercentAttributeBar(AttributeRegistry.EVOCATION_SPELL_POWER.get(), "evocation_spell_power");
-        createPercentAttributeBar(AttributeRegistry.POISON_SPELL_POWER.get(), "poison_spell_power");
+        createPercentAttributeBar(AttributeRegistry.NATURE_SPELL_POWER.get(), "poison_spell_power");
         createPercentAttributeBar(AttributeRegistry.SPELL_RESIST.get(), "spell_resist");
         /*
         Mana Attribute (From arcane ingot) display

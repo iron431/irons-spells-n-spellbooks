@@ -8,7 +8,6 @@
     "#irons_spellbooks:ender_focus",
     "#irons_spellbooks:blood_focus",
     "#irons_spellbooks:evocation_focus",
-    "#irons_spellbooks:void_focus",
-    "#irons_spellbooks:poison_focus"
+    "#irons_spellbooks:nature_focus"
   ]
 }

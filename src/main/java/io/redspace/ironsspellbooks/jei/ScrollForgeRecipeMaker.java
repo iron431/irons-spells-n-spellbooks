@@ -1,10 +1,13 @@
 package io.redspace.ironsspellbooks.jei;
 
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ModTags;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
@@ -40,19 +43,23 @@ public final class ScrollForgeRecipeMaker {
                 .map(item -> {
                     var paperInput = new ItemStack(Items.PAPER);
                     var focusInput = new ItemStack(item);
-                    var school = SchoolType.getSchoolFromItem(focusInput);
-                    var spells = SpellType.getSpellsFromSchool(school);
+                    var school = SchoolRegistry.getSchoolFromFocus(focusInput);
+                    var spells = SpellRegistry.getSpellsForSchool(school);
                     var scrollOutputs = new ArrayList<ItemStack>();
                     var inkOutputs = new ArrayList<ItemStack>();
 
                     inkItems.forEach(ink -> {
-                        spells.forEach(spell -> {
-                            var spellToUse = spell.getSpellForRarity(ink.getRarity());
-                            if (spellToUse.getSpellType() != SpellType.NONE_SPELL) {
-                                inkOutputs.add(new ItemStack(ink));
-                                scrollOutputs.add(getScrollStack(spellToUse.getSpellType(), spellToUse.getLevel(null)));
+                        //var string = new StringBuilder();
+                        //SpellRegistry.REGISTRY.get().getValues().forEach((AbstractSpell)-> string.append(AbstractSpell.getSpellId()).append(", "));
+                        for (AbstractSpell spell : spells) {
+                            if (spell.isEnabled()) {
+                                var spellLevel = spell.getMinLevelForRarity(ink.getRarity());
+                                if (spellLevel > 0 && spell != SpellRegistry.none()) {
+                                    inkOutputs.add(new ItemStack(ink));
+                                    scrollOutputs.add(getScrollStack(spell, spell.getLevel(spellLevel, null)));
+                                }
                             }
-                        });
+                        }
                     });
 
                     return new ScrollForgeRecipe(inkOutputs, paperInput, focusInput, scrollOutputs);
@@ -61,9 +68,9 @@ public final class ScrollForgeRecipeMaker {
         return recipes.toList();
     }
 
-    private static ItemStack getScrollStack(SpellType spellType, int spellLevel) {
+    private static ItemStack getScrollStack(AbstractSpell spell, int spellLevel) {
         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-        SpellData.setSpellData(scrollStack, spellType, spellLevel);
+        SpellData.setSpellData(scrollStack, spell, spellLevel);
         return scrollStack;
     }
 }

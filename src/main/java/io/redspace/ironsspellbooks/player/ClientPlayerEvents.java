@@ -1,22 +1,21 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
+import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.InstantManaEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.registries.PotionRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
-import io.redspace.ironsspellbooks.spells.CastSource;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -27,7 +26,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -35,7 +33,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,16 +69,15 @@ public class ClientPlayerEvents {
                     /*
                     Current Casting Spell Visuals
                      */
-                    SpellType currentSpell = SpellType.getTypeFromValue(spellData.getCastingSpellId());
-                    if (currentSpell == SpellType.RAY_OF_SIPHONING_SPELL) {
-                        Vec3 impact = Utils.raycastForEntity(entity.level(), entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);
+                    if (spellData.isCasting() && spellData.getCastingSpellId().equals(SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId())) {
+                        Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);
                         for (int i = 0; i < 8; i++) {
                             Vec3 motion = new Vec3(
                                     Utils.getRandomScaled(.2f),
                                     Utils.getRandomScaled(.2f),
                                     Utils.getRandomScaled(.2f)
                             );
-                            entity.level().addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
+                            entity.level.addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
                         }
                     }
                 });
@@ -111,7 +107,9 @@ public class ClientPlayerEvents {
         var livingEntity = event.getEntity();
         if (livingEntity instanceof Player) {
             var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
-            SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
+            if (syncedData.isCasting()) {
+                SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
+            }
         }
     }
 
@@ -131,7 +129,7 @@ public class ClientPlayerEvents {
         - [*name* *lvl*]
          */
 
-        if (SpellData.getSpellData(stack).getSpellId() != 0) {
+        if (SpellData.getSpellData(stack) != SpellData.EMPTY) {
             var player = Minecraft.getInstance().player;
             if (player == null)
                 return;
@@ -159,28 +157,8 @@ public class ClientPlayerEvents {
         var mobEffects = PotionUtils.getMobEffects(stack);
         if (mobEffects.size() > 0) {
             for (MobEffectInstance mobEffectInstance : mobEffects) {
-                if (mobEffectInstance.getEffect() == MobEffectRegistry.INSTANT_MANA.get()) {
-                    int amp = mobEffectInstance.getAmplifier() + 1;
-                    int addition = amp * InstantManaEffect.manaPerAmplifier;
-                    int percent = (int) (amp * InstantManaEffect.manaPerAmplifierPercent * 100);
-                    var description = Component.translatable("tooltip.irons_spellbooks.instant_mana_description", addition, percent).withStyle(ChatFormatting.BLUE);
-
-                    var header = Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE);
-                    var tooltip = event.getToolTip();
-                    var newLines = new ArrayList<Component>();
-                    int i = tooltip.indexOf(header);
-
-                    if (i < 0) {
-                        newLines.add(Component.empty());
-                        newLines.add(header);
-                        newLines.add(description);
-                        i = event.getFlags().isAdvanced() ? tooltip.size() - 2 : tooltip.size();
-                    } else {
-                        newLines.add(description);
-                        i++;
-                    }
-                    tooltip.addAll(i, newLines);
-                    return;
+                if (mobEffectInstance.getEffect() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {
+                    CustomDescriptionMobEffect.handleCustomPotionTooltip(stack, event.getToolTip(), event.getFlags().isAdvanced(), mobEffectInstance, customDescriptionMobEffect);
                 }
             }
         }

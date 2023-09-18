@@ -1,17 +1,21 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.*;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
-import io.redspace.ironsspellbooks.util.AnimationHolder;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -27,31 +31,42 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class BloodStepSpell extends AbstractSpell {
-    public BloodStepSpell() {
-        this(1);
-    }
-
-    @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(caster), 1)));
-    }
-
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "blood_step");
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
-            .setSchool(SchoolType.BLOOD)
+            .setSchoolResource(SchoolRegistry.BLOOD_RESOURCE)
             .setMaxLevel(5)
             .setCooldownSeconds(5)
             .build();
 
-    public BloodStepSpell(int level) {
-        super(SpellType.BLOOD_STEP_SPELL);
-        this.setLevel(level);
+    @Override
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getDistance(spellLevel, caster), 1)));
+    }
+
+    public BloodStepSpell() {
         this.baseSpellPower = 12;
         this.spellPowerPerLevel = 4;
         this.baseManaCost = 30;
         this.manaCostPerLevel = 10;
         this.castTime = 0;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
+    }
+
+    @Override
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
+        return spellId;
     }
 
     @Override
@@ -65,8 +80,8 @@ public class BloodStepSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientPreCast(Level level, LivingEntity entity, InteractionHand hand, @Nullable PlayerMagicData playerMagicData) {
-        super.onClientPreCast(level, entity, hand, playerMagicData);
+    public void onClientPreCast(Level level, int spellLevel, LivingEntity entity, InteractionHand hand, @Nullable MagicData playerMagicData) {
+        super.onClientPreCast(level, spellLevel, entity, hand, playerMagicData);
         Vec3 forward = entity.getForward().normalize();
         for (int i = 0; i < 35; i++) {
             Vec3 motion = forward.scale(level.random.nextDouble() * .25f);
@@ -75,7 +90,7 @@ public class BloodStepSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 dest = null;
         var teleportData = (TeleportSpell.TeleportData) playerMagicData.getAdditionalCastData();
         if (teleportData != null) {
@@ -84,8 +99,8 @@ public class BloodStepSpell extends AbstractSpell {
                 dest = potentialTarget;
                 entity.teleportTo(dest.x, dest.y, dest.z);
             }
-        }else{
-            HitResult hitResult = Utils.raycastForEntity(level, entity, getDistance(entity), true);
+        } else {
+            HitResult hitResult = Utils.raycastForEntity(level, entity, getDistance(spellLevel, entity), true);
             if (entity.isPassenger()) {
                 entity.stopRiding();
             }
@@ -100,7 +115,7 @@ public class BloodStepSpell extends AbstractSpell {
                 entity.teleportTo(dest.x, dest.y + 1f, dest.z);
                 entity.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition().subtract(0, .15, 0));
             } else {
-                dest = TeleportSpell.findTeleportLocation(level, entity, getDistance(entity));
+                dest = TeleportSpell.findTeleportLocation(level, entity, getDistance(spellLevel, entity));
                 entity.teleportTo(dest.x, dest.y, dest.z);
 
             }
@@ -113,11 +128,11 @@ public class BloodStepSpell extends AbstractSpell {
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY.get(), 100, 0, false, false, true));
 
 
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    private float getDistance(LivingEntity sourceEntity) {
-        return getSpellPower(sourceEntity);
+    private float getDistance(int spellLevel, LivingEntity sourceEntity) {
+        return getSpellPower(spellLevel, sourceEntity);
     }
 
     @Override

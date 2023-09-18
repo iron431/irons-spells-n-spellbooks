@@ -74,6 +74,14 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> KEEPER_HURT = registerSoundEvent("entity.citadel_keeper.hurt");
     public static RegistryObject<SoundEvent> KEEPER_SWORD_IMPACT = registerSoundEvent("entity.citadel_keeper.sword_impact");
     public static RegistryObject<SoundEvent> KEEPER_IDLE = registerSoundEvent("entity.citadel_keeper.idle");
+    public static RegistryObject<SoundEvent> OAKSKIN_CAST = registerSoundEvent("spell.oakskin.cast");
+    public static RegistryObject<SoundEvent> EARTHQUAKE_LOOP = registerSoundEvent("entity.earthquake_aoe.loop");
+    public static RegistryObject<SoundEvent> EARTHQUAKE_IMPACT = registerSoundEvent("entity.earthquake_aoe.impact");
+    public static RegistryObject<SoundEvent> EARTHQUAKE_CAST = registerSoundEvent("spell.earthquake.cast");
+    public static RegistryObject<SoundEvent> FIREFLY_SWARM_IDLE = registerSoundEvent("entity.firefly_swarm.idle");
+    public static RegistryObject<SoundEvent> FIREFLY_SWARM_ATTACK = registerSoundEvent("entity.firefly_swarm.attack");
+    public static RegistryObject<SoundEvent> FIREFLY_SPELL_PREPARE = registerSoundEvent("spell.firefly_swarm.prepare");
+    public static RegistryObject<SoundEvent> RAY_OF_FROST = registerSoundEvent("spell.ray_of_frost.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
@@ -92,6 +100,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> ENDER_CAST = registerSoundEvent("cast.generic.ender");
     public static RegistryObject<SoundEvent> BLOOD_CAST = registerSoundEvent("cast.generic.blood");
     public static RegistryObject<SoundEvent> EVOCATION_CAST = registerSoundEvent("cast.generic.evocation");
+    public static RegistryObject<SoundEvent> NATURE_CAST = registerSoundEvent("cast.generic.nature");
     public static RegistryObject<SoundEvent> POISON_CAST = registerSoundEvent("cast.generic.poison");
 
 

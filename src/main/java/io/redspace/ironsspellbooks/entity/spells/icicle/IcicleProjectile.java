@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.icicle;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
@@ -45,7 +45,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellType.ICICLE_SPELL.getDamageSource(this, getOwner()), SchoolType.ICE);
+        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.ICICLE_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.ICICLE_SPELL.get().getSchoolType());
  //Ironsspellbooks.logger.debug("IcilePorjectile: Hit: {}",hit);
         if (hit && entityHitResult.getEntity() instanceof LivingEntity target && !level().isClientSide && target.canFreeze()) {
             target.setTicksFrozen(target.getTicksFrozen() + 165);

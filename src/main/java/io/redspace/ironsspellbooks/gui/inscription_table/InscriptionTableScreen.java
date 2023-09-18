@@ -9,9 +9,9 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
-import io.redspace.ironsspellbooks.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -121,7 +121,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         if (inscriptionErrorCode > 0) {
             //X over arrow
-           // setTexture(TEXTURE);
             guiHelper.blit(TEXTURE, leftPos + 35, topPos + 51, 0, 213, 28, 22);
             if (isHovering(leftPos + 35, topPos + 51, 28, 22, mouseX, mouseY)) {
                 guiHelper.renderTooltip(font, getErrorMessage(inscriptionErrorCode), mouseX, mouseY);
@@ -131,8 +130,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private int getErrorCode() {
         if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellbook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
-            var scrollData = SpellData.getSpellData(menu.getScrollSlot().getItem());
-            if (spellbook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
+            var spellData = SpellData.getSpellData(menu.getScrollSlot().getItem());
+            if (spellbook.getRarity().compareRarity(spellData.getSpell().getRarity(spellData.getLevel())) < 0)
                 return 1;
         }
 
@@ -200,20 +199,20 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private void drawSpellIcon(GuiGraphics guiHelper, Vec2 pos, SpellSlotInfo slot) {
         //setTexture(slot.containedSpell.getSpellType().getResourceLocation());
-        guiHelper.blit(slot.containedSpell.getSpellType().getResourceLocation(), (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
+        guiHelper.blit(slot.spellData.getSpell().getSpellIconResource(), (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
     }
 
     private void renderLorePage(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
         int x = leftPos + LORE_PAGE_X;
         int y = topPos;
-        int margin = 5;
+        int margin = 2;
         var textColor = Style.EMPTY.withColor(0x322c2a);
         var poseStack = guiHelper.pose();
         //
         // Title
         //
         boolean spellSelected = selectedSpellIndex >= 0 && spellSlots.get(selectedSpellIndex).hasSpell();
-        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSelected ? spellSlots.get(selectedSpellIndex).containedSpell.getSpellType().getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
+        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSelected ? spellSlots.get(selectedSpellIndex).spellData.getSpell().getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
         //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
 
         var titleLines = font.split(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
@@ -226,7 +225,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
             //show description if hovering
             if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)) {
-                guiHelper.renderTooltip(font, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).containedSpell.getSpellType(), font), mouseX, mouseY);
+                guiHelper.renderTooltip(font, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).spellData.getSpell(), font), mouseX, mouseY);
             }
 
             //increment y for next line
@@ -245,7 +244,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var colorMana = Style.EMPTY.withColor(0x0044a9);
         var colorCast = Style.EMPTY.withColor(0x115511);
         var colorCooldown = Style.EMPTY.withColor(0x115511);
-        var spell = spellSlots.get(selectedSpellIndex).containedSpell;
+        var spell = spellSlots.get(selectedSpellIndex).spellData.getSpell();
+        var spellLevel = spellSlots.get(selectedSpellIndex).spellData.getLevel();
         float textScale = 1f;
         float reverseScale = 1 / textScale;
 
@@ -262,20 +262,20 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Level
         //
-        var levelText = Component.translatable("ui.irons_spellbooks.level", spell.getLevel(null)).withStyle(textColor);
+        var levelText = Component.translatable("ui.irons_spellbooks.level", spell.getLevel(spellLevel, null)).withStyle(textColor);
         guiHelper.drawString(font, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF, false);
         descLine += font.lineHeight * textScale * 2;
 
         //
         // Mana
         //
-        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost() + ""), colorMana, textScale);
+        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost(spellLevel, null) + ""), colorMana, textScale);
 
         //
         // Cast Time
         //
 
-        descLine += drawText(font, guiHelper, TooltipsUtils.getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(null), 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
+        descLine += drawText(font, guiHelper, TooltipsUtils.getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, null), 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
 
         //
         // Cooldown
@@ -286,7 +286,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         //  Unique Info
         //
-        for (MutableComponent component : spell.getUniqueInfo(null)) {
+        for (MutableComponent component : spell.getUniqueInfo(spellLevel, null)) {
             descLine += drawText(font, guiHelper, component, x + margin, descLine, textColor.getColor().getValue(), 1);
         }
 
@@ -298,13 +298,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         x /= scale;
         y /= scale;
         guiHelper.drawString(font, text, x, y, color);
-        //font.drawShadow(poseStack, text, x, y, color);
     }
 
     private int drawText(Font font, GuiGraphics guiHelper, Component text, int x, int y, int color, float scale) {
         x /= scale;
         y /= scale;
-        //guiHelper.drawString(font, text, x, y, color);
         guiHelper.drawWordWrap(font, text, x, y, LORE_PAGE_WIDTH, color);
         return font.wordWrapHeight(text, LORE_PAGE_WIDTH);
 
@@ -313,9 +311,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private int drawStatText(Font font, GuiGraphics guiHelper, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
 //        x /= scale;
 //        y /= scale;
-//        font.drawWordWrap(Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, LORE_PAGE_WIDTH, 0xFFFFFF);
         return drawText(font, guiHelper, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF, scale);
-        //guiHelper.drawString(font, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF);
     }
 
     private void generateSpellSlots() {
@@ -410,8 +406,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 return;
 
             //  Is the spellbook a high enough rarity?
-            var scrollData = SpellData.getSpellData(menu.getScrollSlot().getItem());
-            if (spellBook.getRarity().compareRarity(scrollData.getSpell().getRarity()) < 0)
+            var spellData = SpellData.getSpellData(menu.getScrollSlot().getItem());
+            if (spellBook.getRarity().compareRarity(spellData.getSpell().getRarity(spellData.getLevel())) < 0)
                 return;
 
             //  Is the Spell Book unique? (shouldn't even be possible to get this far but...)
@@ -480,28 +476,22 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private boolean isHovering(int x, int y, int width, int height, int mouseX, int mouseY) {
         return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
     }
-//
-//    private void setTexture(ResourceLocation texture) {
-//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-//        RenderSystem.setShaderTexture(0, texture);
-//    }
 
     private final int[][] LAYOUT = ClientRenderCache.SPELL_LAYOUT;
 
     private class SpellSlotInfo {
-        public AbstractSpell containedSpell;
+        public SpellData spellData;
         public Vec2 relativePosition;
         public Button button;
 
-        SpellSlotInfo(AbstractSpell containedSpell, Vec2 relativePosition, Button button) {
-            this.containedSpell = containedSpell;
+        SpellSlotInfo(SpellData spellData, Vec2 relativePosition, Button button) {
+            this.spellData = spellData;
             this.relativePosition = relativePosition;
             this.button = button;
         }
 
         public boolean hasSpell() {
-            return containedSpell != null;
+            return spellData != null && !spellData.equals(SpellData.EMPTY);
         }
     }
 

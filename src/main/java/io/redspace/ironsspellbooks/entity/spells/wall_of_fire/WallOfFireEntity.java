@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.entity.spells.wall_of_fire;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -92,8 +92,9 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             } else {
                 for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
                     if (livingentity != getOwner()) {
-                        if (DamageSources.applyDamage(livingentity, damage, SpellType.WALL_OF_FIRE_SPELL.getDamageSource(this, getOwner()), SchoolType.FIRE))
+                        if(DamageSources.applyDamage(livingentity, damage, SpellRegistry.WALL_OF_FIRE_SPELL.get().getDamageSource(this,getOwner()), SpellRegistry.WALL_OF_FIRE_SPELL.get().getSchoolType())) {
                             livingentity.setSecondsOnFire(3);
+                        }
                     }
                 }
             }

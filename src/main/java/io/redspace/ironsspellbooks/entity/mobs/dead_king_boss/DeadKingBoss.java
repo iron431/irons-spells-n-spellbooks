@@ -1,17 +1,17 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.PatrolNearLocationGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.SpellBarrageGoal;
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -33,6 +33,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -100,38 +101,40 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
         return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85, 3.5f).setSpellQuality(.3f, .5f).setSpells(
                 List.of(
-                        SpellType.RAY_OF_SIPHONING_SPELL,
-                        SpellType.BLOOD_SLASH_SPELL, SpellType.BLOOD_SLASH_SPELL,
-                        SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL, SpellType.WITHER_SKULL_SPELL,
-                        SpellType.FANG_STRIKE_SPELL, SpellType.FANG_STRIKE_SPELL,
-                        SpellType.POISON_ARROW_SPELL, SpellType.POISON_ARROW_SPELL,
-                        SpellType.BLIGHT_SPELL,
-                        SpellType.ACID_ORB_SPELL
+                        SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
+                        SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
+                        SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(),
+                        SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(),
+                        SpellRegistry.POISON_ARROW_SPELL.get(), SpellRegistry.POISON_ARROW_SPELL.get(),
+                        SpellRegistry.BLIGHT_SPELL.get(),
+                        SpellRegistry.ACID_ORB_SPELL.get()
                 ),
-                List.of(SpellType.FANG_WARD_SPELL, SpellType.BLOOD_STEP_SPELL),
+                List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.BLOOD_STEP_SPELL.get()),
                 List.of(/*SpellType.BLOOD_STEP_SPELL*/),
                 List.of()
-        ).setMeleeBias(0.75f);
+        ).setMeleeBias(0.75f).setShouldFlee(false);
     }
 
     protected void setFirstPhaseGoals() {
+        this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellType.WITHER_SKULL_SPELL, 3, 4, 70, 140, 3));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.RAISE_DEAD_SPELL, 3, 5, 600, 900, 1));
-        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellType.BLOOD_STEP_SPELL, 1, 1, 100, 180, 1));
-        this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellType.RAISE_DEAD_SPELL, 10, 50, 8, 8));
+        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 3, 5, 600, 900, 1));
+        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 10, 50, 8, 8));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 
     }
 
     protected void setFinalPhaseGoals() {
+        this.goalSelector.getRunningGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
-        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellType.WITHER_SKULL_SPELL, 5, 5, 60, 140, 4));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellType.SUMMON_VEX_SPELL, 3, 5, 400, 600, 1));
-        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellType.BLOOD_STEP_SPELL, 1, 1, 100, 180, 1));
-        this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellType.BLAZE_STORM_SPELL, 10, 30, 10, 10));
+        this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 3, 5, 400, 600, 1));
+        this.goalSelector.addGoal(3, new SpellBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.hasUsedSingleAttack = false;
@@ -224,12 +227,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                                 (this.random.nextFloat() * 2 - 1) * radius
                         ));
                         level.addParticle(ParticleTypes.SMOKE, random.x, random.y, random.z, 0, -.1, 0);
-
                     }
-
                 }
             }
-
         } else {
             //irons_spellbooks.LOGGER.debug("DeadKingBoss.tick | Phase: {} | isTransitioning: {} | TransitionTime: {}", getPhase(), isPhaseTransitioning(), transitionAnimationTime);
             float halfHealth = this.getMaxHealth() / 2;
@@ -238,10 +238,12 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 if (this.getHealth() <= halfHealth) {
                     setPhase(Phases.Transitioning);
                     var player = level.getNearestPlayer(this, 16);
-                    if (player != null)
+                    if (player != null) {
                         lookAt(player, 360, 360);
-                    if (!isDeadOrDying())
+                    }
+                    if (!isDeadOrDying()) {
                         setHealth(halfHealth);
+                    }
                     playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get());
                     //Overriding isInvulnerable just doesn't seem to work
                     setInvulnerable(true);
@@ -403,10 +405,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         var controller = animationEvent.getController();
         if (isPhaseTransitioning()) {
             controller.setAnimation(phase_transition_animation);
-            return PlayState.CONTINUE;
         }
 
-        return PlayState.STOP;
+        return PlayState.CONTINUE;
     }
 
     private PlayState idlePredicate(AnimationState animationEvent) {

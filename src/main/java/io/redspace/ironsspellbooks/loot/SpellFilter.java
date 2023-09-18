@@ -3,47 +3,47 @@ package io.redspace.ironsspellbooks.loot;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class SpellFilter {
     SchoolType schoolType = null;
-    List<SpellType> spells = new ArrayList<>();
+    List<AbstractSpell> spells = new ArrayList<>();
 
     public SpellFilter(SchoolType schoolType) {
         this.schoolType = schoolType;
     }
 
-    public SpellFilter(List<SpellType> spells) {
+    public SpellFilter(List<AbstractSpell> spells) {
         this.spells = spells;
     }
 
     public SpellFilter() {
-
     }
 
     public boolean isFiltered() {
         return schoolType != null || spells.size() > 0;
     }
 
-    public List<SpellType> getApplicableSpells() {
+    public List<AbstractSpell> getApplicableSpells() {
         if (spells.size() > 0)
             return spells;
         else if (schoolType != null)
-            return SpellType.getSpellsFromSchool(schoolType);
+            return SpellRegistry.getSpellsForSchool(schoolType);
         else
-            return Arrays.stream(SpellType.values()).filter((spellType) -> spellType.getSchoolType() != SchoolType.VOID).toList();
-
+            return SpellRegistry.REGISTRY.get().getValues().stream().toList();
     }
 
-    public SpellType getRandomSpell(RandomSource random, Predicate<SpellType> filter) {
+    public AbstractSpell getRandomSpell(RandomSource random, Predicate<AbstractSpell> filter) {
         //Will throw a non fatal error if the filter empties the list
         var spells = getApplicableSpells().stream().filter(filter).toList();
         return spells.get(random.nextInt(spells.size()));
@@ -52,26 +52,17 @@ public class SpellFilter {
     public static SpellFilter deserializeSpellFilter(JsonObject json) {
         if (GsonHelper.isValidNode(json, "school")) {
             var schoolType = GsonHelper.getAsString(json, "school");
-            return switch (schoolType.toLowerCase()) {
-                case "fire" -> new SpellFilter(SchoolType.FIRE);
-                case "ice" -> new SpellFilter(SchoolType.ICE);
-                case "lightning" -> new SpellFilter(SchoolType.LIGHTNING);
-                case "holy" -> new SpellFilter(SchoolType.HOLY);
-                case "ender" -> new SpellFilter(SchoolType.ENDER);
-                case "blood" -> new SpellFilter(SchoolType.BLOOD);
-                case "evocation" -> new SpellFilter(SchoolType.EVOCATION);
-                case "void" -> new SpellFilter(SchoolType.VOID);
-                case "poison" -> new SpellFilter(SchoolType.POISON);
-                default -> new SpellFilter();
-            };
+            return new SpellFilter(SchoolRegistry.getSchool(new ResourceLocation(schoolType)));
         } else if (GsonHelper.isArrayNode(json, "spells")) {
             var spellsFromJson = GsonHelper.getAsJsonArray(json, "spells");
-            List<SpellType> applicableSpellList = new ArrayList<>();
+            List<AbstractSpell> applicableSpellList = new ArrayList<>();
             for (JsonElement element : spellsFromJson) {
-                String spell = element.getAsString();
-                for (SpellType spellType : SpellType.values()) {
-                    if (spellType.getId().equalsIgnoreCase(spell))
-                        applicableSpellList.add(spellType);
+                String spellId = element.getAsString();
+
+                var spell = SpellRegistry.getSpell(spellId);
+
+                if (spell != SpellRegistry.none()) {
+                    applicableSpellList.add(spell);
                 }
             }
             return new SpellFilter(applicableSpellList);

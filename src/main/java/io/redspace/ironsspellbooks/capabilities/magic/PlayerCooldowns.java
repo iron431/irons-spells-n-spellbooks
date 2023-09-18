@@ -1,32 +1,34 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldowns;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.AbstractCollection;
 import java.util.Map;
 
 public class PlayerCooldowns {
-    public static final String SPELL_ID = "sid";
+    public static final String LEGACY_SPELL_ID = "sid";
+    public static final String SPELL_ID = "id";
     public static final String SPELL_COOLDOWN = "scd";
     public static final String COOLDOWN_REMAINING = "cdr";
 
     //spell type and for how many more ticks it will be on cooldown
-    private final Map<SpellType, CooldownInstance> spellCooldowns;
+    private final Map<String, CooldownInstance> spellCooldowns;
 
     //This is used to deal with the client and server tick's not in sync so
     // the client has a little grace period so it's remove doesn't happen before the server's
     private int tickBuffer = 0;
 
     public PlayerCooldowns() {
-        this(Maps.newEnumMap(SpellType.class));
+        this(Maps.newHashMap());
     }
 
-    public PlayerCooldowns(Map<SpellType, CooldownInstance> spellCooldowns) {
+    public PlayerCooldowns(Map<String, CooldownInstance> spellCooldowns) {
         this.spellCooldowns = spellCooldowns;
     }
 
@@ -35,38 +37,48 @@ public class PlayerCooldowns {
     }
 
     public void tick(int actualTicks) {
-        spellCooldowns.forEach((spell, cooldown) -> {
-            if (decrementCooldown(cooldown, actualTicks))
-                spellCooldowns.remove(spell);
-        });
+        var spells = spellCooldowns.entrySet().stream().filter(x -> decrementCooldown(x.getValue(), actualTicks)).toList();
+        spells.forEach(spell -> spellCooldowns.remove(spell.getKey()));
+
+//        spellCooldowns.forEach((spell, cooldown) -> {
+//            if (decrementCooldown(cooldown, actualTicks))
+//                spellCooldowns.remove(spell);
+//        });
     }
 
     public boolean hasCooldownsActive() {
         return !spellCooldowns.isEmpty();
     }
 
-    public Map<SpellType, CooldownInstance> getSpellCooldowns() {
+    public Map<String, CooldownInstance> getSpellCooldowns() {
         return spellCooldowns;
     }
 
-    public void addCooldown(SpellType spell, int durationTicks) {
-        spellCooldowns.put(spell, new CooldownInstance(durationTicks));
+    public void addCooldown(AbstractSpell spell, int durationTicks) {
+        spellCooldowns.put(spell.getSpellId(), new CooldownInstance(durationTicks));
     }
 
-    public void addCooldown(SpellType spell, int durationTicks, int remaining) {
-        //irons_spellbooks.LOGGER.debug("addCooldown: {} {} {}", spell, durationTicks, remaining);
-        spellCooldowns.put(spell, new CooldownInstance(durationTicks, remaining));
+    public void addCooldown(AbstractSpell spell, int durationTicks, int remaining) {
+        spellCooldowns.put(spell.getSpellId(), new CooldownInstance(durationTicks, remaining));
     }
 
-    public boolean isOnCooldown(SpellType spell) {
-        return spellCooldowns.containsKey(spell);
+    public void addCooldown(String spellID, int durationTicks) {
+        spellCooldowns.put(spellID, new CooldownInstance(durationTicks));
     }
 
-    public float getCooldownPercent(SpellType spell) {
-        return spellCooldowns.getOrDefault(spell, new CooldownInstance(0)).getCooldownPercent();
+    public void addCooldown(String spellID, int durationTicks, int remaining) {
+        spellCooldowns.put(spellID, new CooldownInstance(durationTicks, remaining));
     }
 
-    private boolean decrementCooldown(CooldownInstance c, int amount) {
+    public boolean isOnCooldown(AbstractSpell spell) {
+        return spellCooldowns.containsKey(spell.getSpellId());
+    }
+
+    public float getCooldownPercent(AbstractSpell spell) {
+        return spellCooldowns.getOrDefault(spell.getSpellId(), new CooldownInstance(0)).getCooldownPercent();
+    }
+
+    public boolean decrementCooldown(CooldownInstance c, int amount) {
         c.decrementBy(amount);
         return c.getCooldownRemaining() <= tickBuffer;
     }
@@ -76,10 +88,10 @@ public class PlayerCooldowns {
     }
 
     public void saveNBTData(ListTag listTag) {
-        spellCooldowns.forEach((spell, cooldown) -> {
+        spellCooldowns.forEach((spellId, cooldown) -> {
             if (cooldown.getCooldownRemaining() > 0) {
                 CompoundTag ct = new CompoundTag();
-                ct.putInt(SPELL_ID, spell.getValue());
+                ct.putString(SPELL_ID, spellId);
                 ct.putInt(SPELL_COOLDOWN, cooldown.getSpellCooldown());
                 ct.putInt(COOLDOWN_REMAINING, cooldown.getCooldownRemaining());
                 listTag.add(ct);
@@ -91,10 +103,10 @@ public class PlayerCooldowns {
         if (listTag != null) {
             listTag.forEach(tag -> {
                 CompoundTag t = (CompoundTag) tag;
-                SpellType spellType = SpellType.values()[t.getInt(SPELL_ID)];
+                String spellId = t.getString(SPELL_ID);
                 int spellCooldown = t.getInt(SPELL_COOLDOWN);
                 int cooldownRemaining = t.getInt(COOLDOWN_REMAINING);
-                spellCooldowns.put(spellType, new CooldownInstance(spellCooldown, cooldownRemaining));
+                spellCooldowns.put(spellId, new CooldownInstance(spellCooldown, cooldownRemaining));
             });
         }
     }

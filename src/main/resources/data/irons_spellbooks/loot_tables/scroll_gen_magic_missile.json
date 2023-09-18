@@ -14,8 +14,8 @@
                 "max": 1.0
               },
               "spells": [
-                "magic_missile",
-                "firebolt"
+                "irons_spellbooks:magic_missile",
+                "irons_spellbooks:firebolt"
               ]
             }
           ]

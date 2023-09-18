@@ -1,13 +1,13 @@
 package io.redspace.ironsspellbooks.entity.spells.poison_cloud;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -76,7 +76,7 @@ public class PoisonSplash extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        if (DamageSources.applyDamage(target, getDamage(), SpellType.POISON_SPLASH_SPELL.getDamageSource(this, getOwner()), SchoolType.POISON))
+        if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.POISON_SPLASH_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.POISON_SPLASH_SPELL.get().getSchoolType()))
             target.addEffect(new MobEffectInstance(MobEffects.POISON, getEffectDuration(), 0));
     }
 

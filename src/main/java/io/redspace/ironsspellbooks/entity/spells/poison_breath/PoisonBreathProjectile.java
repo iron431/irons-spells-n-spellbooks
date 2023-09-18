@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.poison_breath;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -57,7 +57,7 @@ public class PoisonBreathProjectile extends AbstractConeProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         //irons_spellbooks.LOGGER.debug("ConeOfColdProjectile.onHitEntity: {}", entityHitResult.getEntity().getName().getString());
         var entity = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(entity, damage, SpellType.POISON_BREATH_SPELL.getDamageSource(this, getOwner()), SchoolType.POISON) && entity instanceof LivingEntity livingEntity)
+        if (DamageSources.applyDamage(entity, damage, SpellRegistry.POISON_BREATH_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.POISON_BREATH_SPELL.get().getSchoolType()) && entity instanceof LivingEntity livingEntity)
             livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0));
     }
 

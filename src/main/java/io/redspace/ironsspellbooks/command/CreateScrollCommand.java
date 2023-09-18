@@ -4,14 +4,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.server.command.EnumArgument;
 
 public class CreateScrollCommand {
 
@@ -20,20 +21,30 @@ public class CreateScrollCommand {
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("createScroll").requires((p_138819_) -> {
             return p_138819_.hasPermission(2);
-        }).then(Commands.argument("spellType", EnumArgument.enumArgument(SpellType.class)).then(Commands.argument("level", IntegerArgumentType.integer(1)).executes((commandContext) -> {
-            return createScroll(commandContext.getSource(), commandContext.getArgument("spellType", SpellType.class), IntegerArgumentType.getInteger(commandContext, "level"));
+        }).then(Commands.argument("spell", SpellArgument.spellArgument()).then(Commands.argument("level", IntegerArgumentType.integer(1)).executes((commandContext) -> {
+            return createScroll(commandContext.getSource(), commandContext.getArgument("spell", String.class), IntegerArgumentType.getInteger(commandContext, "level"));
         }))));
     }
 
-    private static int createScroll(CommandSourceStack source, SpellType spellType, int spellLevel) throws CommandSyntaxException {
-        if (spellLevel > spellType.getMaxLevel()) {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spellType, spellType.getMaxLevel())).create();
+    private static int createScroll(CommandSourceStack source, String spell, int spellLevel) throws CommandSyntaxException {
+        if (!spell.contains(":")) {
+            spell = IronsSpellbooks.MODID + ":" + spell;
+        }
+
+        var abstractSpell = SpellRegistry.REGISTRY.get().getValue(new ResourceLocation(spell));
+
+        if (abstractSpell == null || abstractSpell == SpellRegistry.none()) {
+            throw ERROR_FAILED.create();
+        }
+
+        if (spellLevel > abstractSpell.getMaxLevel()) {
+            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getSpellName(), abstractSpell.getMaxLevel())).create();
         }
 
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-            SpellData.setSpellData(itemstack, spellType, spellLevel);
+            SpellData.setSpellData(itemstack, spell, spellLevel);
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
             }

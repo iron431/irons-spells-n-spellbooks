@@ -40,7 +40,7 @@
         },
         {
           "type": "minecraft:tag",
-          "name": "irons_spellbooks:poison_focus",
+          "name": "irons_spellbooks:nature_focus",
           "expand": true
         }
       ]

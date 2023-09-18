@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
-import io.redspace.ironsspellbooks.spells.SchoolType;
-import io.redspace.ironsspellbooks.spells.SpellType;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.EvokerFangs;
@@ -63,8 +63,8 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
     private void dealDamageTo(LivingEntity pTarget) {
         LivingEntity livingentity = this.getOwner();
         if (pTarget.isAlive() && !pTarget.isInvulnerable() && pTarget != livingentity) {
-            DamageSources.applyDamage(pTarget, damage, SpellType.FANG_STRIKE_SPELL.getDamageSource(this,getOwner()), SchoolType.EVOCATION);
-
+            var spell = SpellRegistry.FANG_STRIKE_SPELL.get();
+            DamageSources.applyDamage(pTarget, damage, spell.getDamageSource(this, getOwner()), spell.getSchoolType());
         }
     }
 
@@ -80,7 +80,7 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
     }
 
     @Override
-    public void onAntiMagic(PlayerMagicData playerMagicData) {
+    public void onAntiMagic(MagicData playerMagicData) {
         this.discard();
     }
 }

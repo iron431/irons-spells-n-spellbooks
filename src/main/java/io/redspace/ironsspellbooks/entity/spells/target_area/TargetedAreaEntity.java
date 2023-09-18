@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
@@ -27,21 +28,31 @@ public class TargetedAreaEntity extends Entity {
     @Nullable
     private UUID ownerUUID;
     @Nullable
-    private LivingEntity cachedOwner;
+    private Entity cachedOwner;
+    boolean hasOwner;
 
     private int duration;
 
-    public void setOwner(@Nullable LivingEntity pOwner) {
+    public void setOwner(@Nullable Entity pOwner) {
         if (pOwner != null) {
             this.ownerUUID = pOwner.getUUID();
             this.cachedOwner = pOwner;
+            hasOwner = true;
         }
-
     }
 
     @Nullable
     public Entity getOwner() {
-        return OwnerHelper.getAndCacheOwner(level(), cachedOwner, ownerUUID);
+        if (cachedOwner != null && cachedOwner.isAlive()) {
+            return cachedOwner;
+        } else if (ownerUUID != null && level instanceof ServerLevel serverLevel) {
+            cachedOwner = serverLevel.getEntity(ownerUUID);
+            if (serverLevel.getEntity(ownerUUID) instanceof LivingEntity livingEntity)
+                cachedOwner = livingEntity;
+            return cachedOwner;
+        } else {
+            return null;
+        }
     }
 
     public TargetedAreaEntity(EntityType<TargetedAreaEntity> pEntityType, Level pLevel) {
@@ -66,13 +77,17 @@ public class TargetedAreaEntity extends Entity {
         zOld = getZ();
         if (owner != null) {
             setPos(owner.position());
-            this.setDeltaMovement(owner.getDeltaMovement());
+            this.xOld = owner.xOld;
+            this.yOld = owner.yOld;
+            this.zOld = owner.zOld;
         }
-        if (!level().isClientSide
+        if (!level.isClientSide
                 && (duration > 0 && tickCount > duration
                 || duration == 0 && tickCount > 20 * 20
-                || (owner != null && owner.isRemoved())))
+                || (hasOwner && (owner == null || owner.isRemoved())))
+        ) {
             discard();
+        }
     }
 
     public TargetedAreaEntity(Level level, float radius, int color) {
@@ -102,7 +117,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     public void setRadius(float pRadius) {
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(pRadius, 0.0F, 32.0F));
         }
     }
@@ -116,7 +131,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     public void setColor(int color) {
-        if (!this.level().isClientSide) {
+        if (!this.level.isClientSide) {
             this.getEntityData().set(DATA_COLOR, color);
         }
     }
@@ -168,11 +183,13 @@ public class TargetedAreaEntity extends Entity {
         this.setRadius(tag.getFloat("Radius"));
         this.setColor(tag.getInt("Color"));
         this.tickCount = (tag.getInt("Age"));
-        if (tag.contains("Duration"))
+        if (tag.contains("Duration")) {
             this.duration = tag.getInt("Duration");
-        if (tag.contains("Owner"))
+        }
+        if (tag.contains("Owner")) {
             this.ownerUUID = tag.getUUID("Owner");
-
+            hasOwner = true;
+        }
     }
 
     @Override

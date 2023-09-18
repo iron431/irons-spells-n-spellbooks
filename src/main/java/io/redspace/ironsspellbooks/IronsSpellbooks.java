@@ -1,6 +1,11 @@
 package io.redspace.ironsspellbooks;
 
 import com.mojang.logging.LogUtils;
+import io.redspace.ironsspellbooks.api.magic.MagicHelper;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
@@ -18,7 +23,6 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -48,16 +52,22 @@ public class IronsSpellbooks {
     // Directly reference a slf4j logger
     public static final String MODID = "irons_spellbooks";
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static MagicManager MAGIC_MANAGER;
 
     public IronsSpellbooks() {
 
         ModSetup.setup();
+
+        MAGIC_MANAGER = new MagicManager();
+        MagicHelper.MAGIC_MANAGER = MAGIC_MANAGER;
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(ModSetup::init);
 
         modEventBus.addListener(OverlayRegistry::onRegisterOverlays);
 
+        SchoolRegistry.register(modEventBus);
+        SpellRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);
@@ -69,6 +79,8 @@ public class IronsSpellbooks {
         SoundRegistry.register(modEventBus);
         FeatureRegistry.register(modEventBus);
         PotionRegistry.register(modEventBus);
+        CommandArgumentRegistry.register(modEventBus);
+        StructureProcessorRegistry.register(modEventBus);
         CreativeTabRegistry.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
@@ -88,22 +100,18 @@ public class IronsSpellbooks {
         // Register the processIMC method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 
-
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SuppressWarnings("removal")
     private void clientSetup(final FMLClientSetupEvent e) {
-
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
         MenuScreens.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
 
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(BlockRegistry.ARMOR_PILE_BLOCK.get(), RenderType.translucent());
-
-
     }
 
     public void addPackFinders(AddPackFindersEvent event) {
@@ -144,8 +152,7 @@ public class IronsSpellbooks {
         registerCurioSlot("necklace", 1, false, null);
     }
 
-    public static void registerCurioSlot(final String identifier, final int slots, final boolean isHidden,
-                                         @Nullable final ResourceLocation icon) {
+    public static void registerCurioSlot(final String identifier, final int slots, final boolean isHidden, @Nullable final ResourceLocation icon) {
         final SlotTypeMessage.Builder message = new SlotTypeMessage.Builder(identifier);
 
         message.size(slots);

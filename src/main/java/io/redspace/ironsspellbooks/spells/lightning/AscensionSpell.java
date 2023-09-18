@@ -1,16 +1,18 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
-import io.redspace.ironsspellbooks.capabilities.magic.CastData;
-import io.redspace.ironsspellbooks.capabilities.magic.CastDataSerializable;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.ImpulseCastData;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,33 +26,44 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
-
+@AutoSpellConfig
 public class AscensionSpell extends AbstractSpell {
-    public AscensionSpell() {
-        this(1);
-    }
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "ascension");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)));
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
-            .setSchool(SchoolType.LIGHTNING)
+            .setSchoolResource(SchoolRegistry.LIGHTNING_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(15)
             .build();
 
-    public AscensionSpell(int level) {
-        super(SpellType.ASCENSION_SPELL);
-        this.setLevel(level);
+    public AscensionSpell() {
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 1;
         this.castTime = 0;
         this.baseManaCost = 50;
 
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.INSTANT;
+    }
+
+    @Override
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
+        return spellId;
     }
 
     @Override
@@ -64,22 +77,22 @@ public class AscensionSpell extends AbstractSpell {
     }
 
     @Override
-    public CastDataSerializable getEmptyCastData() {
+    public ICastDataSerializable getEmptyCastData() {
         return new ImpulseCastData();
     }
 
     @Override
-    public void onClientCast(Level level, LivingEntity entity, CastData castData) {
+    public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
         if (castData instanceof ImpulseCastData data) {
             entity.hasImpulse = data.hasImpulse;
             double y = Math.max(entity.getDeltaMovement().y, data.y);
             entity.setDeltaMovement(data.x, y, data.z);
         }
-        super.onClientCast(level, entity, castData);
+        super.onClientCast(level, spellLevel, entity, castData);
     }
 
     @Override
-    public void onCast(Level level, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
 
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ASCENSION.get(), 80, 0, false, false, true));
 
@@ -102,8 +115,8 @@ public class AscensionSpell extends AbstractSpell {
         level.getEntities(entity, entity.getBoundingBox().inflate(radius)).forEach(target -> {
             double distance = target.distanceToSqr(strikePos);
             if (distance < radius * radius) {
-                float finalDamage = (float) (getDamage(entity) * (1 - distance / (radius * radius)));
-                DamageSources.applyDamage(target, finalDamage, SpellType.ASCENSION_SPELL.getDamageSource(lightningBolt, entity), SchoolType.LIGHTNING);
+                float finalDamage = (float) (getDamage(spellLevel, entity) * (1 - distance / (radius * radius)));
+                DamageSources.applyDamage(target, finalDamage, getDamageSource(lightningBolt, entity), getSchoolType());
                 if (target instanceof Creeper creeper)
                     creeper.thunderHit((ServerLevel) level, lightningBolt);
             }
@@ -115,10 +128,10 @@ public class AscensionSpell extends AbstractSpell {
         entity.hasImpulse = true;
 
 
-        super.onCast(level, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    private int getDamage(LivingEntity caster) {
-        return (int) getSpellPower(caster);
+    private int getDamage(int spellLevel, LivingEntity caster) {
+        return (int) getSpellPower(spellLevel, caster);
     }
 }

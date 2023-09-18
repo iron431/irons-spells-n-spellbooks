@@ -1,14 +1,14 @@
 package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRecipe;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRecipeRegistry;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.spells.SpellRarity;
-import io.redspace.ironsspellbooks.spells.SpellType;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.world.item.ItemStack;
@@ -30,8 +30,8 @@ public final class AlchemistCauldronRecipeMaker {
     public static List<AlchemistCauldronJeiRecipe> getRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
         return Stream.of(
                         getScrollRecipes(vanillaRecipeFactory, ingredientManager),
-                        getPotionRecipes(vanillaRecipeFactory, ingredientManager),
-                        getCustomRecipes(vanillaRecipeFactory, ingredientManager))
+                        getCustomRecipes(vanillaRecipeFactory, ingredientManager),
+                        getPotionRecipes(vanillaRecipeFactory, ingredientManager))
                 .flatMap(x -> x)
                 .toList();
     }
@@ -73,7 +73,7 @@ public final class AlchemistCauldronRecipeMaker {
     }
 
     private static Stream<AlchemistCauldronJeiRecipe> getPotionRecipes(IVanillaRecipeFactory vanillaRecipeFactory, IIngredientManager ingredientManager) {
-        if(!ServerConfigs.ALLOW_CAULDRON_BREWING.get()) {
+        if (!ServerConfigs.ALLOW_CAULDRON_BREWING.get()) {
             return Stream.of();
         }
 
@@ -127,14 +127,14 @@ public final class AlchemistCauldronRecipeMaker {
 
     }
 
-    private static List<ItemStack> enumerateScrollLevels(SpellType spellType) {
+    private static List<ItemStack> enumerateScrollLevels(AbstractSpell spell) {
         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
 
         var scrolls = new ArrayList<ItemStack>();
 
-        IntStream.rangeClosed(spellType.getMinLevel(), spellType.getMaxLevel())
+        IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
                 .forEach((spellLevel) -> {
-                    scrolls.add(getScrollStack(scrollStack, spellType, spellLevel));
+                    scrolls.add(getScrollStack(scrollStack, spell, spellLevel));
                 });
 
         return scrolls;
@@ -145,10 +145,15 @@ public final class AlchemistCauldronRecipeMaker {
         var inputs = new ArrayList<ItemStack>();
         var catalysts = new ArrayList<ItemStack>();
         var outputs = new ArrayList<ItemStack>();
+        var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
 
-        Arrays.stream(SpellType.values()).filter((spellType -> spellType.isEnabled() && spellType != SpellType.NONE_SPELL)).forEach((spellType -> {
-            inputs.addAll(enumerateScrollLevels(spellType).stream().filter((scrollStack) -> SpellData.getSpellData(scrollStack).getSpell().getRarity() == spellRarity).toList());
-        }));
+        SpellRegistry.getEnabledSpells().forEach(spell -> {
+            IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
+                    .filter(spellLevel -> spell.getRarity(spellLevel) == spellRarity)
+                    .forEach(filteredLevel -> {
+                        inputs.add(getScrollStack(scrollStack, spell, filteredLevel));
+                    });
+        });
 
         inputs.forEach((itemStack -> {
             catalysts.add(ItemStack.EMPTY);
@@ -158,9 +163,9 @@ public final class AlchemistCauldronRecipeMaker {
         return new AlchemistCauldronJeiRecipe(inputs, outputs, catalysts);
     }
 
-    private static ItemStack getScrollStack(ItemStack stack, SpellType spellType, int spellLevel) {
+    private static ItemStack getScrollStack(ItemStack stack, AbstractSpell spell, int spellLevel) {
         var scrollStack = stack.copy();
-        SpellData.setSpellData(scrollStack, spellType, spellLevel);
+        SpellData.setSpellData(scrollStack, spell, spellLevel);
         return scrollStack;
     }
 

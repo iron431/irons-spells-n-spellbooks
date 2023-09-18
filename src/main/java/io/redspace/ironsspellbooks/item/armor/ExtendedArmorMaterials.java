@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.item.armor;
 
-import io.redspace.ironsspellbooks.registries.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.Util;
 import net.minecraft.sounds.SoundEvent;
@@ -59,7 +59,7 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
     )),
     PLAGUED("plagued", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
-            AttributeRegistry.POISON_SPELL_POWER.get(), new AttributeModifier("Poison Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
+            AttributeRegistry.NATURE_SPELL_POWER.get(), new AttributeModifier("Nature Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     ELECTROMANCER("electromancer", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),

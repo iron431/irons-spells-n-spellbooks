@@ -1,49 +1,65 @@
 package io.redspace.ironsspellbooks.spells.ender;
 
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class DragonBreathSpell extends AbstractSpell {
-    public DragonBreathSpell() {
-        this(1);
-    }
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)));
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.ENDER)
+            .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(12)
             .build();
 
-    public DragonBreathSpell(int level) {
-        super(SpellType.DRAGON_BREATH_SPELL);
-        this.setLevel(level);
+    public DragonBreathSpell() {
         this.manaCostPerLevel = 1;
         this.baseSpellPower = 1;
         this.spellPowerPerLevel = 1;
         this.castTime = 100;
         this.baseManaCost = 5;
+    }
 
+    @Override
+    public CastType getCastType() {
+        return CastType.CONTINUOUS;
+    }
+
+    @Override
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
+        return spellId;
     }
 
     @Override
@@ -57,29 +73,29 @@ public class DragonBreathSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
 
-        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId() == this.getID()
+        if (playerMagicData.isCasting() && playerMagicData.getCastingSpell().getSpell().equals(this)
                 && playerMagicData.getAdditionalCastData() instanceof EntityCastData entityCastData
                 && entityCastData.getCastingEntity() instanceof AbstractConeProjectile cone) {
             cone.setDealDamageActive();
         } else {
             DragonBreathProjectile dragonBreathProjectile = new DragonBreathProjectile(world, entity);
             dragonBreathProjectile.setPos(entity.position().add(0, entity.getEyeHeight() * .7, 0));
-            dragonBreathProjectile.setDamage(getDamage(entity));
+            dragonBreathProjectile.setDamage(getDamage(spellLevel, entity));
             world.addFreshEntity(dragonBreathProjectile);
 
             playerMagicData.setAdditionalCastData(new EntityCastData(dragonBreathProjectile));
         }
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
-    public float getDamage(LivingEntity caster) {
-        return 1 + getSpellPower(caster) * .75f;
+    public float getDamage(int spellLevel, LivingEntity caster) {
+        return 1 + getSpellPower(spellLevel, caster) * .75f;
     }
 
     @Override
-    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
+    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
         return mob.distanceToSqr(target) > (10 * 10) * 1.2;
     }
 

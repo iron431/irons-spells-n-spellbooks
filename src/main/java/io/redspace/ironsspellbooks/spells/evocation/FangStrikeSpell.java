@@ -1,17 +1,21 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicData;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedEvokerFang;
-import io.redspace.ironsspellbooks.spells.*;
-import io.redspace.ironsspellbooks.util.Utils;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -19,32 +23,44 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
+@AutoSpellConfig
 public class FangStrikeSpell extends AbstractSpell {
-    public FangStrikeSpell() {
-        this(1);
-    }
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "fang_strike");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.fang_count", getCount(caster)),
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(caster), 1)));
+    public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
+        return List.of(Component.translatable("ui.irons_spellbooks.fang_count", getCount(spellLevel, caster)),
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)));
     }
 
-    public static DefaultConfig defaultConfig = new DefaultConfig()
+    private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
-            .setSchool(SchoolType.EVOCATION)
+            .setSchoolResource(SchoolRegistry.EVOCATION_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(5)
             .build();
 
-    public FangStrikeSpell(int level) {
-        super(SpellType.FANG_STRIKE_SPELL);
-        this.setLevel(level);
+    public FangStrikeSpell() {
         this.manaCostPerLevel = 3;
         this.baseSpellPower = 6;
         this.spellPowerPerLevel = 1;
         this.castTime = 15;
         this.baseManaCost = 30;
+    }
+
+    @Override
+    public CastType getCastType() {
+        return CastType.LONG;
+    }
+
+    @Override
+    public DefaultConfig getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    @Override
+    public ResourceLocation getSpellResource() {
+        return spellId;
     }
 
     @Override
@@ -58,21 +74,20 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, LivingEntity entity, PlayerMagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 forward = entity.getForward().multiply(1, 0, 1).normalize();
         Vec3 start = entity.getEyePosition().add(forward.scale(1.5));
 
-        for (int i = 0; i < getCount(entity); i++) {
+        for (int i = 0; i < getCount(spellLevel, entity); i++) {
             Vec3 spawn = start.add(forward.scale(i));
             spawn = new Vec3(spawn.x, getGroundLevel(world, spawn, 8), spawn.z);
             if (!world.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
                 int delay = i / 3;
-                ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, (entity.getYRot() - 90) * Mth.DEG_TO_RAD, delay, entity, getDamage(entity));
+                ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, (entity.getYRot() - 90) * Mth.DEG_TO_RAD, delay, entity, getDamage(spellLevel, entity));
                 world.addFreshEntity(fang);
             }
-
         }
-        super.onCast(world, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     private int getGroundLevel(Level level, Vec3 start, int maxSteps) {
@@ -89,16 +104,16 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(AbstractSpellCastingMob mob, LivingEntity target) {
-        float f = this.getCount(mob) * 1.2f;
+    public boolean shouldAIStopCasting(int spellLevel, Mob mob, LivingEntity target) {
+        float f = this.getCount(spellLevel, mob) * 1.2f;
         return mob.distanceToSqr(target) > (f * f);
     }
 
-    private int getCount(LivingEntity entity) {
-        return 7 + getLevel(entity);
+    private int getCount(int spellLevel, LivingEntity entity) {
+        return 7 + getLevel(spellLevel, entity);
     }
 
-    private float getDamage(LivingEntity entity) {
-        return getSpellPower(entity);
+    private float getDamage(int spellLevel, LivingEntity entity) {
+        return getSpellPower(spellLevel, entity);
     }
 }

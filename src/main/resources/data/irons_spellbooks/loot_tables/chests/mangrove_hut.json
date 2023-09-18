@@ -69,7 +69,7 @@
           "functions": [
             {
               "function": "irons_spellbooks:randomize_spell",
-              "school": "fire",
+              "school": "irons_spellbooks:fire",
               "quality": {
                 "min": 0.1,
                 "max": 0.65
