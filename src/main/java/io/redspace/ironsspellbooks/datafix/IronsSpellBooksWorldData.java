@@ -8,7 +8,7 @@ public class IronsSpellBooksWorldData extends SavedData {
     private int dataVersion;
 
     public IronsSpellBooksWorldData() {
-        dataVersion = 1;
+        dataVersion = 0;
     }
 
     public IronsSpellBooksWorldData(int dataVersion) {
