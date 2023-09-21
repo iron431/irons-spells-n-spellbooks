@@ -93,7 +93,7 @@ public class ServerPlayerEvents {
             var server = event.getServer();
             var storageSource = server.storageSource;
             //TODO: port world upgrader
-//            new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings()).runUpgrade();
+            new IronsWorldUpgrader(storageSource).runUpgrade();
         }
     }
 
@@ -210,7 +210,7 @@ public class ServerPlayerEvents {
             serverPlayer.clearFire();
             serverPlayer.setTicksFrozen(0);
             var data = serverPlayer.getEntityData().packDirty();
-            if(data != null) {
+            if (data != null) {
                 serverPlayer.connection.send(new ClientboundSetEntityDataPacket(serverPlayer.getId(), data));
             }
 
