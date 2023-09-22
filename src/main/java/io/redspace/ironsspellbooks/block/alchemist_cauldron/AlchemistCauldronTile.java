@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -420,14 +421,30 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             }
             //Otherwise, put potion in
             else if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile && !isFull(tile.resultItems)) {
-                appendItem(tile.resultItems, itemstack.split(1));
+                appendItem(tile.resultItems, itemstack);
                 return createFilledResult(level, blockState, pos, Math.min(currentLevel + 1, MAX_LEVELS), new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
             }
             return null;
         });
-
+        createInkInteraction(map, ItemRegistry.INK_COMMON);
+        createInkInteraction(map, ItemRegistry.INK_UNCOMMON);
+        createInkInteraction(map, ItemRegistry.INK_RARE);
+        createInkInteraction(map, ItemRegistry.INK_EPIC);
+        createInkInteraction(map, ItemRegistry.INK_LEGENDARY);
 
         return map;
+    }
+
+    private static void createInkInteraction(Object2ObjectOpenHashMap<Item, AlchemistCauldronInteraction> map, RegistryObject<Item> ink) {
+        map.put(ink.get(), (blockState, level, pos, currentLevel, itemstack) -> {
+            if (currentLevel > 0 && level.getBlockEntity(pos) instanceof AlchemistCauldronTile tile) {
+                if (!isFull(tile.resultItems)) {
+                    appendItem(tile.resultItems, itemstack);
+                    return createFilledResult(level, blockState, pos, currentLevel, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
+                }
+            }
+            return null;
+        });
     }
 
     private static ItemStack createFilledResult(Level level, BlockState blockState, BlockPos blockPos, int newLevel, ItemStack resultItem, SoundEvent soundEvent) {

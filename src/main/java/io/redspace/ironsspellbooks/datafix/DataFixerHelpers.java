@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.spells.eldritch.AbyssalShroudSpell;
 import io.redspace.ironsspellbooks.spells.ender.BlackHoleSpell;
 import io.redspace.ironsspellbooks.spells.eldritch.SculkTentaclesSpell;
 import net.minecraft.nbt.*;
+import net.minecraftforge.fml.ModList;
 
 import java.util.Map;
 
@@ -142,7 +143,10 @@ public class DataFixerHelpers {
     }
 
     public static boolean fixTetra(CompoundTag tag) {
-        if (tag != null) {
+        if (!ModList.get().isLoaded("tetra")) {
+            return false;
+        }
+        else if (tag != null) {
             String key = "sword/socket_material";
             if (tag.contains(key)) {
                 var socketTag = tag.get(key);
@@ -159,7 +163,10 @@ public class DataFixerHelpers {
     }
 
     public static boolean fixApoth(CompoundTag tag) {
-        if (tag != null) {
+        if (!ModList.get().isLoaded("apotheosis")) {
+            return false;
+        }
+        else if (tag != null) {
             if (tag.get("affix_data") instanceof CompoundTag affixTag) {
                 if (affixTag.get("gems") instanceof ListTag gemList) {
                     for (Tag gem : gemList) {

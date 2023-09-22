@@ -29,13 +29,14 @@ public class AttributeRegistry {
     public static final RegistryObject<Attribute> CAST_TIME_REDUCTION = ATTRIBUTES.register("cast_time_reduction", () -> (new RangedAttribute("attribute.irons_spellbooks.cast_time_reduction", 1.0D, 1, 10.0D).setSyncable(true)));
     public static final RegistryObject<Attribute> SUMMON_DAMAGE = ATTRIBUTES.register("summon_damage", () -> (new RangedAttribute("attribute.irons_spellbooks.summon_damage", 1.0D, 1, 10.0D).setSyncable(true)));
 
-//    public static final RegistryObject<Attribute> FIRE_MAGIC_RESIST = newResistanceAttribute("fire");
-//    public static final RegistryObject<Attribute> ICE_MAGIC_RESIST = newResistanceAttribute("ice");
-//    public static final RegistryObject<Attribute> LIGHTNING_MAGIC_RESIST = newResistanceAttribute("lightning");
-//    public static final RegistryObject<Attribute> HOLY_MAGIC_RESIST = newResistanceAttribute("holy");
-//    public static final RegistryObject<Attribute> ENDER_MAGIC_RESIST = newResistanceAttribute("ender");
-//    public static final RegistryObject<Attribute> BLOOD_MAGIC_RESIST = newResistanceAttribute("blood");
-//    public static final RegistryObject<Attribute> EVOCATION_MAGIC_RESIST = newResistanceAttribute("evocation");
+    public static final RegistryObject<Attribute> FIRE_MAGIC_RESIST = newResistanceAttribute("fire");
+    public static final RegistryObject<Attribute> ICE_MAGIC_RESIST = newResistanceAttribute("ice");
+    public static final RegistryObject<Attribute> LIGHTNING_MAGIC_RESIST = newResistanceAttribute("lightning");
+    public static final RegistryObject<Attribute> HOLY_MAGIC_RESIST = newResistanceAttribute("holy");
+    public static final RegistryObject<Attribute> ENDER_MAGIC_RESIST = newResistanceAttribute("ender");
+    public static final RegistryObject<Attribute> BLOOD_MAGIC_RESIST = newResistanceAttribute("blood");
+    public static final RegistryObject<Attribute> EVOCATION_MAGIC_RESIST = newResistanceAttribute("evocation");
+    public static final RegistryObject<Attribute> NATURE_MAGIC_RESIST = newResistanceAttribute("nature");
 
     public static final RegistryObject<Attribute> FIRE_SPELL_POWER = newPowerAttribute("fire");
     public static final RegistryObject<Attribute> ICE_SPELL_POWER = newPowerAttribute("ice");
@@ -56,13 +57,14 @@ public class AttributeRegistry {
             e.add(entity, CAST_TIME_REDUCTION.get());
             e.add(entity, SUMMON_DAMAGE.get());
 
-//            e.add(entity, FIRE_MAGIC_RESIST.get());
-//            e.add(entity, ICE_MAGIC_RESIST.get());
-//            e.add(entity, LIGHTNING_MAGIC_RESIST.get());
-//            e.add(entity, HOLY_MAGIC_RESIST.get());
-//            e.add(entity, ENDER_MAGIC_RESIST.get());
-//            e.add(entity, BLOOD_MAGIC_RESIST.get());
-//            e.add(entity, EVOCATION_MAGIC_RESIST.get());
+            e.add(entity, FIRE_MAGIC_RESIST.get());
+            e.add(entity, ICE_MAGIC_RESIST.get());
+            e.add(entity, LIGHTNING_MAGIC_RESIST.get());
+            e.add(entity, HOLY_MAGIC_RESIST.get());
+            e.add(entity, ENDER_MAGIC_RESIST.get());
+            e.add(entity, BLOOD_MAGIC_RESIST.get());
+            e.add(entity, EVOCATION_MAGIC_RESIST.get());
+            e.add(entity, NATURE_MAGIC_RESIST.get());
 
             e.add(entity, FIRE_SPELL_POWER.get());
             e.add(entity, ICE_SPELL_POWER.get());

@@ -8,7 +8,7 @@
     {
       "type": "patchouli:text",
       "title": "Uncraftable Spell Books",
-      "text": "Not every spell book can be manufactured - it is called the arcane art, after all. Armor, weapons, trinkets, and, of course, spell books, are all littered across the world, waiting for you to explore and find them. "
+      "text": "Armor, weapons, trinkets, and, of course, spell books, are all littered across the world, waiting for you to explore and find them. "
     },
     {
       "type": "patchouli:text",
@@ -33,7 +33,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:rotten_spell_book",
-      "text": "What may have once been a more powerful book has since rotted away, leaving but three pages, still more powerful than most Overworld spell books. They can be looted from equally rotten places all across the Overworld."
+      "text": "What may have once been a more powerful book has since rotted away, leaving but three pages. Yet, still more powerful than most Overworld spell books. They can be looted from equally rotten places all across the Overworld."
     },
     {
       "type": "patchouli:spotlight",
@@ -43,7 +43,12 @@
     {
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:blaze_spell_book",
-      "text": "Every Blaze, unbeknownst to them, comes with one of these tucked away. The trick is killing them in a way that doesn't turn it into ash."
+      "text": "Every Blaze, unbeknownst to them, comes with one of these tucked away. The trick is killing them and hoping it doesn't turn into ash."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:druidic_spell_book",
+      "text": "A strong magical energy still persists within the Rotten Spell Book. Perhaps Mother Nature will bless the book anew if a proper remedy were applied."
     }
   ]
 }
