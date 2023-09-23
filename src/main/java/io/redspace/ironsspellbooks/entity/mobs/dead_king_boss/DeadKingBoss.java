@@ -28,6 +28,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -125,7 +127,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 10, 50, 8, 8));
         this.goalSelector.addGoal(5, new PatrolNearLocationGoal(this, 32, 0.9f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-
+        //this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,100000,100000));
     }
 
     protected void setFinalPhaseGoals() {
@@ -373,21 +375,15 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
     }
 
     private final RawAnimation phase_transition_animation = RawAnimation.begin().thenPlay("dead_king_die");
-    private final RawAnimation idle = RawAnimation.begin().thenPlay("dead_king_idle");
     private final RawAnimation melee = RawAnimation.begin().thenPlay("dead_king_melee");
     private final RawAnimation slam = RawAnimation.begin().thenPlay("dead_king_slam");
 
     private final AnimationController<DeadKingBoss> transitionController = new AnimationController<>(this, "dead_king_transition", 0, this::transitionPredicate);
     private final AnimationController<DeadKingBoss> meleeController = new AnimationController<>(this, "dead_king_animations", 0, this::predicate);
-    private final AnimationController<DeadKingBoss> idleController = new AnimationController<>(this, "dead_king_idle", 0, this::idlePredicate);
 
     private PlayState predicate(AnimationState<DeadKingBoss> animationEvent) {
         var controller = animationEvent.getController();
-//        if (isPhaseTransitioning() && controller.getAnimationState() == AnimationState.Stopped) {
-//            controller.markNeedsReload();
-//            controller.setAnimation(phase_transition_animation);
-//            return PlayState.CONTINUE;
-//        }
+
         if (this.swinging) {
             controller.forceAnimationReset();
             if (isNextSlam()) {
@@ -405,24 +401,15 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
         var controller = animationEvent.getController();
         if (isPhaseTransitioning()) {
             controller.setAnimation(phase_transition_animation);
+            return PlayState.CONTINUE;
         }
-
-        return PlayState.CONTINUE;
-    }
-
-    private PlayState idlePredicate(AnimationState animationEvent) {
-        if (isAnimating())
-            return PlayState.STOP;
-        if (animationEvent.getController().getAnimationState() == AnimationController.State.STOPPED)
-            animationEvent.getController().setAnimation(idle);
-        return PlayState.CONTINUE;
+        return PlayState.STOP;
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(transitionController);
         controllerRegistrar.add(meleeController);
-        controllerRegistrar.add(idleController);
         super.registerControllers(controllerRegistrar);
     }
 
@@ -438,7 +425,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
-        level().playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.get(), SoundSource.HOSTILE, 1, 1);
+        level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.get(), SoundSource.HOSTILE, 1, 1);
         return super.doHurtTarget(pEntity);
     }
 
