@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenCustomHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.worldselection.OptimizeWorldScreen;
+import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -20,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.WorldStem;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -56,17 +58,18 @@ public class IronsWorldUpgrader {
     private static final Pattern REGEX = Pattern.compile("^r\\.(-?[0-9]+)\\.(-?[0-9]+)\\.mca$");
     private final DimensionDataStorage overworldDataStorage;
     private final IronsSpellBooksWorldData ironsSpellBooksWorldData;
-    private Registry<LevelStem> dimensions = null;
-    private Set<ResourceKey<Level>> levels = null;
+    private Set<ResourceKey<Level>> levels;
 
-    public IronsWorldUpgrader(LevelStorageSource.LevelStorageAccess pLevelStorage) {
+    public IronsWorldUpgrader(LevelStorageSource.LevelStorageAccess pLevelStorage, LayeredRegistryAccess<RegistryLayer> registries) {
         this.levelStorage = pLevelStorage;
 
         try {
-            WorldStem worldstem = Minecraft.getInstance().createWorldOpenFlows().loadWorldStem(pLevelStorage, false);
-            RegistryAccess.Frozen registryaccess$frozen = worldstem.registries().compositeAccess();
-            dimensions = registryaccess$frozen.registryOrThrow(Registries.LEVEL_STEM);
-            levels = dimensions.registryKeySet().stream().map(Registries::levelStemToLevel).collect(Collectors.toUnmodifiableSet());
+            levels = registries.compositeAccess()
+                    .registryOrThrow(Registries.LEVEL_STEM)
+                    .registryKeySet()
+                    .stream()
+                    .map(Registries::levelStemToLevel)
+                    .collect(Collectors.toUnmodifiableSet());
         } catch (Exception exception) {
             IronsSpellbooks.LOGGER.error("IronsWorldUpgrader. Failed to init levels. Cannot upgrade", exception);
         }
@@ -78,8 +81,7 @@ public class IronsWorldUpgrader {
             if (!file.exists()) {
                 file.mkdir();
             }
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         }
 
         this.overworldDataStorage = new DimensionDataStorage(file, dataFixer);
@@ -94,7 +96,7 @@ public class IronsWorldUpgrader {
     }
 
     public void runUpgrade() {
-        if (dimensions != null && levels != null && worldNeedsUpgrading()) {
+        if (levels != null && worldNeedsUpgrading()) {
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting upgrade");
 
             try {

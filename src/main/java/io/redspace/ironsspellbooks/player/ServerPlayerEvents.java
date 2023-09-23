@@ -26,6 +26,9 @@ import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -37,6 +40,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.WorldStem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -46,6 +51,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
@@ -72,6 +78,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber
 public class ServerPlayerEvents {
@@ -91,9 +98,7 @@ public class ServerPlayerEvents {
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
             var server = event.getServer();
-            var storageSource = server.storageSource;
-            //TODO: port world upgrader
-            new IronsWorldUpgrader(storageSource).runUpgrade();
+            new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
         }
     }
 
