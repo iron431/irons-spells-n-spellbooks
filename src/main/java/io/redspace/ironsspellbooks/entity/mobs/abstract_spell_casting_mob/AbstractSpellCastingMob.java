@@ -428,7 +428,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     }
 
     private PlayState longCastingPredicate(AnimationEvent event) {
-        if (cancelCastAnimation) {
+        if (cancelCastAnimation || !isCasting()) {
             return PlayState.STOP;
         }
 
