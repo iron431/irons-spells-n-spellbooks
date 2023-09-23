@@ -132,7 +132,6 @@ public class IronsWorldUpgrader {
         converted = 0;
         skipped = 0;
         fixes = 0;
-        //TODO: port world upgrader
         levels.stream().map(resourceKey -> {
             return this.levelStorage.getDimensionPath(resourceKey).resolve("data").toFile();
         }).forEach(dir -> {
