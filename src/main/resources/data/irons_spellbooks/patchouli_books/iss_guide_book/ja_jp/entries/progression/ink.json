@@ -1,0 +1,39 @@
+{
+  "name": "インク",
+  "icon": "irons_spellbooks:epic_ink",
+  "category": "irons_spellbooks:root",
+  "sortnum": 4,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:common_ink",
+      "text": "インクの中で最も入手しやすいコモンインクは、最低レベルの呪文を作成できる。 呪文の最低レベルがコモンを超えている場合、その呪文はコモンインクでは作成できない。 他のすべてのインクについても同様だ。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:uncommon_ink",
+      "text": "コモンよりも入手しにくいが、わずかに強力な呪文を作成できる。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:rare_ink",
+      "text": "レアインクは、魔法の宝箱からまたは呪文を唱えるモブを倒すことで頻繫に見つけることができる。"
+
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:epic_ink",
+      "text": "エピックインクや更なるレアリティのインクは、魔法の宝物または呪文を唱えるモブを倒すことで入手するのが一番手っ取り早い。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:legendary_ink",
+      "text": "最も希少なインクであり、最も強力な呪文を生み出す。 一部の呪文には複数のレジェンダリーのレベルがあり、それらを取得するには秘術の金床を使用する必要があることに注意。"
+    },
+    {
+      "type": "patchouli:empty",
+      "draw_filler": false
+    }
+  ]
+}
