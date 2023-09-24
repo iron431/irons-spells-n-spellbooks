@@ -345,7 +345,7 @@ public class GenerateSiteData {
                         sb.append(String.format(SPELL_DATA_TEMPLATE,
                                 handleCapitalization(spellType.getSpellName()),
                                 handleCapitalization(spellType.getSchoolType().getDisplayName().getString()),
-                                String.format("/img/spells/%s.png", spellType.getSpellId()),
+                                String.format("/img/spells/%s.png", spellType.getSpellName()),
                                 spellType.getMinLevel(),
                                 spellType.getMaxLevel(),
                                 spellType.getManaCost(spellMin, null),
