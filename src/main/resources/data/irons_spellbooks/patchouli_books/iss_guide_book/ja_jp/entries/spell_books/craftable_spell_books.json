@@ -1,0 +1,29 @@
+{
+  "name": "作成可能なスペルブック",
+  "icon": "irons_spellbooks:iron_spell_book",
+  "category": "irons_spellbooks:root",
+  "sortnum": 1,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "作成可能なスペルブック",
+      "text": "スペルブックは、バニラ素材と秘術の素材をベースにして作成する。 さらにスペルブックには東急があり、高いほど呪文の本の希少性とスロット数が増加し、それに含まれるスクロールのパワーと量が増加する。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:copper_spell_book",
+      "recipe2": "irons_spellbooks:iron_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:gold_spell_book",
+      "recipe2": "irons_spellbooks:diamond_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:netherite_spell_book",
+      "recipe2": "irons_spellbooks:dragonskin_spell_book"
+    }
+  ]
+}

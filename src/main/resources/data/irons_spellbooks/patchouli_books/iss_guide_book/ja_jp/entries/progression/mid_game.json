@@ -1,0 +1,50 @@
+{
+  "name": "中盤",
+  "icon": "irons_spellbooks:scroll_forge",
+  "category": "irons_spellbooks:root",
+  "sortnum": -2,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "スクロールフォージ",
+      "text": "ネザーに行ける位になれば、魔法の力を得るための新た作成ステーションを作れるはず。その名もスクロールフォージ$(br2)スクロールフォージは、インク、紙、属性を司る素材を使用してスクロールを作成できる。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:scroll_forge"
+    },
+    {
+      "type": "patchouli:crafting",
+      "title": "新たなスペルブック",
+      "text": "更なる呪文の本はネザーで採れる物を使用して作成できる",
+      "recipe": "irons_spellbooks:gold_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:diamond_spell_book",
+      "text": "ホグリンの革はホグリンがドロップする"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:magic_cloth",
+      "title": "新たな素材",
+      "text": "また、秘術の布を使用してより強力な装備を作った方がいい。 大量の秘術エッセンスを入手するには、魔法の建造物を襲撃するのが一番効率的だろう。"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "かかしの装備",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:pumpkin_boots',Count:1b},{id:'irons_spellbooks:pumpkin_leggings',Count:1b},{id:'irons_spellbooks:pumpkin_chestplate',Count:1b},{id:'irons_spellbooks:pumpkin_helmet',Count:1b}],NoBasePlate:1b}"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blank_rune",
+      "title": "貴重な素材",
+      "text": "進歩を続けるために、魔法の構造物のルーンストーンに注目するのはどうだろうか。 ルーンストーンを使えばさらに強力な鎧を作成出来る。$(br1)ヒント:紅蓮術師など特定の属性を操る術師は常に自分の属性のルーンをドロップする。"
+    },
+    {
+      "type": "patchouli:empty",
+      "draw_filler": false
+    }
+  ]
+}
