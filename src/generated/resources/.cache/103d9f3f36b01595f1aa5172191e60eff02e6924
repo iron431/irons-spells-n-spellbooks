@@ -1,4 +1,4 @@
-// 1.20.1	2023-06-20T22:51:16.9310979	Registries
+// 1.20.1	2023-09-24T00:31:08.7493729	Registries
 98e97fef80c4433bb746da6322c4a94d69fe2a7e data/irons_spellbooks/damage_type/blood_cauldron.json
 06e8e3da773193115e4569bed7f8964ea5b83917 data/irons_spellbooks/damage_type/blood_magic.json
 3ebbe39a8df6dae168eee32a471c5f2bf26a6b25 data/irons_spellbooks/damage_type/dragon_breath_pool.json
@@ -10,8 +10,8 @@ a5039451e3aee2429c41082e2146401f63b19f67 data/irons_spellbooks/damage_type/fire_
 64510da501f8d65382f6d883846ca3132157a3aa data/irons_spellbooks/damage_type/holy_magic.json
 cdbf4db108b9370b31f52163ea2f363197ba03b4 data/irons_spellbooks/damage_type/ice_magic.json
 87dffbb77f473b21894892fdcec614f34fb8329b data/irons_spellbooks/damage_type/lightning_magic.json
+7f66c9dd531d899609429013ce06bd7f06cdcc46 data/irons_spellbooks/damage_type/nature_magic.json
 4fb2f25e0b9a2ad704c3af493070f7f7cc5471d6 data/irons_spellbooks/damage_type/poison_cloud.json
-f7314063596d05e3b73e997130bd0948e91cf5f4 data/irons_spellbooks/damage_type/poison_magic.json
 66393fecd784ca8c91023a4111a1425b4ccf71d9 data/irons_spellbooks/damage_type/void_magic.json
 02157c07a3835ea158b8b1473d2726c16da6ceb6 data/irons_spellbooks/forge/biome_modifier/add_arcane_debris_ore.json
 ddc62c4f31b90e0946df28a550d3830cec76f78d data/irons_spellbooks/worldgen/configured_feature/ore_arcane_debris.json
