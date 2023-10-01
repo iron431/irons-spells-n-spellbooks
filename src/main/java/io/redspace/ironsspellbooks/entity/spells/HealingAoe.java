@@ -38,7 +38,7 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
         if (getOwner() instanceof LivingEntity owner && Utils.shouldHealEntity(owner, target)) {
             float healAmount = getDamage();
             MinecraftForge.EVENT_BUS.post(new SpellHealEvent((LivingEntity) getOwner(), target, healAmount, SchoolRegistry.HOLY.get()));
-            target.heal(getDamage());
+            target.heal(healAmount);
         }
     }
 
