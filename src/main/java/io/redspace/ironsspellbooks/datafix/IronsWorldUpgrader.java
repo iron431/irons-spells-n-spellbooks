@@ -126,23 +126,32 @@ public class IronsWorldUpgrader {
         }).forEach(dir -> {
             var files = dir.listFiles();
             if (files != null) {
-                Arrays.stream(files).toList().forEach(file -> {
-                    try {
-                        var compoundTag = NbtIo.readCompressed(file);
-                        var ironsTraverser = new IronsTagTraverser();
-                        ironsTraverser.visit(compoundTag);
-
-                        if (ironsTraverser.changesMade()) {
-                            NbtIo.writeCompressed(compoundTag, file);
-                        }
-
-                        fixes += ironsTraverser.totalChanges();
-                    } catch (Exception exception) {
-                        IronsSpellbooks.LOGGER.error("IronsWorldUpgrader FixDimensionStorage error: {}", exception.getMessage());
-                    }
-                });
+                Arrays.stream(files).toList().forEach(this::fixDimensionDataFile);
             }
         });
+    }
+
+    private void fixDimensionDataFile(File file) {
+        var subFiles = file.listFiles();
+        if (subFiles != null && subFiles.length > 0) {
+            IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader FixDimensionStorage directory found: {} ", file.getName());
+            Arrays.stream(subFiles).forEach(this::fixDimensionDataFile);
+        } else {
+            try {
+                var compoundTag = NbtIo.readCompressed(file);
+                var ironsTraverser = new IronsTagTraverser();
+                ironsTraverser.visit(compoundTag);
+
+                if (ironsTraverser.changesMade()) {
+                    NbtIo.writeCompressed(compoundTag, file);
+                    IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader FixDimensionStorage updating file: {}, {}", file.getPath(), ironsTraverser.totalChanges());
+                }
+
+                fixes += ironsTraverser.totalChanges();
+            } catch (Exception exception) {
+                IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader FixDimensionStorage error: {}", exception.getMessage());
+            }
+        }
     }
 
     private boolean preScanChunkUpdateNeeded(ChunkStorage chunkStorage, ChunkPos chunkPos) throws Exception {
