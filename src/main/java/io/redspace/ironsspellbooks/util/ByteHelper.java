@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.util;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+
 public class ByteHelper {
     /**
      * Returns the start position of the first occurrence of the specified {@code target} within
@@ -25,6 +28,38 @@ public class ByteHelper {
             }
             return i;
         }
+        return -1;
+    }
+
+    public static int indexOf(DataInputStream dataInputStream, byte[] target) throws IOException {
+        if (dataInputStream == null || target == null || target.length == 0) {
+            return -1;
+        }
+
+        int index = -1;
+        int data;
+
+        outer:
+        do {
+            data = dataInputStream.read();
+            index++;
+
+            int addlReadCount = 0;
+
+            for (int j = 0; j < target.length; j++) {
+                if (data != target[j]) {
+                    index += addlReadCount;
+                    continue outer;
+                } else if (j < target.length - 1) {
+                    data = dataInputStream.read();
+                    addlReadCount++;
+                    if (data == -1) {
+                        return -1;
+                    }
+                }
+            }
+            return index;
+        } while (data != -1);
         return -1;
     }
 }

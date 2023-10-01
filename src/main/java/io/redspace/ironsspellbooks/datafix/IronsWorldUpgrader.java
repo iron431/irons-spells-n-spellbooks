@@ -52,6 +52,10 @@ public class IronsWorldUpgrader {
     private final IronsSpellBooksWorldData ironsSpellBooksWorldData;
     private Set<ResourceKey<Level>> levels = null;
 
+    //TODO: remove these after testing
+    int preScanInhabitedMatches = 0;
+    int fullScanInhabitedMatches = 0;
+
     private enum ChunkInhabitedState {
         INHABITED,
         NOT_INHABITED,
@@ -89,19 +93,10 @@ public class IronsWorldUpgrader {
         try {
             dataInputStream = new DataInputStream(new FileInputStream(fileName));
 
-            var buffer = new byte[1024];
-            int bytesRead;
-
-            //TODO: This code currently doesn't handle if the inhabited time and value is split between buffer boundaries
-
-            do {
-                bytesRead = dataInputStream.read(buffer);
-                if (bytesRead > 0) {
-                    chunkInhabited(buffer, bytesRead);
-                }
-            } while (bytesRead > 0);
+            int markerPos = ByteHelper.indexOf(dataInputStream, INHABITED_TIME_MARKER);
+            var inhabitedTime = dataInputStream.readLong();
+            int x = 0;
         } catch (Exception ignored) {
-
         } finally {
             if (dataInputStream != null) {
                 try {
@@ -133,15 +128,21 @@ public class IronsWorldUpgrader {
 
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting REGION_FOLDER");
             long millis = Util.getMillis();
-            doWork(REGION_FOLDER, "block_entities");
+            doWork(REGION_FOLDER, "block_entities", true);
             millis = Util.getMillis() - millis;
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished REGION_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
 
+            //TODO: remove this after testing
+            IronsSpellbooks.LOGGER.debug("MATCHES: preScanInhabitedMatches:{} fullScanInhabitedMatches:{}", preScanInhabitedMatches, fullScanInhabitedMatches);
+
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting ENTITY_FOLDER");
             millis = Util.getMillis();
-            doWork(ENTITY_FOLDER, null);
+            doWork(ENTITY_FOLDER, null, false);
             millis = Util.getMillis() - millis;
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished ENTITY_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
+
+            //TODO: remove this after testing
+            IronsSpellbooks.LOGGER.debug("MATCHES: preScanInhabitedMatches:{} fullScanInhabitedMatches:{}", preScanInhabitedMatches, fullScanInhabitedMatches);
 
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting fixDimensionStorage");
             millis = Util.getMillis();
@@ -187,74 +188,28 @@ public class IronsWorldUpgrader {
         });
     }
 
-    private ChunkInhabitedState chunkInhabited(byte[] buffer, int size) {
-        int markerPos = ByteHelper.indexOf(buffer, size, INHABITED_TIME_MARKER);
-
-        if (markerPos == -1) {
-            return ChunkInhabitedState.MARKER_NOT_FOUND;
-        }
-
-        int dataPos = markerPos + INHABITED_TIME_MARKER.length;
-        if (dataPos < size - Long.BYTES) {
-            ByteBuffer bb = ByteBuffer.allocate(8);
-            bb.put(Arrays.copyOfRange(buffer, dataPos, dataPos + 8));
-            if (bb.getLong(0) == 0) {
-                return ChunkInhabitedState.NOT_INHABITED;
-            }
-        }
-
-        return ChunkInhabitedState.INHABITED;
-    }
-
     private boolean preScanChunkUpdateNeeded(ChunkStorage chunkStorage, ChunkPos chunkPos) throws Exception {
         var regionFile = chunkStorage.worker.storage.getRegionFile(chunkPos);
         var dataInputStream = regionFile.getChunkDataInputStream(chunkPos);
-        //TODO: remove after debugging
 
         var debugChunkPos = new ChunkPos(-23, -39);
         if (chunkPos.equals(debugChunkPos)) {
             int x = 0;
         }
 
-        //FileOutputStream fileOutputStream = null;
-
         try (dataInputStream) {
             if (dataInputStream == null) {
                 return false;
             }
 
-            if (chunkPos.equals(debugChunkPos)) {
-                //fileOutputStream = new FileOutputStream(String.format("chunk_%d_%d.dat", chunkPos.x, chunkPos.z));
+            int markerPos = ByteHelper.indexOf(dataInputStream, INHABITED_TIME_MARKER);
+
+            if (markerPos == -1) {
+                return true;
             }
 
-            var buffer = new byte[2048];
-            int bytesRead;
-
-            //TODO: This code currently doesn't handle if the inhabited time and value is split between buffer boundaries.
-            // This shouldn't matter it might end up with a couple extra full scans worst case
-
-            do {
-                bytesRead = dataInputStream.read(buffer, 0, buffer.length);
-                if (bytesRead > 0) {
-
-                    if (chunkPos.equals(debugChunkPos)) {
-                       //fileOutputStream.write(buffer, 0, bytesRead);
-                    }
-
-                    var cis = chunkInhabited(buffer, bytesRead);
-
-                    if (cis == ChunkInhabitedState.INHABITED) {
-                        IronsSpellbooks.LOGGER.debug("INHABITED ChunkPos {}", chunkPos);
-                        return true;
-                    } else if (cis == ChunkInhabitedState.NOT_INHABITED) {
-                        return false;
-                    }
-                }
-            } while (bytesRead > 0);
-
-            if (chunkPos.equals(debugChunkPos)) {
-                //fileOutputStream.close();
-            }
+            var inhabitedTime = dataInputStream.readLong();
+            return inhabitedTime != 0;
 
         } catch (Exception ignored) {
         }
@@ -262,7 +217,7 @@ public class IronsWorldUpgrader {
         return true;
     }
 
-    private void doWork(String regionFolder, String filterTag) {
+    private void doWork(String regionFolder, String filterTag, boolean preScan) {
         running = true;
         converted = 0;
         skipped = 0;
@@ -303,13 +258,19 @@ public class IronsWorldUpgrader {
                         boolean updated = false;
 
                         try {
-                            if (preScanChunkUpdateNeeded(chunkstorage, chunkpos)) {
-                                IronsSpellbooks.LOGGER.debug("preScanChunkUpdateNeeded: TRUE {}", chunkpos);
+                            if (!preScan || preScanChunkUpdateNeeded(chunkstorage, chunkpos)) {
+
+                                if (preScan) {
+                                    preScanInhabitedMatches++;
+                                    IronsSpellbooks.LOGGER.debug("preScanChunkUpdateNeeded: TRUE {}", chunkpos);
+                                }
+
                                 timer.add("chunkstorage read start: " + chunkpos);
                                 CompoundTag chunkDataTag = chunkstorage.read(chunkpos).join().orElse(null);
                                 timer.add("chunkstorage read finish");
 
                                 if (chunkDataTag != null && chunkDataTag.getInt("InhabitedTime") != 0) {
+                                    fullScanInhabitedMatches++;
                                     ListTag blockEntitiesTag;
 
                                     if (filterTag != null) {
@@ -344,7 +305,7 @@ public class IronsWorldUpgrader {
                         if (System.currentTimeMillis() > nextProgressReportMS) {
                             nextProgressReportMS = System.currentTimeMillis() + REPORT_PROGRESS_MS;
                             int chunksProcessed = this.converted + this.skipped;
-                            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader PROGRESS: {} of {} chunks complete ({}%)", chunksProcessed, totalChunks, String.format("%.2f", (chunksProcessed / (float) totalChunks) * 100));
+                            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader {} PROGRESS: {} of {} chunks complete ({}%)", regionFolder, chunksProcessed, totalChunks, String.format("%.2f", (chunksProcessed / (float) totalChunks) * 100));
                         }
 
                         processedItem = true;
