@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 public class IronsWorldUpgrader {
     public static int IRONS_WORLD_DATA_VERSION = 1;
-    final int REPORT_PROGRESS_MS = 20000;
+    final int REPORT_PROGRESS_MS = 5000;
     final byte[] INHABITED_TIME_MARKER = new byte[]{0x49, 0x6E, 0x68, 0x61, 0x62, 0x69, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6D, 0x65};
     public static final String REGION_FOLDER = "region";
     public static final String ENTITY_FOLDER = "entities";
@@ -93,13 +93,13 @@ public class IronsWorldUpgrader {
         if (levels != null && worldNeedsUpgrading()) {
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting upgrade");
 
-            try {
-                IronsSpellbooks.LOGGER.info("IronsWorldUpgrader Attempting minecraft world backup (this can take long on large worlds)");
-                levelStorage.makeWorldBackup();
-                IronsSpellbooks.LOGGER.info("IronsWorldUpgrader Minecraft world backup complete.");
-            } catch (Exception exception) {
-                IronsSpellbooks.LOGGER.error("IronsWorldUpgrader Level Backup failed: {}", exception.getMessage());
-            }
+//            try {
+//                IronsSpellbooks.LOGGER.info("IronsWorldUpgrader Attempting minecraft world backup (this can take long on large worlds)");
+//                levelStorage.makeWorldBackup();
+//                IronsSpellbooks.LOGGER.info("IronsWorldUpgrader Minecraft world backup complete.");
+//            } catch (Exception exception) {
+//                IronsSpellbooks.LOGGER.error("IronsWorldUpgrader Level Backup failed: {}", exception.getMessage());
+//            }
 
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting REGION_FOLDER");
             long millis = Util.getMillis();
