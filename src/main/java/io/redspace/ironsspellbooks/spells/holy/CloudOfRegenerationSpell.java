@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
 import java.util.Optional;
@@ -83,7 +85,9 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(radius)).forEach((target) -> {
             if (target.distanceToSqr(entity.position()) < radius * radius && Utils.shouldHealEntity(entity, target)) {
-                target.heal(getHealing(spellLevel, entity));
+                float healAmount = getHealing(spellLevel, entity);
+                MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, target, healAmount));
+                target.heal(healAmount);
                 Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(target.position()), entity, true);
             }
         });

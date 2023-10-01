@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +72,9 @@ public class GreaterHealSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        entity.heal(entity.getMaxHealth());
+        float healAmount = entity.getMaxHealth();
+        MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount));
+        entity.heal(healAmount);
         Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(entity.position()), entity, true);
         super.onCast(world, spellLevel, entity, playerMagicData);
     }

@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.spells.holy;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
@@ -17,6 +18,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -85,7 +87,9 @@ public class BlessingOfLifeSpell extends AbstractSpell {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData healTargetingData) {
             var targetEntity = healTargetingData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
-                targetEntity.heal(getSpellPower(spellLevel, entity));
+                float healAmount = getSpellPower(spellLevel, entity);
+                MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, targetEntity, healAmount));
+                targetEntity.heal(healAmount);
                 Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(targetEntity.position()), targetEntity, true);
             }
         }
