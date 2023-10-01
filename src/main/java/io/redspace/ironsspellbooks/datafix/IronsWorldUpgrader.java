@@ -209,35 +209,53 @@ public class IronsWorldUpgrader {
     private boolean preScanChunkUpdateNeeded(ChunkStorage chunkStorage, ChunkPos chunkPos) throws Exception {
         var regionFile = chunkStorage.worker.storage.getRegionFile(chunkPos);
         var dataInputStream = regionFile.getChunkDataInputStream(chunkPos);
-
         //TODO: remove after debugging
-        if(chunkPos.x == -23 && chunkPos.z == -38){
+
+        var debugChunkPos = new ChunkPos(-23, -39);
+        if (chunkPos.equals(debugChunkPos)) {
             int x = 0;
         }
-        
+
+        //FileOutputStream fileOutputStream = null;
+
         try (dataInputStream) {
             if (dataInputStream == null) {
                 return false;
             }
-            var buffer = new byte[1024];
+
+            if (chunkPos.equals(debugChunkPos)) {
+                //fileOutputStream = new FileOutputStream(String.format("chunk_%d_%d.dat", chunkPos.x, chunkPos.z));
+            }
+
+            var buffer = new byte[2048];
             int bytesRead;
 
             //TODO: This code currently doesn't handle if the inhabited time and value is split between buffer boundaries.
             // This shouldn't matter it might end up with a couple extra full scans worst case
 
             do {
-                bytesRead = dataInputStream.read(buffer);
+                bytesRead = dataInputStream.read(buffer, 0, buffer.length);
                 if (bytesRead > 0) {
+
+                    if (chunkPos.equals(debugChunkPos)) {
+                       //fileOutputStream.write(buffer, 0, bytesRead);
+                    }
+
                     var cis = chunkInhabited(buffer, bytesRead);
 
                     if (cis == ChunkInhabitedState.INHABITED) {
-                        IronsSpellbooks.LOGGER.debug("ChunkPos {}", chunkPos);
+                        IronsSpellbooks.LOGGER.debug("INHABITED ChunkPos {}", chunkPos);
                         return true;
                     } else if (cis == ChunkInhabitedState.NOT_INHABITED) {
                         return false;
                     }
                 }
             } while (bytesRead > 0);
+
+            if (chunkPos.equals(debugChunkPos)) {
+                //fileOutputStream.close();
+            }
+
         } catch (Exception ignored) {
         }
 
@@ -286,7 +304,7 @@ public class IronsWorldUpgrader {
 
                         try {
                             if (preScanChunkUpdateNeeded(chunkstorage, chunkpos)) {
-                                IronsSpellbooks.LOGGER.debug("preScanChunkUpdateNeeded: TRUE");
+                                IronsSpellbooks.LOGGER.debug("preScanChunkUpdateNeeded: TRUE {}", chunkpos);
                                 timer.add("chunkstorage read start: " + chunkpos);
                                 CompoundTag chunkDataTag = chunkstorage.read(chunkpos).join().orElse(null);
                                 timer.add("chunkstorage read finish");
