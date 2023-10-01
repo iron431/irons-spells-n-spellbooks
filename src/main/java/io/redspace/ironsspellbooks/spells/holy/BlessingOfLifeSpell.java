@@ -88,7 +88,7 @@ public class BlessingOfLifeSpell extends AbstractSpell {
             var targetEntity = healTargetingData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
                 float healAmount = getSpellPower(spellLevel, entity);
-                MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, targetEntity, healAmount));
+                MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, targetEntity, healAmount, getSchoolType()));
                 targetEntity.heal(healAmount);
                 Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(targetEntity.position()), targetEntity, true);
             }

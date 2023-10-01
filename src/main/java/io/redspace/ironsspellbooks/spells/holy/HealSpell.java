@@ -77,7 +77,7 @@ public class HealSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float healAmount = getSpellPower(spellLevel, entity);
-        MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount));
+        MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount, getSchoolType()));
         entity.heal(healAmount);
         int count = 16;
         float radius = 1.25f;

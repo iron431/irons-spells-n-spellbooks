@@ -73,7 +73,7 @@ public class GreaterHealSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float healAmount = entity.getMaxHealth();
-        MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount));
+        MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount, getSchoolType()));
         entity.heal(healAmount);
         Messages.sendToPlayersTrackingEntity(new ClientboundHealParticles(entity.position()), entity, true);
         super.onCast(world, spellLevel, entity, playerMagicData);
