@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_needle;
 
+import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Optional;
 
@@ -88,7 +90,9 @@ public class BloodNeedle extends AbstractMagicProjectile {
         boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.BLOOD_NEEDLES_SPELL.get().getDamageSource(this, getOwner()), school);
         if (hit && entityHitResult.getEntity() instanceof LivingEntity target && getOwner() instanceof LivingEntity livingOwner) {
             //you know. this shit doesn't *actually* work
-            livingOwner.heal(getDamage() * DamageSources.getResist(target, school) * .25f);
+            float healAmount = getDamage() * DamageSources.getResist(target, school) * .25f;
+            MinecraftForge.EVENT_BUS.post(new SpellHealEvent(livingOwner, livingOwner, healAmount, school));
+            livingOwner.heal(healAmount);
         }
         entityHitResult.getEntity().invulnerableTime = 0;
     }

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_slash;
 
+import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -23,6 +24,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,7 +198,9 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
             if (hit && entity instanceof LivingEntity livingEntity) {
                 //livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
                 if (getOwner() instanceof LivingEntity livingOwner) {
-                    livingOwner.heal(damage * .15f * DamageSources.getResist(livingEntity, school));
+                    float healAmount = damage * .15f * DamageSources.getResist(livingEntity, school);
+                    MinecraftForge.EVENT_BUS.post(new SpellHealEvent(livingOwner, livingOwner, healAmount, school));
+                    livingOwner.heal(healAmount);
                 }
             }
             victims.add(entity);

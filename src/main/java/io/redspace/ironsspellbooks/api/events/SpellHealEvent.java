@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.events;
 
 
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -18,13 +19,16 @@ import net.minecraftforge.eventbus.api.Cancelable;
 public class SpellHealEvent extends LivingEvent {
     private final LivingEntity targetEntity;
     private final float healAmount;
-    public SpellHealEvent(LivingEntity castingEntity, LivingEntity targetEntity, float healAmount)
+    private SchoolType schoolType;
+    public SpellHealEvent(LivingEntity castingEntity, LivingEntity targetEntity, float healAmount, SchoolType schoolType)
     {
         super(castingEntity);
         this.targetEntity = targetEntity;
         this.healAmount = healAmount;
+        this.schoolType = schoolType;
     }
 
     public LivingEntity getTargetEntity() { return this.targetEntity; }
     public float getHealAmount() { return this.healAmount; }
+    public SchoolType getSchoolType() { return this.schoolType; }
 }
