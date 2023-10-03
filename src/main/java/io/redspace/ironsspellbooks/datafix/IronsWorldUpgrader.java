@@ -35,9 +35,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IronsWorldUpgrader {
+    public int tempCount = 0;
     public static int IRONS_WORLD_DATA_VERSION = 1;
     final int REPORT_PROGRESS_MS = 5000;
-    final byte[] INHABITED_TIME_MARKER = new byte[]{0x49, 0x6E, 0x68, 0x61, 0x62, 0x69, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6D, 0x65};
+    public static final byte[] INHABITED_TIME_MARKER = new byte[]{0x49, 0x6E, 0x68, 0x61, 0x62, 0x69, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6D, 0x65};
     public static final String REGION_FOLDER = "region";
     public static final String ENTITY_FOLDER = "entities";
     private final LevelStorageSource.LevelStorageAccess levelStorage;
@@ -155,12 +156,14 @@ public class IronsWorldUpgrader {
             }
 
             int markerPos = ByteHelper.indexOf(dataInputStream, INHABITED_TIME_MARKER);
-
+            //int markerPos = ByteHelper.indexOf(dataInputStream, DataFixerHelpers.parallelMatcher);
             if (markerPos == -1) {
                 return true;
             }
-
             var inhabitedTime = dataInputStream.readLong();
+
+            tempCount++;
+
             return inhabitedTime != 0;
 
         } catch (Exception ignored) {

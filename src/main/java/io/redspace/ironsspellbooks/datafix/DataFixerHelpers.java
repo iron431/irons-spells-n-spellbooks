@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.datafix.fixers.*;
 import io.redspace.ironsspellbooks.spells.blood.*;
 import io.redspace.ironsspellbooks.spells.ender.*;
 import io.redspace.ironsspellbooks.spells.evocation.*;
@@ -19,10 +20,14 @@ import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
 import net.minecraft.nbt.*;
 import net.minecraftforge.fml.ModList;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class DataFixerHelpers {
-    static final Map<Integer, String> LEGACY_SPELL_MAPPING = ImmutableMap.<Integer, String>builder()
+    public static final Map<Integer, String> LEGACY_SPELL_MAPPING = ImmutableMap.<Integer, String>builder()
             .put(1, new FireballSpell().getSpellId())
             .put(2, new BurningDashSpell().getSpellId())
             .put(3, new TeleportSpell().getSpellId())
@@ -91,12 +96,12 @@ public class DataFixerHelpers {
             .put(66, new DevourSpell().getSpellId())
             .build();
 
-    static final Map<String, String> LEGACY_ITEM_IDS = ImmutableMap.<String, String>builder()
+    public static final Map<String, String> LEGACY_ITEM_IDS = ImmutableMap.<String, String>builder()
             .put("irons_spellbooks:poison_rune", "irons_spellbooks:nature_rune")
             .put("irons_spellbooks:poison_upgrade_orb", "irons_spellbooks:nature_upgrade_orb")
             .build();
 
-    static final Map<String, String> LEGACY_UPGRADE_TYPE_IDS = ImmutableMap.<String, String>builder()
+    public static final Map<String, String> LEGACY_UPGRADE_TYPE_IDS = ImmutableMap.<String, String>builder()
             .put("fire_power", "irons_spellbooks:fire_power")
             .put("ice_power", "irons_spellbooks:ice_power")
             .put("lightning_power", "irons_spellbooks:lightning_power")
@@ -113,6 +118,27 @@ public class DataFixerHelpers {
             .put("health", "irons_spellbooks:health")
             .build();
 
+    public static List<DataFixerElement> DATA_FIXER_ELEMENTS = List.of(
+            new FixIsbEnhance(),
+            new FixTetra(),
+            new FixApoth(),
+            new FixIsbSpellbook(),
+            new FixIsbSpell(),
+            new FixItemNames(),
+            new FixUpgradeType());
+
+    public static List<byte[]> DATA_FIXER_ELEMENTS_BYTES;
+
+    public static ParallelMatcher parallelMatcher = new ParallelMatcher(
+            ((Supplier<List<byte[]>>)
+                    () -> {
+                        var bytesList = DATA_FIXER_ELEMENTS
+                                .stream()
+                                .flatMap(item -> item.preScanValueBytes().stream())
+                                .collect(Collectors.toList());
+                        bytesList.add(IronsWorldUpgrader.INHABITED_TIME_MARKER);
+                        return (List<byte[]>) bytesList;
+                    }).get());
 
     /**
      * Returns true if data was updated
@@ -145,8 +171,7 @@ public class DataFixerHelpers {
     public static boolean fixTetra(CompoundTag tag) {
         if (!ModList.get().isLoaded("tetra")) {
             return false;
-        }
-        else if (tag != null) {
+        } else if (tag != null) {
             String key = "sword/socket_material";
             if (tag.contains(key)) {
                 var socketTag = tag.get(key);
@@ -165,8 +190,7 @@ public class DataFixerHelpers {
     public static boolean fixApoth(CompoundTag tag) {
         if (!ModList.get().isLoaded("apotheosis")) {
             return false;
-        }
-        else if (tag != null) {
+        } else if (tag != null) {
             if (tag.get("affix_data") instanceof CompoundTag affixTag) {
                 if (affixTag.get("gems") instanceof ListTag gemList) {
                     for (Tag gem : gemList) {

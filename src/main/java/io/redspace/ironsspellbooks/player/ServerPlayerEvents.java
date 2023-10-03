@@ -89,7 +89,9 @@ public class ServerPlayerEvents {
         if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
             var server = event.getServer();
             var storageSource = server.storageSource;
-            new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings()).runUpgrade();
+            var iwu = new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings());
+            iwu.runUpgrade();
+            IronsSpellbooks.LOGGER.debug("IWU:{}",iwu.tempCount);
         }
     }
 
