@@ -296,7 +296,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public static boolean isFull(NonNullList<ItemStack> container) {
-        for (ItemStack itemStack : container)l
+        for (ItemStack itemStack : container)
             if (itemStack.isEmpty())
                 return false;
         return true;
