@@ -296,7 +296,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public static boolean isFull(NonNullList<ItemStack> container) {
-        for (ItemStack itemStack : container)
+        for (ItemStack itemStack : container)l
             if (itemStack.isEmpty())
                 return false;
         return true;
@@ -309,7 +309,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     @Override
     public void setChanged() {
         super.setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        if (level != null)
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     @Override
