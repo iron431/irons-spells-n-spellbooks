@@ -252,7 +252,7 @@ public abstract class AbstractSpell {
                 return false;
             }
 
-            if (MinecraftForge.EVENT_BUS.post(new SpellCastEvent(player, this.getSpellId(), spellLevel, getSchoolType())))
+            if (MinecraftForge.EVENT_BUS.post(new SpellCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource)))
                 return false;
 
             if (!checkPreCastConditions(level, serverPlayer, playerMagicData))
