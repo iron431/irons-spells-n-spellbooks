@@ -40,7 +40,7 @@ public class SpellFilter {
         else if (schoolType != null)
             return SpellRegistry.getSpellsForSchool(schoolType);
         else
-            return SpellRegistry.REGISTRY.get().getValues().stream().filter(AbstractSpell::allowLooting).toList();
+            return SpellRegistry.REGISTRY.get().getValues().stream().filter(school -> !school.getSchoolType().equals(SchoolRegistry.ELDRITCH.get())).toList();
     }
 
     public AbstractSpell getRandomSpell(RandomSource random, Predicate<AbstractSpell> filter) {

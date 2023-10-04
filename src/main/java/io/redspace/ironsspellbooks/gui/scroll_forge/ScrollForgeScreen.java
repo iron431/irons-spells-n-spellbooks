@@ -125,7 +125,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             SpellCardInfo spellCard = availableSpells.get(i);
 
             if (i - scrollOffset >= 0 && i - scrollOffset < 3) {
-                spellCard.button.active = spellCard.spell.allowCrafting(minecraft.player) && inkRarity != null && spellCard.spell.getMinRarity() <= inkRarity.getValue();
+                spellCard.button.active = inkRarity != null && spellCard.spell.getMinRarity() <= inkRarity.getValue();
                 int x = leftPos + SPELL_LIST_X;
                 int y = topPos + SPELL_LIST_Y + (i - scrollOffset) * 19;
                 spellCard.button.x = x;

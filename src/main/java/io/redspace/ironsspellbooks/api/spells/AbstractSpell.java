@@ -534,22 +534,4 @@ public abstract class AbstractSpell {
 
         return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
     }
-
-    /**
-     * Returns whether this spell can be generated from random loot when no other criteria are specified
-     */
-    public boolean allowLooting(){
-        return true;
-    }
-
-    /**
-     * Returns an additional condition for whether this spell can be crafted by a player. This does NOT omit it from the scroll forge entirely
-     */
-    public boolean allowCrafting(Player player){
-        return true;
-    }
-
-    public boolean obfuscateStats(Player player){
-        return false;
-    }
 }

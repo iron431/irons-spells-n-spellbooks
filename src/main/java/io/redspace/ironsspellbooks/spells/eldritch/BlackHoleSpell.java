@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.spells.ender;
+package io.redspace.ironsspellbooks.spells.eldritch;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;

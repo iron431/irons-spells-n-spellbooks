@@ -15,7 +15,6 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -25,7 +24,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.List;
 
@@ -117,9 +115,8 @@ public class Scroll extends Item implements IScroll {
     @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
         var scrollData = SpellData.getSpellData(itemStack);
-        var spell = scrollData.getSpell();
-        boolean obfuscateName = Minecraft.getInstance().player != null && spell.obfuscateStats(Minecraft.getInstance().player);
-        return obfuscateName ? Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId() + ".unlearned") : scrollData.getDisplayName();
+        return scrollData.getDisplayName();
+
     }
 
     @Override
