@@ -1,9 +1,10 @@
 ### Additions
-- Added SpellCastEvent and SpellHealEvent for developers, courtesy of Silvertide7
+- 
 
 
 ### Changes
-- Significantly Optimized WorldUpgrader by skipping uninhabited chunks
+- Buff Magic Arrow's base damage by 5
+- Add CastSource to SpellCastEvent
 
 ### Fixes
-- Fix Alchemist Cauldron having a null level when spawned in as a structure
+- Fix inconsistent Magic Arrow block penetration
