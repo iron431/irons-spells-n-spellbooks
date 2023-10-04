@@ -1,0 +1,49 @@
+{
+  "name": "作成不可能なスペルブック",
+  "icon": "irons_spellbooks:evoker_spell_book",
+  "category": "irons_spellbooks:root",
+  "sortnum": 2,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "作成不可能なスペルブック",
+      "text": "すべてのスペルブックが製造できるわけではない。結局のところ、それは秘術と呼ばれる代物だ。 鎧、武器、装身具、そしてもちろんスペルブックはすべて世界中に散らばっており、あなたが探索して見つけ出すのを待っている。 "
+    },
+    {
+      "type": "patchouli:text",
+      "title": "ユニークなスペルブック",
+      "text": "ユニークなスペルブックは特定のモブからのまれなドロップで、呪文が刻まれており、削除したり編集したりすることはできない。 すべてのスペルブックが作れるわけではない。結局のところ、それは秘術と呼ばれる代物だ。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:evoker_spell_book",
+      "text": "基本的な邪悪な村人の魔法が満載の本である 召喚のグリモアは、エヴォーカーまたはそれより強力な魔法を操るアーキヴォーカーがドロップする。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blood_staff",
+      "text": "多くの闇の呪文を秘めた古代の笏は、アンデッドの所有者から奪うことによってのみ入手できる。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "名前の付いたスペルブック",
+      "text": "名前の付いたスペルブックは世界のあちこちで見つけることができ、適切な場所を探している幸運な冒険者にボーナスを提供することがよく散見される。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:rotten_spell_book",
+      "text": "かつてはより強力な本だったかもしれない本は、その後朽ち果て、わずか3ページしかないが、依然としてほとんどのオーバーワールドの魔法の本よりも強力だ。それらはオーバーワールド中の同様に朽ち果てた場所にあるかも知れない。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:villager_spell_book",
+      "text": "少しの祝福を備えたこのの本は、神聖な魔法に適した本である。 特にアーキヴォーカーから捕虜を解放することで村人たちから評判を築くと、最終的には確実にあなたの手に渡るだろう。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blaze_spell_book",
+      "text": "すべてのブレイズには、彼らが知らないうちに、これらのいずれかが隠されている。 秘訣は灰にならない方法で殺すことだ。"
+    }
+  ]
+}

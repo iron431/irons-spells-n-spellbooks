@@ -73,14 +73,19 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
         }
     }
 
+    BlockPos lastHitBlock;
 
     @Override
     protected void onHit(HitResult result) {
         //IronsSpellbooks.LOGGER.debug("onHit ({})", result.getType());
 
-        penetration++;
         if (!level.isClientSide) {
-            if (result.getType() == HitResult.Type.ENTITY) {
+            var blockPos = new BlockPos(result.getLocation());
+            if (result.getType() == HitResult.Type.BLOCK && !blockPos.equals(lastHitBlock)) {
+                penetration++;
+                lastHitBlock = blockPos;
+            } else if (result.getType() == HitResult.Type.ENTITY) {
+                penetration++;
                 level.playSound(null, new BlockPos(position()), SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2, .65f);
                 //IronsSpellbooks.LOGGER.debug("Playing Sound");
             }

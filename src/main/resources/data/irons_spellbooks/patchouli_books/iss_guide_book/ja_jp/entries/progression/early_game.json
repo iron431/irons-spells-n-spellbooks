@@ -1,0 +1,41 @@
+{
+  "name": "最初に",
+  "icon": "irons_spellbooks:inscription_table",
+  "category": "irons_spellbooks:root",
+  "sortnum": -3,
+  "read_by_default" : false,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "最初の流れ",
+      "text": "ゲームの初期の進行は探索と略奪がほとんどだ。 各地のチェストには魔法物が溢れており、特に各地に点在する新しい魔法の建造物にはその傾向が顕著に表れている。 だが気を付けた方ががいい。 それぞれの魔法の構造物には強力な魔術師が住んでるが、 こちらを見つけると攻撃する奴が大半だから装備が整っていない内は近づかない方がいい。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:scroll",
+      "title": "スクロール",
+      "text": "巻物は貴方にとって初めて魔法に触れるきっかけとなる。 それらは使う事で書き込まれた呪文を唱えるために使う事ができるが、銘刻台を介して魔法の本に刻み込み、繰り返し使用できるようになるまで保存しておくことをお勧めする。"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "銘刻台",
+      "text": "スペルブックは、スクロールと銘刻台を使用してスペルブックに呪文を書き込む事で使える。 スクロールは一度スペルブックに入れると取り出すことができるが、呪文の書き込みは無くなる。 右側の魔法の本は割と簡単に集まる材料で作成できる。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:inscription_table",
+      "recipe2": "irons_spellbooks:copper_spell_book"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:arcane_essence",
+      "title": "基礎的な材料",
+      "text": "いくつかの基礎的な材料は、バニラの構造でもまばらだが見つかることがある。$(br2)秘術のエッセンスを革装備と組み合わせて、追加で最大マナが増える放浪の魔術師装備を作成できる。序盤のお供にどうぞ。"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "放浪の魔術師装備",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:wandering_magician_boots',Count:1b},{id:'irons_spellbooks:wandering_magician_leggings',Count:1b},{id:'irons_spellbooks:wandering_magician_chestplate',Count:1b},{id:'irons_spellbooks:wandering_magician_helmet',Count:1b}],NoBasePlate:1b}"
+    }
+  ]
+}

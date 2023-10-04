@@ -309,7 +309,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     @Override
     public void setChanged() {
         super.setChanged();
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        if (level != null)
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     @Override
@@ -350,7 +351,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         //irons_spellbooks.LOGGER.debug("onDataPacket: pkt.getTag:{}", pkt.getTag());
         handleUpdateTag(pkt.getTag());
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        if (level != null)
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     @Override
@@ -372,7 +374,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         for (int i = 0; i < inputItems.size(); i++) {
             simpleContainer.setItem(i, inputItems.get(i));
         }
-        Containers.dropContents(this.level, this.worldPosition, simpleContainer);
+        if (level != null)
+            Containers.dropContents(this.level, this.worldPosition, simpleContainer);
     }
 
     /************************************************************

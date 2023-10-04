@@ -1,0 +1,86 @@
+{
+  "name": "終盤",
+  "icon": "irons_spellbooks:arcane_anvil",
+  "category": "irons_spellbooks:root",
+  "sortnum": -1,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "秘術の金床",
+      "text": "ネザライトを入手し大量の素材を集められるようになると、MODは終盤に到達する。$(br2)ネザライトを使用すると、秘術の金床が作れる。 秘術の金床は最も強力な作成ステーションであり、巻物のレベルアップ、装備とスペルブックをアップグレード、武器に魔法を吹き込む事が出来る。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:arcane_anvil"
+    },
+    {
+      "type": "patchouli:crafting",
+      "title": "更なるスペルブック",
+      "text": "最高の作成可能な呪文の本をここに記す。 ボロボロ本は古代都市で見つかる",
+      "recipe": "irons_spellbooks:netherite_spell_book"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:dragonskin_spell_book",
+      "text": "ドラゴンの革はエンダードラゴンがドロップする"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:cryomancer_helmet",
+      "recipe2": "irons_spellbooks:pyromancer_helmet",
+      "title": "属性魔法装備"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "Ex: 氷魔術師の装備",
+      "entity": "minecraft:armor_stand{ArmorItems:[{id:'irons_spellbooks:cryomancer_boots',Count:1b},{id:'irons_spellbooks:cryomancer_leggings',Count:1b},{id:'irons_spellbooks:cryomancer_chestplate',Count:1b},{id:'irons_spellbooks:cryomancer_helmet',Count:1b}],NoBasePlate:1b}",
+      "text": "属性魔法装備は、このテンプレートに従って、難解な布と特定の属性のルーンから作られている。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:upgrade_orb",
+      "title": "アップグレード",
+      "text": "アップグレードはこのMODのエンドコンテンツの一つ。 デフォルトでは、属性魔法装備とスペルブックだけがアップグレードできる。。$(br2)特定の属性のアップグレードオーブは、基本アップグレードオーブと希望の属性の8個のルーンから作成できる。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:upgrade_orb",
+      "recipe2": "irons_spellbooks:fire_upgrade_orb"
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "クラフト素材のアップグレード",
+      "enable_visualize" : false,
+      "multiblock": {
+        "pattern": [
+          [ " D S ", "DA0PF"]
+        ],
+        "mapping": {
+          "D": "minecraft:deepslate",
+          "A": "irons_spellbooks:arcane_debris",
+          "P": "irons_spellbooks:armor_pile",
+          "S": "minecraft:soul_sand",
+          "F": "minecraft:soul_fire"
+        }
+      },
+      "text": "秘術の破片はオーバーワールドのy=-38 以下にある古代のガレキ相当する物だ。 ネザライトのツルハシが必要。"
+    },
+    {
+      "type": "patchouli:entity",
+      "entity": "irons_spellbooks:citadel_keeper",
+      "text": "燃え殻のエッセンスは古代の騎士からドロップされる、古代の騎士はネザーの鎧の山を壊すことで目覚めることができる。"
+    },
+    {
+      "type": "patchouli:entity",
+      "name": "古代の王の伝説",
+      "entity": "irons_spellbooks:dead_king",
+      "text": "わがままなコンパスは本来魂の帰すべき場所であるカタコンペを指し示す。その最奥には嘗て葬られたであろう古代の王の死体があるらしい。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "title": "わがままなコンパス",
+      "recipe": "irons_spellbooks:wayward_compass"
+    }
+  ]
+}
