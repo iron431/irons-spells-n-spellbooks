@@ -146,8 +146,8 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         //Called whenever the client clicks on a button. The ID passed in is the spell slot index or -1. If it is positive, it is to select that slot. If it is negative, it is to inscribe
         if (pId < 0) {
             if (selectedSpellIndex >= 0 && getScrollSlot().getItem().is(ItemRegistry.SCROLL.get())){
-                SpellData scrollData = SpellData.getSpellData(getScrollSlot().getItem());
-                if (MinecraftForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, scrollData)))
+                SpellData spellData = SpellData.getSpellData(getScrollSlot().getItem());
+                if (MinecraftForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)))
                     return false;
                 doInscription(selectedSpellIndex);
             }
