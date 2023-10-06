@@ -507,7 +507,7 @@ public class Utils {
     }
 
     public static void sendTargetedNotification(ServerPlayer target, LivingEntity caster, AbstractSpell spell) {
-        target.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_warning", caster.getDisplayName().getString(), spell.getDisplayName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
+        target.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_warning", caster.getDisplayName().getString(), spell.getDisplayName(target)).withStyle(ChatFormatting.LIGHT_PURPLE)));
     }
 
     public static boolean preCastTargetHelper(Level level, LivingEntity caster, MagicData playerMagicData, AbstractSpell spell, int range, float aimAssist) {
@@ -520,7 +520,7 @@ public class Utils {
             playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
             if (caster instanceof ServerPlayer serverPlayer) {
                 Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, spell), serverPlayer);
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), spell.getDisplayName()).withStyle(ChatFormatting.GREEN)));
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), spell.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
             }
             if (livingTarget instanceof ServerPlayer serverPlayer) {
                 Utils.sendTargetedNotification(serverPlayer, caster, spell);

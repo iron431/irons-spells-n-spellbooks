@@ -14,7 +14,7 @@ import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.*;
 import io.redspace.ironsspellbooks.spells.nature.*;
 import io.redspace.ironsspellbooks.spells.eldritch.AbyssalShroudSpell;
-import io.redspace.ironsspellbooks.spells.eldritch.BlackHoleSpell;
+import io.redspace.ironsspellbooks.spells.ender.BlackHoleSpell;
 import io.redspace.ironsspellbooks.spells.eldritch.SculkTentaclesSpell;
 import net.minecraft.nbt.*;
 import net.minecraftforge.fml.ModList;

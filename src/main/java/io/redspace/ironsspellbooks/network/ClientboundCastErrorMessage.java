@@ -43,9 +43,9 @@ public class ClientboundCastErrorMessage {
             if (errorType == ErrorType.COOLDOWN) {
                 //ignore cooldown message if we are simply holding right click.
                 if (ClientInputEvents.hasReleasedSinceCasting)
-                    Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spell.getDisplayName()).withStyle(ChatFormatting.RED), false);
+                    Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
             } else {
-                Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", spell.getDisplayName()).withStyle(ChatFormatting.RED), false);
+                Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
             }
         });
 

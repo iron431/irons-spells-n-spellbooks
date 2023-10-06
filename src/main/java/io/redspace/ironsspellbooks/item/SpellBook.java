@@ -61,6 +61,7 @@ public class SpellBook extends Item implements ISpellbook {
         }
 
         if (level.isClientSide()) {
+            //TODO:implement eldritch learned mechanics into client (also for scroll and imbued weapons)
             if (ClientMagicData.isCasting()) {
                 return InteractionResultHolder.fail(itemStack);
             } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellData.getLevel(), player)

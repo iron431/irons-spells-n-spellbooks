@@ -4,11 +4,14 @@ import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Objects;
 
@@ -80,9 +83,10 @@ public class SpellData implements Comparable<SpellData> {
         return spellLevel;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public Component getDisplayName() {
         if (displayName == null) {
-            displayName = getSpell().getDisplayName().append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));//.append(" ").append(Component.translatable("tooltip.irons_spellbooks.rarity",getSpell().getRarity().getDisplayName().getString()));
+            displayName = getSpell().getDisplayName(Minecraft.getInstance().player).append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));
         }
         return displayName;
     }

@@ -219,7 +219,7 @@ public class GenerateSiteData {
     private static String getSpells(ItemStack itemStack) {
         if (itemStack.getItem() instanceof SpellBook) {
             return SpellBookData.getSpellBookData(itemStack).getActiveInscribedSpells().stream().map(spell -> {
-                return spell.getSpell().getDisplayName().getString() + " (" + spell.getLevel() + ")";
+                return spell.getSpell().getDisplayName(null).getString() + " (" + spell.getLevel() + ")";
             }).collect(Collectors.joining(", "));
         }
         return "";
