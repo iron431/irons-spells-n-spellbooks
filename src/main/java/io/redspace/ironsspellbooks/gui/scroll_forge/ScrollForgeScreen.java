@@ -144,11 +144,13 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 spellCard.button.x = x;
                 spellCard.button.y = y;
                 spellCard.draw(this, poseStack, x, y, mouseX, mouseY);
+
                 if (additionalTooltip == null)
                     additionalTooltip = spellCard.getTooltip(x, y, mouseX, mouseY);
             } else {
                 spellCard.activityState = SpellCardInfo.ActivityState.DISABLED;
             }
+            spellCard.button.active = spellCard.activityState == SpellCardInfo.ActivityState.ENABLED;
         }
 
         if (additionalTooltip != null) {
@@ -270,7 +272,6 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         void draw(ScrollForgeScreen screen, PoseStack poseStack, int x, int y, int mouseX, int mouseY) {
             setTexture(TEXTURE);
-            this.button.active = this.activityState == ActivityState.ENABLED;
             if (this.activityState == ActivityState.ENABLED || this.activityState == ActivityState.UNLEARNED_ERROR) {
                 //Draw with highlighted or regular color
                 if (spell == screen.getSelectedSpell())
@@ -282,11 +283,11 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 //"hidden" color
                 screen.blit(poseStack, x, y, 0, 185, 108, 19);
             }
-            setTexture(this.button.active ? spell.getSpellIconResource() : SpellRegistry.none().getSpellIconResource());
+            setTexture(this.activityState == ActivityState.ENABLED ? spell.getSpellIconResource() : SpellRegistry.none().getSpellIconResource());
             screen.blit(poseStack, x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
 
             int maxWidth = 108 - 20;
-            var text = trimText(font, getDisplayName().withStyle(this.button.active ? Style.EMPTY : Style.EMPTY.withFont(RUNIC_FONT)), maxWidth);
+            var text = trimText(font, getDisplayName().withStyle(this.activityState == ActivityState.ENABLED ? Style.EMPTY : Style.EMPTY.withFont(RUNIC_FONT)), maxWidth);
             int textX = x + 2;
             int textY = y + 3;
             font.drawWordWrap(text, textX, textY, maxWidth, 0xFFFFFF);
