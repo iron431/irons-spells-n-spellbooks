@@ -148,8 +148,10 @@ public class TooltipsUtils {
         var name = spell.getDisplayName(Minecraft.getInstance().player);
         var description = font.split(Component.translatable(String.format("%s.guide", spell.getComponentId())).withStyle(ChatFormatting.GRAY), 180);
         var hoverText = new ArrayList<FormattedCharSequence>();
-        hoverText.add(FormattedCharSequence.forward(name.getString(), Style.EMPTY.withUnderlined(true)));
-        hoverText.addAll(description);
+        hoverText.add(FormattedCharSequence.forward(name.getString(), name.getStyle().withUnderlined(true)));
+        if(!spell.obfuscateStats(Minecraft.getInstance().player)) {
+            hoverText.addAll(description);
+        }
         return hoverText;
     }
 
