@@ -119,7 +119,7 @@ public abstract class AbstractSpell {
         return String.format("spell.%s.%s", getSpellResource().getNamespace(), getSpellName());
     }
 
-    protected abstract ResourceLocation getSpellResource();
+    public abstract ResourceLocation getSpellResource();
 
     public abstract DefaultConfig getDefaultConfig();
 

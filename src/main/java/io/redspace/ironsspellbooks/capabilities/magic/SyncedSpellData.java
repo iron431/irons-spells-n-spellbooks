@@ -1,10 +1,13 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.api.magic.LearnedSpellData;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.network.ClientboundSyncEntityData;
 import io.redspace.ironsspellbooks.network.ClientboundSyncPlayerData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -39,6 +42,7 @@ public class SyncedSpellData {
     private float heartStopAccumulatedDamage;
     private int evasionHitsRemaining;
     private SpinAttackType spinAttackType;
+    private LearnedSpellData learnedSpellData;
 
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {
@@ -52,6 +56,7 @@ public class SyncedSpellData {
         this.heartStopAccumulatedDamage = 0f;
         this.evasionHitsRemaining = 0;
         this.spinAttackType = SpinAttackType.RIPTIDE;
+        this.learnedSpellData = new LearnedSpellData();
     }
 
     //Use this on the server
@@ -70,6 +75,7 @@ public class SyncedSpellData {
             buffer.writeFloat(data.heartStopAccumulatedDamage);
             buffer.writeInt(data.evasionHitsRemaining);
             buffer.writeEnum(data.spinAttackType);
+            data.learnedSpellData.writeToBuffer(buffer);
         }
 
         public SyncedSpellData read(FriendlyByteBuf buffer) {
@@ -81,6 +87,7 @@ public class SyncedSpellData {
             data.heartStopAccumulatedDamage = buffer.readFloat();
             data.evasionHitsRemaining = buffer.readInt();
             data.spinAttackType = buffer.readEnum(SpinAttackType.class);
+            data.learnedSpellData.readFromBuffer(buffer);
             return data;
         }
     };
@@ -92,6 +99,7 @@ public class SyncedSpellData {
         compound.putLong("effectFlags", this.syncedEffectFlags);
         compound.putFloat("heartStopAccumulatedDamage", this.heartStopAccumulatedDamage);
         compound.putFloat("evasionHitsRemaining", this.evasionHitsRemaining);
+        learnedSpellData.saveToNBT(compound);
         //SpinAttack not saved
     }
 
@@ -102,6 +110,7 @@ public class SyncedSpellData {
         this.syncedEffectFlags = compound.getLong("effectFlags");
         this.heartStopAccumulatedDamage = compound.getFloat("heartStopAccumulatedDamage");
         this.evasionHitsRemaining = compound.getInt("evasionHitsRemaining");
+        this.learnedSpellData.loadFromNBT(compound);
         //SpinAttack not saved
 
     }
@@ -137,6 +146,15 @@ public class SyncedSpellData {
     public void setHeartstopAccumulatedDamage(float damage) {
         heartStopAccumulatedDamage = damage;
         doSync();
+    }
+
+    public void learnSpell(AbstractSpell spell) {
+        this.learnedSpellData.learnedSpells.add(spell.getSpellResource());
+        doSync();
+    }
+
+    public boolean isSpellLearned(AbstractSpell spell) {
+        return this.learnedSpellData.learnedSpells.contains(spell.getSpellResource());
     }
 
     public SpinAttackType getSpinAttackType() {

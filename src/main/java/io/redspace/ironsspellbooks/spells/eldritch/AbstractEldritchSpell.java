@@ -4,6 +4,8 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastResult;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -17,11 +19,13 @@ import static io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen.RUN
 
 public abstract class AbstractEldritchSpell extends AbstractSpell {
 
+    private static final Style OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(RUNIC_FONT);
+
     //TODO: make sure clientbound targeting notifications are passing in the correct player
     @Override
     public MutableComponent getDisplayName(Player player) {
         boolean obfuscateName = player != null && this.obfuscateStats(player);
-        return super.getDisplayName(player).withStyle(Style.EMPTY.withObfuscated(obfuscateName).withFont(RUNIC_FONT));
+        return super.getDisplayName(player).withStyle(obfuscateName ? OBFUSCATED_STYLE : Style.EMPTY);
     }
 
     @Override
@@ -47,9 +51,11 @@ public abstract class AbstractEldritchSpell extends AbstractSpell {
         return super.canBeCastedBy(spellLevel, castSource, playerMagicData, player);
     }
 
-    public /*abstract*/ boolean isLearned(Player player) {
-        //TODO: implement with player data tracking
-        return false;
+    public boolean isLearned(Player player) {
+        if (player.level.isClientSide) {
+            return ClientMagicData.getSyncedSpellData(player).isSpellLearned(this);
+        } else {
+            return MagicData.getPlayerMagicData(player).getSyncedData().isSpellLearned(this);
+        }
     }
-
 }

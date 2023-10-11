@@ -444,7 +444,7 @@ public class Utils {
                 if (ClientMagicData.isCasting()) {
                     //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.4");
                     return InteractionResultHolder.fail(stack);
-                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost(spellData.getLevel(), null))) {
+                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost(spellData.getLevel(), null)) || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
                     //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.5");
                     return InteractionResultHolder.pass(stack);
                 } else {

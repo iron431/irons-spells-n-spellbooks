@@ -61,11 +61,11 @@ public class SpellBook extends Item implements ISpellbook {
         }
 
         if (level.isClientSide()) {
-            //TODO:implement eldritch learned mechanics into client (also for scroll and imbued weapons)
             if (ClientMagicData.isCasting()) {
                 return InteractionResultHolder.fail(itemStack);
             } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellData.getLevel(), player)
-                    || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())) {
+                    || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
+                    || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
                 return InteractionResultHolder.pass(itemStack);
             } else {
                 return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());

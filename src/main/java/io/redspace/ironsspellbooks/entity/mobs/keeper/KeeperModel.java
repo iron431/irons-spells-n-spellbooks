@@ -59,7 +59,7 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
             float strength = .75f;
             updatePosition(rightLeg, 0, Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount);
             updatePosition(leftLeg, 0, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount);
-            updatePosition(body, 0, Mth.cos(pLimbSwing * 1.2662F - Mth.PI * .5f) * 1 * strength * pLimbSwingAmount, 0);
+            updatePosition(body, 0, Mth.abs(Mth.cos((pLimbSwing * 1.2662F - Mth.PI * .5f) * .5f)) * 2 * strength * pLimbSwingAmount, 0);
             if (tick) {
                 if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
                     legTween = Mth.lerp(.9f, 0, 1);
@@ -70,7 +70,7 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
             rightLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F) * 1.4F * pLimbSwingAmount * legTween * strength);
             leftLeg.setRotationX(Mth.cos(pLimbSwing * 0.6662F + (float) Math.PI) * 1.4F * pLimbSwingAmount * legTween * strength);
         }
-        if (entity.isAnimating()){
+        if (entity.isAnimating()) {
             bobBone(rightArm, entity.tickCount, 1);
             bobBone(leftArm, entity.tickCount, -1);
         }
