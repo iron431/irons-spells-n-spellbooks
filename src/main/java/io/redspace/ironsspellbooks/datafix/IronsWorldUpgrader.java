@@ -155,8 +155,8 @@ public class IronsWorldUpgrader {
                 return false;
             }
 
-            int markerPos = ByteHelper.indexOf(dataInputStream, INHABITED_TIME_MARKER);
-            //int markerPos = ByteHelper.indexOf(dataInputStream, DataFixerHelpers.parallelMatcher);
+            //int markerPos = ByteHelper.indexOf(dataInputStream, INHABITED_TIME_MARKER);
+            int markerPos = ByteHelper.indexOf(dataInputStream, DataFixerHelpers.parallelMatcher);
             if (markerPos == -1) {
                 return true;
             }
