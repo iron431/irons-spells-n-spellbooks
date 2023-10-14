@@ -33,9 +33,9 @@ public class VoidTentacleModel extends AnimatedGeoModel<VoidTentacle> {
     @Override
     public void setCustomAnimations(VoidTentacle animatable, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(animatable, instanceId, animationEvent);
-        float seed = (float) (animatable.getX() * animatable.getZ());
-        float speed = (seed % 6) * .125f + 1f;
-        float f = (float) (((animatable.getX() * animatable.getZ() % 173) + (animatable.tickCount + animationEvent.getPartialTick()) * speed) * .8f);
+        float seed = (float) (animatable.getX() * animatable.getZ()) % 173;
+        float speed = .55f;
+        float f = (float) (seed + animatable.tickCount + animationEvent.getPartialTick()) * speed;
         List<IBone> bones = List.of(
                 this.getAnimationProcessor().getBone("root"),
                 this.getAnimationProcessor().getBone("segment_1"),
@@ -48,9 +48,9 @@ public class VoidTentacleModel extends AnimatedGeoModel<VoidTentacle> {
         float tween = Mth.clamp(age < 15 ? (age - 5) / 10f : age > 240 ? 1 - (age - 240) / 50f : 1f, 0, 1);
         for (int i = 0; i < bones.size(); i++) {
             var bone = bones.get(i);
-            float f2 = 1.2f + i * .85f;
-            bone.setRotationX(Mth.lerp(tween, bone.getRotationX(), f2 * Mth.DEG_TO_RAD * shittyNoise(f + 100 + i)));
-            bone.setRotationZ(Mth.lerp(tween, bone.getRotationZ(), f2 * Mth.DEG_TO_RAD * shittyNoise(f + i)));
+            float intensity = 3f - i * .2f;
+            bone.setRotationX(Mth.lerp(tween, bone.getRotationX(), intensity * Mth.DEG_TO_RAD * shittyNoise(f + 100 + i)));
+            bone.setRotationZ(Mth.lerp(tween, bone.getRotationZ(), intensity * Mth.DEG_TO_RAD * shittyNoise(f + i)));
         }
         this.getAnimationProcessor().getBone("root").setRotationY(Mth.DEG_TO_RAD * (shittyNoise(f + 150) * .25f + animatable.tickCount + animationEvent.getPartialTick()));
     }
