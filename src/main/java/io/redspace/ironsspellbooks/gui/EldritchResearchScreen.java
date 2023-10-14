@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +43,11 @@ public class EldritchResearchScreen extends Screen {
     public static final int BACKGROUND_TILE_COUNT_Y = 7;
 
     int leftPos, topPos;
+    InteractionHand activeHand;
 
-    public EldritchResearchScreen(Component pTitle) {
+    public EldritchResearchScreen(Component pTitle, InteractionHand activeHand) {
         super(pTitle);
+        this.activeHand = activeHand;
     }
 
     List<AbstractSpell> learnableSpells;
@@ -107,7 +110,7 @@ public class EldritchResearchScreen extends Screen {
         for (SpellNode node : nodes) {
             if (isHovering(node.x, node.y, 16, 16, (int) pMouseX, (int) pMouseY)) {
                 //Minecraft.getInstance().player.sendSystemMessage(node.spell.getDisplayName(minecraft.player));
-                Messages.sendToServer(new ServerboundLearnSpell((byte) 1, node.spell.getSpellId()));
+                Messages.sendToServer(new ServerboundLearnSpell(this.activeHand, node.spell.getSpellId()));
                 break;
             }
         }

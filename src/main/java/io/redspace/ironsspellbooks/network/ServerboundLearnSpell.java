@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.network;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -20,8 +21,8 @@ public class ServerboundLearnSpell {
     private final byte hand;
     private final String spell;
 
-    public ServerboundLearnSpell(byte interactionHand, String spell) {
-        this.hand = interactionHand;
+    public ServerboundLearnSpell(InteractionHand interactionHand, String spell) {
+        this.hand = handToByte(interactionHand);
         this.spell = spell;
     }
 
@@ -39,15 +40,24 @@ public class ServerboundLearnSpell {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.getSender();
-            ItemStack itemStack = serverPlayer.getItemInHand(hand > 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
+            ItemStack itemStack = serverPlayer.getItemInHand(byteToHand(hand));
             AbstractSpell spell = SpellRegistry.getSpell(this.spell);
-            if (spell != SpellRegistry.none() && itemStack.is(ItemRegistry.ELDRITCH_PAGE.get()) && itemStack.getCount() > 0) {
-                MagicData.getPlayerMagicData(serverPlayer).getSyncedData().learnSpell(spell);
+            var data = MagicData.getPlayerMagicData(serverPlayer).getSyncedData();
+            if (spell != SpellRegistry.none() && !data.isSpellLearned(spell) && itemStack.is(ItemRegistry.ELDRITCH_PAGE.get()) && itemStack.getCount() > 0) {
+                data.learnSpell(spell);
                 if (!serverPlayer.getAbilities().instabuild) {
                     itemStack.shrink(1);
                 }
             }
         });
         return true;
+    }
+
+    public static byte handToByte(InteractionHand hand) {
+        return (byte) (hand == InteractionHand.MAIN_HAND ? 1 : 0);
+    }
+
+    public static InteractionHand byteToHand(byte b) {
+        return b > 0 ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
     }
 }

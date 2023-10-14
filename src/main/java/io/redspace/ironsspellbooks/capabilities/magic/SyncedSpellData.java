@@ -42,7 +42,7 @@ public class SyncedSpellData {
     private float heartStopAccumulatedDamage;
     private int evasionHitsRemaining;
     private SpinAttackType spinAttackType;
-    private LearnedSpellData learnedSpellData;
+    private final LearnedSpellData learnedSpellData;
 
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {

@@ -23,7 +23,7 @@ public class EldritchManuscript extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand pUsedHand) {
         if (level.isClientSide && player == Minecraft.getInstance().player) {
-            Minecraft.getInstance().setScreen(new EldritchResearchScreen(Component.empty()));
+            Minecraft.getInstance().setScreen(new EldritchResearchScreen(Component.empty(), pUsedHand));
         }
         //if (player instanceof ServerPlayer serverPlayer) {
         //    MagicData.getPlayerMagicData(serverPlayer).getSyncedData().learnSpell(SpellRegistry.SONIC_BOOM_SPELL.get());

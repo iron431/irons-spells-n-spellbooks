@@ -176,8 +176,8 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
-        if (event.isWasDeath()) {
-            if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
+        if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
+            if (event.isWasDeath()) {
                 //Persist summon timers across death
                 event.getOriginal().getActiveEffects().forEach((effect -> {
                     //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
@@ -186,6 +186,12 @@ public class ServerPlayerEvents {
                     }
                 }));
             }
+            event.getOriginal().reviveCaps();
+            MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
+            MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
+            newMagicData.setSyncedData(oldMagicData.getSyncedData());
+            newMagicData.getSyncedData().doSync();
+            event.getOriginal().invalidateCaps();
         }
     }
 
