@@ -204,6 +204,12 @@ public class Messages {
                 .consumerMainThread(ClientboundSyncCameraShake::handle)
                 .add();
 
+        net.messageBuilder(ServerboundLearnSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundLearnSpell::new)
+                .encoder(ServerboundLearnSpell::toBytes)
+                .consumer(ServerboundLearnSpell::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {

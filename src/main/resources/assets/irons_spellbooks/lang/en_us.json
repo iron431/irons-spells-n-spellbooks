@@ -258,6 +258,8 @@
   "ui.irons_spellbooks.summon_despawn_message": "%s faded from this world.",
   "ui.irons_spellbooks.spell_target_warning": "%s is targeting you with %s!",
   "ui.irons_spellbooks.spell_target_success": "%s targeted with %s",
+  "ui.irons_spellbooks.research_warning": "Consume Manuscript to Learn",
+  "ui.irons_spellbooks.research_already_learned": "This spell is already learned",
   "school.irons_spellbooks.fire": "Fire",
   "school.irons_spellbooks.ice": "Ice",
   "school.irons_spellbooks.lightning": "Lightning",
