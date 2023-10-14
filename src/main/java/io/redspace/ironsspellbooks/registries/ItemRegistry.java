@@ -11,11 +11,8 @@ import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.consumables.CastersTea;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import io.redspace.ironsspellbooks.item.spell_books.VillagerSpellBook;
-import io.redspace.ironsspellbooks.item.weapons.BloodStaffItem;
+import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.item.weapons.KeeperFlambergeItem;
-import io.redspace.ironsspellbooks.item.weapons.MagehunterItem;
-import io.redspace.ironsspellbooks.item.weapons.TestClaymoreItem;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -71,7 +68,7 @@ public class ItemRegistry {
     );
 
     public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", MagehunterItem::new);
-    //public static final RegistryObject<Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new SpellbreakerItem(SpellType.COUNTERSPELL_SPELL, 1));
+    public static final RegistryObject<Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new SpellbreakerItem(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1)));
     public static final RegistryObject<Item> TEST_CLAYMORE = ITEMS.register("claymore", TestClaymoreItem::new);
     public static final RegistryObject<Item> KEEPER_FLAMBERGE = ITEMS.register("keeper_flamberge", KeeperFlambergeItem::new);
     //public static final RegistryObject<Item> TRUTHSEEKER = ITEMS.register("truthseeker", TruthseekerItem::new);
