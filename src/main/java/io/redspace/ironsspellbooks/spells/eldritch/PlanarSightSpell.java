@@ -39,8 +39,8 @@ public class PlanarSightSpell extends AbstractEldritchSpell {
 
     public PlanarSightSpell() {
         this.manaCostPerLevel = 50;
-        this.baseSpellPower = 25;
-        this.spellPowerPerLevel = 15;
+        this.baseSpellPower = 40;
+        this.spellPowerPerLevel = 20;
         this.castTime = 0;
         this.baseManaCost = 200;
     }

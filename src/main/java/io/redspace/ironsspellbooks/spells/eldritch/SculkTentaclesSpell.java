@@ -39,14 +39,14 @@ public class SculkTentaclesSpell extends AbstractEldritchSpell {
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)
-            .setMaxLevel(3)
+            .setMaxLevel(4)
             .setCooldownSeconds(30)
             .build();
 
     public SculkTentaclesSpell() {
         this.manaCostPerLevel = 50;
-        this.baseSpellPower = 6;
-        this.spellPowerPerLevel = 2;
+        this.baseSpellPower = 8;
+        this.spellPowerPerLevel = 3;
         this.castTime = 20;
         this.baseManaCost = 150;
     }
