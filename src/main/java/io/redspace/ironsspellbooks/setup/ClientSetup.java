@@ -306,8 +306,7 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerSpecialModels(ModelEvent.RegisterAdditional event) {
-        event.register(IronsSpellbooks.id("item/claymore_gui"));
-        event.register(IronsSpellbooks.id("item/claymore_normal"));
+        //TODO: use forge's built in system
         event.register(IronsSpellbooks.id("item/keeper_flamberge_gui"));
         event.register(IronsSpellbooks.id("item/keeper_flamberge_normal"));
         event.register(IronsSpellbooks.id("item/magehunter_gui"));

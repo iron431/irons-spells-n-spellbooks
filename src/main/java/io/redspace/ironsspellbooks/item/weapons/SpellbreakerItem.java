@@ -27,16 +27,4 @@ public class SpellbreakerItem extends MagicSwordItem {
             ),
             (new Properties()).rarity(Rarity.EPIC));
     }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return new SpecialItemRenderer(Minecraft.getInstance().getItemRenderer(),
-                        Minecraft.getInstance().getEntityModels(),
-                        "spellbreaker");
-            }
-        });
-    }
 }
