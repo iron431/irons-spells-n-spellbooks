@@ -149,6 +149,8 @@
   "item.irons_spellbooks.greater_invisibility_elixir": "Greater Invisibility Elixir",
   "item.irons_spellbooks.evasion_elixir": "Evasion Elixir",
   "item.irons_spellbooks.greater_evasion_elixir": "Greater Evasion Elixir",
+  "item.irons_spellbooks.lurker_ring": "Ring of the Lurker",
+  "item.irons_spellbooks.lurker_ring.desc": " Your first attack while invisible will do +50% damage (15s cooldown)",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
