@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.item.curios;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
@@ -9,6 +10,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.COOLDOWN_REDUCTION;
 
 public class SimpleDescriptiveCurio extends CurioBaseItem {
     final @Nullable String slotIdentifier;
@@ -29,7 +32,7 @@ public class SimpleDescriptiveCurio extends CurioBaseItem {
     public List<Component> getSlotsTooltip(List<Component> tooltips, ItemStack stack) {
         if (slotIdentifier != null) {
             var title = Component.translatable("curios.modifiers." + this.slotIdentifier).withStyle(ChatFormatting.GOLD);
-            var description = Component.literal(" ").append(Component.translatable(this.getDescriptionId() + ".desc")).withStyle(descriptionStyle);
+            var description = getDescription(stack);
             if(showHeader){
                 tooltips.add(Component.empty());
                 tooltips.add(title);
@@ -40,4 +43,7 @@ public class SimpleDescriptiveCurio extends CurioBaseItem {
         return super.getSlotsTooltip(tooltips, stack);
     }
 
+    public Component getDescription(ItemStack stack){
+        return Component.literal(" ").append(Component.translatable(this.getDescriptionId() + ".desc")).withStyle(descriptionStyle);
+    }
 }
