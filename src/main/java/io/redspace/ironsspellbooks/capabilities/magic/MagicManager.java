@@ -18,8 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.COOLDOWN_REDUCTION;
-import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.*;
 
 public class MagicManager implements IMagicManager {
     public static final int MANA_REGEN_TICKS = 10;
@@ -32,7 +31,8 @@ public class MagicManager implements IMagicManager {
 
     public void regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
-        int increment = Math.round(Math.max(playerMaxMana * .01f, 1));
+        float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
+        var increment = Math.max(playerMaxMana * playerManaRegenMultiplier * .01f, 1);
 
         if (playerMagicData.getMana() != playerMaxMana) {
             if (playerMagicData.getMana() + increment < playerMaxMana) {

@@ -151,6 +151,7 @@
   "item.irons_spellbooks.greater_evasion_elixir": "Greater Evasion Elixir",
   "item.irons_spellbooks.lurker_ring": "Ring of the Lurker",
   "item.irons_spellbooks.lurker_ring.desc": "Your first attack while invisible deals +%d%% damage",
+  "item.irons_spellbooks.amethyst_resonance_charm": "Amethyst Resonance Charm",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
@@ -269,6 +270,7 @@
   "rarity.irons_spellbooks.epic": "Epic",
   "rarity.irons_spellbooks.legendary": "Legendary",
   "attribute.irons_spellbooks.max_mana": "Max Mana",
+  "attribute.irons_spellbooks.mana_regen": "Mana Regeneration",
   "attribute.irons_spellbooks.spell_power": "Spell Power",
   "attribute.irons_spellbooks.cast_time_reduction": "Cast Time Reduction",
   "attribute.irons_spellbooks.cooldown_reduction": "Cooldown Reduction",

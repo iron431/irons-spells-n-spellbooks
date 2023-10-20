@@ -44,17 +44,17 @@ public class MagicData {
 
     /********* MANA *******************************************************/
 
-    private int mana;
+    private float mana;
 
     public int getMana() {
-        return mana;
+        return (int) mana;
     }
 
-    public void setMana(int mana) {
+    public void setMana(float mana) {
         this.mana = mana;
     }
 
-    public void addMana(int mana) {
+    public void addMana(float mana) {
         this.mana += mana;
     }
 
@@ -221,7 +221,7 @@ public class MagicData {
     }
 
     public void saveNBTData(CompoundTag compound) {
-        compound.putInt(MANA, mana);
+        compound.putInt(MANA, (int) mana);
 
         if (playerCooldowns.hasCooldownsActive()) {
             ListTag listTag = new ListTag();
