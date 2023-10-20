@@ -150,7 +150,7 @@
   "item.irons_spellbooks.evasion_elixir": "Evasion Elixir",
   "item.irons_spellbooks.greater_evasion_elixir": "Greater Evasion Elixir",
   "item.irons_spellbooks.lurker_ring": "Ring of the Lurker",
-  "item.irons_spellbooks.lurker_ring.desc": "Your first attack while invisible will do +%d%% damage (%d cooldown)",
+  "item.irons_spellbooks.lurker_ring.desc": "Your first attack while invisible deals +%d%% damage",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
   "item.minecraft.splash_potion.effect.mana": "Splash Potion of Mana",
@@ -200,6 +200,7 @@
   "tooltip.irons_spellbooks.instant_mana_description": " Restores %d Mana +%d%% Max Mana",
   "tooltip.irons_spellbooks.oakskin_description": "+%d%% Damage Reduction",
   "tooltip.irons_spellbooks.evasion_description": " Allows %d Hits to be Evaded",
+  "tooltip.irons_spellbooks.passive_ability": " Passive Ability (%s cooldown):",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",
   "ui.irons_spellbooks.inscription_table_rarity_error": "This scroll is too rare for this spell book.",
