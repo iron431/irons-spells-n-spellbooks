@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.api.events.SpellDamageEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
@@ -37,6 +38,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
@@ -188,6 +190,13 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void infiniteRabbits(SpellDamageEvent event){
+        if(event.getEntity().getType() == EntityType.RABBIT){
+            event.setCanceled(true);
+            event.getSpellDamageSource().get().getEntity().hurt(event.getSpellDamageSource().get(), event.getOriginalAmount());
+        }
+    }
+                                       @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
 

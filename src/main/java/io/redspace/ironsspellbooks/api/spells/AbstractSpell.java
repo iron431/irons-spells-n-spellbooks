@@ -12,6 +12,8 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.damage.IndirectSpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
@@ -489,10 +491,6 @@ public abstract class AbstractSpell {
         return SpellRarity.COMMON;
     }
 
-    public DamageSource getDamageSource() {
-        return new DamageSource(getDeathMessageId());
-    }
-
     public String getDeathMessageId() {
         if (deathMessageId == null) {
             deathMessageId = getSpellId().replace(':', '.');
@@ -501,12 +499,12 @@ public abstract class AbstractSpell {
         return deathMessageId;
     }
 
-    public DamageSource getDamageSource(Entity attacker) {
-        return DamageSources.directDamageSource(getDamageSource(), attacker);
+    public SpellDamageSource getDamageSource(Entity attacker) {
+        return new SpellDamageSource(attacker, this);
     }
 
-    public DamageSource getDamageSource(Entity projectile, Entity attacker) {
-        return DamageSources.indirectDamageSource(getDamageSource(), projectile, attacker);
+    public IndirectSpellDamageSource getDamageSource(Entity projectile, Entity attacker) {
+        return new IndirectSpellDamageSource(projectile, attacker, this);
     }
 
     public boolean isEnabled() {

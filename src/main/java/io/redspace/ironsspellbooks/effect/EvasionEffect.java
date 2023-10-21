@@ -31,7 +31,6 @@ public class EvasionEffect extends CustomDescriptionMobEffect {
             DamageSource.WITHER,
             DamageSource.FREEZE,
             DamageSources.CAULDRON,
-            DamageSources.BLEED_DAMAGE,
             DamageSource.STARVE,
             DamageSource.DROWN,
             DamageSource.STALAGMITE,
