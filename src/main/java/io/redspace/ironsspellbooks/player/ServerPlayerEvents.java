@@ -190,13 +190,6 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void infiniteRabbits(SpellDamageEvent event){
-        if(event.getEntity().getType() == EntityType.RABBIT){
-            event.setCanceled(true);
-            event.getSpellDamageSource().get().getEntity().hurt(event.getSpellDamageSource().get(), event.getOriginalAmount());
-        }
-    }
-                                       @SubscribeEvent
     public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
 
@@ -279,7 +272,7 @@ public class ServerPlayerEvents {
          */
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity livingAttacker) {
-            IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {} target:{}", livingAttacker.getName().getString(), event.getEntity());
+            //IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {} target:{}", livingAttacker.getName().getString(), event.getEntity());
             //TODO: subscribe in effect class?
             /**
              * Spider aspect handling

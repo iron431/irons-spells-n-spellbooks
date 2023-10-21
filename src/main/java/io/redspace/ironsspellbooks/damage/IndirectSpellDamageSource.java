@@ -15,14 +15,14 @@ public class IndirectSpellDamageSource extends IndirectEntityDamageSource implem
     int fireTime;
 
     public IndirectSpellDamageSource(@NotNull Entity directEntity, @NotNull Entity causingEntity, AbstractSpell spell) {
-        super(spell.getDeathMessageId(), causingEntity, directEntity);
+        super(spell.getDeathMessageId(), directEntity, causingEntity);
         this.spell = spell;
     }
 
     @Override
     public @NotNull Component getLocalizedDeathMessage(@NotNull LivingEntity pLivingEntity) {
         String s = "death.attack." + spell.getDeathMessageId();
-        Component component = this.entity != null ? this.entity.getDisplayName() : this.getDirectEntity().getDisplayName();
+        Component component = this.entity != null ? this.getEntity().getDisplayName() : this.getDirectEntity().getDisplayName();
         return Component.translatable(s, pLivingEntity.getDisplayName(), component);
     }
 
