@@ -11,9 +11,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import software.bernie.geckolib3.core.AnimationState;
@@ -114,8 +116,8 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
                         AtomicInteger count = new AtomicInteger();
                         blockCollector.blocksToRemove.forEach(pos -> {
                             var distance = blockCollector.origin.distManhattan(pos);
-                            var missChance = random.nextFloat() * 3;
-                            float pct = (distance * distance) / 100.0f;
+                            var missChance = random.nextFloat() * 35;
+                            float pct = (distance * distance) / (100.0f * this.radius * this.radius);
 
                             if (missChance < pct) {
                                 //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: missed pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
@@ -132,6 +134,11 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
                                 }
                             }
                         });
+                        //TODO: try to clean up item entities. might want to spawn them manually instead of using Block.dropResources. i think they cause a lot of lag
+                        var aabb = new AABB(blockCollector.minX,blockCollector.minY,blockCollector.minZ,blockCollector.maxX,blockCollector.maxY,blockCollector.maxZ);
+                        level.getEntitiesOfClass(ItemEntity.class, aabb).forEach((itemEntity -> {
+                            itemEntity.setPickUpDelay(0);
+                        }));
                     }
                 }
             }
