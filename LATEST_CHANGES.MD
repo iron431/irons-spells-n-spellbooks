@@ -1,6 +1,8 @@
 ### Additions
 - Added Mana Regen attribute
 - Added the Amethyst Resonance Charm, a craftable necklace that gives +15% mana regeneration
+- Added InscribeSpellEvent for developers
+- Added ChangeManaEvent for developers
 
 ### Changes
 - Buff Magic Arrow's base damage by 5

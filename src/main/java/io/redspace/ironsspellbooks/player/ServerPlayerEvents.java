@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
@@ -264,13 +265,26 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void testManaEvent(ChangeManaEvent event) {
+        if (event.getEntity().hasEffect(MobEffects.REGENERATION))
+            event.setCanceled(true);
+        else if (event.getEntity().hasEffect(MobEffects.POISON) ){
+            var diff = event.getNewMana() - event.getOldMana();
+            if (diff < 0) {
+                diff *= 2;
+                event.setNewMana(event.getOldMana() + diff);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onLivingTakeDamage(LivingDamageEvent event) {
         /*
         Damage Increasing Effects
          */
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity livingAttacker) {
-            IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {} target:{}", livingAttacker.getName().getString(), event.getEntity());
+            //IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {} target:{}", livingAttacker.getName().getString(), event.getEntity());
             //TODO: subscribe in effect class?
             /**
              * Spider aspect handling

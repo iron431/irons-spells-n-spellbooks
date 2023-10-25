@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.api.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
+import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
@@ -13,6 +15,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
 
 public class MagicData {
@@ -51,11 +54,15 @@ public class MagicData {
     }
 
     public void setMana(float mana) {
-        this.mana = mana;
+        //Event does will not get posted if the server player is null
+        ChangeManaEvent e = new ChangeManaEvent(this.serverPlayer, this, this.mana, mana);
+        if (this.serverPlayer == null || !MinecraftForge.EVENT_BUS.post(e)) {
+            this.mana = e.getNewMana();
+        }
     }
 
     public void addMana(float mana) {
-        this.mana += mana;
+        setMana(this.mana + mana);
     }
 
     /********* SYNC DATA *******************************************************/
