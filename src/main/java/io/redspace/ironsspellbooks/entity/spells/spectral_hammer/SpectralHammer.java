@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -119,7 +120,7 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
 
                     if (!blockCollector.blocksToRemove.isEmpty()) {
                         //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: origin:{}", blockCollector.origin);
-                        var random = level.getRandom();
+                        var random = Utils.random;
                         AtomicInteger count = new AtomicInteger();
                         int maxPossibleStacks = (this.radius * 2) * (1 + this.radius * 2) * (this.depth + 1);
                         SimpleContainer drops = new SimpleContainer(maxPossibleStacks);

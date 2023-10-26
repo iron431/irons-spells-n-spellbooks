@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.blood_needle;
 
 import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -118,9 +119,9 @@ public class BloodNeedle extends AbstractMagicProjectile {
 
         for (int i = 0; i < 2; i++) {
             double speed = .05;
-            double dx = level.random.nextDouble() * 2 * speed - speed;
-            double dy = level.random.nextDouble() * 2 * speed - speed;
-            double dz = level.random.nextDouble() * 2 * speed - speed;
+            double dx = Utils.random.nextDouble() * 2 * speed - speed;
+            double dy = Utils.random.nextDouble() * 2 * speed - speed;
+            double dz = Utils.random.nextDouble() * 2 * speed - speed;
             level.addParticle(ParticleHelper.BLOOD, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
 
         }

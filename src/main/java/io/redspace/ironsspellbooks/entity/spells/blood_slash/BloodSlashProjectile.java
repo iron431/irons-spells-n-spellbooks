@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.blood_slash;
 import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
@@ -45,7 +46,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 
     public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level level) {
         super(entityType, level);
-        animationSeed = level.random.nextInt(9999);
+        animationSeed = Utils.random.nextInt(9999);
 
         float initialRadius = 2;
         maxRadius = 4;

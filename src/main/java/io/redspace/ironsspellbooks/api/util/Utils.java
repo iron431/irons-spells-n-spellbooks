@@ -51,6 +51,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.levelgen.ThreadSafeLegacyRandomSource;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +65,7 @@ import java.util.function.Predicate;
 
 public class Utils {
 
+    public static final RandomSource random = RandomSource.createThreadSafe();
     public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
         StringBuffer sb = new StringBuffer();
@@ -369,10 +371,10 @@ public class Utils {
         if (!(d2 <= 0.0D)) {
             double d3 = target.getX() - attacker.getX();
             double d4 = target.getZ() - attacker.getZ();
-            float f = (float) (attacker.level.random.nextInt(21) - 10);
-            double d5 = d2 * (double) (attacker.level.random.nextFloat() * 0.5F + 0.2F);
+            float f = (float) (Utils.random.nextInt(21) - 10);
+            double d5 = d2 * (double) (Utils.random.nextFloat() * 0.5F + 0.2F);
             Vec3 vec3 = (new Vec3(d3, 0.0D, d4)).normalize().scale(d5).yRot(f);
-            double d6 = d2 * (double) attacker.level.random.nextFloat() * 0.5D;
+            double d6 = d2 * (double) Utils.random.nextFloat() * 0.5D;
             target.push(vec3.x, d6, vec3.z);
             target.hurtMarked = true;
         }

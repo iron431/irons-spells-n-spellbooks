@@ -92,7 +92,7 @@ public class FireBomb extends AbstractMagicProjectile {
 
     @Override
     protected void doImpactSound(SoundEvent sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + level.random.nextFloat() * .2f);
+        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + Utils.random.nextFloat() * .2f);
     }
 
     @Override

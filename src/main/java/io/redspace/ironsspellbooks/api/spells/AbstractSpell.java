@@ -340,9 +340,9 @@ public abstract class AbstractSpell {
 
     protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
         if (sound.isPresent()) {
-            entity.playSound(sound.get(), 2.0f, .9f + entity.level.random.nextFloat() * .2f);
+            entity.playSound(sound.get(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
         } else if (playDefaultSound) {
-            entity.playSound(defaultCastSound(), 2.0f, .9f + entity.level.random.nextFloat() * .2f);
+            entity.playSound(defaultCastSound(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
         }
     }
 

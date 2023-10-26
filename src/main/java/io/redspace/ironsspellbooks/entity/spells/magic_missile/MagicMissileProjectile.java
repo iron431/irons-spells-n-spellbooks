@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.magic_missile;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -74,9 +75,9 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
     public void trailParticles() {
         for (int i = 0; i < 2; i++) {
             double speed = .02;
-            double dx = level.random.nextDouble() * 2 * speed - speed;
-            double dy = level.random.nextDouble() * 2 * speed - speed;
-            double dz = level.random.nextDouble() * 2 * speed - speed;
+            double dx = Utils.random.nextDouble() * 2 * speed - speed;
+            double dy = Utils.random.nextDouble() * 2 * speed - speed;
+            double dz = Utils.random.nextDouble() * 2 * speed - speed;
             level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
             if (age > 1)
                 level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx - getDeltaMovement().x / 2, this.getY() + dy - getDeltaMovement().y / 2, this.getZ() + dz - getDeltaMovement().z / 2, dx, dy, dz);

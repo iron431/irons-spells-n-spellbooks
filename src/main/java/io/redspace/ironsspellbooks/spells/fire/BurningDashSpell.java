@@ -96,7 +96,7 @@ public class BurningDashSpell extends AbstractSpell {
         //Direction for Mobs to cast in
         Vec3 forward = entity.getLookAngle();
         if (playerMagicData.getAdditionalCastData() instanceof BurningDashDirectionOverrideCastData) {
-            if (world.random.nextBoolean())
+            if (Utils.random.nextBoolean())
                 forward = forward.yRot(90);
             else
                 forward = forward.yRot(-90);
