@@ -321,7 +321,15 @@ public class Utils {
         return new Vec2(pitch, yaw);
     }
 
-    public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource, @Nullable SchoolType damageSchool) {
+    /**
+     * School Type is no a parameter, use {@link Utils#doMeleeAttack(Mob, Entity, DamageSource)} instead
+     */
+    @Deprecated(forRemoval = true)
+    public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource, SchoolType schoolType) {
+        return doMeleeAttack(attacker, target, damageSource);
+    }
+
+    public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource) {
         /*
         Copied from Mob#doHurtTarget
          */
@@ -337,7 +345,7 @@ public class Utils {
             target.setSecondsOnFire(i * 4);
         }
 
-        boolean flag = DamageSources.applyDamage(target, f, damageSource, damageSchool);
+        boolean flag = DamageSources.applyDamage(target, f, damageSource);
         if (flag) {
             if (f1 > 0.0F && target instanceof LivingEntity livingTarget) {
                 ((LivingEntity) target).knockback((double) (f1 * 0.5F), (double) Mth.sin(attacker.getYRot() * ((float) Math.PI / 180F)), (double) (-Mth.cos(attacker.getYRot() * ((float) Math.PI / 180F))));

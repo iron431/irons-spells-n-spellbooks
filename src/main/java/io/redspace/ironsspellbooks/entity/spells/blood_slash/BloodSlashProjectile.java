@@ -192,17 +192,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            var school = SpellRegistry.BLOOD_SLASH_SPELL.get().getSchoolType();
-
-            var hit = DamageSources.applyDamage(entity, damage, SpellRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this, getOwner()), school);
-            if (hit && entity instanceof LivingEntity livingEntity) {
-                //livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
-                if (getOwner() instanceof LivingEntity livingOwner) {
-                    float healAmount = damage * .15f * DamageSources.getResist(livingEntity, school);
-                    MinecraftForge.EVENT_BUS.post(new SpellHealEvent(livingOwner, livingOwner, healAmount, school));
-                    livingOwner.heal(healAmount);
-                }
-            }
+            DamageSources.applyDamage(entity, damage, SpellRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this, getOwner()));
             victims.add(entity);
         }
     }

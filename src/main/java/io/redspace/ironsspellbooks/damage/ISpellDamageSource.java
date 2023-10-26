@@ -17,6 +17,11 @@ public interface ISpellDamageSource {
     float getLifestealPercent();
     int getFireTime();
     int getFreezeTicks();
+
+    ISpellDamageSource setLifestealPercent(float lifesteal);
+    ISpellDamageSource setFireTime(int fireTime);
+    ISpellDamageSource setFreezeTicks(int freezeTime);
+
     default boolean hasPostHitEffects(){
         return getLifestealPercent() > 0 || getFireTime() > 0 || getFreezeTicks() > 0;
     }

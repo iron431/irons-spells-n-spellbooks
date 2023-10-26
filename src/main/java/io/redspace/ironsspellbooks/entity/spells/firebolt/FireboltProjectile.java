@@ -68,7 +68,7 @@ public class FireboltProjectile extends AbstractMagicProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         var target = entityHitResult.getEntity();
-        DamageSources.applyDamage(target, getDamage(), SpellRegistry.FIREBOLT_SPELL.get().getDamageSource(this, getOwner()).setFireTime(3));
+        DamageSources.applyDamage(target, getDamage(), SpellRegistry.FIREBOLT_SPELL.get().getDamageSource(this, getOwner()));
         discard();
     }
 

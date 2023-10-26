@@ -73,8 +73,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile implements ItemS
         if (!this.level.isClientSide) {
             var target = pResult.getEntity();
             var owner = getOwner();
-            if (DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this, owner), SpellRegistry.BLAZE_STORM_SPELL.get().getSchoolType()))
-                target.setSecondsOnFire(5);
+            DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this, owner));
         }
     }
 

@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.ray_of_frost.RayOfFrostVisualEntity;
 import io.redspace.ironsspellbooks.network.spell.ClientboundBloodSiphonParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -20,12 +21,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -88,7 +91,7 @@ public class RayOfFrostSpell extends AbstractSpell {
         level.addFreshEntity(new RayOfFrostVisualEntity(level, entity.getEyePosition(), hitResult.getLocation(), entity));
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
-            DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity).setFreezeTicks(getFreezeTime(spellLevel, entity)));
+            DamageSources.applyDamage(target, getDamage(spellLevel, entity), ((ISpellDamageSource) getDamageSource(entity)).setFreezeTicks(getFreezeTime(spellLevel, entity)).get());
             MagicManager.spawnParticles(level, ParticleHelper.ICY_FOG, hitResult.getLocation().x, target.getY(), hitResult.getLocation().z, 4, 0, 0, 0, .3, true);
         } else if (hitResult.getType() == HitResult.Type.BLOCK) {
             MagicManager.spawnParticles(level, ParticleHelper.ICY_FOG, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, 4, 0, 0, 0, .3, true);
@@ -107,5 +110,11 @@ public class RayOfFrostSpell extends AbstractSpell {
 
     private int getFreezeTime(int spellLevel, LivingEntity caster) {
         return (int) (getSpellPower(spellLevel, caster) * 30);
+    }
+
+
+    @Override
+    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setFreezeTicks(80).get();
     }
 }
