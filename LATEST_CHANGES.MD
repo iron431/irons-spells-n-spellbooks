@@ -1,15 +1,15 @@
 ### Additions
 - Added Mana Regen attribute
 - Added the Amethyst Resonance Charm, a craftable necklace that gives +15% mana regeneration
-- Added InscribeSpellEvent for developers
+- Added InscribeSpellEvent for developers, courtesy of Silvertide7
 - Added ChangeManaEvent for developers
 
 ### Changes
 - Buff Magic Arrow's base damage by 5
-- Add CastSource to SpellCastEvent
+- Add CastSource to SpellCastEvent for developers
 - Rework Priest Armor Texture, courtesy of Crydigo
 - Tweak most jewelry textures
-- Any armor can now be upgraded instead of only mage armor
+- Any armor can now be upgraded instead of only mage armor (can_be_upgraded tag has been removed)
 - Spectral Hammer debris reduced 
 
 ### Fixes
