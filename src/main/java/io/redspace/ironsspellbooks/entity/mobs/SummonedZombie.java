@@ -146,7 +146,7 @@ public class SummonedZombie extends Zombie implements MagicSummon, GeoAnimatable
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
-        return Utils.doMeleeAttack(this, pEntity, SpellRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this, getSummoner()), null);
+        return Utils.doMeleeAttack(this, pEntity, SpellRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this, getSummoner()));
     }
 
     @Override

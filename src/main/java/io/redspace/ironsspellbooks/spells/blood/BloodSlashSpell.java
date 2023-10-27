@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -12,8 +13,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,6 +78,11 @@ public class BloodSlashSpell extends AbstractSpell {
         bloodSlash.setDamage(getSpellPower(spellLevel, entity));
         world.addFreshEntity(bloodSlash);
         super.onCast(world, spellLevel, entity, playerMagicData);
+    }
+
+    @Override
+    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setLifestealPercent(.15f).get();
     }
 
     @Override

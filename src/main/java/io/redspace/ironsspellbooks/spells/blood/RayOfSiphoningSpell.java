@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
 import io.redspace.ironsspellbooks.network.spell.ClientboundBloodSiphonParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -14,12 +15,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -79,13 +82,17 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
-                if (DamageSources.applyDamage(target, getTickDamage(spellLevel, entity), getDamageSource(entity), getSchoolType())) {
-                    entity.heal(getTickDamage(spellLevel, entity));
+                if (DamageSources.applyDamage(target, getTickDamage(spellLevel, entity), getDamageSource(entity))) {
                     Messages.sendToPlayersTrackingEntity(new ClientboundBloodSiphonParticles(target.position().add(0, target.getBbHeight() / 2, 0), entity.position().add(0, entity.getBbHeight() / 2, 0)), entity, true);
                 }
             }
         }
         super.onCast(level, spellLevel, entity, playerMagicData);
+    }
+
+    @Override
+    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setLifestealPercent(1f).get();
     }
 
     public static float getRange(int level) {

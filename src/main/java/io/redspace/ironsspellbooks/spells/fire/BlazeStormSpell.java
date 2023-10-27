@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -99,6 +101,11 @@ public class BlazeStormSpell extends AbstractSpell {
         fireball.setDamage(getDamage(spellLevel, entity));
         world.playSound(null, origin.x, origin.y, origin.z, SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 2.0f, 1.0f);
         world.addFreshEntity(fireball);
+    }
+
+    @Override
+    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setFireTime(2).get();
     }
 
     @Override

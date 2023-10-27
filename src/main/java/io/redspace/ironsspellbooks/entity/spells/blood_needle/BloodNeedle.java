@@ -87,14 +87,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        var school = SpellRegistry.BLOOD_NEEDLES_SPELL.get().getSchoolType();
-        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.BLOOD_NEEDLES_SPELL.get().getDamageSource(this, getOwner()), school);
-        if (hit && entityHitResult.getEntity() instanceof LivingEntity target && getOwner() instanceof LivingEntity livingOwner) {
-            //you know. this shit doesn't *actually* work
-            float healAmount = getDamage() * DamageSources.getResist(target, school) * .25f;
-            MinecraftForge.EVENT_BUS.post(new SpellHealEvent(livingOwner, livingOwner, healAmount, school));
-            livingOwner.heal(healAmount);
-        }
+        DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.BLOOD_NEEDLES_SPELL.get().getDamageSource(this, getOwner()));
         entityHitResult.getEntity().invulnerableTime = 0;
     }
 

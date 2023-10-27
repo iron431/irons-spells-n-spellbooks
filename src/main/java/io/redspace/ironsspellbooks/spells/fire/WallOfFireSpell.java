@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -16,6 +17,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -128,6 +130,11 @@ public class WallOfFireSpell extends AbstractSpell {
             }
         }
         super.onServerCastComplete(level, spellLevel, entity, playerMagicData, false);
+    }
+
+    @Override
+    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setFireTime(4).get();
     }
 
     private float getWallLength(int spellLevel, LivingEntity entity) {
