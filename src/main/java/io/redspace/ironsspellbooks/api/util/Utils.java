@@ -41,18 +41,17 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.levelgen.ThreadSafeLegacyRandomSource;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -68,6 +67,7 @@ import java.util.function.Predicate;
 
 public class Utils {
 
+    public static final RandomSource random = RandomSource.createThreadSafe();
     public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
         StringBuffer sb = new StringBuffer();
@@ -89,7 +89,7 @@ public class Utils {
 
     public static boolean canBeUpgraded(ItemStack stack) {
         return !ServerConfigs.UPGRADE_BLACKLIST.get().contains(ForgeRegistries.ITEMS.getKey(stack.getItem()).toString())
-                && (stack.getItem() instanceof SpellBook || stack.is(ModTags.CAN_BE_UPGRADED)
+                && (stack.getItem() instanceof SpellBook || stack.getItem() instanceof ArmorItem
                 || ServerConfigs.UPGRADE_WHITELIST.get().contains(ForgeRegistries.ITEMS.getKey(stack.getItem()).toString())
         );
     }
@@ -372,10 +372,10 @@ public class Utils {
         if (!(d2 <= 0.0D)) {
             double d3 = target.getX() - attacker.getX();
             double d4 = target.getZ() - attacker.getZ();
-            float f = (float) (attacker.level.random.nextInt(21) - 10);
-            double d5 = d2 * (double) (attacker.level.random.nextFloat() * 0.5F + 0.2F);
+            float f = (float) (Utils.random.nextInt(21) - 10);
+            double d5 = d2 * (double) (Utils.random.nextFloat() * 0.5F + 0.2F);
             Vec3 vec3 = (new Vec3(d3, 0.0D, d4)).normalize().scale(d5).yRot(f);
-            double d6 = d2 * (double) attacker.level.random.nextFloat() * 0.5D;
+            double d6 = d2 * (double) Utils.random.nextFloat() * 0.5D;
             target.push(vec3.x, d6, vec3.z);
             target.hurtMarked = true;
         }
@@ -394,24 +394,25 @@ public class Utils {
     }
 
     public static boolean shouldHealEntity(LivingEntity healer, LivingEntity target) {
-        if (healer instanceof NeutralMob neutralMob && neutralMob.isAngryAt(target))
+        if (healer instanceof NeutralMob neutralMob && neutralMob.isAngryAt(target)) {
             return false;
-        if (healer == target)
+        } else if (healer == target) {
             return true;
-        if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer.getMobType() == MobType.UNDEAD || healer.getMobType() == MobType.ILLAGER))
+        } else if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer instanceof Enemy)) {
             //This tag is for things like iron golems, villagers, farm animals, etc
             return true;
-        if (healer.isAlliedTo(target))
+        } else if (healer.isAlliedTo(target)) {
             //Generic ally-check. Precursory team check plus some mobs override it, such as summons
             return true;
-        if (healer.getTeam() != null)
+        } else if (healer.getTeam() != null) {
             //If we are on a team, only heal teammates
             return target.isAlliedTo(healer.getTeam());
-        if (healer instanceof Player) {
+        } else if (healer instanceof Player) {
             //If we are a player and not on a team, we only want to heal other players
             return target instanceof Player;
         } else {
-            return healer.getMobType() == target.getMobType();
+            //Otherwise, heal like kind (ie undead to undead), but also xor check "enemy" status (most mob types are undefined)
+            return healer.getMobType() == target.getMobType() && (healer instanceof Enemy ^ target instanceof Enemy);
         }
     }
 

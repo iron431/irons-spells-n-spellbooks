@@ -54,7 +54,7 @@ public class FireboltProjectile extends AbstractMagicProjectile {
 
     @Override
     protected void doImpactSound(SoundEvent sound) {
-        level().playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + level().random.nextFloat() * .2f);
+        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 1.2f + Utils.random.nextFloat() * .2f);
 
     }
 
@@ -77,7 +77,7 @@ public class FireboltProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level(), ParticleTypes.LAVA, x, y, z, 5, .1, .1, .1, .25, true);
+        MagicManager.spawnParticles(level, ParticleTypes.LAVA, x, y, z, 5, .1, .1, .1, .25, true);
     }
 
     @Override
@@ -96,9 +96,9 @@ public class FireboltProjectile extends AbstractMagicProjectile {
                 double y = getY() + swirl.y + getBbHeight() / 2;
                 double z = getZ() + swirl.z;
                 Vec3 jitter = Utils.getRandomVec3(.05f);
-                level().addParticle(ParticleHelper.EMBERS, x, y, z, jitter.x, jitter.y, jitter.z);
+                level.addParticle(ParticleHelper.EMBERS, x, y, z, jitter.x, jitter.y, jitter.z);
             }
-            //level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), 0, 0, 0);
+            //level.addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), 0, 0, 0);
 
         }
     }

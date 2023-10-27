@@ -203,6 +203,11 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     }
 
     @Override
+    public boolean canTakeItemForPickAll(ItemStack pStack, Slot pSlot) {
+        return pSlot.container != this.resultSlot.container && super.canTakeItemForPickAll(pStack, pSlot);
+    }
+
+    @Override
     public boolean stillValid(Player pPlayer) {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
                 pPlayer, SCROLL_FORGE_BLOCK.get());

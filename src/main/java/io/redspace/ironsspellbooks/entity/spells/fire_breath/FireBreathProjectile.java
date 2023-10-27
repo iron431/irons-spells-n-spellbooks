@@ -30,23 +30,23 @@ public class FireBreathProjectile extends AbstractConeProjectile {
 
     @Override
     public void tick() {
-        if (!level().isClientSide && getOwner() != null)
+        if (!level.isClientSide && getOwner() != null)
             if (dealDamageActive) {
                 //Set Fire Blocks
-                boolean doFire = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level(), this.getOwner());
+                boolean doFire = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
 
                 if(doFire){
                     float range = 15 * Mth.DEG_TO_RAD;
                     for (int i = 0; i < 3; i++) {
-                        Vec3 cast = getOwner().getLookAngle().normalize().xRot(level().random.nextFloat() * range * 2 - range).yRot(level().random.nextFloat() * range * 2 - range);
-                        HitResult hitResult = level().clip(new ClipContext(getOwner().getEyePosition(), getOwner().getEyePosition().add(cast.scale(10)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                        Vec3 cast = getOwner().getLookAngle().normalize().xRot(Utils.random.nextFloat() * range * 2 - range).yRot(Utils.random.nextFloat() * range * 2 - range);
+                        HitResult hitResult = level.clip(new ClipContext(getOwner().getEyePosition(), getOwner().getEyePosition().add(cast.scale(10)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                         if (hitResult.getType() == HitResult.Type.BLOCK) {
-                            HitResult shieldResult = Utils.raycastForEntityOfClass(level(), this, getOwner().getEyePosition(), hitResult.getLocation(), false, AbstractShieldEntity.class);
+                            HitResult shieldResult = Utils.raycastForEntityOfClass(level, this, getOwner().getEyePosition(), hitResult.getLocation(), false, AbstractShieldEntity.class);
                             if (shieldResult.getType() == HitResult.Type.MISS) {
                                 Vec3 pos = hitResult.getLocation().subtract(cast.scale(.5));
-                                BlockPos blockPos =  BlockPos.containing(pos.x, pos.y, pos.z) ;
-                                if (level().getBlockState(blockPos).isAir())
-                                    level().setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level(), blockPos));
+                                BlockPos blockPos = BlockPos.containing(pos.x, pos.y, pos.z);
+                                if (level.getBlockState(blockPos).isAir())
+                                    level.setBlockAndUpdate(blockPos, BaseFireBlock.getState(this.level, blockPos));
                             }
 
                         }
@@ -61,7 +61,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
     @Override
     public void spawnParticles() {
         var owner = getOwner();
-        if (!level().isClientSide || owner == null) {
+        if (!level.isClientSide || owner == null) {
             return;
         }
         Vec3 rotation = owner.getLookAngle().normalize();
@@ -81,7 +81,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
             double angularness = .5;
             Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
-            level().addParticle(ParticleHelper.FIRE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+            level.addParticle(ParticleHelper.FIRE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
         }
     }
 

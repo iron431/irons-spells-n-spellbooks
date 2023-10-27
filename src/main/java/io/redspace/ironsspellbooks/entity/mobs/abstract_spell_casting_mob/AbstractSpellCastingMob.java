@@ -220,7 +220,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 finishDrinkingPotion();
             } else if (drinkTime % 4 == 0)
                 if (!this.isSilent())
-                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, this.level.random.nextFloat() * 0.1F + 0.9F);
+                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, Utils.random.nextFloat() * 0.1F + 0.9F);
 
         }
 

@@ -32,12 +32,12 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     @Override
     public void trailParticles() {
         Vec3 vec3 = this.position().subtract(getDeltaMovement());
-        level().addParticle(ParticleHelper.UNSTABLE_ENDER, vec3.x, vec3.y, vec3.z, 0, 0, 0);
+        level.addParticle(ParticleHelper.UNSTABLE_ENDER, vec3.x, vec3.y, vec3.z, 0, 0, 0);
     }
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, x, y, z, 15, .1, .1, .1, .5, false);
+        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 15, .1, .1, .1, .5, false);
     }
 
     @Override
@@ -73,15 +73,20 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
         }
     }
 
+    BlockPos lastHitBlock;
 
     @Override
     protected void onHit(HitResult result) {
         //IronsSpellbooks.LOGGER.debug("onHit ({})", result.getType());
 
-        penetration++;
-        if (!level().isClientSide) {
-            if (result.getType() == HitResult.Type.ENTITY) {
-                level().playSound(null, BlockPos.containing(this.position()), SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2, .65f);
+        if (!level.isClientSide) {
+            var blockPos = new BlockPos(result.getLocation());
+            if (result.getType() == HitResult.Type.BLOCK && !blockPos.equals(lastHitBlock)) {
+                penetration++;
+                lastHitBlock = blockPos;
+            } else if (result.getType() == HitResult.Type.ENTITY) {
+                penetration++;
+                level.playSound(null, BlockPos.containing(position()), SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2, .65f);
                 //IronsSpellbooks.LOGGER.debug("Playing Sound");
             }
         }

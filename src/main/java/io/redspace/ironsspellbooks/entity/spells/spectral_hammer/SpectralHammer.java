@@ -1,19 +1,29 @@
 package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -24,10 +34,9 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class SpectralHammer extends LivingEntity implements GeoEntity {
 
@@ -86,22 +95,22 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
 
         if (ticksAlive >= doAnimateTick && !didAnimate) {
             missedBlocks.forEach(pos -> {
-                FallingBlockEntity.fall(level(), pos, level().getBlockState(pos));
+                FallingBlockEntity.fall(level, pos, level.getBlockState(pos));
             });
             didAnimate = true;
         }
 
         if (ticksAlive == doDamageTick - 2 && !didDamage) {
             var location = this.position();
-            level().playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2f, random.nextIntBetweenInclusive(6, 8) * .1f);
-            level().playSound(null, location.x, location.y, location.z, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1f, random.nextIntBetweenInclusive(6, 8) * .1f);
+            level.playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2f, random.nextIntBetweenInclusive(6, 8) * .1f);
+            level.playSound(null, location.x, location.y, location.z, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1f, random.nextIntBetweenInclusive(6, 8) * .1f);
 
         }
 
         if (ticksAlive >= doDamageTick && !didDamage) {
             if (blockHitResult != null && blockHitResult.getType() != HitResult.Type.MISS) {
                 var blockPos = blockHitResult.getBlockPos();
-                var blockState = level().getBlockState(blockPos);
+                var blockState = level.getBlockState(blockPos);
 
                 if (blockState.is(ModTags.SPECTRAL_HAMMER_MINEABLE)) {
                     var blockCollector = getBlockCollector(blockPos, blockHitResult.getDirection(), radius, depth, new HashSet<>(), new HashSet<>());
@@ -109,28 +118,31 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
 
                     if (!blockCollector.blocksToRemove.isEmpty()) {
                         //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: origin:{}", blockCollector.origin);
-                        var random = level().getRandom();
+                        var random = Utils.random;
                         AtomicInteger count = new AtomicInteger();
+                        int maxPossibleStacks = (this.radius * 2) * (1 + this.radius * 2) * (this.depth + 1);
+                        SimpleContainer drops = new SimpleContainer(maxPossibleStacks);
                         blockCollector.blocksToRemove.forEach(pos -> {
                             var distance = blockCollector.origin.distManhattan(pos);
-                            var missChance = random.nextFloat() * 3;
-                            float pct = (distance * distance) / 100.0f;
+                            var missChance = random.nextFloat() * 40;
+                            float pct = (distance * distance) / (100.0f * this.radius);
 
                             if (missChance < pct) {
                                 //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: missed pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
                                 missedBlocks.add(pos);
                             } else {
+                                var blockstate = level.getBlockState(pos);
+
                                 if (count.incrementAndGet() % 5 == 0) {
-                                    //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.1 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
-                                    level().destroyBlock(pos, true);
-                                } else {
-                                    //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
-                                    var bState = level().getBlockState(pos);
-                                    Block.dropResources(bState, level(), pos);
-                                    level().removeBlock(pos, false);
+                                    level.destroyBlock(pos, false);
+                                }else{
+                                    level.removeBlock(pos, false);
                                 }
+                                //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
+                                dropResources(blockstate, level, pos).forEach(drops::addItem);
                             }
                         });
+                        Containers.dropContents(level, this.blockPosition(), drops);
                     }
                 }
             }
@@ -141,6 +153,15 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
         super.tick();
     }
 
+    public static List<ItemStack> dropResources(BlockState pState, Level pLevel, BlockPos pos) {
+        List<ItemStack> drops = new ArrayList<>();
+        if (pLevel instanceof ServerLevel) {
+            drops = Block.getDrops(pState, (ServerLevel) pLevel, pos, null);
+            pState.spawnAfterBreak((ServerLevel) pLevel, pos, ItemStack.EMPTY, true);
+        }
+        return drops;
+    }
+
     private void collectBlocks(BlockPos blockPos, BlockCollectorHelper bch) {
         //IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos:{} checked:{} toRemove:{}", blockPos, bch.blocksChecked.size(), bch.blocksToRemove.size());
 
@@ -148,7 +169,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
             return;
         }
 
-        if (bch.isValidBlockToCollect(level(), blockPos)) {
+        if (bch.isValidBlockToCollect(level, blockPos)) {
             //IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is valid", blockPos);
             bch.blocksToRemove.add(blockPos);
             collectBlocks(blockPos.above(), bch);

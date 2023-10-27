@@ -117,12 +117,12 @@ public class FrostStepSpell extends AbstractSpell {
             double width = 0.5;
             float height = 1;
             for (int i = 0; i < 25; i++) {
-                double x = pos.x + level.random.nextDouble() * width * 2 - width;
-                double y = pos.y + height + level.random.nextDouble() * height * 1.2 * 2 - height * 1.2;
-                double z = pos.z + level.random.nextDouble() * width * 2 - width;
-                double dx = level.random.nextDouble() * .1 * (level.random.nextBoolean() ? 1 : -1);
-                double dy = level.random.nextDouble() * .1 * (level.random.nextBoolean() ? 1 : -1);
-                double dz = level.random.nextDouble() * .1 * (level.random.nextBoolean() ? 1 : -1);
+                double x = pos.x + Utils.random.nextDouble() * width * 2 - width;
+                double y = pos.y + height + Utils.random.nextDouble() * height * 1.2 * 2 - height * 1.2;
+                double z = pos.z + Utils.random.nextDouble() * width * 2 - width;
+                double dx = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
+                double dy = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
+                double dz = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
                 level.addParticle(ParticleHelper.SNOWFLAKE, true, x, y, z, dx, dy, dz);
                 level.addParticle(ParticleTypes.SNOWFLAKE, true, x, y, z, -dx, -dy, -dz);
             }

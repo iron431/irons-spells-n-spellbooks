@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.api.events;
 
 
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;

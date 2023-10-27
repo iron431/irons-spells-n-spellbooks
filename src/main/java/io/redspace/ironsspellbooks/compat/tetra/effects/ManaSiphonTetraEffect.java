@@ -52,7 +52,7 @@ public class ManaSiphonTetraEffect {
                     int increment = (int) Math.min(level * event.getAmount(), 50);
                     int maxMana = (int) player.getAttributeValue(MAX_MANA.get());
                     var playerMagicData = MagicData.getPlayerMagicData(player);
-                    int newMana = Math.min(increment + playerMagicData.getMana(), maxMana);
+                    var newMana = Math.min(increment + playerMagicData.getMana(), maxMana);
                     playerMagicData.setMana(newMana);
                     Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), player);
                 }

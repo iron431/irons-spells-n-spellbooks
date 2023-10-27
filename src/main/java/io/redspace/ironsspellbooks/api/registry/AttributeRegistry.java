@@ -24,6 +24,7 @@ public class AttributeRegistry {
 
     //"attribute.irons_spellbooks.max_mana" seems to be the id for the lang file
     public static final RegistryObject<Attribute> MAX_MANA = ATTRIBUTES.register("max_mana", () -> (new RangedAttribute("attribute.irons_spellbooks.max_mana", 100.0D, 0.0D, 10000.0D).setSyncable(true)));
+    public static final RegistryObject<Attribute> MANA_REGEN = ATTRIBUTES.register("mana_regen", () -> (new RangedAttribute("attribute.irons_spellbooks.mana_regen", 1.0D, 0.0D, 10.0D).setSyncable(true)));
     public static final RegistryObject<Attribute> COOLDOWN_REDUCTION = ATTRIBUTES.register("cooldown_reduction", () -> (new RangedAttribute("attribute.irons_spellbooks.cooldown_reduction", 1.0D, -10.0D, 10.0D).setSyncable(true)));
     public static final RegistryObject<Attribute> SPELL_POWER = ATTRIBUTES.register("spell_power", () -> (new RangedAttribute("attribute.irons_spellbooks.spell_power", 1.0D, 1, 10.0D).setSyncable(true)));
     public static final RegistryObject<Attribute> SPELL_RESIST = ATTRIBUTES.register("spell_resist", () -> (new RangedAttribute("attribute.irons_spellbooks.spell_resist", 1.0D, 1, 10.0D).setSyncable(true)));
@@ -52,6 +53,7 @@ public class AttributeRegistry {
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(entity -> {
             e.add(entity, MAX_MANA.get());
+            e.add(entity, MANA_REGEN.get());
             e.add(entity, SPELL_POWER.get());
             e.add(entity, SPELL_RESIST.get());
             e.add(entity, COOLDOWN_REDUCTION.get());

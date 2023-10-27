@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " L ",
+    "L L",
+    "AL "
+  ],
+  "key": {
+    "L": {
+      "tag": "forge:leather"
+    },
+    "A": {
+      "tag": "forge:gems/amethyst"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:amethyst_resonance_charm",
+    "count": 1
+  }
+}

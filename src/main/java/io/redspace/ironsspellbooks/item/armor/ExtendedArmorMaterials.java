@@ -25,6 +25,7 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
 
     TARNISHED("tarnished", 25, makeArmorMap(0, 0, 0, 0), 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.0F, 0.0F, () -> Ingredient.of(Items.IRON_INGOT), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 150, AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.MANA_REGEN.get(), new AttributeModifier("Mana Regen", .25, AttributeModifier.Operation.MULTIPLY_TOTAL),
             Attributes.ATTACK_DAMAGE, new AttributeModifier("minus damage", -.15, AttributeModifier.Operation.MULTIPLY_TOTAL)
     )),
     WANDERING_MAGICIAN("wandering_magician", 10, makeArmorMap(2, 5, 6, 2), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Items.LEATHER), Map.of(
