@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
@@ -98,8 +98,8 @@ public class DevourSpell extends AbstractSpell {
     }
 
     @Override
-    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setLifestealPercent(.15f).get();
+    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return super.getDamageSource(projectile, attacker).setLifestealPercent(.15f);
     }
 
     public float getDamage(int spellLevel, LivingEntity caster) {

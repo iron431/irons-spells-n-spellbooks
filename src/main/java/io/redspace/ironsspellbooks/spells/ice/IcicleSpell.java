@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
-import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
@@ -86,7 +86,7 @@ public class IcicleSpell extends AbstractSpell {
     }
 
     @Override
-    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setFreezeTicks(80).get();
+    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return super.getDamageSource(projectile, attacker).setFreezeTicks(80);
     }
 }

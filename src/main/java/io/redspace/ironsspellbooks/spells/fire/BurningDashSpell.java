@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -130,8 +130,8 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setFireTime(4).get();
+    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return super.getDamageSource(projectile, attacker).setFireTime(4);
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {

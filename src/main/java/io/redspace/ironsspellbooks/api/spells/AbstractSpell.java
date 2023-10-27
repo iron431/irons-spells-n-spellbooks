@@ -496,12 +496,12 @@ public abstract class AbstractSpell {
         return deathMessageId;
     }
 
-    public DamageSource getDamageSource(Entity attacker) {
-        return SpellMagicDamageSource.source(attacker, this);
+    public final SpellDamageSource getDamageSource(Entity attacker) {
+        return getDamageSource(attacker, attacker);
     }
 
-    public DamageSource getDamageSource(Entity projectile, Entity attacker) {
-        return SpellMagicDamageSource.source(projectile, attacker, this);
+    public SpellDamageSource getDamageSource(Entity projectile, Entity attacker) {
+        return SpellDamageSource.source(projectile, attacker, this);
     }
 
     public boolean isEnabled() {

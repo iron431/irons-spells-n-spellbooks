@@ -45,6 +45,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.BLOOD_STAFF.get());
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
+                entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
 
                 entries.accept(ItemRegistry.WANDERING_MAGICIAN_HELMET.get());
                 entries.accept(ItemRegistry.WANDERING_MAGICIAN_CHESTPLATE.get());
@@ -100,9 +101,9 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.CONJURERS_TALISMAN.get());
                 entries.accept(ItemRegistry.AFFINITY_RING.get());
                 entries.accept(ItemRegistry.CONCENTRATION_AMULET.get());
+                entries.accept(ItemRegistry.AMETHYST_RESONANCE_NECKLACE.get());
                 entries.accept(ItemRegistry.INVISIBILITY_RING.get());
 
-                entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
             })
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .build());

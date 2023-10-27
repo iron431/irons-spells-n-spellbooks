@@ -1,12 +1,11 @@
 package io.redspace.ironsspellbooks.api.events;
 
 
-import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
@@ -24,11 +23,11 @@ import net.minecraftforge.eventbus.api.Cancelable;
  **/
 public class SpellDamageEvent extends LivingEvent {
     //TODO: pre and post?
-    private final ISpellDamageSource spellDamageSource;
+    private final SpellDamageSource spellDamageSource;
     private final float baseAmount;
     private float amount;
 
-    public SpellDamageEvent(LivingEntity livingEntity, float amount, ISpellDamageSource spellDamageSource) {
+    public SpellDamageEvent(LivingEntity livingEntity, float amount, SpellDamageSource spellDamageSource) {
         super(livingEntity);
         this.spellDamageSource = spellDamageSource;
         this.baseAmount = amount;
@@ -52,7 +51,7 @@ public class SpellDamageEvent extends LivingEvent {
         this.amount = amount;
     }
 
-    public ISpellDamageSource getSpellDamageSource() {
+    public SpellDamageSource getSpellDamageSource() {
         return this.spellDamageSource;
     }
 }

@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.network.spell.ClientboundBloodSiphonParticles;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -91,8 +91,8 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     }
 
     @Override
-    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setLifestealPercent(1f).get();
+    public SpellDamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return super.getDamageSource(projectile, attacker).setLifestealPercent(1f);
     }
 
     public static float getRange(int level) {

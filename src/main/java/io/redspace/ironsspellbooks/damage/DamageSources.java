@@ -78,13 +78,13 @@ public class DamageSources {
     }
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource) {
-        if (target instanceof LivingEntity livingTarget && damageSource instanceof ISpellDamageSource spellDamageSource) {
+        if (target instanceof LivingEntity livingTarget && damageSource instanceof SpellDamageSource spellDamageSource) {
             var e = new SpellDamageEvent(livingTarget, baseAmount, spellDamageSource);
             if (MinecraftForge.EVENT_BUS.post(e)) {
                 return false;
             }
             baseAmount = e.getAmount();
-            float adjustedDamage = baseAmount * getResist(livingTarget, spellDamageSource.schoolType());
+            float adjustedDamage = baseAmount * getResist(livingTarget, spellDamageSource.spell.getSchoolType());
             MagicSummon fromSummon = damageSource.getDirectEntity() instanceof MagicSummon summon ? summon : damageSource.getEntity() instanceof MagicSummon summon ? summon : null;
             if (fromSummon != null) {
                 if (fromSummon.getSummoner() != null) {
@@ -131,7 +131,7 @@ public class DamageSources {
 
     @SubscribeEvent
     public static void postHitEffects(LivingDamageEvent event) {
-        if (event.getSource() instanceof ISpellDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
+        if (event.getSource() instanceof SpellDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
             float actualDamage = event.getAmount();
             var target = event.getEntity();
             var attacker = event.getSource().getEntity();
