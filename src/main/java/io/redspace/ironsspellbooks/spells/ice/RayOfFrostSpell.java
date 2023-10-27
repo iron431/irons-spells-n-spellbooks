@@ -91,6 +91,7 @@ public class RayOfFrostSpell extends AbstractSpell {
         level.addFreshEntity(new RayOfFrostVisualEntity(level, entity.getEyePosition(), hitResult.getLocation(), entity));
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
+            //Set freeze time right here because it scales off of level and power
             DamageSources.applyDamage(target, getDamage(spellLevel, entity), ((ISpellDamageSource) getDamageSource(entity)).setFreezeTicks(getFreezeTime(spellLevel, entity)).get());
             MagicManager.spawnParticles(level, ParticleHelper.ICY_FOG, hitResult.getLocation().x, target.getY(), hitResult.getLocation().z, 4, 0, 0, 0, .3, true);
         } else if (hitResult.getType() == HitResult.Type.BLOCK) {
@@ -110,11 +111,5 @@ public class RayOfFrostSpell extends AbstractSpell {
 
     private int getFreezeTime(int spellLevel, LivingEntity caster) {
         return (int) (getSpellPower(spellLevel, caster) * 30);
-    }
-
-
-    @Override
-    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setFreezeTicks(80).get();
     }
 }
