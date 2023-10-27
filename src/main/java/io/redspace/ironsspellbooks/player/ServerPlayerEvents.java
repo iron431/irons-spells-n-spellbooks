@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.api.events.SpellDamageEvent;
+import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
@@ -262,6 +263,19 @@ public class ServerPlayerEvents {
         if (newTarget != null && newTarget.getType().is(ModTags.VILLAGE_ALLIES) && event.getEntity().getType().is(ModTags.VILLAGE_ALLIES)
         ) {
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void testManaEvent(ChangeManaEvent event) {
+        if (event.getEntity().hasEffect(MobEffects.REGENERATION))
+            event.setCanceled(true);
+        else if (event.getEntity().hasEffect(MobEffects.POISON) ){
+            var diff = event.getNewMana() - event.getOldMana();
+            if (diff < 0) {
+                diff *= 2;
+                event.setNewMana(event.getOldMana() + diff);
+            }
         }
     }
 

@@ -259,9 +259,9 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
     public void spawnParticles() {
 //        for (int i = 0; i < 1; i++) {
 //            double speed = .02;
-//            double dx = level.random.nextDouble() * 2 * speed - speed;
-//            double dy = level.random.nextDouble() * 2 * speed - speed;
-//            double dz = level.random.nextDouble() * 2 * speed - speed;
+//            double dx = Utils.random.nextDouble() * 2 * speed - speed;
+//            double dy = Utils.random.nextDouble() * 2 * speed - speed;
+//            double dz = Utils.random.nextDouble() * 2 * speed - speed;
 //            var tmp = ParticleHelper.UNSTABLE_ENDER;
 //            //IronsSpellbooks.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}, {} {} {}", this.level.isClientSide, this.position(), dx, dy, dz);
 //            level.addParticle(ParticleHelper.WISP, this.xOld - dx, this.position().y, this.zOld - dz, dx, dy, dz);

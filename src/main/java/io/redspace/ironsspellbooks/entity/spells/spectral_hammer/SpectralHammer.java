@@ -1,21 +1,32 @@
 package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -25,10 +36,9 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public class SpectralHammer extends LivingEntity implements IAnimatable {
 
@@ -110,28 +120,31 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
 
                     if (!blockCollector.blocksToRemove.isEmpty()) {
                         //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: origin:{}", blockCollector.origin);
-                        var random = level.getRandom();
+                        var random = Utils.random;
                         AtomicInteger count = new AtomicInteger();
+                        int maxPossibleStacks = (this.radius * 2) * (1 + this.radius * 2) * (this.depth + 1);
+                        SimpleContainer drops = new SimpleContainer(maxPossibleStacks);
                         blockCollector.blocksToRemove.forEach(pos -> {
                             var distance = blockCollector.origin.distManhattan(pos);
-                            var missChance = random.nextFloat() * 3;
-                            float pct = (distance * distance) / 100.0f;
+                            var missChance = random.nextFloat() * 40;
+                            float pct = (distance * distance) / (100.0f * this.radius);
 
                             if (missChance < pct) {
                                 //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: missed pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
                                 missedBlocks.add(pos);
                             } else {
+                                var blockstate = level.getBlockState(pos);
+
                                 if (count.incrementAndGet() % 5 == 0) {
-                                    //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.1 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
-                                    level.destroyBlock(pos, true);
-                                } else {
-                                    //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
-                                    var bState = level.getBlockState(pos);
-                                    Block.dropResources(bState, level, pos);
+                                    level.destroyBlock(pos, false);
+                                }else{
                                     level.removeBlock(pos, false);
                                 }
+                                //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
+                                dropResources(blockstate, level, pos).forEach(drops::addItem);
                             }
                         });
+                        Containers.dropContents(level, this.blockPosition(), drops);
                     }
                 }
             }
@@ -140,6 +153,15 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
         }
 
         super.tick();
+    }
+
+    public static List<ItemStack> dropResources(BlockState pState, Level pLevel, BlockPos pos) {
+        List<ItemStack> drops = new ArrayList<>();
+        if (pLevel instanceof ServerLevel) {
+            drops = Block.getDrops(pState, (ServerLevel) pLevel, pos, null);
+            pState.spawnAfterBreak((ServerLevel) pLevel, pos, ItemStack.EMPTY, true);
+        }
+        return drops;
     }
 
     private void collectBlocks(BlockPos blockPos, BlockCollectorHelper bch) {

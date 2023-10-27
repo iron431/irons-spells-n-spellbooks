@@ -79,7 +79,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 cauldronTile.cooktimes[i] = 0;
             }
         }
-        var random = level.getRandom();
+        var random = Utils.random;
         if (AlchemistCauldronBlock.isBoiling(blockState)) {
             float waterLevel = Mth.lerp(AlchemistCauldronBlock.getLevel(blockState) / (float) AlchemistCauldronBlock.MAX_LEVELS, .25f, .9f);
             MagicManager.spawnParticles(level, ParticleTypes.BUBBLE_POP, pos.getX() + Mth.randomBetween(random, .2f, .8f), pos.getY() + waterLevel, pos.getZ() + Mth.randomBetween(random, .2f, .8f), 1, 0, 0, 0, 0, false);
@@ -122,7 +122,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         boolean shouldMelt = false;
         boolean success = true;
         if (itemStack.is(ItemRegistry.SCROLL.get()) && !isFull(resultItems)) {
-            if (level.random.nextFloat() < ServerConfigs.SCROLL_RECYCLE_CHANCE.get()) {
+            if (Utils.random.nextFloat() < ServerConfigs.SCROLL_RECYCLE_CHANCE.get()) {
                 ItemStack result = new ItemStack(getInkFromScroll(itemStack));
                 appendItem(resultItems, result);
             } else {

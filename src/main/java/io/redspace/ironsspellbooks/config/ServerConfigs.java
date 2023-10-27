@@ -9,6 +9,9 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -113,7 +116,18 @@ public class ServerConfigs {
     public static Map<String, SpellConfigParameters> getSpellConfigs() {
         return SPELL_CONFIGS;
     }
-
+//TODO:
+//    private static boolean validateItemName(final Object obj) {
+//        return obj instanceof final String itemName && ForgeRegistries.ITEMS.containsKey(new ResourceLocation(itemName));
+//    }
+//    @SubscribeEvent
+//    static void onLoad(final ModConfigEvent event) {
+//        // convert the list of strings into a set of items
+//        items = ITEM_STRINGS.get().stream()
+//                .map(itemName -> ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName)))
+//                .collect(Collectors.toSet());
+//    }
+//
     private static void createSpellConfig(AbstractSpell spell) {
         DefaultConfig config = spell.getDefaultConfig();
         //IronsSpellbooks.LOGGER.debug("CFG: createSpellConfig");
@@ -148,7 +162,7 @@ public class ServerConfigs {
 //    }
 
     public static class SpellConfigParameters {
-
+        //why did i do all this manually why isnt it a record :D
         final Supplier<Boolean> ENABLED;
         final Supplier<String> SCHOOL;
         final LazyOptional<SchoolType> ACTUAL_SCHOOL;

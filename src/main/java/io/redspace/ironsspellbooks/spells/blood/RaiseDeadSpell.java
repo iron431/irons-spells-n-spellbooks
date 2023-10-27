@@ -86,24 +86,16 @@ public class RaiseDeadSpell extends AbstractSpell {
     public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
         int level = getLevel(spellLevel, entity);
+        float radius = 1.5f + .75f * level;
         for (int i = 0; i < level; i++) {
-            boolean isSkeleton = world.random.nextDouble() < .3;
-            var equipment = getEquipment(getSpellPower(spellLevel, entity), world.getRandom());
+            boolean isSkeleton = Utils.random.nextDouble() < .3;
+            var equipment = getEquipment(getSpellPower(spellLevel, entity), Utils.random);
 
             Monster undead = isSkeleton ? new SummonedSkeleton(world, entity, true) : new SummonedZombie(world, entity, true);
             undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null, null);
             undead.addEffect(new MobEffectInstance(MobEffectRegistry.RAISE_DEAD_TIMER.get(), summonTime, 0, false, false, false));
             equip(undead, equipment);
-            Vec3 spawn = entity.position();
-            for (int j = 0; j < 4; j++) {
-                //Going to try to spawn 3 times
-                float distance = level / 4f + 1;
-                distance *= (3 - j) / 3f;
-                spawn = entity.getEyePosition().add(new Vec3(0, 0, distance).yRot(((6.281f / level) * i)));
-                spawn = new Vec3(spawn.x, Utils.findRelativeGroundLevel(world, spawn, 5), spawn.z);
-                if (!world.getBlockState(new BlockPos(spawn).below()).isAir())
-                    break;
-            }
+            Vec3 spawn = entity.getEyePosition().add(new Vec3(0, 0, radius).yRot(((6.281f / level) * i)));
             undead.moveTo(spawn.x, spawn.y, spawn.z, entity.getYRot(), 0);
             world.addFreshEntity(undead);
         }

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -27,13 +28,13 @@ import javax.annotation.Nullable;
 public class SummonedHorse extends AbstractHorse implements MagicSummon {
     public SummonedHorse(EntityType<? extends AbstractHorse> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        //randomizeAttributes(level.random);
+        //randomizeAttributes(Utils.random);
 
     }
 
     public SummonedHorse(Level pLevel) {
         this(EntityRegistry.SPECTRAL_STEED.get(), pLevel);
-        //randomizeAttributes(level.random);
+        //randomizeAttributes(Utils.random);
 
     }
 
@@ -116,7 +117,7 @@ public class SummonedHorse extends AbstractHorse implements MagicSummon {
     public void spawnParticles() {
 
         if (level.isClientSide) {
-            if (level.getRandom().nextFloat() < .25f) {
+            if (Utils.random.nextFloat() < .25f) {
                 float radius = .75f;
                 Vec3 vec = new Vec3(
                         random.nextFloat() * 2 * radius - radius,

@@ -17,7 +17,7 @@ public class LurkerRing extends SimpleDescriptiveCurio {
     public static final float MULTIPLIER = 1.5f;
 
     public LurkerRing() {
-        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1), "ring");
+        super(new Properties().stacksTo(1), "ring");
     }
 
 

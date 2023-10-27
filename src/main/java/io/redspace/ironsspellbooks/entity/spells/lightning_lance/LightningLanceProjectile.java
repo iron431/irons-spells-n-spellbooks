@@ -75,9 +75,9 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
 //            //Beam
 //            for (int i = 0; i < 40; i++) {
 //                Vec3 randomVec = new Vec3(
-//                        level.random.nextDouble() * .25 - .125,
-//                        level.random.nextDouble() * .25 - .125,
-//                        level.random.nextDouble() * .25 - .125
+//                        Utils.random.nextDouble() * .25 - .125,
+//                        Utils.random.nextDouble() * .25 - .125,
+//                        Utils.random.nextDouble() * .25 - .125
 //                );
 //                //level.addParticle(ParticleHelper.ELECTRICITY, pos.x + randomVec.x, pos.y + randomVec.y + i * .25, pos.z + randomVec.z, randomVec.x * .2, randomVec.y * .2, randomVec.z * .2);
 //                level.addParticle(ParticleHelper.ELECTRICITY, pos.x, pos.y, pos.z, 0,0,0);
