@@ -500,7 +500,17 @@ public class Utils {
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
-        return new Vec3(start.x, findRelativeGroundLevel(level, start, maxSteps), start.z);
+        BlockCollisions blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true);
+        if (blockcollisions.hasNext()) {
+            for (int i = 1; i < maxSteps * 2; i++) {
+                blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i * .5, 0)), true);
+                if (!blockcollisions.hasNext()) {
+                    start = start.add(0, i * .5, 0);
+                    break;
+                }
+            }
+        }
+        return level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
     }
 
     public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
