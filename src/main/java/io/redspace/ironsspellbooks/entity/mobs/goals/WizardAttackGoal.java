@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -90,8 +91,8 @@ public class WizardAttackGoal extends Goal {
 
     public WizardAttackGoal setSingleUseSpell(AbstractSpell abstractSpell, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         this.singleUseSpell = abstractSpell;
-        this.singleUseDelay = mob.level.random.nextIntBetweenInclusive(minDelay, maxDelay);
-        this.singleUseLevel = mob.level.random.nextIntBetweenInclusive(minLevel, maxLevel);
+        this.singleUseDelay = Utils.random.nextIntBetweenInclusive(minDelay, maxDelay);
+        this.singleUseLevel = Utils.random.nextIntBetweenInclusive(minLevel, maxLevel);
         return this;
     }
 

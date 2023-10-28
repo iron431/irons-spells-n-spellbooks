@@ -80,16 +80,16 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
             } else {
                 if (age < 280 && (age) % 20 == 0) {
                     level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.2)).forEach(this::dealDamage);
-                    if (level.random.nextFloat() < .15f)
-                        playSound(SoundRegistry.VOID_TENTACLES_AMBIENT.get(), 1.5f, .5f + level.random.nextFloat() * .65f);
+                    if (Utils.random.nextFloat() < .15f)
+                        playSound(SoundRegistry.VOID_TENTACLES_AMBIENT.get(), 1.5f, .5f + Utils.random.nextFloat() * .65f);
                 }
             }
-            if (age == 260 && level.random.nextFloat() < .3f)
+            if (age == 260 && Utils.random.nextFloat() < .3f)
                 playSound(SoundRegistry.VOID_TENTACLES_LEAVE.get(), 2, 1);
         } else {
             if (age < 280)
 //                for (int i = 0; i < 4; i++) {
-                if (level.random.nextFloat() < .15f)
+                if (Utils.random.nextFloat() < .15f)
                     level.addParticle(ParticleHelper.VOID_TENTACLE_FOG, getX() + Utils.getRandomScaled(.5f), getY() + Utils.getRandomScaled(.5f) + .2f, getZ() + Utils.getRandomScaled(.5f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
 //                }
         }
@@ -104,7 +104,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
 
     public boolean dealDamage(LivingEntity target) {
         if (target != getOwner())
-            if (DamageSources.applyDamage(target, damage, SpellRegistry.SCULK_TENTACLES_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.SCULK_TENTACLES_SPELL.get().getSchoolType())) {
+            if (DamageSources.applyDamage(target, damage, SpellRegistry.SCULK_TENTACLES_SPELL.get().getDamageSource(this, getOwner()))) {
                 target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
                 return true;
             }
@@ -213,7 +213,7 @@ public class VoidTentacle extends LivingEntity implements IAnimatable, AntiMagic
         //if (controller.getAnimationState() == AnimationState.Stopped) {
         //}
         //IronsSpellbooks.LOGGER.debug("TentacleAnimOffset: {}", controller.tickOffset);
-        if (age > 220 && level.random.nextFloat() < .04f) {
+        if (age > 220 && Utils.random.nextFloat() < .04f) {
             controller.setAnimation(ANIMATION_RETREAT);
         } else if (controller.getAnimationState() == AnimationState.Stopped) {
 //            controller.setAnimationSpeed((2 + this.level.random.nextFloat()) / 2f);

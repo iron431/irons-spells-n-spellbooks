@@ -1,5 +1,5 @@
 {
-  "parent": "irons_spellbooks:item/template_large_sword_one_handed",
+  "parent": "irons_spellbooks:item/template_large_sword",
   "textures": {
     "layer0": "irons_spellbooks:item/magehunter"
   }

@@ -84,7 +84,7 @@ public class BloodStepSpell extends AbstractSpell {
         super.onClientPreCast(level, spellLevel, entity, hand, playerMagicData);
         Vec3 forward = entity.getForward().normalize();
         for (int i = 0; i < 35; i++) {
-            Vec3 motion = forward.scale(level.random.nextDouble() * .25f);
+            Vec3 motion = forward.scale(Utils.random.nextDouble() * .25f);
             level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, entity.getRandomX(.4f), entity.getRandomY(), entity.getRandomZ(.4f), motion.x, motion.y, motion.z);
         }
     }

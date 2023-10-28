@@ -38,7 +38,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
                 if(doFire){
                     float range = 15 * Mth.DEG_TO_RAD;
                     for (int i = 0; i < 3; i++) {
-                        Vec3 cast = getOwner().getLookAngle().normalize().xRot(level.random.nextFloat() * range * 2 - range).yRot(level.random.nextFloat() * range * 2 - range);
+                        Vec3 cast = getOwner().getLookAngle().normalize().xRot(Utils.random.nextFloat() * range * 2 - range).yRot(Utils.random.nextFloat() * range * 2 - range);
                         HitResult hitResult = level.clip(new ClipContext(getOwner().getEyePosition(), getOwner().getEyePosition().add(cast.scale(10)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                         if (hitResult.getType() == HitResult.Type.BLOCK) {
                             HitResult shieldResult = Utils.raycastForEntityOfClass(level, this, getOwner().getEyePosition(), hitResult.getLocation(), false, AbstractShieldEntity.class);
@@ -88,7 +88,6 @@ public class FireBreathProjectile extends AbstractConeProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(entity, damage, SpellRegistry.FIRE_BREATH_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.FIRE_BREATH_SPELL.get().getSchoolType()))
-            entity.setSecondsOnFire(4);
+        DamageSources.applyDamage(entity, damage, SpellRegistry.FIRE_BREATH_SPELL.get().getDamageSource(this, getOwner()));
     }
 }

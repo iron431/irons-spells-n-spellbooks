@@ -44,16 +44,14 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockCollisions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.levelgen.ThreadSafeLegacyRandomSource;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
@@ -67,6 +65,7 @@ import java.util.function.Predicate;
 
 public class Utils {
 
+    public static final RandomSource random = RandomSource.createThreadSafe();
     public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
         StringBuffer sb = new StringBuffer();
@@ -88,7 +87,7 @@ public class Utils {
 
     public static boolean canBeUpgraded(ItemStack stack) {
         return !ServerConfigs.UPGRADE_BLACKLIST.get().contains(Registry.ITEM.getKey(stack.getItem()).toString())
-                && (stack.getItem() instanceof SpellBook || stack.is(ModTags.CAN_BE_UPGRADED)
+                && (stack.getItem() instanceof SpellBook || stack.getItem() instanceof ArmorItem
                 || ServerConfigs.UPGRADE_WHITELIST.get().contains(Registry.ITEM.getKey(stack.getItem()).toString())
         );
     }
@@ -322,7 +321,15 @@ public class Utils {
         return new Vec2(pitch, yaw);
     }
 
-    public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource, @Nullable SchoolType damageSchool) {
+    /**
+     * School Type is no a parameter, use {@link Utils#doMeleeAttack(Mob, Entity, DamageSource)} instead
+     */
+    @Deprecated(forRemoval = true)
+    public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource, SchoolType schoolType) {
+        return doMeleeAttack(attacker, target, damageSource);
+    }
+
+    public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource) {
         /*
         Copied from Mob#doHurtTarget
          */
@@ -338,7 +345,7 @@ public class Utils {
             target.setSecondsOnFire(i * 4);
         }
 
-        boolean flag = DamageSources.applyDamage(target, f, damageSource, damageSchool);
+        boolean flag = DamageSources.applyDamage(target, f, damageSource);
         if (flag) {
             if (f1 > 0.0F && target instanceof LivingEntity livingTarget) {
                 ((LivingEntity) target).knockback((double) (f1 * 0.5F), (double) Mth.sin(attacker.getYRot() * ((float) Math.PI / 180F)), (double) (-Mth.cos(attacker.getYRot() * ((float) Math.PI / 180F))));
@@ -372,10 +379,10 @@ public class Utils {
         if (!(d2 <= 0.0D)) {
             double d3 = target.getX() - attacker.getX();
             double d4 = target.getZ() - attacker.getZ();
-            float f = (float) (attacker.level.random.nextInt(21) - 10);
-            double d5 = d2 * (double) (attacker.level.random.nextFloat() * 0.5F + 0.2F);
+            float f = (float) (Utils.random.nextInt(21) - 10);
+            double d5 = d2 * (double) (Utils.random.nextFloat() * 0.5F + 0.2F);
             Vec3 vec3 = (new Vec3(d3, 0.0D, d4)).normalize().scale(d5).yRot(f);
-            double d6 = d2 * (double) attacker.level.random.nextFloat() * 0.5D;
+            double d6 = d2 * (double) Utils.random.nextFloat() * 0.5D;
             target.push(vec3.x, d6, vec3.z);
             target.hurtMarked = true;
         }
@@ -500,7 +507,17 @@ public class Utils {
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
-        return new Vec3(start.x, findRelativeGroundLevel(level, start, maxSteps), start.z);
+        BlockCollisions blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true);
+        if (blockcollisions.hasNext()) {
+            for (int i = 1; i < maxSteps * 2; i++) {
+                blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i * .5, 0)), true);
+                if (!blockcollisions.hasNext()) {
+                    start = start.add(0, i * .5, 0);
+                    break;
+                }
+            }
+        }
+        return level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
     }
 
     public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {

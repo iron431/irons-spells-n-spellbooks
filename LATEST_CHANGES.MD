@@ -1,10 +1,11 @@
 ### Additions
 - 
 
-
 ### Changes
-- Buff Magic Arrow's base damage by 5
-- Add CastSource to SpellCastEvent
-
+- Black Hole radius scales less significantly with spell power
+- 
 ### Fixes
-- Fix inconsistent Magic Arrow block penetration
+-
+
+### API
+- 

@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.blood_slash;
 import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
@@ -45,7 +46,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 
     public BloodSlashProjectile(EntityType<? extends BloodSlashProjectile> entityType, Level level) {
         super(entityType, level);
-        animationSeed = level.random.nextInt(9999);
+        animationSeed = Utils.random.nextInt(9999);
 
         float initialRadius = 2;
         maxRadius = 4;
@@ -192,17 +193,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            var school = SpellRegistry.BLOOD_SLASH_SPELL.get().getSchoolType();
-
-            var hit = DamageSources.applyDamage(entity, damage, SpellRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this, getOwner()), school);
-            if (hit && entity instanceof LivingEntity livingEntity) {
-                //livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLOOD_SLASHED.get(), 40, 1));
-                if (getOwner() instanceof LivingEntity livingOwner) {
-                    float healAmount = damage * .15f * DamageSources.getResist(livingEntity, school);
-                    MinecraftForge.EVENT_BUS.post(new SpellHealEvent(livingOwner, livingOwner, healAmount, school));
-                    livingOwner.heal(healAmount);
-                }
-            }
+            DamageSources.applyDamage(entity, damage, SpellRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this, getOwner()));
             victims.add(entity);
         }
     }

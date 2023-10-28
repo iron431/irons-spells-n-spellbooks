@@ -33,7 +33,7 @@ public class ManaCommand {
     private static int changeMana(CommandSourceStack source, Collection<ServerPlayer> targets, int amount, boolean set) {
         targets.forEach((serverPlayer -> {
             MagicData pmg = MagicData.getPlayerMagicData(serverPlayer);
-            int base = set ? 0 : pmg.getMana();
+            var base = set ? 0 : pmg.getMana();
             pmg.setMana(amount + base);
             Messages.sendToPlayer(new ClientboundSyncMana(pmg), serverPlayer);
         }));

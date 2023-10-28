@@ -5,14 +5,15 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "item",
-          "name": "patchouli:guide_book",
-          "functions": [
-            {
-              "function": "set_nbt",
-              "tag": "{\"patchouli:book\": \"irons_spellbooks:iss_guide_book\"}"
-            }
-          ]
+          "type": "tag",
+          "name": "irons_spellbooks:patchouli_drop",
+          "expand": true
+        }
+      ],
+      "functions": [
+        {
+          "function": "set_nbt",
+          "tag": "{\"patchouli:book\": \"irons_spellbooks:iss_guide_book\"}"
         }
       ]
     }

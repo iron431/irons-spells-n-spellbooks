@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.*;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -15,10 +16,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +100,7 @@ public class BurningDashSpell extends AbstractSpell {
         //Direction for Mobs to cast in
         Vec3 forward = entity.getLookAngle();
         if (playerMagicData.getAdditionalCastData() instanceof BurningDashDirectionOverrideCastData) {
-            if (world.random.nextBoolean())
+            if (Utils.random.nextBoolean())
                 forward = forward.yRot(90);
             else
                 forward = forward.yRot(-90);
@@ -116,14 +120,18 @@ public class BurningDashSpell extends AbstractSpell {
         //Deal Shockwave Damage and particles
         world.getEntities(entity, entity.getBoundingBox().inflate(4)).forEach((target) -> {
             if (target.distanceToSqr(entity) < 16) {
-                if (DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity), getSchoolType()))
-                    target.setSecondsOnFire(3);
+                DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity), getSchoolType());
             }
         });
         MagicManager.spawnParticles(world, ParticleHelper.FIRE, entity.getX(), entity.getY(), entity.getZ(), 75, 1, 0, 1, .08, false);
 
         playerMagicData.getSyncedData().setSpinAttackType(SpinAttackType.FIRE);
         super.onCast(world, spellLevel, entity, playerMagicData);
+    }
+
+    @Override
+    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setFireTime(4).get();
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {

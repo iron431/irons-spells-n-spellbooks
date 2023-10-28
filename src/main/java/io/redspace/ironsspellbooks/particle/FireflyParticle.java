@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
@@ -37,9 +38,9 @@ public class FireflyParticle extends TextureSheetParticle {
         this.sprites = spriteSet;
 
         this.gravity = 0F;
-        lit = level.random.nextBoolean();
+        lit = Utils.random.nextBoolean();
         litTween = lit ? 1 : 0;
-        wander = level.random.nextFloat() * 2.5f;
+        wander = Utils.random.nextFloat() * 2.5f;
         wander *= wander * wander * wander;
         //this.setSprite(sprites.get(lit ? 0 : 1, 1));
         this.setSprite(sprites.get(0, 1));
@@ -48,7 +49,7 @@ public class FireflyParticle extends TextureSheetParticle {
         this.gCol = 1f;
         this.bCol = 1f;
 
-        this.flickerIntensity = level.random.nextIntBetweenInclusive(18, 45) * .01f;
+        this.flickerIntensity = Utils.random.nextIntBetweenInclusive(18, 45) * .01f;
     }
 
     @Override

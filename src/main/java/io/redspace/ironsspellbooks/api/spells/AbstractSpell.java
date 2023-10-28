@@ -12,6 +12,9 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
+import io.redspace.ironsspellbooks.damage.IndirectSpellDamageSource;
+import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
@@ -333,9 +336,9 @@ public abstract class AbstractSpell {
 
     protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
         if (sound.isPresent()) {
-            entity.playSound(sound.get(), 2.0f, .9f + entity.level.random.nextFloat() * .2f);
+            entity.playSound(sound.get(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
         } else if (playDefaultSound) {
-            entity.playSound(defaultCastSound(), 2.0f, .9f + entity.level.random.nextFloat() * .2f);
+            entity.playSound(defaultCastSound(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
         }
     }
 
@@ -502,10 +505,6 @@ public abstract class AbstractSpell {
         return SpellRarity.COMMON;
     }
 
-    public DamageSource getDamageSource() {
-        return new DamageSource(getDeathMessageId());
-    }
-
     public String getDeathMessageId() {
         if (deathMessageId == null) {
             deathMessageId = getSpellId().replace(':', '.');
@@ -514,12 +513,12 @@ public abstract class AbstractSpell {
         return deathMessageId;
     }
 
-    public DamageSource getDamageSource(Entity attacker) {
-        return DamageSources.directDamageSource(getDamageSource(), attacker);
+    public final DamageSource getDamageSource(Entity attacker) {
+        return getDamageSource(null, attacker);
     }
 
-    public DamageSource getDamageSource(Entity projectile, Entity attacker) {
-        return DamageSources.indirectDamageSource(getDamageSource(), projectile, attacker);
+    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return projectile == null ? new SpellDamageSource(attacker, this) : new IndirectSpellDamageSource(projectile, attacker, this);
     }
 
     public boolean isEnabled() {
