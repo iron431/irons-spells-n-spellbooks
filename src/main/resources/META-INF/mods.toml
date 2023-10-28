@@ -62,13 +62,13 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
     modId="curios" #mandatory
     mandatory=true #mandatory
-    versionRange="[1.19.4-5.1.5.3,)" #mandatory
+    versionRange="[5.3.0+1.20.1,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="caelus" #mandatory
     mandatory=true #mandatory
-    versionRange="[1.19.4-3.0.0.10,)" #mandatory
+    versionRange="[3.1.0+1.20,)" #mandatory
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
