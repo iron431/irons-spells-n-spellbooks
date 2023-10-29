@@ -29,7 +29,7 @@ import java.util.Optional;
 
 @AutoSpellConfig
 public class TelekinesisSpell extends AbstractEldritchSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "telekinesis_spell");
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "telekinesis");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
