@@ -71,13 +71,18 @@ public class MagicFireball extends AbstractMagicProjectile implements ItemSuppli
                 if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.FIREBALL_SPELL.get().getSchoolType());
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()));
                 }
             }
             boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
             this.level.explode(null, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), (float) this.getExplosionRadius(), flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
             this.discard();
         }
+    }
+
+    @Override
+    protected boolean canHitEntity(Entity pTarget) {
+        return super.canHitEntity(pTarget) && Utils.hasLineOfSight(level, this.getBoundingBox().getCenter(), pTarget.getBoundingBox().getCenter(), true);
     }
 
     @Override

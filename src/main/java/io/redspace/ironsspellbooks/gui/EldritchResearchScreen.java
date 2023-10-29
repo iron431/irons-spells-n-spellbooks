@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Vector4f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -24,6 +25,8 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,25 +77,29 @@ public class EldritchResearchScreen extends Screen {
             int y = topPos + WINDOW_HEIGHT / 2 - 8 + (int) (r * Mth.sin(f * i));
             nodes.add(new SpellNode(learnableSpells.get(i), x, y));
         }
+        for (int i = 0; i < nodes.size(); i++) {
+
+        }
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float pPartialTick) {
-        super.render(poseStack, mouseX, mouseY, pPartialTick);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        super.render(poseStack, mouseX, mouseY, partialTick);
         this.fillGradient(poseStack, 0, 0, this.width, this.height, -1072689136, -804253680);
         setTranslucentTexture(WINDOW_LOCATION);
         this.blit(poseStack, leftPos, topPos, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         var player = Minecraft.getInstance().player;
-        if(player == null) {
+        if (player == null) {
             return;
         }
+        handleConnections(poseStack, partialTick);
         for (int i = 0; i < nodes.size(); i++) {
             int x = nodes.get(i).x;
             int y = nodes.get(i).y;
             setTexture(nodes.get(i).spell.getSpellIconResource());
             this.blit(poseStack, x, y, 0, 0, 16, 16, 16, 16);
             setTexture(FRAME_LOCATION);
-            this.blit(poseStack, x - 8, y - 8, 32, 32, nodes.get(i).spell instanceof AbstractEldritchSpell eldritchSpell && eldritchSpell.isLearned(player) ? 32 : 0, 0, 32, 32,64,32);
+            this.blit(poseStack, x - 8, y - 8, 32, 32, isLearned(nodes.get(i).spell, player) ? 32 : 0, 0, 32, 32, 64, 32);
             if (isHovering(x - 2, y - 2, 16 + 4, 16 + 4, mouseX, mouseY)) {
                 renderTooltip(poseStack, buildTooltip(nodes.get(i).spell, font), mouseX, mouseY);
             }
@@ -114,10 +121,98 @@ public class EldritchResearchScreen extends Screen {
         return hoverText;
     }
 
+    private static boolean isLearned(AbstractSpell spell, Player player) {
+        return spell instanceof AbstractEldritchSpell eldritchSpell && eldritchSpell.isLearned(player);
+    }
+
+    private void handleConnections(PoseStack poseStack, float partialTick) {
+        fill(poseStack, 0, 0, this.width, this.height, 0);
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        final Tesselator tesselator = Tesselator.getInstance();
+        final BufferBuilder buffer = tesselator.getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        for (int i = 0; i < nodes.size() - 1; i++) {
+            Vec2 a = new Vec2(nodes.get(i).x, nodes.get(i).y);
+            Vec2 b = new Vec2(nodes.get(i + 1).x, nodes.get(i + 1).y);
+            Vec2 org = new Vec2(-(b.y - a.y), b.x - a.x).normalized().scale(1.5f);
+
+            final double x1m1 = a.x + org.x + 8;
+            final double x2m1 = b.x + org.x + 8;
+            final double y1m1 = a.y + org.y + 8;
+            final double y2m1 = b.y + org.y + 8;
+
+            final double x1m2 = a.x - org.x + 8;
+            final double x2m2 = b.x - org.x + 8;
+            final double y1m2 = a.y - org.y + 8;
+            final double y2m2 = b.y - org.y + 8;
+
+            float f = Mth.sin((Minecraft.getInstance().player.tickCount + partialTick) * .1f);
+            float glowIntensity = f * f;
+            var color = new Vector4f(135 / 255f, 154 / 255f, 174 / 255f, 0.5f);
+            var glowcolor = new Vector4f(244 / 255f, 65 / 255f, 255 / 255f, 0.5f);
+            var color1 = lerpColor(color, glowcolor, glowIntensity * (isLearned(nodes.get(i).spell, Minecraft.getInstance().player) ? 1 : 0));
+            var color2 = lerpColor(color, glowcolor, glowIntensity * (isLearned(nodes.get(i + 1).spell, Minecraft.getInstance().player) ? 1 : 0));
+            buffer.vertex(x1m1, y1m1, getBlitOffset()).color(color1.x(), color1.y(), color1.z(), color1.w()).endVertex();
+            buffer.vertex(x2m1, y2m1, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), color2.w()).endVertex();
+            buffer.vertex(x2m2, y2m2, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), color2.w()).endVertex();
+            buffer.vertex(x1m2, y1m2, getBlitOffset()).color(color1.x(), color1.y(), color1.z(), color1.w()).endVertex();
+        }
+
+        tesselator.end();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
+    }
+
+    private void drawConnection(PoseStack poseStack, SpellNode node1, SpellNode node2, float partialTick) {
+        float f = Mth.sin(Minecraft.getInstance().player.tickCount + partialTick * .001f);
+        float glowIntensity = f * f;
+        var color = new Vector4f(135 / 255f, 154 / 255f, 174 / 255f, 1f);
+        var glowcolor = new Vector4f(244 / 255f, 65 / 255f, 255 / 255f, 1f);
+        var color1 = lerpColor(color, glowcolor, glowIntensity * (isLearned(node1.spell, Minecraft.getInstance().player) ? 1 : 0));
+        var color2 = lerpColor(color, glowcolor, glowIntensity * (isLearned(node2.spell, Minecraft.getInstance().player) ? 1 : 0));
+        fillGradient(poseStack, node1.x, node1.y, node2.x, node2.y, colorFromRGBA(color1), colorFromRGBA(color2));
+    }
+
+    private int colorFromRGBA(Vector4f rgba) {
+        var r = (int) (rgba.x() * 255) & 0xFF;
+        var g = (int) (rgba.y() * 255) & 0xFF;
+        var b = (int) (rgba.z() * 255) & 0xFF;
+        var a = (int) (rgba.w() * 255) & 0xFF;
+
+        return (r << 24) + (g << 16) + (b << 8) + (a);
+    }
+
+    private void drawBG(int left, int top, int width, int height) {
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getRendertypeEndPortalShader);
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        bufferbuilder.vertex((float) left, (float) top + height, 0.0F).color(1, 1, 1, 1).endVertex();
+        bufferbuilder.vertex((float) left + width, (float) top + height, 0.0F).color(1, 1, 1, 1).endVertex();
+        bufferbuilder.vertex((float) left + width, (float) top, 0.0F).color(1, 1, 1, 1).endVertex();
+        bufferbuilder.vertex((float) left, (float) top, 0.0F).color(1, 1, 1, 1).endVertex();
+        BufferUploader.drawWithShader(bufferbuilder.end());
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+    }
+
+    private static Vector4f lerpColor(Vector4f a, Vector4f b, float pDelta) {
+        float f = 1.0F - pDelta;
+        var x = a.x() * f + b.x() * pDelta;
+        var y = a.y() * f + b.y() * pDelta;
+        var z = a.z() * f + b.z() * pDelta;
+        var w = a.w() * f + b.w() * pDelta;
+        return new Vector4f(x, y, z, w);
+    }
+
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         for (SpellNode node : nodes) {
-            if (isHovering(node.x, node.y, 16, 16, (int) pMouseX, (int) pMouseY)) {
+            if (isHovering(node.x - 2, node.y - 2, 16 + 4, 16 + 4, (int) pMouseX, (int) pMouseY)) {
                 //Minecraft.getInstance().player.sendSystemMessage(node.spell.getDisplayName(minecraft.player));
                 Messages.sendToServer(new ServerboundLearnSpell(this.activeHand, node.spell.getSpellId()));
                 break;
@@ -146,6 +241,9 @@ public class EldritchResearchScreen extends Screen {
     }
 
     record SpellNode(AbstractSpell spell, int x, int y) {
+    }
+
+    record NodeConnection(SpellNode node1, SpellNode node2) {
     }
 
     private static void setTexture(ResourceLocation texture) {

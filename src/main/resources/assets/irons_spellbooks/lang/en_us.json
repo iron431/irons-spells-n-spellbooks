@@ -98,6 +98,7 @@
   "item.irons_spellbooks.nature_rune": "Nature Rune",
   "item.irons_spellbooks.crypt_skull": "Skull of No-One Important",
   "item.irons_spellbooks.blood_staff": "The Blood Staff",
+  "item.irons_spellbooks.improved_blood_staff": "Improved Blood Staff",
   "item.irons_spellbooks.wayward_compass": "Wayward Compass",
   "item.irons_spellbooks.wayward_compass_desc": "The trapped soul points toward its home",
   "item.irons_spellbooks.wayward_compass.error": "No catacombs found! [%s] to search again",
@@ -198,6 +199,7 @@
   "tooltip.irons_spellbooks.cast_charge": "%s Charge Time",
   "tooltip.irons_spellbooks.ink_tooltip": "Can Craft %s Scrolls",
   "tooltip.irons_spellbooks.upgrade_plus_format": "%s +%d",
+  "tooltip.irons_spellbooks.improved_format": "Improved %s",
   "tooltip.irons_spellbooks.enhance_spell_level": " +1 level to %s",
   "tooltip.irons_spellbooks.empty_affinity_ring": "This ring seems to be empty",
   "tooltip.irons_spellbooks.no_affinity": "No",
@@ -399,6 +401,7 @@
   "spell.irons_spellbooks.sonic_boom": "Sonic Boom",
   "spell.irons_spellbooks.planar_sight": "Planar Sight",
   "spell.irons_spellbooks.telekinesis": "Telekinesis",
+  "spell.irons_spellbooks.smiting_strike": "Smiting Strike",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -476,6 +479,7 @@
   "spell.irons_spellbooks.sonic_boom.guide": "Blast forth a sonic boom of immense power, passing through solid material with ease and harming the first creature in its path.",
   "spell.irons_spellbooks.planar_sight.guide": "Shift your vision partially into a different plane to gain the ability to see creatures through solid material.",
   "spell.irons_spellbooks.telekinesis.guide": "Reach out with a spectral force and grip a creature, forcing them towards your gaze.",
+  "spell.irons_spellbooks.smiting_strike.guide": "With a fervor of holy energy, swing forth your weapon, doing a melee area attack. The damage scales off of your held weapon's melee damage.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -534,6 +538,7 @@
   "death.attack.irons_spellbooks.earthquake": "%1$s was decimated in %2$s's earthquake",
   "death.attack.irons_spellbooks.ray_of_frost": "%1$s was blasted by %2$s's ray of frost",
   "death.attack.irons_spellbooks.sonic_boom": "%1$s was obliterated by %2$s's sonic boom",
+  "death.attack.irons_spellbooks.smiting_strike": "%1$s was smitten by %2$s",
 
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
@@ -584,6 +589,7 @@
   "death.attack.irons_spellbooks.earthquake.item": "%1$s was decimated in %2$s's earthquake caused by %3$s",
   "death.attack.irons_spellbooks.ray_of_frost.item": "%1$s was blasted by %2$s's ray of frost while using %3$s",
   "death.attack.irons_spellbooks.sonic_boom.item": "%1$s was obliterated by %2$s's sonic boom caused by %3$s",
+  "death.attack.irons_spellbooks.smiting_strike.item": "%1$s was smitten by %2$s while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
