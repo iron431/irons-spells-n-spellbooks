@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.List;
 
 public class EldritchResearchScreen extends Screen {
     private static final ResourceLocation WINDOW_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/eldritch_research_window.png");
+    private static final ResourceLocation FRAME_LOCATION = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/eldritch_frame.png");
     public static final int WINDOW_WIDTH = 252;
     public static final int WINDOW_HEIGHT = 140;
     private static final int WINDOW_INSIDE_X = 9;
@@ -63,6 +65,9 @@ public class EldritchResearchScreen extends Screen {
         this.topPos = (this.height - WINDOW_HEIGHT) / 2;
         nodes = new ArrayList<>();
         float f = 6.282f / learnableSpells.size();
+        RandomSource randomSource = RandomSource.create(431L);
+        int gridsize = 64;
+
         for (int i = 0; i < learnableSpells.size(); i++) {
             float r = 35;
             int x = leftPos + WINDOW_WIDTH / 2 - 8 + (int) (r * Mth.cos(f * i));
@@ -75,27 +80,31 @@ public class EldritchResearchScreen extends Screen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float pPartialTick) {
         super.render(poseStack, mouseX, mouseY, pPartialTick);
         this.fillGradient(poseStack, 0, 0, this.width, this.height, -1072689136, -804253680);
-        setTexture(WINDOW_LOCATION);
+        setTranslucentTexture(WINDOW_LOCATION);
         this.blit(poseStack, leftPos, topPos, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-        float f = 6.282f / learnableSpells.size();
+        var player = Minecraft.getInstance().player;
+        if(player == null) {
+            return;
+        }
         for (int i = 0; i < nodes.size(); i++) {
-            setTexture(nodes.get(i).spell.getSpellIconResource());
             int x = nodes.get(i).x;
             int y = nodes.get(i).y;
+            setTexture(nodes.get(i).spell.getSpellIconResource());
             this.blit(poseStack, x, y, 0, 0, 16, 16, 16, 16);
-            if (isHovering(x, y, 16, 16, mouseX, mouseY)) {
+            setTexture(FRAME_LOCATION);
+            this.blit(poseStack, x - 8, y - 8, 32, 32, nodes.get(i).spell instanceof AbstractEldritchSpell eldritchSpell && eldritchSpell.isLearned(player) ? 32 : 0, 0, 32, 32,64,32);
+            if (isHovering(x - 2, y - 2, 16 + 4, 16 + 4, mouseX, mouseY)) {
                 renderTooltip(poseStack, buildTooltip(nodes.get(i).spell, font), mouseX, mouseY);
             }
         }
     }
 
-    private static final Component ALREADY_LEARNED = Component.translatable("ui.irons_spellbooks.research_already_learned").withStyle(ChatFormatting.GREEN);
+    private static final Component ALREADY_LEARNED = Component.translatable("ui.irons_spellbooks.research_already_learned").withStyle(ChatFormatting.DARK_AQUA);
     private static final Component UNLEARNED = Component.translatable("ui.irons_spellbooks.research_warning").withStyle(ChatFormatting.RED);
 
     public static List<FormattedCharSequence> buildTooltip(AbstractSpell spell, Font font) {
         boolean learned = spell instanceof AbstractEldritchSpell eldritchSpell && eldritchSpell.isLearned(Minecraft.getInstance().player);
-        var name = spell.getDisplayName(null).withStyle(learned ? ChatFormatting.GREEN : ChatFormatting.RED);
+        var name = spell.getDisplayName(null).withStyle(learned ? ChatFormatting.DARK_AQUA : ChatFormatting.RED);
         var description = font.split(Component.translatable(String.format("%s.guide", spell.getComponentId())).withStyle(ChatFormatting.GRAY), 180);
         var hoverText = new ArrayList<FormattedCharSequence>();
         hoverText.add(FormattedCharSequence.forward(name.getString(), name.getStyle().withUnderlined(true)));
@@ -117,11 +126,6 @@ public class EldritchResearchScreen extends Screen {
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
-    private void setTexture(ResourceLocation texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, texture);
-    }
 
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         InputConstants.Key mouseKey = InputConstants.getKey(pKeyCode, pScanCode);
@@ -142,5 +146,19 @@ public class EldritchResearchScreen extends Screen {
     }
 
     record SpellNode(AbstractSpell spell, int x, int y) {
+    }
+
+    private static void setTexture(ResourceLocation texture) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, texture);
+    }
+
+    private static void setTranslucentTexture(ResourceLocation texture) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.setShaderTexture(0, texture);
     }
 }

@@ -282,7 +282,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
             forceLookAtTarget(getTarget());
         }
 
-        if (!level.isClientSide && !castingSpell.getSpell().checkPreCastConditions(level, this, playerMagicData)) {
+        if (!level.isClientSide && !castingSpell.getSpell().checkPreCastConditions(level, spellLevel, this, playerMagicData)) {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, level.isClientSide);
             }

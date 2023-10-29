@@ -153,6 +153,11 @@ public class SyncedSpellData {
         doSync();
     }
 
+    public void forgetAllSpells() {
+        this.learnedSpellData.learnedSpells.clear();
+        doSync();
+    }
+
     public boolean isSpellLearned(AbstractSpell spell) {
         return this.learnedSpellData.learnedSpells.contains(spell.getSpellResource());
     }

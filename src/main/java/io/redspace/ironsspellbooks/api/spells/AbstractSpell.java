@@ -252,7 +252,7 @@ public abstract class AbstractSpell {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
             }
 
-            if (!castResult.isSuccess() || !checkPreCastConditions(level, serverPlayer, playerMagicData) || MinecraftForge.EVENT_BUS.post(new SpellCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource))) {
+            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || MinecraftForge.EVENT_BUS.post(new SpellCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource))) {
                 return false;
             }
 
@@ -365,6 +365,14 @@ public abstract class AbstractSpell {
     /**
      * Server Side. At this point, the spell is allowed to be cast (mana, cooldown, etc). This checks for limitations of the spell itself, such as if it requires a target but finds none
      */
+    public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        return checkPreCastConditions(level, entity, playerMagicData);
+    }
+
+    /**
+     * Use new level sensitive version {@link AbstractSpell#checkPreCastConditions(Level, int, LivingEntity, MagicData)}.
+     */
+    @Deprecated(forRemoval = true)
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
         return true;
     }
