@@ -59,7 +59,7 @@ public class ItemRegistry {
                     new SpellDataRegistryHolder(SpellRegistry.BLAZE_STORM_SPELL, 6)})
     );
 
-    public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(SpellRarity.COMMON,
+    public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new EvokerSpellBook(
             new SpellDataRegistryHolder[]{
                     new SpellDataRegistryHolder(SpellRegistry.FANG_STRIKE_SPELL, 6),
                     new SpellDataRegistryHolder(SpellRegistry.FANG_WARD_SPELL, 4),
