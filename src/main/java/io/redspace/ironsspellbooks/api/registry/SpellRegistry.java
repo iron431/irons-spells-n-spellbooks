@@ -130,6 +130,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> HEAL_SPELL = registerSpell(new HealSpell());
     public static final RegistryObject<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
     public static final RegistryObject<AbstractSpell> WISP_SPELL = registerSpell(new WispSpell());
+    public static final RegistryObject<AbstractSpell> SMITING_STRIKE_SPELL = registerSpell(new SmitingStrikeSpell());
 
     // ICE
     public static final RegistryObject<AbstractSpell> CONE_OF_COLD_SPELL = registerSpell(new ConeOfColdSpell());

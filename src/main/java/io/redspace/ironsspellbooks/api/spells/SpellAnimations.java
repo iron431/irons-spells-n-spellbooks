@@ -22,4 +22,5 @@ public class SpellAnimations {
     public static final AnimationHolder SPIT_FINISH_ANIMATION = new AnimationHolder("charge_spit_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     public static final AnimationHolder CHARGE_ANIMATION = new AnimationHolder("charge_black_hole", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     public static final AnimationHolder FINISH_ANIMATION = new AnimationHolder("long_cast_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final AnimationHolder SMITING_STRIKE_ANIMATION = new AnimationHolder("overhead_two_handed_swing", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 }
