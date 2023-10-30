@@ -16,6 +16,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.network.chat.Component;
@@ -56,14 +57,18 @@ public class EldritchResearchScreen extends Screen {
     List<AbstractSpell> learnableSpells;
     List<SpellNode> nodes;
     SyncedSpellData playerData;
-    Vec2 viewportOffset;
+    Vec2i maxViewportOffset;
+    Vec2i viewportOffset;
+
+    private record Vec2i(int x, int y) {
+    }
 
     protected void init() {
         learnableSpells = SpellRegistry.getSpellsForSchool(SchoolRegistry.ELDRITCH.get());
         if (this.minecraft != null) {
             playerData = ClientMagicData.getSyncedSpellData(minecraft.player);
         }
-        viewportOffset = Vec2.ZERO;
+        viewportOffset = new Vec2i(0, 0);
         this.leftPos = (this.width - WINDOW_WIDTH) / 2;
         this.topPos = (this.height - WINDOW_HEIGHT) / 2;
         nodes = new ArrayList<>();
@@ -77,9 +82,22 @@ public class EldritchResearchScreen extends Screen {
             int y = topPos + WINDOW_HEIGHT / 2 - 8 + (int) (r * Mth.sin(f * i));
             nodes.add(new SpellNode(learnableSpells.get(i), x, y));
         }
+        float maxDistX = 0;
+        float maxDistY = 0;
         for (int i = 0; i < nodes.size(); i++) {
-
+            for (int j = 1; j < nodes.size(); j++) {
+                int x = Math.abs(nodes.get(i).x - nodes.get(j).x);
+                if (x > maxDistX) {
+                    maxDistX = x;
+                }
+                int y = Math.abs(nodes.get(i).y - nodes.get(j).y);
+                if (y > maxDistY) {
+                    maxDistY = y;
+                }
+            }
         }
+        //TODO: wait this makes no sense
+        maxViewportOffset = new Vec2i((int) maxDistX, (int) maxDistY);
     }
 
     @Override
@@ -87,27 +105,72 @@ public class EldritchResearchScreen extends Screen {
         super.render(poseStack, mouseX, mouseY, partialTick);
         this.fillGradient(poseStack, 0, 0, this.width, this.height, -1072689136, -804253680);
         drawBackdrop(leftPos, topPos);
-        setTranslucentTexture(WINDOW_LOCATION);
-        this.blit(poseStack, leftPos, topPos, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
         var player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
         handleConnections(poseStack, partialTick);
         List<FormattedCharSequence> tooltip = null;
-        for (int i = 0; i < nodes.size(); i++) {
-            int x = nodes.get(i).x + (int) viewportOffset.x;
-            int y = nodes.get(i).y + (int) viewportOffset.y;
-            setTexture(nodes.get(i).spell.getSpellIconResource());
-            blit(poseStack, x, y, 0, 0, 16, 16, 16, 16);
-            setTexture(FRAME_LOCATION);
-            blit(poseStack, x - 8, y - 8, 32, 32, nodes.get(i).spell.isLearned(player) ? 32 : 0, 0, 32, 32, 64, 32);
-            if (isHovering(x - 2, y - 2, 16 + 4, 16 + 4, mouseX, mouseY)) {
-                tooltip = buildTooltip(nodes.get(i).spell, font);
+        for (SpellNode node : nodes) {
+            drawNode(poseStack, node, player);
+            if (isHoveringNode(node, mouseX, mouseY)) {
+                tooltip = buildTooltip(node.spell, font);
             }
         }
+        setTranslucentTexture(WINDOW_LOCATION);
+        this.blit(poseStack, leftPos, topPos, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         if (tooltip != null) {
             renderTooltip(poseStack, tooltip, mouseX, mouseY);
+        }
+    }
+
+    private void drawNode(PoseStack poseStack, SpellNode node, LocalPlayer player) {
+        drawWithClipping(node.spell.getSpellIconResource(),
+                poseStack,
+                node.x,
+                node.y,
+                0, 0,
+                16, 16,
+                16, 16,
+                leftPos + WINDOW_INSIDE_X, topPos + WINDOW_INSIDE_Y,
+                WINDOW_INSIDE_WIDTH, WINDOW_INSIDE_HEIGHT);
+        setTexture(FRAME_LOCATION);
+        drawWithClipping(FRAME_LOCATION,
+                poseStack,
+                node.x - 8,
+                node.y - 8,
+                node.spell.isLearned(player) ? 32 : 0, 0,
+                32, 32,
+                64, 32,
+                leftPos + WINDOW_INSIDE_X, topPos + WINDOW_INSIDE_Y,
+                WINDOW_INSIDE_WIDTH, WINDOW_INSIDE_HEIGHT);
+    }
+
+    private void drawWithClipping(ResourceLocation texture, PoseStack poseStack, int x, int y, int uvx, int uvy, int width, int height, int imageWidth, int imageHeight, int bbx, int bby, int bbw, int bbh) {
+        x += viewportOffset.x;
+        if (x < bbx) {
+            int xDiff = bbx - x;
+            width -= xDiff;
+            uvx += xDiff;
+            x += xDiff;
+        } else if (x > bbx + bbw - width) {
+            int xDiff = x - (bbx + bbw - width);
+            width -= xDiff;
+        }
+        y += viewportOffset.y;
+        if (y < bby) {
+            int yDiff = bby - y;
+            height -= yDiff;
+            uvy += yDiff;
+            y += yDiff;
+        } else if (y > bby + bbh - height) {
+            int yDiff = y - (bby + bbh - height);
+            height -= yDiff;
+        }
+        if (width > 0 && height > 0) {
+            setTexture(texture);
+            blit(poseStack, x, y, width, height, uvx, uvy, width, height, imageWidth, imageHeight);
         }
     }
 
@@ -223,6 +286,7 @@ public class EldritchResearchScreen extends Screen {
     }
 
     public boolean isHoveringNode(SpellNode node, int mouseX, int mouseY) {
+        //TODO: make outside screen unclickable
         return isHovering(node.x - 2 + (int) viewportOffset.x, node.y - 2 + (int) viewportOffset.y, 16 + 4, 16 + 4, mouseX, mouseY);
     }
 
@@ -236,7 +300,11 @@ public class EldritchResearchScreen extends Screen {
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
         if (this.isMouseDragging) {
-            this.viewportOffset = this.viewportOffset.add(new Vec2((float) pDragX, (float) pDragY));
+            viewportOffset = new Vec2i(viewportOffset.x + (int) pDragX, viewportOffset.y + (int) pDragY);
+//            viewportOffset = new Vec2(
+//                    (float) Mth.clamp(viewportOffset.x + pDragX, -maxViewportOffset.x, maxViewportOffset.x),
+//                    (float) Mth.clamp(viewportOffset.y + pDragY, -maxViewportOffset.y, maxViewportOffset.y)
+//            );
             return true;
         } else {
             return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
