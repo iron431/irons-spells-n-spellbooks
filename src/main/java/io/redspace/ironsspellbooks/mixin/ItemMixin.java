@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Item.class)
 public abstract class ItemMixin {
 
-    /*
+    /**
     Necessary to display how many times a piece of gear has been upgraded on its name
      */
     @Inject(method = "getName", at = @At("TAIL"), cancellable = true)
@@ -27,6 +27,9 @@ public abstract class ItemMixin {
         }
     }
 
+    /**
+     * Necessary for any item to be able to have a use duration for being imbued with a continuous cast
+     */
     @Inject(method = "getUseDuration", at = @At("HEAD"), cancellable = true)
     public void getUseDuration(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
         if (!SpellData.getSpellData(stack).equals(SpellData.EMPTY)) {

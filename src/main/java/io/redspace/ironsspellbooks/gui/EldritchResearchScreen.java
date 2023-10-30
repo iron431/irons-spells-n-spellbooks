@@ -99,7 +99,7 @@ public class EldritchResearchScreen extends Screen {
             setTexture(nodes.get(i).spell.getSpellIconResource());
             this.blit(poseStack, x, y, 0, 0, 16, 16, 16, 16);
             setTexture(FRAME_LOCATION);
-            this.blit(poseStack, x - 8, y - 8, 32, 32, isLearned(nodes.get(i).spell, player) ? 32 : 0, 0, 32, 32, 64, 32);
+            this.blit(poseStack, x - 8, y - 8, 32, 32, nodes.get(i).spell.isLearned(player) ? 32 : 0, 0, 32, 32, 64, 32);
             if (isHovering(x - 2, y - 2, 16 + 4, 16 + 4, mouseX, mouseY)) {
                 renderTooltip(poseStack, buildTooltip(nodes.get(i).spell, font), mouseX, mouseY);
             }
@@ -110,7 +110,7 @@ public class EldritchResearchScreen extends Screen {
     private static final Component UNLEARNED = Component.translatable("ui.irons_spellbooks.research_warning").withStyle(ChatFormatting.RED);
 
     public static List<FormattedCharSequence> buildTooltip(AbstractSpell spell, Font font) {
-        boolean learned = spell instanceof AbstractEldritchSpell eldritchSpell && eldritchSpell.isLearned(Minecraft.getInstance().player);
+        boolean learned = spell.isLearned(Minecraft.getInstance().player);
         var name = spell.getDisplayName(null).withStyle(learned ? ChatFormatting.DARK_AQUA : ChatFormatting.RED);
         var description = font.split(Component.translatable(String.format("%s.guide", spell.getComponentId())).withStyle(ChatFormatting.GRAY), 180);
         var hoverText = new ArrayList<FormattedCharSequence>();
@@ -119,10 +119,6 @@ public class EldritchResearchScreen extends Screen {
         hoverText.add(FormattedCharSequence.EMPTY);
         hoverText.add((learned ? ALREADY_LEARNED : UNLEARNED).getVisualOrderText());
         return hoverText;
-    }
-
-    private static boolean isLearned(AbstractSpell spell, Player player) {
-        return spell instanceof AbstractEldritchSpell eldritchSpell && eldritchSpell.isLearned(player);
     }
 
     private void handleConnections(PoseStack poseStack, float partialTick) {
@@ -152,8 +148,8 @@ public class EldritchResearchScreen extends Screen {
             float glowIntensity = f * f;
             var color = new Vector4f(135 / 255f, 154 / 255f, 174 / 255f, 0.5f);
             var glowcolor = new Vector4f(244 / 255f, 65 / 255f, 255 / 255f, 0.5f);
-            var color1 = lerpColor(color, glowcolor, glowIntensity * (isLearned(nodes.get(i).spell, Minecraft.getInstance().player) ? 1 : 0));
-            var color2 = lerpColor(color, glowcolor, glowIntensity * (isLearned(nodes.get(i + 1).spell, Minecraft.getInstance().player) ? 1 : 0));
+            var color1 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
+            var color2 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i + 1).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             buffer.vertex(x1m1, y1m1, getBlitOffset()).color(color1.x(), color1.y(), color1.z(), color1.w()).endVertex();
             buffer.vertex(x2m1, y2m1, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), color2.w()).endVertex();
             buffer.vertex(x2m2, y2m2, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), color2.w()).endVertex();
@@ -170,8 +166,8 @@ public class EldritchResearchScreen extends Screen {
         float glowIntensity = f * f;
         var color = new Vector4f(135 / 255f, 154 / 255f, 174 / 255f, 1f);
         var glowcolor = new Vector4f(244 / 255f, 65 / 255f, 255 / 255f, 1f);
-        var color1 = lerpColor(color, glowcolor, glowIntensity * (isLearned(node1.spell, Minecraft.getInstance().player) ? 1 : 0));
-        var color2 = lerpColor(color, glowcolor, glowIntensity * (isLearned(node2.spell, Minecraft.getInstance().player) ? 1 : 0));
+        var color1 = lerpColor(color, glowcolor, glowIntensity * (node1.spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
+        var color2 = lerpColor(color, glowcolor, glowIntensity * (node2.spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
         fillGradient(poseStack, node1.x, node1.y, node2.x, node2.y, colorFromRGBA(color1), colorFromRGBA(color2));
     }
 

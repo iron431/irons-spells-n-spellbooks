@@ -22,6 +22,7 @@ import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastStarted;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
@@ -578,5 +579,9 @@ public abstract class AbstractSpell {
 
     public boolean obfuscateStats(Player player) {
         return false;
+    }
+
+    public boolean isLearned(Player player) {
+        return true;
     }
 }

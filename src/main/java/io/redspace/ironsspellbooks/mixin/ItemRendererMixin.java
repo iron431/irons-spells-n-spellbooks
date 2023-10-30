@@ -27,6 +27,7 @@ public class ItemRendererMixin {
     private void fillRect(BufferBuilder p_115153_, int p_115154_, int p_115155_, int p_115156_, int p_115157_, int p_115158_, int p_115159_, int p_115160_, int p_115161_) {
     }
 
+    //TODO: can't this be an event?
     @Inject(method = "renderGuiItemDecorations", at = @At(value = "TAIL"))
     public void renderSpellbookCooldown(Font font, ItemStack stack, int one, int two, CallbackInfo ci) {
         Item item = stack.getItem();

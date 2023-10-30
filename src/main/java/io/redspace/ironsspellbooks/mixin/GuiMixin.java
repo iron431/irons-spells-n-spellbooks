@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Gui.class)
 public class GuiMixin {
 
+    //TODO: can't this be an event?
     @Inject(method = "renderExperienceBar", at = @At(value = "HEAD"), cancellable = true)
     public void renderExperienceBar(PoseStack pPoseStack, int pXPos, CallbackInfo ci) {
         if (ClientConfigs.MANA_BAR_ANCHOR.get() == ManaBarOverlay.Anchor.XP && Minecraft.getInstance().player != null && ManaBarOverlay.shouldShowManaBar(Minecraft.getInstance().player))

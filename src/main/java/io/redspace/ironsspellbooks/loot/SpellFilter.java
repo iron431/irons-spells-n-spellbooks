@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.loot;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -10,14 +11,19 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.RandomSource;
+import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SpellFilter {
     SchoolType schoolType = null;
     List<AbstractSpell> spells = new ArrayList<>();
+    static final LazyOptional<List<AbstractSpell>> DEFAULT_SPELLS = LazyOptional.of(() -> SpellRegistry.REGISTRY.get().getValues().stream().filter(AbstractSpell::allowLooting).toList());
+    static final LazyOptional<Map<SchoolType, List<AbstractSpell>>> SPELLS_FOR_SCHOOL = LazyOptional.of(() -> SchoolRegistry.REGISTRY.get().getValues().stream().collect(Collectors.toMap((school -> school), (school -> SpellRegistry.getSpellsForSchool(school).stream().filter(AbstractSpell::allowLooting).toList()))));
 
     public SpellFilter(SchoolType schoolType) {
         this.schoolType = schoolType;
@@ -31,16 +37,22 @@ public class SpellFilter {
     }
 
     public boolean isFiltered() {
-        return schoolType != null || spells.size() > 0;
+        return schoolType != null || !spells.isEmpty();
     }
 
     public List<AbstractSpell> getApplicableSpells() {
-        if (spells.size() > 0)
-            return spells;
-        else if (schoolType != null)
-            return SpellRegistry.getSpellsForSchool(schoolType);
-        else
-            return SpellRegistry.REGISTRY.get().getValues().stream().filter(AbstractSpell::allowLooting).toList();
+        try {
+            if (!spells.isEmpty())
+                return spells;
+            else if (schoolType != null)
+                return SPELLS_FOR_SCHOOL.resolve().get().get(schoolType);
+            else
+                return DEFAULT_SPELLS.resolve().get();
+        } catch (Exception e) {
+            IronsSpellbooks.LOGGER.error("SpellFilter failure: {}", e.getMessage());
+            return List.of(SpellRegistry.none());
+        }
+
     }
 
     public AbstractSpell getRandomSpell(RandomSource random, Predicate<AbstractSpell> filter) {
@@ -68,14 +80,6 @@ public class SpellFilter {
             return new SpellFilter(applicableSpellList);
         } else {
             return new SpellFilter();
-//                var nonVoidSpells = new SpellType[SpellType.values().length - SpellType.getSpellsFromSchool(SchoolType.VOID).length];
-//                int j = 0;
-//                for (int i = 0; i < nonVoidSpells.length; i++) {
-//                    if (SpellType.values()[i].getSchoolType() != SchoolType.VOID) {
-//                        nonVoidSpells[j++] = SpellType.values()[i];
-//                    }
-//                }
-//                return nonVoidSpells;
         }
     }
 }

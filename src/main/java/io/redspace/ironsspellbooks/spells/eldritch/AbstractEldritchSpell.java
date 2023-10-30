@@ -51,6 +51,7 @@ public abstract class AbstractEldritchSpell extends AbstractSpell {
         return super.canBeCastedBy(spellLevel, castSource, playerMagicData, player);
     }
 
+    @Override
     public boolean isLearned(Player player) {
         if (player.level.isClientSide) {
             return ClientMagicData.getSyncedSpellData(player).isSpellLearned(this);

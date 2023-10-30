@@ -14,6 +14,8 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -24,15 +26,22 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
+import org.w3c.dom.Attr;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @AutoSpellConfig
@@ -92,14 +101,14 @@ public class SmitingStrikeSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        float explosionRadius = 1.5f;
+        float radius = 1.5f;
         Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1, 0, 1).normalize().scale(2.25f)), 3);
         //TODO: particle packet
-        MagicManager.spawnParticles(level, ParticleHelper.BLOOD, smiteLocation.x, smiteLocation.y, smiteLocation.z, 100, 0, 0, 0, 0.5, true);
-        var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, explosionRadius * 2, explosionRadius * 4, explosionRadius * 2));
+        MagicManager.spawnParticles(level, ParticleTypes.FIREWORK, smiteLocation.x, smiteLocation.y, smiteLocation.z, 100, 0, 0, 0, 0.5, true);
+        var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
         for (Entity targetEntity : entities) {
             double distance = targetEntity.distanceToSqr(smiteLocation);
-            if (distance < explosionRadius * explosionRadius && Utils.hasLineOfSight(level, smiteLocation, targetEntity.getBoundingBox().getCenter(), true)) {
+            if (distance < radius * radius && Utils.hasLineOfSight(level, smiteLocation, targetEntity.getBoundingBox().getCenter(), true)) {
                 DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity));
             }
         }
@@ -107,9 +116,9 @@ public class SmitingStrikeSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        //TODO: the client is not aware of the attributes of the entity...
         float base = (float) entity.getAttributeValue(Attributes.ATTACK_DAMAGE);
-        float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), MobType.UNDEFINED);
+        //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
+        float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), MobType.UNDEAD);
 
         IronsSpellbooks.LOGGER.debug("SmitingStrikeSpell.getDamage {} + {} + {}", getSpellPower(spellLevel, entity), base, enchant);
         return getSpellPower(spellLevel, entity) + base + enchant;
@@ -118,5 +127,10 @@ public class SmitingStrikeSpell extends AbstractSpell {
     @Override
     public AnimationHolder getCastStartAnimation() {
         return SpellAnimations.SMITING_STRIKE_ANIMATION;
+    }
+
+    @Override
+    public AnimationHolder getCastFinishAnimation() {
+        return AnimationHolder.none();
     }
 }
