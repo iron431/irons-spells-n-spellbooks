@@ -98,7 +98,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         if (!level.isClientSide) {
             var radius = this.getRadius();
             var level = this.level;
-            int intensity = (int) (radius * radius * .09f);
+            int intensity = Math.min((int) (radius * radius * .09f), 15);
             for (int i = 0; i < intensity; i++) {
                 Vec3 vec3 = this.position().add(uniformlyDistributedPointInRadius(radius));
                 BlockPos blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, vec3, 4)).below();

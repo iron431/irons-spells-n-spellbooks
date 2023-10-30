@@ -281,19 +281,6 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void testManaEvent(ChangeManaEvent event) {
-        if (event.getEntity().hasEffect(MobEffects.REGENERATION))
-            event.setCanceled(true);
-        else if (event.getEntity().hasEffect(MobEffects.POISON) ){
-            var diff = event.getNewMana() - event.getOldMana();
-            if (diff < 0) {
-                diff *= 2;
-                event.setNewMana(event.getOldMana() + diff);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void onLivingTakeDamage(LivingDamageEvent event) {
         /*
         Damage Increasing Effects
