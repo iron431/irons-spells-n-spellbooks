@@ -478,7 +478,7 @@
   "spell.irons_spellbooks.ray_of_frost.guide": "Fire a beam of cold energy, dealing low damage but immediately applying freeze to the creature hit.",
   "spell.irons_spellbooks.sonic_boom.guide": "Blast forth a sonic boom of immense power, passing through solid material with ease and harming the first creature in its path.",
   "spell.irons_spellbooks.planar_sight.guide": "Shift your vision partially into a different plane to gain the ability to see creatures through solid material.",
-  "spell.irons_spellbooks.telekinesis.guide": "Reach out with a spectral force and grip a creature, forcing them towards your gaze.",
+  "spell.irons_spellbooks.telekinesis.guide": "Reach out with a spectral force and grip a creature, forcing them towards your gaze. Creatures are susceptible to kinetic damage.",
   "spell.irons_spellbooks.smiting_strike.guide": "With a fervor of holy energy, swing forth your weapon, doing a melee area attack. The damage scales off of your held weapon's melee damage.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
