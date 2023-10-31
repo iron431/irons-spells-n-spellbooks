@@ -57,18 +57,15 @@ public class EldritchResearchScreen extends Screen {
     List<AbstractSpell> learnableSpells;
     List<SpellNode> nodes;
     SyncedSpellData playerData;
-    Vec2i maxViewportOffset;
-    Vec2i viewportOffset;
-
-    private record Vec2i(int x, int y) {
-    }
+    Vec2 maxViewportOffset;
+    Vec2 viewportOffset;
 
     protected void init() {
         learnableSpells = SpellRegistry.getSpellsForSchool(SchoolRegistry.ELDRITCH.get());
         if (this.minecraft != null) {
             playerData = ClientMagicData.getSyncedSpellData(minecraft.player);
         }
-        viewportOffset = new Vec2i(0, 0);
+        viewportOffset = Vec2.ZERO;
         this.leftPos = (this.width - WINDOW_WIDTH) / 2;
         this.topPos = (this.height - WINDOW_HEIGHT) / 2;
         nodes = new ArrayList<>();
@@ -97,7 +94,7 @@ public class EldritchResearchScreen extends Screen {
             }
         }
         //TODO: wait this makes no sense
-        maxViewportOffset = new Vec2i((int) maxDistX, (int) maxDistY);
+        maxViewportOffset = new Vec2((int) maxDistX, (int) maxDistY);
     }
 
     @Override
@@ -202,15 +199,15 @@ public class EldritchResearchScreen extends Screen {
             Vec2 b = new Vec2(nodes.get(i + 1).x, nodes.get(i + 1).y);
             Vec2 org = new Vec2(-(b.y - a.y), b.x - a.x).normalized().scale(1.5f);
 
-            final double x1m1 = a.x + org.x + 8;
-            final double x2m1 = b.x + org.x + 8;
-            final double y1m1 = a.y + org.y + 8;
-            final double y2m1 = b.y + org.y + 8;
+            final double x1m1 = a.x + org.x + 8 + viewportOffset.x;
+            final double x2m1 = b.x + org.x + 8 + viewportOffset.x;
+            final double y1m1 = a.y + org.y + 8 + viewportOffset.y;
+            final double y2m1 = b.y + org.y + 8 + viewportOffset.y;
 
-            final double x1m2 = a.x - org.x + 8;
-            final double x2m2 = b.x - org.x + 8;
-            final double y1m2 = a.y - org.y + 8;
-            final double y2m2 = b.y - org.y + 8;
+            final double x1m2 = a.x - org.x + 8 + viewportOffset.x;
+            final double x2m2 = b.x - org.x + 8 + viewportOffset.x;
+            final double y1m2 = a.y - org.y + 8 + viewportOffset.y;
+            final double y2m2 = b.y - org.y + 8 + viewportOffset.y;
 
             float f = Mth.sin((Minecraft.getInstance().player.tickCount + partialTick) * .1f);
             float glowIntensity = f * f;
@@ -218,15 +215,27 @@ public class EldritchResearchScreen extends Screen {
             var glowcolor = new Vector4f(244 / 255f, 65 / 255f, 255 / 255f, 0.5f);
             var color1 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var color2 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i + 1).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
-            buffer.vertex(x1m1 + viewportOffset.x, y1m1 + viewportOffset.y, getBlitOffset()).color(color1.x(), color1.y(), color1.z(), color1.w()).endVertex();
-            buffer.vertex(x2m1 + viewportOffset.x, y2m1 + viewportOffset.y, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), color2.w()).endVertex();
-            buffer.vertex(x2m2 + viewportOffset.x, y2m2 + viewportOffset.y, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), color2.w()).endVertex();
-            buffer.vertex(x1m2 + viewportOffset.x, y1m2 + viewportOffset.y, getBlitOffset()).color(color1.x(), color1.y(), color1.z(), color1.w()).endVertex();
+            var alphaTopLeft = (Mth.clamp(x1m1 + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2) / WINDOW_INSIDE_X * 2) * (Mth.clamp(y1m1 + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2) / WINDOW_INSIDE_Y * 2);
+            buffer.vertex(x1m1, y1m1, getBlitOffset()).color(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(poseStack, x1m1, y1m1)).endVertex();
+            buffer.vertex(x2m1, y2m1, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(poseStack, x2m1, y2m1)).endVertex();
+            buffer.vertex(x2m2, y2m2, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(poseStack, x2m2, y2m2)).endVertex();
+            buffer.vertex(x1m2, y1m2, getBlitOffset()).color(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(poseStack, x1m2, y1m2)).endVertex();
         }
 
         tesselator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
+    }
+
+    private float fadeOutTowardEdges(PoseStack poseStack, double x, double y) {
+        int px = (int) Mth.clamp(x + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2);
+        int py = (int) Mth.clamp(y + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2);
+        int px2 = (int) Mth.clamp(WINDOW_INSIDE_WIDTH - (x + viewportOffset.x - leftPos), 0, WINDOW_INSIDE_X * 2);
+        int py2 = (int) Mth.clamp(WINDOW_INSIDE_HEIGHT - (y + viewportOffset.y - topPos), 0, WINDOW_INSIDE_Y * 2);
+        //Minecraft.getInstance().font.draw(poseStack, String.format("%d/%d * %d/%d", px, WINDOW_INSIDE_X * 2, py, WINDOW_INSIDE_Y * 2), (float) x, (float) y, 0xFFFFFF);
+        return Mth.clamp(px / ((float) WINDOW_INSIDE_X * 0.5f), 0, 1) * Mth.clamp(py / ((float) WINDOW_INSIDE_Y * 0.5f), 0, 1) * Mth.clamp(px2 / ((float) WINDOW_INSIDE_X * 0.5f), 0, 1) * Mth.clamp(py2 / ((float) WINDOW_INSIDE_Y * 0.5f), 0, 1);
+        //* (Mth.clamp(WINDOW_INSIDE_WIDTH - (x + viewportOffset.x - leftPos), 0, WINDOW_INSIDE_X * 2) / WINDOW_INSIDE_X * 2) * (Mth.clamp(WINDOW_INSIDE_HEIGHT - (y + viewportOffset.y - topPos), 0, WINDOW_INSIDE_Y * 2) / WINDOW_INSIDE_Y * 2));
+
     }
 
     private int colorFromRGBA(Vector4f rgba) {
@@ -299,12 +308,8 @@ public class EldritchResearchScreen extends Screen {
 
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        if (this.isMouseDragging) {
-            viewportOffset = new Vec2i(viewportOffset.x + (int) pDragX, viewportOffset.y + (int) pDragY);
-//            viewportOffset = new Vec2(
-//                    (float) Mth.clamp(viewportOffset.x + pDragX, -maxViewportOffset.x, maxViewportOffset.x),
-//                    (float) Mth.clamp(viewportOffset.y + pDragY, -maxViewportOffset.y, maxViewportOffset.y)
-//            );
+        if (this.isMouseDragging && false /*No dragging for now*/) {
+            viewportOffset = new Vec2((float) (viewportOffset.x + pDragX), (float) (viewportOffset.y + pDragY));
             return true;
         } else {
             return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
