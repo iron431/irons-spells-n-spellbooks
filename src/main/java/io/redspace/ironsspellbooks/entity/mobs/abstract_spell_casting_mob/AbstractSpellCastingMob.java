@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -481,6 +482,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     }
 
     private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
+        if(spell.getCastFinishAnimation() == AnimationHolder.pass()){
+            return;
+        }
         spell.getCastFinishAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.setFinishAnimationFromSpell {}", animationBuilder);

@@ -24,6 +24,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
@@ -583,5 +584,9 @@ public abstract class AbstractSpell {
 
     public boolean isLearned(Player player) {
         return true;
+    }
+
+    public boolean canBeInterrupted(Player player){
+        return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
     }
 }

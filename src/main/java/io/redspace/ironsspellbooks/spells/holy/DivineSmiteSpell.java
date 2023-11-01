@@ -4,49 +4,35 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
-import org.w3c.dom.Attr;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class SmitingStrikeSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "smiting_strike");
+public class DivineSmiteSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "divine_smite");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -60,12 +46,17 @@ public class SmitingStrikeSpell extends AbstractSpell {
             .setCooldownSeconds(15)
             .build();
 
-    public SmitingStrikeSpell() {
+    public DivineSmiteSpell() {
         this.manaCostPerLevel = 2;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 3;
         this.castTime = 16;
         this.baseManaCost = 15;
+    }
+
+    @Override
+    public boolean canBeInterrupted(Player player) {
+        return false;
     }
 
     @Override
@@ -101,8 +92,8 @@ public class SmitingStrikeSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        float radius = 1.5f;
-        Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1, 0, 1).normalize().scale(2.25f)), 3);
+        float radius = 1.25f;
+        Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1, 0, 1).normalize().scale(1.35f)), 3);
         //TODO: particle packet
         MagicManager.spawnParticles(level, ParticleTypes.FIREWORK, smiteLocation.x, smiteLocation.y, smiteLocation.z, 100, 0, 0, 0, 0.5, true);
         var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
@@ -120,17 +111,17 @@ public class SmitingStrikeSpell extends AbstractSpell {
         //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
         float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), MobType.UNDEAD);
 
-        IronsSpellbooks.LOGGER.debug("SmitingStrikeSpell.getDamage {} + {} + {}", getSpellPower(spellLevel, entity), base, enchant);
+        //IronsSpellbooks.LOGGER.debug("SmitingStrikeSpell.getDamage {} + {} + {}", getSpellPower(spellLevel, entity), base, enchant);
         return getSpellPower(spellLevel, entity) + base + enchant;
     }
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return SpellAnimations.SMITING_STRIKE_ANIMATION;
+        return SpellAnimations.OVERHEAD_MELEE_SWING_ANIMATION;
     }
 
     @Override
     public AnimationHolder getCastFinishAnimation() {
-        return AnimationHolder.none();
+        return AnimationHolder.pass();
     }
 }

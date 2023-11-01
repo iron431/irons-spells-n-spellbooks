@@ -5,10 +5,13 @@ import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
+import dev.kosmx.playerAnim.api.layered.modifier.AbstractFadeModifier;
+import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
@@ -220,13 +223,16 @@ public class ClientSpellCastHelper {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
 
         var spell = SpellRegistry.getSpell(spellId);
-        spell.getCastFinishAnimation()
-                .getForPlayer()
-                .ifPresent((resourceLocation -> {
-                    if (!cancelled) {
-                        animatePlayerStart(player, resourceLocation);
-                    }
-                }));
+        var finishAnimation = spell.getCastFinishAnimation();
+
+        if (finishAnimation.getForPlayer().isPresent() && !cancelled) {
+            animatePlayerStart(player, finishAnimation.getForPlayer().get());
+        } else if (finishAnimation != AnimationHolder.pass() || cancelled) {
+            var animationPlayer = ClientMagicData.castingAnimationPlayerLookup.getOrDefault(castingEntityId, null);
+            if (animationPlayer != null) {
+                animationPlayer.stop();
+            }
+        }
 
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {
             if (spell.getCastType().holdToCast()) {
