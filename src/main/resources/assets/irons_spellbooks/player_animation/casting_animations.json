@@ -114,7 +114,7 @@
 			}
 		},
 		"instant_projectile": {
-			"animation_length": 0.5625,
+			"animation_length": 0.375,
 			"bones": {
 				"body": {
 					"rotation": {
@@ -135,7 +135,7 @@
 						"0.0": {
 							"vector": [-102.5, 0, 0]
 						},
-						"0.125": {
+						"0.1875": {
 							"vector": [-87.5, 0, 0]
 						},
 						"0.375": {
@@ -165,34 +165,6 @@
 						"0.375": {
 							"vector": [0, 0, 0],
 							"easing": "easeOutSine"
-						}
-					}
-				},
-				"right_leg": {
-					"rotation": {
-						"0.0": {
-							"vector": [-5, 0, 0]
-						},
-						"0.375": {
-							"vector": [0, 0, 0]
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, -1]
-						},
-						"0.375": {
-							"vector": [0, 0, 0]
-						}
-					}
-				},
-				"left_leg": {
-					"rotation": {
-						"0.0": {
-							"vector": [22.5, 0, 0]
-						},
-						"0.375": {
-							"vector": [0, 0, 0]
 						}
 					}
 				}

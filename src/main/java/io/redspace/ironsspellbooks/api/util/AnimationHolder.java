@@ -10,24 +10,21 @@ import java.util.Optional;
 public class AnimationHolder {
     private final AnimationBuilder geckoAnimation;
     private final ResourceLocation playerAnimation;
-    public final boolean adjustLeftArm;
-    public final boolean adjustRightArm;
+    public final boolean isPass;
 
     public AnimationHolder(String path, ILoopType loopType) {
         this.playerAnimation = IronsSpellbooks.id(path);
         this.geckoAnimation = new AnimationBuilder().addAnimation(playerAnimation.getPath(), loopType);
-        this.adjustLeftArm = true;
-        this.adjustRightArm = true;
+        this.isPass = false;
     }
 
-    private AnimationHolder() {
+    private AnimationHolder(boolean isPass) {
         this.playerAnimation = null;
         this.geckoAnimation = null;
-        this.adjustLeftArm = false;
-        this.adjustRightArm = false;
+        this.isPass = isPass;
     }
-    private static final AnimationHolder empty = new AnimationHolder();
-    private static final AnimationHolder pass = new AnimationHolder();
+    private static final AnimationHolder empty = new AnimationHolder(false);
+    private static final AnimationHolder pass = new AnimationHolder(true);
 
     /**
      * This singleton represents an animation where the player immediately stops animating at the end of a cast

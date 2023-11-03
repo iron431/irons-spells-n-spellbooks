@@ -85,7 +85,7 @@ public class ShockwaveParticle extends TextureSheetParticle {
             p_234005_.mul(Vector3f.YP.rotation(0));
             p_234005_.mul(Vector3f.XP.rotation(-DEGREES_90));
         });
-        //back face?
+        //back face
         this.renderRotatedParticle(buffer, camera, partialticks, (p_234000_) -> {
             p_234000_.mul(Vector3f.YP.rotation(-(float) Math.PI));
             p_234000_.mul(Vector3f.XP.rotation(DEGREES_90));

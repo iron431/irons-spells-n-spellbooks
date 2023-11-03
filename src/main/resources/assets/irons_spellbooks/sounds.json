@@ -436,5 +436,15 @@
     "sounds": [
       "irons_spellbooks:sonic_boom"
     ]
+  },
+  "spell.divine_smite.cast": {
+    "sounds": [
+      "irons_spellbooks:divine_smite_cast"
+    ]
+  },
+  "spell.divine_smite.windup": {
+    "sounds": [
+      "irons_spellbooks:divine_smite_windup"
+    ]
   }
 }

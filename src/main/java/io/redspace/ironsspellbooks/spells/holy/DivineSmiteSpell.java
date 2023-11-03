@@ -6,9 +6,12 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.CameraShakeData;
+import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -25,6 +28,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.function.FailableIntBinaryOperator;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,7 +40,7 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", getDamageText(spellLevel, caster)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -47,11 +51,11 @@ public class DivineSmiteSpell extends AbstractSpell {
             .build();
 
     public DivineSmiteSpell() {
-        this.manaCostPerLevel = 2;
+        this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 3;
         this.castTime = 16;
-        this.baseManaCost = 15;
+        this.baseManaCost = 30;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     @Override
     public int getEffectiveCastTime(int spellLevel, @Nullable LivingEntity entity) {
-        //due to melee animation, we do not want cast time attribute to affect this spell
+        //due to melee animation timing, we do not want cast time attribute to affect this spell
         return getCastTime(spellLevel);
     }
 
@@ -82,20 +86,21 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundEvents.ILLUSIONER_PREPARE_MIRROR);
+        return Optional.of(SoundRegistry.DIVINE_SMITE_WINDUP.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.EVOCATION_CAST.get());
+        return Optional.of(SoundRegistry.DIVINE_SMITE_CAST.get());
     }
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = 1.25f;
         Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1, 0, 1).normalize().scale(1.35f)), 3);
-        //TODO: particle packet
-        MagicManager.spawnParticles(level, ParticleTypes.FIREWORK, smiteLocation.x, smiteLocation.y, smiteLocation.z, 100, 0, 0, 0, 0.5, true);
+        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.HOLY.get().getTargetingColor(), radius * 2), smiteLocation.x, smiteLocation.y, smiteLocation.z, 1, 0, 0, 0, 0, true);
+        MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, smiteLocation.x, smiteLocation.y, smiteLocation.z, 50, 0, 0, 0, 1, false);
+        CameraShakeManager.addCameraShake(new CameraShakeData(10, smiteLocation, 10));
         var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
         for (Entity targetEntity : entities) {
             double distance = targetEntity.distanceToSqr(smiteLocation);
@@ -107,12 +112,34 @@ public class DivineSmiteSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        float base = (float) entity.getAttributeValue(Attributes.ATTACK_DAMAGE);
-        //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
-        float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), MobType.UNDEAD);
+        if (entity != null) {
+            float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            float fist = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
+            if (weapon == fist) {
+                //Remove fist damage if they are not using a melee weapon
+                weapon -= fist;
+            }
+            //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
+            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), MobType.UNDEAD);
 
-        //IronsSpellbooks.LOGGER.debug("SmitingStrikeSpell.getDamage {} + {} + {}", getSpellPower(spellLevel, entity), base, enchant);
-        return getSpellPower(spellLevel, entity) + base + enchant;
+            //IronsSpellbooks.LOGGER.debug("SmitingStrikeSpell.getDamage {} + {} + {}", getSpellPower(spellLevel, entity), base, enchant);
+            return getSpellPower(spellLevel, entity) + weapon + enchant;
+        }
+        return getSpellPower(spellLevel, entity);
+    }
+
+    private String getDamageText(int spellLevel, LivingEntity entity) {
+        if (entity != null) {
+            float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), MobType.UNDEAD);
+            String plus = "";
+            if (weapon + enchant > 1) {
+                plus = String.format(" (+%s)", Utils.stringTruncation(weapon + enchant, 1));
+            }
+            String damage = Utils.stringTruncation(getDamage(spellLevel, entity), 1);
+            return damage + plus;
+        }
+        return "" + getSpellPower(spellLevel, entity);
     }
 
     @Override
