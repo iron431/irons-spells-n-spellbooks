@@ -177,7 +177,8 @@ public class ClientSpellCastHelper {
                 }
 
                 //You might use  animation.replaceAnimationWithFade(); to create fade effect instead of sudden change
-                animation.setAnimation(castingAnimationPlayer);
+                //animation.setAnimation(castingAnimationPlayer);
+                animation.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), castingAnimationPlayer, true);
             }
         }
     }
