@@ -155,7 +155,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.KEEPER_FLAMBERGE.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.TEST_CLAYMORE.get()));
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -165,7 +165,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, Anim
                 .add(Attributes.FOLLOW_RANGE, 25.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8)
                 .add(Attributes.ATTACK_KNOCKBACK, 2.0)
-                .add(Attributes.MOVEMENT_SPEED, .19);
+                .add(Attributes.MOVEMENT_SPEED, .25);
     }
 
     @Override

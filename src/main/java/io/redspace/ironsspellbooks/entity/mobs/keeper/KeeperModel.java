@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 
@@ -37,6 +38,7 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
         IBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
         IBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
         IBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
+        IBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
 
         boolean tick = lastTick != entity.tickCount;
         lastTick = entity.tickCount;
@@ -60,7 +62,15 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
             updatePosition(rightLeg, 0, Mth.cos(pLimbSwing * 0.6662F) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F) * 4 * pLimbSwingAmount);
             updatePosition(leftLeg, 0, Mth.cos(pLimbSwing * 0.6662F - Mth.PI) * 4 * strength * pLimbSwingAmount, -Mth.sin(pLimbSwing * 0.6662F - Mth.PI) * 4 * pLimbSwingAmount);
             updatePosition(body, 0, Mth.abs(Mth.cos((pLimbSwing * 1.2662F - Mth.PI * .5f) * .5f)) * 2 * strength * pLimbSwingAmount, 0);
+            Vec3 interpDeltaMovement = entity.getDeltaMovement();
+            interpDeltaMovement = new Vec3(Mth.lerp(partialTick, deltaMovementOld.x, interpDeltaMovement.x), Mth.lerp(partialTick, deltaMovementOld.y, interpDeltaMovement.y), Mth.lerp(partialTick, deltaMovementOld.z, interpDeltaMovement.z));
+            float speed = (float) interpDeltaMovement.horizontalDistanceSqr();
+            float bodyRot = (float) -(Mth.smoothstep(Mth.clamp(speed * 65, 0, 1)) * Mth.PI / 12);
+            body.setRotationX(bodyRot);
+            head.setRotationX(head.getRotationX() - bodyRot);
+            IronsSpellbooks.LOGGER.debug("speed: {} | bodyrot: {}", speed, bodyRot);
             if (tick) {
+                deltaMovementOld = entity.getDeltaMovement();
                 if (!entity.isAnimating() || entity.shouldAlwaysAnimateLegs()) {
                     legTween = Mth.lerp(.9f, 0, 1);
                 } else {
@@ -78,6 +88,7 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
 
     private int lastTick;
     private float legTween = 1f;
+    private Vec3 deltaMovementOld = Vec3.ZERO;
 
     private static void updatePosition(IBone bone, float x, float y, float z) {
         bone.setPositionX(x);
