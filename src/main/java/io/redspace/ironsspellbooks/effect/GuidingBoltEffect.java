@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.effect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
@@ -23,4 +24,5 @@ public class GuidingBoltEffect extends MobEffect {
             projectile.setDeltaMovement(projectile.getDeltaMovement().add(magnetization));
         });
     }
+
 }

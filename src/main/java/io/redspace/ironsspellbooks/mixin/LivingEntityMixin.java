@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,4 +29,13 @@ public class LivingEntityMixin {
             cir.setReturnValue(0f);
         }
     }
+
+    @Inject(method = "isCurrentlyGlowing", at = @At(value = "HEAD"), cancellable = true)
+    public void isCurrentlyGlowing(CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity self = (LivingEntity) (Object) this;
+        if (!self.level.isClientSide() && self.hasEffect(MobEffectRegistry.GUIDING_BOLT.get())) {
+            cir.setReturnValue(true);
+        }
+    }
+
 }
