@@ -112,6 +112,11 @@ public class DivineSmiteSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
+        //IronsSpellbooks.LOGGER.debug("SmitingStrikeSpell.getDamage {} + {} + {}", getSpellPower(spellLevel, entity), base, enchant);
+        return getSpellPower(spellLevel, entity) + getWeaponDamage(entity);
+    }
+
+    private float getWeaponDamage(LivingEntity entity) {
         if (entity != null) {
             float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
             float fist = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
@@ -121,20 +126,17 @@ public class DivineSmiteSpell extends AbstractSpell {
             }
             //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
             float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), MobType.UNDEAD);
-
-            //IronsSpellbooks.LOGGER.debug("SmitingStrikeSpell.getDamage {} + {} + {}", getSpellPower(spellLevel, entity), base, enchant);
-            return getSpellPower(spellLevel, entity) + weapon + enchant;
+            return weapon + enchant;
         }
-        return getSpellPower(spellLevel, entity);
+        return 0;
     }
 
     private String getDamageText(int spellLevel, LivingEntity entity) {
         if (entity != null) {
-            float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
-            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), MobType.UNDEAD);
+            float weaponDamage = getWeaponDamage(entity);
             String plus = "";
-            if (weapon + enchant > 1) {
-                plus = String.format(" (+%s)", Utils.stringTruncation(weapon + enchant, 1));
+            if (weaponDamage > 0) {
+                plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));
             }
             String damage = Utils.stringTruncation(getDamage(spellLevel, entity), 1);
             return damage + plus;

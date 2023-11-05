@@ -27,14 +27,14 @@ public class AnimationHolder {
     private static final AnimationHolder pass = new AnimationHolder(true);
 
     /**
-     * This singleton represents an animation where the player immediately stops animating at the end of a cast
+     * Represents an empty animation, making the player immediately stop animating at the end of a cast
      */
     public static AnimationHolder none() {
         return empty;
     }
 
     /**
-     * This singleton lets the previous animation (the cast start animation) continue to play after the spell ends, so long as the spell wasn't cancelled
+     * Represents the lack of an animation, letting the previous animation (the cast start animation) continue to play after the spell ends, so long as the spell wasn't cancelled
      */
     public static AnimationHolder pass() {
         return pass;
