@@ -451,5 +451,10 @@
     "sounds": [
       "irons_spellbooks:learn_eldritch_spell"
     ]
+  },
+  "ui.tick": {
+    "sounds": [
+      "irons_spellbooks:ui_tick"
+    ]
   }
 }

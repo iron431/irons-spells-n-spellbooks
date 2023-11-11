@@ -107,6 +107,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> POISON_CAST = registerSoundEvent("cast.generic.poison");
 
     public static RegistryObject<SoundEvent> LEARN_ELDRITCH_SPELL = registerSoundEvent("ui.learn_eldritch_spell");
+    public static RegistryObject<SoundEvent> UI_TICK = registerSoundEvent("ui.tick");
 
 
 
