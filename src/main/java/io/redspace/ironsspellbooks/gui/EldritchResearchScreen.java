@@ -8,9 +8,12 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.network.ServerboundLearnSpell;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -21,11 +24,16 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
+import net.minecraftforge.common.data.SoundDefinition;
+import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +67,12 @@ public class EldritchResearchScreen extends Screen {
     SyncedSpellData playerData;
     Vec2 maxViewportOffset;
     Vec2 viewportOffset;
+
+    boolean isMouseHoldingSpell, isMouseDragging;
+    int heldSpellIndex = -1;
+    int heldSpellTime = -1;
+    int lastPlayerTick;
+    static final int TIME_TO_HOLD = 15;
 
     protected void init() {
         learnableSpells = SpellRegistry.getSpellsForSchool(SchoolRegistry.ELDRITCH.get());
@@ -101,16 +115,34 @@ public class EldritchResearchScreen extends Screen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         super.render(poseStack, mouseX, mouseY, partialTick);
         this.fillGradient(poseStack, 0, 0, this.width, this.height, -1072689136, -804253680);
-        drawBackdrop(leftPos, topPos);
+        drawBackdrop(leftPos + WINDOW_INSIDE_X, topPos + WINDOW_INSIDE_Y);
 
         var player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
+
+        if (player.tickCount != lastPlayerTick) {
+            lastPlayerTick = player.tickCount;
+            if (isMouseHoldingSpell && heldSpellIndex >= 0 && heldSpellIndex < nodes.size() && !nodes.get(heldSpellIndex).spell.isLearned(player)) {
+                if (heldSpellTime > TIME_TO_HOLD) {
+                    heldSpellTime = -1;
+                    Messages.sendToServer(new ServerboundLearnSpell(this.activeHand, nodes.get(heldSpellIndex).spell.getSpellId()));
+                    player.playNotifySound(SoundRegistry.LEARN_ELDRITCH_SPELL.get(), SoundSource.MASTER, 1f, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
+                }
+                heldSpellTime++;
+                if (lastPlayerTick % 2 == 0) {
+                    player.playNotifySound(SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 0.5f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
+                }
+            } else if (heldSpellTime >= 0) {
+                heldSpellTime = Math.max(heldSpellTime - 2, -1);
+            }
+        }
         handleConnections(poseStack, partialTick);
         List<FormattedCharSequence> tooltip = null;
-        for (SpellNode node : nodes) {
-            drawNode(poseStack, node, player);
+        for (int i = 0; i < nodes.size(); i++) {
+            var node = nodes.get(i);
+            drawNode(poseStack, node, player, i == heldSpellIndex && heldSpellTime > 0);
             if (isHoveringNode(node, mouseX, mouseY)) {
                 tooltip = buildTooltip(node.spell, font);
             }
@@ -122,7 +154,29 @@ public class EldritchResearchScreen extends Screen {
         }
     }
 
-    private void drawNode(PoseStack poseStack, SpellNode node, LocalPlayer player) {
+    private void renderProgressOverlay(int x, int y, float progress) {
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        fillRect(bufferbuilder, x, y, Mth.ceil(16.0F * progress), 16, 244, 65, 255, 127);
+        RenderSystem.enableTexture();
+        RenderSystem.enableDepthTest();
+    }
+
+    private void fillRect(BufferBuilder pRenderer, int pX, int pY, int pWidth, int pHeight, int pRed, int pGreen, int pBlue, int pAlpha) {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        pRenderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        pRenderer.vertex((pX + 0), (pY + 0), 0.0D).color(pRed, pGreen, pBlue, pAlpha).endVertex();
+        pRenderer.vertex((pX + 0), (pY + pHeight), 0.0D).color(pRed, pGreen, pBlue, pAlpha).endVertex();
+        pRenderer.vertex((pX + pWidth), (pY + pHeight), 0.0D).color(pRed, pGreen, pBlue, pAlpha).endVertex();
+        pRenderer.vertex((pX + pWidth), (pY + 0), 0.0D).color(pRed, pGreen, pBlue, pAlpha).endVertex();
+        BufferUploader.drawWithShader(pRenderer.end());
+    }
+
+    private void drawNode(PoseStack poseStack, SpellNode node, LocalPlayer player, boolean drawProgress) {
         drawWithClipping(node.spell.getSpellIconResource(),
                 poseStack,
                 node.x,
@@ -132,6 +186,9 @@ public class EldritchResearchScreen extends Screen {
                 16, 16,
                 leftPos + WINDOW_INSIDE_X, topPos + WINDOW_INSIDE_Y,
                 WINDOW_INSIDE_WIDTH, WINDOW_INSIDE_HEIGHT);
+        if (drawProgress) {
+            renderProgressOverlay(node.x, node.y, heldSpellTime / (float) TIME_TO_HOLD);
+        }
         setTexture(FRAME_LOCATION);
         drawWithClipping(FRAME_LOCATION,
                 poseStack,
@@ -254,10 +311,11 @@ public class EldritchResearchScreen extends Screen {
         RenderSystem.setShader(GameRenderer::getRendertypeEndPortalShader);
         RenderSystem.setShaderTexture(0, TheEndPortalRenderer.END_PORTAL_LOCATION);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        float f = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.tickCount * .086f : 0f;
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferbuilder.vertex((float) left, (float) top + EldritchResearchScreen.WINDOW_HEIGHT, 0.0F).color(1, 1, 1, 1).endVertex();
-        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_WIDTH, (float) top + EldritchResearchScreen.WINDOW_HEIGHT, 0.0F).color(1, 1, 1, 1).endVertex();
-        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_WIDTH, (float) top, 0.0F).color(1, 1, 1, 1).endVertex();
+        bufferbuilder.vertex((float) left, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).uv(f, f).color(1, 1, 1, 1).endVertex();
+        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top + EldritchResearchScreen.WINDOW_INSIDE_HEIGHT, 0.0F).color(1, 1, 1, 1).endVertex();
+        bufferbuilder.vertex((float) left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, (float) top, 0.0F).color(1, 1, 1, 1).endVertex();
         bufferbuilder.vertex((float) left, (float) top, 0.0F).color(1, 1, 1, 1).endVertex();
         BufferUploader.drawWithShader(bufferbuilder.end());
         RenderSystem.disableBlend();
@@ -272,17 +330,18 @@ public class EldritchResearchScreen extends Screen {
         return new Vector4f(x, y, z, w);
     }
 
-    boolean isMouseHoldingSpell, isMouseDragging;
-
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         int mouseX = (int) pMouseX;
         int mouseY = (int) pMouseY;
-        for (SpellNode node : nodes) {
-            if (isHoveringNode(node, mouseX, mouseY)) {
-                isMouseHoldingSpell = true;
-                Messages.sendToServer(new ServerboundLearnSpell(this.activeHand, node.spell.getSpellId()));
-                break;
+        //Only allow initiating the learn process if they are holding a manuscript
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getItemInHand(activeHand).is(ItemRegistry.ELDRITCH_PAGE.get())) {
+            for (int i = 0; i < nodes.size(); i++) {
+                if (isHoveringNode(nodes.get(i), mouseX, mouseY)) {
+                    heldSpellIndex = i;
+                    isMouseHoldingSpell = true;
+                    break;
+                }
             }
         }
         if (!isMouseHoldingSpell) {

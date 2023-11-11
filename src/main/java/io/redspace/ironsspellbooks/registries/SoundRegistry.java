@@ -106,6 +106,9 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> NATURE_CAST = registerSoundEvent("cast.generic.nature");
     public static RegistryObject<SoundEvent> POISON_CAST = registerSoundEvent("cast.generic.poison");
 
+    public static RegistryObject<SoundEvent> LEARN_ELDRITCH_SPELL = registerSoundEvent("ui.learn_eldritch_spell");
+
+
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {
         return SOUND_EVENTS.register(name, () -> new SoundEvent(new ResourceLocation(IronsSpellbooks.MODID, name)));

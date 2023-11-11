@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -112,7 +113,7 @@ public class TooltipsUtils {
     }
 
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
-    private static final Style OBFUSCATED_STYLE = INFO_STYLE.withObfuscated(true).withFont(RUNIC_FONT);
+    private static final Style OBFUSCATED_STYLE = AbstractEldritchSpell.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
 
     public static MutableComponent getLevelComponenet(SpellData spellData, LivingEntity caster) {
         int levelTotal = spellData.getSpell().getLevel(spellData.getLevel(), caster);
@@ -149,7 +150,7 @@ public class TooltipsUtils {
         var description = font.split(Component.translatable(String.format("%s.guide", spell.getComponentId())).withStyle(ChatFormatting.GRAY), 180);
         var hoverText = new ArrayList<FormattedCharSequence>();
         hoverText.add(FormattedCharSequence.forward(name.getString(), name.getStyle().withUnderlined(true)));
-        if(!spell.obfuscateStats(Minecraft.getInstance().player)) {
+        if (!spell.obfuscateStats(Minecraft.getInstance().player)) {
             hoverText.addAll(description);
         }
         return hoverText;

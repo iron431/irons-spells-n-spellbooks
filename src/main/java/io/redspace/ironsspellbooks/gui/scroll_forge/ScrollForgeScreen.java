@@ -42,6 +42,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private static final int SCROLL_BAR_WIDTH = 12;
     private static final int SCROLL_BAR_HEIGHT = 56;
     public static final ResourceLocation RUNIC_FONT = new ResourceLocation("illageralt");
+    public static final ResourceLocation ENCHANT_FONT = new ResourceLocation("alt");
 
     private List<SpellCardInfo> availableSpells;
     private ItemStack[] oldMenuSlots = {ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};

@@ -34,7 +34,7 @@ public final class ClientInputEvents {
 
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
-    private static final KeyState ELDRITCH_SCREEN_STATE = register(KeyMappings.ELDRITCH_SCREEN_KEYMAP);
+//    private static final KeyState ELDRITCH_SCREEN_STATE = register(KeyMappings.ELDRITCH_SCREEN_KEYMAP);
     private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
 
     private static int useKeyId = Integer.MIN_VALUE;
@@ -58,13 +58,13 @@ public final class ClientInputEvents {
             if (minecraft.screen == null && SpellWheelOverlay.instance.active)
                 SpellWheelOverlay.instance.close();
         }
-        if (ELDRITCH_SCREEN_STATE.wasPressed()) {
-            if (minecraft.screen == null) {
-                minecraft.setScreen(new EldritchResearchScreen(Component.empty(), player.getOffhandItem().is(ItemRegistry.ELDRITCH_PAGE.get()) ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND));
-            }else if(minecraft.screen instanceof EldritchResearchScreen screen){
-                screen.onClose();
-            }
-        }
+//        if (ELDRITCH_SCREEN_STATE.wasPressed()) {
+//            if (minecraft.screen == null) {
+//                minecraft.setScreen(new EldritchResearchScreen(Component.empty(), player.getOffhandItem().is(ItemRegistry.ELDRITCH_PAGE.get()) ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND));
+//            }else if(minecraft.screen instanceof EldritchResearchScreen screen){
+//                screen.onClose();
+//            }
+//        }
 
         update();
     }

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.eldritch;
 
+import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -102,6 +103,12 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
         }
 
         super.onCast(world, spellLevel, entity, playerMagicData);
+    }
+
+    @Override
+    public Vector3f getTargetingColor() {
+        //color similar to the spell icon
+        return new Vector3f(1f, .24f, .95f);
     }
 
     private int getRange(int spellLevel, LivingEntity caster) {

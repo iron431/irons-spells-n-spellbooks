@@ -20,7 +20,7 @@ public final class KeyMappings {
 
     public static final KeyMapping SPELL_WHEEL_KEYMAP = new KeyMapping(getResourceName("spell_wheel"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_R, KEY_BIND_GENERAL_CATEGORY);
     public static final KeyMapping SPELLBAR_SCROLL_MODIFIER_KEYMAP = new KeyMapping(getResourceName("spell_bar_modifier"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_LSHIFT, KEY_BIND_GENERAL_CATEGORY);
-    public static final KeyMapping ELDRITCH_SCREEN_KEYMAP = new KeyMapping(getResourceName("open_eldritch_screen"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_I, KEY_BIND_GENERAL_CATEGORY);
+//    public static final KeyMapping ELDRITCH_SCREEN_KEYMAP = new KeyMapping(getResourceName("open_eldritch_screen"), KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_I, KEY_BIND_GENERAL_CATEGORY);
     public static final List<KeyMapping> QUICK_CAST_MAPPINGS = createQuickCastKeybinds();
 
     private static String getResourceName(String name) {
@@ -32,7 +32,7 @@ public final class KeyMappings {
         //Ironsspellbooks.logger.debug("KeyMappings.onRegisterKeybinds");
         event.register(SPELL_WHEEL_KEYMAP);
         event.register(SPELLBAR_SCROLL_MODIFIER_KEYMAP);
-        event.register(ELDRITCH_SCREEN_KEYMAP);
+//        event.register(ELDRITCH_SCREEN_KEYMAP);
         QUICK_CAST_MAPPINGS.forEach(event::register);
     }
 

@@ -5,27 +5,24 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastResult;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import org.checkerframework.checker.units.qual.C;
 
+import static io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen.ENCHANT_FONT;
 import static io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen.RUNIC_FONT;
 
 public abstract class AbstractEldritchSpell extends AbstractSpell {
 
-    private static final Style OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(RUNIC_FONT);
+    public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(ENCHANT_FONT);
 
     //TODO: make sure clientbound targeting notifications are passing in the correct player
     @Override
     public MutableComponent getDisplayName(Player player) {
         boolean obfuscateName = player != null && this.obfuscateStats(player);
-        return super.getDisplayName(player).withStyle(obfuscateName ? OBFUSCATED_STYLE : Style.EMPTY);
+        return super.getDisplayName(player).withStyle(obfuscateName ? ELDRITCH_OBFUSCATED_STYLE : Style.EMPTY);
     }
 
     @Override
