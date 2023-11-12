@@ -69,12 +69,12 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.TELEKINESIS_CAST.get());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.CONE_OF_COLD_LOOP.get());
+        return Optional.of(SoundRegistry.TELEKINESIS_LOOP.get());
     }
 
     @Override

@@ -456,5 +456,17 @@
     "sounds": [
       "irons_spellbooks:ui_tick"
     ]
+  },
+  "spell.telekinesis.cast": {
+    "sounds": [
+      "irons_spellbooks:levitation_cast"
+    ]
+  },
+  "spell.telekinesis.loop": {
+    "sounds": [
+      "irons_spellbooks:levitation_drop_001",
+      "irons_spellbooks:levitation_drop_002",
+      "irons_spellbooks:levitation_drop_003"
+    ]
   }
 }

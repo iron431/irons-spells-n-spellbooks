@@ -140,7 +140,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> ICICLE_SPELL = registerSpell(new IcicleSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_POLAR_BEAR_SPELL = registerSpell(new SummonPolarBearSpell());
     public static final RegistryObject<AbstractSpell> RAY_OF_FROST_SPELL = registerSpell(new RayOfFrostSpell());
-    public static final RegistryObject<AbstractSpell> COLDWAVE_SPELL = registerSpell(new ColdwaveSpell());
+    //public static final RegistryObject<AbstractSpell> COLDWAVE_SPELL = registerSpell(new ColdwaveSpell());
 
     // LIGHTNING
     public static final RegistryObject<AbstractSpell> ASCENSION_SPELL = registerSpell(new AscensionSpell());
@@ -169,5 +169,5 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> SONIC_BOOM_SPELL = registerSpell(new SonicBoomSpell());
     public static final RegistryObject<AbstractSpell> PLANAR_SIGHT_SPELL = registerSpell(new PlanarSightSpell());
     public static final RegistryObject<AbstractSpell> TELEKINESIS_SPELL = registerSpell(new TelekinesisSpell());
-    //public static final RegistryObject<AbstractSpell> ELDRITCH_BLAST_SPELL = registerSpell(new EldritchBlastSpell());
+//    public static final RegistryObject<AbstractSpell> ELDRITCH_BLAST_SPELL = registerSpell(new EldritchBlastSpell());
 }
