@@ -210,6 +210,12 @@ public class Messages {
                 .consumer(ServerboundLearnSpell::handle)
                 .add();
 
+        net.messageBuilder(ClientboundOpenEldritchScreen.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundOpenEldritchScreen::new)
+                .encoder(ClientboundOpenEldritchScreen::toBytes)
+                .consumerMainThread(ClientboundOpenEldritchScreen::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {

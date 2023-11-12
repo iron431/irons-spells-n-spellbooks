@@ -9,14 +9,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
-import static io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen.ENCHANT_FONT;
-import static io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen.RUNIC_FONT;
 
 public abstract class AbstractEldritchSpell extends AbstractSpell {
 
-    public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(ENCHANT_FONT);
+    public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(new ResourceLocation("alt"));
 
     //TODO: make sure clientbound targeting notifications are passing in the correct player
     @Override

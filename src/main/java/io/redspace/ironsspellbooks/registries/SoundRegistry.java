@@ -87,6 +87,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> DIVINE_SMITE_CAST = registerSoundEvent("spell.divine_smite.cast");
     public static RegistryObject<SoundEvent> TELEKINESIS_CAST = registerSoundEvent("spell.telekinesis.cast");
     public static RegistryObject<SoundEvent> TELEKINESIS_LOOP = registerSoundEvent("spell.telekinesis.loop");
+    public static RegistryObject<SoundEvent> PLANAR_SIGHT_CAST = registerSoundEvent("spell.planar_sight.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");

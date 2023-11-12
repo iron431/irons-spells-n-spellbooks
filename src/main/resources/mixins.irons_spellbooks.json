@@ -23,7 +23,8 @@
     "LocalPlayerMixin",
     "MinecraftMixin",
     "ParticleMixin",
-    "SpinAttackEffectLayerMixin"
+    "SpinAttackEffectLayerMixin",
+    "ClientEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

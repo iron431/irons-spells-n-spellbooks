@@ -12,20 +12,25 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.gui.EldritchResearchScreen;
+import io.redspace.ironsspellbooks.network.ClientboundCastErrorMessage;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.holy.CloudOfRegenerationSpell;
 import io.redspace.ironsspellbooks.spells.holy.FortifySpell;
 import io.redspace.ironsspellbooks.spells.ice.FrostStepSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -52,6 +57,20 @@ public class ClientSpellCastHelper {
         ClientSpellCastHelper.suppressRightClicks = suppressRightClicks;
     }
 
+    public static void openEldritchResearchScreen(InteractionHand hand){
+        Minecraft.getInstance().setScreen(new EldritchResearchScreen(Component.empty(), hand));
+    }
+
+    public static void handleCastErrorMessage(ClientboundCastErrorMessage packet){
+        var spell = SpellRegistry.getSpell(packet.spellId);
+        if (packet.errorType == ClientboundCastErrorMessage.ErrorType.COOLDOWN) {
+            //ignore cooldown message if we are simply holding right click.
+            if (ClientInputEvents.hasReleasedSinceCasting)
+                Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
+        } else {
+            Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
+        }
+    }
     /**
      * Handle Network Triggered Particles
      */

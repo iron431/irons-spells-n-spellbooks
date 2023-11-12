@@ -62,14 +62,5 @@ public abstract class EntityMixin {
         }
     }
 
-    /**
-     * Necessary see color glowing mob outlines while we have the echolocation effect
-     */
-    @Inject(method = "getTeamColor", at = @At(value = "HEAD"), cancellable = true)
-    public void changeGlowOutline(CallbackInfoReturnable<Integer> cir) {
-        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())) {
-            cir.setReturnValue(0x6c42f5);
-        }
-    }
 
 }

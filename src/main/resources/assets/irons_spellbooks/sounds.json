@@ -468,5 +468,10 @@
       "irons_spellbooks:levitation_drop_002",
       "irons_spellbooks:levitation_drop_003"
     ]
+  },
+  "spell.planar_sight.cast": {
+    "sounds": [
+      "irons_spellbooks:planar_sight_cast"
+    ]
   }
 }

@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FogRenderer;
@@ -9,20 +11,27 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PlanarSightEffect extends MobEffect {
-
-    static {
-        FogRenderer.MOB_EFFECT_FOG.add(new EcholocationBlindnessFogFunction());
-    }
-
     public PlanarSightEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
     }
 
+    @Override
+    public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
+        super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().removeEffects(SyncedSpellData.PLANAR_SIGHT);
+    }
+
+    @Override
+    public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
+        super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+        MagicData.getPlayerMagicData(pLivingEntity).getSyncedData().addEffects(SyncedSpellData.PLANAR_SIGHT);
+    }
 
     public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
@@ -40,7 +49,7 @@ public class PlanarSightEffect extends MobEffect {
     }
 
     @OnlyIn(Dist.CLIENT)
-    static class EcholocationBlindnessFogFunction implements FogRenderer.MobEffectFogFunction {
+    public static class EcholocationBlindnessFogFunction implements FogRenderer.MobEffectFogFunction {
         public MobEffect getMobEffect() {
             return MobEffectRegistry.PLANAR_SIGHT.get();
         }
