@@ -20,8 +20,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -93,7 +95,8 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
                 }
                 targetEntity.resetFallDistance();
                 targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY.get(), 10, 0));
-                Vec3 force = (entity.getForward().normalize().scale(targetEntity.distanceTo(entity)).add(entity.position()).subtract(targetEntity.position())).scale(.15f);
+                float resistance = Mth.clamp(1 - (float) targetEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), .2f, 1f);
+                Vec3 force = (entity.getForward().normalize().scale(targetEntity.distanceTo(entity)).add(entity.position()).subtract(targetEntity.position())).scale(.15f * resistance);
                 Vec3 travel = new Vec3(targetEntity.getX() - targetEntity.xOld, targetEntity.getY() - targetEntity.yOld, targetEntity.getZ() - targetEntity.zOld);
                 int airborne = (int) (travel.x * travel.x + travel.z * travel.z) / 2;
                 targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 30, airborne));
