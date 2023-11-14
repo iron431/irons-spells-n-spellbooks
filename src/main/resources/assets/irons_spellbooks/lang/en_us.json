@@ -405,6 +405,7 @@
   "spell.irons_spellbooks.planar_sight": "Planar Sight",
   "spell.irons_spellbooks.telekinesis": "Telekinesis",
   "spell.irons_spellbooks.divine_smite": "Divine Smite",
+  "spell.irons_spellbooks.thunder_step": "Thunderstep",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -483,6 +484,7 @@
   "spell.irons_spellbooks.planar_sight.guide": "Shift your vision in between planes, gaining the ability to see creatures through solid material.",
   "spell.irons_spellbooks.telekinesis.guide": "Reach out with a spectral force and grip a creature, forcing them towards your gaze. Creatures are susceptible to kinetic damage.",
   "spell.irons_spellbooks.divine_smite.guide": "With a fervor of holy energy, swing forth your weapon, doing a melee area attack. This spell is uninterruptible. The damage scales off of your held weapon's melee damage.",
+  "spell.irons_spellbooks.thunder_step.guide": "Teleport a short distance forward, creating a wake of lightning that damages creatures you teleport through.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -542,6 +544,7 @@
   "death.attack.irons_spellbooks.ray_of_frost": "%1$s was blasted by %2$s's ray of frost",
   "death.attack.irons_spellbooks.sonic_boom": "%1$s was obliterated by %2$s's sonic boom",
   "death.attack.irons_spellbooks.divine_smite": "%1$s was smitten by %2$s",
+  "death.attack.irons_spellbooks.thunder_step": "%1$s was electrocuted in %2$s's path",
 
   "death.attack.fire_field.item": "%1$s cooked in %2$s's fiery field while using %3$s",
   "death.attack.dragon_breath_pool.item": "%1$s stood in %2$s's dragon breath using %3$s",
@@ -593,6 +596,7 @@
   "death.attack.irons_spellbooks.ray_of_frost.item": "%1$s was blasted by %2$s's ray of frost while using %3$s",
   "death.attack.irons_spellbooks.sonic_boom.item": "%1$s was obliterated by %2$s's sonic boom caused by %3$s",
   "death.attack.irons_spellbooks.divine_smite.item": "%1$s was smitten by %2$s while using %3$s",
+  "death.attack.irons_spellbooks.thunder_step.item": "%1$s electrocuted in %2$s's path while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",

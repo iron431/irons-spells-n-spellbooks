@@ -123,7 +123,7 @@ public class TeleportSpell extends AbstractSpell {
         if (isAir && los && Math.abs(ledgeY - pos.getY()) <= 3) {
             return correctedPos.add(0.5, 0.076, 0.5);
         } else {
-            return level.clip(new ClipContext(bbImpact, bbImpact.add(0, -entity.getEyeHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getLocation().add(0, 0.076, 0);
+            return level.clip(new ClipContext(bbImpact, bbImpact.add(0, -entity.getBbHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getLocation().add(0, 0.076, 0);
         }
 
     }

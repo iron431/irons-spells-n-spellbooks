@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -32,7 +31,7 @@ public class ZapParticle extends TextureSheetParticle {
         super(pLevel, pX, pY, pZ, 0, 0, 0);
         this.setSize(1, 1);
         this.quadSize = 1f;
-        this.destination = options.getDestination().getPosition(pLevel).orElse(new Vec3(pX, pY, pZ));
+        this.destination = options.getDestination();
         this.lifetime = Utils.random.nextIntBetweenInclusive(3, 8);
         this.rCol = 1;
         this.gCol = 1;
