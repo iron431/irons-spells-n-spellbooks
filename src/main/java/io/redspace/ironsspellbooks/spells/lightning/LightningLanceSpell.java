@@ -29,7 +29,7 @@ public class LightningLanceSpell extends AbstractSpell {
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.RARE)
+            .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.LIGHTNING_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(8)
@@ -37,7 +37,7 @@ public class LightningLanceSpell extends AbstractSpell {
 
     public LightningLanceSpell() {
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 10;
+        this.baseSpellPower = 14;
         this.spellPowerPerLevel = 2;
         this.castTime = 40;
         this.baseManaCost = 50;

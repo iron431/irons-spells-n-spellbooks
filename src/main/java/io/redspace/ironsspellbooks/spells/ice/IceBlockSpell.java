@@ -106,7 +106,7 @@ public class IceBlockSpell extends AbstractSpell {
 
         IceBlockProjectile iceBlock = new IceBlockProjectile(level, entity, target);
         iceBlock.moveTo(raiseWithCollision(spawn, 4, level));
-        iceBlock.setAirTime(target == null ? 20 : 50);
+        iceBlock.setAirTime(target == null ? 25 : 35);
         iceBlock.setDamage(getDamage(spellLevel, entity));
         level.addFreshEntity(iceBlock);
         super.onCast(level, spellLevel, entity, playerMagicData);

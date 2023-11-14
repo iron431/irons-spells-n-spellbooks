@@ -72,10 +72,10 @@ public class LightningBoltSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        Vec3 pos = Utils.raycastForEntity(level, entity, 100, true).getLocation();
+        Vec3 pos = Utils.raycastForEntity(level, entity, 100, true, 1f).getLocation();
         LightningBolt lightningBolt = new ExtendedLightningBolt(level, entity, getSpellPower(spellLevel, entity));
         //lightningBolt.setDamage(getSpellPower(entity));
-        lightningBolt.setPos(pos);
+        lightningBolt.setPos(Utils.moveToRelativeGroundLevel(level, pos, 10));
         if (entity instanceof ServerPlayer serverPlayer)
             lightningBolt.setCause(serverPlayer);
         level.addFreshEntity(lightningBolt);

@@ -1,14 +1,13 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_block;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -167,7 +166,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
 
                     Vec3 diff = target.position().subtract(this.position());
                     if (diff.horizontalDistanceSqr() > 1) {
-                        this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.02f)));
+                        this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.025f)));
                     }
                     if (this.getY() - target.getY() > 3.5)
                         tooHigh = true;
