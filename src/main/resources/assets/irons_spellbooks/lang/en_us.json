@@ -269,6 +269,7 @@
   "ui.irons_spellbooks.research_warning": "Hold to Learn (1 Manuscript)",
   "ui.irons_spellbooks.research_already_learned": "This spell is already learned",
   "ui.irons_spellbooks.wandering_trader_scroll": "Any %s Scroll",
+  "ui.irons_spellbooks.sacrifice_target_failure": "You must target one of your summons",
   "school.irons_spellbooks.fire": "Fire",
   "school.irons_spellbooks.ice": "Ice",
   "school.irons_spellbooks.lightning": "Lightning",
