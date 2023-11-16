@@ -37,6 +37,7 @@
   "item.irons_spellbooks.cinder_essence": "Cinder Essence",
   "item.irons_spellbooks.cinder_essence.guide": "Dropped from Ancient Knights.",
   "item.irons_spellbooks.arcane_salvage": "Arcane Salvage",
+  "item.irons_spellbooks.arcane_salvage_desc": "Power still radiates from this forgotten material",
   "item.irons_spellbooks.shriving_stone": "Shriving Stone",
   "item.irons_spellbooks.shriving_stone_desc": "Use in Smithing Table to remove Imbuement or Upgrades",
   "item.irons_spellbooks.arcane_ingot": "Arcane Ingot",
@@ -154,7 +155,7 @@
   "item.irons_spellbooks.lurker_ring.desc": "Your first attack while invisible deals +%d%% damage",
   "item.irons_spellbooks.amethyst_resonance_charm": "Amethyst Resonance Charm",
   "item.irons_spellbooks.eldritch_manuscript": "Eldritch Manuscript",
-  "item.irons_spellbooks.eldritch_manuscript_desc": "Use to learn Eldritch spells",
+  "item.irons_spellbooks.eldritch_manuscript_desc": " Use to learn Eldritch spells",
   "item.irons_spellbooks.ancient_knowledge_fragment": "Ancient Knowledge Fragment",
 
   "item.minecraft.potion.effect.mana": "Potion of Mana",
