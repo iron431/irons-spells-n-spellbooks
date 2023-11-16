@@ -15,23 +15,22 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.NetworkEvent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
@@ -106,7 +105,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
             }
             if (waveAnim >= 0) {
                 var circumference = waveAnim * 2 * 3.14f;
-                int blocks = (int) circumference;
+                int blocks = Mth.clamp((int) circumference, 0, 200);
                 float anglePerBlock = 360f / blocks;
                 for (int i = 0; i < blocks; i++) {
                     Vec3 vec3 = new Vec3(
@@ -120,8 +119,8 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
                 if (waveAnim++ >= radius) {
                     waveAnim = -1;
                     if (tickCount + reapplicationDelay >= duration) {
-                        this.discard();
                         //end ourselves smoothly with the last bang instead of timing out awkwardly
+                        this.discard();
                     }
                 }
             }
