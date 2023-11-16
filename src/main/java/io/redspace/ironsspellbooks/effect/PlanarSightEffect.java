@@ -43,7 +43,7 @@ public class PlanarSightEffect extends MobEffect {
             for (int i = 0; i < 3; i++) {
                 Vec3 pos = new Vec3(Utils.getRandomScaled(16), Utils.getRandomScaled(5f) + 5, Utils.getRandomScaled(16)).add(livingEntity.position());
                 Vec3 random = new Vec3(Utils.getRandomScaled(.08f), Utils.getRandomScaled(.08f), Utils.getRandomScaled(.08f));
-                livingEntity.level.addParticle(ParticleTypes.MYCELIUM, pos.x, pos.y, pos.z, random.x, random.y, random.z);
+                livingEntity.level.addParticle(ParticleTypes.WHITE_ASH, pos.x, pos.y, pos.z, random.x, random.y, random.z);
             }
         }
     }

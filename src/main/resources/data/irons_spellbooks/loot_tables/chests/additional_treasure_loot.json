@@ -92,12 +92,12 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:torn_ancient_text",
+          "name": "irons_spellbooks:ancient_knowledge_fragment",
           "functions": [
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 1,
+                "min": 0,
                 "max": 3
               }
             }
@@ -107,7 +107,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.05
+          "chance": 0.10
         }
       ]
     }

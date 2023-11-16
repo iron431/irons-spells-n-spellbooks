@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.spells.eldritch;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastResult;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -53,6 +55,15 @@ public abstract class AbstractEldritchSpell extends AbstractSpell {
             return ClientMagicData.getSyncedSpellData(player).isSpellLearned(this);
         } else {
             return MagicData.getPlayerMagicData(player).getSyncedData().isSpellLearned(this);
+        }
+    }
+
+    @Override
+    public ResourceLocation getSpellIconResource() {
+        if (Minecraft.getInstance().player != null && isLearned(Minecraft.getInstance().player)) {
+            return new ResourceLocation(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
+        } else {
+            return SpellRegistry.none().getSpellIconResource();
         }
     }
 }

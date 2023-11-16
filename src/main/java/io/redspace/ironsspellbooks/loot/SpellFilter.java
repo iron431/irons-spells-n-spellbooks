@@ -61,6 +61,10 @@ public class SpellFilter {
         return spells.get(random.nextInt(spells.size()));
     }
 
+    public AbstractSpell getRandomSpell(RandomSource randomSource) {
+        return getRandomSpell(randomSource, (spell -> spell.isEnabled() && spell != SpellRegistry.none() && spell.allowLooting()));
+    }
+
     public static SpellFilter deserializeSpellFilter(JsonObject json) {
         if (GsonHelper.isValidNode(json, "school")) {
             var schoolType = GsonHelper.getAsString(json, "school");

@@ -1,20 +1,15 @@
 package io.redspace.ironsspellbooks.api.util;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.spells.EarthquakeAoe;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCameraShake;
 import io.redspace.ironsspellbooks.setup.Messages;
-import net.minecraft.client.Minecraft;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.Ticket;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
@@ -57,7 +52,7 @@ public class CameraShakeManager {
             ArrayList<CameraShakeData> complete = new ArrayList<>();
             for (CameraShakeData data : cameraShakeData) {
                 data.tickCount += tickDelay;
-                IronsSpellbooks.LOGGER.debug("{}/{}", data.tickCount, data.duration);
+                //IronsSpellbooks.LOGGER.debug("{}/{}", data.tickCount, data.duration);
                 if (data.tickCount >= data.duration) {
                     complete.add(data);
                 }

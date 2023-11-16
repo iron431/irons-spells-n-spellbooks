@@ -2,21 +2,24 @@ package io.redspace.ironsspellbooks.spells.eldritch;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -77,10 +80,25 @@ public class SculkTentaclesSpell extends AbstractEldritchSpell {
     }
 
     @Override
+    public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .15f, false);
+        return true;
+    }
+
+    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         int rings = getRings(spellLevel, entity);
         int count = 2;
-        Vec3 center = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 48).getLocation();
+        Vec3 center = null;
+        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
+            var target = castTargetingData.getTarget((ServerLevel) level);
+            if (target != null)
+                center = target.position();
+        }
+        if (center == null) {
+            center = Utils.raycastForEntity(level, entity, 48, true, .15f).getLocation();
+            center = Utils.moveToRelativeGroundLevel(level, center, 6);
+        }
         level.playSound(entity instanceof Player player ? player : null, center.x, center.y, center.z, SoundRegistry.VOID_TENTACLES_FINISH.get(), SoundSource.AMBIENT, 1, 1);
 
         for (int r = 0; r < rings; r++) {

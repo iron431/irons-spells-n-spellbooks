@@ -155,7 +155,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "irons_spellbooks:torn_ancient_text",
+          "name": "irons_spellbooks:ancient_knowledge_fragment",
           "functions": [
             {
               "function": "minecraft:set_count",

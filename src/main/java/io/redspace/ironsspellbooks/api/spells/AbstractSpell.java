@@ -3,16 +3,18 @@ package io.redspace.ironsspellbooks.api.spells;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
+import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.api.item.curios.RingData;
-import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
 import io.redspace.ironsspellbooks.damage.IndirectSpellDamageSource;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
@@ -20,16 +22,11 @@ import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastStarted;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Log;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -92,7 +89,7 @@ public abstract class AbstractSpell {
         return spellID;
     }
 
-    public final ResourceLocation getSpellIconResource() {
+    public ResourceLocation getSpellIconResource() {
         return new ResourceLocation(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
     }
 
