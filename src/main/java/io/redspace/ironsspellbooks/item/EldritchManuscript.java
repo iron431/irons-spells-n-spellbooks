@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class EldritchManuscript extends Item {
-    private static final Component description = Component.translatable("item.irons_spellbooks.eldritch_manuscript_desc").withStyle(ChatFormatting.YELLOW);
+    private static final Component description = Component.translatable("item.irons_spellbooks.eldritch_manuscript_desc").withStyle(ChatFormatting.GRAY);
 
     public EldritchManuscript(Item.Properties pProperties) {
         super(pProperties);
