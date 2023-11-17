@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.item.curios;
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.render.AffinityRingRenderer;
-import io.redspace.ironsspellbooks.render.SpecialItemRenderer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -11,6 +10,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +25,7 @@ public class AffinityRing extends SimpleDescriptiveCurio {
         super(properties);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> tooltip, TooltipFlag pIsAdvanced) {
         var spell = RingData.getRingData(pStack).getSpell();
@@ -36,11 +38,13 @@ public class AffinityRing extends SimpleDescriptiveCurio {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public Component getName(ItemStack pStack) {
         return Component.translatable(this.getDescriptionId(pStack), RingData.getRingData(pStack).getNameForItem());
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {

@@ -13,6 +13,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public abstract class AbstractEldritchSpell extends AbstractSpell {
@@ -58,6 +60,7 @@ public abstract class AbstractEldritchSpell extends AbstractSpell {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public ResourceLocation getSpellIconResource() {
         if (Minecraft.getInstance().player != null && isLearned(Minecraft.getInstance().player)) {
