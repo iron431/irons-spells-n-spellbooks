@@ -18,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
@@ -28,7 +27,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.function.FailableIntBinaryOperator;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -96,15 +94,15 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        float radius = 1.25f;
-        Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1, 0, 1).normalize().scale(1.35f)), 3);
+        float radius = 1.75f;
+        Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1, 0, 1).normalize().scale(1.35f)), 2);
         MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.HOLY.get().getTargetingColor(), radius * 2), smiteLocation.x, smiteLocation.y, smiteLocation.z, 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, smiteLocation.x, smiteLocation.y, smiteLocation.z, 50, 0, 0, 0, 1, false);
         CameraShakeManager.addCameraShake(new CameraShakeData(10, smiteLocation, 10));
         var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
         for (Entity targetEntity : entities) {
-            double distance = targetEntity.distanceToSqr(smiteLocation);
-            if (distance < radius * radius && Utils.hasLineOfSight(level, smiteLocation, targetEntity.getBoundingBox().getCenter(), true)) {
+            //double distance = targetEntity.distanceToSqr(smiteLocation);
+            if (/*distance < radius * radius && */Utils.hasLineOfSight(level, smiteLocation, targetEntity.getBoundingBox().getCenter(), true)) {
                 DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity));
             }
         }

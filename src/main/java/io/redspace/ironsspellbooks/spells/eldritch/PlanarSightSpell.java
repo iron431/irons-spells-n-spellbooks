@@ -35,7 +35,7 @@ public class PlanarSightSpell extends AbstractEldritchSpell {
             .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)
             .setMaxLevel(3)
-            .setCooldownSeconds(30)
+            .setCooldownSeconds(200)
             .build();
 
     public PlanarSightSpell() {

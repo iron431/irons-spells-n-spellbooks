@@ -43,15 +43,15 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
             .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)
             .setMaxLevel(5)
-            .setCooldownSeconds(300)
+            .setCooldownSeconds(35)
             .build();
 
     public TelekinesisSpell() {
-        this.manaCostPerLevel = 25;
+        this.manaCostPerLevel = 10;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 4;
         this.castTime = 100;
-        this.baseManaCost = 50;
+        this.baseManaCost = 40;
     }
 
     @Override

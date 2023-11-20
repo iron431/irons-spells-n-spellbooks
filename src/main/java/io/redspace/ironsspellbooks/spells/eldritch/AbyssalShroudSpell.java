@@ -33,7 +33,7 @@ public class AbyssalShroudSpell extends AbstractEldritchSpell {
             .setMinRarity(SpellRarity.LEGENDARY)
             .setSchoolResource(SchoolRegistry.ELDRITCH_RESOURCE)
             .setMaxLevel(3)
-            .setCooldownSeconds(300)
+            .setCooldownSeconds(200)
             .build();
 
     public AbyssalShroudSpell() {
