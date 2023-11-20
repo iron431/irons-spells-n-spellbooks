@@ -14,13 +14,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class AutoloadingCrossbow extends CrossbowItem {
+public class AutoloaderCrossbow extends CrossbowItem {
     //NBT flag used for if we are currently in the process of loading a new projectile
     public static final String LOADING = "Loading";
     //NBT flag used for keeping track of the server tick when we will be finished loading
     public static final String LOADING_TIMESTAMP = "LoadingTimestamp";
 
-    public AutoloadingCrossbow(Properties pProperties) {
+    public AutoloaderCrossbow(Properties pProperties) {
         super(pProperties);
     }
 

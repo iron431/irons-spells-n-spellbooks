@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.item.weapons.AutoloadingCrossbow;
+import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.client.gui.Font;
@@ -40,8 +40,8 @@ public class ItemRendererMixin {
             AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
             float f = spell == SpellRegistry.none() ? 0 : ClientMagicData.getCooldownPercent(spell);
             renderSpellCooldown(one, two, f);
-        } else if (item instanceof AutoloadingCrossbow) {
-            renderSpellCooldown(one, two, !AutoloadingCrossbow.isLoading(stack) ? 0.0F : AutoloadingCrossbow.getLoadingTicks(stack) / (float) AutoloadingCrossbow.getChargeDuration(stack));
+        } else if (item instanceof AutoloaderCrossbow) {
+            renderSpellCooldown(one, two, !AutoloaderCrossbow.isLoading(stack) ? 0.0F : 1 - AutoloaderCrossbow.getLoadingTicks(stack) / (float) AutoloaderCrossbow.getChargeDuration(stack));
         }
     }
 
