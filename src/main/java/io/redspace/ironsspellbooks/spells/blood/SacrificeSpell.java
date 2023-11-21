@@ -8,11 +8,15 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.CameraShakeData;
+import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
+import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
@@ -103,20 +107,28 @@ public class SacrificeSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
-            var targetEntity = targetData.getTarget((ServerLevel) world);
+            var targetEntity = targetData.getTarget((ServerLevel) level);
             if (targetEntity != null) {
                 float damage = getDamage(spellLevel, entity);
-                MagicManager.spawnParticles(world, ParticleHelper.BLOOD, targetEntity.getX(), targetEntity.getY() + .15f, targetEntity.getZ(), 50, .03, 0, .03, .1, true);
-                //todo: shockwave particle on the other branch :(
-                //todo: SO IS CAMERA SHAKE
-                //TODO: SO IS THE FUCKING LOS FIX
+                float explosionRadius = 3f;
+                MagicManager.spawnParticles(level, ParticleHelper.BLOOD, targetEntity.getX(), targetEntity.getY() + .15f, targetEntity.getZ(), 50, .03, 0, .03, .1, true);
+                MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.BLOOD.get().getTargetingColor(), explosionRadius), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);
+                var entities = level.getEntities(targetEntity, targetEntity.getBoundingBox().inflate(explosionRadius));
+                for (Entity victim : entities) {
+                    double distance = victim.distanceToSqr(targetEntity.position());
+                    if (distance < explosionRadius * explosionRadius && Utils.hasLineOfSight(level, targetEntity.getBoundingBox().getCenter(), victim.getBoundingBox().getCenter(), true)) {
+                        float p = (float) (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
+                        DamageSources.applyDamage(victim, damage * p, getDamageSource(targetEntity, entity));
+                    }
+                }
+                CameraShakeManager.addCameraShake(new CameraShakeData(10, targetEntity.position(), 20));
                 targetEntity.remove(Entity.RemovalReason.KILLED);
             }
         }
 
-        super.onCast(world, spellLevel, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
 
