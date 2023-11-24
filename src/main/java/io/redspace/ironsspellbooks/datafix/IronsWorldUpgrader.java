@@ -49,7 +49,6 @@ public class IronsWorldUpgrader {
     private final Object2FloatMap<ResourceKey<Level>> progressMap = Object2FloatMaps.synchronize(new Object2FloatOpenCustomHashMap<>(Util.identityStrategy()));
     private static final Pattern REGEX = Pattern.compile("^r\\.(-?[0-9]+)\\.(-?[0-9]+)\\.mca$");
     private final DimensionDataStorage overworldDataStorage;
-    private final IronsSpellBooksWorldData ironsSpellBooksWorldData;
     private Set<ResourceKey<Level>> levels = null;
 
     public IronsWorldUpgrader(LevelStorageSource.LevelStorageAccess pLevelStorage, WorldGenSettings pWorldGenSettings) {
@@ -68,14 +67,14 @@ public class IronsWorldUpgrader {
         }
 
         this.overworldDataStorage = new DimensionDataStorage(file, dataFixer);
-        this.ironsSpellBooksWorldData = overworldDataStorage.computeIfAbsent(
+        IronsSpellBooksWorldData.INSTANCE = overworldDataStorage.computeIfAbsent(
                 IronsSpellBooksWorldData::load,
                 IronsSpellBooksWorldData::new,
                 IronsSpellbooks.MODID);
     }
 
     public boolean worldNeedsUpgrading() {
-        return ironsSpellBooksWorldData.getDataVersion() < IRONS_WORLD_DATA_VERSION;
+        return IronsSpellBooksWorldData.INSTANCE.getDataVersion() < IRONS_WORLD_DATA_VERSION;
     }
 
     public void runUpgrade() {
@@ -108,8 +107,8 @@ public class IronsWorldUpgrader {
             millis = Util.getMillis() - millis;
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished fixDimensionStorage after {} ms. tags fixed:{} ", millis, this.fixes);
 
-            int previousVersion = ironsSpellBooksWorldData.getDataVersion();
-            ironsSpellBooksWorldData.setDataVersion(IRONS_WORLD_DATA_VERSION);
+            int previousVersion = IronsSpellBooksWorldData.INSTANCE.getDataVersion();
+            IronsSpellBooksWorldData.INSTANCE.setDataVersion(IRONS_WORLD_DATA_VERSION);
             overworldDataStorage.save();
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader V{} -> V{} completed", previousVersion, IRONS_WORLD_DATA_VERSION);
         }

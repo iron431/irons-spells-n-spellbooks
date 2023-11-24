@@ -5,7 +5,9 @@ import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
 public class IronsSpellBooksWorldData extends SavedData {
+    public static IronsSpellBooksWorldData INSTANCE;
     private int dataVersion;
+
 
     public IronsSpellBooksWorldData() {
         dataVersion = 0;
