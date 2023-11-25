@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.datafix;
 
 import java.util.List;
 
-public class ParallelMatcher {
+public class ParallelMatcher implements AutoCloseable {
     private int[] matcherPositions;
     private final List<byte[]> matchTargets;
 
@@ -36,5 +36,10 @@ public class ParallelMatcher {
 
         //If we don't have a full match on any item return false
         return false;
+    }
+
+    @Override
+    public void close() throws Exception {
+        reset();
     }
 }

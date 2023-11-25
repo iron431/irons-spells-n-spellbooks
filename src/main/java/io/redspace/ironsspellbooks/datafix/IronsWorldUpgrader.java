@@ -2,13 +2,11 @@ package io.redspace.ironsspellbooks.datafix;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.util.ByteHelper;
-import io.redspace.ironsspellbooks.util.CodeTimer;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenCustomHashMap;
@@ -17,7 +15,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.storage.ChunkStorage;
@@ -26,11 +23,13 @@ import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.LevelStorageSource;
 
-import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.ByteBuffer;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -156,7 +155,7 @@ public class IronsWorldUpgrader {
             }
 
             //int markerPos = ByteHelper.indexOf(dataInputStream, INHABITED_TIME_MARKER);
-            int markerPos = ByteHelper.indexOf(dataInputStream, DataFixerHelpers.parallelMatcher);
+            int markerPos = ByteHelper.indexOf(dataInputStream, new ParallelMatcher(DataFixerHelpers.DATA_MATCHER_TARGETS));
             if (markerPos == -1) {
                 return true;
             }
