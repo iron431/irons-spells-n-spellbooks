@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastType;
@@ -79,7 +80,7 @@ public class ServerPlayerEvents {
             var storageSource = server.storageSource;
             var iwu = new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings());
             iwu.runUpgrade();
-            IronsSpellbooks.LOGGER.debug("IWU:{}",iwu.tempCount);
+            IronsSpellbooks.LOGGER.debug("IWU:{}", iwu.tempCount);
         }
     }
 
@@ -106,6 +107,7 @@ public class ServerPlayerEvents {
             Utils.serverSideCancelCast(serverPlayer);
         }
     }
+
     @SubscribeEvent
     public static void onPlayerOpenContainer(PlayerContainerEvent.Open event) {
         if (event.getEntity().level.isClientSide) {
