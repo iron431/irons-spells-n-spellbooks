@@ -80,13 +80,13 @@ public class MagmaBombSpell extends AbstractSpell {
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
         orb.setExplosionRadius(getRadius(spellLevel, entity));
         orb.setDamage(getDamage(spellLevel, entity));
-        orb.setDamage(getDamage(spellLevel, entity));
+        orb.setAoeDamage(getAoeDamage(spellLevel, entity));
         level.addFreshEntity(orb);
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     public float getRadius(int spellLevel, LivingEntity caster) {
-        return 5;
+        return 3 + getEntityPowerMultiplier(caster);
     }
 
     public float getDamage(int spellLevel, LivingEntity caster) {

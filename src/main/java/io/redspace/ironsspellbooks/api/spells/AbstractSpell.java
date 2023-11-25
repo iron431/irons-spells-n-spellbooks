@@ -352,13 +352,11 @@ public abstract class AbstractSpell {
 
         if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName(player)).withStyle(ChatFormatting.RED));
-        }
-
-        if (castSource.consumesMana() && !hasEnoughMana) {
+        } else if (castSource.consumesMana() && !hasEnoughMana) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_mana", getDisplayName(player)).withStyle(ChatFormatting.RED));
-
+        }else{
+            return new CastResult(CastResult.Type.SUCCESS);
         }
-        return new CastResult(CastResult.Type.SUCCESS);
     }
 
     /**

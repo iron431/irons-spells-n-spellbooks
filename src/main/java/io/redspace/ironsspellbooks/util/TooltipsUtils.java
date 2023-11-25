@@ -35,15 +35,8 @@ public class TooltipsUtils {
 
 
     public static List<Component> formatActiveSpellTooltip(ItemStack stack, CastSource castSource, @Nonnull LocalPlayer player) {
-        //var player = Minecraft.getInstance().player;
         var spellData = stack.getItem() instanceof SpellBook ? SpellBookData.getSpellBookData(stack).getActiveSpell() : SpellData.getSpellData(stack); //Put me in utils?
         var spell = spellData.getSpell();
-//        var title = Component.translatable("tooltip.irons_spellbooks.selected_spell",
-//                spellType.getDisplayName().withStyle(spellType.getSchoolType().getDisplayName().getStyle()),
-//                Component.literal("" + spell.getLevel()).withStyle(spellType.getRarity(spell.getLevel()).getDisplayName().getStyle()));
-//        var title = Component.translatable("tooltip.irons_spellbooks.selected_spell",
-//                spellType.getDisplayName().withStyle(spellType.getSchoolType().getDisplayName().getStyle()),
-//                Component.literal("" + spell.getLevel())).withStyle(spellType.getRarity(spell.getLevel()).getDisplayName().getStyle());
         var levelText = getLevelComponenet(spellData, player);
 
         var title = Component.translatable("tooltip.irons_spellbooks.selected_spell",
@@ -74,7 +67,6 @@ public class TooltipsUtils {
             return List.of();
         }
 
-
         var spell = spellData.getSpell();
 
         var levelText = getLevelComponenet(spellData, player);
@@ -89,16 +81,6 @@ public class TooltipsUtils {
         }
         List<Component> lines = new ArrayList<>();
         lines.add(Component.literal(" ").append(title));
-//        if (spell.obfuscateStats(player)) {
-//            obfuscateStat(manaCost);
-//            obfuscateStat(cooldownTime);
-//            //if (castType != null)
-//            //    obfuscateStat(castType);
-//            //cooldownTime.getSiblings().get(0).getStyle().applyFormat(ChatFormatting.OBFUSCATED);
-//            //if (castType != null) {
-//            //    castType.getSiblings().get(0).getStyle().applyFormat(ChatFormatting.OBFUSCATED);
-//            //}
-//        }
         uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(getStyleFor(player, spell)))));
         if (castType != null) {
             lines.add(castType);

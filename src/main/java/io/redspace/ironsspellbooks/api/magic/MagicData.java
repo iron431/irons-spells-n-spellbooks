@@ -54,7 +54,7 @@ public class MagicData {
     }
 
     public void setMana(float mana) {
-        //Event does will not get posted if the server player is null
+        //Event will not get posted if the server player is null
         ChangeManaEvent e = new ChangeManaEvent(this.serverPlayer, this, this.mana, mana);
         if (this.serverPlayer == null || !MinecraftForge.EVENT_BUS.post(e)) {
             this.mana = e.getNewMana();
