@@ -90,17 +90,19 @@ public class IronsWorldUpgrader {
 //                IronsSpellbooks.LOGGER.error("IronsWorldUpgrader Level Backup failed: {}", exception.getMessage());
 //            }
 
-            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting REGION_FOLDER");
-            long millis = Util.getMillis();
-            doWork(REGION_FOLDER, "block_entities", true, true);
-            millis = Util.getMillis() - millis;
-            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished REGION_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
+            long millis = 0;
 
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting ENTITY_FOLDER");
             millis = Util.getMillis();
             doWork(ENTITY_FOLDER, null, false, false);
             millis = Util.getMillis() - millis;
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished ENTITY_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
+
+            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting REGION_FOLDER (this will take a few minutes on huge worlds..");
+            millis = Util.getMillis();
+            doWork(REGION_FOLDER, "block_entities", true, true);
+            millis = Util.getMillis() - millis;
+            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished REGION_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
 
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting fixDimensionStorage");
             millis = Util.getMillis();
