@@ -222,7 +222,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
                 finishDrinkingPotion();
             } else if (drinkTime % 4 == 0)
                 if (!this.isSilent())
-                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, this.level.random.nextFloat() * 0.1F + 0.9F);
+                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, Utils.random.nextFloat() * 0.1F + 0.9F);
 
         }
 
@@ -320,9 +320,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
             for (int i = 0; i < 24; i++) {
                 Vec3 randomness = Utils.getRandomVec3(.15f * i).multiply(1, 0, 1);
-                teleportPos = target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD)).add(randomness);
-                int y = Utils.findRelativeGroundLevel(target.level, teleportPos, 5);
-                teleportPos = new Vec3(teleportPos.x, y + .1f, teleportPos.z);
+                teleportPos = Utils.moveToRelativeGroundLevel(level, target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD)).add(randomness), 5);
+                teleportPos = new Vec3(teleportPos.x, teleportPos.y + .1f, teleportPos.z);
                 var reposBB = this.getBoundingBox().move(teleportPos.subtract(this.position()));
                 IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget attempt to teleport to {}:", reposBB.getCenter());
                 if (!level.collidesWithSuffocatingBlock(this, reposBB.inflate(-.05f))) {

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.block;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -54,7 +55,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
                     if (entity instanceof LivingEntity livingEntity && livingEntity.getBoundingBox().intersects(cauldron.getInteractionShape(blockState, level, pos).bounds().move(pos))) {
                         if (livingEntity.hurt(DamageSources.CAULDRON, 2)) {
                             MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
-                            if (level.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
+                            if (Utils.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
                                 execution.execute();
                             }
                         }

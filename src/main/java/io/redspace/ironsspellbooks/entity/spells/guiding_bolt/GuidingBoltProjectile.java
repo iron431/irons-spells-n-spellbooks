@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.guiding_bolt;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -53,7 +54,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
 
     @Override
     protected void doImpactSound(SoundEvent sound) {
-        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 0.9f + level.random.nextFloat() * .4f);
+        level.playSound(null, getX(), getY(), getZ(), sound, SoundSource.NEUTRAL, 2, 0.9f + Utils.random.nextFloat() * .4f);
     }
 
     @Override

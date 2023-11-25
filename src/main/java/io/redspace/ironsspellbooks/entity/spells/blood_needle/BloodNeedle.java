@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_needle;
 
+import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
@@ -18,6 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.Optional;
 
@@ -84,12 +87,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        var school = SpellRegistry.BLOOD_NEEDLES_SPELL.get().getSchoolType();
-        boolean hit = DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.BLOOD_NEEDLES_SPELL.get().getDamageSource(this, getOwner()), school);
-        if (hit && entityHitResult.getEntity() instanceof LivingEntity target && getOwner() instanceof LivingEntity livingOwner) {
-            //you know. this shit doesn't *actually* work
-            livingOwner.heal(getDamage() * DamageSources.getResist(target, school) * .25f);
-        }
+        DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.BLOOD_NEEDLES_SPELL.get().getDamageSource(this, getOwner()));
         entityHitResult.getEntity().invulnerableTime = 0;
     }
 
@@ -114,9 +112,9 @@ public class BloodNeedle extends AbstractMagicProjectile {
 
         for (int i = 0; i < 2; i++) {
             double speed = .05;
-            double dx = level.random.nextDouble() * 2 * speed - speed;
-            double dy = level.random.nextDouble() * 2 * speed - speed;
-            double dz = level.random.nextDouble() * 2 * speed - speed;
+            double dx = Utils.random.nextDouble() * 2 * speed - speed;
+            double dy = Utils.random.nextDouble() * 2 * speed - speed;
+            double dz = Utils.random.nextDouble() * 2 * speed - speed;
             level.addParticle(ParticleHelper.BLOOD, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
 
         }

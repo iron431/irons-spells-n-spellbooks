@@ -92,13 +92,13 @@ public class IronsWorldUpgrader {
 
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting REGION_FOLDER");
             long millis = Util.getMillis();
-            doWork(REGION_FOLDER, "block_entities", true);
+            doWork(REGION_FOLDER, "block_entities", true, true);
             millis = Util.getMillis() - millis;
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished REGION_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
 
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting ENTITY_FOLDER");
             millis = Util.getMillis();
-            doWork(ENTITY_FOLDER, null, false);
+            doWork(ENTITY_FOLDER, null, false, false);
             millis = Util.getMillis() - millis;
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished ENTITY_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
 
@@ -171,7 +171,7 @@ public class IronsWorldUpgrader {
         return true;
     }
 
-    private void doWork(String regionFolder, String filterTag, boolean preScan) {
+    private void doWork(String regionFolder, String filterTag, boolean preScan, boolean checkInhabitedTime) {
         running = true;
         converted = 0;
         skipped = 0;
@@ -211,7 +211,7 @@ public class IronsWorldUpgrader {
                             if (!preScan || preScanChunkUpdateNeeded(chunkstorage, chunkpos)) {
                                 CompoundTag chunkDataTag = chunkstorage.read(chunkpos).join().orElse(null);
 
-                                if (chunkDataTag != null && chunkDataTag.getInt("InhabitedTime") != 0) {
+                                if (chunkDataTag != null && (!checkInhabitedTime || chunkDataTag.getInt("InhabitedTime") != 0)) {
                                     ListTag blockEntitiesTag;
 
                                     if (filterTag != null) {

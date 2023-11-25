@@ -52,7 +52,7 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
 
     }
 
-    public WizardSupportGoal setSpells(List<AbstractSpell> healingSpells, List<AbstractSpell> buffSpells) {
+    public WizardSupportGoal<T> setSpells(List<AbstractSpell> healingSpells, List<AbstractSpell> buffSpells) {
         this.healingSpells.clear();
         this.buffSpells.clear();
 
@@ -62,13 +62,13 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
         return this;
     }
 
-    public WizardSupportGoal setSpellQuality(float minSpellQuality, float maxSpellQuality) {
+    public WizardSupportGoal<T> setSpellQuality(float minSpellQuality, float maxSpellQuality) {
         this.minSpellQuality = minSpellQuality;
         this.maxSpellQuality = maxSpellQuality;
         return this;
     }
 
-    public WizardSupportGoal setIsFlying() {
+    public WizardSupportGoal<T> setIsFlying() {
         isFlying = true;
         return this;
     }
@@ -139,9 +139,6 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
 
             resetAttackTimer(distanceSquared);
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.2: attackTime.1: {}", attackTime);
-        } else if (this.attackTime < 0) {
-            this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(distanceSquared) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
-            //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.3: attackTime.2: {}", attackTime);
         }
         if (mob.isCasting()) {
             var spellData = MagicData.getPlayerMagicData(mob).getCastingSpell();
@@ -153,7 +150,7 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
 
     protected void resetAttackTimer(double distanceSquared) {
         float f = (float) Math.sqrt(distanceSquared) / this.attackRadius;
-        this.attackTime = Mth.floor(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
+        this.attackTime = (int)(f * (float) (this.attackIntervalMax - this.attackIntervalMin) + (float) this.attackIntervalMin);
     }
 
     protected void doMovement(double distanceSquared) {
@@ -186,13 +183,14 @@ public class WizardSupportGoal<T extends AbstractSpellCastingMob & SupportMob> e
 
     protected AbstractSpell getNextSpellType() {
         float shouldBuff = 0;
-        if (!buffSpells.isEmpty() && target instanceof Mob mob && mob.isAggressive())
+        if (!buffSpells.isEmpty() && target instanceof Mob mob && mob.isAggressive()) {
             shouldBuff = target.getHealth() / target.getMaxHealth();
+        }
         return getSpell(mob.getRandom().nextFloat() > shouldBuff ? healingSpells : buffSpells);
     }
 
     protected AbstractSpell getSpell(List<AbstractSpell> spells) {
-        if (spells.size() < 1)
+        if (spells.isEmpty())
             return SpellRegistry.none();
         return spells.get(mob.getRandom().nextInt(spells.size()));
     }
