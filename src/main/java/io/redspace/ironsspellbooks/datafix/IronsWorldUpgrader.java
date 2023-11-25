@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 
 public class IronsWorldUpgrader {
     public int tempCount = 0;
-    public static int IRONS_WORLD_DATA_VERSION = 1;
+    public static int IRONS_WORLD_DATA_VERSION = IronsDataVersions.ELDRITCH_SCHOOL_DATA_VERSION;
     final int REPORT_PROGRESS_MS = 5000;
     public static final byte[] INHABITED_TIME_MARKER = new byte[]{0x49, 0x6E, 0x68, 0x61, 0x62, 0x69, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6D, 0x65};
     public static final String REGION_FOLDER = "region";

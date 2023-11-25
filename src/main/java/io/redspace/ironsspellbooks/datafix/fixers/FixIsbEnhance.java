@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.datafix.DataFixerElement;
 import io.redspace.ironsspellbooks.datafix.DataFixerHelpers;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.StringTag;
 
 import java.util.List;
 
@@ -23,6 +24,12 @@ public class FixIsbEnhance extends DataFixerElement {
                     tag.remove(RingData.ISB_ENHANCE);
                     tag.putString(RingData.ISB_ENHANCE, DataFixerHelpers.LEGACY_SPELL_MAPPING.getOrDefault(legacyRingTag.getAsInt(), "irons_spellbooks:none"));
                     return true;
+                } else if (ringTag instanceof StringTag stringTag) {
+                    String newName = DataFixerHelpers.NEW_SPELL_IDS.get(stringTag.getAsString());
+                    if (newName != null) {
+                        tag.putString(RingData.ISB_ENHANCE, newName);
+                        return true;
+                    }
                 }
             }
         }

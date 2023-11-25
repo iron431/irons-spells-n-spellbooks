@@ -25,6 +25,6 @@ public class SpellbreakerItem extends MagicSwordItem {
             Map.of(
                 AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .15, AttributeModifier.Operation.MULTIPLY_BASE)
             ),
-            (new Properties()).rarity(Rarity.EPIC));
+            (new Properties()).rarity(Rarity.EPIC).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
     }
 }

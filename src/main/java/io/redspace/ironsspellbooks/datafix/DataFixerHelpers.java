@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.datafix;
 
 import com.google.common.collect.ImmutableMap;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
@@ -20,11 +21,10 @@ import io.redspace.ironsspellbooks.spells.eldritch.SculkTentaclesSpell;
 import net.minecraft.nbt.*;
 import net.minecraftforge.fml.ModList;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -119,6 +119,10 @@ public class DataFixerHelpers {
             .put("melee_damage", "irons_spellbooks:melee_damage")
             .put("melee_speed", "irons_spellbooks:melee_speed")
             .put("health", "irons_spellbooks:health")
+            .build();
+
+    public static final Map<String, String> NEW_SPELL_IDS = ImmutableMap.<String, String>builder()
+            .put("irons_spellbooks:void_tentacles", "irons_spellbooks:sculk_tentacles")
             .build();
 
     public static List<DataFixerElement> DATA_FIXER_ELEMENTS = List.of(

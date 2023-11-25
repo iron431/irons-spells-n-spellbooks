@@ -18,10 +18,19 @@ public class FixIsbSpell extends DataFixerElement {
         if (tag != null) {
             var spellTag = (CompoundTag) tag.get(SpellData.ISB_SPELL);
             if (spellTag != null) {
+                boolean fixed = false;
                 if (spellTag.contains(SpellData.LEGACY_SPELL_TYPE)) {
                     fixScrollData(spellTag);
-                    return true;
+                    fixed = true;
                 }
+                if (spellTag.contains(SpellData.SPELL_ID)) {
+                    String newName = DataFixerHelpers.NEW_SPELL_IDS.get(spellTag.get(SpellData.SPELL_ID).getAsString());
+                    if (newName != null) {
+                        spellTag.putString(SpellData.SPELL_ID, newName);
+                        fixed = true;
+                    }
+                }
+                return fixed;
             }
         }
 
