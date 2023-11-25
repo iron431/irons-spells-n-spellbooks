@@ -235,7 +235,7 @@ public class IronsWorldUpgrader {
 
                                     if (ironsTagTraverser.changesMade()) {
                                         chunkstorage.write(chunkpos, chunkDataTag);
-                                        this.fixes = ironsTagTraverser.totalChanges();
+                                        this.fixes += ironsTagTraverser.totalChanges();
                                         updated = true;
                                     }
                                 }
