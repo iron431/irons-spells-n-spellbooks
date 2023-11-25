@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
+import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -102,9 +103,10 @@ public class GenerateSiteData {
             var itemBuilder = new StringBuilder();
             var armorBuilder = new StringBuilder();
             var spellbookBuilder = new StringBuilder();
+            var curioBuilder = new StringBuilder();
             var blockBuilder = new StringBuilder();
 
-            var armorTypes = List.of("Archevoker", "Cryomancer", "Cultist", "Electromancer", "Priest", "Pumpkin", "Pyromancer", "Shadow-Walker", "Wandering Magician", "Ring", "Heavy Chain", "Scarecrow", "Plagued");
+            var armorTypes = List.of("Archevoker", "Cryomancer", "Cultist", "Electromancer", "Priest", "Pumpkin", "Pyromancer", "Shadow-Walker", "Wandering Magician", "Scarecrow", "Plagued");
             Set<Item> itemsTracked = new HashSet<>();
             //This will exclude these items
             itemsTracked.add(ItemRegistry.WIMPY_SPELL_BOOK.get());
@@ -167,8 +169,10 @@ public class GenerateSiteData {
                             var name = item.getName(ItemStack.EMPTY).getString();
                             if (item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
                                 //Skip
-                            } else if (armorTypes.stream().anyMatch(itemToMatch -> name.contains(itemToMatch))) {
+                            } else if (item instanceof ArmorItem) {
                                 appendToBuilder2(armorBuilder, name, itemResource, tooltip);
+                            } else if (item instanceof CurioBaseItem) {
+                                appendToBuilder2(curioBuilder, name, itemResource, getSpells(new ItemStack(item)));
                             } else if (item instanceof UniqueSpellBook) {
                                 appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
                             } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem) {
@@ -188,6 +192,10 @@ public class GenerateSiteData {
             file.close();
 
             file = new BufferedWriter(new FileWriter("armor_data.yml"));
+            file.write(postProcess(armorBuilder));
+            file.close();
+
+            file = new BufferedWriter(new FileWriter("curio_data.yml"));
             file.write(postProcess(armorBuilder));
             file.close();
 
