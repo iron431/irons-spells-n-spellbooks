@@ -151,13 +151,15 @@ public class AdditionalWanderingTrades {
                     var context = new LootContext.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
                     var items = loottable.getRandomItems(context);
                     if (!items.isEmpty()) {
+                        int quality = 0;
                         ItemStack forSale = new ItemStack(Items.BUNDLE).setHoverName(Component.translatable("item.irons_spellbooks.scroll_pouch"));
                         ListTag itemsTag = new ListTag();
                         for (ItemStack scroll : items) {
                             itemsTag.add(scroll.save(new CompoundTag()));
+                            quality += SpellData.getSpellData(scroll).getRarity().getValue() + 1;
                         }
                         forSale.getOrCreateTag().put("Items", itemsTag);
-                        ItemStack cost = new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(24, 48));
+                        ItemStack cost = new ItemStack(Items.EMERALD, quality * 4 + random.nextIntBetweenInclusive(8, 16));
                         return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
                     }
                 }
