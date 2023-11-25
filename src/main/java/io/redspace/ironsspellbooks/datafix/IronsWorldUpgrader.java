@@ -134,7 +134,6 @@ public class IronsWorldUpgrader {
     private void fixDimensionDataFile(File file) {
         var subFiles = file.listFiles();
         if (subFiles != null && subFiles.length > 0) {
-            IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader FixDimensionStorage directory found: {} ", file.getName());
             Arrays.stream(subFiles).forEach(this::fixDimensionDataFile);
         } else {
             try {
@@ -144,12 +143,11 @@ public class IronsWorldUpgrader {
 
                 if (ironsTraverser.changesMade()) {
                     NbtIo.writeCompressed(compoundTag, file);
-                    IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader FixDimensionStorage updating file: {}, {}", file.getPath(), ironsTraverser.totalChanges());
                 }
 
                 fixes += ironsTraverser.totalChanges();
             } catch (Exception exception) {
-                IronsSpellbooks.LOGGER.debug("IronsWorldUpgrader FixDimensionStorage error: {}", exception.getMessage());
+                IronsSpellbooks.LOGGER.error("IronsWorldUpgrader FixDimensionStorage error: {}", exception.getMessage());
             }
         }
     }
