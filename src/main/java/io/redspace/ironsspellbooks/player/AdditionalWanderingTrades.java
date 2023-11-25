@@ -7,12 +7,15 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -52,7 +55,8 @@ public class AdditionalWanderingTrades {
                 new InkBuyTrade((InkItem) ItemRegistry.INK_UNCOMMON.get()),
                 new InkBuyTrade((InkItem) ItemRegistry.INK_RARE.get()),
                 new InkBuyTrade((InkItem) ItemRegistry.INK_EPIC.get()),
-                new InkBuyTrade((InkItem) ItemRegistry.INK_LEGENDARY.get())
+                new InkBuyTrade((InkItem) ItemRegistry.INK_LEGENDARY.get()),
+                new RandomCurioTrade()
         );
         List<VillagerTrades.ItemListing> additionalRareTrades = List.of(
                 SimpleTrade.of((trader, random) -> new MerchantOffer(
@@ -63,7 +67,12 @@ public class AdditionalWanderingTrades {
                         0,
                         .05f
                 )),
-                new RandomCurioTrade()
+                //Add them multiple times to increase their likelihood of dropping.
+                new RandomCurioTrade(),
+                new RandomCurioTrade(),
+                new RandomCurioTrade(),
+                new ScrollPouchTrade(),
+                new ScrollPouchTrade()
         );
         event.getGenericTrades().addAll(additionalGenericTrades);
         event.getRareTrades().addAll(additionalRareTrades);
@@ -126,6 +135,29 @@ public class AdditionalWanderingTrades {
                     if (!items.isEmpty()) {
                         ItemStack forSale = items.get(0);
                         ItemStack cost = new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(14, 25));
+                        return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
+                    }
+                }
+                return null;
+            });
+        }
+    }
+
+    static class ScrollPouchTrade extends SimpleTrade {
+        private ScrollPouchTrade() {
+            super((trader, random) -> {
+                if (!trader.level.isClientSide) {
+                    LootTable loottable = trader.level.getServer().getLootTables().get(IronsSpellbooks.id("magic_items/scroll_pouch"));
+                    var context = new LootContext.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
+                    var items = loottable.getRandomItems(context);
+                    if (!items.isEmpty()) {
+                        ItemStack forSale = new ItemStack(Items.BUNDLE).setHoverName(Component.translatable("item.irons_spellbooks.scroll_pouch"));
+                        ListTag itemsTag = new ListTag();
+                        for (ItemStack scroll : items) {
+                            itemsTag.add(scroll.save(new CompoundTag()));
+                        }
+                        forSale.getOrCreateTag().put("Items", itemsTag);
+                        ItemStack cost = new ItemStack(Items.EMERALD, random.nextIntBetweenInclusive(24, 48));
                         return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
                     }
                 }
