@@ -1,10 +1,11 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.api.events.SpellDamageEvent;
-import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
@@ -19,15 +20,12 @@ import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -39,7 +37,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
@@ -81,7 +78,9 @@ public class ServerPlayerEvents {
         if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
             var server = event.getServer();
             var storageSource = server.storageSource;
-            new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings()).runUpgrade();
+            var iwu = new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings());
+            iwu.runUpgrade();
+            IronsSpellbooks.LOGGER.debug("IWU:{}", iwu.tempCount);
         }
     }
 
@@ -99,6 +98,13 @@ public class ServerPlayerEvents {
                     && (event.getFrom().getItem() instanceof SpellBook || SpellData.hasSpellData(event.getFrom()))) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            Utils.serverSideCancelCast(serverPlayer);
         }
     }
 
@@ -269,19 +275,6 @@ public class ServerPlayerEvents {
         if (newTarget != null && newTarget.getType().is(ModTags.VILLAGE_ALLIES) && event.getEntity().getType().is(ModTags.VILLAGE_ALLIES)
         ) {
             event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public static void testManaEvent(ChangeManaEvent event) {
-        if (event.getEntity().hasEffect(MobEffects.REGENERATION))
-            event.setCanceled(true);
-        else if (event.getEntity().hasEffect(MobEffects.POISON) ){
-            var diff = event.getNewMana() - event.getOldMana();
-            if (diff < 0) {
-                diff *= 2;
-                event.setNewMana(event.getOldMana() + diff);
-            }
         }
     }
 

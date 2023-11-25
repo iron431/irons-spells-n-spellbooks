@@ -77,8 +77,8 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
         this.setYHeadRot(yHeadRot);
         this.lastTickPos = this.position();
 
- //Ironsspellbooks.logger.debug("WispEntity: Owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
- //Ironsspellbooks.logger.debug("WispEntity: Wisp - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
+        //Ironsspellbooks.logger.debug("WispEntity: Owner - xRot:{}, yRot:{}, yHeadRot:{}", xRot, yRot, yHeadRot);
+        //Ironsspellbooks.logger.debug("WispEntity: Wisp - xRot:{}, yRot:{}, look:{}", this.getXRot(), this.getYRot(), this.getLookAngle());
     }
 
     @Override
@@ -118,10 +118,14 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
             spawnParticles();
         } else {
             var target = this.getTarget();
-            if (target != null) {
+            if (target == null || target.isRemoved()) {
+                if (tickCount > 10) {
+                    this.popAndDie();
+                }
+            } else {
                 if (this.getBoundingBox().intersects(target.getBoundingBox())) {
-                   // IronsSpellbooks.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
-                    DamageSources.applyDamage(target, damageAmount, SpellRegistry.WISP_SPELL.get().getDamageSource(this,cachedOwner), SpellRegistry.WISP_SPELL.get().getSchoolType());
+                    // IronsSpellbooks.LOGGER.debug("WispEntity.tick applyDamage: {}", damageAmount);
+                    DamageSources.applyDamage(target, damageAmount, SpellRegistry.WISP_SPELL.get().getDamageSource(this, cachedOwner), SpellRegistry.WISP_SPELL.get().getSchoolType());
                     this.playSound(WispSpell.getImpactSound(), 1.0f, 1.0f);
                     var p = target.getEyePosition();
                     MagicManager.spawnParticles(level, ParticleHelper.WISP, p.x, p.y, p.z, 25, 0, 0, 0, .18, true);
@@ -242,12 +246,16 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
 
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (!this.level.isClientSide) {
-            this.playSound(SoundEvents.SHULKER_BULLET_HURT, 1.0F, 1.0F);
-            ((ServerLevel)this.level).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 15, 0.2D, 0.2D, 0.2D, 0.0D);
-            this.discard();
+            this.popAndDie();
         }
 
         return true;
+    }
+
+    private void popAndDie() {
+        this.playSound(SoundEvents.SHULKER_BULLET_HURT, 1.0F, 1.0F);
+        ((ServerLevel) this.level).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 15, 0.2D, 0.2D, 0.2D, 0.0D);
+        this.discard();
     }
 
     @Override
