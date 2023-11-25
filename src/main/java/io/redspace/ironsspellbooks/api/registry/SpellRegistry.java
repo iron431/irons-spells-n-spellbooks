@@ -97,12 +97,6 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> STARFALL_SPELL = registerSpell(new StarfallSpell());
     public static final RegistryObject<AbstractSpell> TELEPORT_SPELL = registerSpell(new TeleportSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_ENDER_CHEST_SPELL = registerSpell(new SummonEnderChestSpell());
-    public static final RegistryObject<AbstractSpell> VOID_TENTACLES_SPELL = registerSpell(new SculkTentaclesSpell(){
-        @Override
-        public ResourceLocation getSpellResource() {
-            return new ResourceLocation(IronsSpellbooks.MODID, "void_tentacles");
-        }
-    });
 
     // EVOCATION
     public static final RegistryObject<AbstractSpell> CHAIN_CREEPER_SPELL = registerSpell(new ChainCreeperSpell());
