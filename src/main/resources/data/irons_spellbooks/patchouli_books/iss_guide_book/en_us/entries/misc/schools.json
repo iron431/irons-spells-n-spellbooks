@@ -1,0 +1,74 @@
+{
+  "name": "Schools of Magic",
+  "icon": "irons_spellbooks:lightning_bottle",
+  "category": "irons_spellbooks:root",
+  "sortnum": 20,
+  "read_by_default" : true,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "title": "Overview",
+      "text": "Each magical spell belong to a school of magic. Each school encapsulates a theme, both visually and functionally, and each have an Focus: a representative item used as a crafting ingredient. Furthermore, each school can be empowered by specific school related gear, allowing you to become a powerful master of a single school, or mix and match to become a jack of all trades."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:blaze_rod",
+      "title": "Fire",
+      "text": "The Fire school, with a Blaze Rod as its Focus, is centered around damage and damage over time."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:frozen_bone",
+      "title": "Ice",
+      "text": "The Ice school, with Frozen Bones as its Focus, is centered around damage and crowd control."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:lightning_bottle",
+      "title": "Lightning",
+      "text": "The Lightning school, with a Bottle o' Lightning as its Focus, is centered around concentrated damage."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:divine_pearl",
+      "title": "Holy",
+      "text": "The Holy school, with the Divine Pearl as its Focus, is centered around support, healing, and buffing characters."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:ender_pearl",
+      "title": "Ender",
+      "text": "The Ender school, with an Ender Pearl as its Focus, is themed around all things arcane and mystical, with spells that range from damage to utility to mobility."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:blood_vial",
+      "title": "Blood",
+      "text": "The Blood school, with a Blood Vial as its Focus, is themed around evil; you will find elements of necromancy, wither, and blood magic here, with spells focusing on damage that buffs the caster."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:emerald",
+      "title": "Evocation",
+      "text": "The Evocation school, with an Emerald as its Focus, is themed around magical trickery and conjuration, covering the broadest range of offensive, defensive, and utility spells."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:poisonous_potato",
+      "title": "Nature",
+      "text": "The Nature school, with a Poisonous Potato as its Focus, is focused on applying debuffs to enemies, with elements of damage to finish them off."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "irons_spellbooks:eldritch_manuscript",
+      "title": "Eldritch",
+      "text": "The Eldritch school is not like the others. It is an ancient and powerful way of magic, one that has all but been forgotten; you will be unable to craft or cast them. However, shreds of ancient Eldritch manuscripts can still be found scattered throughout the world, and may even be pieced back together with the help of an echo shard."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "minecraft:echo_shard",
+      "title": "Eldritch, continued",
+      "text": "Once a manuscript has been restored, it can be consumed to learn a single Eldritch spell, enabling the crafting and casting of it. After being learned, the Echo Shard is used as the focus."
+    }
+  ]
+}

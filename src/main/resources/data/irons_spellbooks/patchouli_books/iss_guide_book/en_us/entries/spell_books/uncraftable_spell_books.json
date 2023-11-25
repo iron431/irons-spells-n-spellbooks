@@ -1,5 +1,5 @@
 {
-  "name": "Uncraftable Spell Books",
+  "name": "Named Spell Books",
   "icon": "irons_spellbooks:evoker_spell_book",
   "category": "irons_spellbooks:root",
   "sortnum": 2,
@@ -46,9 +46,9 @@
       "text": "Every Blaze, unbeknownst to them, comes with one of these tucked away. The trick is killing them and hoping it doesn't turn into ash."
     },
     {
-      "type": "patchouli:spotlight",
-      "item": "irons_spellbooks:druidic_spell_book",
-      "text": "A strong magical energy still persists within the Rotten Spell Book. Perhaps Mother Nature will bless the book anew if a proper remedy were applied."
+      "type": "patchouli:crafting",
+      "recipe": "irons_spellbooks:druidic_spell_book",
+      "text": "A strong magical energy still persists within the Rotten Spell Book. The book may be blessed anew if a proper remedy were applied."
     }
   ]
 }
