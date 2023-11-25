@@ -78,7 +78,8 @@ public class EldritchResearchScreen extends Screen {
     static final int TIME_TO_HOLD = 15;
 
     protected void init() {
-        learnableSpells = SpellRegistry.getSpellsForSchool(SchoolRegistry.ELDRITCH.get());
+        //gather spell not learned by a null player (default unlearned)
+        learnableSpells = SpellRegistry.getEnabledSpells().stream().filter(spell -> !spell.isLearned(null)).toList();
         if (this.minecraft != null) {
             playerData = ClientMagicData.getSyncedSpellData(minecraft.player);
         }
@@ -87,8 +88,8 @@ public class EldritchResearchScreen extends Screen {
         this.topPos = (this.height - WINDOW_HEIGHT) / 2;
         nodes = new ArrayList<>();
         float f = 6.282f / learnableSpells.size();
-        RandomSource randomSource = RandomSource.create(431L);
-        int gridsize = 64;
+        //RandomSource randomSource = RandomSource.create(431L);
+        //int gridsize = 64;
 
         for (int i = 0; i < learnableSpells.size(); i++) {
             float r = 35;

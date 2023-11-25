@@ -89,7 +89,7 @@ public abstract class AbstractSpell {
         return spellID;
     }
 
-    public ResourceLocation getSpellIconResource() {
+    public final ResourceLocation getSpellIconResource() {
         return new ResourceLocation(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
     }
 
@@ -575,15 +575,15 @@ public abstract class AbstractSpell {
         return true;
     }
 
-    public boolean obfuscateStats(Player player) {
+    public boolean obfuscateStats(@Nullable Player player) {
         return false;
     }
 
-    public boolean isLearned(Player player) {
+    public boolean isLearned(@Nullable Player player) {
         return true;
     }
 
-    public boolean canBeInterrupted(Player player){
+    public boolean canBeInterrupted(@Nullable Player player){
         return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
     }
 }

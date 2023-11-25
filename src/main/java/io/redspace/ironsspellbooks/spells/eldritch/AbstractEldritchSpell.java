@@ -53,20 +53,12 @@ public abstract class AbstractEldritchSpell extends AbstractSpell {
 
     @Override
     public boolean isLearned(Player player) {
-        if (player.level.isClientSide) {
+        if (player == null) {
+            return false;
+        } else if (player.level.isClientSide) {
             return ClientMagicData.getSyncedSpellData(player).isSpellLearned(this);
         } else {
             return MagicData.getPlayerMagicData(player).getSyncedData().isSpellLearned(this);
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public ResourceLocation getSpellIconResource() {
-        if (Minecraft.getInstance().player != null && isLearned(Minecraft.getInstance().player)) {
-            return new ResourceLocation(getSpellResource().getNamespace(), "textures/gui/spell_icons/" + getSpellName() + ".png");
-        } else {
-            return SpellRegistry.none().getSpellIconResource();
         }
     }
 }
