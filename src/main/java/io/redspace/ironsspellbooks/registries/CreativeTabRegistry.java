@@ -145,6 +145,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.ARCANE_SALVAGE.get());
                 entries.accept(ItemRegistry.ARCANE_INGOT.get());
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
+                entries.accept(ItemRegistry.ELDRITCH_PAGE.get());
+                entries.accept(ItemRegistry.LOST_KNOWLEDGE_FRAGMENT.get());
 
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
                 entries.accept(ItemRegistry.FIRE_RUNE.get());

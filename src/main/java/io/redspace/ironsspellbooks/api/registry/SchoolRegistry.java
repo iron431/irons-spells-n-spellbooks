@@ -137,7 +137,8 @@ public class SchoolRegistry {
             Component.translatable("school.irons_spellbooks.eldritch").withStyle(Style.EMPTY.withColor(0x0f839c)),
             LazyOptional.empty(),
             LazyOptional.empty(),
-            LazyOptional.of(SoundRegistry.EVOCATION_CAST::get)
+            LazyOptional.of(SoundRegistry.EVOCATION_CAST::get),
+            ISSDamageTypes.ELDRITCH_MAGIC
     ));
 
     @Nullable

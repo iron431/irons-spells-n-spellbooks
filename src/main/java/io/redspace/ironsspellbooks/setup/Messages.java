@@ -207,7 +207,7 @@ public class Messages {
         net.messageBuilder(ServerboundLearnSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundLearnSpell::new)
                 .encoder(ServerboundLearnSpell::toBytes)
-                .consumer(ServerboundLearnSpell::handle)
+                .consumerMainThread(ServerboundLearnSpell::handle)
                 .add();
 
         net.messageBuilder(ClientboundOpenEldritchScreen.class, id(), NetworkDirection.PLAY_TO_CLIENT)

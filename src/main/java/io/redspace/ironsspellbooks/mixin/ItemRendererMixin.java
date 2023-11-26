@@ -23,8 +23,8 @@ import software.bernie.geckolib.core.object.Color;
 @Mixin(GuiGraphics.class)
 public class ItemRendererMixin {
     @Inject(method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;II)V", at = @At(value = "HEAD"))
-    public void renderSpellbookCooldown(Font p_281721_, ItemStack itemStack, int one, int two, CallbackInfo ci) {
-        Item item = itemStack.getItem();
+    public void renderSpellbookCooldown(Font p_281721_, ItemStack stack, int one, int two, CallbackInfo ci) {
+        Item item = stack.getItem();
         if (item instanceof SpellBook) {
             AbstractSpell spell = SpellBookData.getSpellBookData(stack).getActiveSpell().getSpell();
             float f = spell == SpellRegistry.none() ? 0 : ClientMagicData.getCooldownPercent(spell);
@@ -41,9 +41,11 @@ public class ItemRendererMixin {
     private void renderSpellCooldown(int one, int two, float f) {
         if (f > 0.0F) {
                 GuiGraphics self = (GuiGraphics) (Object)this;
-                int i1 = p_282146_ + Mth.floor(16.0F * (1.0F - f));
+                int i1 = one + Mth.floor(16.0F * (1.0F - f));
                 int j1 = i1 + Mth.ceil(16.0F * f);
-                self.fill(RenderType.guiOverlay(), p_282641_, i1, p_282641_ + 16, j1, Integer.MAX_VALUE);
+                //fillRect(bufferbuilder, one, two + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
+
+            self.fill(RenderType.guiOverlay(), two, i1, two + 16, j1, Integer.MAX_VALUE);
         }
     }
 }

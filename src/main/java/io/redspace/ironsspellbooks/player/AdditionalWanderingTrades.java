@@ -20,8 +20,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.event.village.WandererTradesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -129,8 +131,8 @@ public class AdditionalWanderingTrades {
         private RandomCurioTrade() {
             super((trader, random) -> {
                 if (!trader.level.isClientSide) {
-                    LootTable loottable = trader.level.getServer().getLootTables().get(IronsSpellbooks.id("magic_items/basic_curios"));
-                    var context = new LootContext.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
+                    LootTable loottable = trader.level.getServer().getLootData().getLootTable(IronsSpellbooks.id("magic_items/basic_curios"));
+                    var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
                     var items = loottable.getRandomItems(context);
                     if (!items.isEmpty()) {
                         ItemStack forSale = items.get(0);
@@ -147,8 +149,8 @@ public class AdditionalWanderingTrades {
         private ScrollPouchTrade() {
             super((trader, random) -> {
                 if (!trader.level.isClientSide) {
-                    LootTable loottable = trader.level.getServer().getLootTables().get(IronsSpellbooks.id("magic_items/scroll_pouch"));
-                    var context = new LootContext.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
+                    LootTable loottable = trader.level.getServer().getLootData().getLootTable(IronsSpellbooks.id("magic_items/scroll_pouch"));
+                    var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
                     var items = loottable.getRandomItems(context);
                     if (!items.isEmpty()) {
                         int quality = 0;
@@ -221,7 +223,7 @@ public class AdditionalWanderingTrades {
                     itemstack.setDamageValue(itemstack.getDamageValue());
                 }
 
-                return ItemStack.isSame(itemstack, pCost) && (!pCost.hasTag() || itemstack.hasTag() && NbtUtils.compareNbt(pCost.getTag(), itemstack.getTag(), false));
+                return ItemStack.isSameItem(itemstack, pCost) && (!pCost.hasTag() || itemstack.hasTag() && NbtUtils.compareNbt(pCost.getTag(), itemstack.getTag(), false));
             }
         }
 

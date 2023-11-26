@@ -95,7 +95,6 @@ public class FogParticle extends TextureSheetParticle {
             p_234005_.mul(Axis.YP.rotation(0));
             p_234005_.mul(Axis.XP.rotation(-DEGREES_90));
         });
-        //back face?
         this.renderRotatedParticle(buffer, camera, partialticks, (p_234000_) -> {
             p_234000_.mul(Axis.YP.rotation(-(float) Math.PI));
             p_234000_.mul(Axis.XP.rotation(DEGREES_90));

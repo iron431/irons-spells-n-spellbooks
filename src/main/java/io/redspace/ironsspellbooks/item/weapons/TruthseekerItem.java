@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 public class TruthseekerItem extends ExtendedSwordItem {
     public TruthseekerItem() {
-        super(ExtendedWeaponTiers.TRUTHSEEKER, 11, -3, Map.of(), new Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
+        super(ExtendedWeaponTiers.TRUTHSEEKER, 11, -3, Map.of(), new Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override

@@ -1,10 +1,7 @@
 package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.Utils;
+import com.mojang.math.Axis;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -16,7 +13,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Max;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.function.Consumer;
 
@@ -82,17 +80,16 @@ public class ShockwaveParticle extends TextureSheetParticle {
         this.alpha = 1.0F - Mth.clamp((this.age + partialticks) / (float) this.lifetime, 0, 1F);
 
         this.renderRotatedParticle(buffer, camera, partialticks, (p_234005_) -> {
-            p_234005_.mul(Vector3f.YP.rotation(0));
-            p_234005_.mul(Vector3f.XP.rotation(-DEGREES_90));
+            p_234005_.mul(Axis.YP.rotation(0));
+            p_234005_.mul(Axis.XP.rotation(-DEGREES_90));
         });
-        //back face
         this.renderRotatedParticle(buffer, camera, partialticks, (p_234000_) -> {
-            p_234000_.mul(Vector3f.YP.rotation(-(float) Math.PI));
-            p_234000_.mul(Vector3f.XP.rotation(DEGREES_90));
+            p_234000_.mul(Axis.YP.rotation(-(float) Math.PI));
+            p_234000_.mul(Axis.XP.rotation(DEGREES_90));
         });
     }
 
-    private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, Consumer<Quaternion> pQuaternion) {
+    private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, Consumer<Quaternionf> pQuaternion) {
         /*
         Copied from Shriek Particle
          */
@@ -100,16 +97,16 @@ public class ShockwaveParticle extends TextureSheetParticle {
         float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
-        Quaternion quaternion = new Quaternion(ROTATION_VECTOR, 0.0F, true);
+        Quaternionf quaternion = (new Quaternionf()).setAngleAxis(0.0F, ROTATION_VECTOR.x(), ROTATION_VECTOR.y(), ROTATION_VECTOR.z());
 
         pQuaternion.accept(quaternion);
-        TRANSFORM_VECTOR.transform(quaternion);
+        quaternion.transform(TRANSFORM_VECTOR);
         Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
         float f3 = this.getQuadSize(partialTick);
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            vector3f.transform(quaternion);
+            vector3f.rotate(quaternion);
             vector3f.mul(f3);
             vector3f.add(f, f1, f2);
         }
@@ -133,7 +130,7 @@ public class ShockwaveParticle extends TextureSheetParticle {
 
     @Override
     protected int getLightColor(float pPartialTick) {
-        BlockPos blockpos = new BlockPos(this.x, this.y, this.z).above();
+        BlockPos blockpos = BlockPos.containing(this.x, this.y, this.z).above();
         return this.level.hasChunkAt(blockpos) ? LevelRenderer.getLightColor(this.level, blockpos) : 0;
     }
 

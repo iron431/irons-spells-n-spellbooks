@@ -35,16 +35,6 @@ public class ModTags {
     public static final TagKey<EntityType<?>> CANT_ROOT = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "cant_root"));
     public static final TagKey<EntityType<?>> VILLAGE_ALLIES = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "village_allies"));
 
-    public static final TagKey<DamageType> FIRE_MAGIC = create("fire_magic");
-    public static final TagKey<DamageType> ICE_MAGIC = create("ice_magic");
-    public static final TagKey<DamageType> LIGHTNING_MAGIC = create("lightning_magic");
-    public static final TagKey<DamageType> HOLY_MAGIC = create("holy_magic");
-    public static final TagKey<DamageType> ENDER_MAGIC = create("ender_magic");
-    public static final TagKey<DamageType> BLOOD_MAGIC = create("blood_magic");
-    public static final TagKey<DamageType> EVOCATION_MAGIC = create("evocation_magic");
-    public static final TagKey<DamageType> VOID_MAGIC = create("void_magic");
-    public static final TagKey<DamageType> POISON_MAGIC = create("poison_magic");
-
     private static TagKey<DamageType> create(String tag) {
         return TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(IronsSpellbooks.MODID, tag));
     }

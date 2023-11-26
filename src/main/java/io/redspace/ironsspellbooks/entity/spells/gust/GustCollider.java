@@ -80,7 +80,7 @@ public class GustCollider extends AbstractConeProjectile {
             target.hasImpulse = true;
             Vec3 vec3 = target.getDeltaMovement();
             Vec3 vec31 = (new Vec3(x, y, z)).normalize().scale(pStrength);
-            target.setDeltaMovement(vec3.x / 2.0D - vec31.x, target.isOnGround() ? Math.min(0.4D, vec3.y / 2.0D + pStrength) : vec3.y, vec3.z / 2.0D - vec31.z);
+            target.setDeltaMovement(vec3.x / 2.0D - vec31.x, target.onGround() ? Math.min(0.4D, vec3.y / 2.0D + pStrength) : vec3.y, vec3.z / 2.0D - vec31.z);
         }
     }
 

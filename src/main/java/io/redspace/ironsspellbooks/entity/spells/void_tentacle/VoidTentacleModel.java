@@ -2,7 +2,10 @@ package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 import java.util.List;
@@ -28,12 +31,12 @@ public class VoidTentacleModel extends GeoModel<VoidTentacle> {
     }
 
     @Override
-    public void setCustomAnimations(VoidTentacle animatable, int instanceId, AnimationEvent animationEvent) {
-        super.setCustomAnimations(animatable, instanceId, animationEvent);
+    public void setCustomAnimations(VoidTentacle animatable, long instanceId, AnimationState<VoidTentacle> animationState) {
+        super.setCustomAnimations(animatable, instanceId, animationState);
         float seed = (float) (animatable.getX() * animatable.getZ()) % 173;
         float speed = .55f;
-        float f = (float) (seed + animatable.tickCount + animationEvent.getPartialTick()) * speed;
-        List<GeoBone> bones = List.of(
+        float f = (float) (seed + animatable.tickCount + animationState.getPartialTick()) * speed;
+        List<CoreGeoBone> bones = List.of(
                 this.getAnimationProcessor().getBone("root"),
                 this.getAnimationProcessor().getBone("segment_1"),
                 this.getAnimationProcessor().getBone("segment_2"),
@@ -46,10 +49,9 @@ public class VoidTentacleModel extends GeoModel<VoidTentacle> {
         for (int i = 0; i < bones.size(); i++) {
             var bone = bones.get(i);
             float intensity = 3f - i * .2f;
-            bone.setRotationX(Mth.lerp(tween, bone.getRotationX(), intensity * Mth.DEG_TO_RAD * shittyNoise(f + 100 + i)));
-            bone.setRotationZ(Mth.lerp(tween, bone.getRotationZ(), intensity * Mth.DEG_TO_RAD * shittyNoise(f + i)));
+            bone.updateRotation(Mth.lerp(tween, bone.getRotX(), intensity * Mth.DEG_TO_RAD * shittyNoise(f + 100 + i)), 0, Mth.lerp(tween, bone.getRotZ(), intensity * Mth.DEG_TO_RAD * shittyNoise(f + i)));
         }
-        this.getAnimationProcessor().getBone("root").setRotationY(Mth.DEG_TO_RAD * (shittyNoise(f + 150) * .25f + animatable.tickCount + animationEvent.getPartialTick()));
+        this.getAnimationProcessor().getBone("root").updateRotation(0, Mth.DEG_TO_RAD * (shittyNoise(f + 150) * .25f + animatable.tickCount + animationState.getPartialTick()), 0);
     }
 
     private static float shittyNoise(float f) {

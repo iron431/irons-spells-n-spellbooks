@@ -27,7 +27,7 @@ import java.util.logging.Level;
 
 public class FirebrandItem extends ExtendedSwordItem {
     public FirebrandItem() {
-        super(ExtendedWeaponTiers.KEEPER_FLAMBERGE, 10, -1.8, Map.of(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier(UUID.fromString("c552273e-6669-4cd2-80b3-a703b7616336"), "weapon mod", .10, AttributeModifier.Operation.MULTIPLY_BASE)), new Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
+        super(ExtendedWeaponTiers.KEEPER_FLAMBERGE, 10, -1.8, Map.of(AttributeRegistry.FIRE_SPELL_POWER.get(), new AttributeModifier(UUID.fromString("c552273e-6669-4cd2-80b3-a703b7616336"), "weapon mod", .10, AttributeModifier.Operation.MULTIPLY_BASE)), new Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override

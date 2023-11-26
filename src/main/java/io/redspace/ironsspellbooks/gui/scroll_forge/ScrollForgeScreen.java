@@ -97,7 +97,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
         guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         float scrollOffset = Mth.clamp((float) this.scrollOffset / (this.totalRowCount() - 3), 0, 1);
-        this.blit(poseStack, leftPos + SCROLL_BAR_X, (int) (topPos + SCROLL_BAR_Y + scrollOffset * (SCROLL_BAR_HEIGHT - 15)), imageWidth + (isScrollbarHeld ? 12 : 0), 0, 12, 15);
+        guiHelper.blit(TEXTURE, leftPos + SCROLL_BAR_X, (int) (topPos + SCROLL_BAR_Y + scrollOffset * (SCROLL_BAR_HEIGHT - 15)), imageWidth + (isScrollbarHeld ? 12 : 0), 0, 12, 15);
 //        if (lastFocusItem != menu.getFocusSlot().getItem()) {
 //            generateSpellList();
 //            lastFocusItem = menu.getFocusSlot().getItem();

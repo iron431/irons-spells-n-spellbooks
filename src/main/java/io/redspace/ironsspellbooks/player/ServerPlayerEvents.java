@@ -40,6 +40,7 @@ import net.minecraft.server.WorldStem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -96,8 +97,7 @@ public class ServerPlayerEvents {
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
             var server = event.getServer();
-            var iwu = new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
-            IronsSpellbooks.LOGGER.debug("IWU:{}", iwu.tempCount);
+            new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
         }
     }
 
@@ -252,7 +252,7 @@ public class ServerPlayerEvents {
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
 
         if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof AbstractSpellCastingMob)) {
-            if (ItemRegistry.FIREWARD_RING.get().isEquippedBy(livingEntity) && event.getSource().isFire()) {
+            if (ItemRegistry.FIREWARD_RING.get().isEquippedBy(livingEntity) && event.getSource().is(DamageTypeTags.IS_FIRE)) {
                 event.getEntity().clearFire();
                 event.setCanceled(true);
                 return;

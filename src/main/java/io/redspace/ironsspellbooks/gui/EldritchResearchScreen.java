@@ -3,9 +3,7 @@ package io.redspace.ironsspellbooks.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Vector4f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -18,6 +16,8 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
@@ -28,14 +28,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.data.SoundDefinition;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,9 +113,9 @@ public class EldritchResearchScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        super.render(poseStack, mouseX, mouseY, partialTick);
-        this.fillGradient(poseStack, 0, 0, this.width, this.height, -1072689136, -804253680);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         drawBackdrop(leftPos + WINDOW_INSIDE_X, topPos + WINDOW_INSIDE_Y);
 
         var player = Minecraft.getInstance().player;
@@ -143,32 +140,32 @@ public class EldritchResearchScreen extends Screen {
                 heldSpellTime = Math.max(heldSpellTime - 3, -1);
             }
         }
-        handleConnections(poseStack, partialTick);
+        handleConnections(guiGraphics, partialTick);
         List<FormattedCharSequence> tooltip = null;
         for (int i = 0; i < nodes.size(); i++) {
             var node = nodes.get(i);
-            drawNode(poseStack, node, player, i == heldSpellIndex && heldSpellTime > 0);
+            drawNode(guiGraphics, node, player, i == heldSpellIndex && heldSpellTime > 0);
             if (isHoveringNode(node, mouseX, mouseY)) {
                 tooltip = buildTooltip(node.spell, font);
             }
         }
-        setTranslucentTexture(WINDOW_LOCATION);
-        this.blit(poseStack, leftPos, topPos, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        //setTranslucentTexture(WINDOW_LOCATION);
+        guiGraphics.blit(WINDOW_LOCATION, leftPos, topPos, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         if (tooltip != null) {
-            renderTooltip(poseStack, tooltip, mouseX, mouseY);
+            guiGraphics.renderTooltip(minecraft.font, tooltip, mouseX, mouseY);
         }
     }
 
     private void renderProgressOverlay(int x, int y, float progress) {
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableTexture();
+        //RenderSystem.disableDepthTest();
+        //RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         fillRect(bufferbuilder, x, y, Mth.ceil(16.0F * progress), 16, 244, 65, 255, 127);
-        RenderSystem.enableTexture();
-        RenderSystem.enableDepthTest();
+        //RenderSystem.enableTexture();
+        //RenderSystem.enableDepthTest();
     }
 
     private void fillRect(BufferBuilder pRenderer, int pX, int pY, int pWidth, int pHeight, int pRed, int pGreen, int pBlue, int pAlpha) {
@@ -181,9 +178,9 @@ public class EldritchResearchScreen extends Screen {
         BufferUploader.drawWithShader(pRenderer.end());
     }
 
-    private void drawNode(PoseStack poseStack, SpellNode node, LocalPlayer player, boolean drawProgress) {
+    private void drawNode(GuiGraphics guiGraphics, SpellNode node, LocalPlayer player, boolean drawProgress) {
         drawWithClipping(node.spell.getSpellIconResource(),
-                poseStack,
+                guiGraphics,
                 node.x,
                 node.y,
                 0, 0,
@@ -194,9 +191,8 @@ public class EldritchResearchScreen extends Screen {
         if (drawProgress) {
             renderProgressOverlay(node.x, node.y, heldSpellTime / (float) TIME_TO_HOLD);
         }
-        setTexture(FRAME_LOCATION);
         drawWithClipping(FRAME_LOCATION,
-                poseStack,
+                guiGraphics,
                 node.x - 8,
                 node.y - 8,
                 node.spell.isLearned(player) ? 32 : 0, 0,
@@ -206,7 +202,7 @@ public class EldritchResearchScreen extends Screen {
                 WINDOW_INSIDE_WIDTH, WINDOW_INSIDE_HEIGHT);
     }
 
-    private void drawWithClipping(ResourceLocation texture, PoseStack poseStack, int x, int y, int uvx, int uvy, int width, int height, int imageWidth, int imageHeight, int bbx, int bby, int bbw, int bbh) {
+    private void drawWithClipping(ResourceLocation texture, GuiGraphics guiGraphics, int x, int y, int uvx, int uvy, int width, int height, int imageWidth, int imageHeight, int bbx, int bby, int bbw, int bbh) {
         x += viewportOffset.x;
         if (x < bbx) {
             int xDiff = bbx - x;
@@ -228,8 +224,7 @@ public class EldritchResearchScreen extends Screen {
             height -= yDiff;
         }
         if (width > 0 && height > 0) {
-            setTexture(texture);
-            blit(poseStack, x, y, width, height, uvx, uvy, width, height, imageWidth, imageHeight);
+            guiGraphics.blit(texture, x, y, width, height, uvx, uvy, width, height, imageWidth, imageHeight);
         }
     }
 
@@ -248,11 +243,11 @@ public class EldritchResearchScreen extends Screen {
         return hoverText;
     }
 
-    private void handleConnections(PoseStack poseStack, float partialTick) {
-        fill(poseStack, 0, 0, this.width, this.height, 0);
-        RenderSystem.disableTexture();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+    private void handleConnections(GuiGraphics guiGraphics, float partialTick) {
+        guiGraphics.fill(0, 0, this.width, this.height, 0);
+        //RenderSystem.disableTexture();
+        //RenderSystem.enableBlend();
+        //RenderSystem.defaultBlendFunc();
         final Tesselator tesselator = Tesselator.getInstance();
         final BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -278,18 +273,18 @@ public class EldritchResearchScreen extends Screen {
             var color1 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var color2 = lerpColor(color, glowcolor, glowIntensity * (nodes.get(i + 1).spell.isLearned(Minecraft.getInstance().player) ? 1 : 0));
             var alphaTopLeft = (Mth.clamp(x1m1 + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2) / WINDOW_INSIDE_X * 2) * (Mth.clamp(y1m1 + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2) / WINDOW_INSIDE_Y * 2);
-            buffer.vertex(x1m1, y1m1, getBlitOffset()).color(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(poseStack, x1m1, y1m1)).endVertex();
-            buffer.vertex(x2m1, y2m1, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(poseStack, x2m1, y2m1)).endVertex();
-            buffer.vertex(x2m2, y2m2, getBlitOffset()).color(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(poseStack, x2m2, y2m2)).endVertex();
-            buffer.vertex(x1m2, y1m2, getBlitOffset()).color(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(poseStack, x1m2, y1m2)).endVertex();
+            buffer.vertex(x1m1, y1m1, 0).color(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m1, y1m1)).endVertex();
+            buffer.vertex(x2m1, y2m1, 0).color(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m1, y2m1)).endVertex();
+            buffer.vertex(x2m2, y2m2, 0).color(color2.x(), color2.y(), color2.z(), fadeOutTowardEdges(guiGraphics, x2m2, y2m2)).endVertex();
+            buffer.vertex(x1m2, y1m2, 0).color(color1.x(), color1.y(), color1.z(), fadeOutTowardEdges(guiGraphics, x1m2, y1m2)).endVertex();
         }
 
         tesselator.end();
-        RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
+        //RenderSystem.disableBlend();
+        //RenderSystem.enableTexture();
     }
 
-    private float fadeOutTowardEdges(PoseStack poseStack, double x, double y) {
+    private float fadeOutTowardEdges(GuiGraphics guiGraphics, double x, double y) {
         int px = (int) Mth.clamp(x + viewportOffset.x - leftPos, 0, WINDOW_INSIDE_X * 2);
         int py = (int) Mth.clamp(y + viewportOffset.y - topPos, 0, WINDOW_INSIDE_Y * 2);
         int px2 = (int) Mth.clamp(WINDOW_INSIDE_WIDTH - (x + viewportOffset.x - leftPos), 0, WINDOW_INSIDE_X * 2);
@@ -405,17 +400,17 @@ public class EldritchResearchScreen extends Screen {
     record NodeConnection(SpellNode node1, SpellNode node2) {
     }
 
-    private static void setTexture(ResourceLocation texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, texture);
-    }
-
-    private static void setTranslucentTexture(ResourceLocation texture) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
-    }
+//    private static void setTexture(ResourceLocation texture) {
+//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.setShaderTexture(0, texture);
+//    }
+//
+//    private static void setTranslucentTexture(ResourceLocation texture) {
+//        RenderSystem.enableBlend();
+//        RenderSystem.defaultBlendFunc();
+//        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
+//        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+//        RenderSystem.setShaderTexture(0, texture);
+//    }
 }
