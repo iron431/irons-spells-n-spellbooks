@@ -1,13 +1,13 @@
 package io.redspace.ironsspellbooks.entity.spells.magma_ball;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -70,7 +70,7 @@ public class FireBomb extends AbstractMagicProjectile {
                 if (Utils.hasLineOfSight(level, hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
                     double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
                     float damage = (float) (this.damage * p);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.MAGMA_BOMB_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.MAGMA_BOMB_SPELL.get().getSchoolType());
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.MAGMA_BOMB_SPELL.get().getDamageSource(this, getOwner()));
                 }
             }
         }
@@ -82,12 +82,37 @@ public class FireBomb extends AbstractMagicProjectile {
             FireField fire = new FireField(level);
             fire.setOwner(getOwner());
             fire.setDuration(200);
-            fire.setDamage(damage / 5);
+            fire.setDamage(aoeDamage);
             fire.setRadius(getExplosionRadius());
             fire.setCircular();
             fire.moveTo(location);
             level.addFreshEntity(fire);
         }
+    }
+
+    float aoeDamage;
+
+    public void setAoeDamage(float damage) {
+        this.aoeDamage = damage;
+    }
+
+    public float getAoeDamage() {
+        return aoeDamage;
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.putFloat("AoeDamage", aoeDamage);
+
+
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        this.aoeDamage = pCompound.getFloat("AoeDamage");
+
     }
 
     @Override

@@ -2,14 +2,13 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.particle.ZapParticleOption;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -17,8 +16,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.EntityPositionSource;
-import net.minecraft.world.level.gameevent.PositionSource;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -61,7 +58,7 @@ public class ChainLightning extends AbstractMagicProjectile {
                 doHurt(initialVictim);
                 if (getOwner() != null) {
                     Vec3 start = getOwner().position().add(0, getOwner().getBbHeight() / 2, 0);
-                    PositionSource dest = new EntityPositionSource(initialVictim, initialVictim.getBbHeight() / 2);
+                    var dest = initialVictim.position().add(0, initialVictim.getBbHeight() / 2, 0);
                     ((ServerLevel) level).sendParticles(new ZapParticleOption(dest), start.x, start.y, start.z, 1, 0, 0, 0, 0);
                 }
 
@@ -79,7 +76,7 @@ public class ChainLightning extends AbstractMagicProjectile {
                             victim.playSound(SoundRegistry.CHAIN_LIGHTNING_CHAIN.get(), 2, 1);
                             zapsThisWave.getAndIncrement();
                             Vec3 start = new Vec3(entity.xOld, entity.yOld, entity.zOld).add(0, entity.getBbHeight() / 2, 0);
-                            PositionSource dest = new EntityPositionSource(victim, victim.getBbHeight() / 2);
+                            var dest = victim.position().add(0, victim.getBbHeight() / 2, 0);
                             ((ServerLevel) level).sendParticles(new ZapParticleOption(dest), start.x, start.y, start.z, 1, 0, 0, 0, 0);
                         }
                     });
@@ -92,7 +89,7 @@ public class ChainLightning extends AbstractMagicProjectile {
 
     public void doHurt(Entity victim) {
         hits++;
-        DamageSources.applyDamage(victim, damage, SPELL.get().getDamageSource(this, getOwner()), SPELL.get().getSchoolType());
+        DamageSources.applyDamage(victim, damage, SPELL.get().getDamageSource(this, getOwner()));
         MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, victim.getX(), victim.getY() + victim.getBbHeight() / 2, victim.getZ(), 10, victim.getBbWidth() / 3, victim.getBbHeight() / 3, victim.getBbWidth() / 3, 0.1, false);
 
         lastVictims.add(victim);

@@ -10,11 +10,8 @@ import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import io.redspace.ironsspellbooks.item.spell_books.VillagerSpellBook;
-import io.redspace.ironsspellbooks.item.weapons.BloodStaffItem;
+import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.item.weapons.KeeperFlambergeItem;
-import io.redspace.ironsspellbooks.item.weapons.MagehunterItem;
-import io.redspace.ironsspellbooks.item.weapons.TestClaymoreItem;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -62,7 +59,7 @@ public class ItemRegistry {
                     new SpellDataRegistryHolder(SpellRegistry.BLAZE_STORM_SPELL, 6)})
     );
 
-    public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new UniqueSpellBook(SpellRarity.COMMON,
+    public static final RegistryObject<Item> EVOKER_SPELL_BOOK = ITEMS.register("evoker_spell_book", () -> new EvokerSpellBook(
             new SpellDataRegistryHolder[]{
                     new SpellDataRegistryHolder(SpellRegistry.FANG_STRIKE_SPELL, 6),
                     new SpellDataRegistryHolder(SpellRegistry.FANG_WARD_SPELL, 4),
@@ -70,11 +67,13 @@ public class ItemRegistry {
     );
 
     public static final RegistryObject<Item> MAGEHUNTER = ITEMS.register("magehunter", MagehunterItem::new);
-    //public static final RegistryObject<Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new SpellbreakerItem(SpellType.COUNTERSPELL_SPELL, 1));
+    //public static final RegistryObject<Item> SPELLBREAKER = ITEMS.register("spellbreaker", () -> new SpellbreakerItem(new SpellDataRegistryHolder(SpellRegistry.COUNTERSPELL_SPELL, 1)));
     public static final RegistryObject<Item> TEST_CLAYMORE = ITEMS.register("claymore", TestClaymoreItem::new);
     public static final RegistryObject<Item> KEEPER_FLAMBERGE = ITEMS.register("keeper_flamberge", KeeperFlambergeItem::new);
     //public static final RegistryObject<Item> TRUTHSEEKER = ITEMS.register("truthseeker", TruthseekerItem::new);
+    //public static final RegistryObject<Item> FIREBRAND = ITEMS.register("firebrand", FirebrandItem::new);
     public static final RegistryObject<Item> SCROLL = ITEMS.register("scroll", Scroll::new);
+    //public static final RegistryObject<Item> AUTOLOADER_CROSSBOW = ITEMS.register("autoloader_crossbow", () -> new AutoloaderCrossbow(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1).durability(465)));
 
     /**
      * Ink
@@ -143,6 +142,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> ARCANE_SALVAGE = ITEMS.register("arcane_salvage", ArcaneSalvageItem::new);
     public static final RegistryObject<Item> ARCANE_INGOT = ITEMS.register("arcane_ingot", () -> new Item((new Item.Properties())));
     public static final RegistryObject<Item> SHRIVING_STONE = ITEMS.register("shriving_stone", ShrivingStoneItem::new);
+    public static final RegistryObject<Item> ELDRITCH_PAGE = ITEMS.register("eldritch_manuscript", () -> new EldritchManuscript((new Item.Properties()).rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> LOST_KNOWLEDGE_FRAGMENT = ITEMS.register("ancient_knowledge_fragment", () -> new Item((new Item.Properties()).rarity(Rarity.UNCOMMON)));
 
     /**
      * Block Items
@@ -233,7 +234,7 @@ public class ItemRegistry {
     public static final RegistryObject<CurioBaseItem> CONJURERS_TALISMAN = ITEMS.register("conjurers_talisman", () -> new SimpleAttributeCurio(new Item.Properties().stacksTo(1), AttributeRegistry.SUMMON_DAMAGE.get(), new AttributeModifier("summon", 0.10, AttributeModifier.Operation.MULTIPLY_BASE)));
     public static final RegistryObject<CurioBaseItem> AFFINITY_RING = ITEMS.register("affinity_ring", () -> new AffinityRing(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<CurioBaseItem> CONCENTRATION_AMULET = ITEMS.register("concentration_amulet", () -> new SimpleDescriptiveCurio(new Item.Properties().stacksTo(1), "necklace"));
-    public static final RegistryObject<CurioBaseItem> LURKER_RING = ITEMS.register("lurker_ring",  LurkerRing::new);
+    public static final RegistryObject<CurioBaseItem> LURKER_RING = ITEMS.register("lurker_ring", LurkerRing::new);
     public static final RegistryObject<CurioBaseItem> AMETHYST_RESONANCE_NECKLACE = ITEMS.register("amethyst_resonance_charm", () -> new SimpleAttributeCurio(new Item.Properties().stacksTo(1), AttributeRegistry.MANA_REGEN.get(), new AttributeModifier("mana_regen", 0.15, AttributeModifier.Operation.MULTIPLY_BASE)));
 
     //leave invis ring at the bottom so you can't see a gap in the creative inventory

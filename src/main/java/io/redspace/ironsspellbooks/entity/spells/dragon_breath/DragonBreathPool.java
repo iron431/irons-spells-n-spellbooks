@@ -39,7 +39,7 @@ public class DragonBreathPool extends AoeEntity {
 
     @Override
     public float getParticleCount() {
-        return 4f;
+        return 3f;
     }
 
     @Override

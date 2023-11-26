@@ -82,6 +82,12 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> FIREFLY_SWARM_ATTACK = registerSoundEvent("entity.firefly_swarm.attack");
     public static RegistryObject<SoundEvent> FIREFLY_SPELL_PREPARE = registerSoundEvent("spell.firefly_swarm.prepare");
     public static RegistryObject<SoundEvent> RAY_OF_FROST = registerSoundEvent("spell.ray_of_frost.cast");
+    public static RegistryObject<SoundEvent> SONIC_BOOM = registerSoundEvent("spell.sonic_boom.cast");
+    public static RegistryObject<SoundEvent> DIVINE_SMITE_WINDUP = registerSoundEvent("spell.divine_smite.windup");
+    public static RegistryObject<SoundEvent> DIVINE_SMITE_CAST = registerSoundEvent("spell.divine_smite.cast");
+    public static RegistryObject<SoundEvent> TELEKINESIS_CAST = registerSoundEvent("spell.telekinesis.cast");
+    public static RegistryObject<SoundEvent> TELEKINESIS_LOOP = registerSoundEvent("spell.telekinesis.loop");
+    public static RegistryObject<SoundEvent> PLANAR_SIGHT_CAST = registerSoundEvent("spell.planar_sight.cast");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
@@ -102,6 +108,10 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> EVOCATION_CAST = registerSoundEvent("cast.generic.evocation");
     public static RegistryObject<SoundEvent> NATURE_CAST = registerSoundEvent("cast.generic.nature");
     public static RegistryObject<SoundEvent> POISON_CAST = registerSoundEvent("cast.generic.poison");
+
+    public static RegistryObject<SoundEvent> LEARN_ELDRITCH_SPELL = registerSoundEvent("ui.learn_eldritch_spell");
+    public static RegistryObject<SoundEvent> UI_TICK = registerSoundEvent("ui.tick");
+
 
 
     private static RegistryObject<SoundEvent> registerSoundEvent(String name) {

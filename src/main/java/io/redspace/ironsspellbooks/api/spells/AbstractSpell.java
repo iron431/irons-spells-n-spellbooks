@@ -2,29 +2,28 @@ package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
+import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.api.item.curios.RingData;
-import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
+import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.network.ClientboundUpdateCastingState;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastFinished;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnCastStarted;
 import io.redspace.ironsspellbooks.network.spell.ClientboundOnClientCast;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.util.Log;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -104,7 +103,15 @@ public abstract class AbstractSpell {
         return 1;
     }
 
+    /**
+     * @deprecated See player sensitive version, {@link AbstractSpell#getDisplayName(Player player)}
+     */
+    @Deprecated(forRemoval = true)
     public MutableComponent getDisplayName() {
+        return Component.translatable(getComponentId());
+    }
+
+    public MutableComponent getDisplayName(Player player) {
         return Component.translatable(getComponentId());
     }
 
@@ -112,7 +119,7 @@ public abstract class AbstractSpell {
         return String.format("spell.%s.%s", getSpellResource().getNamespace(), getSpellName());
     }
 
-    protected abstract ResourceLocation getSpellResource();
+    public abstract ResourceLocation getSpellResource();
 
     public abstract DefaultConfig getDefaultConfig();
 
@@ -237,27 +244,14 @@ public abstract class AbstractSpell {
         var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
 
         if (!playerMagicData.isCasting()) {
-            int playerMana = playerMagicData.getMana();
-
-            boolean hasEnoughMana = playerMana - getManaCost(spellLevel, serverPlayer) >= 0;
-            boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(this);
-
-            if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName()).withStyle(ChatFormatting.RED)));
-                return false;
+            CastResult castResult = canBeCastedBy(spellLevel, castSource, playerMagicData, serverPlayer);
+            if (castResult.message != null) {
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
             }
 
-            if (castSource.consumesMana() && !hasEnoughMana) {
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_mana", getDisplayName()).withStyle(ChatFormatting.RED)));
+            if (!castResult.isSuccess() || !checkPreCastConditions(level, spellLevel, serverPlayer, playerMagicData) || MinecraftForge.EVENT_BUS.post(new SpellCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource))) {
                 return false;
             }
-
-            if (MinecraftForge.EVENT_BUS.post(new SpellCastEvent(player, this.getSpellId(), spellLevel, getSchoolType(), castSource)))
-                return false;
-
-            if (!checkPreCastConditions(level, serverPlayer, playerMagicData))
-                return false;
-
 
             var castType = getCastType();
             if (castType == CastType.INSTANT) {
@@ -346,8 +340,34 @@ public abstract class AbstractSpell {
     }
 
     /**
-     * Server Side. Used to see if a spell is allowed to be cast, such as if it requires a target but finds none
+     * Checks for if a player is allowed to cast a spell
      */
+    public CastResult canBeCastedBy(int spellLevel, CastSource castSource, MagicData playerMagicData, Player player) {
+        int playerMana = playerMagicData.getMana();
+
+        boolean hasEnoughMana = playerMana - getManaCost(spellLevel, player) >= 0;
+        boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(this);
+
+        if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
+            return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName(player)).withStyle(ChatFormatting.RED));
+        } else if (castSource.consumesMana() && !hasEnoughMana) {
+            return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_mana", getDisplayName(player)).withStyle(ChatFormatting.RED));
+        }else{
+            return new CastResult(CastResult.Type.SUCCESS);
+        }
+    }
+
+    /**
+     * Server Side. At this point, the spell is allowed to be cast (mana, cooldown, etc). This checks for limitations of the spell itself, such as if it requires a target but finds none
+     */
+    public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        return checkPreCastConditions(level, entity, playerMagicData);
+    }
+
+    /**
+     * Use new level sensitive version {@link AbstractSpell#checkPreCastConditions(Level, int, LivingEntity, MagicData)}.
+     */
+    @Deprecated(forRemoval = true)
     public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
         return true;
     }
@@ -528,5 +548,38 @@ public abstract class AbstractSpell {
         }
 
         return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
+    }
+
+    /**
+     * Returns whether this spell can be generated from random loot when no other criteria are specified
+     */
+    public boolean allowLooting() {
+        return true;
+    }
+
+    /**
+     * Returns an additional condition for whether this spell can be crafted by a player. This does NOT omit it from the scroll forge entirely
+     */
+    public boolean canBeCraftedBy(Player player) {
+        return true;
+    }
+
+    /**
+     * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
+     */
+    public boolean allowCrafting() {
+        return true;
+    }
+
+    public boolean obfuscateStats(@Nullable Player player) {
+        return false;
+    }
+
+    public boolean isLearned(@Nullable Player player) {
+        return true;
+    }
+
+    public boolean canBeInterrupted(@Nullable Player player){
+        return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
     }
 }

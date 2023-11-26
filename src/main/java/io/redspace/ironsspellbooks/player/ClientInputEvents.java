@@ -2,21 +2,21 @@ package io.redspace.ironsspellbooks.player;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,6 +30,7 @@ public final class ClientInputEvents {
 
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
+    //    private static final KeyState ELDRITCH_SCREEN_STATE = register(KeyMappings.ELDRITCH_SCREEN_KEYMAP);
     private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
 
     private static int useKeyId = Integer.MIN_VALUE;
@@ -52,8 +53,14 @@ public final class ClientInputEvents {
         if (SPELL_WHEEL_STATE.wasReleased()) {
             if (minecraft.screen == null && SpellWheelOverlay.instance.active)
                 SpellWheelOverlay.instance.close();
-
         }
+//        if (ELDRITCH_SCREEN_STATE.wasPressed()) {
+//            if (minecraft.screen == null) {
+//                minecraft.setScreen(new EldritchResearchScreen(Component.empty(), player.getOffhandItem().is(ItemRegistry.ELDRITCH_PAGE.get()) ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND));
+//            }else if(minecraft.screen instanceof EldritchResearchScreen screen){
+//                screen.onClose();
+//            }
+//        }
 
         update();
     }
@@ -82,7 +89,7 @@ public final class ClientInputEvents {
 //                    irons_spellbooks.LOGGER.debug("collapsed new index: {}", scrollIndex);
 //                    irons_spellbooks.LOGGER.debug("{} + {} = {}", scrollIndex, spellCount, scrollIndex + spellCount);
 //                    irons_spellbooks.LOGGER.debug("{} % {} = {}", scrollIndex + spellCount, spellCount, (scrollIndex + spellCount) % spellCount);
-                    scrollIndex = (scrollIndex + spellCount) % spellCount;
+                    scrollIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
 
 //                    irons_spellbooks.LOGGER.debug("wrapped collapsed index: {}", scrollIndex);
 

@@ -27,9 +27,7 @@ public class RayOfFrostVisualEntity extends Entity implements IEntityAdditionalS
         this.setPos(start.subtract(0, .75f, 0));
         this.distance = (float) start.distanceTo(end);
         this.setRot(owner.getYRot(), owner.getXRot());
-
     }
-
 
     @Override
     public void tick() {

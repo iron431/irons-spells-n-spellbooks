@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class EntityRendererMixin<T extends Entity> {
 
 
-    /*
+    /**
     Necessary to render additional effects based on the entity while casting when they might otherwise cull themselves
      */
     @Inject(method = "shouldRender", at = @At(value = "HEAD"), cancellable = true)

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FFF",
+    "FEF",
+    "FFF"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:echo_shard"
+    },
+    "F": {
+      "item": "irons_spellbooks:ancient_knowledge_fragment"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:eldritch_manuscript",
+    "count": 1
+  }
+}

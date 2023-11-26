@@ -9,7 +9,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 /**
- * SpellCastEvent is fired whenever a {@link Player} casts a spell.<br>
+ * SpellCastEvent is fired whenever a {@link Player} is about to cast a spell.<br>
  * <br>
  * This event is {@link Cancelable}.<br>
  * If this event is canceled, the spell is not cast.<br>
@@ -23,8 +23,8 @@ public class SpellCastEvent extends PlayerEvent {
     private final SchoolType schoolType;
     private final CastSource castSource;
     private final int spellLevel;
-    public SpellCastEvent(Player player, String spellId, int spellLevel, SchoolType schoolType, CastSource castSource)
-    {
+
+    public SpellCastEvent(Player player, String spellId, int spellLevel, SchoolType schoolType, CastSource castSource) {
         super(player);
         this.spellId = spellId;
         this.spellLevel = spellLevel;
@@ -33,9 +33,23 @@ public class SpellCastEvent extends PlayerEvent {
     }
 
     @Override
-    public boolean isCancelable() { return true; }
-    public String getSpellId() { return this.spellId; }
-    public SchoolType getSchoolType() { return this.schoolType; }
-    public int getSpellLevel() { return this.spellLevel; }
-    public CastSource getCastSource() { return this.castSource; }
+    public boolean isCancelable() {
+        return true;
+    }
+
+    public String getSpellId() {
+        return this.spellId;
+    }
+
+    public SchoolType getSchoolType() {
+        return this.schoolType;
+    }
+
+    public int getSpellLevel() {
+        return this.spellLevel;
+    }
+
+    public CastSource getCastSource() {
+        return this.castSource;
+    }
 }

@@ -22,4 +22,5 @@ public class SpellAnimations {
     public static final AnimationHolder SPIT_FINISH_ANIMATION = new AnimationHolder("charge_spit_finish", Animation.LoopType.PLAY_ONCE);
     public static final AnimationHolder CHARGE_ANIMATION = new AnimationHolder("charge_black_hole", Animation.LoopType.PLAY_ONCE);
     public static final AnimationHolder FINISH_ANIMATION = new AnimationHolder("long_cast_finish", Animation.LoopType.PLAY_ONCE);
+    public static final AnimationHolder OVERHEAD_MELEE_SWING_ANIMATION = new AnimationHolder("long_cast_finish", IAnimation.LoopType.PLAY_ONCE);
 }

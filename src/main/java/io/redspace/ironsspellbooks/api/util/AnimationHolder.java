@@ -10,27 +10,34 @@ import java.util.Optional;
 public class AnimationHolder {
     private final RawAnimation geckoAnimation;
     private final ResourceLocation playerAnimation;
-    public final boolean adjustLeftArm;
-    public final boolean adjustRightArm;
+    public final boolean isPass;
 
     public AnimationHolder(String path, Animation.LoopType loopType) {
         this.playerAnimation = IronsSpellbooks.id(path);
         this.geckoAnimation = RawAnimation.begin().then(playerAnimation.getPath(), loopType);
-        this.adjustLeftArm = true;
-        this.adjustRightArm = true;
+        this.isPass = false;
     }
 
-    private AnimationHolder() {
+    private AnimationHolder(boolean isPass) {
         this.playerAnimation = null;
         this.geckoAnimation = null;
-        this.adjustLeftArm = false;
-        this.adjustRightArm = false;
+        this.isPass = isPass;
     }
+    private static final AnimationHolder empty = new AnimationHolder(false);
+    private static final AnimationHolder pass = new AnimationHolder(true);
 
-    private static final AnimationHolder empty = new AnimationHolder();
-
+    /**
+     * Represents an empty animation, making the player immediately stop animating at the end of a cast
+     */
     public static AnimationHolder none() {
         return empty;
+    }
+
+    /**
+     * Represents the lack of an animation, letting the previous animation (the cast start animation) continue to play after the spell ends, so long as the spell wasn't cancelled
+     */
+    public static AnimationHolder pass() {
+        return pass;
     }
 
     public Optional<RawAnimation> getForMob() {

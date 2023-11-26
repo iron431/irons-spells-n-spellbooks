@@ -42,7 +42,7 @@ public class RayOfFrostSpell extends AbstractSpell {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
                 Component.translatable("ui.irons_spellbooks.freeze_time", Utils.timeFromTicks(getFreezeTime(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(spellLevel), 1))
+                Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getRange(spellLevel, caster), 1))
         );
     }
 
@@ -81,7 +81,7 @@ public class RayOfFrostSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel), true, .15f);
+        var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), true, .15f);
         level.addFreshEntity(new RayOfFrostVisualEntity(level, entity.getEyePosition(), hitResult.getLocation(), entity));
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
@@ -95,7 +95,7 @@ public class RayOfFrostSpell extends AbstractSpell {
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
-    public static float getRange(int level) {
+    public static float getRange(int level, LivingEntity caster) {
         return 30;
     }
 

@@ -75,7 +75,7 @@ public class ChainCreeperSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Utils.preCastTargetHelper(level, entity, playerMagicData, this, 48, .25f, false);
         return true;
     }

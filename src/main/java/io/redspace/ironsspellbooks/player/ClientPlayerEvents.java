@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
-import io.redspace.ironsspellbooks.effect.InstantManaEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -29,12 +28,12 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
@@ -161,6 +160,23 @@ public class ClientPlayerEvents {
                     CustomDescriptionMobEffect.handleCustomPotionTooltip(stack, event.getToolTip(), event.getFlags().isAdvanced(), mobEffectInstance, customDescriptionMobEffect);
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void changeFogColor(ViewportEvent.ComputeFogColor event) {
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT.get())) {
+            var color = MobEffectRegistry.PLANAR_SIGHT.get().getColor();
+            float f = 0.0F;
+            float f1 = 0.0F;
+            float f2 = 0.0F;
+
+            f += (float) ((color >> 16 & 255)) / 255.0F;
+            f1 += (float) ((color >> 8 & 255)) / 255.0F;
+            f2 += (float) ((color >> 0 & 255)) / 255.0F;
+            event.setRed(f * .15f);
+            event.setGreen(f1 * .15f);
+            event.setBlue(f2 * .15f);
         }
     }
 }

@@ -27,7 +27,7 @@ public class MagmaBombSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(spellLevel, caster) / 5f, 1)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getAoeDamage(spellLevel, caster), 1)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1))
         );
     }
@@ -42,7 +42,7 @@ public class MagmaBombSpell extends AbstractSpell {
     public MagmaBombSpell() {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 8;
-        this.spellPowerPerLevel = 1;
+        this.spellPowerPerLevel = 3;
         this.castTime = 20;
         this.baseManaCost = 30;
     }
@@ -80,16 +80,21 @@ public class MagmaBombSpell extends AbstractSpell {
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
         orb.setExplosionRadius(getRadius(spellLevel, entity));
         orb.setDamage(getDamage(spellLevel, entity));
+        orb.setAoeDamage(getAoeDamage(spellLevel, entity));
         level.addFreshEntity(orb);
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     public float getRadius(int spellLevel, LivingEntity caster) {
-        return 5;
+        return 3 + getEntityPowerMultiplier(caster);
     }
 
     public float getDamage(int spellLevel, LivingEntity caster) {
-        return getSpellPower(spellLevel, caster);
+        return baseSpellPower * getEntityPowerMultiplier(caster);
+    }
+
+    public float getAoeDamage(int spellLevel, LivingEntity caster) {
+        return 1 + getSpellPower(spellLevel, caster) * .1f;
     }
 
     @Override

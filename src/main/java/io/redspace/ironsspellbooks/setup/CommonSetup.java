@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedSkeleton;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedVex;
@@ -71,7 +70,7 @@ public class CommonSetup {
         event.put(EntityRegistry.ARCHEVOKER.get(), ArchevokerEntity.prepareAttributes().build());
         event.put(EntityRegistry.PRIEST.get(), PriestEntity.prepareAttributes().build());
         event.put(EntityRegistry.KEEPER.get(), KeeperEntity.prepareAttributes().build());
-        event.put(EntityRegistry.VOID_TENTACLE.get(), VoidTentacle.createLivingAttributes().build());
+        event.put(EntityRegistry.SCULK_TENTACLE.get(), VoidTentacle.createLivingAttributes().build());
         event.put(EntityRegistry.CRYOMANCER.get(), CryomancerEntity.prepareAttributes().build());
         event.put(EntityRegistry.ROOT.get(), RootEntity.createLivingAttributes().build());
 

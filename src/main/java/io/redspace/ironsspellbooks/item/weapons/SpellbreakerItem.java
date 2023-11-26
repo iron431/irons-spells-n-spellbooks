@@ -21,22 +21,10 @@ import java.util.function.Consumer;
 public class SpellbreakerItem extends MagicSwordItem {
 
     public SpellbreakerItem(SpellDataRegistryHolder imbuedSpell) {
-        super(Tiers.DIAMOND, 6, -2.4f, imbuedSpell,
+        super(Tiers.DIAMOND, 8, -2.2f, imbuedSpell,
             Map.of(
                 AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier(UUID.fromString("412b5a66-2b43-4c18-ab05-6de0bb4d64d3"), "Weapon Modifier", .15, AttributeModifier.Operation.MULTIPLY_BASE)
             ),
             (new Properties()).rarity(Rarity.EPIC));
-    }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return new SpecialItemRenderer(Minecraft.getInstance().getItemRenderer(),
-                        Minecraft.getInstance().getEntityModels(),
-                        "spellbreaker");
-            }
-        });
     }
 }

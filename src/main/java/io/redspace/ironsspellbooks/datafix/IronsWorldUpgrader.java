@@ -37,9 +37,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class IronsWorldUpgrader {
-    public static int IRONS_WORLD_DATA_VERSION = 1;
+    public int tempCount = 0;
+    public static int IRONS_WORLD_DATA_VERSION = IronsDataVersions.ELDRITCH_SCHOOL_DATA_VERSION;
     final int REPORT_PROGRESS_MS = 5000;
-    final byte[] INHABITED_TIME_MARKER = new byte[]{0x49, 0x6E, 0x68, 0x61, 0x62, 0x69, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6D, 0x65};
+    public static final byte[] INHABITED_TIME_MARKER = new byte[]{0x49, 0x6E, 0x68, 0x61, 0x62, 0x69, 0x74, 0x65, 0x64, 0x54, 0x69, 0x6D, 0x65};
     public static final String REGION_FOLDER = "region";
     public static final String ENTITY_FOLDER = "entities";
     private final LevelStorageSource.LevelStorageAccess levelStorage;
@@ -51,8 +52,7 @@ public class IronsWorldUpgrader {
     private final Object2FloatMap<ResourceKey<Level>> progressMap = Object2FloatMaps.synchronize(new Object2FloatOpenCustomHashMap<>(Util.identityStrategy()));
     private static final Pattern REGEX = Pattern.compile("^r\\.(-?[0-9]+)\\.(-?[0-9]+)\\.mca$");
     private final DimensionDataStorage overworldDataStorage;
-    private final IronsSpellBooksWorldData ironsSpellBooksWorldData;
-    private Set<ResourceKey<Level>> levels;
+    private Set<ResourceKey<Level>> levels = null;
 
     public IronsWorldUpgrader(LevelStorageSource.LevelStorageAccess pLevelStorage, LayeredRegistryAccess<RegistryLayer> registries) {
         this.levelStorage = pLevelStorage;
@@ -79,14 +79,14 @@ public class IronsWorldUpgrader {
         }
 
         this.overworldDataStorage = new DimensionDataStorage(file, dataFixer);
-        this.ironsSpellBooksWorldData = overworldDataStorage.computeIfAbsent(
+        IronsSpellBooksWorldData.INSTANCE = overworldDataStorage.computeIfAbsent(
                 IronsSpellBooksWorldData::load,
                 IronsSpellBooksWorldData::new,
                 IronsSpellbooks.MODID);
     }
 
     public boolean worldNeedsUpgrading() {
-        return ironsSpellBooksWorldData.getDataVersion() < IRONS_WORLD_DATA_VERSION;
+        return IronsSpellBooksWorldData.INSTANCE.getDataVersion() < IRONS_WORLD_DATA_VERSION;
     }
 
     public void runUpgrade() {
@@ -101,17 +101,19 @@ public class IronsWorldUpgrader {
 //                IronsSpellbooks.LOGGER.error("IronsWorldUpgrader Level Backup failed: {}", exception.getMessage());
 //            }
 
-            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting REGION_FOLDER");
-            long millis = Util.getMillis();
-            doWork(REGION_FOLDER, "block_entities", true);
-            millis = Util.getMillis() - millis;
-            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished REGION_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
+            long millis = 0;
 
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting ENTITY_FOLDER");
             millis = Util.getMillis();
-            doWork(ENTITY_FOLDER, null, false);
+            doWork(ENTITY_FOLDER, null, false, false);
             millis = Util.getMillis() - millis;
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished ENTITY_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
+
+            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting REGION_FOLDER (this will take a few minutes on huge worlds..");
+            millis = Util.getMillis();
+            doWork(REGION_FOLDER, "block_entities", true, true);
+            millis = Util.getMillis() - millis;
+            IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished REGION_FOLDER after {} ms.  chunks updated:{} chunks skipped:{} tags fixed:{}", millis, this.converted, this.skipped, this.fixes);
 
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader starting fixDimensionStorage");
             millis = Util.getMillis();
@@ -119,8 +121,8 @@ public class IronsWorldUpgrader {
             millis = Util.getMillis() - millis;
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished fixDimensionStorage after {} ms. tags fixed:{} ", millis, this.fixes);
 
-            int previousVersion = ironsSpellBooksWorldData.getDataVersion();
-            ironsSpellBooksWorldData.setDataVersion(IRONS_WORLD_DATA_VERSION);
+            int previousVersion = IronsSpellBooksWorldData.INSTANCE.getDataVersion();
+            IronsSpellBooksWorldData.INSTANCE.setDataVersion(IRONS_WORLD_DATA_VERSION);
             overworldDataStorage.save();
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader V{} -> V{} completed", previousVersion, IRONS_WORLD_DATA_VERSION);
         }
@@ -137,23 +139,30 @@ public class IronsWorldUpgrader {
         }).forEach(dir -> {
             var files = dir.listFiles();
             if (files != null) {
-                Arrays.stream(files).toList().forEach(file -> {
-                    try {
-                        var compoundTag = NbtIo.readCompressed(file);
-                        var ironsTraverser = new IronsTagTraverser();
-                        ironsTraverser.visit(compoundTag);
-
-                        if (ironsTraverser.changesMade()) {
-                            NbtIo.writeCompressed(compoundTag, file);
-                        }
-
-                        fixes += ironsTraverser.totalChanges();
-                    } catch (Exception exception) {
-                        IronsSpellbooks.LOGGER.error("IronsWorldUpgrader FixDimensionStorage error: {}", exception.getMessage());
-                    }
-                });
+                Arrays.stream(files).toList().forEach(this::fixDimensionDataFile);
             }
         });
+    }
+
+    private void fixDimensionDataFile(File file) {
+        var subFiles = file.listFiles();
+        if (subFiles != null && subFiles.length > 0) {
+            Arrays.stream(subFiles).forEach(this::fixDimensionDataFile);
+        } else {
+            try {
+                var compoundTag = NbtIo.readCompressed(file);
+                var ironsTraverser = new IronsTagTraverser();
+                ironsTraverser.visit(compoundTag);
+
+                if (ironsTraverser.changesMade()) {
+                    NbtIo.writeCompressed(compoundTag, file);
+                }
+
+                fixes += ironsTraverser.totalChanges();
+            } catch (Exception exception) {
+                IronsSpellbooks.LOGGER.error("IronsWorldUpgrader FixDimensionStorage error: {}", exception.getMessage());
+            }
+        }
     }
 
     private boolean preScanChunkUpdateNeeded(ChunkStorage chunkStorage, ChunkPos chunkPos) throws Exception {
@@ -165,13 +174,15 @@ public class IronsWorldUpgrader {
                 return false;
             }
 
-            int markerPos = ByteHelper.indexOf(dataInputStream, INHABITED_TIME_MARKER);
-
+            //int markerPos = ByteHelper.indexOf(dataInputStream, INHABITED_TIME_MARKER);
+            int markerPos = ByteHelper.indexOf(dataInputStream, new ParallelMatcher(DataFixerHelpers.DATA_MATCHER_TARGETS));
             if (markerPos == -1) {
                 return true;
             }
-
             var inhabitedTime = dataInputStream.readLong();
+
+            tempCount++;
+
             return inhabitedTime != 0;
 
         } catch (Exception ignored) {
@@ -180,7 +191,7 @@ public class IronsWorldUpgrader {
         return true;
     }
 
-    private void doWork(String regionFolder, String filterTag, boolean preScan) {
+    private void doWork(String regionFolder, String filterTag, boolean preScan, boolean checkInhabitedTime) {
         running = true;
         converted = 0;
         skipped = 0;
@@ -220,7 +231,7 @@ public class IronsWorldUpgrader {
                             if (!preScan || preScanChunkUpdateNeeded(chunkstorage, chunkpos)) {
                                 CompoundTag chunkDataTag = chunkstorage.read(chunkpos).join().orElse(null);
 
-                                if (chunkDataTag != null && chunkDataTag.getInt("InhabitedTime") != 0) {
+                                if (chunkDataTag != null && (!checkInhabitedTime || chunkDataTag.getInt("InhabitedTime") != 0)) {
                                     ListTag blockEntitiesTag;
 
                                     if (filterTag != null) {
@@ -235,7 +246,7 @@ public class IronsWorldUpgrader {
 
                                     if (ironsTagTraverser.changesMade()) {
                                         chunkstorage.write(chunkpos, chunkDataTag);
-                                        this.fixes = ironsTagTraverser.totalChanges();
+                                        this.fixes += ironsTagTraverser.totalChanges();
                                         updated = true;
                                     }
                                 }

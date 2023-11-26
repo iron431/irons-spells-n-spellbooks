@@ -1,10 +1,11 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.api.events.SpellDamageEvent;
-import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
@@ -19,12 +20,10 @@ import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.Util;
@@ -44,8 +43,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -59,6 +60,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -70,6 +72,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 
+import java.util.UUID;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,7 +81,7 @@ import java.util.stream.Collectors;
 @Mod.EventBusSubscriber
 public class ServerPlayerEvents {
 
-//    @SubscribeEvent
+    //    @SubscribeEvent
 //    public static void onPlayerAttack(AttackEntityEvent event) {
 //        TODO: this only gets called when the player successfully hits something. we want it to cancel if they even try.
 //              granted, the input even should be cancelled already, but better combat skips that due to custom weapon handling.
@@ -92,7 +96,8 @@ public class ServerPlayerEvents {
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
             var server = event.getServer();
-            new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
+            var iwu = new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
+            IronsSpellbooks.LOGGER.debug("IWU:{}", iwu.tempCount);
         }
     }
 
@@ -110,6 +115,13 @@ public class ServerPlayerEvents {
                     && (event.getFrom().getItem() instanceof SpellBook || SpellData.hasSpellData(event.getFrom()))) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            Utils.serverSideCancelCast(serverPlayer);
         }
     }
 
@@ -179,8 +191,8 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
-        if (event.isWasDeath()) {
-            if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
+        if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
+            if (event.isWasDeath()) {
                 //Persist summon timers across death
                 event.getOriginal().getActiveEffects().forEach((effect -> {
                     //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
@@ -189,6 +201,12 @@ public class ServerPlayerEvents {
                     }
                 }));
             }
+            event.getOriginal().reviveCaps();
+            MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
+            MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
+            newMagicData.setSyncedData(oldMagicData.getSyncedData());
+            newMagicData.getSyncedData().doSync();
+            event.getOriginal().invalidateCaps();
         }
     }
 
@@ -234,6 +252,11 @@ public class ServerPlayerEvents {
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
 
         if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof AbstractSpellCastingMob)) {
+            if (ItemRegistry.FIREWARD_RING.get().isEquippedBy(livingEntity) && event.getSource().isFire()) {
+                event.getEntity().clearFire();
+                event.setCanceled(true);
+                return;
+            }
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
                 if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
@@ -248,28 +271,6 @@ public class ServerPlayerEvents {
         //TODO: tetra update
         //TetraProxy.PROXY.handleLivingAttackEvent(event);
     }
-//
-//    @SubscribeEvent
-//    public static void onMobTarget(LivingChangeTargetEvent event) {
-//        var newTarget = event.getNewTarget();
-//        var oldTarget = event.getOriginalTarget();
-//        if (newTarget == null || oldTarget == null)
-//            return;
-//
-//        if (newTarget.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY.get()))
-//            event.setNewTarget(oldTarget);
-//    }
-//    @SubscribeEvent
-//    public static void onPlayerHurt(LivingHurtEvent event) {
-//        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-//            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-//            if (playerMagicData.getSyncedData().getHasEvasion()) {
-//                if (EvasionEffect.doEffect(serverPlayer, event.getSource())) {
-//                    event.setCanceled(true);
-//                }
-//            }
-//        }
-//    }
 
     @SubscribeEvent
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
@@ -325,8 +326,7 @@ public class ServerPlayerEvents {
 
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             if (playerMagicData.isCasting() &&
-                    !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(serverPlayer) &&
-                    playerMagicData.getCastType() == CastType.LONG &&
+                    playerMagicData.getCastingSpell().getSpell().canBeInterrupted(serverPlayer) &&
                     playerMagicData.getCastDurationRemaining() > 0 &&
                     !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE)) {
                 Utils.serverSideCancelCast(serverPlayer);
@@ -386,6 +386,24 @@ public class ServerPlayerEvents {
                 player.swing(event.getHand());
                 event.setCancellationResult(InteractionResultHolder.sidedSuccess(ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get())), player.level.isClientSide).getResult());
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void handleResistanceAttributesOnSpawn(MobSpawnEvent event) {
+        var mob = event.getEntity();
+        //Attributes should never be null because all living entities have these attributes
+        if (mob.getMobType() == MobType.UNDEAD) {
+            //Undead take extra holy damage, and less blood (necromantic) damage
+            mob.getAttributes().getInstance(AttributeRegistry.HOLY_MAGIC_RESIST.get()).setBaseValue(0.5);
+            mob.getAttributes().getInstance(AttributeRegistry.BLOOD_MAGIC_RESIST.get()).setBaseValue(1.5);
+        } else if (mob.getMobType() == MobType.WATER) {
+            //Water mobs take extra lightning damage
+            mob.getAttributes().getInstance(AttributeRegistry.LIGHTNING_MAGIC_RESIST.get()).setBaseValue(0.5);
+        }
+        if (mob.fireImmune()) {
+            //Fire immune (blazes, pyromancer, etc) take 50% fire damage
+            mob.getAttributes().getInstance(AttributeRegistry.FIRE_MAGIC_RESIST.get()).setBaseValue(1.5);
         }
     }
 

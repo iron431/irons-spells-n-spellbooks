@@ -37,11 +37,4 @@ public class AbstractClientPlayerMixin {
             cir.setReturnValue(true);
         }
     }
-
-//    @Inject(method = "<init>", at = @At("TAIL"))
-//    private void postInit(ClientLevel world, GameProfile profile, ProfilePublicKey publicKey, CallbackInfo ci) {
-//        //var player = (Player) (Object) this;
-//        //AbstractClientPlayerMixinHelper.playerMixinInit(player);
-//    }
-
 }

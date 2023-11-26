@@ -50,6 +50,7 @@ public class SchoolRegistry {
     public static final ResourceLocation BLOOD_RESOURCE = IronsSpellbooks.id("blood");
     public static final ResourceLocation EVOCATION_RESOURCE = IronsSpellbooks.id("evocation");
     public static final ResourceLocation NATURE_RESOURCE = IronsSpellbooks.id("nature");
+    public static final ResourceLocation ELDRITCH_RESOURCE = IronsSpellbooks.id("eldritch");
 
     public static final RegistryObject<SchoolType> FIRE = registerSchool(new SchoolType(
             FIRE_RESOURCE,
@@ -128,6 +129,15 @@ public class SchoolRegistry {
             LazyOptional.of(AttributeRegistry.NATURE_MAGIC_RESIST::get),
             LazyOptional.of(SoundRegistry.NATURE_CAST::get),
             ISSDamageTypes.NATURE_MAGIC
+    ));
+
+    public static final RegistryObject<SchoolType> ELDRITCH = registerSchool(new SchoolType(
+            ELDRITCH_RESOURCE,
+            ModTags.ELDRITCH_FOCUS,
+            Component.translatable("school.irons_spellbooks.eldritch").withStyle(Style.EMPTY.withColor(0x0f839c)),
+            LazyOptional.empty(),
+            LazyOptional.empty(),
+            LazyOptional.of(SoundRegistry.EVOCATION_CAST::get)
     ));
 
     @Nullable

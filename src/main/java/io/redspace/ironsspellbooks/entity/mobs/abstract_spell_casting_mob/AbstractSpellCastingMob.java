@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -280,7 +281,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             forceLookAtTarget(getTarget());
         }
 
-        if (!level.isClientSide && !castingSpell.getSpell().checkPreCastConditions(level, this, playerMagicData)) {
+        if (!level.isClientSide && !castingSpell.getSpell().checkPreCastConditions(level, spellLevel, this, playerMagicData)) {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, level.isClientSide);
             }
@@ -485,6 +486,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
+        if(spell.getCastFinishAnimation() == AnimationHolder.pass()){
+            return;
+        }
         spell.getCastFinishAnimation().getForMob().ifPresentOrElse(animationBuilder -> {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.setFinishAnimationFromSpell {}", animationBuilder);

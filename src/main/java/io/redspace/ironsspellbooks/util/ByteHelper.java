@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.util;
 
+import io.redspace.ironsspellbooks.datafix.ParallelMatcher;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 
@@ -60,6 +62,26 @@ public class ByteHelper {
             }
             return index;
         } while (data != -1);
+        return -1;
+    }
+
+    public static int indexOf(DataInputStream dataInputStream, ParallelMatcher parallelMatcher) throws IOException {
+        if (dataInputStream == null || parallelMatcher == null) {
+            return -1;
+        }
+
+        int data;
+        int index = -1;
+
+        do {
+            data = dataInputStream.read();
+            index++;
+            if (parallelMatcher.pushValue(data)) {
+                return index;
+            }
+
+        } while (data != -1);
+
         return -1;
     }
 }

@@ -31,7 +31,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.1
+          "chance": 0.15
         }
       ]
     },
@@ -91,6 +91,21 @@
         {
           "condition": "minecraft:random_chance",
           "chance": 0.1
+        }
+      ]
+    },
+    {
+      "rolls": 3,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "irons_spellbooks:ancient_knowledge_fragment",
+          "conditions": [
+            {
+              "condition": "minecraft:random_chance",
+              "chance": 0.25
+            }
+          ]
         }
       ]
     },

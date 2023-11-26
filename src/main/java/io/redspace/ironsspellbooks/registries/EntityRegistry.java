@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.entity.spells.ChainLightning;
 import io.redspace.ironsspellbooks.entity.spells.EarthquakeAoe;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
+import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.entity.spells.HealingAoe;
@@ -276,11 +277,11 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "citadel_keeper").toString()));
 
-    public static final RegistryObject<EntityType<VoidTentacle>> VOID_TENTACLE =
-            ENTITIES.register("void_tentacle", () -> EntityType.Builder.<VoidTentacle>of(VoidTentacle::new, MobCategory.MISC)
+    public static final RegistryObject<EntityType<VoidTentacle>> SCULK_TENTACLE =
+            ENTITIES.register("sculk_tentacle", () -> EntityType.Builder.<VoidTentacle>of(VoidTentacle::new, MobCategory.MISC)
                     .sized(2.5f, 5.5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "void_tentacle").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "sculk_tentacle").toString()));
 
     public static final RegistryObject<EntityType<IceBlockProjectile>> ICE_BLOCK_PROJECTILE =
             ENTITIES.register("ice_block_projectile", () -> EntityType.Builder.<IceBlockProjectile>of(IceBlockProjectile::new, MobCategory.MISC)
@@ -421,6 +422,12 @@ public class EntityRegistry {
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "ray_of_frost").toString()));
+
+    public static final RegistryObject<EntityType<EldritchBlastVisualEntity>> ELDRITCH_BLAST_VISUAL_ENTITY =
+            ENTITIES.register("eldritch_blast", () -> EntityType.Builder.<EldritchBlastVisualEntity>of(EldritchBlastVisualEntity::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "eldritch_blast").toString()));
 
     public static final RegistryObject<EntityType<DevourJaw>> DEVOUR_JAW =
             ENTITIES.register("devour_jaw", () -> EntityType.Builder.<DevourJaw>of(DevourJaw::new, MobCategory.MISC)

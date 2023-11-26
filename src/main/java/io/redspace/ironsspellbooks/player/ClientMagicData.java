@@ -118,12 +118,6 @@ public class ClientMagicData {
             resetTargetingData();
         }
 
-        var animationPlayer = castingAnimationPlayerLookup.getOrDefault(playerUUID, null);
-        if (animationPlayer != null) {
-            //Ironsspellbooks.logger.debug("resetClientCastState.1.2");
-            animationPlayer.stop();
-        }
-
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem() && Minecraft.getInstance().player.getUUID().equals(playerUUID)) {
             //Ironsspellbooks.logger.debug("resetClientCastState.2: instanceUUID:{}, playerUUID:{}", Minecraft.getInstance().player.getUUID(), playerUUID);
             Minecraft.getInstance().player.stopUsingItem();

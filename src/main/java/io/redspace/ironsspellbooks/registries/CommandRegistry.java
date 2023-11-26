@@ -1,15 +1,9 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.command.*;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.server.command.ModIdArgument;
-
-import static net.minecraftforge.registries.ForgeRegistries.COMMAND_ARGUMENT_TYPES;
 
 
 @Mod.EventBusSubscriber()
@@ -23,8 +17,9 @@ public class CommandRegistry {
         CreateDebugWizardCommand.register(event.getDispatcher());
         ManaCommand.register(event.getDispatcher());
         GenerateModList.register(event.getDispatcher());
-//        LocateBlock.register(event.getDispatcher(), event.getBuildContext());
-        //GenerateSiteData.register(event.getDispatcher());
-
+        LearnCommand.register(event.getDispatcher());
+//        if(!FMLLoader.isProduction()) {
+//            GenerateSiteData.register(event.getDispatcher());
+//        }
     }
 }

@@ -29,6 +29,21 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "name": "irons_spellbooks:ancient_knowledge_fragment"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.05
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
@@ -296,6 +311,5 @@
         }
       ]
     }
-
   ]
 }

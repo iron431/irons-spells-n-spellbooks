@@ -212,7 +212,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         // Title
         //
         boolean spellSelected = selectedSpellIndex >= 0 && spellSlots.get(selectedSpellIndex).hasSpell();
-        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSelected ? spellSlots.get(selectedSpellIndex).spellData.getSpell().getDisplayName() : Component.translatable("ui.irons_spellbooks.empty_slot");
+        var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSelected ? spellSlots.get(selectedSpellIndex).spellData.getSpell().getDisplayName(Minecraft.getInstance().player) : Component.translatable("ui.irons_spellbooks.empty_slot");
         //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
 
         var titleLines = font.split(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);

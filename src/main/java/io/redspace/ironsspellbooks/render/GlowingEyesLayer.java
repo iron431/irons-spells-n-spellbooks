@@ -72,6 +72,8 @@ public class GlowingEyesLayer {
         //Sorted by most prioritized color
         if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ABYSSAL_SHROUD))
             return EyeType.Abyssal;
+        if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.PLANAR_SIGHT))
+            return EyeType.Planar_Sight;
 //        else if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.SHADOWWALKER_HELMET.get()))
 //            return EyeType.Ender_Armor;
         else return EyeType.None;
@@ -83,12 +85,15 @@ public class GlowingEyesLayer {
             return EyeType.Ender_Armor.scale;
         if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.ABYSSAL_SHROUD))
             return EyeType.Abyssal.scale;
+        if (ClientMagicData.getSyncedSpellData(entity).hasEffect(SyncedSpellData.PLANAR_SIGHT))
+            return EyeType.Planar_Sight.scale;
         else return EyeType.None.scale;
     }
 
     public enum EyeType {
         None(0, 0, 0, 0),
         Abyssal(1f, 1f, 1f, 1f),
+        Planar_Sight(.42f, .258f, .96f, 1f),
         Ender_Armor(.816f, 0f, 1f, 1.15f);
 
         public final float r, g, b, scale;

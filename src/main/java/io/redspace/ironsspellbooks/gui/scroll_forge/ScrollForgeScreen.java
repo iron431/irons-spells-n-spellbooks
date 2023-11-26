@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -23,6 +24,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,13 +37,19 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private static final ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
     private static final int SPELL_LIST_X = 89;
     private static final int SPELL_LIST_Y = 15;
+    private static final int SCROLL_BAR_X = 199;
+    private static final int SCROLL_BAR_Y = 15;
+    private static final int SCROLL_BAR_WIDTH = 12;
+    private static final int SCROLL_BAR_HEIGHT = 56;
     public static final ResourceLocation RUNIC_FONT = new ResourceLocation("illageralt");
+    public static final ResourceLocation ENCHANT_FONT = new ResourceLocation("alt");
 
     private List<SpellCardInfo> availableSpells;
     private ItemStack[] oldMenuSlots = {ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
 
     private AbstractSpell selectedSpell = SpellRegistry.none();
     private int scrollOffset;
+    private boolean isScrollbarHeld;
 
     public ScrollForgeScreen(ScrollForgeMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -88,7 +96,8 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         //setTexture(TEXTURE);
 
         guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-
+        float scrollOffset = Mth.clamp((float) this.scrollOffset / (this.totalRowCount() - 3), 0, 1);
+        this.blit(poseStack, leftPos + SCROLL_BAR_X, (int) (topPos + SCROLL_BAR_Y + scrollOffset * (SCROLL_BAR_HEIGHT - 15)), imageWidth + (isScrollbarHeld ? 12 : 0), 0, 12, 15);
 //        if (lastFocusItem != menu.getFocusSlot().getItem()) {
 //            generateSpellList();
 //            lastFocusItem = menu.getFocusSlot().getItem();
@@ -124,7 +133,13 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             SpellCardInfo spellCard = availableSpells.get(i);
 
             if (i - scrollOffset >= 0 && i - scrollOffset < 3) {
-                spellCard.button.active = inkRarity != null && spellCard.spell.getMinRarity() <= inkRarity.getValue();
+                if (inkRarity == null || spellCard.spell.getMinRarity() > inkRarity.getValue()) {
+                    spellCard.activityState = SpellCardInfo.ActivityState.INK_ERROR;
+                } else if (minecraft != null && !spellCard.spell.canBeCraftedBy(minecraft.player)) {
+                    spellCard.activityState = SpellCardInfo.ActivityState.UNLEARNED_ERROR;
+                } else {
+                    spellCard.activityState = SpellCardInfo.ActivityState.ENABLED;
+                }
                 int x = leftPos + SPELL_LIST_X;
                 int y = topPos + SPELL_LIST_Y + (i - scrollOffset) * 19;
                 spellCard.button.setX(x);
@@ -133,8 +148,9 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 if (additionalTooltip == null)
                     additionalTooltip = spellCard.getTooltip(x, y, mouseX, mouseY);
             } else {
-                spellCard.button.active = false;
+                spellCard.activityState = SpellCardInfo.ActivityState.DISABLED;
             }
+            spellCard.button.active = spellCard.activityState == SpellCardInfo.ActivityState.ENABLED;
         }
 
         if (additionalTooltip != null) {
@@ -162,14 +178,14 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         if (!focusStack.isEmpty() && focusStack.is(ModTags.SCHOOL_FOCUS)) {
             SchoolType school = SchoolRegistry.getSchoolFromFocus(focusStack);
             //irons_spellbooks.LOGGER.info("ScrollForgeMenu.generateSpellSlots.school: {}", school.toString());
-            var spells = SpellRegistry.getSpellsForSchool(school);
+            var spells = SpellRegistry.getSpellsForSchool(school).stream().filter(AbstractSpell::allowCrafting).toList();
             for (int i = 0; i < spells.size(); i++) {
                 //int id = spells[i].getValue();
                 int tempIndex = i;
                 //IronsSpellbooks.LOGGER.debug("ScrollForgeScreen.generateSpellList: {} isEnabled: {}", spells[i], spells[i].isEnabled());
-                if (spells.get(i).isEnabled())
+                if (spells.get(i).isEnabled() && minecraft != null)
                     availableSpells.add(new SpellCardInfo(spells.get(i), i + 1, i, this.addWidget(
-                            new Button.Builder(spells.get(i).getDisplayName(), (b) -> this.setSelectedSpell(spells.get(tempIndex))).pos(0, 0).size(108, 19).build()
+                            new Button.Builder(spells.get(i).getDisplayName(minecraft.player), (b) -> this.setSelectedSpell(spells.get(tempIndex))).pos(0, 0).size(108, 19).build()
                     )));
             }
         }
@@ -191,8 +207,46 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     public AbstractSpell getSelectedSpell() {
         return selectedSpell;
     }
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        isScrollbarHeld = isHovering(SCROLL_BAR_X, SCROLL_BAR_Y, 12, 56, pMouseX, pMouseY);
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
+        isScrollbarHeld = false;
+        return super.mouseReleased(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+        int i = this.totalRowCount() - 3;
+        if (this.isScrollbarHeld) {
+            int j = this.topPos + SCROLL_BAR_Y;
+            int k = j + SCROLL_BAR_HEIGHT;
+            var scrollOffs = ((float) pMouseY - (float) j - 7.5F) / ((float) (k - j) - 15.0F);
+            scrollOffs = Mth.clamp(scrollOffs, 0.0F, 1.0F);
+            this.scrollOffset = Math.max((int) ((double) (scrollOffs * (float) i) + 0.5D), 0);
+            return true;
+        } else {
+            return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+        }
+    }
+
+    private int totalRowCount() {
+        return this.availableSpells.size();
+    }
 
     private class SpellCardInfo {
+        enum ActivityState {
+            DISABLED,
+            ENABLED,
+            INK_ERROR,
+            UNLEARNED_ERROR
+        }
+
+        ActivityState activityState = ActivityState.DISABLED;
         AbstractSpell spell;
         int spellLevel;
         SpellRarity rarity;
@@ -208,18 +262,21 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
 
         void draw(ScrollForgeScreen screen, GuiGraphics guiHelper, int x, int y, int mouseX, int mouseY) {
-            if (this.button.active) {
-                if (spell == screen.getSelectedSpell())//mouseX >= x && mouseY >= y && mouseX < x + 108 && mouseY < y + 19)
+            if (this.activityState == ActivityState.ENABLED || this.activityState == ActivityState.UNLEARNED_ERROR) {
+                //Draw with highlighted or regular color
+                if (spell == screen.getSelectedSpell())
                     guiHelper.blit(TEXTURE, x, y, 0, 204, 108, 19);
                 else
                     guiHelper.blit(TEXTURE, x, y, 0, 166, 108, 19);
             } else {
+                //"hidden" color
                 guiHelper.blit(TEXTURE, x, y, 0, 185, 108, 19);
             }
-            guiHelper.blit(this.button.active ? spell.getSpellIconResource() : SpellRegistry.none().getSpellIconResource(), x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
+            var texture = (this.activityState == ActivityState.ENABLED ? spell.getSpellIconResource() : SpellRegistry.none().getSpellIconResource());
+            guiHelper.blit(texture, x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
 
             int maxWidth = 108 - 20;
-            var text = trimText(font, getDisplayName().withStyle(this.button.active ? Style.EMPTY : Style.EMPTY.withFont(RUNIC_FONT)), maxWidth);
+            var text = trimText(font, getDisplayName().withStyle(this.activityState == ActivityState.ENABLED ? Style.EMPTY : Style.EMPTY.withFont(RUNIC_FONT)), maxWidth);
             int textX = x + 2;
             int textY = y + 3;
             guiHelper.drawWordWrap(font, text, textX, textY, maxWidth, 0xFFFFFF);
@@ -238,8 +295,10 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
 
         List<FormattedCharSequence> getHoverText() {
-            if (!this.button.active) {
+            if (this.activityState == ActivityState.INK_ERROR) {
                 return List.of(FormattedCharSequence.forward(Component.translatable("ui.irons_spellbooks.ink_rarity_error").getString(), Style.EMPTY));
+            } else if (this.activityState == ActivityState.UNLEARNED_ERROR) {
+                return List.of(FormattedCharSequence.forward(Component.translatable("ui.irons_spellbooks.unlearned_error").getString(), Style.EMPTY));
             } else {
                 return TooltipsUtils.createSpellDescriptionTooltip(this.spell, font);
             }
@@ -253,7 +312,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
 
         MutableComponent getDisplayName() {
-            return spell.getDisplayName();
+            return spell.getDisplayName(minecraft.player);
         }
     }
 }

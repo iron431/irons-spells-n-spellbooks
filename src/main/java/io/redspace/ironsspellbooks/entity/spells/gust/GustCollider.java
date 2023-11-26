@@ -12,6 +12,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -61,11 +62,26 @@ public class GustCollider extends AbstractConeProjectile {
         var resultEntity = entityHitResult.getEntity();
         if (entity != null && resultEntity instanceof LivingEntity target && target.distanceToSqr(entity) < range * range)
             if (!DamageSources.isFriendlyFireBetween(entity, target)) {
-                target.knockback(strength, entity.getX() - target.getX(), entity.getZ() - target.getZ());
+                knockback(target, strength, entity.getX() - target.getX(), entity.getY() - target.getY(), entity.getZ() - target.getZ());
                 target.hurtMarked = true;
                 target.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 60, amplifier));
             }
 
+    }
+
+    private static void knockback(LivingEntity target, double pStrength, double x, double y, double z) {
+        net.minecraftforge.event.entity.living.LivingKnockBackEvent event = net.minecraftforge.common.ForgeHooks.onLivingKnockBack(target, (float) pStrength, x, z);
+        if(event.isCanceled()) return;
+        pStrength = event.getStrength();
+        x = event.getRatioX();
+        z = event.getRatioZ();
+        pStrength *= 1.0D - (target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) * .5f);
+        if (!(pStrength <= 0.0D)) {
+            target.hasImpulse = true;
+            Vec3 vec3 = target.getDeltaMovement();
+            Vec3 vec31 = (new Vec3(x, y, z)).normalize().scale(pStrength);
+            target.setDeltaMovement(vec3.x / 2.0D - vec31.x, target.isOnGround() ? Math.min(0.4D, vec3.y / 2.0D + pStrength) : vec3.y, vec3.z / 2.0D - vec31.z);
+        }
     }
 
     @Override

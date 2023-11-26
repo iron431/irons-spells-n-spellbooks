@@ -7,7 +7,8 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRen
 import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeRenderer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
+import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.armor.*;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorModel;
@@ -32,6 +33,7 @@ import io.redspace.ironsspellbooks.entity.spells.comet.CometRenderer;
 import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdRenderer;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadRenderer;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJawRenderer;
+import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastRenderer;
 import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltRenderer;
@@ -55,27 +57,28 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRende
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
-import io.redspace.ironsspellbooks.api.item.curios.RingData;
+import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.particle.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.render.*;
-import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.util.AbstractClientPlayerMixinHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -113,6 +116,7 @@ public class ClientSetup {
         event.registerLayerDefinition(AcidOrbRenderer.MODEL_LAYER_LOCATION, AcidOrbRenderer::createBodyLayer);
         event.registerLayerDefinition(GustRenderer.MODEL_LAYER_LOCATION, GustRenderer::createBodyLayer);
         event.registerLayerDefinition(RayOfFrostRenderer.MODEL_LAYER_LOCATION, RayOfFrostRenderer::createBodyLayer);
+        event.registerLayerDefinition(EldritchBlastRenderer.MODEL_LAYER_LOCATION, EldritchBlastRenderer::createBodyLayer);
         event.registerLayerDefinition(FireballRenderer.MODEL_LAYER_LOCATION, FireballRenderer::createBodyLayer);
         event.registerLayerDefinition(FireboltRenderer.MODEL_LAYER_LOCATION, FireboltRenderer::createBodyLayer);
         event.registerLayerDefinition(GuidingBoltRenderer.MODEL_LAYER_LOCATION, GuidingBoltRenderer::createBodyLayer);
@@ -129,7 +133,6 @@ public class ClientSetup {
     }
 
     @SubscribeEvent
-
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
         addLayerToPlayerSkin(event, "default");
         addLayerToPlayerSkin(event, "slim");
@@ -208,7 +211,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARCHEVOKER.get(), ArchevokerRenderer::new);
         event.registerEntityRenderer(EntityRegistry.KEEPER.get(), KeeperRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.VOID_TENTACLE.get(), VoidTentacleRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SCULK_TENTACLE.get(), VoidTentacleRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ROOT.get(), RootRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ICE_BLOCK_PROJECTILE.get(), IceBlockRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CRYOMANCER.get(), CryomancerRenderer::new);
@@ -233,6 +236,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.EARTHQUAKE_AOE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FALLING_BLOCK.get(), VisualFallingBlockRenderer::new);
         event.registerEntityRenderer(EntityRegistry.RAY_OF_FROST_VISUAL_ENTITY.get(), RayOfFrostRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ELDRITCH_BLAST_VISUAL_ENTITY.get(), EldritchBlastRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);
@@ -256,6 +260,7 @@ public class ClientSetup {
         event.registerSpriteSet(ParticleRegistry.ACID_BUBBLE_PARTICLE.get(), AcidBubbleParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.ZAP_PARTICLE.get(), ZapParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.FIREFLY_PARTICLE.get(), FireflyParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.SHOCKWAVE_PARTICLE.get(), ShockwaveParticle.Provider::new);
 
     }
 
@@ -265,7 +270,18 @@ public class ClientSetup {
         e.enqueueWork(() -> {
             ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"),
                     new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag())));
-
+//            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pull"), (itemStack, clientLevel, livingEntity, i) -> {
+//                return CrossbowItem.isCharged(itemStack) ? 0.0F : AutoloaderCrossbow.getLoadingTicks(itemStack) / (float) AutoloaderCrossbow.getChargeDuration(itemStack);
+//            });
+//            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pulling"), (itemStack, clientLevel, livingEntity, i) -> {
+//                return AutoloaderCrossbow.isLoading(itemStack) && !CrossbowItem.isCharged(itemStack) ? 1.0F : 0.0F;
+//            });
+//            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("charged"), (p_174610_, p_174611_, p_174612_, p_174613_) -> {
+//                return p_174612_ != null && CrossbowItem.isCharged(p_174610_) ? 1.0F : 0.0F;
+//            });
+//            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("firework"), (p_174605_, p_174606_, p_174607_, p_174608_) -> {
+//                return p_174607_ != null && CrossbowItem.isCharged(p_174605_) && CrossbowItem.containsChargedProjectile(p_174605_, Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
+//            });
             //ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
             //        (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue());
             //ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("spell"),
@@ -274,7 +290,24 @@ public class ClientSetup {
             //        (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue());
             //ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("spell"),
             //        (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpellId());
+            FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
 
+//            register(Items.CROSSBOW, new ResourceLocation("pull"), (p_174620_, p_174621_, p_174622_, p_174623_) -> {
+//                if (p_174622_ == null) {
+//                    return 0.0F;
+//                } else {
+//                    return CrossbowItem.isCharged(p_174620_) ? 0.0F : (float)(p_174620_.getUseDuration() - p_174622_.getUseItemRemainingTicks()) / (float)CrossbowItem.getChargeDuration(p_174620_);
+//                }
+//            });
+//            register(Items.CROSSBOW, new ResourceLocation("pulling"), (p_174615_, p_174616_, p_174617_, p_174618_) -> {
+//                return p_174617_ != null && p_174617_.isUsingItem() && p_174617_.getUseItem() == p_174615_ && !CrossbowItem.isCharged(p_174615_) ? 1.0F : 0.0F;
+//            });
+//            register(Items.CROSSBOW, new ResourceLocation("charged"), (p_174610_, p_174611_, p_174612_, p_174613_) -> {
+//                return p_174612_ != null && CrossbowItem.isCharged(p_174610_) ? 1.0F : 0.0F;
+//            });
+//            register(Items.CROSSBOW, new ResourceLocation("firework"), (p_174605_, p_174606_, p_174607_, p_174608_) -> {
+//                return p_174607_ != null && CrossbowItem.isCharged(p_174605_) && CrossbowItem.containsChargedProjectile(p_174605_, Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
+//            });
         });
 
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
@@ -290,8 +323,7 @@ public class ClientSetup {
 
     @SubscribeEvent
     public static void registerSpecialModels(ModelEvent.RegisterAdditional event) {
-        event.register(IronsSpellbooks.id("item/claymore_gui"));
-        event.register(IronsSpellbooks.id("item/claymore_normal"));
+        //TODO: use forge's built in system
         event.register(IronsSpellbooks.id("item/keeper_flamberge_gui"));
         event.register(IronsSpellbooks.id("item/keeper_flamberge_normal"));
         event.register(IronsSpellbooks.id("item/magehunter_gui"));

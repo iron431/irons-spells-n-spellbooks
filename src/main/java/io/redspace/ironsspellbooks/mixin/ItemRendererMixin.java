@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
@@ -25,23 +26,24 @@ public class ItemRendererMixin {
     public void renderSpellbookCooldown(Font p_281721_, ItemStack itemStack, int one, int two, CallbackInfo ci) {
         Item item = itemStack.getItem();
         if (item instanceof SpellBook) {
-            AbstractSpell spell = SpellBookData.getSpellBookData(itemStack).getActiveSpell().getSpell();
-            renderSpellCooldown(one, two, spell);
-        } else if (SpellData.hasSpellData(itemStack) && !itemStack.getItem().equals(ItemRegistry.SCROLL.get())) {
-            AbstractSpell spell = SpellData.getSpellData(itemStack).getSpell();
-            renderSpellCooldown(one, two, spell);
+            AbstractSpell spell = SpellBookData.getSpellBookData(stack).getActiveSpell().getSpell();
+            float f = spell == SpellRegistry.none() ? 0 : ClientMagicData.getCooldownPercent(spell);
+            renderSpellCooldown(one, two, f);
+        } else if (SpellData.hasSpellData(stack) && !stack.getItem().equals(ItemRegistry.SCROLL.get())) {
+            AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
+            float f = spell == SpellRegistry.none() ? 0 : ClientMagicData.getCooldownPercent(spell);
+            renderSpellCooldown(one, two, f);
+        } else if (item instanceof AutoloaderCrossbow) {
+            renderSpellCooldown(one, two, !AutoloaderCrossbow.isLoading(stack) ? 0.0F : 1 - AutoloaderCrossbow.getLoadingTicks(stack) / (float) AutoloaderCrossbow.getChargeDuration(stack));
         }
     }
 
-    private void renderSpellCooldown(int p_282641_, int p_282146_, AbstractSpell spell) {
-        if (!spell.equals(SpellRegistry.none())) {
-            float f = ClientMagicData.getCooldownPercent(spell);
-            if (f > 0.0F) {
+    private void renderSpellCooldown(int one, int two, float f) {
+        if (f > 0.0F) {
                 GuiGraphics self = (GuiGraphics) (Object)this;
                 int i1 = p_282146_ + Mth.floor(16.0F * (1.0F - f));
                 int j1 = i1 + Mth.ceil(16.0F * f);
                 self.fill(RenderType.guiOverlay(), p_282641_, i1, p_282641_ + 16, j1, Integer.MAX_VALUE);
-            }
         }
     }
 }

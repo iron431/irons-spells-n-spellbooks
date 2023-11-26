@@ -59,7 +59,7 @@ public class CounterspellSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
             .setMaxLevel(1)
-            .setCooldownSeconds(15)
+            .setCooldownSeconds(10)
             .build();
 
     @Override

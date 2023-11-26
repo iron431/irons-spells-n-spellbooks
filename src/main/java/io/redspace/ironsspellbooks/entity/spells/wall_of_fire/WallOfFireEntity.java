@@ -93,7 +93,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
                 for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
                     if (livingentity != getOwner()) {
                         DamageSources.applyDamage(livingentity, damage, SpellRegistry.WALL_OF_FIRE_SPELL.get().getDamageSource(this, getOwner()));
-                        livingentity.invulnerableTime = 10;
                     }
                 }
             }

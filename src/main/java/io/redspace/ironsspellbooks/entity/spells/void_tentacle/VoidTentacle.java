@@ -51,7 +51,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
     }
 
     public VoidTentacle(Level level, LivingEntity owner, float damage) {
-        this(EntityRegistry.VOID_TENTACLE.get(), level);
+        this(EntityRegistry.SCULK_TENTACLE.get(), level);
         setOwner(owner);
         setDamage(damage);
     }
@@ -85,7 +85,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
                 }
             }
             if (age == 260 && Utils.random.nextFloat() < .3f)
-                playSound(SoundRegistry.VOID_TENTACLES_LEAVE.get());
+                playSound(SoundRegistry.VOID_TENTACLES_LEAVE.get(), 2, 1);
         } else {
             if (age < 280)
 //                for (int i = 0; i < 4; i++) {
@@ -104,7 +104,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 
     public boolean dealDamage(LivingEntity target) {
         if (target != getOwner())
-            if (DamageSources.applyDamage(target, damage, SpellRegistry.VOID_TENTACLES_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.VOID_TENTACLES_SPELL.get().getSchoolType())) {
+            if (DamageSources.applyDamage(target, damage, SpellRegistry.SCULK_TENTACLES_SPELL.get().getDamageSource(this, getOwner()))) {
                 target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
                 return true;
             }
@@ -213,17 +213,18 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
         //if (controller.getAnimationState() == AnimationState.Stopped) {
         //}
         //IronsSpellbooks.LOGGER.debug("TentacleAnimOffset: {}", controller.tickOffset);
-        if (age > 250 && Utils.random.nextFloat() < .04f) {
+        if (age > 220 && Utils.random.nextFloat() < .04f) {
             controller.setAnimation(ANIMATION_RETREAT);
         } else if (controller.getAnimationState() == AnimationController.State.STOPPED) {
-            controller.setAnimationSpeed((2 + Utils.random.nextFloat()) / 2f);
-            int animation = random.nextInt(3);
-            //IronsSpellbooks.LOGGER.debug("Choosing new animation ({})", animation);
-            switch (animation) {
-                case 0 -> controller.setAnimation(ANIMATION_FLAIL);
-                case 1 -> controller.setAnimation(ANIMATION_FLAIL2);
-                case 2 -> controller.setAnimation(ANIMATION_FLAIL3);
-            }
+//            controller.setAnimationSpeed((2 + Utils.random.nextFloat()) / 2f);
+//            int animation = random.nextInt(3);
+//            //IronsSpellbooks.LOGGER.debug("Choosing new animation ({})", animation);
+//            switch (animation) {
+//                case 0 -> controller.setAnimation(ANIMATION_FLAIL);
+//                case 1 -> controller.setAnimation(ANIMATION_FLAIL2);
+//                case 2 -> controller.setAnimation(ANIMATION_FLAIL3);
+//            }
+            controller.setAnimation(ANIMATION_IDLE);
         }
 
         return PlayState.CONTINUE;
@@ -241,7 +242,6 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
         if (age < 10) {
             controller.setAnimation(ANIMATION_RISE);
             return PlayState.CONTINUE;
-
         } else
             return PlayState.STOP;
 
@@ -254,6 +254,8 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
     private final RawAnimation ANIMATION_FLAIL = RawAnimation.begin().thenPlay("flail");
     private final RawAnimation ANIMATION_FLAIL2 = RawAnimation.begin().thenPlay("flail2");
     private final RawAnimation ANIMATION_FLAIL3 = RawAnimation.begin().thenPlay("flail3");
+    private final RawAnimation ANIMATION_IDLE = RawAnimation.begin().thenLoop("idle");
+
     private final AnimationController controller = new AnimationController(this, "void_tentacle_controller", 20, this::animationPredicate);
     private final AnimationController riseController = new AnimationController(this, "void_tentacle_rise_controller", 0, this::risePredicate);
 

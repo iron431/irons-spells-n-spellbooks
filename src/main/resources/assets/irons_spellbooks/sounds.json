@@ -431,5 +431,47 @@
     "sounds": [
       "irons_spellbooks:ray_of_frost"
     ]
+  },
+  "spell.sonic_boom.cast": {
+    "sounds": [
+      "irons_spellbooks:sonic_boom"
+    ]
+  },
+  "spell.divine_smite.cast": {
+    "sounds": [
+      "irons_spellbooks:divine_smite_cast"
+    ]
+  },
+  "spell.divine_smite.windup": {
+    "sounds": [
+      "irons_spellbooks:divine_smite_windup"
+    ]
+  },
+  "ui.learn_eldritch_spell": {
+    "sounds": [
+      "irons_spellbooks:learn_eldritch_spell"
+    ]
+  },
+  "ui.tick": {
+    "sounds": [
+      "irons_spellbooks:ui_tick"
+    ]
+  },
+  "spell.telekinesis.cast": {
+    "sounds": [
+      "irons_spellbooks:levitation_cast"
+    ]
+  },
+  "spell.telekinesis.loop": {
+    "sounds": [
+      "irons_spellbooks:levitation_drop_001",
+      "irons_spellbooks:levitation_drop_002",
+      "irons_spellbooks:levitation_drop_003"
+    ]
+  },
+  "spell.planar_sight.cast": {
+    "sounds": [
+      "irons_spellbooks:planar_sight_cast"
+    ]
   }
 }

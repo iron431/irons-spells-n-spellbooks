@@ -135,7 +135,7 @@ public class SpellWheelOverlay implements IGuiOverlay {
             int textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
             int textCenterMargin = 5;
             int textTitleMargin = 5;
-            var title = currentSpell.getSpell().getDisplayName().withStyle(Style.EMPTY.withUnderlined(true));
+            var title = currentSpell.getSpell().getDisplayName(minecraft.player).withStyle(Style.EMPTY.withUnderlined(true));
             var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player).withStyle(selectedSpell.getSpell().getRarity(selectedSpell.getLevel()).getDisplayName().getStyle()));
             var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getSpell().getManaCost(selectedSpell.getLevel(), null)).withStyle(ChatFormatting.AQUA);
 //            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));

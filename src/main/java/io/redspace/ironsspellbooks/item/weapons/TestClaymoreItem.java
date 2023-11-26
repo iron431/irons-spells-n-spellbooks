@@ -17,16 +17,4 @@ public class TestClaymoreItem extends ExtendedSwordItem {
     public TestClaymoreItem() {
         super(ExtendedWeaponTiers.CLAYMORE, 9, -2.7, Map.of(), new Item.Properties().stacksTo(1));
     }
-
-    @Override
-    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return new SpecialItemRenderer(Minecraft.getInstance().getItemRenderer(),
-                        Minecraft.getInstance().getEntityModels(),
-                        "claymore");
-            }
-        });
-    }
 }
