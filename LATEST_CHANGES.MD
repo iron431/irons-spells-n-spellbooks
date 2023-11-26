@@ -28,6 +28,7 @@
     - Undead are weak to Holy magic and resistant to Blood magic
     - Fire mobs are resistant to Fire magic
     - Water mobs are weak to Lightning magic
+  - Added Scroll Bar to Scroll Forge
 
 ### Changes
 - Spell Balance
