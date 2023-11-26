@@ -172,7 +172,7 @@ public class GenerateSiteData {
                             } else if (item instanceof ArmorItem) {
                                 appendToBuilder2(armorBuilder, name, itemResource, tooltip);
                             } else if (item instanceof CurioBaseItem) {
-                                appendToBuilder2(curioBuilder, name, itemResource, getSpells(new ItemStack(item)));
+                                appendToBuilder2(curioBuilder, name, itemResource, tooltip);
                             } else if (item instanceof UniqueSpellBook) {
                                 appendToBuilder2(spellbookBuilder, name, itemResource, getSpells(new ItemStack(item)));
                             } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem) {
@@ -196,7 +196,7 @@ public class GenerateSiteData {
             file.close();
 
             file = new BufferedWriter(new FileWriter("curio_data.yml"));
-            file.write(postProcess(armorBuilder));
+            file.write(postProcess(curioBuilder));
             file.close();
 
             file = new BufferedWriter(new FileWriter("spellbook_data.yml"));

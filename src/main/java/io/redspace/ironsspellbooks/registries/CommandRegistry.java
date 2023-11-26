@@ -24,7 +24,7 @@ public class CommandRegistry {
         ManaCommand.register(event.getDispatcher());
         GenerateModList.register(event.getDispatcher());
         LearnCommand.register(event.getDispatcher());
-        //GenerateSiteData.register(event.getDispatcher());
+        GenerateSiteData.register(event.getDispatcher());
 
     }
 }
