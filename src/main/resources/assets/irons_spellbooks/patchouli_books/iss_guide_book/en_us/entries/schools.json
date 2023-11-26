@@ -8,7 +8,7 @@
     {
       "type": "patchouli:text",
       "title": "Overview",
-      "text": "Each magical spell belong to a school of magic. Each school encapsulates a theme, both visually and functionally, and each have an Focus: a representative item used as a crafting ingredient. Furthermore, each school can be empowered by specific school related gear, allowing you to become a powerful master of a single school, or mix and match to become a jack of all trades."
+      "text": "Each magical spell belong to a school of magic. Each school encapsulates a theme, both visually and functionally, and each have a Focus: a representative item used as a crafting ingredient. Furthermore, each school can be empowered by specific school related gear, allowing you to become a powerful master of a single school, or mix and match to become a jack of all trades."
     },
     {
       "type": "patchouli:spotlight",
@@ -32,7 +32,7 @@
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:divine_pearl",
       "title": "Holy",
-      "text": "The Holy school, with the Divine Pearl as its Focus, is centered around support, healing, and buffing characters."
+      "text": "The Holy school, with the Divine Pearl as its Focus, is centered around support, healing, and buffing allies."
     },
     {
       "type": "patchouli:spotlight",
@@ -62,7 +62,7 @@
       "type": "patchouli:spotlight",
       "item": "irons_spellbooks:eldritch_manuscript",
       "title": "Eldritch",
-      "text": "The Eldritch school is not like the others. It is an ancient and powerful way of magic, one that has all but been forgotten; you will be unable to craft or cast them. However, shreds of ancient Eldritch manuscripts can still be found scattered throughout the world, and may even be pieced back together with the help of an echo shard."
+      "text": "The Eldritch school is not like the others. It is an ancient and powerful way of magic, one that has all but been forgotten; you will be unable to immediately craft or cast Eldritch spells. However, shreds of ancient Eldritch manuscripts can still be found scattered throughout the world, and may even be pieced back together with the help of an echo shard."
     },
     {
       "type": "patchouli:spotlight",
