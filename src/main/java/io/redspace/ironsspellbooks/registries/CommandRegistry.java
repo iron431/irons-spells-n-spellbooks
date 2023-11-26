@@ -6,6 +6,7 @@ import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.server.command.ModIdArgument;
 
@@ -24,7 +25,8 @@ public class CommandRegistry {
         ManaCommand.register(event.getDispatcher());
         GenerateModList.register(event.getDispatcher());
         LearnCommand.register(event.getDispatcher());
-        GenerateSiteData.register(event.getDispatcher());
-
+        if(!FMLLoader.isProduction()) {
+            GenerateSiteData.register(event.getDispatcher());
+        }
     }
 }

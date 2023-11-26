@@ -24,6 +24,10 @@
   - Added a Patchouli page for Schools
   - Added a learnSpell command
   - Added Ukrainian Translations
+  - Added inherent mob spell resistance
+    - Undead are weak to Holy magic and resistant to Blood magic
+    - Fire mobs are resistant to Fire magic
+    - Water mobs are weak to Lightning magic
 
 ### Changes
 - Spell Balance
@@ -43,7 +47,8 @@
   - Updated Chinese Translations
 
 ### Fixes
--
+- Fixed Spell Power and Resistance Attributes not being able to go below 1
+- Fixed Fireward Ring strange behavior due to reliance on mob effect
 
 ### API
 - Spells now have methods for crafting criteria, craftability, lootability, and interruptibility

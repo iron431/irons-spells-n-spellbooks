@@ -38,6 +38,9 @@ import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -48,6 +51,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -59,10 +63,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 
+import java.util.UUID;
+
 @Mod.EventBusSubscriber
 public class ServerPlayerEvents {
 
-//    @SubscribeEvent
+    //    @SubscribeEvent
 //    public static void onPlayerAttack(AttackEntityEvent event) {
 //        TODO: this only gets called when the player successfully hits something. we want it to cancel if they even try.
 //              granted, the input even should be cancelled already, but better combat skips that due to custom weapon handling.
@@ -232,6 +238,11 @@ public class ServerPlayerEvents {
         //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
 
         if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof AbstractSpellCastingMob)) {
+            if (ItemRegistry.FIREWARD_RING.get().isEquippedBy(livingEntity) && event.getSource().isFire()) {
+                event.getEntity().clearFire();
+                event.setCanceled(true);
+                return;
+            }
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
             if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
                 if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
@@ -246,28 +257,6 @@ public class ServerPlayerEvents {
 
         TetraProxy.PROXY.handleLivingAttackEvent(event);
     }
-//
-//    @SubscribeEvent
-//    public static void onMobTarget(LivingChangeTargetEvent event) {
-//        var newTarget = event.getNewTarget();
-//        var oldTarget = event.getOriginalTarget();
-//        if (newTarget == null || oldTarget == null)
-//            return;
-//
-//        if (newTarget.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY.get()))
-//            event.setNewTarget(oldTarget);
-//    }
-//    @SubscribeEvent
-//    public static void onPlayerHurt(LivingHurtEvent event) {
-//        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-//            var playerMagicData = PlayerMagicData.getPlayerMagicData(serverPlayer);
-//            if (playerMagicData.getSyncedData().getHasEvasion()) {
-//                if (EvasionEffect.doEffect(serverPlayer, event.getSource())) {
-//                    event.setCanceled(true);
-//                }
-//            }
-//        }
-//    }
 
     @SubscribeEvent
     public static void onLivingChangeTarget(LivingChangeTargetEvent event) {
@@ -386,6 +375,24 @@ public class ServerPlayerEvents {
                 player.swing(event.getHand());
                 event.setCancellationResult(InteractionResultHolder.sidedSuccess(ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get())), player.getLevel().isClientSide).getResult());
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void handleResistanceAttributesOnSpawn(LivingSpawnEvent event) {
+        var mob = event.getEntity();
+        //Attributes should never be null because all living entities have these attributes
+        if (mob.getMobType() == MobType.UNDEAD) {
+            //Undead take extra holy damage, and less blood (necromantic) damage
+            mob.getAttributes().getInstance(AttributeRegistry.HOLY_MAGIC_RESIST.get()).setBaseValue(0.5);
+            mob.getAttributes().getInstance(AttributeRegistry.BLOOD_MAGIC_RESIST.get()).setBaseValue(1.5);
+        } else if (mob.getMobType() == MobType.WATER) {
+            //Water mobs take extra lightning damage
+            mob.getAttributes().getInstance(AttributeRegistry.LIGHTNING_MAGIC_RESIST.get()).setBaseValue(0.5);
+        }
+        if (mob.fireImmune()) {
+            //Fire immune (blazes, pyromancer, etc) take 50% fire damage
+            mob.getAttributes().getInstance(AttributeRegistry.FIRE_MAGIC_RESIST.get()).setBaseValue(1.5);
         }
     }
 

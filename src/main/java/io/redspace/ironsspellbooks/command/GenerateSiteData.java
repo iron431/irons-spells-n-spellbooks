@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.*;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.BufferedWriter;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 public class GenerateSiteData {
 
+    private static final LazyOptional<List<Item>> ITEM_BLACKLIST = LazyOptional.of(() -> List.of(ItemRegistry.INVISIBILITY_RING.get(), ItemRegistry.TEST_CLAYMORE.get(), ItemRegistry.LURKER_RING.get()));
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_recipe_data.failed"));
 
     private static final String RECIPE_DATA_TEMPLATE = """
@@ -164,10 +166,10 @@ public class GenerateSiteData {
                         var itemResource = ForgeRegistries.ITEMS.getKey(item);
                         var tooltip = getTooltip(source.getPlayer(), new ItemStack(item));
 
-                        if (itemResource.toString().contains("irons_spellbooks") && !itemsTracked.contains(item)) {
+                        if (itemResource.getNamespace().equals("irons_spellbooks") && !itemsTracked.contains(item) && !ITEM_BLACKLIST.resolve().get().contains(item)) {
                             //Non craftable items
                             var name = item.getName(ItemStack.EMPTY).getString();
-                            if (item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
+                            if (item.getDescriptionId().contains("patchouli") || item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
                                 //Skip
                             } else if (item instanceof ArmorItem) {
                                 appendToBuilder2(armorBuilder, name, itemResource, tooltip);
