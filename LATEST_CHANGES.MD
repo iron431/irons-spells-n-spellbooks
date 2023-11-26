@@ -22,6 +22,9 @@
     - Buy mystery bags of scrolls from Wandering Trader
     - Buy Ancient Knowledge Fragments from Wandering Trader
   - Added a Patchouli page for Schools
+  - Added a learnSpell command
+  - Added Ukrainian Translations
+
 ### Changes
 - Spell Balance
   - Ice Block Spell now moves faster and initiates its fall sooner
@@ -32,6 +35,13 @@
   - Magma Bomb impact damage no longer scales with spell level
   - Magma Bomb aoe damage slightly increased
   - Magma Bomb radius is reduced, and now scales with spell power
+  - Gust Spell is less affected by knockback resistance
+- Misc
+  - Unique Spell Books can have their spells improved in the Arcane Anvil, by combining it with a higher level scroll
+  - Evoker Spell Book now gives +10% Evocation Spell Power
+  - Improved animation smoothing
+  - Updated Chinese Translations
+
 ### Fixes
 -
 
