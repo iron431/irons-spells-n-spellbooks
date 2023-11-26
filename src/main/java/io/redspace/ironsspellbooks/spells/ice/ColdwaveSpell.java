@@ -81,9 +81,9 @@ public class ColdwaveSpell extends AbstractSpell {
         float radius = getRadius(spellLevel, entity);
         MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.ICE.get().getTargetingColor(), radius), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);
         level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> DamageSources.isFriendlyFireBetween(target, entity)).forEach(target -> {
-            if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED.get(), getDuration(spellLevel, entity)));
-            }
+//            if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
+//                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED.get(), getDuration(spellLevel, entity)));
+//            }
         });
         super.onCast(level, spellLevel, entity, playerMagicData);
     }

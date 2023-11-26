@@ -38,19 +38,19 @@ public abstract class EntityMixin {
             cir.setReturnValue(self.isAlliedTo(summon.getSummoner()) || self.equals(summon.getSummoner()));
 
     }
-
-    @Inject(method = "setTicksFrozen", at = @At(value = "HEAD"), cancellable = true)
-    public void setTicksFrozen(int pTicksFrozen, CallbackInfo ci) {
-        if ((Object) (this) instanceof LivingEntity livingEntity && livingEntity.hasEffect(MobEffectRegistry.CHILLED.get())) {
-            int currentTicks = ((Entity) (Object) this).getTicksFrozen();
-            int deltaTicks = pTicksFrozen - currentTicks;
-            if (deltaTicks > 0) {
-                deltaTicks *= 2;
-                entityData.set(DATA_TICKS_FROZEN, currentTicks + deltaTicks);
-                ci.cancel();
-            }
-        }
-    }
+// TODO:
+//    @Inject(method = "setTicksFrozen", at = @At(value = "HEAD"), cancellable = true)
+//    public void setTicksFrozen(int pTicksFrozen, CallbackInfo ci) {
+//        if ((Object) (this) instanceof LivingEntity livingEntity && livingEntity.hasEffect(MobEffectRegistry.CHILLED.get())) {
+//            int currentTicks = ((Entity) (Object) this).getTicksFrozen();
+//            int deltaTicks = pTicksFrozen - currentTicks;
+//            if (deltaTicks > 0) {
+//                deltaTicks *= 2;
+//                entityData.set(DATA_TICKS_FROZEN, currentTicks + deltaTicks);
+//                ci.cancel();
+//            }
+//        }
+//    }
 
     /**
      * Necessary see all invisible mobs
