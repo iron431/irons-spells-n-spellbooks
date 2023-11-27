@@ -40,12 +40,10 @@ public class ItemRendererMixin {
 
     private void renderSpellCooldown(int one, int two, float f) {
         if (f > 0.0F) {
-                GuiGraphics self = (GuiGraphics) (Object)this;
-                int i1 = one + Mth.floor(16.0F * (1.0F - f));
-                int j1 = i1 + Mth.ceil(16.0F * f);
-                //fillRect(bufferbuilder, one, two + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-
-            self.fill(RenderType.guiOverlay(), two, i1, two + 16, j1, Integer.MAX_VALUE);
+            GuiGraphics self = (GuiGraphics) (Object) this;
+            var i1 = two + Mth.floor(16.0F * (1.0F - f));
+            var j1 = i1 + Mth.ceil(16.0F * f);
+            self.fill(RenderType.guiOverlay(), one, i1, one + 16, j1, Integer.MAX_VALUE);
         }
     }
 }
