@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.item.curios;
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.render.AffinityRingRenderer;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -10,8 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,26 +24,23 @@ public class AffinityRing extends SimpleDescriptiveCurio {
         super(properties);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> tooltip, TooltipFlag pIsAdvanced) {
         var spell = RingData.getRingData(pStack).getSpell();
         if (!spell.equals(SpellRegistry.none())) {
             tooltip.add(Component.empty());
             tooltip.add(Component.translatable("curios.modifiers.ring").withStyle(ChatFormatting.GOLD));
-            tooltip.add(Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spell.getDisplayName(Minecraft.getInstance().player).withStyle(spell.getSchoolType().getDisplayName().getStyle())).withStyle(ChatFormatting.YELLOW));
+            tooltip.add(Component.translatable("tooltip.irons_spellbooks.enhance_spell_level", spell.getDisplayName(MinecraftInstanceHelper.instance.player()).withStyle(spell.getSchoolType().getDisplayName().getStyle())).withStyle(ChatFormatting.YELLOW));
         } else {
             tooltip.add(Component.translatable("tooltip.irons_spellbooks.empty_affinity_ring").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public Component getName(ItemStack pStack) {
         return Component.translatable(this.getDescriptionId(pStack), RingData.getRingData(pStack).getNameForItem());
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {

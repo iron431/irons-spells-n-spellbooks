@@ -35,6 +35,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> IMBUE_BLACKLIST;
     public static final ForgeConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
 
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -68,6 +69,8 @@ public class ServerConfigs {
         SCROLL_RECYCLE_CHANCE = BUILDER.worldRestart().define("scrollRecycleChance", 0.5);
         BUILDER.comment("Whether or not potions should be allowed to be brewed in the alchemist cauldron)");
         ALLOW_CAULDRON_BREWING = BUILDER.worldRestart().define("allowCauldronBrewing", true);
+        BUILDER.comment("Whether or not Furled Map items should skip chunks when searching for structures (only find new structures). Can impact performance while searching.");
+        FURLED_MAPS_SKIP_CHUNKS = BUILDER.worldRestart().define("furledMapSkipsExistingChunks", false);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");
