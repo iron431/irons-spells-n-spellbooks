@@ -58,7 +58,6 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRende
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
-import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.particle.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -66,6 +65,8 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.render.*;
 import io.redspace.ironsspellbooks.util.AbstractClientPlayerMixinHelper;
+import io.redspace.ironsspellbooks.util.IMinecraftInstanceHelper;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
@@ -78,8 +79,6 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CrossbowItem;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -87,6 +86,7 @@ import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 import java.util.Map;
@@ -287,7 +287,14 @@ public class ClientSetup {
         e.enqueueWork(() -> {
             ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), new ResourceLocation("angle"),
                     new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack.getOrCreateTag())));
-//            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pull"), (itemStack, clientLevel, livingEntity, i) -> {
+            MinecraftInstanceHelper.instance = new IMinecraftInstanceHelper() {
+                @Nullable
+                @Override
+                public Player player() {
+                    return Minecraft.getInstance().player;
+                }
+            };
+            //            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pull"), (itemStack, clientLevel, livingEntity, i) -> {
 //                return CrossbowItem.isCharged(itemStack) ? 0.0F : AutoloaderCrossbow.getLoadingTicks(itemStack) / (float) AutoloaderCrossbow.getChargeDuration(itemStack);
 //            });
 //            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pulling"), (itemStack, clientLevel, livingEntity, i) -> {

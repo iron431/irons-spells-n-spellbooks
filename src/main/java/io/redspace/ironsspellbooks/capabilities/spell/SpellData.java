@@ -1,18 +1,16 @@
 package io.redspace.ironsspellbooks.capabilities.spell;
 
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import net.minecraft.client.Minecraft;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Objects;
 
@@ -88,10 +86,9 @@ public class SpellData implements Comparable<SpellData> {
         return getSpell().getRarity(getLevel());
     }
 
-    @OnlyIn(Dist.CLIENT)
     public Component getDisplayName() {
         if (displayName == null) {
-            displayName = getSpell().getDisplayName(Minecraft.getInstance().player).append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));
+            displayName = getSpell().getDisplayName(MinecraftInstanceHelper.instance.player()).append(" ").append(Component.translatable(ItemRegistry.SCROLL.get().getDescriptionId()));
         }
         return displayName;
     }

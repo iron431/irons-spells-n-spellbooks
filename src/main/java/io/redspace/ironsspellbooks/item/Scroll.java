@@ -2,17 +2,18 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -120,9 +121,8 @@ public class Scroll extends Item implements IScroll {
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, List<Component> lines, @NotNull TooltipFlag flag) {
-        var player = Minecraft.getInstance().player;
-        if (player != null)
-            lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, player));
+        if (MinecraftInstanceHelper.instance.player() instanceof LocalPlayer localPlayer)
+            lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, localPlayer));
         super.appendHoverText(itemStack, level, lines, flag);
     }
 }

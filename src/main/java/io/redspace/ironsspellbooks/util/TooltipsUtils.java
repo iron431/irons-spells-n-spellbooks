@@ -1,35 +1,29 @@
 package io.redspace.ironsspellbooks.util;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.spongepowered.asm.mixin.Mutable;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-
-import static io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen.RUNIC_FONT;
 
 public class TooltipsUtils {
 
@@ -128,11 +122,12 @@ public class TooltipsUtils {
     }
 
     public static List<FormattedCharSequence> createSpellDescriptionTooltip(AbstractSpell spell, Font font) {
-        var name = spell.getDisplayName(Minecraft.getInstance().player);
+        Player player = MinecraftInstanceHelper.instance.player();
+        var name = spell.getDisplayName(player);
         var description = font.split(Component.translatable(String.format("%s.guide", spell.getComponentId())).withStyle(ChatFormatting.GRAY), 180);
         var hoverText = new ArrayList<FormattedCharSequence>();
         hoverText.add(FormattedCharSequence.forward(name.getString(), name.getStyle().withUnderlined(true)));
-        if (!spell.obfuscateStats(Minecraft.getInstance().player)) {
+        if (!spell.obfuscateStats(player)) {
             hoverText.addAll(description);
         }
         return hoverText;
