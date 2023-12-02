@@ -1,15 +1,13 @@
 package io.redspace.ironsspellbooks.item.curios;
 
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
+import io.redspace.ironsspellbooks.compat.Curios;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
 
 public class PoisonwardRing extends SimpleDescriptiveCurio {
     public PoisonwardRing() {
-        super(new Properties().stacksTo(1), "ring");
+        super(new Properties().stacksTo(1), Curios.RING_SLOT);
     }
     @Override
     public void curioTick(SlotContext slotContext, ItemStack stack) {

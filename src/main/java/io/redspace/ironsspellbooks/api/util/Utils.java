@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.util;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -57,6 +59,8 @@ import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotResult;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -68,6 +72,7 @@ import java.util.function.Predicate;
 public class Utils {
 
     public static final RandomSource random = RandomSource.createThreadSafe();
+
     public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
         StringBuffer sb = new StringBuffer();
@@ -130,7 +135,17 @@ public class Utils {
     }
 
     public static boolean isPlayerHoldingSpellBook(Player player) {
-        return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
+        var slotResult = CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0);
+        return slotResult.isPresent();
+        //return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
+    }
+
+    public static ItemStack getPlayerSpellbookStack(Player player) {
+        return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
+    }
+
+    public static void setPlayerSpellbookStack(Player player, ItemStack itemStack) {
+        CuriosApi.getCuriosHelper().setEquippedCurio(player, Curios.SPELLBOOK_SLOT, 0, itemStack);
     }
 
     public static ServerPlayer getServerPlayer(Level level, UUID uuid) {
@@ -256,7 +271,7 @@ public class Utils {
             if (spellBookData.getSpellSlots() >= 1) {
                 var spell = spellBookData.getSpell(slot);
                 if (spell != null) {
-                    Messages.sendToServer(new ServerboundQuickCast(slot, hand));
+                    Messages.sendToServer(new ServerboundQuickCast(slot));
                 }
             }
         }
@@ -270,6 +285,22 @@ public class Utils {
                 serverPlayer.stopUsingItem();
             }
         }
+    }
+
+    public static boolean serverSideInitiateCast(ServerPlayer serverPlayer, int slot) {
+        var spellbookStack = Utils.getPlayerSpellbookStack(serverPlayer);
+        SpellBookData sbd = SpellBookData.getSpellBookData(spellbookStack);
+        if (sbd.getSpellSlots() > 0) {
+            var spellData = sbd.getSpell(slot);
+            if (spellData != null) {
+                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
+                    ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
+                }
+                return spellData.getSpell().attemptInitiateCast(spellbookStack, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
+            }
+        }
+        return false;
     }
 
     private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
@@ -437,34 +468,33 @@ public class Utils {
     }
 
     public static InteractionResultHolder<ItemStack> onUseCastingHelper(@NotNull Level level, Player player, @NotNull InteractionHand hand, ItemStack stack, SpellData spellData) {
-        //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.1");
         var spell = spellData.getSpell();
         if (spell != SpellRegistry.none()) {
-            //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.2");
             if (level.isClientSide) {
-                //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.3");
                 if (ClientMagicData.isCasting()) {
-                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.4");
-                    return InteractionResultHolder.fail(stack);
+                    //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.1 {} {}", level.isClientSide, hand);
+                    return InteractionResultHolder.consume(stack);
                 } else if (ClientMagicData.getCooldowns().isOnCooldown(spell) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost(spellData.getLevel(), null)) || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
-                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.5");
+                    //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.2 {} {}", level.isClientSide, hand);
                     return InteractionResultHolder.pass(stack);
                 } else {
-                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.6");
+                    //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.3 {} {}", level.isClientSide, hand);
                     return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
                 }
             }
 
             if (spell.attemptInitiateCast(stack, spellData.getLevel(), level, player, CastSource.SWORD, true)) {
                 if (spell.getCastType().holdToCast()) {
-                    //Ironsspellbooks.logger.debug("onUseCastingHelper.2");
                     player.startUsingItem(hand);
                 }
+                //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.4 {} {}", level.isClientSide, hand);
                 return InteractionResultHolder.success(stack);
             } else {
+                //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.5 {} {}", level.isClientSide, hand);
                 return InteractionResultHolder.fail(stack);
             }
         }
+        //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.6 {} {}", level.isClientSide, hand);
         return null;
     }
 

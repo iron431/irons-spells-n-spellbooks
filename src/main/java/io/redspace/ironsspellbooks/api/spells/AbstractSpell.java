@@ -266,6 +266,10 @@ public abstract class AbstractSpell {
                  */
                 int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
                 playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
+                if(castType.holdToCast()){
+                    //serverPlayer.startUsingItem(player.getMainHandItem() == stack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
+                    serverPlayer.startUsingItem(InteractionHand.MAIN_HAND);
+                }
                 onServerPreCast(player.level, spellLevel, player, playerMagicData);
                 Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
             }
@@ -578,6 +582,10 @@ public abstract class AbstractSpell {
 
     public boolean isLearned(@Nullable Player player) {
         return true;
+    }
+
+    public boolean needsLearning() {
+        return false;
     }
 
     public boolean canBeInterrupted(@Nullable Player player){

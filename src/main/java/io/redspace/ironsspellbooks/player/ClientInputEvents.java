@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -24,12 +25,15 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.redspace.ironsspellbooks.player.KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP;
+
 @Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public final class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
     private static final KeyState SPELL_WHEEL_STATE = register(KeyMappings.SPELL_WHEEL_KEYMAP);
     private static final KeyState SPELLBAR_MODIFIER_STATE = register(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
+    private static final KeyState SPELLBOOK_CAST_STATE = register(SPELLBOOK_CAST_ACTIVE_KEYMAP);
     //    private static final KeyState ELDRITCH_SCREEN_STATE = register(KeyMappings.ELDRITCH_SCREEN_KEYMAP);
     private static final List<KeyState> QUICK_CAST_STATES = registerQuickCast(KeyMappings.QUICK_CAST_MAPPINGS);
 
@@ -45,6 +49,21 @@ public final class ClientInputEvents {
         Player player = minecraft.player;
         if (player == null)
             return;
+
+        if (SPELLBOOK_CAST_STATE.wasPressed()) {
+            var spellbookStack = Utils.getPlayerSpellbookStack(player);
+
+            if (minecraft.screen == null && spellbookStack != null) {
+                var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
+
+                if (spellBookData.getSpellSlots() >= 1) {
+                    var spell = spellBookData.getActiveSpell();
+                    if (spell != SpellData.EMPTY) {
+                        Messages.sendToServer(new ServerboundQuickCast(spellBookData.getActiveSpellIndex()));
+                    }
+                }
+            }
+        }
 
         if (SPELL_WHEEL_STATE.wasPressed()) {
             if (minecraft.screen == null && Utils.isPlayerHoldingSpellBook(player))

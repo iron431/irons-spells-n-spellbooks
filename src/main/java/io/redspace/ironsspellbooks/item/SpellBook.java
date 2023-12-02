@@ -4,6 +4,8 @@ import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.compat.Curios;
+import io.redspace.ironsspellbooks.item.curios.SimpleDescriptiveCurio;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -23,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SpellBook extends Item implements ISpellbook {
+public class SpellBook extends SimpleDescriptiveCurio implements ISpellbook {
     protected final SpellRarity rarity;
     protected final int spellSlots;
 
@@ -36,7 +38,7 @@ public class SpellBook extends Item implements ISpellbook {
     }
 
     public SpellBook(int spellSlots, SpellRarity rarity, Item.Properties pProperties) {
-        super(pProperties);
+        super(pProperties, Curios.SPELLBOOK_SLOT);
         this.spellSlots = spellSlots;
         this.rarity = rarity;
     }
@@ -50,59 +52,67 @@ public class SpellBook extends Item implements ISpellbook {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack itemStack = player.getItemInHand(hand);
-        var spellBookData = SpellBookData.getSpellBookData(itemStack);
-        SpellData spellData = spellBookData.getActiveSpell();
-
-        if (spellData.equals(SpellData.EMPTY)) {
-            return InteractionResultHolder.pass(itemStack);
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+        if (pLevel.isClientSide()) {
+            Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.spellbook_cast_error").withStyle(ChatFormatting.RED), false);
         }
-
-        if (level.isClientSide()) {
-            if (ClientMagicData.isCasting()) {
-                return InteractionResultHolder.fail(itemStack);
-            } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellData.getLevel(), player)
-                    || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
-                    || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
-                return InteractionResultHolder.pass(itemStack);
-            } else {
-                return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
-            }
-        }
-
-        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, CastSource.SPELLBOOK, true)) {
-            if (spellData.getSpell().getCastType().holdToCast()) {
-                player.startUsingItem(hand);
-            }
-            return InteractionResultHolder.success(itemStack);
-        } else {
-            return InteractionResultHolder.fail(itemStack);
-        }
+        return super.use(pLevel, pPlayer, pUsedHand);
     }
 
-    @Override
-    public int getUseDuration(ItemStack itemStack) {
-        return 7200;//return getSpellBookData(itemStack).getActiveSpell().getCastTime();
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack pStack) {
-        return UseAnim.BOW;
-    }
-
-    @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged;
-    }
-
-    @Override
-    public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
-        IronsSpellbooks.LOGGER.debug("Spellbook Release Using ticks used: {}", p_41415_);
-        entity.stopUsingItem();
-        Utils.releaseUsingHelper(entity, itemStack, p_41415_);
-        super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
-    }
+    //    @Override
+//    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+//        ItemStack itemStack = player.getItemInHand(hand);
+//        var spellBookData = SpellBookData.getSpellBookData(itemStack);
+//        SpellData spellData = spellBookData.getActiveSpell();
+//
+//        if (spellData.equals(SpellData.EMPTY)) {
+//            return InteractionResultHolder.pass(itemStack);
+//        }
+//
+//        if (level.isClientSide()) {
+//            if (ClientMagicData.isCasting()) {
+//                return InteractionResultHolder.fail(itemStack);
+//            } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellData.getLevel(), player)
+//                    || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
+//                    || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
+//                return InteractionResultHolder.pass(itemStack);
+//            } else {
+//                return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+//            }
+//        }
+//
+//        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, CastSource.SPELLBOOK, true)) {
+//            if (spellData.getSpell().getCastType().holdToCast()) {
+//                player.startUsingItem(hand);
+//            }
+//            return InteractionResultHolder.success(itemStack);
+//        } else {
+//            return InteractionResultHolder.fail(itemStack);
+//        }
+//    }
+//
+//    @Override
+//    public int getUseDuration(ItemStack itemStack) {
+//        return 7200;//return getSpellBookData(itemStack).getActiveSpell().getCastTime();
+//    }
+//
+//    @Override
+//    public UseAnim getUseAnimation(ItemStack pStack) {
+//        return UseAnim.BOW;
+//    }
+//
+//    @Override
+//    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+//        return slotChanged;
+//    }
+//
+//    @Override
+//    public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
+//        IronsSpellbooks.LOGGER.debug("Spellbook Release Using ticks used: {}", p_41415_);
+//        entity.stopUsingItem();
+//        Utils.releaseUsingHelper(entity, itemStack, p_41415_);
+//        super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
+//    }
 
     public boolean isUnique() {
         return false;

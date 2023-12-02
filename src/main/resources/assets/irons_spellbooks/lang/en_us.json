@@ -36,6 +36,7 @@
   "item.irons_spellbooks.arcane_essence": "Arcane Essence",
   "item.irons_spellbooks.cinder_essence": "Cinder Essence",
   "item.irons_spellbooks.cinder_essence.guide": "Dropped from Ancient Knights.",
+  "item.irons_spellbooks.dev_staff": "Staff of Testing",
   "item.irons_spellbooks.arcane_salvage": "Arcane Salvage",
   "item.irons_spellbooks.arcane_salvage_desc": "Power still radiates from this forgotten material",
   "item.irons_spellbooks.shriving_stone": "Shriving Stone",
@@ -264,6 +265,7 @@
   "ui.irons_spellbooks.cast_ready": "Cast!",
   "ui.irons_spellbooks.hits_dodged": "%d Hits Dodged",
   "ui.irons_spellbooks.cast_error_mana": "Not enough mana to cast %s!",
+  "ui.irons_spellbooks.spellbook_cast_error": "Spellbook must be in Curio slot. Use Keybind or Staff to cast.",
   "ui.irons_spellbooks.cast_error_cooldown": "%s is on cooldown.",
   "ui.irons_spellbooks.cast_error_unlearned": "You can't understand this spell...",
   "ui.irons_spellbooks.cast_error_target": "This spell requires a target.",
@@ -315,6 +317,7 @@
 
   "key.irons_spellbooks.group_1": "Iron's Spells 'n Spellbooks - General",
   "key.irons_spellbooks.group_2": "Iron's Spells 'n Spellbooks - Quick Cast",
+  "key.irons_spellbooks.spellbook_cast": "Cast Selected Spell",
   "key.irons_spellbooks.spell_wheel": "Open Spell Wheel",
   "key.irons_spellbooks.spell_bar_modifier": "Spell Bar Scroll Modifier",
   "key.irons_spellbooks.spell_quick_cast_1": "Quick Cast Slot 01",
@@ -846,5 +849,7 @@
   "affix.irons_spellbooks:spellbook/attribute/mana": "Intelligent",
   "affix.irons_spellbooks:spellbook/attribute/mana.suffix": "of the Artificer",
   "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction": "Fast-Casting",
-  "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction.suffix": "of the Arcane"
+  "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction.suffix": "of the Arcane",
+
+  "curios.identifier.spellbook": "Spellbook"
 }

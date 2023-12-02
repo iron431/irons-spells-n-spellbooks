@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -40,18 +41,10 @@ public class SpellBookData {
         this.transcribedSpells = new SpellData[this.spellSlots];
     }
 
+    @NotNull
     public SpellData getActiveSpell() {
-        if (activeSpellIndex < 0) {
-            return SpellData.EMPTY;
-        }
-
-        var spellData = transcribedSpells[activeSpellIndex];
-
-        if (spellData == null) {
-            return SpellData.EMPTY;
-        }
-
-        return transcribedSpells[activeSpellIndex];
+        var spell = getSpell(activeSpellIndex);
+        return spell == null ? SpellData.EMPTY : spell;
     }
 
     public boolean setActiveSpellIndex(int index, ItemStack stack) {

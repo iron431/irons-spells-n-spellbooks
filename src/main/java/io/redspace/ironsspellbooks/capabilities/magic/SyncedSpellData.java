@@ -160,7 +160,7 @@ public class SyncedSpellData {
     }
 
     public boolean isSpellLearned(AbstractSpell spell) {
-        return this.learnedSpellData.learnedSpells.contains(spell.getSpellResource());
+        return !spell.needsLearning() || this.learnedSpellData.learnedSpells.contains(spell.getSpellResource());
     }
 
     public SpinAttackType getSpinAttackType() {

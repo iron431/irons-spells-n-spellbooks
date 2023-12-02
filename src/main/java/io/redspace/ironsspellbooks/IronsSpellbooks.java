@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
@@ -28,7 +29,6 @@ import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -39,9 +39,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.resource.PathPackResources;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-import top.theillusivec4.curios.api.SlotTypeMessage;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -143,30 +141,9 @@ public class IronsSpellbooks {
 //    }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
-        // Some example code to dispatch IMC to another mod
-//        InterModComms.sendTo("examplemod", "helloworld", () -> {
-//            LOGGER.info("Hello world from the MDK");
-//            return "Hello world";
-//        });
-        registerCurioSlot("ring", 2, false, null);
-        registerCurioSlot("necklace", 1, false, null);
-    }
-
-    public static void registerCurioSlot(final String identifier, final int slots, final boolean isHidden, @Nullable final ResourceLocation icon) {
-        final SlotTypeMessage.Builder message = new SlotTypeMessage.Builder(identifier);
-
-        message.size(slots);
-
-        if (isHidden) {
-            message.hide();
-        }
-
-        if (icon != null) {
-            message.icon(icon);
-        }
-
-        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> message.build());
-
+        Curios.registerCurioSlot(Curios.RING_SLOT, 2, false, null);
+        Curios.registerCurioSlot(Curios.NECKLACE_SLOT, 1, false, null);
+        Curios.registerCurioSlot(Curios.SPELLBOOK_SLOT, 1, false, new ResourceLocation("curios:slot/spellbook_slot"));
     }
 
     private void processIMC(final InterModProcessEvent event) {

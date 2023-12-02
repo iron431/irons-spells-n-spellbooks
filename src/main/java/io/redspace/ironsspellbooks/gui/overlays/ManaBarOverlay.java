@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.gui.overlays;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -94,7 +95,8 @@ public class ManaBarOverlay implements IGuiOverlay {
     public static boolean shouldShowManaBar(Player player) {
         //We show mana if they are holding an item that can cast spells or if their mana is not full
         var display = ClientConfigs.MANA_BAR_DISPLAY.get();
-        return !player.isSpectator() && display != Display.Never && (display == Display.Always || player.isHolding((itemstack -> itemstack.getItem() instanceof SpellBook || SpellData.hasSpellData(itemstack))) || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get()));
+        var spellbookStack = Utils.getPlayerSpellbookStack(player);
+        return !player.isSpectator() && display != Display.Never && (display == Display.Always || spellbookStack != null || ClientMagicData.getPlayerMana() < player.getAttributeValue(MAX_MANA.get()));
     }
 
     private static int getBarX(Anchor anchor, int screenWidth) {

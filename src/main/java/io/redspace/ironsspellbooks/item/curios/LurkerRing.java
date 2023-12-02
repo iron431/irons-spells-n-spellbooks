@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.item.curios;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -17,7 +18,7 @@ public class LurkerRing extends SimpleDescriptiveCurio {
     public static final float MULTIPLIER = 1.5f;
 
     public LurkerRing() {
-        super(new Properties().stacksTo(1), "ring");
+        super(new Properties().stacksTo(1), Curios.RING_SLOT);
     }
 
 

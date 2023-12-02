@@ -45,7 +45,7 @@ public class SpellBarOverlay implements IGuiOverlay {
         //
         //  Render Spells
         //
-        ItemStack spellBookStack = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
+        ItemStack spellBookStack = Utils.getPlayerSpellbookStack(player);
         var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
         if (spellBookStack != lastSpellBook) {
             lastSpellBook = spellBookStack;
