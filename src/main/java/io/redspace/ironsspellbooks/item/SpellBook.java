@@ -1,16 +1,17 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.item.ISpellbook;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.curios.SimpleDescriptiveCurio;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -34,7 +35,7 @@ public class SpellBook extends SimpleDescriptiveCurio implements ISpellbook {
     }
 
     public SpellBook(int spellSlots, SpellRarity rarity) {
-        this(spellSlots, rarity, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+        this(spellSlots, rarity, ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     public SpellBook(int spellSlots, SpellRarity rarity, Item.Properties pProperties) {

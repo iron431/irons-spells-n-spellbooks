@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.render.SpecialItemRenderer;
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 public class KeeperFlambergeItem extends ExtendedSwordItem {
     public KeeperFlambergeItem() {
-        super(ExtendedWeaponTiers.KEEPER_FLAMBERGE, 10, -2.7, Map.of(Attributes.ARMOR, new AttributeModifier(UUID.fromString("c552273e-6669-4cd2-80b3-a703b7616336"), "weapon mod", 5, AttributeModifier.Operation.ADDITION)), new Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+        super(ExtendedWeaponTiers.KEEPER_FLAMBERGE, 10, -2.7, Map.of(Attributes.ARMOR, new AttributeModifier(UUID.fromString("c552273e-6669-4cd2-80b3-a703b7616336"), "weapon mod", 5, AttributeModifier.Operation.ADDITION)), ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override

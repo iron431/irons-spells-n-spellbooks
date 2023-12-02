@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class InkItem extends Item {
-    private SpellRarity rarity;
+    private final SpellRarity rarity;
 
     public InkItem(SpellRarity rarity) {
-        super(new Item.Properties());
+        super(ItemPropertiesHelper.material());
         this.rarity = rarity;
     }
 
