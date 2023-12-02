@@ -4,6 +4,8 @@ import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.compat.Curios;
+import io.redspace.ironsspellbooks.item.curios.SimpleDescriptiveCurio;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -24,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SpellBook extends Item implements ISpellbook {
+public class SpellBook extends SimpleDescriptiveCurio implements ISpellbook {
     protected final SpellRarity rarity;
     protected final int spellSlots;
 
@@ -37,7 +39,7 @@ public class SpellBook extends Item implements ISpellbook {
     }
 
     public SpellBook(int spellSlots, SpellRarity rarity, Item.Properties pProperties) {
-        super(pProperties);
+        super(pProperties, Curios.SPELLBOOK_SLOT);
         this.spellSlots = spellSlots;
         this.rarity = rarity;
     }
