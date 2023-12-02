@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
+import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -26,6 +28,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     private final Slot scrollSlot;
     private final Slot resultSlot;
     private int selectedSpellIndex = -1;
+    private boolean fromCurioSlot = false;
 
     protected final ResultContainer resultSlots = new ResultContainer();
     protected final Container inputSlots = new SimpleContainer(2) {
@@ -101,7 +104,14 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 //            this.addSlot(new SlotItemHandler(handler, 1, 17, 53));
 //            this.addSlot(new ScrollExtractionSlot(handler, 2, 208, 136));
 //        });
+
+        var spellbookStack = Utils.getPlayerSpellbookStack(inv.player);
+        if (spellbookStack != null) {
+            fromCurioSlot = true;
+            spellBookSlot.set(spellbookStack);
+        }
     }
+
 
     public Slot getSpellBookSlot() {
         return spellBookSlot;
@@ -119,7 +129,6 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     @Override
     public void slotsChanged(Container pContainer) {
         super.slotsChanged(pContainer);
-        //Ironsspellbooks.logger.debug("InscriptionTableMenu.slotsChanged");
         setupResultSlot();
     }
 
@@ -145,7 +154,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     public boolean clickMenuButton(Player pPlayer, int pId) {
         //Called whenever the client clicks on a button. The ID passed in is the spell slot index or -1. If it is positive, it is to select that slot. If it is negative, it is to inscribe
         if (pId < 0) {
-            if (selectedSpellIndex >= 0 && getScrollSlot().getItem().is(ItemRegistry.SCROLL.get())){
+            if (selectedSpellIndex >= 0 && getScrollSlot().getItem().is(ItemRegistry.SCROLL.get())) {
                 SpellData spellData = SpellData.getSpellData(getScrollSlot().getItem());
                 if (MinecraftForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)))
                     return false;
@@ -256,7 +265,12 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
     @Override
     public void removed(Player pPlayer) {
-        super.removed(pPlayer);
+        if (fromCurioSlot && spellBookSlot.hasItem()) {
+            //TODO: this may need to be more advanced to prevent a dup bug.  See the super.removed() for reference
+            Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
+        }
+
+        //super.removed(pPlayer);
         this.access.execute((p_39796_, p_39797_) -> {
             this.clearContainer(pPlayer, this.inputSlots);
         });

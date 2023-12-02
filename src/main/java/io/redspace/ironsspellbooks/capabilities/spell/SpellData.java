@@ -52,6 +52,10 @@ public class SpellData implements Comparable<SpellData> {
     }
 
     public static boolean hasSpellData(ItemStack itemStack) {
+        if (itemStack == null) {
+            return false;
+        }
+
         CompoundTag tag = itemStack.getTagElement(ISB_SPELL);
         return tag != null;
     }

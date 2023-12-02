@@ -264,6 +264,7 @@
   "ui.irons_spellbooks.cast_ready": "Cast!",
   "ui.irons_spellbooks.hits_dodged": "%d Hits Dodged",
   "ui.irons_spellbooks.cast_error_mana": "Not enough mana to cast %s!",
+  "ui.irons_spellbooks.spellbook_cast_error": "Spellbook must be in Curio slot. Use Keybind or Staff to cast.",
   "ui.irons_spellbooks.cast_error_cooldown": "%s is on cooldown.",
   "ui.irons_spellbooks.cast_error_unlearned": "You can't understand this spell...",
   "ui.irons_spellbooks.cast_error_target": "This spell requires a target.",
@@ -315,6 +316,7 @@
 
   "key.irons_spellbooks.group_1": "Iron's Spells 'n Spellbooks - General",
   "key.irons_spellbooks.group_2": "Iron's Spells 'n Spellbooks - Quick Cast",
+  "key.irons_spellbooks.spellbook_cast": "Cast Selected Spell",
   "key.irons_spellbooks.spell_wheel": "Open Spell Wheel",
   "key.irons_spellbooks.spell_bar_modifier": "Spell Bar Scroll Modifier",
   "key.irons_spellbooks.spell_quick_cast_1": "Quick Cast Slot 01",

@@ -141,6 +141,10 @@ public class Utils {
         return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
     }
 
+    public static void setPlayerSpellbookStack(Player player, ItemStack itemStack) {
+        CuriosApi.getCuriosHelper().setEquippedCurio(player, Curios.SPELLBOOK_SLOT, 0, itemStack);
+    }
+
     public static ServerPlayer getServerPlayer(Level level, UUID uuid) {
         return level.getServer().getPlayerList().getPlayer(uuid);
     }
@@ -264,7 +268,7 @@ public class Utils {
             if (spellBookData.getSpellSlots() >= 1) {
                 var spell = spellBookData.getSpell(slot);
                 if (spell != null) {
-                    Messages.sendToServer(new ServerboundQuickCast(slot, hand));
+                    Messages.sendToServer(new ServerboundQuickCast(slot));
                 }
             }
         }
