@@ -54,7 +54,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.ENDER_SPELL_POWER.get(), .10));
     public static final RegistryObject<Item> DRUIDIC_SPELL_BOOK = ITEMS.register("druidic_spell_book", () -> new SimpleAttributeSpellBook(6, SpellRarity.EPIC, AttributeRegistry.NATURE_SPELL_POWER.get(), .10));
     public static final RegistryObject<Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", VillagerSpellBook::new);
-    public static final RegistryObject<Item> dev_staff = ITEMS.register("dev_staff", () -> new StaffItem(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1)));
+    public static final RegistryObject<Item> dev_staff = ITEMS.register("dev_staff", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1)));
 
     public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new BloodStaffItem(
             new SpellDataRegistryHolder[]{
