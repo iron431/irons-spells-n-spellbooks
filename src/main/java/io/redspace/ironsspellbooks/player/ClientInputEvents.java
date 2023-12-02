@@ -90,10 +90,11 @@ public final class ClientInputEvents {
         Player player = minecraft.player;
         if (player == null)
             return;
-        if (Utils.isPlayerHoldingSpellBook(player) && minecraft.screen == null) {
+
+        var spellbookStack = Utils.getPlayerSpellbookStack(player);
+        if (spellbookStack != null && minecraft.screen == null) {
             if (SPELLBAR_MODIFIER_STATE.isHeld()) {
-                ItemStack spellBookStack = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
-                var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
+                var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
                 if (spellBookData.getSpellCount() > 0) {
                     int direction = (int) event.getScrollDelta();
 //                    irons_spellbooks.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
