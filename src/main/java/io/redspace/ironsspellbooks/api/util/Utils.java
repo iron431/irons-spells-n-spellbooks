@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.util;
 
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -474,34 +475,33 @@ public class Utils {
     }
 
     public static InteractionResultHolder<ItemStack> onUseCastingHelper(@NotNull Level level, Player player, @NotNull InteractionHand hand, ItemStack stack, SpellData spellData) {
-        //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.1");
         var spell = spellData.getSpell();
         if (spell != SpellRegistry.none()) {
-            //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.2");
             if (level.isClientSide) {
-                //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.3");
                 if (ClientMagicData.isCasting()) {
-                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.4");
-                    return InteractionResultHolder.fail(stack);
+                    //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.1 {} {}", level.isClientSide, hand);
+                    return InteractionResultHolder.consume(stack);
                 } else if (ClientMagicData.getCooldowns().isOnCooldown(spell) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost(spellData.getLevel(), null)) || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
-                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.5");
+                    //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.2 {} {}", level.isClientSide, hand);
                     return InteractionResultHolder.pass(stack);
                 } else {
-                    //irons_spellbooks.LOGGER.debug("SwordItemMixin.use.6");
+                    //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.3 {} {}", level.isClientSide, hand);
                     return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
                 }
             }
 
             if (spell.attemptInitiateCast(stack, spellData.getLevel(), level, player, CastSource.SWORD, true)) {
                 if (spell.getCastType().holdToCast()) {
-                    //Ironsspellbooks.logger.debug("onUseCastingHelper.2");
                     player.startUsingItem(hand);
                 }
+                //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.4 {} {}", level.isClientSide, hand);
                 return InteractionResultHolder.success(stack);
             } else {
+                //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.5 {} {}", level.isClientSide, hand);
                 return InteractionResultHolder.fail(stack);
             }
         }
+        //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.6 {} {}", level.isClientSide, hand);
         return null;
     }
 

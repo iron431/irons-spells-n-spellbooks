@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
@@ -58,17 +59,21 @@ public class CastingItem extends Item {
         var spellData = spellBookData.getActiveSpell();
 
         if (spellData.equals(SpellData.EMPTY)) {
+            //IronsSpellbooks.LOGGER.debug("CastingItem.Use.1 {} {}", level.isClientSide, hand);
             return InteractionResultHolder.pass(itemStack);
         }
 
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {
-                return InteractionResultHolder.fail(itemStack);
+                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.2 {} {}", level.isClientSide, hand);
+                return InteractionResultHolder.consume(itemStack);
             } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellData.getLevel(), player)
                     || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
                     || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
+                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.3 {} {}", level.isClientSide, hand);
                 return InteractionResultHolder.pass(itemStack);
             } else {
+                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.4 {} {}", level.isClientSide, hand);
                 return InteractionResultHolder.consume(itemStack);
             }
         }
@@ -77,8 +82,11 @@ public class CastingItem extends Item {
             if (spellData.getSpell().getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }
+            //IronsSpellbooks.LOGGER.debug("CastingItem.Use.5 {} {}", level.isClientSide, hand);
+
             return InteractionResultHolder.consume(itemStack);
         } else {
+            //IronsSpellbooks.LOGGER.debug("CastingItem.Use.6 {} {}", level.isClientSide, hand);
             return InteractionResultHolder.fail(itemStack);
         }
     }
