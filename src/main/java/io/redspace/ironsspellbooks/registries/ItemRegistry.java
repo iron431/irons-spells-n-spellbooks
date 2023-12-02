@@ -5,8 +5,6 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.armor.*;
@@ -18,9 +16,10 @@ import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -54,7 +53,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> DRAGONSKIN_SPELL_BOOK = ITEMS.register("dragonskin_spell_book", () -> new SimpleAttributeSpellBook(10, SpellRarity.LEGENDARY, AttributeRegistry.ENDER_SPELL_POWER.get(), .10));
     public static final RegistryObject<Item> DRUIDIC_SPELL_BOOK = ITEMS.register("druidic_spell_book", () -> new SimpleAttributeSpellBook(6, SpellRarity.EPIC, AttributeRegistry.NATURE_SPELL_POWER.get(), .10));
     public static final RegistryObject<Item> VILLAGER_SPELL_BOOK = ITEMS.register("villager_spell_book", VillagerSpellBook::new);
-    public static final RegistryObject<Item> dev_staff = ITEMS.register("dev_staff", () -> new StaffItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> dev_staff = ITEMS.register("dev_staff", () -> new StaffItem(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1)));
 
     public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new BloodStaffItem(
             new SpellDataRegistryHolder[]{
@@ -155,75 +154,75 @@ public class ItemRegistry {
     /**
      * Block Items
      */
-    public static final RegistryObject<Item> INSCRIPTION_TABLE_BLOCK_ITEM = ITEMS.register("inscription_table", () -> new BlockItem(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), new Item.Properties()));
-    public static final RegistryObject<Item> ACANE_ANVIL_BLOCK_ITEM = ITEMS.register("arcane_anvil", () -> new BlockItem(BlockRegistry.ARCANE_ANVIL_BLOCK.get(), new Item.Properties().rarity(Rarity.EPIC)));
-    public static final RegistryObject<Item> SCROLL_FORGE_BLOCK = ITEMS.register("scroll_forge", () -> new BlockItem(BlockRegistry.SCROLL_FORGE_BLOCK.get(), new Item.Properties().rarity(Rarity.UNCOMMON)));
-    public static final RegistryObject<Item> PEDESTAL_BLOCK_ITEM = ITEMS.register("pedestal", () -> new BlockItem(BlockRegistry.PEDESTAL_BLOCK.get(), new Item.Properties()));
-    public static final RegistryObject<Item> ARMOR_PILE_BLOCK_ITEM = ITEMS.register("armor_pile", () -> new BlockItem(BlockRegistry.ARMOR_PILE_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<Item> INSCRIPTION_TABLE_BLOCK_ITEM = ITEMS.register("inscription_table", () -> new BlockItem(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
+    public static final RegistryObject<Item> ACANE_ANVIL_BLOCK_ITEM = ITEMS.register("arcane_anvil", () -> new BlockItem(BlockRegistry.ARCANE_ANVIL_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS).rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> SCROLL_FORGE_BLOCK = ITEMS.register("scroll_forge", () -> new BlockItem(BlockRegistry.SCROLL_FORGE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS).rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> PEDESTAL_BLOCK_ITEM = ITEMS.register("pedestal", () -> new BlockItem(BlockRegistry.PEDESTAL_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
+    public static final RegistryObject<Item> ARMOR_PILE_BLOCK_ITEM = ITEMS.register("armor_pile", () -> new BlockItem(BlockRegistry.ARMOR_PILE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
     //public static final RegistryObject<Item> BLOOD_SLASH_BLOCK_ITEM = ITEMS.register("blood_slash_block", () -> new BlockItem(BlockRegistry.BLOOD_SLASH_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
-    public static final RegistryObject<Item> ARCANE_DEBRIS_BLOCK_ITEM = ITEMS.register("arcane_debris", () -> new BlockItem(BlockRegistry.ARCANE_DEBRIS.get(), new Item.Properties()));
-    public static final RegistryObject<Item> ALCHEMIST_CAULDRON_BLOCK_ITEM = ITEMS.register("alchemist_cauldron", () -> new BlockItem(BlockRegistry.ALCHEMIST_CAULDRON.get(), new Item.Properties()));
-    public static final RegistryObject<Item> FIREFLY_JAR_ITEM = ITEMS.register("firefly_jar", () -> new BlockItem(BlockRegistry.FIREFLY_JAR.get(), new Item.Properties()));
+    public static final RegistryObject<Item> ARCANE_DEBRIS_BLOCK_ITEM = ITEMS.register("arcane_debris", () -> new BlockItem(BlockRegistry.ARCANE_DEBRIS.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));
+    public static final RegistryObject<Item> ALCHEMIST_CAULDRON_BLOCK_ITEM = ITEMS.register("alchemist_cauldron", () -> new BlockItem(BlockRegistry.ALCHEMIST_CAULDRON.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
+    public static final RegistryObject<Item> FIREFLY_JAR_ITEM = ITEMS.register("firefly_jar", () -> new BlockItem(BlockRegistry.FIREFLY_JAR.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
 
     /**
      * Armor
      */
 //    public static final RegistryObject<Item> WIZARD_HAT = ITEMS.register("wizard_hat", () -> new WizardArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
-//    public static final RegistryObject<Item> WIZARD_ROBE = ITEMS.register("wizard_robe", () -> new WizardArmorItem(ArmorMaterials.LEATHER, ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-//    public static final RegistryObject<Item> WIZARD_PANTS = ITEMS.register("wizard_pants", () -> new WizardArmorItem(ArmorMaterials.LEATHER, ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-//    public static final RegistryObject<Item> WIZARD_BOOTS = ITEMS.register("wizard_boots", () -> new WizardArmorItem(ArmorMaterials.LEATHER, ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+//    public static final RegistryObject<Item> WIZARD_ROBE = ITEMS.register("wizard_robe", () -> new WizardArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+//    public static final RegistryObject<Item> WIZARD_PANTS = ITEMS.register("wizard_pants", () -> new WizardArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+//    public static final RegistryObject<Item> WIZARD_BOOTS = ITEMS.register("wizard_boots", () -> new WizardArmorItem(ArmorMaterials.LEATHER, EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_HELMET = ITEMS.register("wandering_magician_helmet", () -> new WanderingMagicianArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_CHESTPLATE = ITEMS.register("wandering_magician_chestplate", () -> new WanderingMagicianArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_LEGGINGS = ITEMS.register("wandering_magician_leggings", () -> new WanderingMagicianArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> WANDERING_MAGICIAN_BOOTS = ITEMS.register("wandering_magician_boots", () -> new WanderingMagicianArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_HELMET = ITEMS.register("wandering_magician_helmet", () -> new WanderingMagicianArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_CHESTPLATE = ITEMS.register("wandering_magician_chestplate", () -> new WanderingMagicianArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_LEGGINGS = ITEMS.register("wandering_magician_leggings", () -> new WanderingMagicianArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> WANDERING_MAGICIAN_BOOTS = ITEMS.register("wandering_magician_boots", () -> new WanderingMagicianArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> PUMPKIN_HELMET = ITEMS.register("pumpkin_helmet", () -> new PumpkinArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PUMPKIN_CHESTPLATE = ITEMS.register("pumpkin_chestplate", () -> new PumpkinArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PUMPKIN_LEGGINGS = ITEMS.register("pumpkin_leggings", () -> new PumpkinArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PUMPKIN_BOOTS = ITEMS.register("pumpkin_boots", () -> new PumpkinArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PUMPKIN_HELMET = ITEMS.register("pumpkin_helmet", () -> new PumpkinArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PUMPKIN_CHESTPLATE = ITEMS.register("pumpkin_chestplate", () -> new PumpkinArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PUMPKIN_LEGGINGS = ITEMS.register("pumpkin_leggings", () -> new PumpkinArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PUMPKIN_BOOTS = ITEMS.register("pumpkin_boots", () -> new PumpkinArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> PYROMANCER_HELMET = ITEMS.register("pyromancer_helmet", () -> new PyromancerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PYROMANCER_CHESTPLATE = ITEMS.register("pyromancer_chestplate", () -> new PyromancerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PYROMANCER_LEGGINGS = ITEMS.register("pyromancer_leggings", () -> new PyromancerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PYROMANCER_BOOTS = ITEMS.register("pyromancer_boots", () -> new PyromancerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PYROMANCER_HELMET = ITEMS.register("pyromancer_helmet", () -> new PyromancerArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PYROMANCER_CHESTPLATE = ITEMS.register("pyromancer_chestplate", () -> new PyromancerArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PYROMANCER_LEGGINGS = ITEMS.register("pyromancer_leggings", () -> new PyromancerArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PYROMANCER_BOOTS = ITEMS.register("pyromancer_boots", () -> new PyromancerArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> ELECTROMANCER_HELMET = ITEMS.register("electromancer_helmet", () -> new ElectromancerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> ELECTROMANCER_CHESTPLATE = ITEMS.register("electromancer_chestplate", () -> new ElectromancerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> ELECTROMANCER_LEGGINGS = ITEMS.register("electromancer_leggings", () -> new ElectromancerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> ELECTROMANCER_BOOTS = ITEMS.register("electromancer_boots", () -> new ElectromancerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> ELECTROMANCER_HELMET = ITEMS.register("electromancer_helmet", () -> new ElectromancerArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> ELECTROMANCER_CHESTPLATE = ITEMS.register("electromancer_chestplate", () -> new ElectromancerArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> ELECTROMANCER_LEGGINGS = ITEMS.register("electromancer_leggings", () -> new ElectromancerArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> ELECTROMANCER_BOOTS = ITEMS.register("electromancer_boots", () -> new ElectromancerArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> ARCHEVOKER_HELMET = ITEMS.register("archevoker_helmet", () -> new ArchevokerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> ARCHEVOKER_CHESTPLATE = ITEMS.register("archevoker_chestplate", () -> new ArchevokerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> ARCHEVOKER_LEGGINGS = ITEMS.register("archevoker_leggings", () -> new ArchevokerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> ARCHEVOKER_BOOTS = ITEMS.register("archevoker_boots", () -> new ArchevokerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> ARCHEVOKER_HELMET = ITEMS.register("archevoker_helmet", () -> new ArchevokerArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> ARCHEVOKER_CHESTPLATE = ITEMS.register("archevoker_chestplate", () -> new ArchevokerArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> ARCHEVOKER_LEGGINGS = ITEMS.register("archevoker_leggings", () -> new ArchevokerArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> ARCHEVOKER_BOOTS = ITEMS.register("archevoker_boots", () -> new ArchevokerArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> CULTIST_HELMET = ITEMS.register("cultist_helmet", () -> new CultistArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> CULTIST_CHESTPLATE = ITEMS.register("cultist_chestplate", () -> new CultistArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> CULTIST_LEGGINGS = ITEMS.register("cultist_leggings", () -> new CultistArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> CULTIST_BOOTS = ITEMS.register("cultist_boots", () -> new CultistArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> CULTIST_HELMET = ITEMS.register("cultist_helmet", () -> new CultistArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> CULTIST_CHESTPLATE = ITEMS.register("cultist_chestplate", () -> new CultistArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> CULTIST_LEGGINGS = ITEMS.register("cultist_leggings", () -> new CultistArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> CULTIST_BOOTS = ITEMS.register("cultist_boots", () -> new CultistArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> CRYOMANCER_HELMET = ITEMS.register("cryomancer_helmet", () -> new CryomancerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> CRYOMANCER_CHESTPLATE = ITEMS.register("cryomancer_chestplate", () -> new CryomancerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> CRYOMANCER_LEGGINGS = ITEMS.register("cryomancer_leggings", () -> new CryomancerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> CRYOMANCER_BOOTS = ITEMS.register("cryomancer_boots", () -> new CryomancerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> CRYOMANCER_HELMET = ITEMS.register("cryomancer_helmet", () -> new CryomancerArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> CRYOMANCER_CHESTPLATE = ITEMS.register("cryomancer_chestplate", () -> new CryomancerArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> CRYOMANCER_LEGGINGS = ITEMS.register("cryomancer_leggings", () -> new CryomancerArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> CRYOMANCER_BOOTS = ITEMS.register("cryomancer_boots", () -> new CryomancerArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> SHADOWWALKER_HELMET = ITEMS.register("shadowwalker_helmet", () -> new ShadowwalkerArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> SHADOWWALKER_CHESTPLATE = ITEMS.register("shadowwalker_chestplate", () -> new ShadowwalkerArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> SHADOWWALKER_LEGGINGS = ITEMS.register("shadowwalker_leggings", () -> new ShadowwalkerArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> SHADOWWALKER_BOOTS = ITEMS.register("shadowwalker_boots", () -> new ShadowwalkerArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> SHADOWWALKER_HELMET = ITEMS.register("shadowwalker_helmet", () -> new ShadowwalkerArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> SHADOWWALKER_CHESTPLATE = ITEMS.register("shadowwalker_chestplate", () -> new ShadowwalkerArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> SHADOWWALKER_LEGGINGS = ITEMS.register("shadowwalker_leggings", () -> new ShadowwalkerArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> SHADOWWALKER_BOOTS = ITEMS.register("shadowwalker_boots", () -> new ShadowwalkerArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> PRIEST_HELMET = ITEMS.register("priest_helmet", () -> new PriestArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PRIEST_CHESTPLATE = ITEMS.register("priest_chestplate", () -> new PriestArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PRIEST_LEGGINGS = ITEMS.register("priest_leggings", () -> new PriestArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PRIEST_BOOTS = ITEMS.register("priest_boots", () -> new PriestArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PRIEST_HELMET = ITEMS.register("priest_helmet", () -> new PriestArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PRIEST_CHESTPLATE = ITEMS.register("priest_chestplate", () -> new PriestArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PRIEST_LEGGINGS = ITEMS.register("priest_leggings", () -> new PriestArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PRIEST_BOOTS = ITEMS.register("priest_boots", () -> new PriestArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> PLAGUED_HELMET = ITEMS.register("plagued_helmet", () -> new PlaguedArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PLAGUED_CHESTPLATE = ITEMS.register("plagued_chestplate", () -> new PlaguedArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PLAGUED_LEGGINGS = ITEMS.register("plagued_leggings", () -> new PlaguedArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> PLAGUED_BOOTS = ITEMS.register("plagued_boots", () -> new PlaguedArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PLAGUED_HELMET = ITEMS.register("plagued_helmet", () -> new PlaguedArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PLAGUED_CHESTPLATE = ITEMS.register("plagued_chestplate", () -> new PlaguedArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PLAGUED_LEGGINGS = ITEMS.register("plagued_leggings", () -> new PlaguedArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> PLAGUED_BOOTS = ITEMS.register("plagued_boots", () -> new PlaguedArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment().rarity(Rarity.UNCOMMON)));
 
     /**
      * Curios
