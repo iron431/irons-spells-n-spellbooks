@@ -37,7 +37,7 @@
 //    public static String FURLED_MAP_DESCRIPTION = "description";
 //
 //    public FurledMapItem() {
-//        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).stacksTo(1));
+//        super(ItemPropertiesHelper.material().stacksTo(1));
 //    }
 //
 //    @Override

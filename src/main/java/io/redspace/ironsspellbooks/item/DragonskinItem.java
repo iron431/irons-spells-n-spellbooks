@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.item;
 
-
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.world.item.Item;
 
 public class DragonskinItem extends Item {
     public DragonskinItem() {
-        super((new Item.Properties()));
+        super(ItemPropertiesHelper.material());
     }
 
 //    @Override

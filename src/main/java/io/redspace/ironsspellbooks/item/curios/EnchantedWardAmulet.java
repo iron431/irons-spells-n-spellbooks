@@ -1,7 +1,7 @@
 //package io.redspace.ironsspellbooks.item.curios;
 //
 //import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-//
+//import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 //import net.minecraft.ChatFormatting;
 //import net.minecraft.network.chat.Component;
 //import net.minecraft.sounds.SoundEvents;
@@ -21,7 +21,7 @@
 //    private static final Component description = Component.translatable("item.irons_spellbooks.enchanted_ward_amulet_desc").withStyle(ChatFormatting.DARK_AQUA);
 //
 //    public EnchantedWardAmulet() {
-//        super(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
+//        super(ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.EPIC));
 //    }
 //
 //    @Override

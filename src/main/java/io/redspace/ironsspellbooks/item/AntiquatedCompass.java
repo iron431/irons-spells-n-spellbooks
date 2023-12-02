@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -21,14 +22,14 @@ import java.util.List;
 public class AntiquatedCompass extends Item {
     private static final Component description = Component.translatable("item.irons_spellbooks.antiquated_compass_desc").withStyle(Style.EMPTY.withColor(0x873200));
     public AntiquatedCompass() {
-        super(new Properties().stacksTo(1));
+        super(ItemPropertiesHelper.equipment());
     }
 
     public static GlobalPos getCitadelLocation(Entity entity, CompoundTag compoundTag) {
-        if (!(entity.level().dimension() == Level.NETHER && compoundTag.contains("CitadelPos")))
+        if (!(entity.level.dimension() == Level.NETHER && compoundTag.contains("CitadelPos")))
             return null;
 
-        return GlobalPos.of(entity.level().dimension(), NbtUtils.readBlockPos(compoundTag.getCompound("CitadelPos")));
+        return GlobalPos.of(entity.level.dimension(), NbtUtils.readBlockPos(compoundTag.getCompound("CitadelPos")));
     }
 
     @Override
