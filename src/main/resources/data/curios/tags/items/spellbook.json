@@ -12,6 +12,7 @@
     "irons_spellbooks:blaze_spell_book",
     "irons_spellbooks:dragonskin_spell_book",
     "irons_spellbooks:druidic_spell_book",
-    "irons_spellbooks:villager_spell_book"
+    "irons_spellbooks:villager_spell_book",
+    "irons_spellbooks:evoker_spell_book"
   ]
 }

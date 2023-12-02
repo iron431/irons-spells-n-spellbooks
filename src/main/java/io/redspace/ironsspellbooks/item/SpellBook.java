@@ -1,15 +1,12 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.compat.Curios;
-import io.redspace.ironsspellbooks.item.curios.SimpleDescriptiveCurio;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
@@ -18,15 +15,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class SpellBook extends SimpleDescriptiveCurio implements ISpellbook {
+public class SpellBook extends CurioBaseItem implements ISpellbook {
     protected final SpellRarity rarity;
     protected final int spellSlots;
 
@@ -39,7 +38,7 @@ public class SpellBook extends SimpleDescriptiveCurio implements ISpellbook {
     }
 
     public SpellBook(int spellSlots, SpellRarity rarity, Item.Properties pProperties) {
-        super(pProperties, Curios.SPELLBOOK_SLOT);
+        super(pProperties);
         this.spellSlots = spellSlots;
         this.rarity = rarity;
     }
