@@ -21,7 +21,7 @@
 //    private static final Component description = Component.translatable("item.irons_spellbooks.enchanted_ward_amulet_desc").withStyle(ChatFormatting.DARK_AQUA);
 //
 //    public EnchantedWardAmulet() {
-//        super(new Item.Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB).stacksTo(1).rarity(Rarity.EPIC));
+//        super(ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.EPIC));
 //    }
 //
 //    @Override
