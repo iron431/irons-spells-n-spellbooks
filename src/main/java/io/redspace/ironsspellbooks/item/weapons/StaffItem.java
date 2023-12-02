@@ -51,7 +51,7 @@ public class StaffItem extends CastingItem {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(1, Component.literal(">Testing Item, NOT FINAL").withStyle(ChatFormatting.RED));
+        pTooltipComponents.add(1, Component.literal(">NOT FINAL").withStyle(ChatFormatting.RED));
     }
 
     @Override
