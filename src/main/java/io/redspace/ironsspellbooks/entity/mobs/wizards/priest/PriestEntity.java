@@ -25,7 +25,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -70,6 +69,12 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     private static final EntityDataAccessor<Boolean> DATA_VILLAGER_UNHAPPY = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.BOOLEAN);
     public GoalSelector supportTargetSelector;
     private int unhappyTimer;
+
+    //Serialized
+    private long lastRestockGameTime;
+    private int numberOfRestocksToday;
+    //Not Serialized
+    private long lastRestockCheckDayTime;
 
     public PriestEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -238,20 +243,24 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         if (unhappyTimer > 0)
             if (--unhappyTimer == 0)
                 this.entityData.set(DATA_VILLAGER_UNHAPPY, false);
-        if(this.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)){
-            this.playSound(SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
-            restock();
-            this.removeAllEffects();
-        }
-//        this.level.getProfiler().push("priestBrain");
+
 //        this.getBrain().tick((ServerLevel) this.level, this);
-//        this.level.getProfiler().pop();
 //        this.getBrain().setActiveActivityToFirstValid(ImmutableList.of(Activity.CORE));
 
     }
 
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
+//        if (!level.isClientSide) {
+//            pPlayer.sendSystemMessage(Component.literal(">Game Time: " + this.level.getGameTime()));
+//            pPlayer.sendSystemMessage(Component.literal(">Day Time: " + this.level.getDayTime()));
+//            pPlayer.sendSystemMessage(Component.literal(">Last Restock Game Time: " + this.lastRestockGameTime));
+//            pPlayer.sendSystemMessage(Component.literal(">Last Restock Day Time: " + this.lastRestockCheckDayTime));
+//            pPlayer.sendSystemMessage(Component.literal("delta game time: " + (this.level.getGameTime() - this.lastRestockGameTime)));
+//            pPlayer.sendSystemMessage(Component.literal("delta day time: " + (this.level.dayTime() - this.lastRestockCheckDayTime)));
+//            pPlayer.sendSystemMessage(Component.literal("restocks today: " + numberOfRestocksToday));
+//        }
+
         boolean preventTrade = this.getOffers().isEmpty() || this.getTarget() != null || isAngryAt(pPlayer);
         if (pHand == InteractionHand.MAIN_HAND) {
             if (preventTrade && !this.level.isClientSide) {
@@ -260,6 +269,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         }
         if (!preventTrade) {
             if (!this.level.isClientSide && !this.getOffers().isEmpty()) {
+                if (shouldRestock()) {
+                    restock();
+                }
                 this.startTrading(pPlayer);
             }
         }
@@ -277,13 +289,23 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
+        if (this.offers != null && !this.offers.isEmpty()) {
+            pCompound.put("Offers", offers.createTag());
+        }
         serializeHome(this, pCompound);
+        pCompound.putLong("LastRestock", this.lastRestockGameTime);
+        pCompound.putInt("RestocksToday", this.numberOfRestocksToday);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
+        if (pCompound.contains("Offers", 10)) {
+            this.offers = new MerchantOffers(pCompound.getCompound("Offers"));
+        }
         deserializeHome(this, pCompound);
+        this.lastRestockGameTime = pCompound.getLong("LastRestock");
+        this.numberOfRestocksToday = pCompound.getInt("RestocksToday");
     }
 
     /*
@@ -332,8 +354,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                     0,
                     1,
                     5,
-                    10f,
-                    1
+                    10f
             ));
             this.offers.add(new MerchantOffer(
                     new ItemStack(ItemRegistry.GREATER_HEALING_POTION.get()),
@@ -349,11 +370,9 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                     0,
                     0.2F
             ));
-
-            //this.addOffersFromItemListings(offers, trades.get(1), 5);
-            //this.updateTrades();
+            //We count the creation of our stock as a restock so that we do not immediately refresh trades the same day.
+            numberOfRestocksToday++;
         }
-
         return this.offers;
     }
 
@@ -387,8 +406,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     }
 
 
-    protected boolean needsToRestock() {
-        for(MerchantOffer merchantoffer : this.getOffers()) {
+    private boolean needsToRestock() {
+        for (MerchantOffer merchantoffer : this.getOffers()) {
             if (merchantoffer.needsRestock()) {
                 return true;
             }
@@ -396,11 +415,48 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         return false;
     }
 
+    private boolean allowedToRestock() {
+        return this.numberOfRestocksToday == 0 && this.level.getGameTime() > this.lastRestockGameTime + 2400L;
+    }
+
+    public boolean shouldRestock() {
+        /*
+        Game time is persistent, Day Time not.
+        Day time does not reset to zero every day, but commands and such often reset it otherwise
+        Therefore, day time is not consistent enough to base our trades off of.
+        (one day is 24,000 ticks)
+         */
+        long timeToNextRestock = this.lastRestockGameTime + 12000L;
+        long currentGameTime = this.level.getGameTime();
+        //If total game time has exceeded one half day, we can restock.
+        boolean hasDayElapsed = currentGameTime > timeToNextRestock;
+
+        long currentDayTime = this.level.getDayTime();
+        if (this.lastRestockCheckDayTime > 0L) {
+            long lastRestockDay = this.lastRestockCheckDayTime / 24000L;
+            long currentDay = currentDayTime / 24000L;
+            //Or, if day time is accurate, and a whole day has passed, we can also restock.
+            hasDayElapsed |= currentDay > lastRestockDay;
+        } else {
+            //Make our day time accurate again
+            this.lastRestockCheckDayTime = currentDayTime;
+        }
+
+        if (hasDayElapsed) {
+            //update times
+            this.lastRestockGameTime = currentGameTime;
+            this.lastRestockCheckDayTime = currentDayTime;
+            this.numberOfRestocksToday = 0;
+        }
+        return this.needsToRestock() && allowedToRestock();
+    }
+
     protected void restock() {
         for (MerchantOffer offer : getOffers()) {
-            offer.resetUses();
             offer.updateDemand();
+            offer.resetUses();
         }
+        this.numberOfRestocksToday++;
     }
 
     @Override
