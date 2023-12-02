@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -24,6 +25,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -37,6 +39,8 @@ import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.ai.village.poi.PoiManager;
+import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.npc.VillagerData;
@@ -59,6 +63,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PriestEntity extends NeutralWizard implements VillagerDataHolder, SupportMob, HomeOwner, Merchant {
     private static final EntityDataAccessor<VillagerData> DATA_VILLAGER_DATA = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.VILLAGER_DATA);
@@ -112,8 +117,15 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        this.setHome(this.blockPosition());
-        IronsSpellbooks.LOGGER.debug("Priest new home: {}", this.getHome());
+        if (this.level instanceof ServerLevel serverLevel) {
+            Optional<BlockPos> optional1 = serverLevel.getPoiManager().find((poiTypeHolder) -> poiTypeHolder.is(PoiTypes.MEETING),
+                    (blockPos) -> true, this.blockPosition(), 100, PoiManager.Occupancy.ANY);
+            optional1.ifPresent((blockPos -> {
+                this.setHome(blockPos);
+                IronsSpellbooks.LOGGER.debug("Priest new home: {}", this.getHome());
+            }));
+        }
+
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
@@ -155,8 +167,13 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         };
     }
 
+    @javax.annotation.Nullable
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.VILLAGER_AMBIENT;
+        if (this.isSleeping()) {
+            return null;
+        } else {
+            return this.isTrading() ? SoundEvents.VILLAGER_TRADE : SoundEvents.VILLAGER_AMBIENT;
+        }
     }
 
     protected SoundEvent getDeathSound() {
@@ -216,9 +233,16 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                             mob.setTarget(this);
             });
         }
+        //One game day = 24,000 ticks
+
         if (unhappyTimer > 0)
             if (--unhappyTimer == 0)
                 this.entityData.set(DATA_VILLAGER_UNHAPPY, false);
+        if(this.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)){
+            this.playSound(SoundEvents.ALLAY_AMBIENT_WITH_ITEM);
+            restock();
+            this.removeAllEffects();
+        }
 //        this.level.getProfiler().push("priestBrain");
 //        this.getBrain().tick((ServerLevel) this.level, this);
 //        this.level.getProfiler().pop();
@@ -262,11 +286,11 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         deserializeHome(this, pCompound);
     }
 
-
     /*
      * Homeowner Implementations
      */
     BlockPos homePos;
+
     @Nullable
     @Override
     public BlockPos getHome() {
@@ -278,8 +302,6 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.homePos = homePos;
     }
 
-
-
     /*
      * Merchant Implementations
      */
@@ -287,6 +309,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     private Player tradingPlayer;
     @Nullable
     protected MerchantOffers offers;
+
     @Override
     public void setTradingPlayer(@org.jetbrains.annotations.Nullable Player pTradingPlayer) {
         this.tradingPlayer = pTradingPlayer;
@@ -303,11 +326,14 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         if (this.offers == null) {
             this.offers = new MerchantOffers();
             this.offers.add(new MerchantOffer(
-                    new ItemStack(Items.EMERALD, 18),
+                    new ItemStack(Items.EMERALD, 24),
+                    ItemStack.EMPTY,
                     FurledMapItem.of(IronsSpellbooks.id("evoker_fort"), Component.translatable("item.irons_spellbooks.evoker_fort_battle_plans")),
-                    1,
                     0,
-                    0.2f
+                    1,
+                    5,
+                    10f,
+                    1
             ));
             this.offers.add(new MerchantOffer(
                     new ItemStack(ItemRegistry.GREATER_HEALING_POTION.get()),
@@ -356,13 +382,44 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public void notifyTradeUpdated(ItemStack pStack) {
         if (!this.level.isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
             this.ambientSoundTime = -this.getAmbientSoundInterval();
-            //this.playSound(this.getTradeUpdatedSound(!pStack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(this.getTradeUpdatedSound(!pStack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
         }
+    }
+
+
+    protected boolean needsToRestock() {
+        for(MerchantOffer merchantoffer : this.getOffers()) {
+            if (merchantoffer.needsRestock()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected void restock() {
+        for (MerchantOffer offer : getOffers()) {
+            offer.resetUses();
+            offer.updateDemand();
+        }
+    }
+
+    @Override
+    public SoundEvent getNotifyTradeSound() {
+        return SoundEvents.VILLAGER_YES;
+    }
+
+    @Override
+    public boolean isClientSide() {
+        return this.level.isClientSide;
+    }
+
+    protected SoundEvent getTradeUpdatedSound(boolean pIsYesSound) {
+        return pIsYesSound ? SoundEvents.VILLAGER_YES : SoundEvents.VILLAGER_NO;
     }
 
     private void startTrading(Player pPlayer) {
         this.setTradingPlayer(pPlayer);
-        this.lookAt(pPlayer, 360, 360);
+        this.lookControl.setLookAt(pPlayer);
         this.openTradingScreen(pPlayer, this.getDisplayName(), this.getVillagerData().getLevel());
     }
 
@@ -380,17 +437,6 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public boolean showProgressBar() {
         return false;
     }
-
-    @Override
-    public SoundEvent getNotifyTradeSound() {
-        return null;
-    }
-
-    @Override
-    public boolean isClientSide() {
-        return this.level.isClientSide;
-    }
-
 
     /*
     Brain Testing

@@ -22,14 +22,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class FurledMapItem extends Item {
     public static String FURLED_MAP_NBT = "furledMapData";
@@ -38,11 +38,6 @@ public class FurledMapItem extends Item {
 
     public FurledMapItem() {
         super(new Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).stacksTo(1));
-    }
-
-    @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> lines, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, pLevel, lines, pIsAdvanced);
     }
 
     @Override
@@ -65,7 +60,6 @@ public class FurledMapItem extends Item {
                         MapItem.renderBiomePreviewMap(serverlevel, mapStack);
                         MapItemSavedData.addTargetDecoration(mapStack, blockpos, "x", MapDecoration.Type.RED_X);
 
-
                         if (tag.getCompound(FURLED_MAP_NBT).contains(FURLED_MAP_DESCRIPTION)) {
                             Component mapTitle = Component.Serializer.fromJson(tag.getCompound(FURLED_MAP_NBT).getString(FURLED_MAP_DESCRIPTION));
                             mapStack.setHoverName(mapTitle);
@@ -83,7 +77,7 @@ public class FurledMapItem extends Item {
     private static void replaceItem(Player player, ItemStack itemStack, InteractionHand hand) {
         boolean flag = player.getAbilities().instabuild;
         if (!flag) {
-            //We set in hand because stack size is 1 and i don't wanna do logic
+            //We set in hand because stack size is 1 and i don't wanna do logic. create filled result was bugging out in survival mode
             player.setItemInHand(hand, itemStack);
         } else {
             player.getInventory().add(itemStack);
