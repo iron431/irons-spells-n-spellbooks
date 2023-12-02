@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 
 public abstract class AbstractEldritchSpell extends AbstractSpell {
@@ -60,5 +61,10 @@ public abstract class AbstractEldritchSpell extends AbstractSpell {
         } else {
             return MagicData.getPlayerMagicData(player).getSyncedData().isSpellLearned(this);
         }
+    }
+
+    @Override
+    public boolean needsLearning() {
+        return true;
     }
 }

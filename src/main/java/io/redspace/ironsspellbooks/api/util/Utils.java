@@ -284,6 +284,22 @@ public class Utils {
         }
     }
 
+    public static boolean serverSideInitiateCast(ServerPlayer serverPlayer, int slot) {
+        var spellbookStack = Utils.getPlayerSpellbookStack(serverPlayer);
+        SpellBookData sbd = SpellBookData.getSpellBookData(spellbookStack);
+        if (sbd.getSpellSlots() > 0) {
+            var spellData = sbd.getSpell(slot);
+            if (spellData != null) {
+                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
+                    ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
+                }
+                return spellData.getSpell().attemptInitiateCast(spellbookStack, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
+            }
+        }
+        return false;
+    }
+
     private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
 
         BlockHitResult blockHitResult = null;

@@ -585,6 +585,10 @@ public abstract class AbstractSpell {
         return true;
     }
 
+    public boolean needsLearning() {
+        return false;
+    }
+
     public boolean canBeInterrupted(@Nullable Player player){
         return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
     }

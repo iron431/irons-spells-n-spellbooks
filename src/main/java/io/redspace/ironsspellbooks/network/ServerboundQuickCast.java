@@ -32,19 +32,7 @@ public class ServerboundQuickCast {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.getSender();
-
-            var spellbookStack = Utils.getPlayerSpellbookStack(serverPlayer);
-            SpellBookData sbd = SpellBookData.getSpellBookData(spellbookStack);
-            if (sbd.getSpellSlots() > 0) {
-                var spellData = sbd.getSpell(slot);
-                if (spellData != null) {
-                    var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-                    if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
-                        ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
-                    }
-                    spellData.getSpell().attemptInitiateCast(spellbookStack, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
-                }
-            }
+            Utils.serverSideInitiateCast(serverPlayer, slot);
         });
         return true;
     }
