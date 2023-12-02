@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -56,6 +57,8 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +69,7 @@ import java.util.function.Predicate;
 public class Utils {
 
     public static final RandomSource random = RandomSource.createThreadSafe();
+
     public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
         StringBuffer sb = new StringBuffer();
@@ -128,7 +132,13 @@ public class Utils {
     }
 
     public static boolean isPlayerHoldingSpellBook(Player player) {
-        return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
+        var slotResult = CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0);
+        return slotResult.isPresent();
+        //return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
+    }
+
+    public static ItemStack getPlayerSpellbookStack(Player player) {
+        return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
     }
 
     public static ServerPlayer getServerPlayer(Level level, UUID uuid) {

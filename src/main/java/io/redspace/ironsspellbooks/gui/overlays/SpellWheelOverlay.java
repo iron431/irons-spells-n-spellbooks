@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import org.apache.commons.lang3.ArrayUtils;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class SpellWheelOverlay extends GuiComponent {
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
 
-        ItemStack spellBookStack = player.getMainHandItem().getItem() instanceof SpellBook ? player.getMainHandItem() : player.getOffhandItem();
+        ItemStack spellBookStack = Utils.getPlayerSpellbookStack(player);
         spellBookData = SpellBookData.getSpellBookData(spellBookStack);
         List<SpellData> spellData = spellBookData.getActiveInscribedSpells();
         int spellCount = spellData.size();
