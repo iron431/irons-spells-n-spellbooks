@@ -58,7 +58,7 @@ public final class ClientInputEvents {
 
                 if (spellBookData.getSpellSlots() >= 1) {
                     var spell = spellBookData.getActiveSpell();
-                    if (spell != null) {
+                    if (spell != SpellData.EMPTY) {
                         Messages.sendToServer(new ServerboundQuickCast(spellBookData.getActiveSpellIndex()));
                     }
                 }
