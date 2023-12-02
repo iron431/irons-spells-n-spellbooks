@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -19,7 +19,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.List;
 public class WaywardCompass extends Item {
     private static final Component description = Component.translatable("item.irons_spellbooks.wayward_compass_desc").withStyle(ChatFormatting.DARK_AQUA);
     public WaywardCompass() {
-        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
+        super(ItemPropertiesHelper.equipment());
     }
 
     public static GlobalPos getCatacombsLocation(Entity entity, CompoundTag compoundTag) {

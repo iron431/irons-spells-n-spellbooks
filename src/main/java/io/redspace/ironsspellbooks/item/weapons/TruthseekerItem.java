@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.render.SpecialItemRenderer;
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.item.Rarity;
@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 public class TruthseekerItem extends ExtendedSwordItem {
     public TruthseekerItem() {
-        super(ExtendedWeaponTiers.TRUTHSEEKER, 11, -3, Map.of(), new Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB));
+        super(ExtendedWeaponTiers.TRUTHSEEKER, 11, -3, Map.of(), ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -14,7 +14,7 @@ import java.util.List;
 public class ShrivingStoneItem extends Item {
     private static final Component description = Component.translatable("item.irons_spellbooks.shriving_stone_desc").withStyle(ChatFormatting.GRAY);
     public ShrivingStoneItem() {
-        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB));
+        super(ItemPropertiesHelper.material());
     }
 
     @Override
