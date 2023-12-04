@@ -130,34 +130,26 @@ public class SpellWheelOverlay extends GuiComponent {
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
 
-        //Text
+        //Text background
         var selectedSpell = spellData.get(selection);
+        var font = gui.getFont();
+        int textCenterMargin = 5;
+        int textTitleMargin = 5;
+        int textHeight = 0;
         if (selectedSpell != null) {
-            var font = gui.getFont();
             var info = selectedSpell.getSpell().getUniqueInfo(selectedSpell.getLevel(), minecraft.player);
-            int textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
-            int textCenterMargin = 5;
-            int textTitleMargin = 5;
-            var title = currentSpell.getSpell().getDisplayName(minecraft.player).withStyle(Style.EMPTY.withUnderlined(true));
-            var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player).withStyle(selectedSpell.getSpell().getRarity(selectedSpell.getLevel()).getDisplayName().getStyle()));
-            var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getSpell().getManaCost(selectedSpell.getLevel(), null)).withStyle(ChatFormatting.AQUA);
-//            selectedSpell.getUniqueInfo(minecraft.player).forEach((line) -> lines.add(line.withStyle(ChatFormatting.DARK_GREEN)));
-
+            textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
             drawTextBackground(poseStack, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
-
-            font.drawShadow(poseStack, title, (float) (centerX - font.width(title) / 2), (float) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF);
-            font.drawShadow(poseStack, level, (float) (centerX - font.width(level) - textCenterMargin), (float) (centerY - (ringOuterEdge + textHeight) + font.lineHeight + textTitleMargin), 0xFFFFFF);
-            font.drawShadow(poseStack, mana, (float) (centerX - font.width(mana) - textCenterMargin), (float) (centerY - (ringOuterEdge + textHeight) + font.lineHeight * 2 + textTitleMargin), 0xFFFFFF);
-
-            for (int i = 0; i < info.size(); i++) {
-                var line = info.get(i);
-                font.drawShadow(poseStack, line, (float) (centerX + textCenterMargin), (float) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b);
-            }
         }
 
         //Spell Icons
-        float scale = Mth.clamp(1 + (15 - spellCount) / 15f, 1, 2) * .65f;
-        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (spellData.size() / 15f));
+        float scale = Mth.lerp(spellCount / 15f, 2, 1.25f) * .65f;
+        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .25f * (spellData.size() / 15f));
+        if(player.isCrouching()){
+            scale = Mth.lerp(spellCount / 15f, 2, 1f) * .65f;
+            radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (spellData.size() / 15f));
+        }
+
         Vec2[] locations = new Vec2[spellCount];
         for (int i = 0; i < locations.length; i++) {
             locations[i] = new Vec2((float) (Math.sin(radiansPerSpell * i) * radius), (float) (-Math.cos(radiansPerSpell * i) * radius));
@@ -188,6 +180,24 @@ public class SpellWheelOverlay extends GuiComponent {
 
             }
         }
+
+        //Text Foreground
+        if (selectedSpell != null) {
+            var info = selectedSpell.getSpell().getUniqueInfo(selectedSpell.getLevel(), minecraft.player);
+            var title = currentSpell.getSpell().getDisplayName(minecraft.player).withStyle(Style.EMPTY.withUnderlined(true));
+            var level = Component.translatable("ui.irons_spellbooks.level", TooltipsUtils.getLevelComponenet(selectedSpell, player).withStyle(selectedSpell.getSpell().getRarity(selectedSpell.getLevel()).getDisplayName().getStyle()));
+            var mana = Component.translatable("ui.irons_spellbooks.mana_cost", selectedSpell.getSpell().getManaCost(selectedSpell.getLevel(), null)).withStyle(ChatFormatting.AQUA);
+
+            font.drawShadow(poseStack, title, (float) (centerX - font.width(title) / 2), (float) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF);
+            font.drawShadow(poseStack, level, (float) (centerX - font.width(level) - textCenterMargin), (float) (centerY - (ringOuterEdge + textHeight) + font.lineHeight + textTitleMargin), 0xFFFFFF);
+            font.drawShadow(poseStack, mana, (float) (centerX - font.width(mana) - textCenterMargin), (float) (centerY - (ringOuterEdge + textHeight) + font.lineHeight * 2 + textTitleMargin), 0xFFFFFF);
+
+            for (int i = 0; i < info.size(); i++) {
+                var line = info.get(i);
+                font.drawShadow(poseStack, line, (float) (centerX + textCenterMargin), (float) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b);
+            }
+        }
+
 
 
         poseStack.popPose();
