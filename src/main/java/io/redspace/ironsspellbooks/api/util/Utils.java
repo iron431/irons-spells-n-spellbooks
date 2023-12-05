@@ -66,6 +66,7 @@ import java.util.function.Predicate;
 public class Utils {
 
     public static final RandomSource random = RandomSource.createThreadSafe();
+
     public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
         StringBuffer sb = new StringBuffer();
@@ -549,6 +550,14 @@ public class Utils {
             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_target").withStyle(ChatFormatting.RED)));
         }
         return false;
+    }
+
+    public static Vector3f deconstructRGB(int color) {
+        int red = (color >> 16) & 0xFF;
+        int green = (color >> 8) & 0xFF;
+        int blue = color & 0xFF;
+
+        return new Vector3f(red / 255.0f, green / 255.0f, blue / 255.0f);
     }
 
     public static CompoundTag saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {

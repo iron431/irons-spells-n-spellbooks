@@ -110,6 +110,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> SPECTRAL_HAMMER_SPELL = registerSpell(new SpectralHammerSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_HORSE_SPELL = registerSpell(new SummonHorseSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_VEX_SPELL = registerSpell(new SummonVexSpell());
+    public static final RegistryObject<AbstractSpell> SLOW_SPELL = registerSpell(new SlowSpell());
 
     // FIRE
     public static final RegistryObject<AbstractSpell> BLAZE_STORM_SPELL = registerSpell(new BlazeStormSpell());
@@ -132,6 +133,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
     public static final RegistryObject<AbstractSpell> WISP_SPELL = registerSpell(new WispSpell());
     public static final RegistryObject<AbstractSpell> DIVINE_SMITE_SPELL = registerSpell(new DivineSmiteSpell());
+    public static final RegistryObject<AbstractSpell> HASTE_SPELL = registerSpell(new HasteSpell());
 
     // ICE
     public static final RegistryObject<AbstractSpell> CONE_OF_COLD_SPELL = registerSpell(new ConeOfColdSpell());

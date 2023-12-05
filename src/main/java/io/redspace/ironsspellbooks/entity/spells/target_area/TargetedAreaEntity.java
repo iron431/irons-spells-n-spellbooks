@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.target_area;
 
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.nbt.CompoundTag;
@@ -136,14 +137,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     public Vector3f getColor() {
-        int color = this.getEntityData().get(DATA_COLOR);
-        //Clever color mapping, taken from potionutils get color
-        int red = (color >> 16) & 0xFF;
-        int green = (color >> 8) & 0xFF;
-        int blue = color & 0xFF;
-
-        return new Vector3f(red / 255.0f, green / 255.0f, blue / 255.0f);
-
+        return Utils.deconstructRGB(this.getEntityData().get(DATA_COLOR));
     }
 
     public int getColorRaw() {
