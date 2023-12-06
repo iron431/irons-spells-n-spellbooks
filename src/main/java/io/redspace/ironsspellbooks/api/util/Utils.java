@@ -137,7 +137,8 @@ public class Utils {
     }
 
     public static String stringTruncation(double f, int places) {
-        return String.format("%." + (f % 1 == 0 ? 0 : places) + "f", f);
+        return (f % 1 == 0) ? String.valueOf((int)f) : String.format("%." + places + "f", f);
+        //return String.format("%" + (f % 1 == 0 ? "" : ".f" + places), f);
     }
 
     public static float getAngle(Vec2 a, Vec2 b) {
@@ -558,6 +559,14 @@ public class Utils {
         int blue = color & 0xFF;
 
         return new Vector3f(red / 255.0f, green / 255.0f, blue / 255.0f);
+    }
+
+    public static int packRGB(Vector3f color) {
+        int red = (int) (color.x() * 255.0f);
+        int green = (int) (color.y() * 255.0f);
+        int blue = (int) (color.z() * 255.0f);
+
+        return (red << 16) | (green << 8) | blue;
     }
 
     public static CompoundTag saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {

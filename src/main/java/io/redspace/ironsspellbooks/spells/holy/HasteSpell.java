@@ -12,10 +12,13 @@ import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.effect.BlightEffect;
+import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.spells.TargetedTargetAreaCastData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -34,32 +37,35 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @AutoSpellConfig
 public class HasteSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "haste");
+    private static final int MAX_TARGETS = 5;
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.hastened", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * .1f * -100, 1)),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.hastened", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * .1f * 100, 1)),
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.max_victims", MAX_TARGETS)
         );
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
+            .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
-            .setMaxLevel(10)
-            .setCooldownSeconds(10)
+            .setMaxLevel(6)
+            .setCooldownSeconds(45)
             .build();
 
     public HasteSpell() {
-        this.manaCostPerLevel = 5;
-        this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 1;
+        this.manaCostPerLevel = 10;
+        this.baseSpellPower = 30;
+        this.spellPowerPerLevel = 5;
         this.castTime = 30;
-        this.baseManaCost = 10;
+        this.baseManaCost = 50;
     }
 
     @Override
@@ -96,25 +102,37 @@ public class HasteSpell extends AbstractSpell {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success_self", this.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
             }
         }
+        float radius = 3f;
+        var target = ((CastTargetingData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
+        var area = TargetedAreaEntity.createTargetAreaEntity(level, target.position(), radius, Utils.packRGB(this.getTargetingColor()));
+        area.setOwner(target);
+        playerMagicData.setAdditionalCastData(new TargetedTargetAreaCastData(target, area));
         return true;
     }
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData healTargetingData) {
-            var targetEntity = healTargetingData.getTarget((ServerLevel) world);
+        if (playerMagicData.getAdditionalCastData() instanceof TargetedTargetAreaCastData targetData) {
+            var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.HASTENED.get()));
+                float radius = 3;
+                AtomicInteger targets = new AtomicInteger(0);
+                targetEntity.level.getEntitiesOfClass(LivingEntity.class, targetEntity.getBoundingBox().inflate(radius)).forEach((victim) -> {
+                    if (targets.get() < MAX_TARGETS && victim.distanceToSqr(targetEntity) < radius * radius && (Utils.shouldHealEntity(entity, targetEntity) || targetEntity == targetData.getTarget((ServerLevel) world))) {
+                        victim.addEffect(new MobEffectInstance(MobEffectRegistry.HASTENED.get(), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
+                        targets.incrementAndGet();
+                    }
+                });
             }
         }
         super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
     public int getAmplifier(int spellLevel, LivingEntity caster) {
-        return (int) (getSpellPower(spellLevel, caster) * this.getLevel(spellLevel, caster) - 1);
+        return this.getLevel(spellLevel, caster) - 1;
     }
 
     public int getDuration(int spellLevel, LivingEntity caster) {
-        return (int) (getSpellPower(spellLevel, caster) * 20 * 30);
+        return (int) (getSpellPower(spellLevel, caster) * 20);
     }
 }

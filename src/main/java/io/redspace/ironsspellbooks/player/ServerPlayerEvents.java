@@ -428,16 +428,16 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void changeDigSpeed(PlayerEvent.BreakSpeed event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            //Emulates a multiply total amplification of 10% per level on player's dig speed.
-            if (serverPlayer.hasEffect(MobEffectRegistry.HASTENED.get())) {
-                int i = 1 + serverPlayer.getEffect(MobEffectRegistry.HASTENED.get()).getAmplifier();
-                event.setNewSpeed((float) (event.getNewSpeed() * Math.pow(1.1, i)));
-            }
-            if (serverPlayer.hasEffect(MobEffectRegistry.SLOWED.get())) {
-                int i = 1 + serverPlayer.getEffect(MobEffectRegistry.SLOWED.get()).getAmplifier();
-                event.setNewSpeed((float) (event.getNewSpeed() * Math.pow(.9, i)));
-            }
+        //This event is getting run on the server and the client, and because the client is aware of its own status effects, this works
+        //(If it did not get run on the client, then breaking particles would not match)
+        var player = event.getEntity();
+        if (player.hasEffect(MobEffectRegistry.HASTENED.get())) {
+            int i = 1 + player.getEffect(MobEffectRegistry.HASTENED.get()).getAmplifier();
+            event.setNewSpeed((float) (event.getNewSpeed() * Math.pow(1.1, i)));
+        }
+        if (player.hasEffect(MobEffectRegistry.SLOWED.get())) {
+            int i = 1 + player.getEffect(MobEffectRegistry.SLOWED.get()).getAmplifier();
+            event.setNewSpeed((float) (event.getNewSpeed() * Math.pow(.9, i)));
         }
     }
 }

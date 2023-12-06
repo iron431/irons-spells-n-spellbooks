@@ -27,35 +27,39 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @AutoSpellConfig
 public class SlowSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "slow");
+    private static final int MAX_TARGETS = 5;
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.slowed", Utils.stringTruncation((1 + getAmplifier(spellLevel, caster)) * .1f * 100, 1)),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1)),
+                Component.translatable("ui.irons_spellbooks.max_victims", MAX_TARGETS)
         );
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
-            .setMinRarity(SpellRarity.COMMON)
+            .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.EVOCATION_RESOURCE)
-            .setMaxLevel(10)
-            .setCooldownSeconds(10)
+            .setMaxLevel(6)
+            .setCooldownSeconds(45)
             .build();
 
     public SlowSpell() {
-        this.manaCostPerLevel = 5;
-        this.baseSpellPower = 4;
-        this.spellPowerPerLevel = 1;
+        this.manaCostPerLevel = 10;
+        this.baseSpellPower = 20;
+        this.spellPowerPerLevel = 4;
         this.castTime = 30;
-        this.baseManaCost = 10;
+        this.baseManaCost = 50;
     }
 
     @Override
@@ -102,9 +106,11 @@ public class SlowSpell extends AbstractSpell {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
                 float radius = 3;
+                AtomicInteger targets = new AtomicInteger(0);
                 targetEntity.level.getEntitiesOfClass(LivingEntity.class, targetEntity.getBoundingBox().inflate(radius)).forEach((victim) -> {
-                    if (victim.distanceToSqr(targetEntity) < radius * radius && !DamageSources.isFriendlyFireBetween(entity, victim)) {
+                    if (targets.get() < MAX_TARGETS && victim.distanceToSqr(targetEntity) < radius * radius && !DamageSources.isFriendlyFireBetween(entity, victim)) {
                         victim.addEffect(new MobEffectInstance(MobEffectRegistry.SLOWED.get(), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
+                        targets.incrementAndGet();
                     }
                 });
             }
@@ -113,11 +119,11 @@ public class SlowSpell extends AbstractSpell {
     }
 
     public int getAmplifier(int spellLevel, LivingEntity caster) {
-        return (int) (getSpellPower(spellLevel, caster) * this.getLevel(spellLevel, caster) - 1);
+        return this.getLevel(spellLevel, caster) - 1;
     }
 
     public int getDuration(int spellLevel, LivingEntity caster) {
-        return (int) (getSpellPower(spellLevel, caster) * 20 * 30);
+        return (int) (getSpellPower(spellLevel, caster) * 20);
     }
 
     @Override

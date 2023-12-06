@@ -240,7 +240,7 @@
   "ui.irons_spellbooks.slowness_effect": "Slowness %d",
   "ui.irons_spellbooks.additional_poisoned_damage": "%d%% Additional Poisoned Damage",
   "ui.irons_spellbooks.strength": "%d Strength",
-  "ui.irons_spellbooks.max_victims": "%d Max Hits",
+  "ui.irons_spellbooks.max_victims": "%d Max Targets",
   "ui.irons_spellbooks.distance": "%d Block Range",
   "ui.irons_spellbooks.freeze_time": "%s Freeze Time",
   "ui.irons_spellbooks.dimensions": "%dx%dx%d",
@@ -495,7 +495,7 @@
   "spell.irons_spellbooks.telekinesis.guide": "Reach out with a spectral force and grip a creature, forcing them towards your gaze. Creatures are susceptible to kinetic damage.",
   "spell.irons_spellbooks.divine_smite.guide": "With a fervor of holy energy, swing forth your weapon, doing a melee area attack. This spell is uninterruptible. The damage scales off of your held weapon's melee damage.",
   "spell.irons_spellbooks.thunder_step.guide": "Teleport a short distance forward, creating a wake of lightning that damages creatures you teleport through.",
-  "spell.irons_spellbooks.haste.guide": "To a targeted creature, or yourself if no creature is targeted, apply the Hastened effect, increasing movement speed, attack speed, mining speed, mana regeneration, and cast time reduction for a duration.",
+  "spell.irons_spellbooks.haste.guide": "In a radius around a targeted creature, or yourself if no creature is targeted, apply the Hastened effect, increasing movement speed, attack speed, mining speed, mana regeneration, and cast time reduction for a duration.",
   "spell.irons_spellbooks.slow.guide": "In a radius around a targeted creature, apply the Slowed effect to enemies, decreasing movement speed, attack speed, mining speed, mana regeneration, and cast time for a duration.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
