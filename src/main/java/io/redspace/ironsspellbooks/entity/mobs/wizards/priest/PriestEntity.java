@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
+import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
@@ -58,6 +59,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -370,6 +374,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                     0,
                     0.2F
             ));
+            this.offers.add(new BibleTrade().getOffer(this, this.random));
+
             //We count the creation of our stock as a restock so that we do not immediately refresh trades the same day.
             numberOfRestocksToday++;
         }
@@ -494,6 +500,23 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         return false;
     }
 
+    static class BibleTrade extends AdditionalWanderingTrades.SimpleTrade {
+        private BibleTrade() {
+            super((trader, random) -> {
+                if (!trader.level.isClientSide) {
+                    LootTable loottable = trader.level.getServer().getLootTables().get(IronsSpellbooks.id("magic_items/archevoker_logbook_translated"));
+                    var context = new LootContext.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
+                    var items = loottable.getRandomItems(context);
+                    if (!items.isEmpty()) {
+                        ItemStack cost = items.get(0);
+                        ItemStack forSale = new ItemStack(ItemRegistry.VILLAGER_SPELL_BOOK.get());
+                        return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
+                    }
+                }
+                return null;
+            });
+        }
+    }
     /*
     Brain Testing
      */

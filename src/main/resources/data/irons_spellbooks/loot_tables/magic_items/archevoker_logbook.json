@@ -1,0 +1,19 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:written_book",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{untranslatedLogbook:1b,display:{Name:'{\"translate\":\"item.irons_spellbooks.archevoker_log\"}'},pages:['[{\"translate\":\"item.irons_spellbooks.archevoker_log.header\",\"font\":\"illageralt\"},{\"text\":\"2:\\\\n\\\\n\",\"font\":\"default\"},{\"translate\":\"item.irons_spellbooks.archevoker_log.page_1\",\"font\":\"illageralt\"}]','[{\"translate\":\"item.irons_spellbooks.archevoker_log.header\",\"font\":\"illageralt\"},{\"text\":\"14:\\\\n\\\\n\",\"font\":\"default\"},{\"translate\":\"item.irons_spellbooks.archevoker_log.page_2\",\"font\":\"illageralt\"}]','[{\"translate\":\"item.irons_spellbooks.archevoker_log.header\",\"font\":\"illageralt\"},{\"text\":\"31:\\\\n\\\\n\",\"font\":\"default\"},{\"translate\":\"item.irons_spellbooks.archevoker_log.page_3\",\"font\":\"illageralt\"}]','[{\"translate\":\"item.irons_spellbooks.archevoker_log.header\",\"font\":\"illageralt\"},{\"text\":\"73:\\\\n\\\\n\",\"font\":\"default\"},{\"translate\":\"item.irons_spellbooks.archevoker_log.page_4\",\"font\":\"illageralt\"}]'],title:\"\",author:Archevoker,resolved:1b}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

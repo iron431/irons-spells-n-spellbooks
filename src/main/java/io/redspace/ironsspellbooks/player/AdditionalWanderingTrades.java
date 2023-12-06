@@ -77,10 +77,10 @@ public class AdditionalWanderingTrades {
         event.getRareTrades().addAll(additionalRareTrades);
     }
 
-    static class SimpleTrade implements VillagerTrades.ItemListing {
+    public static class SimpleTrade implements VillagerTrades.ItemListing {
         final BiFunction<Entity, RandomSource, MerchantOffer> getOffer;
 
-        private SimpleTrade(BiFunction<Entity, RandomSource, MerchantOffer> getOffer) {
+        protected SimpleTrade(BiFunction<Entity, RandomSource, MerchantOffer> getOffer) {
             this.getOffer = getOffer;
         }
 
