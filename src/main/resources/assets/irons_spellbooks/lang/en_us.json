@@ -848,5 +848,6 @@
   "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction": "Fast-Casting",
   "affix.irons_spellbooks:spellbook/attribute/cast_time_reduction.suffix": "of the Arcane",
 
-  "curios.identifier.spellbook": "Spellbook"
+  "curios.identifier.spellbook": "Spell Book",
+  "curios.modifiers.spellbook": "When equipped as Spell Book:"
 }
