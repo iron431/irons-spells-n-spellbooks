@@ -25,9 +25,6 @@ public class SimpleAttributeSpellBook extends SpellBook {
         super(spellSlots, rarity);
         this.defaultModifiers = defaultModifiers;
     }
-    public SimpleAttributeSpellBook(int spellSlots, SpellRarity rarity, Supplier<Multimap<Attribute, AttributeModifier>> defaultModifiers) {
-        this(spellSlots, rarity, defaultModifiers.get());
-    }
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {

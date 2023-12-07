@@ -21,7 +21,7 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
     SpellDataRegistryHolder[] spellDataRegistryHolders;
 
     public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders, Supplier<Multimap<Attribute, AttributeModifier>> defaultModifiers) {
-        super(spellDataRegistryHolders.length, rarity, defaultModifiers);
+        super(spellDataRegistryHolders.length, rarity, defaultModifiers.get());
         this.spellDataRegistryHolders = spellDataRegistryHolders;
     }
 
