@@ -119,7 +119,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             //Upgrade System
             else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getCount() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
                 result = baseItemStack.copy();
-                EquipmentSlot slot = UpgradeUtils.getRelevantEquipmentSlot(result);
+                String slot = UpgradeUtils.getRelevantEquipmentSlot(result);
                 UpgradeData.getUpgradeData(result).addUpgrade(result, upgradeOrb.getUpgradeType(), slot);
                 //IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
             }

@@ -17,12 +17,12 @@ public class UpgradeData {
     public static final String Upgrade_Key = "id";
     public static final String Slot_Key = "slot";
     public static final String Upgrade_Count = "upgrades";
-    public static final UpgradeData NONE = new UpgradeData(Map.of(), EquipmentSlot.MAINHAND);
+    public static final UpgradeData NONE = new UpgradeData(Map.of(), EquipmentSlot.MAINHAND.getName());
 
     private final Map<UpgradeType, Integer> upgrades;
-    private EquipmentSlot upgradedSlot;
+    private String/*EquipmentSlot*/ upgradedSlot;
 
-    protected UpgradeData(Map<UpgradeType, Integer> upgrades, EquipmentSlot slot) {
+    protected UpgradeData(Map<UpgradeType, Integer> upgrades, /*EquipmentSlot*/ String slot) {
         this.upgrades = upgrades;
         this.upgradedSlot = slot;
     }
@@ -33,11 +33,11 @@ public class UpgradeData {
         ListTag upgrades = itemStack.getOrCreateTag().getList(Upgrades, 10);
         //String attributeName = Registry.ATTRIBUTE.getKey(attribute).toString();
         Map<UpgradeType, Integer> map = new HashMap<>();
-        EquipmentSlot upgradedSlot = null;
+        String upgradedSlot = null;
         for (Tag tag : upgrades) {
             if (tag instanceof CompoundTag compoundTag) {
                 if (upgradedSlot == null) {
-                    upgradedSlot = EquipmentSlot.byName(compoundTag.getString(Slot_Key));
+                    upgradedSlot = compoundTag.getString(Slot_Key);//EquipmentSlot.byName(compoundTag.getString(Slot_Key));
                 }
                 var upgradeKey = new ResourceLocation(compoundTag.getString(Upgrade_Key));
                 UpgradeType.getUpgrade(upgradeKey).ifPresent((upgrade) -> map.put(upgrade, compoundTag.getInt(Upgrade_Count)));
@@ -65,7 +65,7 @@ public class UpgradeData {
         for (ImmutableMap.Entry<UpgradeType, Integer> upgradeInstance : upgradeData.upgrades.entrySet()) {
             CompoundTag upgradeTag = new CompoundTag();
             upgradeTag.putString(Upgrade_Key, upgradeInstance.getKey().getId().toString());
-            upgradeTag.putString(Slot_Key, upgradeData.upgradedSlot.getName());
+            upgradeTag.putString(Slot_Key, upgradeData.upgradedSlot/*.getName()*/);
             upgradeTag.putInt(Upgrade_Count, upgradeInstance.getValue());
             upgrades.add(upgradeTag);
         }
@@ -77,7 +77,7 @@ public class UpgradeData {
         setUpgradeData(itemStack, NONE);
     }
 
-    public UpgradeData addUpgrade(ItemStack stack, UpgradeType upgradeType, EquipmentSlot slot) {
+    public UpgradeData addUpgrade(ItemStack stack, UpgradeType upgradeType, String slot) {
         if (this == NONE) {
             Map<UpgradeType, Integer> map = new HashMap<>();
             map.put(upgradeType, 1);
@@ -103,7 +103,7 @@ public class UpgradeData {
         return count;
     }
 
-    public EquipmentSlot getUpgradedSlot() {
+    public String/*EquipmentSlot*/ getUpgradedSlot() {
         return this.upgradedSlot;
     }
 
