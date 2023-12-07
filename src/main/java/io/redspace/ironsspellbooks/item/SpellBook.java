@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
+import com.google.common.collect.HashMultimap;
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -7,6 +8,7 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
+import io.redspace.ironsspellbooks.item.curios.SimpleAttributeCurio;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
@@ -125,13 +127,14 @@ public class SpellBook extends CurioBaseItem implements ISpellbook {
         } else {
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324))).withStyle(ChatFormatting.GRAY));
         }
-        lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", this.spellSlots).withStyle(ChatFormatting.GRAY));
-
         var player = Minecraft.getInstance().player;
-        if (player != null && !SpellBookData.getSpellBookData(itemStack).getActiveSpell().equals(SpellData.EMPTY)) {
-            lines.addAll(TooltipsUtils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK, player));
+        if (player != null) {
+            var spellbookData = SpellBookData.getSpellBookData(itemStack);
+            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", spellbookData.getSpellSlots()).withStyle(ChatFormatting.GRAY));
+            if (!spellbookData.getActiveSpell().equals(SpellData.EMPTY)) {
+                lines.addAll(TooltipsUtils.formatActiveSpellTooltip(itemStack, CastSource.SPELLBOOK, player));
+            }
         }
-
         super.appendHoverText(itemStack, level, lines, flag);
     }
 }

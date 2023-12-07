@@ -72,7 +72,9 @@ import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import java.util.Map;
@@ -142,16 +144,19 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void handleUpgradeModifiers(ItemAttributeModifierEvent event) {
-        var itemStack = event.getItemStack();
-        if (!UpgradeData.hasUpgradeData(itemStack))
-            return;
-        var upgradeData = UpgradeData.getUpgradeData(itemStack);
+        UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
+        if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotType().getName())) {
+            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, Optional.empty());
+        }
+    }
 
-        var slot = event.getSlotType();
-        if (upgradeData.getUpgradedSlot() != slot)
-            return;
-
-        UpgradeUtils.handleAttributeEvent(event, upgradeData);
+    @SubscribeEvent
+    public static void handleCurioUpgradeModifiers(CurioAttributeModifierEvent event) {
+        UpgradeData upgradeData = UpgradeData.getUpgradeData(event.getItemStack());
+        if (upgradeData != UpgradeData.NONE && upgradeData.getUpgradedSlot().equals(event.getSlotContext().identifier())) {
+//        IronsSpellbooks.LOGGER.debug("handleCurioUpgradeModifiers slot: {} uuid: {}",event.getSlotContext().getIdentifier(), event.getUuid());
+            UpgradeUtils.handleAttributeEvent(event.getModifiers(), upgradeData, event::addModifier, event::removeModifier, Optional.of(event.getUuid()));
+        }
     }
 
     @SubscribeEvent

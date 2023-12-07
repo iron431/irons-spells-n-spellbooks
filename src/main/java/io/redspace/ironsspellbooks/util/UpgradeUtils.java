@@ -1,16 +1,27 @@
 package io.redspace.ironsspellbooks.util;
 
+import com.google.common.collect.Multimap;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.item.armor.UpgradeType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
+import net.minecraftforge.eventbus.api.Event;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
+import top.theillusivec4.curios.api.type.ISlotType;
+import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 
 public class UpgradeUtils {
 
@@ -24,35 +35,65 @@ public class UpgradeUtils {
             EquipmentSlot.OFFHAND, UUID.fromString("c508430e-7497-42a9-9a9c-1a324dccca54")
     );
 
-    public static EquipmentSlot getRelevantEquipmentSlot(ItemStack itemStack) {
-        for (EquipmentSlot slot : EquipmentSlot.values())
-            if (!itemStack.getAttributeModifiers(slot).isEmpty())
-                return slot;
-        return EquipmentSlot.MAINHAND;
+    public static String getRelevantEquipmentSlot(ItemStack itemStack) {
+        if (itemStack.getItem() instanceof ICurioItem curioItem) {
+            for (ISlotType slot : CuriosApi.getSlotHelper().getSlotTypes()) {
+                SlotContext context = new SlotContext(slot.getIdentifier(), null, -1, false, false);
+                if (CuriosApi.getCuriosHelper().isStackValid(context, itemStack)) {
+                    return slot.getIdentifier();
+                }
+            }
+        } else if (itemStack.getItem() instanceof ArmorItem armorItem) {
+            return armorItem.getSlot().getName();
+        }
+        return EquipmentSlot.MAINHAND.getName();
     }
 
     public static UUID UUIDForSlot(EquipmentSlot slot) {
         return UPGRADE_UUIDS_BY_SLOT.get(slot);
     }
 
-    public static void handleAttributeEvent(ItemAttributeModifierEvent event, UpgradeData upgradeData){
+    /**
+     * Handler generified for forge's and curio's attribute event
+     *
+     * @param modifiers      item's original attribute map
+     * @param upgradeData    upgrade data we're applying
+     * @param addCallback    function to add new modifiers to the item
+     * @param removeCallback function to remove old modifier from the item
+     * @param uuidOverride optional uuid to use instead of default one. must be provided if curio
+     */
+    public static void handleAttributeEvent(Multimap<Attribute, AttributeModifier> modifiers, UpgradeData upgradeData, BiConsumer<Attribute, AttributeModifier> addCallback, BiConsumer<Attribute, AttributeModifier> removeCallback, Optional<UUID> uuidOverride) {
         var upgrades = upgradeData.getUpgrades();
         for (Map.Entry<UpgradeType, Integer> entry : upgrades.entrySet()) {
             UpgradeType upgradeType = entry.getKey();
             int count = entry.getValue();
-            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(event, upgradeType.getAttribute(), upgradeType.getOperation());
-            event.addModifier(upgradeType.getAttribute(), new AttributeModifier(UpgradeUtils.UUIDForSlot(event.getSlotType()), "upgrade", baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
+            double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(modifiers, upgradeType.getAttribute(), upgradeType.getOperation(), removeCallback);
+            UUID uuid;
+            //IronsSpellbooks.LOGGER.debug("handleAttributeEvent: uuidOverride present: {} ({})", uuidOverride.isPresent(), uuidOverride);
+            if (uuidOverride.isPresent()) {
+                uuid = uuidOverride.get();
+            } else {
+                try {
+                    uuid = UUIDForSlot(EquipmentSlot.byName(upgradeData.getUpgradedSlot()));
+                } catch (IllegalArgumentException e) {
+                    IronsSpellbooks.LOGGER.warn("Invalid UpgradeData NBT: {}", e.toString());
+                    return;
+                }
+            }
+
+            addCallback.accept(upgradeType.getAttribute(), new AttributeModifier(uuid, "upgrade", baseAmount + upgradeType.getAmountPerUpgrade() * count, entry.getKey().getOperation()));
         }
     }
 
-    public static double collectAndRemovePreexistingAttribute(ItemAttributeModifierEvent event, Attribute key, AttributeModifier.Operation operationToMatch) {
+    public static double collectAndRemovePreexistingAttribute(Multimap<Attribute, AttributeModifier> modifiers, Attribute key, AttributeModifier.Operation operationToMatch, BiConsumer<Attribute, AttributeModifier> removeCallback) {
         //Tactical incision to remove the preexisting attribute but preserve its value
-        if (event.getOriginalModifiers().containsKey(key)) {
-            for (AttributeModifier modifier : event.getOriginalModifiers().get(key))
+        if (modifiers.containsKey(key)) {
+            for (AttributeModifier modifier : modifiers.get(key)) {
                 if (modifier.getOperation().equals(operationToMatch)) {
-                    event.removeModifier(key, modifier);
+                    removeCallback.accept(key, modifier);
                     return modifier.getAmount();
                 }
+            }
         }
         return 0;
     }
