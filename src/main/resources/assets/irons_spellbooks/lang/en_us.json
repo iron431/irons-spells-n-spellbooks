@@ -235,6 +235,7 @@
   "ui.irons_spellbooks.greater_healing": "Max Healing",
   "ui.irons_spellbooks.damage": "%d Damage",
   "ui.irons_spellbooks.aoe_damage": "%d AOE Damage",
+  "ui.irons_spellbooks.percent_damage": "%d%% Damage",
   "ui.irons_spellbooks.aoe_healing": "%d AOE Healing",
   "ui.irons_spellbooks.max_hp_on_kill": "%d Max HP on Kill",
   "ui.irons_spellbooks.slowness_effect": "Slowness %d",
