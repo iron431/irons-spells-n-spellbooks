@@ -11,8 +11,9 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
+import io.redspace.ironsspellbooks.particle.TrailShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -25,8 +26,8 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class ColdwaveSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "coldwave");
+public class FrostwaveSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "frostwave");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -43,7 +44,7 @@ public class ColdwaveSpell extends AbstractSpell {
             .setCooldownSeconds(30)
             .build();
 
-    public ColdwaveSpell() {
+    public FrostwaveSpell() {
         this.manaCostPerLevel = 50;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 3;
@@ -79,11 +80,11 @@ public class ColdwaveSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
-        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.ICE.get().getTargetingColor(), radius), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);
-        level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> DamageSources.isFriendlyFireBetween(target, entity)).forEach(target -> {
-//            if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
-//                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED.get(), getDuration(spellLevel, entity)));
-//            }
+        MagicManager.spawnParticles(level, new TrailShockwaveParticleOptions(SchoolRegistry.ICE.get().getTargetingColor(), radius, false, ParticleRegistry.SNOWFLAKE_PARTICLE.get()), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);
+        level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity)).forEach(target -> {
+            if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED.get(), getDuration(spellLevel, entity)));
+            }
         });
         super.onCast(level, spellLevel, entity, playerMagicData);
     }

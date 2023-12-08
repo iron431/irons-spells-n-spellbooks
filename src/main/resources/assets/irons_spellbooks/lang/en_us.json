@@ -416,6 +416,8 @@
   "spell.irons_spellbooks.thunder_step": "Thunderstep",
   "spell.irons_spellbooks.haste": "Haste",
   "spell.irons_spellbooks.slow": "Slow",
+  "spell.irons_spellbooks.frostwave": "Frostwave",
+  "spell.irons_spellbooks.heat_surge": "Heat Surge",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -497,6 +499,8 @@
   "spell.irons_spellbooks.thunder_step.guide": "Teleport a short distance forward, creating a wake of lightning that damages creatures you teleport through.",
   "spell.irons_spellbooks.haste.guide": "In a radius around a targeted creature, or yourself if no creature is targeted, apply the Hastened effect, increasing movement speed, attack speed, mining speed, mana regeneration, and cast time reduction for a duration.",
   "spell.irons_spellbooks.slow.guide": "In a radius around a targeted creature, apply the Slowed effect to enemies, decreasing movement speed, attack speed, mining speed, mana regeneration, and cast time for a duration.",
+  "spell.irons_spellbooks.frostwave.guide": "Cascade a wave of frost magic in a radius around you, afflicting creatures with chilled. Chilled creatures are slowed, and have incoming freeze time doubled.",
+  "spell.irons_spellbooks.heat_surge.guide": "Emanate a surge of fiery magic in a radius around you, igniting and rending creatures. Rended creatures have reduced armor.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -634,6 +638,7 @@
   "effect.irons_spellbooks.oakskin": "Oakskin",
   "effect.irons_spellbooks.planar_sight": "Planar Sight",
   "effect.irons_spellbooks.antigravity": "Anti-Gravity",
+  "effect.irons_spellbooks.chilled": "Chilled",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -658,6 +663,7 @@
   "effect.irons_spellbooks.oakskin.description": "Grants 15% damage reduction, and an additional 5% per level",
   "effect.irons_spellbooks.planar_sight.description": "Shift your vision in between planes, gaining the ability to see creatures through solid material",
   "effect.irons_spellbooks.antigravity.description": "Produces Weightlessness",
+  "effect.irons_spellbooks.chilled.description": "Decreases movement speed and doubles incoming freeze time",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",

@@ -37,7 +37,11 @@ public class UpgradeData {
         for (Tag tag : upgrades) {
             if (tag instanceof CompoundTag compoundTag) {
                 if (upgradedSlot == null) {
-                    upgradedSlot = EquipmentSlot.byName(compoundTag.getString(Slot_Key));
+                    try {
+                        upgradedSlot = EquipmentSlot.byName(compoundTag.getString(Slot_Key));
+                    }catch (Exception e){
+                        return UpgradeData.NONE;
+                    }
                 }
                 var upgradeKey = new ResourceLocation(compoundTag.getString(Upgrade_Key));
                 UpgradeType.getUpgrade(upgradeKey).ifPresent((upgrade) -> map.put(upgrade, compoundTag.getInt(Upgrade_Count)));

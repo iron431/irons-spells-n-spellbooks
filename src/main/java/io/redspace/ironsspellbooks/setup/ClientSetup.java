@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.setup;
 
+import dev.kosmx.playerAnim.api.layered.ModifierLayer;
+import dev.kosmx.playerAnim.api.layered.modifier.AdjustmentModifier;
+import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
+import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
@@ -64,7 +68,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.render.*;
-import io.redspace.ironsspellbooks.util.AbstractClientPlayerMixinHelper;
 import io.redspace.ironsspellbooks.util.IMinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
@@ -72,11 +75,13 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -90,6 +95,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE;
 import static io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTURE;
@@ -275,6 +281,7 @@ public class ClientSetup {
         event.register(ParticleRegistry.SIPHON_PARTICLE.get(), SiphonParticle.Provider::new);
         event.register(ParticleRegistry.FOG_PARTICLE.get(), FogParticle.Provider::new);
         event.register(ParticleRegistry.SHOCKWAVE_PARTICLE.get(), ShockwaveParticle.Provider::new);
+        event.register(ParticleRegistry.TRAIL_SHOCKWAVE_PARTICLE.get(), ShockwaveParticle.Provider::new);
         event.register(ParticleRegistry.ACID_PARTICLE.get(), AcidParticle.Provider::new);
         event.register(ParticleRegistry.ACID_BUBBLE_PARTICLE.get(), AcidBubbleParticle.Provider::new);
         event.register(ParticleRegistry.ZAP_PARTICLE.get(), ZapParticle.Provider::new);
@@ -337,7 +344,36 @@ public class ClientSetup {
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
                 SpellAnimations.ANIMATION_RESOURCE,
                 42,
-                AbstractClientPlayerMixinHelper::playerMixinInit);
+                (player) -> {
+                    var animation = new ModifierLayer<>();
+
+                    animation.addModifierLast(new AdjustmentModifier((partName) -> {
+                        float rotationX = 0;
+                        float rotationY = 0;
+                        float rotationZ = 0;
+                        float offsetX = 0;
+                        float offsetY = 0;
+                        float offsetZ = 0;
+                        switch (partName) {
+                            case "rightArm", "leftArm" -> {
+                                rotationX = (float) Math.toRadians(player.getXRot());
+                                rotationY = (float) Math.toRadians(player.yHeadRot - player.yBodyRot);
+                            }
+                            default -> {
+                                return Optional.empty();
+                            }
+                        }
+                        return Optional.of(new AdjustmentModifier.PartModifier(new Vec3f(rotationX, rotationY, rotationZ), new Vec3f(offsetX, offsetY, offsetZ)));
+                    }));
+                    animation.addModifierLast(new MirrorModifier() {
+                        @Override
+                        public boolean isEnabled() {
+                            return player.getUsedItemHand() == InteractionHand.OFF_HAND;
+                        }
+                    });
+
+                    return animation;
+                });
 
         TetraProxy.PROXY.initClient();
 

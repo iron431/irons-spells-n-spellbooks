@@ -6,24 +6,35 @@ import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.DustParticleOptionsBase;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Optional;
 
-public class ShockwaveParticleOptions extends DustParticleOptionsBase implements IShockwaveParticleOptions {
+public class TrailShockwaveParticleOptions extends DustParticleOptionsBase implements IShockwaveParticleOptions {
     //Shadows dumb private scale
     protected final float scale;
     protected final boolean fullbright;
+    protected final String trailParticle;
 
-    public ShockwaveParticleOptions(Vector3f color, float scale, boolean glowing) {
+    public TrailShockwaveParticleOptions(Vector3f color, float scale, boolean glowing, String trailParticle) {
         super(color, scale);
         //Super clamped scale to 4
         this.scale = Math.max(this.getScale(), scale);
         this.fullbright = glowing;
+        this.trailParticle = trailParticle;
+    }
+
+    public TrailShockwaveParticleOptions(Vector3f color, float scale, boolean glowing, ParticleType<?> trailParticle) {
+        this(color, scale, glowing, Objects.requireNonNull(ForgeRegistries.PARTICLE_TYPES.getKey(trailParticle)).toString());
     }
 
     @Override
@@ -37,18 +48,25 @@ public class ShockwaveParticleOptions extends DustParticleOptionsBase implements
     }
 
     @Override
-    public Optional<ParticleOptions> trailParticle() {
-        return Optional.empty();
-    }
-
-    @Override
     public String trailParticleRaw() {
-        return "";
+        return trailParticle;
     }
 
     @Override
     public Vector3f color() {
         return color;
+    }
+
+    @Override
+    public Optional<ParticleOptions> trailParticle() {
+        try {
+            var type = ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(trailParticle));
+            if (type instanceof ParticleOptions particleOptions) {
+                return Optional.of(particleOptions);
+            }
+        } catch (Exception ignored) {
+        }
+        return Optional.empty();
     }
 
     /*
@@ -57,8 +75,9 @@ public class ShockwaveParticleOptions extends DustParticleOptionsBase implements
     public static final Codec<IShockwaveParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) ->
             p_175793_.group(Vector3f.CODEC.fieldOf("color").forGetter(IShockwaveParticleOptions::color),
                     Codec.FLOAT.fieldOf("scale").forGetter(IShockwaveParticleOptions::getScale),
-                    Codec.BOOL.fieldOf("fullbright").forGetter(IShockwaveParticleOptions::isFullbright)
-            ).apply(p_175793_, ShockwaveParticleOptions::new));
+                    Codec.BOOL.fieldOf("fullbright").forGetter(IShockwaveParticleOptions::isFullbright),
+                    Codec.STRING.fieldOf("trailParticle").forGetter(IShockwaveParticleOptions::trailParticleRaw)
+            ).apply(p_175793_, TrailShockwaveParticleOptions::new));
     @SuppressWarnings("deprecation")
     public static final Deserializer<IShockwaveParticleOptions> DESERIALIZER = new Deserializer<IShockwaveParticleOptions>() {
         public @NotNull IShockwaveParticleOptions fromCommand(@NotNull ParticleType<IShockwaveParticleOptions> p_123689_, @NotNull StringReader p_123690_) throws CommandSyntaxException {
@@ -67,15 +86,17 @@ public class ShockwaveParticleOptions extends DustParticleOptionsBase implements
             float f = p_123690_.readFloat();
             p_123690_.expect(' ');
             boolean glowing = p_123690_.readBoolean();
-            return new ShockwaveParticleOptions(vector3f, f, glowing);
+            p_123690_.expect(' ');
+            String trailParticle = p_123690_.readString();
+            return new TrailShockwaveParticleOptions(vector3f, f, glowing, trailParticle);
         }
 
         public @NotNull IShockwaveParticleOptions fromNetwork(@NotNull ParticleType<IShockwaveParticleOptions> p_123692_, @NotNull FriendlyByteBuf p_123693_) {
-            return new ShockwaveParticleOptions(DustParticleOptionsBase.readVector3f(p_123693_), p_123693_.readFloat(), p_123693_.readBoolean());
+            return new TrailShockwaveParticleOptions(DustParticleOptionsBase.readVector3f(p_123693_), p_123693_.readFloat(), p_123693_.readBoolean(), p_123693_.readUtf());
         }
     };
 
     public @NotNull ParticleType<IShockwaveParticleOptions> getType() {
-        return ParticleRegistry.SHOCKWAVE_PARTICLE.get();
+        return ParticleRegistry.TRAIL_SHOCKWAVE_PARTICLE.get();
     }
 }
