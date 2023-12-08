@@ -499,8 +499,8 @@
   "spell.irons_spellbooks.thunder_step.guide": "Teleport a short distance forward, creating a wake of lightning that damages creatures you teleport through.",
   "spell.irons_spellbooks.haste.guide": "In a radius around a targeted creature, or yourself if no creature is targeted, apply the Hastened effect, increasing movement speed, attack speed, mining speed, mana regeneration, and cast time reduction for a duration.",
   "spell.irons_spellbooks.slow.guide": "In a radius around a targeted creature, apply the Slowed effect to enemies, decreasing movement speed, attack speed, mining speed, mana regeneration, and cast time for a duration.",
-  "spell.irons_spellbooks.frostwave.guide": "Cascade a wave of frost magic in a radius around you, afflicting creatures with chilled. Chilled creatures are slowed, and have incoming freeze time doubled.",
-  "spell.irons_spellbooks.heat_surge.guide": "Emanate a surge of fiery magic in a radius around you, igniting and rending creatures. Rended creatures have reduced armor.",
+  "spell.irons_spellbooks.frostwave.guide": "Cascade a wave of frost magic in a radius around you, afflicting creatures with chilled. Chilled creatures are slowed, and have their incoming freeze time doubled.",
+  "spell.irons_spellbooks.heat_surge.guide": "Emanate a surge of fiery magic, igniting and rending creatures in a radius around you. Rended creatures have reduced armor.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",

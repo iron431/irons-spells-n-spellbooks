@@ -44,11 +44,11 @@ public class HeatSurgeSpell extends AbstractSpell {
             .build();
 
     public HeatSurgeSpell() {
-        this.manaCostPerLevel = 50;
+        this.manaCostPerLevel = 8;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 2;
         this.castTime = 20;
-        this.baseManaCost = 100;
+        this.baseManaCost = 50;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class HeatSurgeSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
         MagicManager.spawnParticles(level, new TrailShockwaveParticleOptions(SchoolRegistry.FIRE.get().getTargetingColor(), radius, true, "irons_spellbooks:fire"), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);
-        level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity)).forEach(target -> {
+        level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity) && Utils.hasLineOfSight(level, entity.position(), target.position(), true)).forEach(target -> {
             if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
                 int i = getDuration(spellLevel, entity);
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND.get(), i, getRendAmplifier(spellLevel, entity)));

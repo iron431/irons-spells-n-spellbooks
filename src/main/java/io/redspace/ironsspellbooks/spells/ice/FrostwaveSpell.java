@@ -33,7 +33,7 @@ public class FrostwaveSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1))
         );
     }
 
@@ -45,11 +45,11 @@ public class FrostwaveSpell extends AbstractSpell {
             .build();
 
     public FrostwaveSpell() {
-        this.manaCostPerLevel = 50;
+        this.manaCostPerLevel = 5;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 3;
         this.castTime = 0;
-        this.baseManaCost = 100;
+        this.baseManaCost = 50;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class FrostwaveSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
         MagicManager.spawnParticles(level, new TrailShockwaveParticleOptions(SchoolRegistry.ICE.get().getTargetingColor(), radius, false, ParticleRegistry.SNOWFLAKE_PARTICLE.get()), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);
-        level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity)).forEach(target -> {
+        level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity) && Utils.hasLineOfSight(level, entity.position(), target.position(), true)).forEach(target -> {
             if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED.get(), getDuration(spellLevel, entity)));
             }
