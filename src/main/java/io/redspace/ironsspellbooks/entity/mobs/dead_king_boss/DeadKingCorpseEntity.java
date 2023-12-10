@@ -114,7 +114,8 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            kill();
+            discard();
+            //kill();
             return true;
         } else {
             Player player = level.getNearestPlayer(this, 8);
