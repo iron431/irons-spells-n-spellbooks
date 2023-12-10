@@ -29,14 +29,10 @@ public class CastCommand {
                 .then(Commands.argument("casters", EntityArgument.entities())
                         .then(Commands.argument("spell", SpellArgument.spellArgument())
                                 .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class)))
-                                .then(Commands.literal("level")
-                                        .then(Commands.argument("value", IntegerArgumentType.integer(1))
-                                                .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), IntegerArgumentType.getInteger(context, "value"))))
-                                        .then(Commands.argument("function value", FunctionArgument.functions())
-                                                .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), FunctionArgument.getFunctions(context, "function value"))))
-                                )
-
-
+                                .then(Commands.argument("level", IntegerArgumentType.integer(1))
+                                        .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), IntegerArgumentType.getInteger(context, "value"))))
+                                .then(Commands.argument("function value", FunctionArgument.functions())
+                                        .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), FunctionArgument.getFunctions(context, "function value"))))
                         ))
         );
     }
