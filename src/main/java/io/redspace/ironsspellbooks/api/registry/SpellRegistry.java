@@ -40,7 +40,7 @@ public class SpellRegistry {
         return noneSpell;
     }
 
-    public static RegistryObject<AbstractSpell> registerSpell(AbstractSpell spell) {
+    private static RegistryObject<AbstractSpell> registerSpell(AbstractSpell spell) {
         return SPELLS.register(spell.getSpellName(), () -> spell);
     }
 
