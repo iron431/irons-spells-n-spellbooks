@@ -26,6 +26,7 @@ public class SpellBookData {
     public static final String ID = "sid";
     public static final String LEVEL = "level";
     public static final String SLOT = "slot";
+    public static final SpellBookData EMPTY_SPELLBOOK_DATA = new SpellBookData(0);
 
     private SpellData[] transcribedSpells;
     private int activeSpellIndex = -1;
@@ -173,11 +174,6 @@ public class SpellBookData {
 
         spellCount = 0;
         if (listTagSpells != null && listTagSpells.size() > 0) {
-
-//            if (((CompoundTag) listTagSpells.get(0)).contains(LEGACY_ID)) {
-//                DataFixerHelpers.fixSpellbookData(listTagSpells);
-//            }
-
             listTagSpells.forEach(tag -> {
                 CompoundTag t = (CompoundTag) tag;
                 String id = t.getString(ID);
@@ -191,7 +187,7 @@ public class SpellBookData {
 
     public static SpellBookData getSpellBookData(ItemStack stack) {
         if (stack == null) {
-            return new SpellBookData(0);
+            return EMPTY_SPELLBOOK_DATA;
         }
 
         CompoundTag tag = stack.getTagElement(ISB_SPELLBOOK);

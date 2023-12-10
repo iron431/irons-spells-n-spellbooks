@@ -37,10 +37,6 @@ public class SpellData implements Comparable<SpellData> {
         CompoundTag tag = stack.getTagElement(ISB_SPELL);
 
         if (tag != null) {
-//            if (tag.contains(LEGACY_SPELL_TYPE)) {
-//                DataFixerHelpers.fixScrollData(tag);
-//            }
-
             return new SpellData(SpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
         } else if (stack.getItem() instanceof MagicSwordItem magicSwordItem) {
             var spell = magicSwordItem.getImbuedSpell();
