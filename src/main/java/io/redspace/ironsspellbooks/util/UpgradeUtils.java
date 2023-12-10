@@ -44,7 +44,7 @@ public class UpgradeUtils {
                 }
             }
         } else if (itemStack.getItem() instanceof ArmorItem armorItem) {
-            return armorItem.getSlot().getName();
+            return armorItem.getEquipmentSlot().getName();
         }
         return EquipmentSlot.MAINHAND.getName();
     }
