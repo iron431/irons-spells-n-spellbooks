@@ -30,7 +30,7 @@ public class CastCommand {
                         .then(Commands.argument("spell", SpellArgument.spellArgument())
                                 .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class)))
                                 .then(Commands.argument("level", IntegerArgumentType.integer(1))
-                                        .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), IntegerArgumentType.getInteger(context, "value"))))
+                                        .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), IntegerArgumentType.getInteger(context, "level"))))
                                 .then(Commands.argument("function value", FunctionArgument.functions())
                                         .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), FunctionArgument.getFunctions(context, "function value"))))
                         ))
