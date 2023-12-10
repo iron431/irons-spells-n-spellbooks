@@ -1,16 +1,10 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.command.*;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.server.command.ModIdArgument;
-
-import static net.minecraftforge.registries.ForgeRegistries.COMMAND_ARGUMENT_TYPES;
 
 
 @Mod.EventBusSubscriber()
@@ -18,15 +12,19 @@ public class CommandRegistry {
     @SubscribeEvent
     public static void onCommandsRegister(RegisterCommandsEvent event) {
 
-        CreateScrollCommand.register(event.getDispatcher());
-        CreateSpellBookCommand.register(event.getDispatcher());
-        CreateImbuedSwordCommand.register(event.getDispatcher(), event.getBuildContext());
-        CreateDebugWizardCommand.register(event.getDispatcher());
-        ManaCommand.register(event.getDispatcher());
-        GenerateModList.register(event.getDispatcher());
-        LearnCommand.register(event.getDispatcher());
-        if(!FMLLoader.isProduction()) {
-            GenerateSiteData.register(event.getDispatcher());
+        var commandDispatcher = event.getDispatcher();
+        var commandBuildContext = event.getBuildContext();
+
+        CreateScrollCommand.register(commandDispatcher);
+        CreateSpellBookCommand.register(commandDispatcher);
+        CreateImbuedSwordCommand.register(commandDispatcher, commandBuildContext);
+        CreateDebugWizardCommand.register(commandDispatcher);
+        CastCommand.register(commandDispatcher);
+        ManaCommand.register(commandDispatcher);
+        GenerateModList.register(commandDispatcher);
+        LearnCommand.register(commandDispatcher);
+        if (!FMLLoader.isProduction()) {
+            GenerateSiteData.register(commandDispatcher);
         }
     }
 }
