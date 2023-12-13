@@ -101,11 +101,6 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
     }
 
     @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        super.onCast(world, spellLevel, entity, playerMagicData);
-    }
-
-    @Override
     public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
         super.onServerCastTick(level, spellLevel, entity, playerMagicData);
         if (playerMagicData != null && (playerMagicData.getCastDurationRemaining()) % 3 == 0) {
@@ -131,9 +126,11 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
                 if (force.y > 0) {
                     targetEntity.resetFallDistance();
                 }
-                int airborne = (int) (travel.x * travel.x + travel.z * travel.z) / 2;
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 31, airborne));
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY.get(), 11, 0));
+                if ((playerMagicData.getCastDurationRemaining()) % 10 == 0) {
+                    int airborne = (int) (travel.x * travel.x + travel.z * travel.z) / 2;
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 31, airborne));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY.get(), 11, 0));
+                }
                 targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(force));
                 targetEntity.hurtMarked = true;
             }
