@@ -18,7 +18,8 @@
 - Update Chinese Translations
 
 ### Fixes
-- 
-
+- Fixed Spell MobEffects persisting after death
+- Fixed Summoned Entities with no summoner causing a crash after killing a player
+- Fixed /kill not working on Dead King Corpse entity
 ### API
 - 

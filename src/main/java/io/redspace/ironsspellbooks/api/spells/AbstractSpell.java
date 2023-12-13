@@ -522,8 +522,8 @@ public abstract class AbstractSpell {
         return getDamageSource(null, attacker);
     }
 
-    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
-        return projectile == null ? new SpellDamageSource(attacker, this) : new IndirectSpellDamageSource(projectile, attacker, this);
+    public DamageSource getDamageSource(@Nullable Entity projectile, @Nullable Entity attacker) {
+        return projectile == null ? attacker == null ? new DamageSource(getDeathMessageId()) : new SpellDamageSource(attacker, this) : new IndirectSpellDamageSource(projectile, attacker == null ? projectile : attacker, this);
     }
 
     public boolean isEnabled() {
