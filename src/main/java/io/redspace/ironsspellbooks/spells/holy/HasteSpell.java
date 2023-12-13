@@ -104,8 +104,7 @@ public class HasteSpell extends AbstractSpell {
         }
         float radius = 3f;
         var target = ((CastTargetingData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
-        var area = TargetedAreaEntity.createTargetAreaEntity(level, target.position(), radius, Utils.packRGB(this.getTargetingColor()));
-        area.setOwner(target);
+        var area = TargetedAreaEntity.createTargetAreaEntity(level, target.position(), radius, Utils.packRGB(this.getTargetingColor()), target);
         playerMagicData.setAdditionalCastData(new TargetedTargetAreaCastData(target, area));
         return true;
     }

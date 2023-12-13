@@ -135,12 +135,10 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
 
     @Override
     public void tick() {
-//        IronsSpellbooks.LOGGER.debug("IceBlockProjectileRotation: X:{} Y:{}", getXRot(), getYRot());
-//        this.setYRot((float)(Mth.atan2(getDeltaMovement().x, getDeltaMovement().z) * (double)(180F / (float)Math.PI)));
-//        this.setXRot(0);
-//        this.yRotO = this.getYRot();
-//        this.xRotO = this.getXRot();
-        baseTick();
+        this.firstTick = false;
+        xo = getX();
+        yo = getY();
+        zo = getZ();
         xOld = getX();
         yOld = getY();
         zOld = getZ();
@@ -163,14 +161,13 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
                 this.setDeltaMovement(getDeltaMovement().multiply(.95f, .75f, .95f));
                 if (getTarget() != null) {
                     var target = getTarget();
-
                     Vec3 diff = target.position().subtract(this.position());
                     if (diff.horizontalDistanceSqr() > 1) {
                         this.setDeltaMovement(getDeltaMovement().add(diff.multiply(1, 0, 1).normalize().scale(.025f)));
                     }
-                    if (this.getY() - target.getY() > 3.5)
+                    if (this.getY() - target.getY() > 3.5) {
                         tooHigh = true;
-
+                    }
                 } else {
                     if (airTime % 3 == 0) {
                         HitResult ground = Utils.raycastForBlock(level, position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
@@ -181,24 +178,21 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
                     }
 
                 }
-                if (tooHigh)
+                if (tooHigh) {
                     this.setDeltaMovement(getDeltaMovement().add(0, -.005, 0));
-                else
+                } else {
                     this.setDeltaMovement(getDeltaMovement().add(0, .01, 0));
-
-                if (airTime == 0)
+                }
+                if (airTime == 0) {
                     this.setDeltaMovement(0, 0.5, 0);
+                }
             } else {
                 this.setDeltaMovement(0, getDeltaMovement().y - .15, 0);
             }
         } else {
             trailParticles();
         }
-
         move(MoverType.SELF, getDeltaMovement());
-
-
-
     }
 
     @Override

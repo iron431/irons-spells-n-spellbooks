@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.target_area;
 
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
@@ -69,17 +70,29 @@ public class TargetedAreaEntity extends Entity {
         return targetedAreaEntity;
     }
 
+    public static TargetedAreaEntity createTargetAreaEntity(Level level, Vec3 center, float radius, int color, Entity owner) {
+        TargetedAreaEntity targetedAreaEntity = new TargetedAreaEntity(level, radius, color);
+        targetedAreaEntity.setPos(center);
+        targetedAreaEntity.setOwner(owner);
+        level.addFreshEntity(targetedAreaEntity);
+        return targetedAreaEntity;
+    }
+
     @Override
     public void tick() {
+        this.firstTick = false;
         var owner = getOwner();
-        xOld = getX();
-        yOld = getY();
-        zOld = getZ();
         if (owner != null) {
             setPos(owner.position());
             this.xOld = owner.xOld;
             this.yOld = owner.yOld;
             this.zOld = owner.zOld;
+            this.xo = owner.xo;
+            this.yo = owner.yo;
+            this.zo = owner.zo;
+            IronsSpellbooks.LOGGER.debug("TargetAreaEntity pos: {}", position());
+            IronsSpellbooks.LOGGER.debug("TargetAreaEntity oldpos: {}, {}, {}", xOld, yOld, zOld);
+            IronsSpellbooks.LOGGER.debug("TargetAreaEntity opos: {}, {}, {}", xo, yo, zo);
         }
         if (!level.isClientSide
                 && (duration > 0 && tickCount > duration
@@ -185,8 +198,17 @@ public class TargetedAreaEntity extends Entity {
         }
     }
 
-    @Override
     public Packet<?> getAddEntityPacket() {
-        return new ClientboundAddEntityPacket(this);
+        Entity entity = this.getOwner();
+        return new ClientboundAddEntityPacket(this, entity == null ? 0 : entity.getId());
+    }
+
+    public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {
+        super.recreateFromPacket(pPacket);
+        Entity entity = this.level.getEntity(pPacket.getData());
+        if (entity != null) {
+            this.setOwner(entity);
+        }
+
     }
 }
