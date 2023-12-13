@@ -473,5 +473,13 @@
     "sounds": [
       "irons_spellbooks:planar_sight_cast"
     ]
+  },
+  "item.spell_book.equip": {
+    "sounds": [
+      "irons_spellbooks:equip_spell_book_1",
+      "irons_spellbooks:equip_spell_book_1",
+      "irons_spellbooks:equip_spell_book_2",
+      "irons_spellbooks:equip_spell_book_3"
+    ]
   }
 }
