@@ -85,8 +85,9 @@ public class BlazeStormSpell extends AbstractSpell {
 
     @Override
     public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
-        if (playerMagicData != null && (playerMagicData.getCastDurationRemaining() + 1) % 5 == 0)
+        if (playerMagicData != null && (playerMagicData.getCastDurationRemaining() + 1) % 5 == 0) {
             shootBlazeFireball(level, spellLevel, entity);
+        }
     }
 
     private float getDamage(int spellLevel, LivingEntity caster) {

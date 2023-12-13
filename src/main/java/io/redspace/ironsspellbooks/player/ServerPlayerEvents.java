@@ -204,7 +204,7 @@ public class ServerPlayerEvents {
             event.getOriginal().reviveCaps();
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
-            newMagicData.setSyncedData(oldMagicData.getSyncedData());
+            newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData());
             newMagicData.getSyncedData().doSync();
             event.getOriginal().invalidateCaps();
         }
