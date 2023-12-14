@@ -54,7 +54,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 3;
-        this.castTime = 16;
+        this.castTime = 15;
         this.baseManaCost = 30;
     }
 
@@ -96,7 +96,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        float radius = 2.5f;
+        float radius = 2.75f;
         Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().multiply(1.45f, 0, 1.45f));
         var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         for (Entity targetEntity : entities) {
@@ -138,7 +138,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return SpellAnimations.OVERHEAD_MELEE_SWING_ANIMATION;
+        return SpellAnimations.ONE_HANDED_HORIZONTAL_SWING_ANIMATION;
     }
 
     @Override

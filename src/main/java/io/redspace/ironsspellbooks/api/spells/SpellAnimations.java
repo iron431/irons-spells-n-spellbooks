@@ -23,5 +23,6 @@ public class SpellAnimations {
     public static final AnimationHolder CHARGE_ANIMATION = new AnimationHolder("charge_black_hole", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     public static final AnimationHolder FINISH_ANIMATION = new AnimationHolder("long_cast_finish", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
     public static final AnimationHolder OVERHEAD_MELEE_SWING_ANIMATION = new AnimationHolder("overhead_two_handed_swing", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
-    public static final AnimationHolder TOUCH_GROUND = new AnimationHolder("touch_ground", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final AnimationHolder TOUCH_GROUND_ANIMATION = new AnimationHolder("touch_ground", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
+    public static final AnimationHolder ONE_HANDED_HORIZONTAL_SWING_ANIMATION = new AnimationHolder("horizontal_slash_one_handed", ILoopType.EDefaultLoopTypes.PLAY_ONCE);
 }

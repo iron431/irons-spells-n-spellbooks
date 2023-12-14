@@ -110,6 +110,6 @@ public class HeatSurgeSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastFinishAnimation() {
-        return SpellAnimations.TOUCH_GROUND;
+        return SpellAnimations.TOUCH_GROUND_ANIMATION;
     }
 }
