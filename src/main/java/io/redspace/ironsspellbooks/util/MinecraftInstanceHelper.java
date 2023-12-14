@@ -15,5 +15,6 @@ public class MinecraftInstanceHelper implements IMinecraftInstanceHelper {
         return instance.player();
     }
 
+    @Nullable
     public static Player getPlayer(){return instance.player();}
 }

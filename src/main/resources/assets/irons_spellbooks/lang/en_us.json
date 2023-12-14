@@ -158,6 +158,7 @@
   "item.irons_spellbooks.eldritch_manuscript_desc": "Use to learn Eldritch spells",
   "item.irons_spellbooks.ancient_knowledge_fragment": "Ancient Knowledge Fragment",
   "item.irons_spellbooks.autoloader_crossbow": "Autoloader Crossbow",
+  "item.irons_spellbooks.autoloader_crossbow.desc": "> Automatically loads next available projectile while in inventory. Crouch-Click to cancel",
   "item.irons_spellbooks.scroll_pouch": "Mystery Scroll Pouch",
   "item.irons_spellbooks.furled_map": "Furled Map",
   "item.irons_spellbooks.furled_map_descriptor_framing": "[%s]",
@@ -185,6 +186,7 @@
   "block.irons_spellbooks.alchemist_cauldron": "Alchemist Cauldron",
   "block.irons_spellbooks.firefly_jar": "Firefly Jar",
 
+  "tooltip.irons_spellbooks.shift_tooltip": "[Shift+]",
   "tooltip.irons_spellbooks.level": "Level %s",
   "tooltip.irons_spellbooks.level_plus": "%d (+%d)",
   "tooltip.irons_spellbooks.scroll_tooltip": "When in Spell Book:",

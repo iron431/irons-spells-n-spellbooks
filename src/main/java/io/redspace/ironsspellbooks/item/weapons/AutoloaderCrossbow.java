@@ -1,6 +1,15 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
+import io.redspace.ironsspellbooks.player.ClientInputEvents;
+import io.redspace.ironsspellbooks.player.KeyState;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.KeyboardHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -11,8 +20,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.tools.Tool;
+import java.util.List;
 
 public class AutoloaderCrossbow extends CrossbowItem {
     //NBT flag used for if we are currently in the process of loading a new projectile
@@ -38,8 +52,10 @@ public class AutoloaderCrossbow extends CrossbowItem {
             }
             return InteractionResultHolder.consume(itemstack);
         } else if (isLoading(itemstack)) {
-            setLoadingTicks(itemstack, 0);
-            setLoading(itemstack, false);
+            if (player.isCrouching()) {
+                setLoadingTicks(itemstack, 0);
+                setLoading(itemstack, false);
+            }
         } else if (!player.getProjectile(itemstack).isEmpty()) {
             startLoading(player, itemstack);
             return InteractionResultHolder.consume(itemstack);
@@ -116,5 +132,10 @@ public class AutoloaderCrossbow extends CrossbowItem {
         pCrossbowStack.getOrCreateTag().putInt(LOADING_TIMESTAMP, timestamp);
     }
 
-
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltip, TooltipFlag pFlag) {
+        TooltipsUtils.addShiftTooltip(pTooltip, List.of(
+                Component.translatable("item.irons_spellbooks.autoloader_crossbow.desc").withStyle(ChatFormatting.YELLOW)));
+        super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
+    }
 }

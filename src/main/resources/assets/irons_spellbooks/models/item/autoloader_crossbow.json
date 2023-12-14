@@ -75,24 +75,52 @@
   },
   "overrides": [
     {
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_0",
       "predicate": {
         "pulling": 1
-      },
-      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_0"
+      }
     },
     {
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_1",
       "predicate": {
         "pulling": 1,
-        "pull": 0.58
-      },
-      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_1"
+        "pull": 0.15
+      }
     },
     {
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_2",
       "predicate": {
         "pulling": 1,
-        "pull": 1.0
-      },
-      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_2"
+        "pull": 0.3
+      }
+    },
+    {
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_3",
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.45
+      }
+    },
+    {
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_4",
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.6
+      }
+    },
+    {
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_5",
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.75
+      }
+    },
+    {
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_6",
+      "predicate": {
+        "pulling": 1,
+        "pull": 0.9
+      }
     },
     {
       "predicate": {

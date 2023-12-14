@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -26,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TooltipsUtils {
-
 
     public static List<Component> formatActiveSpellTooltip(ItemStack stack, CastSource castSource, @Nonnull LocalPlayer player) {
         var spellData = stack.getItem() instanceof SpellBook ? SpellBookData.getSpellBookData(stack).getActiveSpell() : SpellData.getSpellData(stack); //Put me in utils?
@@ -87,6 +87,15 @@ public class TooltipsUtils {
 
         return lines;
     }
+
+    public static void addShiftTooltip(List<Component> currentTooltip, List<Component> tooltipToAdd) {
+        if (ClientInputEvents.isShiftKeyDown) {
+            currentTooltip.addAll(tooltipToAdd);
+        } else {
+            currentTooltip.add(Component.translatable("tooltip.irons_spellbooks.shift_tooltip").withStyle(ChatFormatting.GRAY));
+        }
+    }
+
 
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
     private static final Style OBFUSCATED_STYLE = AbstractEldritchSpell.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
