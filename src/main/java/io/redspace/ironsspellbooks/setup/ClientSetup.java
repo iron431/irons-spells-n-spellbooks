@@ -30,7 +30,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerRend
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerRenderer;
-import io.redspace.ironsspellbooks.entity.spells.FlameStrikeRenderer;
+import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrikeRenderer;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHoleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedleRenderer;
@@ -57,6 +57,8 @@ import io.redspace.ironsspellbooks.entity.spells.root.RootRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
+import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
+import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
@@ -76,7 +78,6 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
@@ -263,6 +264,8 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FALLING_BLOCK.get(), VisualFallingBlockRenderer::new);
         event.registerEntityRenderer(EntityRegistry.RAY_OF_FROST_VISUAL_ENTITY.get(), RayOfFrostRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ELDRITCH_BLAST_VISUAL_ENTITY.get(), EldritchBlastRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.SMALL_MAGIC_ARROW.get(), SmallMagicArrowRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), NoopRenderer::new);
 
         event.registerBlockEntityRenderer(BlockRegistry.SCROLL_FORGE_TILE.get(), ScrollForgeRenderer::new);
         event.registerBlockEntityRenderer(BlockRegistry.PEDESTAL_TILE.get(), PedestalRenderer::new);

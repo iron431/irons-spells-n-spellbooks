@@ -1,7 +1,8 @@
-package io.redspace.ironsspellbooks.entity.spells;
+package io.redspace.ironsspellbooks.entity.spells.flame_strike;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleOptions;

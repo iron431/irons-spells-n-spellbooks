@@ -77,16 +77,16 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements IAnim
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
         if (this.targetUUID != null) {
-            pCompound.putUUID("Target", this.targetUUID);
+            tag.putUUID("Target", this.targetUUID);
         }
     }
 
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-        if (pCompound.hasUUID("Target")) {
-            this.targetUUID = pCompound.getUUID("Target");
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        if (tag.hasUUID("Target")) {
+            this.targetUUID = tag.getUUID("Target");
         }
     }
 

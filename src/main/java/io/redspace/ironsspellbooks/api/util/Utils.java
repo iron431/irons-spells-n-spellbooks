@@ -137,12 +137,16 @@ public class Utils {
     }
 
     public static String stringTruncation(double f, int places) {
-        return (f % 1 == 0) ? String.valueOf((int)f) : String.format("%." + places + "f", f);
+        return (f % 1 == 0) ? String.valueOf((int) f) : String.format("%." + places + "f", f);
         //return String.format("%" + (f % 1 == 0 ? "" : ".f" + places), f);
     }
 
     public static float getAngle(Vec2 a, Vec2 b) {
-        return (float) (Math.atan2(b.y - a.y, b.x - a.x)) + 3.141f;// + (a.x > b.x ? Math.PI : 0));
+        return getAngle(a.x, a.y, b.x, b.y);
+    }
+
+    public static float getAngle(double ax, double ay, double bx, double by) {
+        return (float) (Math.atan2(by - ay, bx - ax)) + 3.141f;// + (a.x > b.x ? Math.PI : 0));
     }
 
     public static BlockHitResult getTargetOld(Level level, Player player, ClipContext.Fluid clipContext, double reach) {
