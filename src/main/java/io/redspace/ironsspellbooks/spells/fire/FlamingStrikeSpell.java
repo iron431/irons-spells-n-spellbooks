@@ -97,10 +97,10 @@ public class FlamingStrikeSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = 2.5f;
-        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .4f, 0).add(entity.getForward().multiply(1.45f, 0, 1.45f));
+        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().multiply(1.45f, 0, 1.45f));
         var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         for (Entity targetEntity : entities) {
-            if (entity.distanceTo(targetEntity) < radius && Utils.hasLineOfSight(level, hitLocation, targetEntity.getBoundingBox().getCenter(), true)) {
+            if (entity.distanceTo(targetEntity) < radius && Utils.hasLineOfSight(level, hitLocation.add(0, 1, 0), targetEntity.getBoundingBox().getCenter(), true)) {
                 if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity))) {
                     MagicManager.spawnParticles(level, ParticleHelper.EMBERS, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 50, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
                 }

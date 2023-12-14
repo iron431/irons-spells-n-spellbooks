@@ -81,7 +81,7 @@ public class FrostwaveSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
         MagicManager.spawnParticles(level, new TrailShockwaveParticleOptions(SchoolRegistry.ICE.get().getTargetingColor(), radius, false, ParticleRegistry.SNOWFLAKE_PARTICLE.get()), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);
-        level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity) && Utils.hasLineOfSight(level, entity.position(), target.position(), true)).forEach(target -> {
+        level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity) && Utils.hasLineOfSight(level, entity, target, true)).forEach(target -> {
             if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED.get(), getDuration(spellLevel, entity)));
             }

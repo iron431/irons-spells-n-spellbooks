@@ -186,7 +186,10 @@ public class Utils {
             }
         }
         return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType() == HitResult.Type.MISS;
+    }
 
+    public static boolean hasLineOfSight(Level level, Entity entity1, Entity entity2, boolean checkForShields) {
+        return hasLineOfSight(level, entity1.getBoundingBox().getCenter(), entity2.getBoundingBox().getCenter(), checkForShields);
     }
 
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
