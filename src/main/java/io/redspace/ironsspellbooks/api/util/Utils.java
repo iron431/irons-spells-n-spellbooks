@@ -612,7 +612,7 @@ public class Utils {
         if (entity != null) {
             float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
             float fist = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
-            if (weapon == fist) {
+            if (weapon <= fist) {
                 //Remove fist damage if they are not using a melee weapon
                 weapon -= fist;
             }

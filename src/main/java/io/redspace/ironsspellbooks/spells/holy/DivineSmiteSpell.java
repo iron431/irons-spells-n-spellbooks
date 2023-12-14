@@ -24,6 +24,7 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -103,7 +104,13 @@ public class DivineSmiteSpell extends AbstractSpell {
         for (Entity targetEntity : entities) {
             //double distance = targetEntity.distanceToSqr(smiteLocation);
             if (/*distance < radius * radius && */Utils.hasLineOfSight(level, smiteLocation.add(0, 1, 0), targetEntity.getBoundingBox().getCenter(), true)) {
-                DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity));
+                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity))) {
+                    int i = EnchantmentHelper.getFireAspect(entity);
+                    if (i > 0) {
+                        targetEntity.setSecondsOnFire(i * 4);
+                    }
+                    EnchantmentHelper.doPostDamageEffects(entity, targetEntity);
+                }
             }
         }
         super.onCast(level, spellLevel, entity, playerMagicData);
