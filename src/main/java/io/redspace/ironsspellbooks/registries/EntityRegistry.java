@@ -455,7 +455,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<FlameStrike>> FLAME_STRIKE =
             ENTITIES.register("flame_strike", () -> EntityType.Builder.<FlameStrike>of(FlameStrike::new, MobCategory.MISC)
-                    .sized(3f, 1f)
+                    .sized(5f, 1f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "flame_strike").toString()));
 
