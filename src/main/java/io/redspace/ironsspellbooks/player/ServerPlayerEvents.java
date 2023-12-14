@@ -348,14 +348,18 @@ public class ServerPlayerEvents {
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         if (event.getRayTraceResult() instanceof EntityHitResult entityHitResult) {
             var victim = entityHitResult.getEntity();
+            IronsSpellbooks.LOGGER.debug("onProjectileImpact: {}", victim);
             if (victim instanceof AbstractSpellCastingMob || victim instanceof Player) {
+                IronsSpellbooks.LOGGER.debug("onProjectileImpact: is a casting mob");
                 var livingEntity = (LivingEntity) victim;
-                MagicData playerMagicData = MagicData.getPlayerMagicData(livingEntity);
-                if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
+                SyncedSpellData syncedSpellData = livingEntity.level.isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getPlayerMagicData(livingEntity).getSyncedData();
+                if (syncedSpellData.hasEffect(SyncedSpellData.EVASION)) {
+                    IronsSpellbooks.LOGGER.debug("onProjectileImpact: evasion");
                     if (EvasionEffect.doEffect(livingEntity, new IndirectEntityDamageSource("noop", event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
-                } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                } else if (syncedSpellData.hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                    IronsSpellbooks.LOGGER.debug("onProjectileImpact: abyssal shroud");
                     if (AbyssalShroudEffect.doEffect(livingEntity, new IndirectEntityDamageSource("noop", event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
