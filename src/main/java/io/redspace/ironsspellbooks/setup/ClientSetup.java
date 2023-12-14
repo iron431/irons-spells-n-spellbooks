@@ -65,6 +65,7 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRende
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
+import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.particle.*;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -86,6 +87,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -306,44 +309,11 @@ public class ClientSetup {
                     return Minecraft.getInstance().player;
                 }
             };
-            //            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pull"), (itemStack, clientLevel, livingEntity, i) -> {
-//                return CrossbowItem.isCharged(itemStack) ? 0.0F : AutoloaderCrossbow.getLoadingTicks(itemStack) / (float) AutoloaderCrossbow.getChargeDuration(itemStack);
-//            });
-//            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pulling"), (itemStack, clientLevel, livingEntity, i) -> {
-//                return AutoloaderCrossbow.isLoading(itemStack) && !CrossbowItem.isCharged(itemStack) ? 1.0F : 0.0F;
-//            });
-//            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("charged"), (p_174610_, p_174611_, p_174612_, p_174613_) -> {
-//                return p_174612_ != null && CrossbowItem.isCharged(p_174610_) ? 1.0F : 0.0F;
-//            });
-//            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("firework"), (p_174605_, p_174606_, p_174607_, p_174608_) -> {
-//                return p_174607_ != null && CrossbowItem.isCharged(p_174605_) && CrossbowItem.containsChargedProjectile(p_174605_, Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
-//            });
-            //ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("school"),
-            //        (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getSchoolType().getValue());
-            //ItemProperties.register(ItemRegistry.AFFINITY_RING.get(), new ResourceLocation("spell"),
-            //        (itemStack, clientLevel, livingEntity, i) -> RingData.getRingData(itemStack).getSpell().getValue());
-            //ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("school"),
-            //        (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpell().getSchoolType().getValue());
-            //ItemProperties.register(ItemRegistry.SCROLL.get(), new ResourceLocation("spell"),
-            //        (itemStack, clientLevel, livingEntity, i) -> SpellData.getSpellData(itemStack).getSpellId());
+            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pull"), (itemStack, clientLevel, livingEntity, i) -> CrossbowItem.isCharged(itemStack) ? 0.0F : AutoloaderCrossbow.getLoadingTicks(itemStack) / (float) AutoloaderCrossbow.getChargeDuration(itemStack));
+            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("pulling"), (itemStack, clientLevel, livingEntity, i) -> AutoloaderCrossbow.isLoading(itemStack) && !CrossbowItem.isCharged(itemStack) ? 1.0F : 0.0F);
+            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("charged"), (itemStack, clientLevel, livingEntity, i) -> livingEntity != null && CrossbowItem.isCharged(itemStack) ? 1.0F : 0.0F);
+            ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("firework"), (itemStack, clientLevel, livingEntity, i) -> livingEntity != null && CrossbowItem.isCharged(itemStack) && CrossbowItem.containsChargedProjectile(itemStack, Items.FIREWORK_ROCKET) ? 1.0F : 0.0F);
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
-
-//            register(Items.CROSSBOW, new ResourceLocation("pull"), (p_174620_, p_174621_, p_174622_, p_174623_) -> {
-//                if (p_174622_ == null) {
-//                    return 0.0F;
-//                } else {
-//                    return CrossbowItem.isCharged(p_174620_) ? 0.0F : (float)(p_174620_.getUseDuration() - p_174622_.getUseItemRemainingTicks()) / (float)CrossbowItem.getChargeDuration(p_174620_);
-//                }
-//            });
-//            register(Items.CROSSBOW, new ResourceLocation("pulling"), (p_174615_, p_174616_, p_174617_, p_174618_) -> {
-//                return p_174617_ != null && p_174617_.isUsingItem() && p_174617_.getUseItem() == p_174615_ && !CrossbowItem.isCharged(p_174615_) ? 1.0F : 0.0F;
-//            });
-//            register(Items.CROSSBOW, new ResourceLocation("charged"), (p_174610_, p_174611_, p_174612_, p_174613_) -> {
-//                return p_174612_ != null && CrossbowItem.isCharged(p_174610_) ? 1.0F : 0.0F;
-//            });
-//            register(Items.CROSSBOW, new ResourceLocation("firework"), (p_174605_, p_174606_, p_174607_, p_174608_) -> {
-//                return p_174607_ != null && CrossbowItem.isCharged(p_174605_) && CrossbowItem.containsChargedProjectile(p_174605_, Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
-//            });
         });
 
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(

@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "item/crossbow_standby"
+    "layer0": "irons_spellbooks:item/autoloader_crossbow_standby"
   },
   "display": {
     "thirdperson_righthand": {
@@ -78,41 +78,34 @@
       "predicate": {
         "pulling": 1
       },
-      "model": "item/crossbow_pulling_0"
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_0"
     },
     {
       "predicate": {
         "pulling": 1,
         "pull": 0.58
       },
-      "model": "item/crossbow_pulling_1"
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_1"
     },
     {
       "predicate": {
         "pulling": 1,
         "pull": 1.0
       },
-      "model": "item/crossbow_pulling_2"
+      "model": "irons_spellbooks:item/autoloader_crossbow_pulling_2"
     },
     {
       "predicate": {
         "charged": 1
       },
-      "model": "item/crossbow_arrow"
+      "model": "irons_spellbooks:item/autoloader_crossbow_arrow"
     },
     {
       "predicate": {
         "charged": 1,
         "firework": 1
       },
-      "model": "item/crossbow_firework"
-    },
-    {
-      "model": "minecraft:item/crossbow_rope_arrow",
-      "predicate": {
-        "minecraft:charged": 1.0,
-        "supplementaries:rope_arrow": 1.0
-      }
+      "model": "irons_spellbooks:item/autoloader_crossbow_firework"
     }
   ]
 }
