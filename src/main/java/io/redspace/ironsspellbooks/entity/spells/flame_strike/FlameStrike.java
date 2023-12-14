@@ -13,6 +13,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 
+//TODO: well, this really could've been a particle. However, it already works.
 public class FlameStrike extends AoeEntity {
     public FlameStrike(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -20,19 +21,12 @@ public class FlameStrike extends AoeEntity {
 
     LivingEntity target;
 
-    public FlameStrike(Level level, LivingEntity owner, LivingEntity target) {
+    public FlameStrike(Level level) {
         this(EntityRegistry.FLAME_STRIKE.get(), level);
-        setOwner(owner);
-        this.target = target;
     }
 
     @Override
     public void applyEffect(LivingEntity target) {
-        if (target == this.target) {
-            if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.DEVOUR_SPELL.get().getDamageSource(this, getOwner())) && getOwner() instanceof LivingEntity livingOwner) {
-
-            }
-        }
     }
 
     public final int ticksPerFrame = 2;

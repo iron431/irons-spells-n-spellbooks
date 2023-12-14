@@ -604,4 +604,18 @@ public class Utils {
             }
         }
     }
+
+    public static float getWeaponDamage(LivingEntity entity, MobType entityForDamageBonus) {
+        if (entity != null) {
+            float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            float fist = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
+            if (weapon == fist) {
+                //Remove fist damage if they are not using a melee weapon
+                weapon -= fist;
+            }
+            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(),entityForDamageBonus);
+            return weapon + enchant;
+        }
+        return 0;
+    }
 }

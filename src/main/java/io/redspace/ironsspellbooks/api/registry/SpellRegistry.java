@@ -122,6 +122,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> MAGMA_BOMB_SPELL = registerSpell(new MagmaBombSpell());
     public static final RegistryObject<AbstractSpell> WALL_OF_FIRE_SPELL = registerSpell(new WallOfFireSpell());
     public static final RegistryObject<AbstractSpell> HEAT_SURGE_SPELL = registerSpell(new HeatSurgeSpell());
+    public static final RegistryObject<AbstractSpell> FLAMING_STRIKE = registerSpell(new FlamingStrikeSpell());
 
     // HOLY
     public static final RegistryObject<AbstractSpell> ANGEL_WINGS_SPELL = registerSpell(new AngelWingsSpell());

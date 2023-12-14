@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.spells.holy;
+package io.redspace.ironsspellbooks.spells.fire;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
@@ -11,19 +11,21 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
+import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrike;
 import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -33,8 +35,8 @@ import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
-public class DivineSmiteSpell extends AbstractSpell {
-    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "divine_smite");
+public class FlamingStrikeSpell extends AbstractSpell {
+    private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "flaming_strike");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -48,7 +50,7 @@ public class DivineSmiteSpell extends AbstractSpell {
             .setCooldownSeconds(15)
             .build();
 
-    public DivineSmiteSpell() {
+    public FlamingStrikeSpell() {
         this.manaCostPerLevel = 15;
         this.baseSpellPower = 5;
         this.spellPowerPerLevel = 3;
@@ -94,30 +96,36 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        float radius = 1.75f;
-        Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1.35f, 0, 1.35f)), 1);
-        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.HOLY.get().getTargetingColor(), radius * 2, true), smiteLocation.x, smiteLocation.y + .15f, smiteLocation.z, 1, 0, 0, 0, 0, true);
-        MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, smiteLocation.x, smiteLocation.y + .15f, smiteLocation.z, 50, 0, 0, 0, 1, false);
-        CameraShakeManager.addCameraShake(new CameraShakeData(10, smiteLocation, 10));
-        var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
+        float radius = 2.5f;
+        Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .4f, 0).add(entity.getForward().multiply(1.45f, 0, 1.45f));
+        var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         for (Entity targetEntity : entities) {
-            //double distance = targetEntity.distanceToSqr(smiteLocation);
-            if (/*distance < radius * radius && */Utils.hasLineOfSight(level, smiteLocation, targetEntity.getBoundingBox().getCenter(), true)) {
-                DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity));
+            if (entity.distanceTo(targetEntity) < radius && Utils.hasLineOfSight(level, hitLocation, targetEntity.getBoundingBox().getCenter(), true)) {
+                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity))) {
+                    MagicManager.spawnParticles(level, ParticleHelper.EMBERS, targetEntity.getX(), targetEntity.getY() + targetEntity.getBbHeight() * .5f, targetEntity.getZ(), 50, targetEntity.getBbWidth() * .5f, targetEntity.getBbHeight() * .5f, targetEntity.getBbWidth() * .5f, .03, false);
+                }
             }
         }
+        FlameStrike flameStrike = new FlameStrike(level);
+        flameStrike.moveTo(hitLocation);
+        flameStrike.setYRot(entity.getYRot());
+        level.addFreshEntity(flameStrike);
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
+    @Override
+    public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
+        return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setFireTime(3).get();
+    }
+
     private float getDamage(int spellLevel, LivingEntity entity) {
-        //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
-        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity, MobType.UNDEAD);
+        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity, MobType.UNDEFINED);
     }
 
 
     private String getDamageText(int spellLevel, LivingEntity entity) {
         if (entity != null) {
-            float weaponDamage = Utils.getWeaponDamage(entity, MobType.UNDEAD);
+            float weaponDamage = Utils.getWeaponDamage(entity, MobType.UNDEFINED);
             String plus = "";
             if (weaponDamage > 0) {
                 plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));

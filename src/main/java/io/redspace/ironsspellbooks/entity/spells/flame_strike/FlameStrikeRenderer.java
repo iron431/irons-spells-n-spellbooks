@@ -35,7 +35,7 @@ public class FlameStrikeRenderer extends EntityRenderer<FlameStrike> {
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(90 - Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
 //        poseStack.mulPose(Vector3f.ZP.rotationDegrees(((entity.animationSeed % 30) - 15) * (float) Math.sin(entity.animationTime * .015)));
 
