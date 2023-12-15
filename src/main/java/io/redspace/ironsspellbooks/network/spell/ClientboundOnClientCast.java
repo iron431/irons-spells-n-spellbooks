@@ -29,7 +29,7 @@ public class ClientboundOnClientCast {
         castSource = buf.readEnum(CastSource.class);
         if (buf.readBoolean()) {
             var tmp = SpellRegistry.getSpell(spellId).getEmptyCastData();
-            tmp.readFromStream(buf);
+            tmp.readFromBuffer(buf);
             castData = tmp;
         }
     }
@@ -40,7 +40,7 @@ public class ClientboundOnClientCast {
         buf.writeEnum(castSource);
         if (castData instanceof ICastDataSerializable castDataSerializable) {
             buf.writeBoolean(true);
-            castDataSerializable.writeToStream(buf);
+            castDataSerializable.writeToBuffer(buf);
         } else {
             buf.writeBoolean(false);
         }

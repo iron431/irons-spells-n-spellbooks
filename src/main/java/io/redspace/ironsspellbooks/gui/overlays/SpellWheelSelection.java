@@ -6,10 +6,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class SpellWheelSelection implements ISerializable, INBTSerializable<CompoundTag> {
-    public String equipmentSlot;
-    public int index;
-    public String lastEquipmentSlot;
-    public int lastIndex;
+    public String equipmentSlot = null;
+    public int index = -1;
+    public String lastEquipmentSlot = null;
+    public int lastIndex = -1;
 
     public SpellWheelSelection() {
     }
@@ -21,8 +21,12 @@ public class SpellWheelSelection implements ISerializable, INBTSerializable<Comp
         this.lastIndex = lastIndex;
     }
 
+    public boolean isEmpty() {
+        return index < 0;
+    }
+
     @Override
-    public void writeToStream(FriendlyByteBuf buffer) {
+    public void writeToBuffer(FriendlyByteBuf buffer) {
         buffer.writeUtf(equipmentSlot);
         buffer.writeInt(index);
         buffer.writeUtf(lastEquipmentSlot);
@@ -30,7 +34,7 @@ public class SpellWheelSelection implements ISerializable, INBTSerializable<Comp
     }
 
     @Override
-    public void readFromStream(FriendlyByteBuf buffer) {
+    public void readFromBuffer(FriendlyByteBuf buffer) {
         equipmentSlot = buffer.readUtf();
         index = buffer.readInt();
         lastEquipmentSlot = buffer.readUtf();

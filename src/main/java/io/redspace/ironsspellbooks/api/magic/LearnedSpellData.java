@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.magic;
 
+import io.redspace.ironsspellbooks.api.network.ISerializable;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
@@ -8,11 +9,13 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class LearnedSpellData {
+//TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
+public class LearnedSpellData implements ISerializable {
     public static final String LEARNED_SPELLS = "learnedSpells";
 
     public final Set<ResourceLocation> learnedSpells = new HashSet<>();
@@ -41,6 +44,7 @@ public class LearnedSpellData {
         }
     }
 
+    @Override
     public void writeToBuffer(FriendlyByteBuf buf) {
         buf.writeInt(learnedSpells.size());
         for (ResourceLocation resourceLocation : learnedSpells) {
@@ -48,6 +52,7 @@ public class LearnedSpellData {
         }
     }
 
+    @Override
     public void readFromBuffer(FriendlyByteBuf buf) {
         int i = buf.readInt();
         if (i > 0) {

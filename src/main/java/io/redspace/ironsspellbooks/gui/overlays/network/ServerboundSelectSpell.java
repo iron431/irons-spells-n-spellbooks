@@ -18,12 +18,12 @@ public class ServerboundSelectSpell {
 
     public ServerboundSelectSpell(FriendlyByteBuf buf) {
         var spellWheelSelection = new SpellWheelSelection();
-        spellWheelSelection.readFromStream(buf);
+        spellWheelSelection.readFromBuffer(buf);
         this.spellWheelSelection = spellWheelSelection;
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        spellWheelSelection.writeToStream(buf);
+        spellWheelSelection.writeToBuffer(buf);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
@@ -32,10 +32,10 @@ public class ServerboundSelectSpell {
             // Here we are server side
             ServerPlayer serverPlayer = ctx.getSender();
             if (serverPlayer != null) {
-                var spellbookStack = Utils.getPlayerSpellbookStack(serverPlayer);
-                if (spellbookStack != null) {
-                    SpellBookData.getSpellBookData(spellbookStack).setActiveSpellIndex(selectedIndex, spellbookStack);
-                }
+//                var spellbookStack = Utils.getPlayerSpellbookStack(serverPlayer);
+//                if (spellbookStack != null) {
+//                    SpellBookData.getSpellBookData(spellbookStack).setActiveSpellIndex(selectedIndex, spellbookStack);
+//                }
             }
         });
         return true;

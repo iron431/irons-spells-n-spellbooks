@@ -75,30 +75,19 @@ public class SpellWheelOverlay extends GuiComponent {
         var mainHandStack = minecraft.player.getMainHandItem();
         var offHandStack = minecraft.player.getOffhandItem();
 
+        var spellWheelSelection = ClientMagicData.getSyncedSpellData(minecraft.player).getSpellWheelSelection();
         var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
         var mainHandSpellData = SpellData.getSpellData(mainHandStack);
         var offHandSpellData = SpellData.getSpellData(offHandStack);
 
+        var totalSpellsAvailable = spellBookData.getSpellCount();
+        totalSpellsAvailable += mainHandSpellData == SpellData.EMPTY ? 0 : 1;
+        totalSpellsAvailable += offHandSpellData == SpellData.EMPTY ? 0 : 1;
 
-        if (SpellData.hasSpellData(stack)) {
-            spellData = SpellData.getSpellData(stack);
-        } else {
-            stack = player.getOffhandItem();
-            if (SpellData.hasSpellData(stack)) {
-                spellData = SpellData.getSpellData(stack);
-            } else {
-                return;
-            }
-        }
-
-        if (stack.isEmpty()) {
+        if(totalSpellsAvailable <= 0 ){
+            close();
             return;
         }
-
-        if (spellData.equals(SpellData.EMPTY)) {
-            return;
-        }
-
 
         poseStack.pushPose();
 
