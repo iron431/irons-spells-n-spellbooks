@@ -90,7 +90,7 @@ public class FrostwaveSpell extends AbstractSpell {
     }
 
     public float getRadius(int spellLevel, LivingEntity caster) {
-        return 6 + spellLevel;
+        return 8 + spellLevel * .5f;
     }
 
     public int getDuration(int spellLevel, LivingEntity caster) {
