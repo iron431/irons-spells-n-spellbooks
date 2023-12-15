@@ -26,8 +26,8 @@ public class ArrowVolleyEntity extends AbstractMagicProjectile {
             if (tickCount % 5 == 0) {
                 //do volley
                 int arrows = 7;
-                float speed = .75f;
-                Vec3 motion = Vec3.directionFromRotation(70 - tickCount / 5f * 7, this.getYRot()).normalize().scale(speed);
+                float speed = .85f;
+                Vec3 motion = Vec3.directionFromRotation(getXRot() - tickCount / 5f * 7, this.getYRot()).normalize().scale(speed);
                 Vec3 orth = new Vec3(-Mth.cos(-this.getYRot() * Mth.DEG_TO_RAD - (float) Math.PI), 0, Mth.sin(-this.getYRot() * Mth.DEG_TO_RAD - (float) Math.PI));
                 for (int i = 0; i < arrows; i++) {
                     float distance = (i - arrows * .5f) * .7f;

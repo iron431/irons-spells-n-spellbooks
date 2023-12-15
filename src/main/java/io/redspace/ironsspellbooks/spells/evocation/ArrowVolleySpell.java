@@ -21,6 +21,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -93,17 +94,20 @@ public class ArrowVolleySpell extends AbstractSpell {
             targetLocation = castTargetingData.getTargetPosition((ServerLevel) level);
         }
         if (targetLocation == null) {
-            HitResult raycast = Utils.raycastForEntity(level, entity, 32, true);
-            if (raycast.getType() == HitResult.Type.ENTITY) {
-                targetLocation = ((EntityHitResult) raycast).getEntity().position();
-            } else {
-                targetLocation = Utils.moveToRelativeGroundLevel(level, raycast.getLocation().subtract(entity.getForward().normalize()).add(0, 2, 0), 0);
-            }
+            targetLocation = Utils.raycastForEntity(level, entity, 32, true).getLocation();
         }
-        Vec3 spawnLocation = targetLocation.subtract(entity.getForward().normalize().scale(2)).add(0, 5, 0);
+        float arrowAngleY = Utils.getAngle(entity.getX(), entity.getZ(), targetLocation.x, targetLocation.z);
+        Vec3 backward = new Vec3(targetLocation.x - entity.getX(), 0, targetLocation.z - entity.getZ()).normalize().scale(-4);
+        Vec3 spawnLocation = Utils.moveToRelativeGroundLevel(level, targetLocation.add(backward), 4);
+        spawnLocation = Utils.raycastForBlock(level, spawnLocation.add(0, 0.25, 0), spawnLocation.add(0, 6, 0), ClipContext.Fluid.NONE).getLocation().add(0, -1, 0);
+        float arrowAngleX = (float) Mth.atan2(
+                Mth.sqrt((float) ((spawnLocation.x - targetLocation.x) * (spawnLocation.x - targetLocation.x) + (spawnLocation.z - targetLocation.z) * (spawnLocation.z - targetLocation.z))),
+                spawnLocation.y - targetLocation.y
+        ) * Mth.RAD_TO_DEG;
         ArrowVolleyEntity arrowVolleyEntity = new ArrowVolleyEntity(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), level);
         arrowVolleyEntity.moveTo(spawnLocation);
-        arrowVolleyEntity.setYRot(Utils.getAngle(entity.getX(), entity.getZ(), spawnLocation.x, spawnLocation.z) * Mth.RAD_TO_DEG + 90);
+        arrowVolleyEntity.setYRot(arrowAngleY * Mth.RAD_TO_DEG + 90);
+        arrowVolleyEntity.setXRot(arrowAngleX + 15);
         level.addFreshEntity(arrowVolleyEntity);
 
         super.onCast(level, spellLevel, entity, playerMagicData);

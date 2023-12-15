@@ -4,16 +4,15 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
-import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.particle.TrailShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -48,13 +47,13 @@ public class FrostwaveSpell extends AbstractSpell {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 3;
-        this.castTime = 0;
+        this.castTime = 20;
         this.baseManaCost = 50;
     }
 
     @Override
     public CastType getCastType() {
-        return CastType.INSTANT;
+        return CastType.LONG;
     }
 
     @Override
@@ -84,16 +83,27 @@ public class FrostwaveSpell extends AbstractSpell {
         level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) -> !DamageSources.isFriendlyFireBetween(target, entity) && Utils.hasLineOfSight(level, entity, target, true)).forEach(target -> {
             if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.CHILLED.get(), getDuration(spellLevel, entity)));
+                MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, livingEntity.getX(), livingEntity.getY() + livingEntity.getBbHeight() * .5f, livingEntity.getZ(), 50, livingEntity.getBbWidth() * .5f, livingEntity.getBbHeight() * .5f, livingEntity.getBbWidth() * .5f, .03, false);
             }
         });
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     public float getRadius(int spellLevel, LivingEntity caster) {
-        return 8 + spellLevel;
+        return 6 + spellLevel;
     }
 
     public int getDuration(int spellLevel, LivingEntity caster) {
         return (int) (getSpellPower(spellLevel, caster) * 20);
+    }
+
+    @Override
+    public AnimationHolder getCastStartAnimation() {
+        return SpellAnimations.ANIMATION_CONTINUOUS_OVERHEAD;
+    }
+
+    @Override
+    public AnimationHolder getCastFinishAnimation() {
+        return SpellAnimations.TOUCH_GROUND_ANIMATION;
     }
 }
