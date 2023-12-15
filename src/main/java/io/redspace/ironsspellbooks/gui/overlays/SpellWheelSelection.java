@@ -14,6 +14,13 @@ public class SpellWheelSelection implements ISerializable, INBTSerializable<Comp
     public SpellWheelSelection() {
     }
 
+    public SpellWheelSelection(String equipmentSlot, int index) {
+        this.equipmentSlot = equipmentSlot;
+        this.index = index;
+        this.lastEquipmentSlot = null;
+        this.lastIndex = -1;
+    }
+
     public SpellWheelSelection(String equipmentSlot, int index, String lastEquipmentSlot, int lastIndex) {
         this.equipmentSlot = equipmentSlot;
         this.index = index;
@@ -23,6 +30,15 @@ public class SpellWheelSelection implements ISerializable, INBTSerializable<Comp
 
     public boolean isEmpty() {
         return index < 0;
+    }
+
+    public void makeSelection(String equipmentSlot, int index) {
+        if (equipmentSlot != null && index >= 0) {
+            this.lastEquipmentSlot = this.equipmentSlot;
+            this.lastIndex = this.index;
+            this.equipmentSlot = equipmentSlot;
+            this.index = index;
+        }
     }
 
     @Override

@@ -20,7 +20,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import org.apache.commons.lang3.ArrayUtils;
@@ -71,23 +70,36 @@ public class SpellWheelOverlay extends GuiComponent {
             return;
         }
 
-        var spellbookStack = Utils.getPlayerSpellbookStack(minecraft.player);
-        var mainHandStack = minecraft.player.getMainHandItem();
-        var offHandStack = minecraft.player.getOffhandItem();
-
-        var spellWheelSelection = ClientMagicData.getSyncedSpellData(minecraft.player).getSpellWheelSelection();
-        var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
-        var mainHandSpellData = SpellData.getSpellData(mainHandStack);
-        var offHandSpellData = SpellData.getSpellData(offHandStack);
-
-        var totalSpellsAvailable = spellBookData.getSpellCount();
-        totalSpellsAvailable += mainHandSpellData == SpellData.EMPTY ? 0 : 1;
-        totalSpellsAvailable += offHandSpellData == SpellData.EMPTY ? 0 : 1;
-
-        if(totalSpellsAvailable <= 0 ){
-            close();
-            return;
-        }
+        var swsm = new SpellWheelSelectionManager(minecraft.player);
+        int totalSpellsAvailable = swsm.getSpellCount();
+//
+//        var spellbookStack = Utils.getPlayerSpellbookStack(minecraft.player);
+//        var mainHandStack = minecraft.player.getMainHandItem();
+//        var offHandStack = minecraft.player.getOffhandItem();
+//
+//        var spellWheelSelection = ClientMagicData.getSyncedSpellData(minecraft.player).getSpellWheelSelection();
+//        var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
+//        var mainHandSpellData = SpellData.getSpellData(mainHandStack, false);
+//        var offHandSpellData = SpellData.getSpellData(offHandStack, false);
+//
+//        var totalSpellsAvailable = spellBookData.getSpellCount();
+//        totalSpellsAvailable += mainHandSpellData == SpellData.EMPTY ? 0 : 1;
+//        totalSpellsAvailable += offHandSpellData == SpellData.EMPTY ? 0 : 1;
+//
+//        if (totalSpellsAvailable <= 0) {
+//            close();
+//            return;
+//        }
+//
+//        var spellData = spellBookData.getActiveInscribedSpells();
+//
+//        if (mainHandSpellData != SpellData.EMPTY) {
+//            spellData.add(mainHandSpellData);
+//        }
+//
+//        if (offHandSpellData != SpellData.EMPTY) {
+//            spellData.add(offHandSpellData);
+//        }
 
         poseStack.pushPose();
 
@@ -95,22 +107,23 @@ public class SpellWheelOverlay extends GuiComponent {
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
 
-        ItemStack spellBookStack = Utils.getPlayerSpellbookStack(player);
-        spellBookData = SpellBookData.getSpellBookData(spellBookStack);
-        List<SpellData> spellData = spellBookData.getActiveInscribedSpells();
-        int spellCount = spellData.size();
-        if (spellCount == 0) {
-            close();
-            return;
-        }
+
+//        ItemStack spellBookStack = Utils.getPlayerSpellbookStack(player);
+//        spellBookData = SpellBookData.getSpellBookData(spellBookStack);
+//        List<SpellData> spellData = spellBookData.getActiveInscribedSpells();
+//        int totalSpellsAvailable = spellData.size();
+//        if (totalSpellsAvailable == 0) {
+//            close();
+//            return;
+//        }
 
         Vec2 screenCenter = new Vec2(minecraft.getWindow().getScreenWidth() * .5f, minecraft.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());
-        double radiansPerSpell = Math.toRadians(360 / (float) spellCount);
+        double radiansPerSpell = Math.toRadians(360 / (float) totalSpellsAvailable);
 
         float mouseRotation = (Utils.getAngle(mousePos, screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
 
-        selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, spellCount - 1);
+        selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, totalSpellsAvailable - 1);
         if (mousePos.distanceToSqr(screenCenter) < ringOuterEdgeMin * ringOuterEdgeMin) {
             selection = Math.max(0, spellBookData.getActiveSpellIndex());
         }
@@ -145,14 +158,14 @@ public class SpellWheelOverlay extends GuiComponent {
         }
 
         //Spell Icons
-        float scale = Mth.lerp(spellCount / 15f, 2, 1.25f) * .65f;
+        float scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1.25f) * .65f;
         double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .25f * (spellData.size() / 15f));
         if (player.isCrouching()) {
-            scale = Mth.lerp(spellCount / 15f, 2, 1f) * .65f;
+            scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1f) * .65f;
             radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (spellData.size() / 15f));
         }
 
-        Vec2[] locations = new Vec2[spellCount];
+        Vec2[] locations = new Vec2[totalSpellsAvailable];
         for (int i = 0; i < locations.length; i++) {
             locations[i] = new Vec2((float) (Math.sin(radiansPerSpell * i) * radius), (float) (-Math.cos(radiansPerSpell * i) * radius));
         }

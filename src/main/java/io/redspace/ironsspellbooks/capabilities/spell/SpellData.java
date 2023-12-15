@@ -34,7 +34,15 @@ public class SpellData implements Comparable<SpellData> {
     }
 
     public static SpellData getSpellData(ItemStack stack) {
+        return getSpellData(stack, true);
+    }
+
+    public static SpellData getSpellData(ItemStack stack, boolean includeScrolls) {
         CompoundTag tag = stack.getTagElement(ISB_SPELL);
+
+        if (!includeScrolls && stack.is(ItemRegistry.SCROLL.get())) {
+            return EMPTY;
+        }
 
         if (tag != null) {
             return new SpellData(SpellRegistry.getSpell(new ResourceLocation(tag.getString(SPELL_ID))), tag.getInt(SPELL_LEVEL));
