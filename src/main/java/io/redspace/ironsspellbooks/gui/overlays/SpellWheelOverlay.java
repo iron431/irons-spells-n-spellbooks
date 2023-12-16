@@ -43,6 +43,7 @@ public class SpellWheelOverlay extends GuiComponent {
     public boolean active;
     private int selection;
     private int selectedSpellIndex;
+    private SpellWheelSelection spellWheelSelection;
 
     public void open() {
         active = true;
@@ -64,58 +65,25 @@ public class SpellWheelOverlay extends GuiComponent {
             return;
 
         var minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
 
-        if (minecraft.player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed()) {
+        if (player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed()) {
             close();
             return;
         }
 
-        var swsm = new SpellWheelSelectionManager(minecraft.player);
+        var swsm = new SpellWheelSelectionManager(player);
         int totalSpellsAvailable = swsm.getSpellCount();
-//
-//        var spellbookStack = Utils.getPlayerSpellbookStack(minecraft.player);
-//        var mainHandStack = minecraft.player.getMainHandItem();
-//        var offHandStack = minecraft.player.getOffhandItem();
-//
-//        var spellWheelSelection = ClientMagicData.getSyncedSpellData(minecraft.player).getSpellWheelSelection();
-//        var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
-//        var mainHandSpellData = SpellData.getSpellData(mainHandStack, false);
-//        var offHandSpellData = SpellData.getSpellData(offHandStack, false);
-//
-//        var totalSpellsAvailable = spellBookData.getSpellCount();
-//        totalSpellsAvailable += mainHandSpellData == SpellData.EMPTY ? 0 : 1;
-//        totalSpellsAvailable += offHandSpellData == SpellData.EMPTY ? 0 : 1;
-//
-//        if (totalSpellsAvailable <= 0) {
-//            close();
-//            return;
-//        }
-//
-//        var spellData = spellBookData.getActiveInscribedSpells();
-//
-//        if (mainHandSpellData != SpellData.EMPTY) {
-//            spellData.add(mainHandSpellData);
-//        }
-//
-//        if (offHandSpellData != SpellData.EMPTY) {
-//            spellData.add(offHandSpellData);
-//        }
+
+        if (totalSpellsAvailable <= 0) {
+            close();
+            return;
+        }
 
         poseStack.pushPose();
 
-        Player player = minecraft.player;
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
-
-
-//        ItemStack spellBookStack = Utils.getPlayerSpellbookStack(player);
-//        spellBookData = SpellBookData.getSpellBookData(spellBookStack);
-//        List<SpellData> spellData = spellBookData.getActiveInscribedSpells();
-//        int totalSpellsAvailable = spellData.size();
-//        if (totalSpellsAvailable == 0) {
-//            close();
-//            return;
-//        }
 
         Vec2 screenCenter = new Vec2(minecraft.getWindow().getScreenWidth() * .5f, minecraft.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());
@@ -125,10 +93,10 @@ public class SpellWheelOverlay extends GuiComponent {
 
         selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, totalSpellsAvailable - 1);
         if (mousePos.distanceToSqr(screenCenter) < ringOuterEdgeMin * ringOuterEdgeMin) {
-            selection = Math.max(0, spellBookData.getActiveSpellIndex());
+            selection = Math.max(0, swsm.getSelectionIndex());
         }
-        var currentSpell = spellData.get(selection);
-        selectedSpellIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), currentSpell);
+        var currentSpell = swsm.getSelectedSpellData();
+        selectedSpellIndex = swsm.getSelectionIndex();
 
         fill(poseStack, 0, 0, screenWidth, screenHeight, 0);
         RenderSystem.disableTexture();
@@ -138,15 +106,15 @@ public class SpellWheelOverlay extends GuiComponent {
         final BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        drawRadialBackgrounds(buffer, centerX, centerY, selection, spellData);
-        drawDividingLines(buffer, centerX, centerY, spellData);
+        drawRadialBackgrounds(buffer, centerX, centerY, selection, swsm);
+        drawDividingLines(buffer, centerX, centerY, swsm);
 
         tesselator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
 
         //Text background
-        var selectedSpell = spellData.get(selection);
+        var selectedSpell = swsm.getSpellData(selection);
         var font = gui.getFont();
         int textCenterMargin = 5;
         int textTitleMargin = 5;
@@ -159,10 +127,10 @@ public class SpellWheelOverlay extends GuiComponent {
 
         //Spell Icons
         float scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1.25f) * .65f;
-        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .25f * (spellData.size() / 15f));
+        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .25f * (totalSpellsAvailable / 15f));
         if (player.isCrouching()) {
             scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1f) * .65f;
-            radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (spellData.size() / 15f));
+            radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (totalSpellsAvailable / 15f));
         }
 
         Vec2[] locations = new Vec2[totalSpellsAvailable];
@@ -170,9 +138,9 @@ public class SpellWheelOverlay extends GuiComponent {
             locations[i] = new Vec2((float) (Math.sin(radiansPerSpell * i) * radius), (float) (-Math.cos(radiansPerSpell * i) * radius));
         }
         for (int i = 0; i < locations.length; i++) {
-            var spell = spellData.get(i);
+            var spell = swsm.getSpellData(i);
             if (spell != null) {
-                setOpaqueTexture(spellData.get(i).getSpell().getSpellIconResource());
+                setOpaqueTexture(spell.getSpell().getSpellIconResource());
                 poseStack.pushPose();
                 poseStack.translate(centerX, centerY, 0);
                 poseStack.scale(scale, scale, scale);
@@ -186,13 +154,12 @@ public class SpellWheelOverlay extends GuiComponent {
                 setTranslucentTexture(TEXTURE);
                 blit(poseStack, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, selection == i ? 32 : 0, 106, 32, 32);
                 //Cooldown
-                float f = spellData.get(i) == null ? 0 : ClientMagicData.getCooldownPercent(spellData.get(i).getSpell());
+                float f = ClientMagicData.getCooldownPercent(spell.getSpell());
                 if (f > 0) {
                     int pixels = (int) (16 * f + 1f);
                     gui.blit(poseStack, (int) locations[i].x - cdWidth, (int) locations[i].y + cdWidth - pixels, 47, 87, 16, pixels);
                 }
                 poseStack.popPose();
-
             }
         }
 
@@ -249,16 +216,17 @@ public class SpellWheelOverlay extends GuiComponent {
         RenderSystem.enableTexture();
     }
 
-    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex, List<SpellData> spells) {
+    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex, SpellWheelSelectionManager swsm) {
         double quarterCircle = Math.PI / 2;
+        int totalSpellsAvailable = swsm.getSpellCount();
         int segments;
-        if (spells.size() < 6) {
-            segments = spells.size() % 2 == 1 ? 15 : 12;
+        if (totalSpellsAvailable < 6) {
+            segments = totalSpellsAvailable % 2 == 1 ? 15 : 12;
         } else {
-            segments = spells.size() * 2;
+            segments = totalSpellsAvailable * 2;
         }
         double radiansPerObject = 2 * Math.PI / segments;
-        double radiansPerSpell = 2 * Math.PI / spells.size();
+        double radiansPerSpell = 2 * Math.PI / totalSpellsAvailable;
         ringOuterEdge = Math.max(ringOuterEdgeMin, ringOuterEdgeMax);
         for (int i = 0; i < segments; i++) {
             final double beginRadians = i * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
@@ -274,7 +242,7 @@ public class SpellWheelOverlay extends GuiComponent {
             final double y1m2 = Math.sin(beginRadians) * ringOuterEdge;
             final double y2m2 = Math.sin(endRadians) * ringOuterEdge;
 
-            boolean isHighlighted = (i * spells.size()) / segments == selectedSpellIndex;
+            boolean isHighlighted = (i * totalSpellsAvailable) / segments == selectedSpellIndex;
 
             Vector4f color = radialButtonColor;
             if (isHighlighted) color = highlightColor;
@@ -301,16 +269,17 @@ public class SpellWheelOverlay extends GuiComponent {
         }
     }
 
-    private void drawDividingLines(BufferBuilder buffer, double centerX, double centerY, List<SpellData> spells) {
+    private void drawDividingLines(BufferBuilder buffer, double centerX, double centerY, SpellWheelSelectionManager swsm) {
+        int totalSpellsAvailable = swsm.getSpellCount();
 
-        if (spells.size() <= 1)
+        if (totalSpellsAvailable <= 1)
             return;
 
         double quarterCircle = Math.PI / 2;
-        double radiansPerSpell = 2 * Math.PI / spells.size();
+        double radiansPerSpell = 2 * Math.PI / totalSpellsAvailable;
         ringOuterEdge = Math.max(ringOuterEdgeMin, ringOuterEdgeMax);
 
-        for (int i = 0; i < spells.size(); i++) {
+        for (int i = 0; i < totalSpellsAvailable; i++) {
             final double closeWidth = 8 * Mth.DEG_TO_RAD;
             final double farWidth = closeWidth / 4;
             final double beginCloseRadians = i * radiansPerSpell - (quarterCircle + (radiansPerSpell / 2)) - (closeWidth / 4);
