@@ -44,14 +44,13 @@ public class SpellWheelSelectionManager {
         } else if (tmpSpellWheelSelection.lastEquipmentSlot.equals(Curios.SPELLBOOK_SLOT) && tmpSpellWheelSelection.lastIndex < spellItemList.size()) {
             spellWheelSelection = new SpellWheelSelection(tmpSpellWheelSelection.lastEquipmentSlot, tmpSpellWheelSelection.lastIndex);
             selectionIndex = tmpSpellWheelSelection.lastIndex;
-            ;
         }
 
         if (mainHandSpellData != SpellData.EMPTY) {
             spellItemList.add(new SpellItem(mainHandSpellData, MAINHAND));
             if (spellWheelSelection == null) {
                 spellWheelSelection = new SpellWheelSelection(MAINHAND, 0);
-                selectionIndex = spellItemList.size() + 1;
+                selectionIndex = spellItemList.size() - 1;
             }
         }
 
@@ -59,7 +58,7 @@ public class SpellWheelSelectionManager {
             spellItemList.add(new SpellItem(offHandSpellData, OFFHAND));
             if (spellWheelSelection == null) {
                 spellWheelSelection = new SpellWheelSelection(OFFHAND, 0);
-                selectionIndex = spellItemList.size() + 2;
+                selectionIndex = spellItemList.size() - 1;
             }
         }
 
@@ -73,7 +72,7 @@ public class SpellWheelSelectionManager {
         return spellWheelSelection;
     }
 
-    public SpellData getSpellData(int index){
+    public SpellData getSpellData(int index) {
         return spellItemList.get(index).spellData;
     }
 
