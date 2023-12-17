@@ -5,23 +5,27 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class SpellWheelSelection implements ISerializable, INBTSerializable<CompoundTag> {
-    public String equipmentSlot = null;
-    public int index = -1;
-    public String lastEquipmentSlot = null;
-    public int lastIndex = -1;
+public class SpellSelection implements ISerializable, INBTSerializable<CompoundTag> {
+    public String equipmentSlot;
+    public int index;
+    public String lastEquipmentSlot;
+    public int lastIndex;
 
-    public SpellWheelSelection() {
+    public SpellSelection() {
+        equipmentSlot = "";
+        index = -1;
+        lastEquipmentSlot = "";
+        lastIndex = -1;
     }
 
-    public SpellWheelSelection(String equipmentSlot, int index) {
+    public SpellSelection(String equipmentSlot, int index) {
         this.equipmentSlot = equipmentSlot;
         this.index = index;
-        this.lastEquipmentSlot = null;
+        this.lastEquipmentSlot = "";
         this.lastIndex = -1;
     }
 
-    public SpellWheelSelection(String equipmentSlot, int index, String lastEquipmentSlot, int lastIndex) {
+    public SpellSelection(String equipmentSlot, int index, String lastEquipmentSlot, int lastIndex) {
         this.equipmentSlot = equipmentSlot;
         this.index = index;
         this.lastEquipmentSlot = lastEquipmentSlot;
@@ -73,5 +77,10 @@ public class SpellWheelSelection implements ISerializable, INBTSerializable<Comp
         index = compoundTag.getInt("index");
         lastEquipmentSlot = compoundTag.getString("lastSlot");
         lastIndex = compoundTag.getInt("lastIndex");
+    }
+
+    @Override
+    public String toString() {
+        return String.format("equipmentSlot:%s, index:%d, lastEquipmentSlot:%s, lastIndex:%d", equipmentSlot, index, lastEquipmentSlot, lastIndex);
     }
 }

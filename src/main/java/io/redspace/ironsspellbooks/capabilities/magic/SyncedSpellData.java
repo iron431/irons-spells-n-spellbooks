@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import io.redspace.ironsspellbooks.api.magic.LearnedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.gui.overlays.SpellWheelSelection;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import io.redspace.ironsspellbooks.network.ClientboundSyncEntityData;
 import io.redspace.ironsspellbooks.network.ClientboundSyncPlayerData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
@@ -42,7 +42,7 @@ public class SyncedSpellData {
     private int evasionHitsRemaining;
     private SpinAttackType spinAttackType;
     private final LearnedSpellData learnedSpellData;
-    private SpellWheelSelection spellWheelSelection;
+    private SpellSelection spellSelection;
 
     //Use this on the client
     public SyncedSpellData(int serverPlayerId) {
@@ -57,7 +57,7 @@ public class SyncedSpellData {
         this.evasionHitsRemaining = 0;
         this.spinAttackType = SpinAttackType.RIPTIDE;
         this.learnedSpellData = new LearnedSpellData();
-        this.spellWheelSelection = new SpellWheelSelection();
+        this.spellSelection = new SpellSelection();
     }
 
     //Use this on the server
@@ -77,7 +77,7 @@ public class SyncedSpellData {
             buffer.writeInt(data.evasionHitsRemaining);
             buffer.writeEnum(data.spinAttackType);
             data.learnedSpellData.writeToBuffer(buffer);
-            data.spellWheelSelection.writeToBuffer(buffer);
+            data.spellSelection.writeToBuffer(buffer);
         }
 
         public SyncedSpellData read(FriendlyByteBuf buffer) {
@@ -90,7 +90,7 @@ public class SyncedSpellData {
             data.evasionHitsRemaining = buffer.readInt();
             data.spinAttackType = buffer.readEnum(SpinAttackType.class);
             data.learnedSpellData.readFromBuffer(buffer);
-            data.spellWheelSelection.readFromBuffer(buffer);
+            data.spellSelection.readFromBuffer(buffer);
             return data;
         }
     };
@@ -105,7 +105,7 @@ public class SyncedSpellData {
 
         //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
         learnedSpellData.saveToNBT(compound);
-        compound.put("spellSelection", this.spellWheelSelection.serializeNBT());
+        compound.put("spellSelection", this.spellSelection.serializeNBT());
         //SpinAttack not saved
     }
 
@@ -118,7 +118,7 @@ public class SyncedSpellData {
         this.evasionHitsRemaining = compound.getInt("evasionHitsRemaining");
         //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
         this.learnedSpellData.loadFromNBT(compound);
-        this.spellWheelSelection.deserializeNBT(compound.getCompound("spellSelection"));
+        this.spellSelection.deserializeNBT(compound.getCompound("spellSelection"));
         //SpinAttack not saved
 
     }
@@ -156,12 +156,12 @@ public class SyncedSpellData {
         doSync();
     }
 
-    public SpellWheelSelection getSpellWheelSelection() {
-        return spellWheelSelection;
+    public SpellSelection getSpellSelection() {
+        return spellSelection;
     }
 
-    public void setSpellWheelSelection(SpellWheelSelection spellWheelSelection) {
-        this.spellWheelSelection = spellWheelSelection;
+    public void setSpellSelection(SpellSelection spellSelection) {
+        this.spellSelection = spellSelection;
         doSync();
     }
 
