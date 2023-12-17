@@ -55,6 +55,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -136,9 +137,46 @@ public class Utils {
         return level.getServer().getPlayerList().getPlayer(uuid);
     }
 
-    public static String stringTruncation(double f, int places) {
-        return (f % 1 == 0) ? String.valueOf((int) f) : String.format("%." + places + "f", f);
-        //return String.format("%" + (f % 1 == 0 ? "" : ".f" + places), f);
+    public static String stringTruncation(double f, int decimalPlaces) {
+        if (f == Math.floor(f)) {
+            return Integer.toString((int) f);
+        }
+
+        double multiplier = Math.pow(10, decimalPlaces);
+        double truncatedValue = Math.floor(f * multiplier) / multiplier;
+
+        // Convert the truncated value to a string
+        String result = Double.toString(truncatedValue);
+
+        // Remove trailing zeros
+        result = result.replaceAll("0*$", "");
+
+        // Remove the decimal point if there are no decimal places
+        result = result.endsWith(".") ? result.substring(0, result.length() - 1) : result;
+
+        return result;
+    }
+
+    public static float intPow(float f, int exponent) {
+        if (exponent == 0) {
+            return 1;
+        }
+        float b = f;
+        for (int i = 1; i < Math.abs(exponent); i++) {
+            b *= f;
+        }
+        return exponent < 0 ? 1 / b : b;
+    }
+
+    public static double intPow(double d, int exponent) {
+        if (exponent == 0) {
+            return 1;
+        }
+        double b = d;
+        for (int i = 1; i < Math.abs(exponent); i++) {
+            b *= d;
+        }
+        return exponent < 0 ? 1 / b : b;
     }
 
     public static float getAngle(Vec2 a, Vec2 b) {

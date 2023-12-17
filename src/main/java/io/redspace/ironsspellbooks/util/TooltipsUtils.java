@@ -38,14 +38,14 @@ public class TooltipsUtils {
                 levelText).withStyle(spell.getSchoolType().getDisplayName().getStyle());
         var uniqueInfo = spell.getUniqueInfo(spellData.getLevel(), player);
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellData.getLevel(), player)).withStyle(ChatFormatting.BLUE);
-        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, castSource), 1)).withStyle(ChatFormatting.BLUE);
+        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, castSource), 2)).withStyle(ChatFormatting.BLUE);
 
         List<Component> lines = new ArrayList<>();
         lines.add(Component.empty());
         lines.add(title);
         uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(getStyleFor(player, spell)))));
         if (spell.getCastType() != CastType.INSTANT) {
-            lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellData.getLevel(), player), 1)).withStyle(ChatFormatting.BLUE)));
+            lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellData.getLevel(), player), 2)).withStyle(ChatFormatting.BLUE)));
         }
         if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get())
             lines.add(manaCost);
@@ -68,10 +68,10 @@ public class TooltipsUtils {
         var uniqueInfo = spell.getUniqueInfo(spellData.getLevel(), player);
         var whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellData.getLevel(), player)).withStyle(ChatFormatting.BLUE);
-        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, CastSource.SCROLL), 1)).withStyle(ChatFormatting.BLUE);
+        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, CastSource.SCROLL), 2)).withStyle(ChatFormatting.BLUE);
         MutableComponent castType = null;
         if (spell.getCastType() != CastType.INSTANT) {
-            castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellData.getLevel(), player), 1)).withStyle(ChatFormatting.BLUE)));
+            castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellData.getLevel(), player), 2)).withStyle(ChatFormatting.BLUE)));
         }
         List<Component> lines = new ArrayList<>();
         lines.add(Component.literal(" ").append(title));

@@ -437,11 +437,11 @@ public class ServerPlayerEvents {
         var player = event.getEntity();
         if (player.hasEffect(MobEffectRegistry.HASTENED.get())) {
             int i = 1 + player.getEffect(MobEffectRegistry.HASTENED.get()).getAmplifier();
-            event.setNewSpeed((float) (event.getNewSpeed() * Math.pow(1.1, i)));
+            event.setNewSpeed(event.getNewSpeed() * Utils.intPow(1.2f, i));
         }
         if (player.hasEffect(MobEffectRegistry.SLOWED.get())) {
             int i = 1 + player.getEffect(MobEffectRegistry.SLOWED.get()).getAmplifier();
-            event.setNewSpeed((float) (event.getNewSpeed() * Math.pow(.9, i)));
+            event.setNewSpeed(event.getNewSpeed() * Utils.intPow(.8f, i));
         }
     }
 }
