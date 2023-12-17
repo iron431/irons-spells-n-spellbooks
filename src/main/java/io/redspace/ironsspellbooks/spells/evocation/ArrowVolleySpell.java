@@ -37,7 +37,7 @@ public class ArrowVolleySpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1)),
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1)),
                 Component.translatable("ui.irons_spellbooks.projectile_count", getCount(spellLevel, caster)));
     }
 
@@ -50,8 +50,8 @@ public class ArrowVolleySpell extends AbstractSpell {
 
     public ArrowVolleySpell() {
         this.manaCostPerLevel = 10;
-        this.baseSpellPower = 5;
-        this.spellPowerPerLevel = 0;
+        this.baseSpellPower = 8;
+        this.spellPowerPerLevel = 1;
         this.castTime = 30;
         this.baseManaCost = 40;
     }
@@ -94,30 +94,41 @@ public class ArrowVolleySpell extends AbstractSpell {
             targetLocation = castTargetingData.getTargetPosition((ServerLevel) level);
         }
         if (targetLocation == null) {
-            targetLocation = Utils.raycastForEntity(level, entity, 32, true).getLocation();
+            targetLocation = Utils.raycastForEntity(level, entity, 100, true).getLocation();
         }
-        float arrowAngleY = Utils.getAngle(entity.getX(), entity.getZ(), targetLocation.x, targetLocation.z);
         Vec3 backward = new Vec3(targetLocation.x - entity.getX(), 0, targetLocation.z - entity.getZ()).normalize().scale(-4);
         Vec3 spawnLocation = Utils.moveToRelativeGroundLevel(level, targetLocation.add(backward), 4);
         spawnLocation = Utils.raycastForBlock(level, spawnLocation.add(0, 0.25, 0), spawnLocation.add(0, 6, 0), ClipContext.Fluid.NONE).getLocation().add(0, -1, 0);
-        float arrowAngleX = (float) Mth.atan2(
-                Mth.sqrt((float) ((spawnLocation.x - targetLocation.x) * (spawnLocation.x - targetLocation.x) + (spawnLocation.z - targetLocation.z) * (spawnLocation.z - targetLocation.z))),
-                spawnLocation.y - targetLocation.y
-        ) * Mth.RAD_TO_DEG;
+
+        float dx = Mth.sqrt((float) ((spawnLocation.x - targetLocation.x) * (spawnLocation.x - targetLocation.x) + (spawnLocation.z - targetLocation.z) * (spawnLocation.z - targetLocation.z)));
+        float arrowAngleX = dx == 0 ? 70 : (float) (Mth.atan2(dx, (spawnLocation.y - targetLocation.y)) * Mth.RAD_TO_DEG);
+        float arrowAngleY = entity.getX() == targetLocation.x && entity.getZ() == targetLocation.z ? (entity.getYRot() - 90) * Mth.DEG_TO_RAD : Utils.getAngle(entity.getX(), entity.getZ(), targetLocation.x, targetLocation.z);
+
         ArrowVolleyEntity arrowVolleyEntity = new ArrowVolleyEntity(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), level);
         arrowVolleyEntity.moveTo(spawnLocation);
         arrowVolleyEntity.setYRot(arrowAngleY * Mth.RAD_TO_DEG + 90);
         arrowVolleyEntity.setXRot(arrowAngleX + 15);
+        arrowVolleyEntity.setDamage(getDamage(spellLevel, entity));
+        arrowVolleyEntity.setArrowsPerRow(getArrowsPerRow(spellLevel, entity));
+        arrowVolleyEntity.setRows(getRows(spellLevel, entity));
         level.addFreshEntity(arrowVolleyEntity);
 
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     private int getCount(int spellLevel, LivingEntity entity) {
-        return 3 + getLevel(spellLevel, entity) - 1;
+        return getRows(spellLevel, entity) * getArrowsPerRow(spellLevel, entity);
+    }
+
+    private int getRows(int spellLevel, LivingEntity entity) {
+        return 4 + spellLevel;
+    }
+
+    private int getArrowsPerRow(int spellLevel, LivingEntity entity) {
+        return 5 + spellLevel / 2;
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return this.getSpellPower(spellLevel, entity);
+        return this.getSpellPower(spellLevel, entity) * .25f;
     }
 }

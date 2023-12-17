@@ -318,7 +318,6 @@ public class Utils {
     }
 
     private static HitResult internalRaycastForEntity(Level level, Entity originEntity, Vec3 start, Vec3 end, boolean checkForBlocks, float bbInflation, Predicate<? super Entity> filter) {
-
         BlockHitResult blockHitResult = null;
         if (checkForBlocks) {
             blockHitResult = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity));
@@ -554,9 +553,13 @@ public class Utils {
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
+        return moveToRelativeGroundLevel(level, start, maxSteps, maxSteps);
+    }
+
+    public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxStepsUp, int maxStepsDown) {
         BlockCollisions blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true);
         if (blockcollisions.hasNext()) {
-            for (int i = 1; i < maxSteps * 2; i++) {
+            for (int i = 1; i < maxStepsUp; i++) {
                 blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i * .5, 0)), true);
                 if (!blockcollisions.hasNext()) {
                     start = start.add(0, i * .5, 0);
@@ -564,7 +567,7 @@ public class Utils {
                 }
             }
         }
-        return level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+        return level.clip(new ClipContext(start, start.add(0, -maxStepsDown, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
     }
 
     public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
