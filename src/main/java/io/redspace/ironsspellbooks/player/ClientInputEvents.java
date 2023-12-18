@@ -54,7 +54,7 @@ public final class ClientInputEvents {
         }
 
         if (SPELL_WHEEL_STATE.wasPressed()) {
-            if (minecraft.screen == null && Utils.isPlayerHoldingSpellBook(player))
+            if (minecraft.screen == null /*&& Utils.isPlayerHoldingSpellBook(player)*/)
                 SpellWheelOverlay.instance.open();
         }
         if (SPELL_WHEEL_STATE.wasReleased()) {
