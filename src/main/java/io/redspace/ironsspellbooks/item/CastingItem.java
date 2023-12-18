@@ -39,11 +39,11 @@ public class CastingItem extends Item {
         ItemStack itemStack = player.getItemInHand(hand);
         SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
         SpellSelectionManager.SpellSlot spellSlot = spellSelectionManager.getSelectedSpellSlot();
-        SpellData spellData = spellSlot.spellData;
-        if (spellData.equals(SpellData.EMPTY)) {
+        if (spellSlot == null || spellSlot.spellData.equals(SpellData.EMPTY)) {
             //IronsSpellbooks.LOGGER.debug("CastingItem.Use.1 {} {}", level.isClientSide, hand);
             return InteractionResultHolder.pass(itemStack);
         }
+        SpellData spellData = spellSlot.spellData;
 
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {
