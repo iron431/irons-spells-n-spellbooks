@@ -91,7 +91,7 @@ public class SpellSelectionManager {
         //TODO: expand this to allow an item to have more than 1 spell
         var spellData = SpellData.getSpellData(itemStack, false);
         if (spellData != SpellData.EMPTY) {
-            spellItemList.add(new SpellItem(spellData, slot, 0, spellItemList.size() - 1));
+            spellItemList.add(new SpellItem(spellData, slot, 0, spellItemList.size()));
             if (spellSelection.equipmentSlot.equals(slot)) {
                 selectionIndex = spellItemList.size() - 1;
                 selectionValid = true;
@@ -108,20 +108,20 @@ public class SpellSelectionManager {
             var spellbookSpells = getSpellsForSlot(Curios.SPELLBOOK_SLOT);
             if (spellSelection.lastIndex < spellbookSpells.size()) {
                 selectionIndex = spellSelection.lastIndex;
-                setSpellSelection(new SpellSelection(Curios.SPELLBOOK_SLOT, spellSelection.lastIndex, spellSelection.equipmentSlot, spellSelection.index));
+                //setSpellSelection(new SpellSelection(Curios.SPELLBOOK_SLOT, spellSelection.lastIndex, spellSelection.equipmentSlot, spellSelection.index));
                 selectionValid = true;
             }
         } else if (spellSelection.lastEquipmentSlot.equals(MAINHAND)) {
             var spellItems = getSpellsForSlot(MAINHAND);
             if (!spellItems.isEmpty()) {
-                setSpellSelection(new SpellSelection(MAINHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
+                //setSpellSelection(new SpellSelection(MAINHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
                 selectionIndex = spellItems.get(0).globalIndex;
                 selectionValid = true;
             }
         } else if (spellSelection.lastEquipmentSlot.equals(OFFHAND)) {
             var spellItems = getSpellsForSlot(OFFHAND);
             if (!spellItems.isEmpty()) {
-                setSpellSelection(new SpellSelection(OFFHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
+                //setSpellSelection(new SpellSelection(OFFHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
                 selectionIndex = spellItems.get(0).globalIndex;
                 selectionValid = true;
             }
