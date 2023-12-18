@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -165,6 +166,7 @@ public class SpellSelectionManager {
         return selectionIndex;
     }
 
+    @Nullable
     public SpellSlot getSelectedSpellSlot() {
         if (selectionIndex >= 0 && selectionIndex < spellSlotList.size()) {
             return spellSlotList.get(selectionIndex);
@@ -173,7 +175,7 @@ public class SpellSelectionManager {
     }
 
     public SpellData getSelectedSpellData() {
-        return spellSlotList.get(selectionIndex).spellData;
+        return selectionIndex >= 0 && selectionIndex < spellSlotList.size() ? spellSlotList.get(selectionIndex).spellData : SpellData.EMPTY;
     }
 
     public List<SpellSlot> getSpellsForSlot(String slot) {

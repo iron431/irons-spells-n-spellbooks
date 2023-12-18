@@ -101,7 +101,9 @@ public class CastingItem extends Item {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         MinecraftInstanceHelper.ifPlayerPresent((player) -> {
             SpellSelectionManager manager = new SpellSelectionManager(player);
-            pTooltipComponents.addAll(TooltipsUtils.formatActiveSpellTooltip(pStack, manager.getSelectedSpellData(), manager.getSelectedSpellSlot().getCastSource(), (LocalPlayer) player));
+            if (manager.getSelectedSpellSlot() != null) {
+                pTooltipComponents.addAll(TooltipsUtils.formatActiveSpellTooltip(pStack, manager.getSelectedSpellData(), manager.getSelectedSpellSlot().getCastSource(), (LocalPlayer) player));
+            }
         });
     }
 }
