@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,10 +35,10 @@ public class SpellBookCurioRenderer implements ICurioRenderer {
             //Negative X is right, Negative Z is Forward
             //Scale by 1/16th, we are now dealing with units of pixels
             poseStack.translate(-4 * .0625f, 11 * .0625f, 0);
-            poseStack.mulPose(Vector3f.YP.rotation(Mth.PI * .5f));
-            poseStack.mulPose(Vector3f.ZP.rotation(Mth.PI));
+            poseStack.mulPose(Axis.YP.rotation(Mth.PI * .5f));
+            poseStack.mulPose(Axis.ZP.rotation(Mth.PI));
             poseStack.scale(.4f, .4f, .4f);
-            itemRenderer.renderStatic(itemStack, ItemTransforms.TransformType.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
+            itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);
             poseStack.popPose();
         }
     }

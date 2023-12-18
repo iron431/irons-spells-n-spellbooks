@@ -207,13 +207,13 @@ public class Messages {
         net.messageBuilder(ServerboundSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundSelectSpell::new)
                 .encoder(ServerboundSelectSpell::toBytes)
-                .consumer(ServerboundSelectSpell::handle)
+                .consumerMainThread(ServerboundSelectSpell::handle)
                 .add();
 
         net.messageBuilder(ServerboundCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundCast::new)
                 .encoder(ServerboundCast::toBytes)
-                .consumer(ServerboundCast::handle)
+                .consumerMainThread(ServerboundCast::handle)
                 .add();
 
         net.messageBuilder(ClientboundOpenEldritchScreen.class, id(), NetworkDirection.PLAY_TO_CLIENT)
