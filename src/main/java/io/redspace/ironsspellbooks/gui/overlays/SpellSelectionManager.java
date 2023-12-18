@@ -134,7 +134,7 @@ public class SpellSelectionManager {
 
     @OnlyIn(Dist.CLIENT)
     public void makeSelection(int index) {
-        if (index >= 0 && index < spellItemList.size()) {
+        if (index != selectionIndex && index >= 0 && index < spellItemList.size()) {
             var item = spellItemList.get(index);
             spellSelection.makeSelection(item.slot, item.slotIndex);
             selectionIndex = index;
