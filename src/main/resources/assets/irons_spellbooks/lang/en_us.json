@@ -642,6 +642,8 @@
   "effect.irons_spellbooks.planar_sight": "Planar Sight",
   "effect.irons_spellbooks.antigravity": "Anti-Gravity",
   "effect.irons_spellbooks.chilled": "Chilled",
+  "effect.irons_spellbooks.slowed": "Slowed",
+  "effect.irons_spellbooks.hastened": "Hastened",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",
@@ -667,6 +669,8 @@
   "effect.irons_spellbooks.planar_sight.description": "Shift your vision in between planes, gaining the ability to see creatures through solid material",
   "effect.irons_spellbooks.antigravity.description": "Produces Weightlessness",
   "effect.irons_spellbooks.chilled.description": "Decreases movement speed and doubles incoming freeze time",
+  "effect.irons_spellbooks.slowed.description": "Decreases movement speed, attack speed, mining speed, mana regeneration, and cast time reduction",
+  "effect.irons_spellbooks.hastened.description": "Increases movement speed, attack speed, mining speed, mana regeneration, and cast time reduction",
 
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",

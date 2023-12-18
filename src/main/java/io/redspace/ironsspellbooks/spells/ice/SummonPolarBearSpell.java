@@ -69,7 +69,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.EVOKER_CAST_SPELL);
+        return Optional.empty();
     }
 
     @Override
