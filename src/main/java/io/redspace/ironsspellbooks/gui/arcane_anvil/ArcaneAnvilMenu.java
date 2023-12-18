@@ -96,7 +96,6 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                                 var newData = SpellBookData.getSpellBookData(result);
                                 newData.removeSpell(i, result);
                                 newData.addSpell(scrollData.getSpell(), scrollData.getLevel(), i, result);
-                                newData.setActiveSpellIndex(spellBookData.getActiveSpellIndex(), result);
                                 SpellBookData.setSpellBookData(result, newData);
                                 result.getOrCreateTag().putBoolean("Improved", true);
                             }

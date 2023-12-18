@@ -1,7 +1,10 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
@@ -12,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
@@ -57,6 +61,11 @@ public class SpellBarOverlay implements IGuiOverlay {
         int approximateWidth = locations.size() / 3;
         //Move spellbar away from hotbar as it gets bigger
         centerX -= approximateWidth * 5;
+        var spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
+        int selectedSpellIndex = spellSelection.index;
+        if (!spellSelection.equipmentSlot.equals(Curios.SPELLBOOK_SLOT)) {
+            selectedSpellIndex = -1;
+        }
 
         //Slot Border
         //setTranslucentTexture(TEXTURE);
@@ -73,7 +82,7 @@ public class SpellBarOverlay implements IGuiOverlay {
         //Border + Cooldowns
         for (int i = 0; i < locations.size(); i++) {
             //setTranslucentTexture(TEXTURE);
-            if (i != spellBookData.getActiveSpellIndex())
+            if (i != selectedSpellIndex)
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22, 84, 22, 22);
 
             float f = spells[i] == null ? 0 : ClientMagicData.getCooldownPercent(spells[i].getSpell());
@@ -85,7 +94,7 @@ public class SpellBarOverlay implements IGuiOverlay {
         //Selected Outline
         for (int i = 0; i < locations.size(); i++) {
             //setTranslucentTexture(TEXTURE);
-            if (i == spellBookData.getActiveSpellIndex())
+            if (i == selectedSpellIndex)
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
         }
     }

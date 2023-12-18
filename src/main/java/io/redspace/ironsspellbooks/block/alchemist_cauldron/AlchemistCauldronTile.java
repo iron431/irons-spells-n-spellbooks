@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.BiomeColors;
@@ -42,11 +41,8 @@ import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.LEVEL;
 import static io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock.MAX_LEVELS;
@@ -251,7 +247,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     public static Item getInkFromScroll(ItemStack scrollStack) {
         if (scrollStack.getItem() instanceof Scroll) {
-            var spellData = SpellData.getSpellData(scrollStack);
+            var spellData = SpellData.getSpellData(scrollStack, true);
             SpellRarity rarity = spellData.getSpell().getRarity(spellData.getLevel());
             return switch (rarity) {
                 case COMMON -> ItemRegistry.INK_COMMON.get();

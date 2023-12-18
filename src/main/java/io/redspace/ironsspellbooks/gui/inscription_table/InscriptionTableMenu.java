@@ -266,11 +266,10 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player pPlayer) {
         if (fromCurioSlot && spellBookSlot.hasItem()) {
-            //TODO: this may need to be more advanced to prevent a dup bug.  See the super.removed() for reference
             Utils.setPlayerSpellbookStack(pPlayer, spellBookSlot.remove(1));
         }
 
-        //super.removed(pPlayer);
+        super.removed(pPlayer);
         this.access.execute((p_39796_, p_39797_) -> {
             this.clearContainer(pPlayer, this.inputSlots);
         });

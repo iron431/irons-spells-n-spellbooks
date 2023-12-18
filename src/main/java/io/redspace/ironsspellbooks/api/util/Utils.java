@@ -9,7 +9,6 @@ import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -17,16 +16,15 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
-import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -140,11 +138,11 @@ public class Utils {
         //return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
     }
 
-    public static ItemStack getPlayerSpellbookStack(Player player) {
+    public static ItemStack getPlayerSpellbookStack(@NotNull Player player) {
         return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
     }
 
-    public static void setPlayerSpellbookStack(Player player, ItemStack itemStack) {
+    public static void setPlayerSpellbookStack(@NotNull Player player, ItemStack itemStack) {
         CuriosApi.getCuriosHelper().setEquippedCurio(player, Curios.SPELLBOOK_SLOT, 0, itemStack);
     }
 
@@ -255,28 +253,6 @@ public class Utils {
         return internalRaycastForEntity(level, originEntity, start, end, checkForBlocks, 0, (entity) -> entity.getClass() == c);
     }
 
-    public static void quickCast(int slot) {
-        var player = Minecraft.getInstance().player;
-        var hand = InteractionHand.MAIN_HAND;
-        var itemStack = player.getItemInHand(hand);
-
-        if (!(itemStack.getItem() instanceof SpellBook)) {
-            hand = InteractionHand.OFF_HAND;
-            itemStack = player.getItemInHand(hand);
-        }
-
-        if (itemStack.getItem() instanceof SpellBook) {
-            var spellBookData = SpellBookData.getSpellBookData(itemStack);
-
-            if (spellBookData.getSpellSlots() >= 1) {
-                var spell = spellBookData.getSpell(slot);
-                if (spell != null) {
-                    Messages.sendToServer(new ServerboundQuickCast(slot));
-                }
-            }
-        }
-    }
-
     public static void releaseUsingHelper(LivingEntity entity, ItemStack itemStack, int ticksUsed) {
         if (entity instanceof ServerPlayer serverPlayer) {
             var pmd = MagicData.getPlayerMagicData(serverPlayer);
@@ -287,18 +263,34 @@ public class Utils {
         }
     }
 
-    public static boolean serverSideInitiateCast(ServerPlayer serverPlayer, int slot) {
-        var spellbookStack = Utils.getPlayerSpellbookStack(serverPlayer);
-        SpellBookData sbd = SpellBookData.getSpellBookData(spellbookStack);
-        if (sbd.getSpellSlots() > 0) {
-            var spellData = sbd.getSpell(slot);
-            if (spellData != null) {
+    public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
+        var ssm = new SpellSelectionManager(serverPlayer);
+        var spellItem = ssm.getSelectedSpellSlot();
+        if (spellItem != null) {
+            var spellData = ssm.getSelectedSpellData();
+            if (spellData != SpellData.EMPTY) {
                 var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                 if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
                     ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
-                return spellData.getSpell().attemptInitiateCast(spellbookStack, spellData.getLevel(), serverPlayer.level, serverPlayer, CastSource.SPELLBOOK, true);
+
+                return spellData.getSpell().attemptInitiateCast(null, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true);
             }
+        }
+        return false;
+    }
+
+    public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
+        var ssm = new SpellSelectionManager(serverPlayer);
+        var spellItem = ssm.getSpellSlot(slot);
+
+        if (spellItem != null && spellItem.spellData != SpellData.EMPTY) {
+            var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+            if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellItem.spellData.getSpell().getSpellId())) {
+                ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
+            }
+
+            return spellItem.spellData.getSpell().attemptInitiateCast(null, spellItem.spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD, true);
         }
         return false;
     }

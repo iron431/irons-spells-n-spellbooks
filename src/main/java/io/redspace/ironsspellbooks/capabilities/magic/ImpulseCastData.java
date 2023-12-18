@@ -20,7 +20,7 @@ public class ImpulseCastData implements ICastDataSerializable {
     }
 
     @Override
-    public void writeToStream(FriendlyByteBuf buffer) {
+    public void writeToBuffer(FriendlyByteBuf buffer) {
         buffer.writeFloat(x);
         buffer.writeFloat(y);
         buffer.writeFloat(z);
@@ -28,7 +28,7 @@ public class ImpulseCastData implements ICastDataSerializable {
     }
 
     @Override
-    public void readFromStream(FriendlyByteBuf buffer) {
+    public void readFromBuffer(FriendlyByteBuf buffer) {
         this.x = buffer.readFloat();
         this.y = buffer.readFloat();
         this.z = buffer.readFloat();

@@ -2,16 +2,11 @@ package io.redspace.ironsspellbooks.gui.overlays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Vector4f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
-import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
-import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,7 +16,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -39,32 +33,31 @@ public class SpellWheelOverlay implements IGuiOverlay {
     private final Vector4f lineColor = new Vector4f(1f, .85f, .7f, 1f);
     private final Vector4f radialButtonColor = new Vector4f(.04f, .03f, .01f, .6f);
     private final Vector4f highlightColor = new Vector4f(.8f, .7f, .55f, .7f);
-//    private final Vector4f selectedColor = new Vector4f(0f, .5f, 1f, .5f);
-//    private final Vector4f highlightSelectedColor = new Vector4f(0.2f, .7f, 1f, .7f);
 
     private final double ringInnerEdge = 20;
     private double ringOuterEdge = 80;
     private final double ringOuterEdgeMax = 80;
     private final double ringOuterEdgeMin = 65;
-    private final double categoryLineWidth = 2;
 
     public boolean active;
-    private int selection;
-    private int selectedSpellIndex;
-    private SpellBookData spellBookData;
+    private int wheelSelection;
+    private SpellSelectionManager swsm;
+
+    private boolean isMouseReleased = false;
 
     public void open() {
         active = true;
-        selection = -1;
-        selectedSpellIndex = -1;
-        Minecraft.getInstance().mouseHandler.releaseMouse();
+        wheelSelection = -1;
     }
 
     public void close() {
         active = false;
-        if (selectedSpellIndex >= 0) {
-            Messages.sendToServer(new ServerboundSetSpellBookActiveIndex(selectedSpellIndex));
+
+        if (wheelSelection >= 0) {
+            swsm.makeSelection(wheelSelection);
         }
+
+        isMouseReleased = false;
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
@@ -73,40 +66,43 @@ public class SpellWheelOverlay implements IGuiOverlay {
             return;
 
         var minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
 
-        if ((minecraft.player == null || minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed() || !Utils.isPlayerHoldingSpellBook(minecraft.player))) {
+        if (player == null || minecraft.screen != null) {
             close();
             return;
+        }
+
+        //TODO: consider making this persist as an optimization.. would need to take into account any equipment changes though as we currently get that for free with it living here
+        swsm = new SpellSelectionManager(player);
+        int totalSpellsAvailable = swsm.getSpellCount();
+
+        if (totalSpellsAvailable <= 0) {
+            close();
+            return;
+        }
+
+        if (!isMouseReleased) {
+            Minecraft.getInstance().mouseHandler.releaseMouse();
+            isMouseReleased = true;
         }
 
         PoseStack poseStack = guiHelper.pose();
         poseStack.pushPose();
 
-        Player player = minecraft.player;
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
 
-        ItemStack spellBookStack = Utils.getPlayerSpellbookStack(player);
-        spellBookData = SpellBookData.getSpellBookData(spellBookStack);
-        List<SpellData> spellData = spellBookData.getActiveInscribedSpells();
-        int spellCount = spellData.size();
-        if (spellCount == 0) {
-            close();
-            return;
-        }
-
         Vec2 screenCenter = new Vec2(minecraft.getWindow().getScreenWidth() * .5f, minecraft.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());
-        double radiansPerSpell = Math.toRadians(360 / (float) spellCount);
+        double radiansPerSpell = Math.toRadians(360 / (float) totalSpellsAvailable);
 
         float mouseRotation = (Utils.getAngle(mousePos, screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
 
-        selection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, spellCount - 1);
+        wheelSelection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, totalSpellsAvailable - 1);
         if (mousePos.distanceToSqr(screenCenter) < ringOuterEdgeMin * ringOuterEdgeMin) {
-            selection = Math.max(0, spellBookData.getActiveSpellIndex());
+            wheelSelection = Math.max(0, swsm.getSelectionIndex());
         }
-        var currentSpell = spellData.get(selection);
-        selectedSpellIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), currentSpell);
 
         guiHelper.fill(0, 0, screenWidth, screenHeight, 0);
         RenderSystem.enableBlend();
@@ -115,22 +111,14 @@ public class SpellWheelOverlay implements IGuiOverlay {
         final BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        drawRadialBackgrounds(buffer, centerX, centerY, selection, spellData);
-        drawDividingLines(buffer, centerX, centerY, spellData);
-
-//        boolean drawText = selectedSpell != null;
-//        if (drawText) {
-//            var info = selectedSpell.getSpell().getUniqueInfo(selectedSpell.getLevel(), minecraft.player);
-//            textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
-//            drawTextBackground(buffer, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
-//        }
+        drawRadialBackgrounds(buffer, centerX, centerY, wheelSelection, swsm);
+        drawDividingLines(buffer, centerX, centerY, swsm);
 
         tesselator.end();
         RenderSystem.disableBlend();
 
-        //Text
-        var selectedSpell = spellData.get(selection);
-        if (selectedSpell != null) {
+        //Text background
+        var selectedSpell = swsm.getSpellData(wheelSelection);
             var font = gui.getFont();
             var info = selectedSpell.getSpell().getUniqueInfo(selectedSpell.getLevel(), minecraft.player);
             int textHeight = Math.max(2, info.size()) * font.lineHeight + 5;
@@ -153,14 +141,19 @@ public class SpellWheelOverlay implements IGuiOverlay {
         }
 
         //Spell Icons
-        float scale = Mth.clamp(1 + (15 - spellCount) / 15f, 1, 2) * .65f;
-        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (spellData.size() / 15f));
-        Vec2[] locations = new Vec2[spellCount];
+        float scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1.25f) * .65f;
+        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .25f * (totalSpellsAvailable / 15f));
+        if (player.isCrouching()) {
+            scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1f) * .65f;
+            radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .15f * (totalSpellsAvailable / 15f));
+        }
+
+        Vec2[] locations = new Vec2[totalSpellsAvailable];
         for (int i = 0; i < locations.length; i++) {
             locations[i] = new Vec2((float) (Math.sin(radiansPerSpell * i) * radius), (float) (-Math.cos(radiansPerSpell * i) * radius));
         }
         for (int i = 0; i < locations.length; i++) {
-            var spell = spellData.get(i);
+            var spell = swsm.getSpellData(i);
             if (spell != null) {
                 var texture = spellData.get(i).getSpell().getSpellIconResource();
                 poseStack.pushPose();
@@ -180,14 +173,13 @@ public class SpellWheelOverlay implements IGuiOverlay {
                 /*
                 Cooldown
                  */
-                float f = spellData.get(i) == null ? 0 : ClientMagicData.getCooldownPercent(spellData.get(i).getSpell());
+                float f = spell.get(i) == null ? 0 : ClientMagicData.getCooldownPercent(spellData.get(i).getSpell());
                 if (f > 0) {
                     int pixels = (int) (16 * f + 1f);
 //                    gui.blit(poseStack, centerX + (int) locations[i].x + 3, centerY + (int) locations[i].y + 19 - pixels, 47, 87, 16, pixels);
                     guiHelper.blit(TEXTURE, (int) locations[i].x - cdWidth, (int) locations[i].y + cdWidth - pixels, 47, 87, 16, pixels);
                 }
                 poseStack.popPose();
-
             }
         }
 
@@ -209,16 +201,6 @@ public class SpellWheelOverlay implements IGuiOverlay {
         int widthMax = 70;
         int widthMin = 0;
 
-//        buffer.vertex(centerX + widthMin, y + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-//        buffer.vertex(centerX + widthMin, y + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-//        buffer.vertex(centerX + widthMax, y + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-//        buffer.vertex(centerX + widthMax, y + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-//
-//        buffer.vertex(centerX - widthMax, y + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-//        buffer.vertex(centerX - widthMax, y + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-//        buffer.vertex(centerX + widthMin, y + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-//        buffer.vertex(centerX + widthMin, y + heightMin, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
-
         widthMin = -1;
         widthMax = 1;
         buffer.vertex(centerX + widthMin, centerY + heightMin, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
@@ -226,6 +208,10 @@ public class SpellWheelOverlay implements IGuiOverlay {
         buffer.vertex(centerX + widthMax, centerY + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
         buffer.vertex(centerX + widthMax, centerY + heightMin, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
 
+        buffer.vertex(centerX + widthMin, centerY + heightMin + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
+        buffer.vertex(centerX + widthMin, centerY + heightMax + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMax + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
+        buffer.vertex(centerX + widthMax, centerY + heightMin + heightMax, getBlitOffset()).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
         buffer.vertex(centerX + widthMin, centerY + heightMin + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()).endVertex();
         buffer.vertex(centerX + widthMin, centerY + heightMax + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
         buffer.vertex(centerX + widthMax, centerY + heightMax + heightMax, 0).color(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0).endVertex();
@@ -241,16 +227,17 @@ public class SpellWheelOverlay implements IGuiOverlay {
         RenderSystem.disableBlend();
     }
 
-    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex, List<SpellData> spells) {
+    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex, SpellSelectionManager swsm) {
         double quarterCircle = Math.PI / 2;
+        int totalSpellsAvailable = swsm.getSpellCount();
         int segments;
-        if (spells.size() < 6) {
-            segments = spells.size() % 2 == 1 ? 15 : 12;
+        if (totalSpellsAvailable < 6) {
+            segments = totalSpellsAvailable % 2 == 1 ? 15 : 12;
         } else {
-            segments = spells.size() * 2;
+            segments = totalSpellsAvailable * 2;
         }
         double radiansPerObject = 2 * Math.PI / segments;
-        double radiansPerSpell = 2 * Math.PI / spells.size();
+        double radiansPerSpell = 2 * Math.PI / totalSpellsAvailable;
         ringOuterEdge = Math.max(ringOuterEdgeMin, ringOuterEdgeMax);
         for (int i = 0; i < segments; i++) {
             final double beginRadians = i * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
@@ -266,7 +253,7 @@ public class SpellWheelOverlay implements IGuiOverlay {
             final double y1m2 = Math.sin(beginRadians) * ringOuterEdge;
             final double y2m2 = Math.sin(endRadians) * ringOuterEdge;
 
-            boolean isHighlighted = (i * spells.size()) / segments == selectedSpellIndex;
+            boolean isHighlighted = (i * totalSpellsAvailable) / segments == selectedSpellIndex;
 
             Vector4f color = radialButtonColor;
             if (isHighlighted) color = highlightColor;
@@ -278,6 +265,7 @@ public class SpellWheelOverlay implements IGuiOverlay {
 
             //Category line
             color = lineColor;
+            double categoryLineWidth = 2;
             final double categoryLineOuterEdge = ringInnerEdge + categoryLineWidth;
 
             final double x1m3 = Math.cos(beginRadians) * categoryLineOuterEdge;
@@ -293,16 +281,17 @@ public class SpellWheelOverlay implements IGuiOverlay {
         }
     }
 
-    private void drawDividingLines(BufferBuilder buffer, double centerX, double centerY, List<SpellData> spells) {
+    private void drawDividingLines(BufferBuilder buffer, double centerX, double centerY, SpellSelectionManager swsm) {
+        int totalSpellsAvailable = swsm.getSpellCount();
 
-        if (spells.size() <= 1)
+        if (totalSpellsAvailable <= 1)
             return;
 
         double quarterCircle = Math.PI / 2;
-        double radiansPerSpell = 2 * Math.PI / spells.size();
+        double radiansPerSpell = 2 * Math.PI / totalSpellsAvailable;
         ringOuterEdge = Math.max(ringOuterEdgeMin, ringOuterEdgeMax);
 
-        for (int i = 0; i < spells.size(); i++) {
+        for (int i = 0; i < totalSpellsAvailable; i++) {
             final double closeWidth = 8 * Mth.DEG_TO_RAD;
             final double farWidth = closeWidth / 4;
             final double beginCloseRadians = i * radiansPerSpell - (quarterCircle + (radiansPerSpell / 2)) - (closeWidth / 4);

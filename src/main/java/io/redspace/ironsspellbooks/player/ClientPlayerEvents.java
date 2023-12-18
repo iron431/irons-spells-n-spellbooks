@@ -128,13 +128,14 @@ public class ClientPlayerEvents {
         - [*name* *lvl*]
          */
 
-        if (SpellData.getSpellData(stack) != SpellData.EMPTY) {
+        var spelldata = SpellData.getSpellData(stack);
+        if (spelldata != SpellData.EMPTY) {
             var player = Minecraft.getInstance().player;
             if (player == null)
                 return;
             //Scrolls take care of themselves
             if (!(stack.getItem() instanceof Scroll)) {
-                var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, CastSource.SWORD, player);
+                var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spelldata, CastSource.SWORD, player);
                 //Add header to sword tooltip
                 additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
                 //Indent the title because we have an additional header

@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.setup;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscribeSpell;
 import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
-import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
+import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
 import io.redspace.ironsspellbooks.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import io.redspace.ironsspellbooks.network.*;
 import io.redspace.ironsspellbooks.network.spell.*;
@@ -101,12 +101,6 @@ public class Messages {
                 .consumerMainThread(ClientboundFrostStepParticles::handle)
                 .add();
 
-
-        net.messageBuilder(ServerboundSetSpellBookActiveIndex.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundSetSpellBookActiveIndex::new)
-                .encoder(ServerboundSetSpellBookActiveIndex::toBytes)
-                .consumerMainThread(ServerboundSetSpellBookActiveIndex::handle)
-                .add();
 
         net.messageBuilder(ServerboundScrollForgeSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundScrollForgeSelectSpell::new)
@@ -210,12 +204,23 @@ public class Messages {
                 .consumerMainThread(ServerboundLearnSpell::handle)
                 .add();
 
+        net.messageBuilder(ServerboundSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundSelectSpell::new)
+                .encoder(ServerboundSelectSpell::toBytes)
+                .consumer(ServerboundSelectSpell::handle)
+                .add();
+
+        net.messageBuilder(ServerboundCast.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundCast::new)
+                .encoder(ServerboundCast::toBytes)
+                .consumer(ServerboundCast::handle)
+                .add();
+
         net.messageBuilder(ClientboundOpenEldritchScreen.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundOpenEldritchScreen::new)
                 .encoder(ClientboundOpenEldritchScreen::toBytes)
                 .consumerMainThread(ClientboundOpenEldritchScreen::handle)
                 .add();
-
     }
 
     public static <MSG> void sendToServer(MSG message) {
