@@ -20,6 +20,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -28,14 +29,9 @@ import java.util.List;
 public class TooltipsUtils {
 
 
-    public static List<Component> formatActiveSpellTooltip(ItemStack stack, CastSource castSource, @Nonnull LocalPlayer player) {
-        var spellData = stack.getItem() instanceof SpellBook ? SpellBookData.getSpellBookData(stack).getActiveSpell() : SpellData.getSpellData(stack); //Put me in utils?
+    public static List<Component> formatActiveSpellTooltip(ItemStack stack, SpellData spellData, CastSource castSource, @Nonnull LocalPlayer player) {
         var spell = spellData.getSpell();
-        var levelText = getLevelComponenet(spellData, player);
-
-        var title = Component.translatable("tooltip.irons_spellbooks.selected_spell",
-                spell.getDisplayName(player),
-                levelText).withStyle(spell.getSchoolType().getDisplayName().getStyle());
+        var title = getTitleComponent(spellData, player);
         var uniqueInfo = spell.getUniqueInfo(spellData.getLevel(), player);
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellData.getLevel(), player)).withStyle(ChatFormatting.BLUE);
         var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, castSource), 1)).withStyle(ChatFormatting.BLUE);
@@ -53,6 +49,8 @@ public class TooltipsUtils {
             lines.add(cooldownTime);
         return lines;
     }
+
+
 
     public static List<Component> formatScrollTooltip(ItemStack stack, @Nonnull LocalPlayer player) {
         var spellData = SpellData.getSpellData(stack);
@@ -119,6 +117,14 @@ public class TooltipsUtils {
         } else {
             return Component.translatable("tooltip.irons_spellbooks.mana_cost", manaCost);
         }
+    }
+
+    public static MutableComponent getTitleComponent(SpellData spellData, @NotNull LocalPlayer player) {
+        var levelText = getLevelComponenet(spellData, player);
+        var spell = spellData.getSpell();
+        return Component.translatable("tooltip.irons_spellbooks.selected_spell",
+                spell.getDisplayName(player),
+                levelText).withStyle(spell.getSchoolType().getDisplayName().getStyle());
     }
 
     public static List<FormattedCharSequence> createSpellDescriptionTooltip(AbstractSpell spell, Font font) {

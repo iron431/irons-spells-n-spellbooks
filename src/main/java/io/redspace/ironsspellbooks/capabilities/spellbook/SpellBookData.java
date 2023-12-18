@@ -30,7 +30,7 @@ public class SpellBookData {
     public static final SpellBookData EMPTY_SPELLBOOK_DATA = new SpellBookData(0);
 
     private SpellData[] transcribedSpells;
-    private int activeSpellIndex = -1;
+    //private int activeSpellIndex = -1;
     private int spellSlots;
     private int spellCount = 0;
 
@@ -42,21 +42,6 @@ public class SpellBookData {
         this.spellSlots = spellSlots;
         this.transcribedSpells = new SpellData[this.spellSlots];
     }
-
-    @NotNull
-    public SpellData getActiveSpell() {
-        var spell = getSpell(activeSpellIndex);
-        return spell == null ? SpellData.EMPTY : spell;
-    }
-
-//    public boolean setActiveSpellIndex(int index, ItemStack stack) {
-//        if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
-//            this.activeSpellIndex = index;
-//            handleDirty(stack);
-//            return true;
-//        }
-//        return false;
-//    }
 
     public SpellData[] getInscribedSpells() {
         var result = new SpellData[this.spellSlots];
@@ -77,10 +62,6 @@ public class SpellBookData {
     public int getSpellSlots() {
         return spellSlots;
     }
-
-//    public int getActiveSpellIndex() {
-//        return activeSpellIndex;
-//    }
 
     public int getSpellCount() {
         return spellCount;
@@ -126,18 +107,6 @@ public class SpellBookData {
         if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
             transcribedSpells[index] = null;
             spellCount--;
-
-            if (spellCount == 0) {
-                activeSpellIndex = -1;
-            } else {
-                for (int i = 0; i < transcribedSpells.length; i++) {
-                    if (transcribedSpells[i] != null) {
-                        activeSpellIndex = i;
-                        break;
-                    }
-                }
-            }
-
             handleDirty(stack);
             return true;
         }
@@ -148,7 +117,6 @@ public class SpellBookData {
     public CompoundTag getNBT() {
         CompoundTag compound = new CompoundTag();
         compound.putInt(SPELL_SLOTS, spellSlots);
-        compound.putInt(ACTIVE_SPELL_INDEX, activeSpellIndex);
 
         ListTag listTagSpells = new ListTag();
         for (int i = 0; i < transcribedSpells.length; i++) {
@@ -169,7 +137,6 @@ public class SpellBookData {
     public void loadFromNBT(ItemStack stack, CompoundTag compound) {
         this.spellSlots = compound.getInt(SPELL_SLOTS);
         this.transcribedSpells = new SpellData[spellSlots];
-        this.activeSpellIndex = compound.getInt(ACTIVE_SPELL_INDEX);
 
         ListTag listTagSpells = (ListTag) compound.get(SPELLS);
 

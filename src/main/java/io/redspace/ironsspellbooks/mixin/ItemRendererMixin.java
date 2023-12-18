@@ -7,13 +7,17 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.compat.Curios;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,9 +37,15 @@ public class ItemRendererMixin {
     public void renderSpellbookCooldown(Font font, ItemStack stack, int one, int two, CallbackInfo ci) {
         Item item = stack.getItem();
         if (item instanceof SpellBook) {
-            AbstractSpell spell = SpellBookData.getSpellBookData(stack).getActiveSpell().getSpell();
-            float f = spell == SpellRegistry.none() ? 0 : ClientMagicData.getCooldownPercent(spell);
-            renderSpellCooldown(one, two, f);
+            var player = MinecraftInstanceHelper.getPlayer();
+            if (player != null) {
+                SpellSelectionManager manager = new SpellSelectionManager(player);
+                if (manager.getCurrentSelection().equipmentSlot.equals(Curios.SPELLBOOK_SLOT)) {
+                    var spell = manager.getSelectedSpellData().getSpell();
+                    float f = spell == SpellRegistry.none() ? 0 : ClientMagicData.getCooldownPercent(spell);
+                    renderSpellCooldown(one, two, f);
+                }
+            }
         } else if (SpellData.hasSpellData(stack) && !stack.getItem().equals(ItemRegistry.SCROLL.get())) {
             AbstractSpell spell = SpellData.getSpellData(stack).getSpell();
             float f = spell == SpellRegistry.none() ? 0 : ClientMagicData.getCooldownPercent(spell);

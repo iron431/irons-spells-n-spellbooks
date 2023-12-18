@@ -135,11 +135,11 @@ public class Utils {
         //return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
     }
 
-    public static ItemStack getPlayerSpellbookStack(Player player) {
+    public static ItemStack getPlayerSpellbookStack(@NotNull Player player) {
         return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
     }
 
-    public static void setPlayerSpellbookStack(Player player, ItemStack itemStack) {
+    public static void setPlayerSpellbookStack(@NotNull Player player, ItemStack itemStack) {
         CuriosApi.getCuriosHelper().setEquippedCurio(player, Curios.SPELLBOOK_SLOT, 0, itemStack);
     }
 
@@ -262,7 +262,7 @@ public class Utils {
 
     public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
         var ssm = new SpellSelectionManager(serverPlayer);
-        var spellItem = ssm.getSelectedSpellItem();
+        var spellItem = ssm.getSelectedSpellSlot();
         if (spellItem != null) {
             var spellData = ssm.getSelectedSpellData();
             if (spellData != SpellData.EMPTY) {
@@ -271,7 +271,7 @@ public class Utils {
                     ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
                 }
 
-                return spellData.getSpell().attemptInitiateCast(null, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD, true);
+                return spellData.getSpell().attemptInitiateCast(null, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true);
             }
         }
         return false;
@@ -279,7 +279,7 @@ public class Utils {
 
     public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
         var ssm = new SpellSelectionManager(serverPlayer);
-        var spellItem = ssm.getSpellItem(slot);
+        var spellItem = ssm.getSpellSlot(slot);
 
         if (spellItem != null && spellItem.spellData != SpellData.EMPTY) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);

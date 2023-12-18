@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.gui.overlays;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +24,14 @@ public class SpellSelectionManager {
     public static final String MAINHAND = EquipmentSlot.MAINHAND.getName();
     public static final String OFFHAND = EquipmentSlot.OFFHAND.getName();
 
-    private final List<SpellItem> spellItemList;
+    private final List<SpellSlot> spellSlotList;
     private SpellSelection spellSelection = null;
     private int selectionIndex = -1;
     private boolean selectionValid = false;
     private final Player player;
 
-    public SpellSelectionManager(Player player) {
-        this.spellItemList = new ArrayList<>();
+    public SpellSelectionManager(@NotNull Player player) {
+        this.spellSlotList = new ArrayList<>();
         this.player = player;
 
         init(player);
@@ -55,9 +57,9 @@ public class SpellSelectionManager {
             tryLastSelection();
         }
 
-        if (!selectionValid && !spellItemList.isEmpty()) {
-            var spellItem = spellItemList.get(0);
-            setSpellSelection(new SpellSelection(spellItem.slot, spellItem.slotIndex));
+        if (!selectionValid && !spellSlotList.isEmpty()) {
+            var spellSlot = spellSlotList.get(0);
+            setSpellSelection(new SpellSelection(spellSlot.slot, spellSlot.slotIndex));
             selectionIndex = 0;
             selectionValid = true;
         }
@@ -69,10 +71,10 @@ public class SpellSelectionManager {
         var activeSpellbookSpells = spellBookData.getActiveInscribedSpells();
 
         for (int i = 0; i < activeSpellbookSpells.size(); i++) {
-            spellItemList.add(new SpellItem(activeSpellbookSpells.get(i), Curios.SPELLBOOK_SLOT, i, i));
+            spellSlotList.add(new SpellSlot(activeSpellbookSpells.get(i), Curios.SPELLBOOK_SLOT, i, i));
         }
 
-        if (spellSelection.equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && spellSelection.index < spellItemList.size()) {
+        if (spellSelection.equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && spellSelection.index < spellSlotList.size()) {
             selectionIndex = spellSelection.index;
             selectionValid = true;
         }
@@ -82,9 +84,9 @@ public class SpellSelectionManager {
         //TODO: expand this to allow an item to have more than 1 spell
         var spellData = SpellData.getSpellData(itemStack, false);
         if (spellData != SpellData.EMPTY) {
-            spellItemList.add(new SpellItem(spellData, slot, 0, spellItemList.size()));
+            spellSlotList.add(new SpellSlot(spellData, slot, 0, spellSlotList.size()));
             if (spellSelection.equipmentSlot.equals(slot)) {
-                selectionIndex = spellItemList.size() - 1;
+                selectionIndex = spellSlotList.size() - 1;
                 selectionValid = true;
             }
         }
@@ -103,17 +105,17 @@ public class SpellSelectionManager {
                 selectionValid = true;
             }
         } else if (spellSelection.lastEquipmentSlot.equals(MAINHAND)) {
-            var spellItems = getSpellsForSlot(MAINHAND);
-            if (!spellItems.isEmpty()) {
+            var spellSlots = getSpellsForSlot(MAINHAND);
+            if (!spellSlots.isEmpty()) {
                 //setSpellSelection(new SpellSelection(MAINHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
-                selectionIndex = spellItems.get(0).globalIndex;
+                selectionIndex = spellSlots.get(0).globalIndex;
                 selectionValid = true;
             }
         } else if (spellSelection.lastEquipmentSlot.equals(OFFHAND)) {
-            var spellItems = getSpellsForSlot(OFFHAND);
-            if (!spellItems.isEmpty()) {
+            var spellSlots = getSpellsForSlot(OFFHAND);
+            if (!spellSlots.isEmpty()) {
                 //setSpellSelection(new SpellSelection(OFFHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
-                selectionIndex = spellItems.get(0).globalIndex;
+                selectionIndex = spellSlots.get(0).globalIndex;
                 selectionValid = true;
             }
         }
@@ -121,8 +123,8 @@ public class SpellSelectionManager {
 
     @OnlyIn(Dist.CLIENT)
     public void makeSelection(int index) {
-        if (index != selectionIndex && index >= 0 && index < spellItemList.size()) {
-            var item = spellItemList.get(index);
+        if (index != selectionIndex && index >= 0 && index < spellSlotList.size()) {
+            var item = spellSlotList.get(index);
             spellSelection.makeSelection(item.slot, item.slotIndex);
             selectionIndex = index;
             selectionValid = true;
@@ -145,16 +147,16 @@ public class SpellSelectionManager {
         return spellSelection;
     }
 
-    public SpellItem getSpellItem(int index) {
-        if (index >= 0 && index < spellItemList.size()) {
-            return spellItemList.get(index);
+    public SpellSlot getSpellSlot(int index) {
+        if (index >= 0 && index < spellSlotList.size()) {
+            return spellSlotList.get(index);
         }
         return null;
     }
 
     public SpellData getSpellData(int index) {
-        if (index >= 0 && index < spellItemList.size()) {
-            return spellItemList.get(index).spellData;
+        if (index >= 0 && index < spellSlotList.size()) {
+            return spellSlotList.get(index).spellData;
         }
         return SpellData.EMPTY;
     }
@@ -163,19 +165,19 @@ public class SpellSelectionManager {
         return selectionIndex;
     }
 
-    public SpellItem getSelectedSpellItem() {
-        if (selectionIndex >= 0 && selectionIndex < spellItemList.size()) {
-            return spellItemList.get(selectionIndex);
+    public SpellSlot getSelectedSpellSlot() {
+        if (selectionIndex >= 0 && selectionIndex < spellSlotList.size()) {
+            return spellSlotList.get(selectionIndex);
         }
         return null;
     }
 
     public SpellData getSelectedSpellData() {
-        return spellItemList.get(selectionIndex).spellData;
+        return spellSlotList.get(selectionIndex).spellData;
     }
 
-    public List<SpellItem> getSpellsForSlot(String slot) {
-        return spellItemList.stream().filter(spellItem -> spellItem.slot.equals(slot)).toList();
+    public List<SpellSlot> getSpellsForSlot(String slot) {
+        return spellSlotList.stream().filter(spellSlot -> spellSlot.slot.equals(slot)).toList();
     }
 
     public SpellData getSpellForSlot(String slot, int index) {
@@ -189,20 +191,24 @@ public class SpellSelectionManager {
     }
 
     public int getSpellCount() {
-        return spellItemList.size();
+        return spellSlotList.size();
     }
 
-    public static class SpellItem {
+    public static class SpellSlot {
         public SpellData spellData;
         public String slot;
         public int slotIndex;
         public int globalIndex;
 
-        public SpellItem(SpellData spell, String slot, int slotIndex, int globalIndex) {
+        public SpellSlot(SpellData spell, String slot, int slotIndex, int globalIndex) {
             this.spellData = spell;
             this.slot = slot;
             this.slotIndex = slotIndex;
             this.globalIndex = globalIndex;
+        }
+
+        public CastSource getCastSource() {
+            return this.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD;
         }
     }
 }
