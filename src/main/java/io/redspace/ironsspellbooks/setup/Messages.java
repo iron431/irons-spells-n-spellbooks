@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscribeSpell;
 import io.redspace.ironsspellbooks.gui.inscription_table.network.ServerboundInscriptionTableSelectSpell;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
-import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.gui.scroll_forge.network.ServerboundScrollForgeSelectSpell;
 import io.redspace.ironsspellbooks.network.*;
 import io.redspace.ironsspellbooks.network.spell.*;
@@ -102,12 +101,6 @@ public class Messages {
                 .consumer(ClientboundFrostStepParticles::handle)
                 .add();
 
-
-        net.messageBuilder(ServerboundSetSpellBookActiveIndex.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundSetSpellBookActiveIndex::new)
-                .encoder(ServerboundSetSpellBookActiveIndex::toBytes)
-                .consumer(ServerboundSetSpellBookActiveIndex::handle)
-                .add();
 
         net.messageBuilder(ServerboundScrollForgeSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundScrollForgeSelectSpell::new)

@@ -49,14 +49,14 @@ public class SpellBookData {
         return spell == null ? SpellData.EMPTY : spell;
     }
 
-    public boolean setActiveSpellIndex(int index, ItemStack stack) {
-        if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
-            this.activeSpellIndex = index;
-            handleDirty(stack);
-            return true;
-        }
-        return false;
-    }
+//    public boolean setActiveSpellIndex(int index, ItemStack stack) {
+//        if (index > -1 && index < transcribedSpells.length && transcribedSpells[index] != null) {
+//            this.activeSpellIndex = index;
+//            handleDirty(stack);
+//            return true;
+//        }
+//        return false;
+//    }
 
     public SpellData[] getInscribedSpells() {
         var result = new SpellData[this.spellSlots];
@@ -78,9 +78,9 @@ public class SpellBookData {
         return spellSlots;
     }
 
-    public int getActiveSpellIndex() {
-        return activeSpellIndex;
-    }
+//    public int getActiveSpellIndex() {
+//        return activeSpellIndex;
+//    }
 
     public int getSpellCount() {
         return spellCount;
@@ -102,7 +102,7 @@ public class SpellBookData {
             spellCount++;
             if (spellCount == 1) {
                 //Stack is intentionally null to avoid multiple calls to handleDirty
-                setActiveSpellIndex(index, null);
+//                setActiveSpellIndex(index, null);
             }
             handleDirty(stack);
             return true;

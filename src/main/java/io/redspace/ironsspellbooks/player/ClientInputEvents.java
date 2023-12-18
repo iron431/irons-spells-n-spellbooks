@@ -3,13 +3,13 @@ package io.redspace.ironsspellbooks.player;
 import com.mojang.blaze3d.platform.InputConstants;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.compat.Curios;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
-import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.network.ServerboundCast;
 import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
 import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -19,7 +19,6 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,27 +82,23 @@ public final class ClientInputEvents {
         var spellbookStack = Utils.getPlayerSpellbookStack(player);
         if (spellbookStack != null && minecraft.screen == null) {
             if (SPELLBAR_MODIFIER_STATE.isHeld()) {
-                var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
-                if (spellBookData.getSpellCount() > 0) {
-                    int direction = (int) event.getScrollDelta();
+                SpellSelectionManager spellSelectionManager = new SpellSelectionManager(MinecraftInstanceHelper.getPlayer());
+                if (spellSelectionManager.getSpellCount() > 0) {
+                    int direction = Mth.clamp((int) event.getScrollDelta(), -1, 1);
 //                    irons_spellbooks.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
 
-                    List<SpellData> spells = new ArrayList<>();
-                    for (SpellData spellData : spellBookData.getInscribedSpells()) {
-                        if (spellData != null)
-                            spells.add(spellData);
-                    }
-                    int spellCount = spellBookData.getSpellCount();
-                    int scrollIndex = (spells.indexOf(spellBookData.getActiveSpell()) - direction);
+                    List<SpellSelectionManager.SpellItem> spellbookSpells = spellSelectionManager.getSpellsForSlot(Curios.SPELLBOOK_SLOT);
+                    int spellCount = spellbookSpells.size();
+                    int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
 //                    irons_spellbooks.LOGGER.debug("collapsed new index: {}", scrollIndex);
 //                    irons_spellbooks.LOGGER.debug("{} + {} = {}", scrollIndex, spellCount, scrollIndex + spellCount);
 //                    irons_spellbooks.LOGGER.debug("{} % {} = {}", scrollIndex + spellCount, spellCount, (scrollIndex + spellCount) % spellCount);
-                    scrollIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
+                    int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
 
 //                    irons_spellbooks.LOGGER.debug("wrapped collapsed index: {}", scrollIndex);
 
 
-                    int selectedIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), spells.get(scrollIndex));
+//                    int selectedIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), spellbookSpells.get(scrollIndex));
 
 //                    int newIndex = spellBookData.getActiveSpellIndex() - direction;
 //                    newIndex = (newIndex + spellBookData.getSpellCount()) % spellBookData.getSpellCount();
@@ -118,7 +113,8 @@ public final class ClientInputEvents {
 //                            break;
 //                    }
 //                    while (spellBookData.getInscribedSpells()[newIndex] == null);
-                    Messages.sendToServer(new ServerboundSetSpellBookActiveIndex(selectedIndex));
+                    spellSelectionManager.makeSelection(selectedIndex);
+                    //Messages.sendToServer(new ServerboundSetSpellBookActiveIndex(selectedIndex));
                     event.setCanceled(true);
                 }
             }
