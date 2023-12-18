@@ -173,7 +173,7 @@ public class SpellSelectionManager {
     }
 
     public SpellData getSelectedSpellData() {
-        return spellSlotList.get(selectionIndex).spellData;
+        return selectionIndex >= 0 && selectionIndex < spellSlotList.size() ? spellSlotList.get(selectionIndex).spellData : SpellData.EMPTY;
     }
 
     public List<SpellSlot> getSpellsForSlot(String slot) {
