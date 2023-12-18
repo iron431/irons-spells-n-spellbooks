@@ -158,7 +158,6 @@ public class SyncedSpellData {
     }
 
     public SpellSelection getSpellSelection() {
-        IronsSpellbooks.LOGGER.debug("SyncedSpellData.getSpellSelection {}", spellSelection);
         return spellSelection;
     }
 
