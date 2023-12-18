@@ -149,7 +149,8 @@ public class DamageSources {
         if (team != null) {
             return team.isAlliedTo(target.getTeam()) && !team.isAllowFriendlyFire();
         }
-        return false;
+        //We already manually checked for teams, so this will only return true for any overrides (such as summons)
+        return attacker.isAlliedTo(target);
     }
 
     public static DamageSource directDamageSource(DamageSource source, Entity attacker) {

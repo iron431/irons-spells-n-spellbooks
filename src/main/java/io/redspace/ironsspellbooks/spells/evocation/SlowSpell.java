@@ -108,7 +108,7 @@ public class SlowSpell extends AbstractSpell {
                 float radius = 3;
                 AtomicInteger targets = new AtomicInteger(0);
                 targetEntity.level.getEntitiesOfClass(LivingEntity.class, targetEntity.getBoundingBox().inflate(radius)).forEach((victim) -> {
-                    if (targets.get() < MAX_TARGETS && victim.distanceToSqr(targetEntity) < radius * radius && !DamageSources.isFriendlyFireBetween(entity, victim)) {
+                    if (targets.get() < MAX_TARGETS && victim != entity && victim.distanceToSqr(targetEntity) < radius * radius && !DamageSources.isFriendlyFireBetween(entity, victim)) {
                         victim.addEffect(new MobEffectInstance(MobEffectRegistry.SLOWED.get(), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
                         targets.incrementAndGet();
                     }
