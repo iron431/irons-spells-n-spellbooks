@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.LearnedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -157,10 +158,12 @@ public class SyncedSpellData {
     }
 
     public SpellSelection getSpellSelection() {
+        IronsSpellbooks.LOGGER.debug("SyncedSpellData.getSpellSelection {}", spellSelection);
         return spellSelection;
     }
 
     public void setSpellSelection(SpellSelection spellSelection) {
+        IronsSpellbooks.LOGGER.debug("SyncedSpellData.setSpellSelection {}", spellSelection);
         this.spellSelection = spellSelection;
         doSync();
     }

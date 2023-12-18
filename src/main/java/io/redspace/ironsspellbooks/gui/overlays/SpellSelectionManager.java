@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
@@ -10,6 +12,8 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +26,21 @@ public class SpellSelectionManager {
     private SpellSelection spellSelection = null;
     private int selectionIndex = -1;
     private boolean selectionValid = false;
+    private final Player player;
 
     public SpellSelectionManager(Player player) {
         this.spellItemList = new ArrayList<>();
+        this.player = player;
 
         init(player);
     }
 
     private void init(Player player) {
-        spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
+        if (player.level.isClientSide) {
+            spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
+        } else {
+            spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
+        }
 
         initSpellbook(player);
 
@@ -47,9 +57,18 @@ public class SpellSelectionManager {
 
         if (!selectionValid && !spellItemList.isEmpty()) {
             var spellItem = spellItemList.get(0);
-            spellSelection = new SpellSelection(spellItem.slot, spellItem.slotIndex);
+            setSpellSelection(new SpellSelection(spellItem.slot, spellItem.slotIndex));
             selectionIndex = 0;
             selectionValid = true;
+        }
+    }
+
+    private void setSpellSelection(SpellSelection spellSelection) {
+        IronsSpellbooks.LOGGER.debug("SSM.setSpellSelection old:{} new:{}", this.spellSelection, spellSelection);
+
+        this.spellSelection = spellSelection;
+        if (!player.level.isClientSide) {
+            MagicData.getPlayerMagicData(player).getSyncedData().setSpellSelection(spellSelection);
         }
     }
 
@@ -89,20 +108,20 @@ public class SpellSelectionManager {
             var spellbookSpells = getSpellsForSlot(Curios.SPELLBOOK_SLOT);
             if (spellSelection.lastIndex < spellbookSpells.size()) {
                 selectionIndex = spellSelection.lastIndex;
-                spellSelection = new SpellSelection(Curios.SPELLBOOK_SLOT, spellSelection.lastIndex);
+                setSpellSelection(new SpellSelection(Curios.SPELLBOOK_SLOT, spellSelection.lastIndex, spellSelection.equipmentSlot, spellSelection.index));
                 selectionValid = true;
             }
         } else if (spellSelection.lastEquipmentSlot.equals(MAINHAND)) {
             var spellItems = getSpellsForSlot(MAINHAND);
             if (!spellItems.isEmpty()) {
-                spellSelection = new SpellSelection(MAINHAND, 0);
+                setSpellSelection(new SpellSelection(MAINHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
                 selectionIndex = spellItems.get(0).globalIndex;
                 selectionValid = true;
             }
         } else if (spellSelection.lastEquipmentSlot.equals(OFFHAND)) {
             var spellItems = getSpellsForSlot(OFFHAND);
             if (!spellItems.isEmpty()) {
-                spellSelection = new SpellSelection(OFFHAND, 0);
+                setSpellSelection(new SpellSelection(OFFHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
                 selectionIndex = spellItems.get(0).globalIndex;
                 selectionValid = true;
             }
@@ -113,12 +132,17 @@ public class SpellSelectionManager {
         return spellSelection;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void makeSelection(int index) {
         if (index >= 0 && index < spellItemList.size()) {
             var item = spellItemList.get(index);
             spellSelection.makeSelection(item.slot, item.slotIndex);
+            selectionIndex = index;
+            selectionValid = true;
+            if (player.level.isClientSide) {
+                Messages.sendToServer(new ServerboundSelectSpell(spellSelection));
+            }
         }
-        Messages.sendToServer(new ServerboundSelectSpell(spellSelection));
     }
 
     public SpellData getSpellData(int index) {
