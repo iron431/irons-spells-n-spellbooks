@@ -63,15 +63,6 @@ public class SpellSelectionManager {
         }
     }
 
-    private void setSpellSelection(SpellSelection spellSelection) {
-        IronsSpellbooks.LOGGER.debug("SSM.setSpellSelection old:{} new:{}", this.spellSelection, spellSelection);
-
-        this.spellSelection = spellSelection;
-        if (!player.level.isClientSide) {
-            MagicData.getPlayerMagicData(player).getSyncedData().setSpellSelection(spellSelection);
-        }
-    }
-
     private void initSpellbook(Player player) {
         var spellbookStack = Utils.getPlayerSpellbookStack(player);
         var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
@@ -128,10 +119,6 @@ public class SpellSelectionManager {
         }
     }
 
-    public SpellSelection getCurrentSelection() {
-        return spellSelection;
-    }
-
     @OnlyIn(Dist.CLIENT)
     public void makeSelection(int index) {
         if (index != selectionIndex && index >= 0 && index < spellItemList.size()) {
@@ -145,8 +132,31 @@ public class SpellSelectionManager {
         }
     }
 
+    private void setSpellSelection(SpellSelection spellSelection) {
+        IronsSpellbooks.LOGGER.debug("SSM.setSpellSelection old:{} new:{}", this.spellSelection, spellSelection);
+
+        this.spellSelection = spellSelection;
+        if (!player.level.isClientSide) {
+            MagicData.getPlayerMagicData(player).getSyncedData().setSpellSelection(spellSelection);
+        }
+    }
+
+    public SpellSelection getCurrentSelection() {
+        return spellSelection;
+    }
+
+    public SpellItem getSpellItem(int index) {
+        if (index >= 0 && index < spellItemList.size()) {
+            return spellItemList.get(index);
+        }
+        return null;
+    }
+
     public SpellData getSpellData(int index) {
-        return spellItemList.get(index).spellData;
+        if (index >= 0 && index < spellItemList.size()) {
+            return spellItemList.get(index).spellData;
+        }
+        return SpellData.EMPTY;
     }
 
     public int getSelectionIndex() {
@@ -154,7 +164,7 @@ public class SpellSelectionManager {
     }
 
     public SpellItem getSelectedSpellItem() {
-        if (selectionIndex >= 0) {
+        if (selectionIndex >= 0 && selectionIndex < spellItemList.size()) {
             return spellItemList.get(selectionIndex);
         }
         return null;

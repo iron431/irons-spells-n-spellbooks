@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
 import io.redspace.ironsspellbooks.network.ServerboundCast;
+import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -149,7 +150,7 @@ public final class ClientInputEvents {
             //IronsSpellbooks.LOGGER.debug("onKeyInput i:{}",i);
             if (QUICK_CAST_STATES.get(i).wasPressed()) {
                 //IronsSpellbooks.LOGGER.debug("onKeyInput cast}");
-                Utils.quickCast(i);
+                Messages.sendToServer(new ServerboundQuickCast(i));
                 break;
             }
         }
