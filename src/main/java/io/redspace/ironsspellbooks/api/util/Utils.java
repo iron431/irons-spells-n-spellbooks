@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.api.util;
 
 import com.mojang.math.Vector3f;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -18,6 +17,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
@@ -285,7 +285,24 @@ public class Utils {
         }
     }
 
-    public static boolean serverSideInitiateCast(ServerPlayer serverPlayer, int slot) {
+    public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
+        var ssm = new SpellSelectionManager(serverPlayer);
+        var spellItem = ssm.getSelectedSpellItem();
+        if (spellItem != null) {
+            var spellData = ssm.getSelectedSpellData();
+            if (spellData != SpellData.EMPTY) {
+                var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
+                    ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
+                }
+
+                return spellData.getSpell().attemptInitiateCast(null, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD, true);
+            }
+        }
+        return false;
+    }
+
+    public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
         var spellbookStack = Utils.getPlayerSpellbookStack(serverPlayer);
         SpellBookData sbd = SpellBookData.getSpellBookData(spellbookStack);
         if (sbd.getSpellSlots() > 0) {

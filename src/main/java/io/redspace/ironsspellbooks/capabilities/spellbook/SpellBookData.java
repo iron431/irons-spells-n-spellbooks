@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.capabilities.spellbook;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
@@ -12,9 +12,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class SpellBookData {
 
@@ -63,8 +64,8 @@ public class SpellBookData {
         return result;
     }
 
-    public List<SpellData> getActiveInscribedSpells() {
-        return Arrays.stream(this.transcribedSpells).filter(Objects::nonNull).toList();
+    public ArrayList<SpellData> getActiveInscribedSpells() {
+        return (ArrayList<SpellData>) Arrays.stream(this.transcribedSpells).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     private void handleDirty(ItemStack stack) {

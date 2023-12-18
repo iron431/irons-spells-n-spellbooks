@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.gui.overlays.network;
 
-import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
-import io.redspace.ironsspellbooks.gui.overlays.SpellWheelSelection;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -10,20 +10,20 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class ServerboundSelectSpell {
-    private final SpellWheelSelection spellWheelSelection;
+    private final SpellSelection spellSelection;
 
-    public ServerboundSelectSpell(SpellWheelSelection spellWheelSelection) {
-        this.spellWheelSelection = spellWheelSelection;
+    public ServerboundSelectSpell(SpellSelection spellSelection) {
+        this.spellSelection = spellSelection;
     }
 
     public ServerboundSelectSpell(FriendlyByteBuf buf) {
-        var spellWheelSelection = new SpellWheelSelection();
-        spellWheelSelection.readFromBuffer(buf);
-        this.spellWheelSelection = spellWheelSelection;
+        var tmpSpellSelection = new SpellSelection();
+        tmpSpellSelection.readFromBuffer(buf);
+        this.spellSelection = tmpSpellSelection;
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        spellWheelSelection.writeToBuffer(buf);
+        spellSelection.writeToBuffer(buf);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
@@ -32,10 +32,8 @@ public class ServerboundSelectSpell {
             // Here we are server side
             ServerPlayer serverPlayer = ctx.getSender();
             if (serverPlayer != null) {
-//                var spellbookStack = Utils.getPlayerSpellbookStack(serverPlayer);
-//                if (spellbookStack != null) {
-//                    SpellBookData.getSpellBookData(spellbookStack).setActiveSpellIndex(selectedIndex, spellbookStack);
-//                }
+                IronsSpellbooks.LOGGER.debug("ServerboundSelectSpell.handle {}", spellSelection);
+                MagicData.getPlayerMagicData(serverPlayer).getSyncedData().setSpellSelection(spellSelection);
             }
         });
         return true;

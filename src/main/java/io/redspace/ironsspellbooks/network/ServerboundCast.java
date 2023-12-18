@@ -7,27 +7,22 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ServerboundQuickCast {
+public class ServerboundCast {
 
-    private int slot;
-
-    public ServerboundQuickCast(int slot) {
-        this.slot = slot;
+    public ServerboundCast() {
     }
 
-    public ServerboundQuickCast(FriendlyByteBuf buf) {
-        slot = buf.readInt();
+    public ServerboundCast(FriendlyByteBuf buf) {
     }
 
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeInt(slot);
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer serverPlayer = ctx.getSender();
-            Utils.serverSideInitiateQuickCast(serverPlayer, slot);
+            Utils.serverSideInitiateCast(serverPlayer);
         });
         return true;
     }

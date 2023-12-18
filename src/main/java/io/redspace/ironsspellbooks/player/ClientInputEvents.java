@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSetSpellBookActiveIndex;
-import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
+import io.redspace.ironsspellbooks.network.ServerboundCast;
 import io.redspace.ironsspellbooks.setup.Messages;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -45,22 +45,12 @@ public final class ClientInputEvents {
     public static void clientTick(TickEvent.ClientTickEvent event) {
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
-        if (player == null)
+        if (player == null) {
             return;
+        }
 
-        if (SPELLBOOK_CAST_STATE.wasPressed()) {
-            var spellbookStack = Utils.getPlayerSpellbookStack(player);
-
-            if (minecraft.screen == null && spellbookStack != null) {
-                var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
-
-                if (spellBookData.getSpellSlots() >= 1) {
-                    var spell = spellBookData.getActiveSpell();
-                    if (spell != SpellData.EMPTY) {
-                        Messages.sendToServer(new ServerboundQuickCast(spellBookData.getActiveSpellIndex()));
-                    }
-                }
-            }
+        if (SPELLBOOK_CAST_STATE.wasPressed() && minecraft.screen == null) {
+            Messages.sendToServer(new ServerboundCast());
         }
 
         if (SPELL_WHEEL_STATE.wasPressed()) {
