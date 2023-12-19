@@ -1,15 +1,23 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
+import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob {
@@ -21,6 +29,8 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     private int remainingPersistentAngerTime;
     @Nullable
     private UUID persistentAngerTarget;
+    private int lastAngerLevelUpdate;
+    private int angerLevel;
 
     public void startPersistentAngerTimer() {
         this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
@@ -46,12 +56,15 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         this.addPersistentAngerSaveData(pCompound);
+        pCompound.putInt("AngerLevel", angerLevel);
         super.addAdditionalSaveData(pCompound);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         this.readPersistentAngerSaveData(this.level, pCompound);
+        this.angerLevel = pCompound.getInt("AngerLevel");
+
         super.readAdditionalSaveData(pCompound);
     }
 
@@ -59,7 +72,48 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     public void aiStep() {
         super.aiStep();
         if (!this.level.isClientSide) {
-            this.updatePersistentAnger((ServerLevel)this.level, true);
+            this.updatePersistentAnger((ServerLevel) this.level, true);
         }
+        if (angerLevel > 0 && lastAngerLevelUpdate + 20 * 20 < tickCount) {
+            angerLevel--;
+            lastAngerLevelUpdate = tickCount;
+        }
+    }
+
+    @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        increaseAngerLevel((int) Math.ceil(pAmount));
+        return super.hurt(pSource, pAmount);
+    }
+
+    public void increaseAngerLevel(int levels) {
+        if (!level.isClientSide && angerLevel < getAngerThreshold()) {
+            MagicManager.spawnParticles(level, ParticleTypes.ANGRY_VILLAGER, getX(), getY() + 1.25, getZ(), 15, .3, .2, .3, 0, false);
+            getAngerSound().ifPresent(this::playSound);
+        }
+        angerLevel += levels;
+        lastAngerLevelUpdate = tickCount;
+    }
+
+    public Optional<SoundEvent> getAngerSound() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return The amount of anger triggers (ie chests opened, amount of damage taken) that must be surpassed in order to become hostile
+     */
+    public int getAngerThreshold() {
+        return 1;
+    }
+
+    public boolean isHostileTowards(LivingEntity entity) {
+        return isAngryAt(entity) && angerLevel > getAngerThreshold();
+    }
+
+    /**
+     * @return Returns whether or not this entity cares to guard {@link io.redspace.ironsspellbooks.util.ModTags#GUARDED_BY_WIZARDS} (ie chests)
+     */
+    public boolean guardsBlocks(){
+        return true;
     }
 }

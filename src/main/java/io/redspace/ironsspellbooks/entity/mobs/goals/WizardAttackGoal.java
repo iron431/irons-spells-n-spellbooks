@@ -158,9 +158,9 @@ public class WizardAttackGoal extends Goal {
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         hasLineOfSight = this.mob.getSensing().hasLineOfSight(this.target);
         if (hasLineOfSight) {
-            ++this.seeTime;
+            this.seeTime++;
         } else {
-            this.seeTime = 0;
+            this.seeTime--;
         }
 
 //        //search for projectiles around the mob
@@ -188,6 +188,9 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void handleAttackLogic(double distanceSquared) {
+        if (seeTime < -50) {
+            return;
+        }
         if (--this.attackTime == 0) {
             resetAttackTimer(distanceSquared);
             if (!mob.isCasting() && !mob.isDrinkingPotion()) {
@@ -217,7 +220,7 @@ public class WizardAttackGoal extends Goal {
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
-        if (allowFleeing && !mob.isCasting() && --fleeCooldown <= 0 && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
+        if (allowFleeing && (!mob.isCasting() && attackTime > 10) && --fleeCooldown <= 0 && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
             Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
             if (flee != null) {
                 this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);

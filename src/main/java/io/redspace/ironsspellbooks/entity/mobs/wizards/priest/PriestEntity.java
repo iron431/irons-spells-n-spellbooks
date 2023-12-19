@@ -112,7 +112,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new GenericDefendVillageTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isHostileTowards));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (mob) -> mob instanceof Enemy && !(mob instanceof Creeper)));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
@@ -312,6 +312,11 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.numberOfRestocksToday = pCompound.getInt("RestocksToday");
     }
 
+    @Override
+    public Optional<SoundEvent> getAngerSound() {
+        return Optional.of(SoundEvents.VILLAGER_NO);
+    }
+
     /*
      * Homeowner Implementations
      */
@@ -327,6 +332,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public void setHome(BlockPos homePos) {
         this.homePos = homePos;
     }
+
 
     /*
      * Merchant Implementations
