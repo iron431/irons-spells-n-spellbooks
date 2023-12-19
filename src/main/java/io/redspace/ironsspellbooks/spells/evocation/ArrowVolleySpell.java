@@ -96,7 +96,7 @@ public class ArrowVolleySpell extends AbstractSpell {
             targetLocation = Utils.raycastForEntity(level, entity, 100, true).getLocation();
         }
         Vec3 backward = new Vec3(targetLocation.x - entity.getX(), 0, targetLocation.z - entity.getZ()).normalize().scale(-4);
-        Vec3 spawnLocation = Utils.moveToRelativeGroundLevel(level, targetLocation.add(backward), 4);
+        Vec3 spawnLocation = Utils.moveToRelativeGroundLevel(level, Utils.moveToRelativeGroundLevel(level, targetLocation, 6).add(backward), 1, 2);
         spawnLocation = Utils.raycastForBlock(level, spawnLocation.add(0, 0.25, 0), spawnLocation.add(0, 6, 0), ClipContext.Fluid.NONE).getLocation().add(0, -1, 0);
 
         float dx = Mth.sqrt((float) ((spawnLocation.x - targetLocation.x) * (spawnLocation.x - targetLocation.x) + (spawnLocation.z - targetLocation.z) * (spawnLocation.z - targetLocation.z)));

@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -44,9 +45,9 @@ public class ArrowVolleyEntity extends AbstractMagicProjectile {
                     arrow.setPos(spawn);
                     arrow.shoot(motion.add(Utils.getRandomVec3(.04f)));
                     level.addFreshEntity(arrow);
-                    MagicManager.spawnParticles(level, ParticleTypes.FIREWORK, spawn.x, spawn.y, spawn.z, 2, 0, 0, 0, .03, false);
+                    MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, spawn.x, spawn.y, spawn.z, 3, .1, .1, .1, .05, false);
                 }
-                level.playSound(null, position().x, position().y, position().z, SoundEvents.WITHER_SHOOT, SoundSource.NEUTRAL, 2, 2);
+                level.playSound(null, position().x, position().y, position().z, SoundRegistry.BOW_SHOOT.get(), SoundSource.NEUTRAL, 2, Utils.random.nextIntBetweenInclusive(16, 20) * .1f);
             } else if (tickCount > rows * delay) {
                 discard();
             }
