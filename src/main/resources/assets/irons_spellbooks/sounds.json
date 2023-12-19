@@ -483,5 +483,10 @@
     "sounds": [
       "irons_spellbooks:frostwave_prepare"
     ]
+  },
+  "spell.arrow_volley.prepare": {
+    "sounds": [
+      "irons_spellbooks:arrow_volley_prepare"
+    ]
   }
 }

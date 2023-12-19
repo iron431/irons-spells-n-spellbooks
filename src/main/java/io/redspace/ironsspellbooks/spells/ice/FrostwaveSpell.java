@@ -100,7 +100,7 @@ public class FrostwaveSpell extends AbstractSpell {
 
     @Override
     public AnimationHolder getCastStartAnimation() {
-        return SpellAnimations.ANIMATION_CONTINUOUS_OVERHEAD;
+        return SpellAnimations.CHARGE_RAISED_HAND;
     }
 
     @Override
