@@ -5,10 +5,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.phys.Vec3;
-
-import java.util.ArrayList;
 
 public class GuidingBoltEffect extends MobEffect {
     public GuidingBoltEffect(MobEffectCategory pCategory, int pColor) {
@@ -32,13 +28,13 @@ public class GuidingBoltEffect extends MobEffect {
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
         IronsSpellbooks.LOGGER.debug("GuidingBoltEffect adding to tracked entities: {}", pLivingEntity);
-        GuidingBoltManager.startTracking(pLivingEntity);
+        GuidingBoltManager.INSTANCE.startTracking(pLivingEntity);
     }
 
     @Override
     public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
         IronsSpellbooks.LOGGER.debug("GuidingBoltEffect removing from tracked entities: {}", pLivingEntity);
-        GuidingBoltManager.stopTracking(pLivingEntity);
+        GuidingBoltManager.INSTANCE.stopTracking(pLivingEntity);
     }
 }
