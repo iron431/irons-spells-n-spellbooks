@@ -39,39 +39,6 @@ public final class ClientInputEvents {
     public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
 
-    public static int test = 0;
-
-    @SubscribeEvent
-    public static void clientTick(TickEvent.ClientTickEvent event) {
-        var minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
-        if (player == null) {
-            return;
-        }
-
-        if (SPELLBOOK_CAST_STATE.wasPressed() && minecraft.screen == null) {
-            Messages.sendToServer(new ServerboundCast());
-        }
-
-        if (SPELL_WHEEL_STATE.wasPressed()) {
-            if (minecraft.screen == null /*&& Utils.isPlayerHoldingSpellBook(player)*/)
-                SpellWheelOverlay.instance.open();
-        }
-        if (SPELL_WHEEL_STATE.wasReleased()) {
-            if (minecraft.screen == null && SpellWheelOverlay.instance.active)
-                SpellWheelOverlay.instance.close();
-        }
-//        if (ELDRITCH_SCREEN_STATE.wasPressed()) {
-//            if (minecraft.screen == null) {
-//                minecraft.setScreen(new EldritchResearchScreen(Component.empty(), player.getOffhandItem().is(ItemRegistry.ELDRITCH_PAGE.get()) ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND));
-//            }else if(minecraft.screen instanceof EldritchResearchScreen screen){
-//                screen.onClose();
-//            }
-//        }
-
-        update();
-    }
-
     @SubscribeEvent
     public static void clientMouseScrolled(InputEvent.MouseScrollingEvent event) {
         Player player = MinecraftInstanceHelper.getPlayer();
@@ -112,8 +79,22 @@ public final class ClientInputEvents {
 
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
-        //IronsSpellbooks.LOGGER.debug("onKeyInput key:{}", event.getKey());
-        handleRightClickSuppression(event.getKey(), event.getAction());
+        handleInputEvent(event.getKey(), event.getAction());
+    }
+
+    @SubscribeEvent
+    public static void onMouseInput(InputEvent.MouseButton.Pre event) {
+        handleInputEvent(event.getButton(), event.getAction());
+    }
+
+    private static void handleInputEvent(int button, int action) {
+        IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent");
+        var minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+        if (player == null) {
+            return;
+        }
+        handleRightClickSuppression(button, action);
 
         for (int i = 0; i < QUICK_CAST_STATES.size(); i++) {
             //IronsSpellbooks.LOGGER.debug("onKeyInput i:{}",i);
@@ -123,11 +104,28 @@ public final class ClientInputEvents {
                 break;
             }
         }
-    }
-
-    @SubscribeEvent
-    public static void onMouseInput(InputEvent.MouseButton.Pre event) {
-        handleRightClickSuppression(event.getButton(), event.getAction());
+        if (SPELLBOOK_CAST_STATE.wasPressed() && minecraft.screen == null) {
+            IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELLBOOK_CAST_STATE");
+            Messages.sendToServer(new ServerboundCast());
+        }
+        if (SPELL_WHEEL_STATE.wasPressed()) {
+            IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELL_WHEEL_STATE pressed");
+            if (minecraft.screen == null /*&& Utils.isPlayerHoldingSpellBook(player)*/)
+                SpellWheelOverlay.instance.open();
+        }
+        if (SPELL_WHEEL_STATE.wasReleased()) {
+            IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELL_WHEEL_STATE released");
+            if (minecraft.screen == null && SpellWheelOverlay.instance.active)
+                SpellWheelOverlay.instance.close();
+        }
+//        if (ELDRITCH_SCREEN_STATE.wasPressed()) {
+//            if (minecraft.screen == null) {
+//                minecraft.setScreen(new EldritchResearchScreen(Component.empty(), player.getOffhandItem().is(ItemRegistry.ELDRITCH_PAGE.get()) ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND));
+//            }else if(minecraft.screen instanceof EldritchResearchScreen screen){
+//                screen.onClose();
+//            }
+//        }
+        update();
     }
 
     private static void handleRightClickSuppression(int button, int action) {
