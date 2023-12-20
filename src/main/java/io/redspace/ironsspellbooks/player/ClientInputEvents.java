@@ -74,47 +74,20 @@ public final class ClientInputEvents {
 
     @SubscribeEvent
     public static void clientMouseScrolled(InputEvent.MouseScrollingEvent event) {
-        var minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
+        Player player = MinecraftInstanceHelper.getPlayer();
         if (player == null)
             return;
 
-        var spellbookStack = Utils.getPlayerSpellbookStack(player);
-        if (spellbookStack != null && minecraft.screen == null) {
+        if (Minecraft.getInstance().screen == null) {
             if (SPELLBAR_MODIFIER_STATE.isHeld()) {
                 SpellSelectionManager spellSelectionManager = new SpellSelectionManager(MinecraftInstanceHelper.getPlayer());
                 if (spellSelectionManager.getSpellCount() > 0) {
                     int direction = Mth.clamp((int) event.getScrollDelta(), -1, 1);
-//                    irons_spellbooks.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
-
                     List<SpellSelectionManager.SpellSlot> spellbookSpells = spellSelectionManager.getAllSpells();
                     int spellCount = spellbookSpells.size();
                     int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
-//                    irons_spellbooks.LOGGER.debug("collapsed new index: {}", scrollIndex);
-//                    irons_spellbooks.LOGGER.debug("{} + {} = {}", scrollIndex, spellCount, scrollIndex + spellCount);
-//                    irons_spellbooks.LOGGER.debug("{} % {} = {}", scrollIndex + spellCount, spellCount, (scrollIndex + spellCount) % spellCount);
                     int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;
-
-//                    irons_spellbooks.LOGGER.debug("wrapped collapsed index: {}", scrollIndex);
-
-
-//                    int selectedIndex = ArrayUtils.indexOf(spellBookData.getInscribedSpells(), spellbookSpells.get(scrollIndex));
-
-//                    int newIndex = spellBookData.getActiveSpellIndex() - direction;
-//                    newIndex = (newIndex + spellBookData.getSpellCount()) % spellBookData.getSpellCount();
-//                    while (spellBookData.getInscribedSpells()[newIndex] == null) {
-//                        newIndex = (newIndex + spellBookData.getSpellCount() - direction) % spellBookData.getSpellCount();
-//                    }
-//                    do {
-//                        newIndex = (newIndex + direction) % spellBook.getCount();
-//                        irons_spellbooks.LOGGER.debug("new index: {}",newIndex);
-//                        irons_spellbooks.LOGGER.debug("spell here: {}",spellBookData.getInscribedSpells()[newIndex]);
-//                        if(newIndex == spellBookData.getActiveSpellIndex())
-//                            break;
-//                    }
-//                    while (spellBookData.getInscribedSpells()[newIndex] == null);
                     spellSelectionManager.makeSelection(selectedIndex);
-                    //Messages.sendToServer(new ServerboundSetSpellBookActiveIndex(selectedIndex));
                     event.setCanceled(true);
                 }
             }
