@@ -1,11 +1,8 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.compat.Curios;
-import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -15,14 +12,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
 import java.util.List;
-import java.util.Objects;
 
 public class SpellBarOverlay extends GuiComponent {
     public final static ResourceLocation TEXTURE = new ResourceLocation(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -50,7 +45,7 @@ public class SpellBarOverlay extends GuiComponent {
         //  Render Spells
         //
         //TODO: cache again
-        ClientRenderCache.generateRelativeLocations(null, 20, 22);
+        ClientRenderCache.generateRelativeLocations(20, 22);
         var swsm = new SpellSelectionManager(player);
         int totalSpellsAvailable = swsm.getSpellCount();
         List<SpellData> spells = swsm.getAllSpells().stream().map((slot) -> slot.spellData).toList();

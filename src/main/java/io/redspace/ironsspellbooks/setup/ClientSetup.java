@@ -56,6 +56,8 @@ import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerR
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
+import io.redspace.ironsspellbooks.gui.overlays.CooldownOverlayItemDecorator;
+import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
@@ -81,12 +83,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ItemDecoratorHandler;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
@@ -309,7 +315,7 @@ public class ClientSetup {
 //                return p_174607_ != null && CrossbowItem.isCharged(p_174605_) && CrossbowItem.containsChargedProjectile(p_174605_, Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
 //            });
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
-//            ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
+//            ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
         });
 
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
@@ -332,6 +338,12 @@ public class ClientSetup {
         event.register(IronsSpellbooks.id("item/magehunter_normal"));
         event.register(IronsSpellbooks.id("item/truthseeker_gui"));
         event.register(IronsSpellbooks.id("item/truthseeker_normal"));
+    }
+
+    @SubscribeEvent
+    public static void registerItemDecorators(RegisterItemDecorationsEvent event) {
+        ForgeRegistries.ITEMS.getValues().stream().filter((item -> item instanceof CastingItem)).forEach((item -> event.register(item, new CooldownOverlayItemDecorator())));
+        //event.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new CooldownOverlayItemDecorator());
     }
 }
 

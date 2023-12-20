@@ -1,13 +1,10 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec2;
 import org.apache.commons.compress.utils.Lists;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.List;
 
@@ -42,7 +39,7 @@ public class ClientRenderCache {
         return new int[]{topRow, middleRow, bottomRow};
     }
 
-    public static void generateRelativeLocations(SpellBookData spellBookData, int boxSize, int spriteSize) {
+    public static void generateRelativeLocations(int boxSize, int spriteSize) {
         relativeSpellBarSlotLocations.clear();
 //        if (spellBookData == null)
 //            return;
