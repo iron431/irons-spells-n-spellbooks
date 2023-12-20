@@ -1,0 +1,12 @@
+{
+	"parent": "minecraft:item/handheld",
+	"loader": "forge:separate_transforms",
+	"base": {
+		"parent": "irons_spellbooks:item/graybeard_staff_normal"
+	},
+	"perspectives": {
+		"gui": {
+			"parent": "irons_spellbooks:item/graybeard_staff_gui"
+		}
+	}
+}

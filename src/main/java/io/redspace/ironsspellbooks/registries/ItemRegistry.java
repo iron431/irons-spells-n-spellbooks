@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.registries;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
@@ -32,7 +31,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class ItemRegistry {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, IronsSpellbooks.MODID);
@@ -63,6 +61,7 @@ public class ItemRegistry {
         return new SimpleAttributeSpellBook(6, SpellRarity.EPIC, builder.build());
     });
     public static final RegistryObject<Item> dev_staff = ITEMS.register("dev_staff", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1)));
+    public static final RegistryObject<Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1)));
 
     public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new BloodStaffItem(
             new SpellDataRegistryHolder[]{
