@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
+import com.ibm.icu.impl.Row;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -342,9 +343,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
          Calculate and save spell slot positions on the screen
          */
         int boxSize = 19;
-        int[] row1 = new int[LAYOUT[spellCount - 1][0]];
-        int[] row2 = new int[LAYOUT[spellCount - 1][1]];
-        int[] row3 = new int[LAYOUT[spellCount - 1][2]];
+        int[] rowCounts = ClientRenderCache.getRowCounts(spellCount);
+        int[] row1 = new int[rowCounts[0]];
+        int[] row2 = new int[rowCounts[1]];
+        int[] row3 = new int[rowCounts[2]];
 
         int[] rowWidth = {
                 boxSize * row1.length,
