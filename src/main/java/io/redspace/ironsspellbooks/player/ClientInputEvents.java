@@ -87,7 +87,7 @@ public final class ClientInputEvents {
                     int direction = Mth.clamp((int) event.getScrollDelta(), -1, 1);
 //                    irons_spellbooks.LOGGER.debug("original index: {}", spellBookData.getActiveSpellIndex());
 
-                    List<SpellSelectionManager.SpellSlot> spellbookSpells = spellSelectionManager.getSpellsForSlot(Curios.SPELLBOOK_SLOT);
+                    List<SpellSelectionManager.SpellSlot> spellbookSpells = spellSelectionManager.getAllSpells();
                     int spellCount = spellbookSpells.size();
                     int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
 //                    irons_spellbooks.LOGGER.debug("collapsed new index: {}", scrollIndex);

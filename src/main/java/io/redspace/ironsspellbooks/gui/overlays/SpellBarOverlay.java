@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SpellBarOverlay extends GuiComponent {
@@ -48,23 +49,18 @@ public class SpellBarOverlay extends GuiComponent {
         //
         //  Render Spells
         //
-        ItemStack spellBookStack = Utils.getPlayerSpellbookStack(player);
-        var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
-        if (spellBookStack != lastSpellBook) {
-            lastSpellBook = spellBookStack;
-            ClientRenderCache.generateRelativeLocations(spellBookData, 20, 22);
-        }
-
-        var spells = spellBookData.getInscribedSpells();
+        //TODO: cache again
+        ClientRenderCache.generateRelativeLocations(null, 20, 22);
+        var swsm = new SpellSelectionManager(player);
+        int totalSpellsAvailable = swsm.getSpellCount();
+        List<SpellData> spells = swsm.getAllSpells().stream().map((slot) -> slot.spellData).toList();
+        int spellbookCount = swsm.getSpellsForSlot(Curios.SPELLBOOK_SLOT).size();
         var locations = ClientRenderCache.relativeSpellBarSlotLocations;
         int approximateWidth = locations.size() / 3;
         //Move spellbar away from hotbar as it gets bigger
         centerX -= approximateWidth * 5;
-        var spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
-        int selectedSpellIndex = spellSelection.index;
-        if (!spellSelection.equipmentSlot.equals(Curios.SPELLBOOK_SLOT)) {
-            selectedSpellIndex = -1;
-        }
+        //var spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
+        int selectedSpellIndex = swsm.getSelectionIndex();
 
         //Slot Border
         setTranslucentTexture(TEXTURE);
@@ -73,18 +69,16 @@ public class SpellBarOverlay extends GuiComponent {
         }
         //Spell Icons
         for (int i = 0; i < locations.size(); i++) {
-            if (spells[i] != null) {
-                setOpaqueTexture(spells[i].getSpell().getSpellIconResource());
-                gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
-            }
+            setOpaqueTexture(spells.get(i).getSpell().getSpellIconResource());
+            gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
         }
         //Border + Cooldowns
         for (int i = 0; i < locations.size(); i++) {
             setTranslucentTexture(TEXTURE);
             if (i != selectedSpellIndex)
-                gui.blit(poseStack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22, 84, 22, 22);
+                gui.blit(poseStack, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22 + (i >= spellbookCount ? 110 : 0), 84, 22, 22);
 
-            float f = spells[i] == null ? 0 : ClientMagicData.getCooldownPercent(spells[i].getSpell());
+            float f = ClientMagicData.getCooldownPercent(spells.get(i).getSpell());
             if (f > 0) {
                 int pixels = (int) (16 * f + 1f);
                 gui.blit(poseStack, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47, 87, 16, pixels);

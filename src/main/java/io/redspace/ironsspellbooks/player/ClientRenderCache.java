@@ -44,8 +44,8 @@ public class ClientRenderCache {
 
     public static void generateRelativeLocations(SpellBookData spellBookData, int boxSize, int spriteSize) {
         relativeSpellBarSlotLocations.clear();
-        if (spellBookData == null)
-            return;
+//        if (spellBookData == null)
+//            return;
         var player = MinecraftInstanceHelper.getPlayer();
         if (player == null)
             return;

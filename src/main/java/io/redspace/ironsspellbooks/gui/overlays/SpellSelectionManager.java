@@ -182,6 +182,10 @@ public class SpellSelectionManager {
         return spellSlotList.stream().filter(spellSlot -> spellSlot.slot.equals(slot)).toList();
     }
 
+    public List<SpellSlot> getAllSpells() {
+        return spellSlotList;
+    }
+
     public SpellData getSpellForSlot(String slot, int index) {
         var spells = getSpellsForSlot(slot);
 
