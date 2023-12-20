@@ -7,17 +7,21 @@ import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
+import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -127,28 +131,50 @@ public class ClientPlayerEvents {
         Spellbooks and Imbued weapons show:
         - [*name* *lvl*]
          */
-
-        var spelldata = SpellData.getSpellData(stack);
-        if (spelldata != SpellData.EMPTY) {
-            var player = Minecraft.getInstance().player;
-            if (player == null)
-                return;
-            //Scrolls take care of themselves
-            if (!(stack.getItem() instanceof Scroll)) {
-                var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spelldata, CastSource.SWORD, player);
-                //Add header to sword tooltip
-                additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
-                //Indent the title because we have an additional header
-                additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
-                //Make room for the stuff the advanced tooltips add to the tooltip
-                if (event.getFlags().isAdvanced())
-                    event.getToolTip().addAll(event.getToolTip().size() - 2, additionalLines);
-                else
-                    event.getToolTip().addAll(additionalLines);
-                //event.getToolTip().add(Component.literal(additionalLines.size() + "").withStyle(ChatFormatting.BOLD));
+        MinecraftInstanceHelper.ifPlayerPresent((player1) -> {
+            var player = (LocalPlayer) player1;
+            var spelldata = SpellData.getSpellData(stack);
+            if (spelldata != SpellData.EMPTY) {
+                //Scrolls take care of themselves
+                if (!(stack.getItem() instanceof Scroll)) {
+                    var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spelldata, CastSource.SWORD, player);
+                    //Add header to sword tooltip
+                    additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
+                    //Indent the title because we have an additional header
+                    additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
+                    //Make room for the stuff the advanced tooltips add to the tooltip
+                    if (event.getFlags().isAdvanced())
+                        event.getToolTip().addAll(event.getToolTip().size() - getAdvancedOffset(stack), additionalLines);
+                    else
+                        event.getToolTip().addAll(additionalLines);
+                }
+            } else if (stack.getItem() instanceof CastingItem) {
+                spelldata = new SpellSelectionManager(player).getSelectedSpellData();
+                if (spelldata != SpellData.EMPTY) {
+                    var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spelldata, CastSource.SWORD, player);
+                    //Add header
+                    additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
+                    //Indent the title because we have an additional header
+                    additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
+                    //Make room for the stuff the advanced tooltips add to the tooltip
+                    if (event.getFlags().isAdvanced())
+                        event.getToolTip().addAll(event.getToolTip().size() - getAdvancedOffset(stack), additionalLines);
+                    else
+                        event.getToolTip().addAll(additionalLines);
+                }
             }
+        });
+    }
 
+    private static int getAdvancedOffset(ItemStack itemStack) {
+        int offset = 1;
+        if (itemStack.isDamaged()) {
+            offset++;
         }
+        if (itemStack.hasTag()) {
+            offset++;
+        }
+        return offset;
     }
 
     @SubscribeEvent

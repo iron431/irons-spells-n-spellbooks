@@ -30,6 +30,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 public class ItemRegistry {
@@ -60,8 +61,8 @@ public class ItemRegistry {
         builder.put(AttributeRegistry.CAST_TIME_REDUCTION.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .08, AttributeModifier.Operation.MULTIPLY_BASE));
         return new SimpleAttributeSpellBook(6, SpellRarity.EPIC, builder.build());
     });
-    public static final RegistryObject<Item> dev_staff = ITEMS.register("dev_staff", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1)));
-    public static final RegistryObject<Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1)));
+    public static final RegistryObject<Item> dev_staff = ITEMS.register("dev_staff", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1), 2, -3, Map.of(AttributeRegistry.MANA_REGEN.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .25, AttributeModifier.Operation.MULTIPLY_BASE), AttributeRegistry.SPELL_POWER.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .10, AttributeModifier.Operation.MULTIPLY_BASE))));
+    public static final RegistryObject<Item> GRAYBEARD_STAFF = ITEMS.register("graybeard_staff", () -> new StaffItem(ItemPropertiesHelper.equipment().stacksTo(1), 2, -3, Map.of(AttributeRegistry.MANA_REGEN.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .25, AttributeModifier.Operation.MULTIPLY_BASE), AttributeRegistry.SPELL_POWER.get(), new AttributeModifier(UUID.fromString("667ad88f-901d-4691-b2a2-3664e42026d3"), "Weapon modifier", .10, AttributeModifier.Operation.MULTIPLY_BASE))));
 
     public static final RegistryObject<Item> BLOOD_STAFF = ITEMS.register("blood_staff", () -> new BloodStaffItem(
             new SpellDataRegistryHolder[]{

@@ -99,11 +99,12 @@ public class CastingItem extends Item {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        MinecraftInstanceHelper.ifPlayerPresent((player) -> {
-            SpellSelectionManager manager = new SpellSelectionManager(player);
-            if (manager.getSelectedSpellSlot() != null) {
-                pTooltipComponents.addAll(TooltipsUtils.formatActiveSpellTooltip(pStack, manager.getSelectedSpellData(), manager.getSelectedSpellSlot().getCastSource(), (LocalPlayer) player));
-            }
-        });
+        //Due to placement in tooltip, we are going to handle this in the same event imbued items handle thier tooltip
+//        MinecraftInstanceHelper.ifPlayerPresent((player) -> {
+//            SpellSelectionManager manager = new SpellSelectionManager(player);
+//            if (manager.getSelectedSpellSlot() != null) {
+//                pTooltipComponents.addAll(TooltipsUtils.formatActiveSpellTooltip(pStack, manager.getSelectedSpellData(), manager.getSelectedSpellSlot().getCastSource(), (LocalPlayer) player));
+//            }
+//        });
     }
 }

@@ -192,6 +192,7 @@
   "tooltip.irons_spellbooks.scroll_tooltip": "When in Spell Book:",
   "tooltip.irons_spellbooks.upgrade_tooltip": "When used for Upgrade:",
   "tooltip.irons_spellbooks.imbued_tooltip": "Imbued Spell:",
+  "tooltip.irons_spellbooks.casting_implement_tooltip": "Active Spell:",
   "tooltip.irons_spellbooks.spell_title": "%s [Lvl %d]",
   "tooltip.irons_spellbooks.mana_cost": " %d Mana Cost",
   "tooltip.irons_spellbooks.mana_cost_per_second": " %d Mana/s",
