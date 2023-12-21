@@ -41,12 +41,13 @@ public class RingSmokeParticle extends TextureSheetParticle {
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
-        rx = /*heading.x;*/(float) -Math.asin(yd / new Vec3(xd, yd, zd).length());
+        Vec3 deltaMovement = new Vec3(xd, yd, zd);
+        rx = /*heading.x;*/(float) -Math.asin(yd / deltaMovement.length());
         ry = /*heading.y;*/ Mth.HALF_PI - (float) Mth.atan2(zd, xd);
 
         this.targetSize = 2;//options.getScale();
         this.quadSize = 0;
-        this.lifetime = (int) (20 + targetSize * 20);
+        this.lifetime = (int) (20 + Mth.absMax(0, targetSize - deltaMovement.length() * 5) * 20);
         this.gravity = 0f;
 
         float f = random.nextFloat() * 0.14F + 0.85F;
