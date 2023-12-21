@@ -19,7 +19,7 @@ public class CastBarOverlay extends GuiComponent {
     static final int IMAGE_HEIGHT = 21;
 
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
-        if (!ClientMagicData.isCasting())
+        if (!ClientMagicData.isCasting() || ClientMagicData.isCasting() && ClientMagicData.getCastType() == CastType.INSTANT)
             return;
 
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();
@@ -42,7 +42,6 @@ public class CastBarOverlay extends GuiComponent {
         int textX, textY;
         var textColor = ChatFormatting.WHITE;
         var font = gui.getFont();
-
 
 
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;

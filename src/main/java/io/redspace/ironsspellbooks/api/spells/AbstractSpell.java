@@ -256,27 +256,20 @@ public abstract class AbstractSpell {
             }
 
             var castType = getCastType();
-            if (castType == CastType.INSTANT) {
-                /*
-                 * Immediately cast spell
-                 */
-                castSpell(level, spellLevel, serverPlayer, castSource, triggerCooldown);
-            } else if (castType == CastType.LONG || castType == CastType.CONTINUOUS) {
-                /*
-                 * Prepare to cast spell (magic manager will pick it up by itself)
-                 */
-                int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
-                playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
-                if (castType.holdToCast()) {
-                    if (Objects.equals(player.getMainHandItem(), stack)) {
-                        serverPlayer.startUsingItem(InteractionHand.MAIN_HAND);
-                    } else if (Objects.equals(player.getOffhandItem(), stack)) {
-                        serverPlayer.startUsingItem(InteractionHand.OFF_HAND);
-                    }
+            int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
+
+            playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
+
+            if (castType.holdToCast()) {
+                if (Objects.equals(player.getMainHandItem(), stack)) {
+                    serverPlayer.startUsingItem(InteractionHand.MAIN_HAND);
+                } else if (Objects.equals(player.getOffhandItem(), stack)) {
+                    serverPlayer.startUsingItem(InteractionHand.OFF_HAND);
                 }
-                onServerPreCast(player.level, spellLevel, player, playerMagicData);
-                Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
             }
+
+            onServerPreCast(player.level, spellLevel, player, playerMagicData);
+            Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
 
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), getSpellId(), spellLevel), serverPlayer, true);
 
@@ -307,10 +300,6 @@ public abstract class AbstractSpell {
 
         onCast(world, spellLevel, serverPlayer, playerMagicData);
         Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), this.getLevel(spellLevel, serverPlayer), castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
-
-        if (getCastType() == CastType.INSTANT) {
-            onServerCastComplete(world, spellLevel, serverPlayer, playerMagicData, false);
-        }
 
         if (serverPlayer.getMainHandItem().getItem() instanceof ISpellbook || serverPlayer.getMainHandItem().getItem() instanceof IScroll)
             playerMagicData.setPlayerCastingItem(serverPlayer.getMainHandItem());
@@ -361,7 +350,7 @@ public abstract class AbstractSpell {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName(player)).withStyle(ChatFormatting.RED));
         } else if (castSource.consumesMana() && !hasEnoughMana) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_mana", getDisplayName(player)).withStyle(ChatFormatting.RED));
-        }else{
+        } else {
             return new CastResult(CastResult.Type.SUCCESS);
         }
     }
@@ -592,7 +581,7 @@ public abstract class AbstractSpell {
         return false;
     }
 
-    public boolean canBeInterrupted(@Nullable Player player){
+    public boolean canBeInterrupted(@Nullable Player player) {
         return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
     }
 }

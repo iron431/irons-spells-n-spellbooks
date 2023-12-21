@@ -59,7 +59,7 @@ public class MagicManager implements IMagicManager {
                 if (playerMagicData.isCasting()) {
                     playerMagicData.handleCastDuration();
                     var spell = SpellRegistry.getSpell(playerMagicData.getCastingSpellId());
-                    if (spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) {
+                    if ((spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) || spell.getCastType() == CastType.INSTANT) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
                             spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
                             spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);

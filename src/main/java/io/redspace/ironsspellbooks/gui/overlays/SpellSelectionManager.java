@@ -139,7 +139,9 @@ public class SpellSelectionManager {
         IronsSpellbooks.LOGGER.debug("SSM.setSpellSelection old:{} new:{}", this.spellSelection, spellSelection);
 
         this.spellSelection = spellSelection;
-        if (!player.level.isClientSide) {
+        if (player.level.isClientSide) {
+            Messages.sendToServer(new ServerboundSelectSpell(spellSelection));
+        } else {
             MagicData.getPlayerMagicData(player).getSyncedData().setSpellSelection(spellSelection);
         }
     }
