@@ -44,7 +44,6 @@ public class FrostbiteSpell extends AbstractSpell {
             .setSchoolResource(SchoolRegistry.ICE_RESOURCE)
             .setMaxLevel(5)
             .setCooldownSeconds(0)
-            .setEnabled(true)
             .build();
 
     public FrostbiteSpell() {

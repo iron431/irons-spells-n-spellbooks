@@ -133,14 +133,14 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> GUIDING_BOLT_SPELL = registerSpell(new GuidingBoltSpell());
     public static final RegistryObject<AbstractSpell> HEALING_CIRCLE_SPELL = registerSpell(new HealingCircleSpell());
     public static final RegistryObject<AbstractSpell> HEAL_SPELL = registerSpell(new HealSpell());
-    public static final RegistryObject<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
+    //public static final RegistryObject<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
     public static final RegistryObject<AbstractSpell> WISP_SPELL = registerSpell(new WispSpell());
     public static final RegistryObject<AbstractSpell> DIVINE_SMITE_SPELL = registerSpell(new DivineSmiteSpell());
     public static final RegistryObject<AbstractSpell> HASTE_SPELL = registerSpell(new HasteSpell());
 
     // ICE
     public static final RegistryObject<AbstractSpell> CONE_OF_COLD_SPELL = registerSpell(new ConeOfColdSpell());
-    public static final RegistryObject<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
+//    public static final RegistryObject<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
     public static final RegistryObject<AbstractSpell> FROST_STEP_SPELL = registerSpell(new FrostStepSpell());
     public static final RegistryObject<AbstractSpell> ICE_BLOCK_SPELL = registerSpell(new IceBlockSpell());
     public static final RegistryObject<AbstractSpell> ICICLE_SPELL = registerSpell(new IcicleSpell());

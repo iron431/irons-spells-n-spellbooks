@@ -38,7 +38,6 @@ public class SunbeamSpell extends AbstractSpell {
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(20)
-            .setEnabled(false)
             .build();
 
     public SunbeamSpell() {
