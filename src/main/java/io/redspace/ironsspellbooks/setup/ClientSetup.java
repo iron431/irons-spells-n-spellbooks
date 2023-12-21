@@ -294,6 +294,7 @@ public class ClientSetup {
         event.register(ParticleRegistry.ACID_BUBBLE_PARTICLE.get(), AcidBubbleParticle.Provider::new);
         event.register(ParticleRegistry.ZAP_PARTICLE.get(), ZapParticle.Provider::new);
         event.register(ParticleRegistry.FIREFLY_PARTICLE.get(), FireflyParticle.Provider::new);
+        event.register(ParticleRegistry.RING_SMOKE_PARTICLE.get(), RingSmokeParticle.Provider::new);
     }
 
     @SubscribeEvent
