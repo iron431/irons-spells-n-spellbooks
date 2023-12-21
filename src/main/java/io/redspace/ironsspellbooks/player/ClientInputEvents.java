@@ -2,8 +2,6 @@ package io.redspace.ironsspellbooks.player;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.network.ServerboundCast;
@@ -16,7 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -88,7 +85,7 @@ public final class ClientInputEvents {
     }
 
     private static void handleInputEvent(int button, int action) {
-        IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent");
+        //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent");
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
         if (player == null) {
@@ -105,16 +102,16 @@ public final class ClientInputEvents {
             }
         }
         if (SPELLBOOK_CAST_STATE.wasPressed() && minecraft.screen == null) {
-            IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELLBOOK_CAST_STATE");
+            //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELLBOOK_CAST_STATE");
             Messages.sendToServer(new ServerboundCast());
         }
         if (SPELL_WHEEL_STATE.wasPressed()) {
-            IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELL_WHEEL_STATE pressed");
+            //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELL_WHEEL_STATE pressed");
             if (minecraft.screen == null /*&& Utils.isPlayerHoldingSpellBook(player)*/)
                 SpellWheelOverlay.instance.open();
         }
         if (SPELL_WHEEL_STATE.wasReleased()) {
-            IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELL_WHEEL_STATE released");
+            //IronsSpellbooks.LOGGER.debug("ClientInputEvents.handleInputEvent: SPELL_WHEEL_STATE released");
             if (minecraft.screen == null && SpellWheelOverlay.instance.active)
                 SpellWheelOverlay.instance.close();
         }

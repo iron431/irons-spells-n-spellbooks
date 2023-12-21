@@ -254,6 +254,9 @@ public class ClientSpellCastHelper {
             }
         }
 
+        spell.playSound(spell.getCastFinishSound(), player, true);
+
+
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {
             if (spell.getCastType().holdToCast()) {
                 ClientSpellCastHelper.setSuppressRightClicks(true);

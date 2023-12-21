@@ -206,6 +206,10 @@ public abstract class AbstractSpell {
         return (float) ((baseSpellPower + spellPowerPerLevel * (level - 1)) * entitySpellPowerModifier * entitySchoolPowerModifier * configPowerModifier);
     }
 
+    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
+        return 0;
+    }
+
     public float getEntityPowerMultiplier(@Nullable LivingEntity entity) {
         if (entity == null) {
             return 1f;
@@ -329,7 +333,7 @@ public abstract class AbstractSpell {
         playSound(getCastFinishSound(), entity, true);
     }
 
-    protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
+    public void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
         if (sound.isPresent()) {
             entity.playSound(sound.get(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
         } else if (playDefaultSound) {
