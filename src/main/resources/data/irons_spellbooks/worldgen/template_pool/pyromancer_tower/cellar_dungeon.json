@@ -3,7 +3,7 @@
   "fallback": "irons_spellbooks:pyromancer_tower/pyromancer_cellar_fallback_pool",
   "elements": [
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/cask_rack",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -21,16 +21,7 @@
       }
     },
     {
-      "weight": 2,
-      "element": {
-        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/junction",
-        "processors": "irons_spellbooks:pyromancer_tower_randomization",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
-    },
-    {
-      "weight": 1,
+      "weight": 20,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
@@ -39,9 +30,27 @@
       }
     },
     {
-      "weight": 1,
+      "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_dead_end",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_dead_end_2",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/rubble_turn",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
@@ -60,6 +69,51 @@
       "weight": 2,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/wall",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/junction_cramped",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/ledge_casks",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/dual_storage",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/dual_storage_secret",
+        "processors": "irons_spellbooks:pyromancer_tower_randomization",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/candle_storage",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
