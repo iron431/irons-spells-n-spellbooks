@@ -57,11 +57,11 @@ public class ClientSpellCastHelper {
         ClientSpellCastHelper.suppressRightClicks = suppressRightClicks;
     }
 
-    public static void openEldritchResearchScreen(InteractionHand hand){
+    public static void openEldritchResearchScreen(InteractionHand hand) {
         Minecraft.getInstance().setScreen(new EldritchResearchScreen(Component.empty(), hand));
     }
 
-    public static void handleCastErrorMessage(ClientboundCastErrorMessage packet){
+    public static void handleCastErrorMessage(ClientboundCastErrorMessage packet) {
         var spell = SpellRegistry.getSpell(packet.spellId);
         if (packet.errorType == ClientboundCastErrorMessage.ErrorType.COOLDOWN) {
             //ignore cooldown message if we are simply holding right click.
@@ -71,6 +71,7 @@ public class ClientSpellCastHelper {
             Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
         }
     }
+
     /**
      * Handle Network Triggered Particles
      */
@@ -220,7 +221,6 @@ public class ClientSpellCastHelper {
         }
     }
 
-
     public static void handleClientboundFrostStep(Vec3 pos1, Vec3 pos2) {
         var player = Minecraft.getInstance().player;
 
@@ -243,6 +243,9 @@ public class ClientSpellCastHelper {
         var player = Minecraft.getInstance().player.level.getPlayerByUUID(castingEntityId);
 
         var spell = SpellRegistry.getSpell(spellId);
+
+        spell.playSound(spell.getCastFinishSound(), player, true);
+
         var finishAnimation = spell.getCastFinishAnimation();
 
         if (finishAnimation.getForPlayer().isPresent() && !cancelled) {
@@ -253,9 +256,6 @@ public class ClientSpellCastHelper {
                 animationPlayer.stop();
             }
         }
-
-        spell.playSound(spell.getCastFinishSound(), player, true);
-
 
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {
             if (spell.getCastType().holdToCast()) {

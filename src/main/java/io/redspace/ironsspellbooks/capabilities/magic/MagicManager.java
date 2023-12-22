@@ -24,15 +24,6 @@ public class MagicManager implements IMagicManager {
     public static final int MANA_REGEN_TICKS = 10;
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
-    /**
-     * Deprecated Helper Method. Use {@link MagicData#setMana(float)} instead.
-     */
-    @Deprecated
-    public void setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
-        var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-        playerMagicData.setMana(newManaValue);
-    }
-
     public void regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
         float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());

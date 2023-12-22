@@ -1,14 +1,13 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import com.google.common.collect.Maps;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.ClientboundSyncCooldowns;
 import io.redspace.ironsspellbooks.setup.Messages;
-import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.AbstractCollection;
 import java.util.Map;
 
 public class PlayerCooldowns {
@@ -25,11 +24,7 @@ public class PlayerCooldowns {
     private int tickBuffer = 0;
 
     public PlayerCooldowns() {
-        this(Maps.newHashMap());
-    }
-
-    public PlayerCooldowns(Map<String, CooldownInstance> spellCooldowns) {
-        this.spellCooldowns = spellCooldowns;
+        this.spellCooldowns = Maps.newHashMap();
     }
 
     public void setTickBuffer(int tickBuffer) {
@@ -39,11 +34,6 @@ public class PlayerCooldowns {
     public void tick(int actualTicks) {
         var spells = spellCooldowns.entrySet().stream().filter(x -> decrementCooldown(x.getValue(), actualTicks)).toList();
         spells.forEach(spell -> spellCooldowns.remove(spell.getKey()));
-
-//        spellCooldowns.forEach((spell, cooldown) -> {
-//            if (decrementCooldown(cooldown, actualTicks))
-//                spellCooldowns.remove(spell);
-//        });
     }
 
     public boolean hasCooldownsActive() {

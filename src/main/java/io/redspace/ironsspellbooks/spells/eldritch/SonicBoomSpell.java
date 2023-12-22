@@ -105,7 +105,7 @@ public class SonicBoomSpell extends AbstractEldritchSpell {
     }
 
     @Override
-    protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
+    public void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
         if (sound == getCastFinishSound()) {
             entity.playSound(sound.get(), 3.5f, .9f + entity.level.random.nextFloat() * .2f);
         } else {

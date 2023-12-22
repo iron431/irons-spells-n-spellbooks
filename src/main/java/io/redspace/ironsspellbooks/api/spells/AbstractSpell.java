@@ -294,7 +294,7 @@ public abstract class AbstractSpell {
 
         if (castSource.consumesMana()) {
             int newMana = playerMagicData.getMana() - getManaCost(spellLevel, serverPlayer);
-            magicManager.setPlayerCurrentMana(serverPlayer, newMana);
+            playerMagicData.setMana(newMana);
             Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
         }
 
@@ -319,7 +319,6 @@ public abstract class AbstractSpell {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, getSpellId(), spellLevel);
         }
-        playSound(getCastFinishSound(), entity, true);
     }
 
     /**
@@ -450,6 +449,11 @@ public abstract class AbstractSpell {
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getSpellResource().hashCode();
     }
 
     private volatile List<Double> rarityWeights;

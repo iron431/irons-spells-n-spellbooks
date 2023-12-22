@@ -111,7 +111,7 @@ public class StarfallSpell extends AbstractSpell {
 
 
     @Override
-    protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
+    public void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
         super.playSound(sound, entity, false);
     }
 
