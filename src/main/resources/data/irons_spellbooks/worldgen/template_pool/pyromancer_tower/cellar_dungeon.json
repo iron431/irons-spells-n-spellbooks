@@ -21,7 +21,7 @@
       }
     },
     {
-      "weight": 20,
+      "weight": 1,
       "element": {
         "location": "irons_spellbooks:pyromancer_tower/cellar_dungeon/room",
         "processors": "irons_spellbooks:pyromancer_tower_randomization",

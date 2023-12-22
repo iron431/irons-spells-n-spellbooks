@@ -57,7 +57,7 @@
           "output_state": {
             "Name": "minecraft:stripped_spruce_wood",
             "Properties": {
-              "axis": "x"
+              "axis": "z"
             }
           }
         },
