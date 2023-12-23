@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
+import java.util.Set;
 
 public class PlayerRecasts {
     private static final RecastInstance EMPTY = new RecastInstance(SpellRegistry.none().getSpellId(), 0, 0, null);
@@ -70,6 +71,10 @@ public class PlayerRecasts {
 
     public RecastInstance getRecastInstance(String spellId) {
         return recastLookup.get(spellId);
+    }
+
+    public Set<Map.Entry<String, RecastInstance>> getAllActiveRecasts() {
+        return recastLookup.entrySet();
     }
 
     public void decrementRecastCount(AbstractSpell spell) {
