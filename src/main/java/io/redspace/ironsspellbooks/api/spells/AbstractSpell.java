@@ -163,9 +163,13 @@ public abstract class AbstractSpell {
         return null;
     }
 
-    public abstract Optional<SoundEvent> getCastStartSound();
+    public Optional<SoundEvent> getCastStartSound() {
+        return Optional.of(defaultCastSound());
+    }
 
-    public abstract Optional<SoundEvent> getCastFinishSound();
+    public Optional<SoundEvent> getCastFinishSound() {
+        return Optional.empty();
+    }
 
     /**
      * Default Animations Based on Cast Type. Override for specific spell-based animations

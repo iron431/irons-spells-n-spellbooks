@@ -103,7 +103,6 @@ public class ServerPlayerEvents {
             }
 
 
-
         }
     }
 
@@ -169,6 +168,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
+            playerMagicData.getPlayerRecasts().syncToPlayer(serverPlayer);
             playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
             CameraShakeManager.doSync(serverPlayer);
         }

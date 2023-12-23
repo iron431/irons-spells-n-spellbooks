@@ -89,6 +89,18 @@ public class Messages {
                 .consumer(ClientboundSyncCooldowns::handle)
                 .add();
 
+        net.messageBuilder(ClientboundSyncRecasts.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncRecasts::new)
+                .encoder(ClientboundSyncRecasts::toBytes)
+                .consumer(ClientboundSyncRecasts::handle)
+                .add();
+
+        net.messageBuilder(ClientBoundSyncRecast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientBoundSyncRecast::new)
+                .encoder(ClientBoundSyncRecast::toBytes)
+                .consumer(ClientBoundSyncRecast::handle)
+                .add();
+
         net.messageBuilder(ClientboundTeleportParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundTeleportParticles::new)
                 .encoder(ClientboundTeleportParticles::toBytes)
@@ -100,7 +112,6 @@ public class Messages {
                 .encoder(ClientboundFrostStepParticles::toBytes)
                 .consumer(ClientboundFrostStepParticles::handle)
                 .add();
-
 
         net.messageBuilder(ServerboundScrollForgeSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundScrollForgeSelectSpell::new)

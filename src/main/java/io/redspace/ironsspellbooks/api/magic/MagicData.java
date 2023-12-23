@@ -1,12 +1,15 @@
 package io.redspace.ironsspellbooks.api.magic;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.ICastData;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import net.minecraft.client.Minecraft;
@@ -200,6 +203,18 @@ public class MagicData {
 
     public PlayerCooldowns getPlayerCooldowns() {
         return this.playerCooldowns;
+    }
+
+    /********* RECASTS *******************************************************/
+
+    private PlayerRecasts playerRecasts = new PlayerRecasts();
+
+    public PlayerRecasts getPlayerRecasts() {
+        return this.playerRecasts;
+    }
+
+    public void setPlayerRecasts(PlayerRecasts playerRecasts) {
+        this.playerRecasts = playerRecasts;
     }
 
     /********* SYSTEM *******************************************************/

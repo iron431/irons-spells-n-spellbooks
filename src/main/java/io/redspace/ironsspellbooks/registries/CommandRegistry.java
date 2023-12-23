@@ -25,6 +25,7 @@ public class CommandRegistry {
         LearnCommand.register(commandDispatcher);
         if (!FMLLoader.isProduction()) {
             GenerateSiteData.register(commandDispatcher);
+            IronsDebugCommand.register(commandDispatcher);
         }
     }
 }

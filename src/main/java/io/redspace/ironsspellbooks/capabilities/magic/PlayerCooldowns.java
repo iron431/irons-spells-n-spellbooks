@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Map;
 
 public class PlayerCooldowns {
-    public static final String LEGACY_SPELL_ID = "sid";
     public static final String SPELL_ID = "id";
     public static final String SPELL_COOLDOWN = "scd";
     public static final String COOLDOWN_REMAINING = "cdr";

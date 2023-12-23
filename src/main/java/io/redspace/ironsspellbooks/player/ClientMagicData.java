@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -59,6 +60,14 @@ public class ClientMagicData {
 
     public static PlayerCooldowns getCooldowns() {
         return playerMagicData.getPlayerCooldowns();
+    }
+
+    public static PlayerRecasts getRecasts() {
+        return playerMagicData.getPlayerRecasts();
+    }
+
+    public static void setRecasts(PlayerRecasts playerRecasts) {
+        playerMagicData.setPlayerRecasts(playerRecasts);
     }
 
     public static float getCooldownPercent(AbstractSpell spell) {

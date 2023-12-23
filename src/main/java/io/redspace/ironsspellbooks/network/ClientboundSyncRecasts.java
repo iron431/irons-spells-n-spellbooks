@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.network;
 
-import io.redspace.ironsspellbooks.capabilities.magic.CooldownInstance;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
@@ -45,12 +46,8 @@ public class ClientboundSyncRecasts {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            this.spellCooldowns.forEach((k, v) -> {
-                //irons_spellbooks.LOGGER.debug("ClientboundSyncCooldowns {} {} {}", k, v.getSpellCooldown(), v.getCooldownRemaining());
-                ClientMagicData.getCooldowns().addCooldown(k, v.getSpellCooldown(), v.getCooldownRemaining());
-            });
-            ClientMagicData.resetClientCastState(null);
-
+            IronsSpellbooks.LOGGER.debug("ClientboundSyncRecasts.handle {}", recastLookup.size());
+            ClientMagicData.setRecasts(new PlayerRecasts(recastLookup));
         });
         return true;
     }
