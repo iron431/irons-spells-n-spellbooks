@@ -11,6 +11,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     public String spellId;
     public int spellLevel;
     public int remainingRecasts;
+    public int totalRecasts;
     public ICastDataSerializable castData;
 
     public RecastInstance() {
@@ -21,6 +22,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         this.spellId = spellId;
         this.spellLevel = spellLevel;
         this.remainingRecasts = remainingRecasts;
+        this.totalRecasts = remainingRecasts + 1;
         this.castData = castData;
     }
 
@@ -29,6 +31,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         buffer.writeUtf(spellId);
         buffer.writeInt(spellLevel);
         buffer.writeInt(remainingRecasts);
+        buffer.writeInt(totalRecasts);
 
         if (castData != null) {
             buffer.writeBoolean(true);
@@ -43,6 +46,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         spellId = buffer.readUtf();
         spellLevel = buffer.readInt();
         remainingRecasts = buffer.readInt();
+        totalRecasts = buffer.readInt();
 
         var hasCastData = buffer.readBoolean();
         if (hasCastData) {
@@ -58,6 +62,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         tag.putString("id", spellId);
         tag.putInt("lvl", spellLevel);
         tag.putInt("cnt", remainingRecasts);
+        tag.putInt("total", totalRecasts);
 
         if (castData != null) {
             tag.put("cd", castData.serializeNBT());
@@ -69,7 +74,8 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     public void deserializeNBT(CompoundTag compoundTag) {
         spellId = compoundTag.getString("id");
         spellLevel = compoundTag.getInt("lvl");
-        remainingRecasts = compoundTag.getInt("cd");
+        remainingRecasts = compoundTag.getInt("cnt");
+        remainingRecasts = compoundTag.getInt("total");
 
         if (compoundTag.contains("cd")) {
             castData = SpellRegistry.getSpell(spellId).getEmptyCastData();
@@ -79,6 +85,6 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
 
     @Override
     public String toString() {
-        return String.format("spellId: %s, spellLevel: %d, remaining: %d, castData: %s", spellId, spellLevel, remainingRecasts, castData.serializeNBT().toString());
+        return String.format("spellId: %s, spellLevel: %d, remaining: %d, total: %d, castData: %s", spellId, spellLevel, remainingRecasts, totalRecasts, castData.serializeNBT().toString());
     }
 }
