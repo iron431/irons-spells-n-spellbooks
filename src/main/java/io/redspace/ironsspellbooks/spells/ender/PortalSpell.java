@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -78,11 +79,15 @@ public class PortalSpell extends AbstractSpell {
 
         if (entity instanceof Player player) {
             var portalData = new PortalData();
-            portalData.castCount = 5;
+            portalData.castCount = 2;
             portalData.globalPos1 = GlobalPos.of(entity.level.dimension(), entity.getOnPos());
-            playerMagicData.getPlayerRecasts().addRecast(getSpellId(), spellLevel, player, portalData,5);
-            playerMagicData.getPlayerRecasts().addRecast("irons_spellbooks:firebolt", spellLevel, player, portalData,2);
-            playerMagicData.getPlayerRecasts().addRecast("irons_spellbooks:magic_missile", spellLevel, player, portalData,9);
+            if (playerMagicData.getPlayerRecasts().hasRecastsActive()) {
+                playerMagicData.getPlayerRecasts().getAllActiveRecasts().forEach((instance) -> playerMagicData.getPlayerRecasts().decrementRecastCount(SpellRegistry.getSpell(instance.spellId)));
+            } else {
+                playerMagicData.getPlayerRecasts().addRecast(getSpellId(), spellLevel, player, portalData, 2);
+                playerMagicData.getPlayerRecasts().addRecast("irons_spellbooks:firebolt", spellLevel, player, portalData, 5);
+                playerMagicData.getPlayerRecasts().addRecast("irons_spellbooks:magic_missile", spellLevel, player, portalData, 9);
+            }
         }
 
         super.onCast(level, spellLevel, entity, playerMagicData);

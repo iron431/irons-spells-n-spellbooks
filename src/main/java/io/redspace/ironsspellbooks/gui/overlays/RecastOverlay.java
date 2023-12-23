@@ -37,8 +37,8 @@ public class RecastOverlay extends GuiComponent {
         RenderSystem.setShaderTexture(0, TEXTURE);
         for (int castIndex = 0; castIndex < activeRecasts.size(); castIndex++) {
             var recastInstance = activeRecasts.get(castIndex);
-            int total = recastInstance.getValue().totalRecasts;
-            int remaining = recastInstance.getValue().remainingRecasts;
+            int total = recastInstance.totalRecasts;
+            int remaining = recastInstance.remainingRecasts;
             int totalWidth = total * ORB_WIDTH + (total - 1) * CONNECTOR_WIDTH;
             int barX = (screenWidth - totalWidth) / 2;
             int barY = screenTopBuffer + totalHeightPerBar * castIndex;
@@ -59,7 +59,7 @@ public class RecastOverlay extends GuiComponent {
 //                    blit(poseStack, orbX, barY, ORB_TEXTURE_OFFSET_X + 10, ORB_TEXTURE_OFFSET_Y + 21, ORB_WIDTH, ORB_WIDTH, 256, 256);
 //                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
 //                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-                    int color = SpellRegistry.getSpell(recastInstance.getKey()).getSchoolType().getDisplayName().getStyle().getColor().getValue();
+                    int color = SpellRegistry.getSpell(recastInstance.spellId).getSchoolType().getDisplayName().getStyle().getColor().getValue();
                     fillGradient(poseStack, orbX + 3, barY + 3, orbX + 7, barY + 7, color, color, 0);
                 }
                 //orb

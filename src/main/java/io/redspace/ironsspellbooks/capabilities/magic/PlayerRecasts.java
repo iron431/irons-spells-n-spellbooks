@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,8 +74,8 @@ public class PlayerRecasts {
         return recastLookup.get(spellId);
     }
 
-    public Set<Map.Entry<String, RecastInstance>> getAllActiveRecasts() {
-        return recastLookup.entrySet();
+    public Collection<RecastInstance> getAllActiveRecasts() {
+        return recastLookup.values();
     }
 
     public void decrementRecastCount(AbstractSpell spell) {
