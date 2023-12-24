@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.IndirectSpellDamageSource;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
@@ -254,6 +255,10 @@ public abstract class AbstractSpell {
         var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
 
         if (!playerMagicData.isCasting()) {
+            if (playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId())) {
+                castSource = CastSource.RECAST;
+            }
+
             CastResult castResult = canBeCastedBy(spellLevel, castSource, playerMagicData, serverPlayer);
             if (castResult.message != null) {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
@@ -316,8 +321,15 @@ public abstract class AbstractSpell {
 
     }
 
-    public void onRecastCancelled(ServerPlayer serverPlayer, ICastDataSerializable castDataSerializable) {
-
+    public void onRecastFinished(ServerPlayer serverPlayer, int spellLevel, int recastsRemainingAtCancel, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
+        //TODO: put this in a Log.SPELL_DEBUG conditional
+        IronsSpellbooks.LOGGER.debug("{} onRecastFinished player:{}, spellLevel:{}, recastsRemainingAtCancel:{}, recastResult:{}, castDataSerializable:{}",
+                getSpellName(),
+                serverPlayer,
+                spellLevel,
+                recastsRemainingAtCancel,
+                recastResult,
+                castDataSerializable);
     }
 
     /**

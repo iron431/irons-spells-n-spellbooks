@@ -8,6 +8,7 @@ public enum CastSource {
     SWORD,
     MOB,
     COMMAND,
+    RECAST,
     NONE;
 
     public boolean consumesMana() {

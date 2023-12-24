@@ -23,12 +23,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
 @AutoSpellConfig
 public class PortalSpell extends AbstractSpell {
+    public static final int PORTAL_RECAST_COUNT = 2;
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "portal");
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
@@ -63,12 +65,17 @@ public class PortalSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.END_PORTAL_SPAWN);
+        return Optional.of(SoundEvents.PORTAL_TRIGGER);
     }
 
     @Override
     public ICastDataSerializable getEmptyCastData() {
         return new PortalData();
+    }
+
+    @Override
+    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
+        return PORTAL_RECAST_COUNT;
     }
 
     @Override
@@ -79,12 +86,11 @@ public class PortalSpell extends AbstractSpell {
 
         if (entity instanceof Player player) {
             var portalData = new PortalData();
-            portalData.castCount = 2;
             portalData.globalPos1 = GlobalPos.of(entity.level.dimension(), entity.getOnPos());
             if (playerMagicData.getPlayerRecasts().hasRecastsActive()) {
                 playerMagicData.getPlayerRecasts().getAllRecasts().forEach((instance) -> playerMagicData.getPlayerRecasts().decrementRecastCount(SpellRegistry.getSpell(instance.getSpellId())));
             } else {
-                playerMagicData.getPlayerRecasts().addRecast(getSpellId(), spellLevel, 2, 100, portalData);
+                playerMagicData.getPlayerRecasts().addRecast(getSpellId(), spellLevel, 1, 100, portalData);
 
                 //TODO: remove after testing
                 playerMagicData.getPlayerRecasts().addRecast("irons_spellbooks:firebolt", spellLevel, 5, 60, null);
@@ -100,9 +106,9 @@ public class PortalSpell extends AbstractSpell {
             double width = 0.5;
             float height = 1;
             for (int i = 0; i < 55; i++) {
-                double x = pos.x + Utils.random.nextDouble() * width * 2 - width;
-                double y = pos.y + height + Utils.random.nextDouble() * height * 1.2 * 2 - height * 1.2;
-                double z = pos.z + Utils.random.nextDouble() * width * 2 - width;
+                double x = pos.x + Utils.random.nextDouble() * width * PORTAL_RECAST_COUNT - width;
+                double y = pos.y + height + Utils.random.nextDouble() * height * 1.2 * PORTAL_RECAST_COUNT - height * 1.2;
+                double z = pos.z + Utils.random.nextDouble() * width * PORTAL_RECAST_COUNT - width;
                 double dx = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
                 double dy = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
                 double dz = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
@@ -116,18 +122,14 @@ public class PortalSpell extends AbstractSpell {
     }
 
     public static class PortalData implements ICastDataSerializable {
-        public int castCount;
         public GlobalPos globalPos1;
         public GlobalPos globalPos2;
 
         public PortalData() {
-            castCount = 0;
         }
 
         @Override
         public void writeToBuffer(FriendlyByteBuf buffer) {
-            buffer.writeInt(castCount);
-
             if (globalPos1 != null) {
                 buffer.writeBoolean(true);
                 buffer.writeGlobalPos(globalPos1);
@@ -145,7 +147,6 @@ public class PortalSpell extends AbstractSpell {
 
         @Override
         public void readFromBuffer(FriendlyByteBuf buffer) {
-            castCount = buffer.readInt();
             if (buffer.readBoolean()) {
                 globalPos1 = buffer.readGlobalPos();
 
@@ -163,7 +164,6 @@ public class PortalSpell extends AbstractSpell {
         @Override
         public CompoundTag serializeNBT() {
             CompoundTag tag = new CompoundTag();
-            tag.putInt("cnt", castCount);
 
             if (globalPos1 != null) {
                 tag.put("gp1", NBT.writeGlobalPos(globalPos1));
@@ -178,8 +178,6 @@ public class PortalSpell extends AbstractSpell {
 
         @Override
         public void deserializeNBT(CompoundTag compoundTag) {
-            this.castCount = compoundTag.getInt("cnt");
-
             if (compoundTag.contains("gp1")) {
                 this.globalPos1 = NBT.readGlobalPos(compoundTag.getCompound("gp1"));
 

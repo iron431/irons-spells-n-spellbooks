@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.MagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -99,16 +100,20 @@ public class CounterspellSpell extends AbstractSpell {
                 Vec3 pos = entity.getEyePosition().add(forward.scale(i));
                 MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
             }
-            if (entityHitResult.getEntity() instanceof AntiMagicSusceptible antiMagicSusceptible && !(antiMagicSusceptible instanceof MagicSummon summon && summon.getSummoner() == entity))
+            if (entityHitResult.getEntity() instanceof AntiMagicSusceptible antiMagicSusceptible && !(antiMagicSusceptible instanceof MagicSummon summon && summon.getSummoner() == entity)) {
                 antiMagicSusceptible.onAntiMagic(playerMagicData);
-            else if (entityHitResult.getEntity() instanceof ServerPlayer serverPlayer)
+            } else if (entityHitResult.getEntity() instanceof ServerPlayer serverPlayer) {
                 Utils.serverSideCancelCast(serverPlayer, true);
-            else if (entityHitResult.getEntity() instanceof AbstractSpellCastingMob abstractSpellCastingMob)
+                MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.COUNTERSPELL);
+            } else if (entityHitResult.getEntity() instanceof AbstractSpellCastingMob abstractSpellCastingMob) {
                 abstractSpellCastingMob.cancelCast();
+            }
 
-            if (entityHitResult.getEntity() instanceof LivingEntity livingEntity)
-                for (MobEffect mobEffect : LAZY_MAGICAL_EFFECTS.resolve().get())
+            if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
+                for (MobEffect mobEffect : LAZY_MAGICAL_EFFECTS.resolve().get()) {
                     livingEntity.removeEffect(mobEffect);
+                }
+            }
         } else {
             for (float i = 1; i < 40; i += .5f) {
                 Vec3 pos = entity.getEyePosition().add(forward.scale(i));

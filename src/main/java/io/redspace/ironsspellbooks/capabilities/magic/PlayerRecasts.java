@@ -42,17 +42,20 @@ public class PlayerRecasts {
         this.serverPlayer = null;
     }
 
-    public void addRecast(RecastInstance recastInstance) {
+    public boolean addRecast(RecastInstance recastInstance) {
         var existingRecastInstance = recastLookup.get(recastInstance.spellId);
 
         if (!isRecastActive(existingRecastInstance)) {
             recastLookup.put(recastInstance.spellId, recastInstance);
             syncToPlayer(recastInstance);
+            return true;
         }
+
+        return false;
     }
 
-    public void addRecast(@NotNull String spellId, int spellLevel, int recastCount, int ticksRemaining, ICastDataSerializable castData) {
-        addRecast(new RecastInstance(spellId, spellLevel, recastCount, ticksRemaining, castData));
+    public boolean addRecast(@NotNull String spellId, int spellLevel, int remainingRecasts, int ticksRemaining, ICastDataSerializable castData) {
+        return addRecast(new RecastInstance(spellId, spellLevel, remainingRecasts, ticksRemaining, castData));
     }
 
     public boolean isRecastActive(RecastInstance recastInstance) {
@@ -65,7 +68,7 @@ public class PlayerRecasts {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void forceAddRecast(RecastInstance recastInstance) {
+    public void forceA]ddRecast(RecastInstance recastInstance) {
         recastLookup.put(recastInstance.spellId, recastInstance);
     }
 
@@ -116,12 +119,10 @@ public class PlayerRecasts {
             if (recastInstance.remainingRecasts > 0) {
                 syncToPlayer(recastInstance);
             } else {
-                recastLookup.remove(spellId);
-                syncRemoveToPlayer(spellId);
+                removeRecast(recastInstance, RecastResult.USED_ALL_RECASTS);
             }
         } else if (recastInstance != null) {
-            recastLookup.remove(spellId);
-            syncRemoveToPlayer(spellId);
+            removeRecast(recastInstance, RecastResult.TIMEOUT);
         }
     }
 
@@ -129,15 +130,15 @@ public class PlayerRecasts {
         decrementRecastCount(spell.getSpellId());
     }
 
-    public void syncToPlayer(RecastInstance recastInstance) {
-        if (serverPlayer != null) {
-            Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
-        }
-    }
-
     public void syncAllToPlayer() {
         if (serverPlayer != null) {
             Messages.sendToPlayer(new ClientboundSyncRecasts(recastLookup), serverPlayer);
+        }
+    }
+
+    public void syncToPlayer(RecastInstance recastInstance) {
+        if (serverPlayer != null) {
+            Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
         }
     }
 
@@ -147,8 +148,24 @@ public class PlayerRecasts {
         }
     }
 
-    public void clear() {
-        recastLookup.clear();
+    private void triggerRecastComplete(RecastInstance recastInstance, RecastResult recastResult) {
+        SpellRegistry.getSpell(recastInstance.getSpellId()).onRecastFinished(serverPlayer, recastInstance.spellLevel, recastInstance.remainingRecasts, recastResult, recastInstance.castData);
+    }
+
+    private void removeRecast(RecastInstance recastInstance, RecastResult recastResult, boolean doSync) {
+        recastLookup.remove(recastInstance.spellId);
+        if (doSync) {
+            syncRemoveToPlayer(recastInstance.spellId);
+        }
+        triggerRecastComplete(recastInstance, recastResult);
+    }
+
+    private void removeRecast(RecastInstance recastInstance, RecastResult recastResult) {
+        removeRecast(recastInstance, recastResult, true);
+    }
+
+    public void removeAll(RecastResult recastResult) {
+        recastLookup.values().stream().toList().forEach(recastInstance -> removeRecast(recastInstance, recastResult, false));
         syncAllToPlayer();
     }
 
@@ -177,6 +194,19 @@ public class PlayerRecasts {
         }
     }
 
+    public void tick(int actualTicks) {
+        if (serverPlayer != null && serverPlayer.level.getGameTime() % actualTicks == 0) {
+            recastLookup.values()
+                    .stream()
+                    .filter(r -> {
+                        r.remainingTicks -= actualTicks;
+                        return r.remainingTicks <= 0;
+                    })
+                    .toList()
+                    .forEach(recastInstance -> removeRecast(recastInstance, RecastResult.TIMEOUT));
+        }
+    }
+
     @Override
     public String toString() {
         var sb = new StringBuilder();
@@ -187,22 +217,5 @@ public class PlayerRecasts {
         });
 
         return sb.toString();
-    }
-
-    public void tick(int actualTicks) {
-        if (serverPlayer != null && serverPlayer.level.getGameTime() % actualTicks == 0) {
-            recastLookup.values()
-                    .stream()
-                    .filter(r -> {
-                        r.remainingTicks -= actualTicks;
-                        return r.remainingTicks <= 0;
-                    })
-                    .toList()
-                    .forEach(recastInstance -> {
-                        recastLookup.remove(recastInstance.spellId);
-                        syncRemoveToPlayer(recastInstance.spellId);
-                        SpellRegistry.getSpell(recastInstance.getSpellId()).onRecastCancelled(serverPlayer, recastInstance.castData);
-                    });
-        }
     }
 }
