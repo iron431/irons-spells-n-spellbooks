@@ -28,7 +28,7 @@ public class RecastOverlay extends GuiComponent {
             return;
         int totalHeightPerBar = 12;
         int screenTopBuffer = 4;
-        var activeRecasts = ClientMagicData.getRecasts().getAllActiveRecasts().stream().toList();
+        var activeRecasts = ClientMagicData.getRecasts().getActiveRecasts();
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);

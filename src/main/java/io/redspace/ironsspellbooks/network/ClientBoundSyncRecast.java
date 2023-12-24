@@ -29,7 +29,7 @@ public class ClientBoundSyncRecast {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            ClientMagicData.getRecasts().addRecast(recastInstance);
+            ClientMagicData.getRecasts().forceAddRecast(recastInstance);
         });
         return true;
     }

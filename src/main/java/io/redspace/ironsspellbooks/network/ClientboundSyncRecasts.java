@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.network;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
@@ -35,8 +34,8 @@ public class ClientboundSyncRecasts {
         buf.writeUtf(spellId);
     }
 
-    public static void writeRecastInstance(FriendlyByteBuf buf, RecastInstance cooldownInstance) {
-        cooldownInstance.writeToBuffer(buf);
+    public static void writeRecastInstance(FriendlyByteBuf buf, RecastInstance recastInstance) {
+        recastInstance.writeToBuffer(buf);
     }
 
     public void toBytes(FriendlyByteBuf buf) {
@@ -46,7 +45,6 @@ public class ClientboundSyncRecasts {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            IronsSpellbooks.LOGGER.debug("ClientboundSyncRecasts.handle {}", recastLookup.size());
             ClientMagicData.setRecasts(new PlayerRecasts(recastLookup));
         });
         return true;
