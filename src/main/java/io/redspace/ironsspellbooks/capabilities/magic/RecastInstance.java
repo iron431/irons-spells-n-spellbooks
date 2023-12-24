@@ -14,10 +14,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     protected int totalRecasts;
     protected ICastDataSerializable castData;
     protected int ticksToLive;
-    protected long expireOnTick = 0;
-
-    //Only used when syncing to the client. Don't ever use this.
-    protected long ticksRemaining = 0;
+    protected int remainingTicks;
 
     public RecastInstance() {
     }
@@ -28,6 +25,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         this.remainingRecasts = remainingRecasts;
         this.totalRecasts = remainingRecasts + 1;
         this.ticksToLive = ticksToLive;
+        this.remainingTicks = ticksToLive;
         this.castData = castData;
     }
 
@@ -51,8 +49,8 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         return ticksToLive;
     }
 
-    public void setExpireOnTick(long expireOnTick) {
-        this.expireOnTick = expireOnTick;
+    public int getTicksRemaining() {
+        return remainingTicks;
     }
 
     public ICastDataSerializable getCastData() {
@@ -66,7 +64,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         buffer.writeInt(remainingRecasts);
         buffer.writeInt(totalRecasts);
         buffer.writeInt(ticksToLive);
-        buffer.writeLong(ticksRemaining);
+        buffer.writeInt(remainingTicks);
 
         if (castData != null) {
             buffer.writeBoolean(true);
@@ -83,7 +81,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         remainingRecasts = buffer.readInt();
         totalRecasts = buffer.readInt();
         ticksToLive = buffer.readInt();
-        ticksRemaining = buffer.readLong();
+        remainingTicks = buffer.readInt();
 
         var hasCastData = buffer.readBoolean();
         if (hasCastData) {
@@ -96,12 +94,12 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
-        tag.putString("id", spellId);
-        tag.putInt("lvl", spellLevel);
-        tag.putInt("cnt", remainingRecasts);
-        tag.putInt("total", totalRecasts);
-        tag.putInt("ticks", ticksToLive);
-        tag.putLong("remaining", ticksRemaining);
+        tag.putString("spellId", spellId);
+        tag.putInt("spellLevel", spellLevel);
+        tag.putInt("remainingRecasts", remainingRecasts);
+        tag.putInt("totalRecasts", totalRecasts);
+        tag.putInt("ticksToLive", ticksToLive);
+        tag.putInt("ticksRemaining", remainingTicks);
 
         if (castData != null) {
             tag.put("cd", castData.serializeNBT());
@@ -111,12 +109,12 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
 
     @Override
     public void deserializeNBT(CompoundTag compoundTag) {
-        spellId = compoundTag.getString("id");
-        spellLevel = compoundTag.getInt("lvl");
-        remainingRecasts = compoundTag.getInt("cnt");
-        totalRecasts = compoundTag.getInt("total");
-        ticksToLive = compoundTag.getInt("ticks");
-        ticksRemaining = compoundTag.getLong("remaining");
+        spellId = compoundTag.getString("spellId");
+        spellLevel = compoundTag.getInt("spellLevel");
+        remainingRecasts = compoundTag.getInt("remainingRecasts");
+        totalRecasts = compoundTag.getInt("totalRecasts");
+        ticksToLive = compoundTag.getInt("ticksToLive");
+        remainingTicks = compoundTag.getInt("ticksRemaining");
 
         if (compoundTag.contains("cd")) {
             castData = SpellRegistry.getSpell(spellId).getEmptyCastData();
@@ -129,6 +127,6 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     @Override
     public String toString() {
         var cd = castData == null ? "" : castData.serializeNBT().toString();
-        return String.format("spellId:%s, spellLevel:%d, remaining:%d, total:%d, ttl:%d, expireOn:%d, remain:%d, castData:%s", spellId, spellLevel, remainingRecasts, totalRecasts, ticksToLive, expireOnTick, ticksRemaining, cd);
+        return String.format("spellId:%s, spellLevel:%d, remainingRecasts:%d, totalRecasts:%d, ticksToLive:%d, ticksRemaining:%d, castData:%s", spellId, spellLevel, remainingRecasts, totalRecasts, ticksToLive, remainingTicks, cd);
     }
 }

@@ -316,6 +316,10 @@ public abstract class AbstractSpell {
 
     }
 
+    public void onRecastCancelled(ServerPlayer serverPlayer, ICastDataSerializable castDataSerializable) {
+
+    }
+
     /**
      * The primary spell effect sound and particle handling goes here. Called Client Side only
      */
