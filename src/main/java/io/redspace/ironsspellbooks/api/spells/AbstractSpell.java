@@ -28,8 +28,6 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -162,32 +160,7 @@ public abstract class AbstractSpell {
     }
 
     public ICastDataSerializable getEmptyCastData() {
-        return new ICastDataSerializable() {
-            @Override
-            public void writeToBuffer(FriendlyByteBuf buffer) {
-
-            }
-
-            @Override
-            public void readFromBuffer(FriendlyByteBuf buffer) {
-
-            }
-
-            @Override
-            public void reset() {
-
-            }
-
-            @Override
-            public CompoundTag serializeNBT() {
-                return new CompoundTag();
-            }
-
-            @Override
-            public void deserializeNBT(CompoundTag nbt) {
-
-            }
-        };
+        return null;
     }
 
     public Optional<SoundEvent> getCastStartSound() {

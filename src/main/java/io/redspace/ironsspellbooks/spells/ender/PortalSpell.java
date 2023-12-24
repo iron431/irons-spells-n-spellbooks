@@ -85,8 +85,8 @@ public class PortalSpell extends AbstractSpell {
                 playerMagicData.getPlayerRecasts().getAllActiveRecasts().forEach((instance) -> playerMagicData.getPlayerRecasts().decrementRecastCount(SpellRegistry.getSpell(instance.getSpellId())));
             } else {
                 playerMagicData.getPlayerRecasts().addRecast(getSpellId(), spellLevel, player, portalData, 2);
-                playerMagicData.getPlayerRecasts().addRecast("irons_spellbooks:firebolt", spellLevel, player, portalData, 5);
-                playerMagicData.getPlayerRecasts().addRecast("irons_spellbooks:magic_missile", spellLevel, player, portalData, 9);
+                playerMagicData.getPlayerRecasts().addRecast("irons_spellbooks:firebolt", spellLevel, player, null, 5);
+                playerMagicData.getPlayerRecasts().addRecast("irons_spellbooks:magic_missile", spellLevel, player, null, 9);
             }
         }
 

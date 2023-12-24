@@ -26,7 +26,6 @@ public class PlayerRecasts {
     private final Map<String, RecastInstance> recastLookup;
     private final ServerPlayer serverPlayer;
 
-
     public PlayerRecasts() {
         this.recastLookup = Maps.newHashMap();
         this.serverPlayer = null;
@@ -46,7 +45,7 @@ public class PlayerRecasts {
         recastLookup.put(recastInstance.spellId, recastInstance);
 
         if (serverPlayer != null) {
-            Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
+            syncToPlayer(recastInstance);
         }
     }
 
@@ -65,7 +64,7 @@ public class PlayerRecasts {
         });
 
         if (serverPlayer != null) {
-            Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
+            syncToPlayer(recastInstance);
         }
     }
 
@@ -108,12 +107,16 @@ public class PlayerRecasts {
             if (recastInstance == null) {
                 Messages.sendToPlayer(new ClientBoundRemoveRecast(spell.getSpellId()), serverPlayer);
             } else {
-                Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
+                syncToPlayer(recastInstance);
             }
         }
     }
 
-    public void syncToPlayer() {
+    public void syncToPlayer(RecastInstance recastInstance) {
+        Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
+    }
+
+    public void syncAllToPlayer() {
         if (serverPlayer != null) {
             Messages.sendToPlayer(new ClientboundSyncRecasts(recastLookup), serverPlayer);
         }
@@ -151,5 +154,10 @@ public class PlayerRecasts {
         });
 
         return sb.toString();
+    }
+
+    public void clear() {
+        recastLookup.clear();
+        syncAllToPlayer();
     }
 }

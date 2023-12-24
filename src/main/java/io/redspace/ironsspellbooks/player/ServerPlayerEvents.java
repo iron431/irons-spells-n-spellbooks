@@ -168,7 +168,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
-            playerMagicData.getPlayerRecasts().syncToPlayer();
+            playerMagicData.getPlayerRecasts().syncAllToPlayer();
             playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
             CameraShakeManager.doSync(serverPlayer);
         }
@@ -178,6 +178,7 @@ public class ServerPlayerEvents {
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             Utils.serverSideCancelCast(serverPlayer);
+            MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().clear();
         }
     }
 

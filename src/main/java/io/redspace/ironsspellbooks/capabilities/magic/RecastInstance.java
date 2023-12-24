@@ -99,7 +99,9 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
 
         if (compoundTag.contains("cd")) {
             castData = SpellRegistry.getSpell(spellId).getEmptyCastData();
-            castData.deserializeNBT((CompoundTag) compoundTag.get("cd"));
+            if (castData != null) {
+                castData.deserializeNBT((CompoundTag) compoundTag.get("cd"));
+            }
         }
     }
 
