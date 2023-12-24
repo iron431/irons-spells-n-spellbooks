@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Common Issues:
+        Common Issues (Try these fixes before making an issue):
         - Broken models with optifine: Optifine is meant for vanilla clients. Use the many alternatives (such as Oculus) that work with forge
         - Exit code 1: You are most likely missing dependencies, download them [here](https://legacy.curseforge.com/minecraft/mc-mods/irons-spells-n-spellbooks/relations/dependencies) or use the CurseForge launcher to automatically download them
         - Animation Issues with Epic Fight: These are incompatibiliteis with playeranimtor and Epic Fight, not Iron's Spell's 'n Spellbooks
