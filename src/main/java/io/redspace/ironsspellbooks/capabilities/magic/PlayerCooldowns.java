@@ -76,7 +76,8 @@ public class PlayerCooldowns {
         Messages.sendToPlayer(new ClientboundSyncCooldowns(this.spellCooldowns), serverPlayer);
     }
 
-    public void saveNBTData(ListTag listTag) {
+    public ListTag saveNBTData() {
+        var listTag = new ListTag();
         spellCooldowns.forEach((spellId, cooldown) -> {
             if (cooldown.getCooldownRemaining() > 0) {
                 CompoundTag ct = new CompoundTag();
@@ -86,6 +87,7 @@ public class PlayerCooldowns {
                 listTag.add(ct);
             }
         });
+        return listTag;
     }
 
     public void loadNBTData(ListTag listTag) {

@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
+import io.redspace.ironsspellbooks.network.ClientBoundRemoveRecast;
 import io.redspace.ironsspellbooks.network.ClientBoundSyncRecast;
 import io.redspace.ironsspellbooks.network.ClientboundSyncRecasts;
 import io.redspace.ironsspellbooks.setup.Messages;
@@ -13,28 +14,38 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class PlayerRecasts {
     private static final RecastInstance EMPTY = new RecastInstance(SpellRegistry.none().getSpellId(), 0, 0, null);
     private final Map<String, RecastInstance> recastLookup;
+    private final ServerPlayer serverPlayer;
+
 
     public PlayerRecasts() {
         this.recastLookup = Maps.newHashMap();
+        this.serverPlayer = null;
+    }
+
+    public PlayerRecasts(ServerPlayer serverPlayer) {
+        this.recastLookup = Maps.newHashMap();
+        this.serverPlayer = serverPlayer;
     }
 
     public PlayerRecasts(Map<String, RecastInstance> recastLookup) {
         this.recastLookup = recastLookup;
+        this.serverPlayer = null;
     }
 
-    public void addRecast(RecastInstance recastInstance, Player player) {
+    public void addRecast(RecastInstance recastInstance) {
         recastLookup.put(recastInstance.spellId, recastInstance);
 
-        if (player instanceof ServerPlayer serverPlayer) {
+        if (serverPlayer != null) {
             Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
         }
     }
@@ -53,9 +64,14 @@ public class PlayerRecasts {
             }
         });
 
-        if (player instanceof ServerPlayer serverPlayer) {
+        if (serverPlayer != null) {
             Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void removeRecast(String spellId) {
+        recastLookup.remove(spellId);
     }
 
     public boolean hasRecastsActive() {
@@ -74,12 +90,12 @@ public class PlayerRecasts {
         return recastLookup.get(spellId);
     }
 
-    public Collection<RecastInstance> getAllActiveRecasts() {
-        return recastLookup.values();
+    public List<RecastInstance> getAllActiveRecasts() {
+        return recastLookup.values().stream().toList();
     }
 
     public void decrementRecastCount(AbstractSpell spell) {
-        var recastData = recastLookup.compute(spell.getSpellId(), (k, v) -> {
+        var recastInstance = recastLookup.compute(spell.getSpellId(), (k, v) -> {
             if (v == null || v.remainingRecasts <= 1) {
                 return null;
             } else {
@@ -87,18 +103,30 @@ public class PlayerRecasts {
                 return v;
             }
         });
+
+        if (serverPlayer != null) {
+            if (recastInstance == null) {
+                Messages.sendToPlayer(new ClientBoundRemoveRecast(spell.getSpellId()), serverPlayer);
+            } else {
+                Messages.sendToPlayer(new ClientBoundSyncRecast(recastInstance), serverPlayer);
+            }
+        }
     }
 
-    public void syncToPlayer(ServerPlayer serverPlayer) {
-        Messages.sendToPlayer(new ClientboundSyncRecasts(recastLookup), serverPlayer);
+    public void syncToPlayer() {
+        if (serverPlayer != null) {
+            Messages.sendToPlayer(new ClientboundSyncRecasts(recastLookup), serverPlayer);
+        }
     }
 
-    public void saveNBTData(ListTag listTag) {
+    public ListTag saveNBTData() {
+        var listTag = new ListTag();
         recastLookup.forEach((spellId, recastInstance) -> {
             if (recastInstance.remainingRecasts > 0) {
                 listTag.add(recastInstance.serializeNBT());
             }
         });
+        return listTag;
     }
 
     public void loadNBTData(ListTag listTag) {
@@ -106,7 +134,9 @@ public class PlayerRecasts {
             listTag.forEach(tag -> {
                 var tmp = new RecastInstance();
                 tmp.deserializeNBT((CompoundTag) tag);
-                recastLookup.put(tmp.spellId, tmp);
+                if (tmp.remainingRecasts > 0) { //failsafe
+                    recastLookup.put(tmp.spellId, tmp);
+                }
             });
         }
     }
@@ -117,6 +147,7 @@ public class PlayerRecasts {
 
         recastLookup.values().forEach(recast -> {
             sb.append(recast.toString());
+            sb.append("\n");
         });
 
         return sb.toString();

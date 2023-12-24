@@ -36,17 +36,20 @@ public class MagicData {
     public MagicData(ServerPlayer serverPlayer) {
         this(false);
         this.serverPlayer = serverPlayer;
+        this.playerRecasts = new PlayerRecasts(serverPlayer);
     }
 
     public void setServerPlayer(ServerPlayer serverPlayer) {
-        if (this.serverPlayer == null) {
+        if (this.serverPlayer == null && serverPlayer != null) {
             this.serverPlayer = serverPlayer;
+            this.playerRecasts = new PlayerRecasts(serverPlayer);
         }
     }
 
     private ServerPlayer serverPlayer = null;
     public static final String MANA = "mana";
     public static final String COOLDOWNS = "cooldowns";
+    public static final String RECASTS = "recasts";
 
     /********* MANA *******************************************************/
 
@@ -236,21 +239,20 @@ public class MagicData {
                 return pmd;
             }
             return new MagicData(serverPlayer);
-        } else
+        } else {
             return new MagicData(null);
-
-
+        }
     }
 
     public void saveNBTData(CompoundTag compound) {
         compound.putInt(MANA, (int) mana);
 
         if (playerCooldowns.hasCooldownsActive()) {
-            ListTag listTag = new ListTag();
-            playerCooldowns.saveNBTData(listTag);
-            if (!listTag.isEmpty()) {
-                compound.put(COOLDOWNS, listTag);
-            }
+            compound.put(COOLDOWNS, playerCooldowns.saveNBTData());
+        }
+
+        if (playerRecasts.hasRecastsActive()) {
+            compound.put(RECASTS, playerRecasts.saveNBTData());
         }
 
         getSyncedData().saveNBTData(compound);
@@ -259,9 +261,14 @@ public class MagicData {
     public void loadNBTData(CompoundTag compound) {
         mana = compound.getInt(MANA);
 
-        ListTag listTag = (ListTag) compound.get(COOLDOWNS);
+        var listTag = (ListTag) compound.get(COOLDOWNS);
         if (listTag != null && !listTag.isEmpty()) {
             playerCooldowns.loadNBTData(listTag);
+        }
+
+        listTag = (ListTag) compound.get(RECASTS);
+        if (listTag != null && !listTag.isEmpty()) {
+            playerRecasts.loadNBTData(listTag);
         }
 
         getSyncedData().loadNBTData(compound);

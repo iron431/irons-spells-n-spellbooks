@@ -101,6 +101,12 @@ public class Messages {
                 .consumer(ClientBoundSyncRecast::handle)
                 .add();
 
+        net.messageBuilder(ClientBoundRemoveRecast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientBoundRemoveRecast::new)
+                .encoder(ClientBoundRemoveRecast::toBytes)
+                .consumer(ClientBoundRemoveRecast::handle)
+                .add();
+
         net.messageBuilder(ClientboundTeleportParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundTeleportParticles::new)
                 .encoder(ClientboundTeleportParticles::toBytes)

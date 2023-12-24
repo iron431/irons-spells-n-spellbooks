@@ -8,11 +8,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class RecastInstance implements ISerializable, INBTSerializable<CompoundTag> {
-    public String spellId;
-    public int spellLevel;
-    public int remainingRecasts;
-    public int totalRecasts;
-    public ICastDataSerializable castData;
+    protected String spellId;
+    protected int spellLevel;
+    protected int remainingRecasts;
+    protected int totalRecasts;
+    protected ICastDataSerializable castData;
 
     public RecastInstance() {
 
@@ -24,6 +24,26 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         this.remainingRecasts = remainingRecasts;
         this.totalRecasts = remainingRecasts + 1;
         this.castData = castData;
+    }
+
+    public String getSpellId() {
+        return spellId;
+    }
+
+    public int getSpellLevel() {
+        return spellLevel;
+    }
+
+    public int getRemainingRecasts() {
+        return remainingRecasts;
+    }
+
+    public int getTotalRecasts() {
+        return totalRecasts;
+    }
+
+    public ICastDataSerializable getCastData() {
+        return castData;
     }
 
     @Override
@@ -75,7 +95,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         spellId = compoundTag.getString("id");
         spellLevel = compoundTag.getInt("lvl");
         remainingRecasts = compoundTag.getInt("cnt");
-        remainingRecasts = compoundTag.getInt("total");
+        totalRecasts = compoundTag.getInt("total");
 
         if (compoundTag.contains("cd")) {
             castData = SpellRegistry.getSpell(spellId).getEmptyCastData();
