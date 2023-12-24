@@ -68,7 +68,7 @@ public class PlayerRecasts {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void forceA]ddRecast(RecastInstance recastInstance) {
+    public void forceAddRecast(RecastInstance recastInstance) {
         recastLookup.put(recastInstance.spellId, recastInstance);
     }
 

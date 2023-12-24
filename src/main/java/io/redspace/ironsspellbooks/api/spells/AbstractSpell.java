@@ -283,7 +283,6 @@ public abstract class AbstractSpell {
 
             onServerPreCast(player.level, spellLevel, player, playerMagicData);
             Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
-
             Messages.sendToPlayersTrackingEntity(new ClientboundOnCastStarted(serverPlayer.getUUID(), getSpellId(), spellLevel), serverPlayer, true);
 
             return true;
@@ -299,25 +298,29 @@ public abstract class AbstractSpell {
         }
 
         var magicManager = MagicHelper.MAGIC_MANAGER;
-        MagicData playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
+        MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
 
         if (castSource.consumesMana()) {
-            int newMana = playerMagicData.getMana() - getManaCost(spellLevel, serverPlayer);
-            playerMagicData.setMana(newMana);
-            Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
+            int newMana = magicData.getMana() - getManaCost(spellLevel, serverPlayer);
+            magicData.setMana(newMana);
+            Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
+        }
+
+        if (castSource == CastSource.RECAST) {
+            magicData.getPlayerRecasts().decrementRecastCount(getSpellId());
         }
 
         if (triggerCooldown) {
             magicManager.addCooldown(serverPlayer, this, castSource);
         }
 
-        onCast(world, spellLevel, serverPlayer, playerMagicData);
-        Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), this.getLevel(spellLevel, serverPlayer), castSource, playerMagicData.getAdditionalCastData()), serverPlayer);
+        onCast(world, spellLevel, serverPlayer, magicData);
+        Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), this.getLevel(spellLevel, serverPlayer), castSource, magicData.getAdditionalCastData()), serverPlayer);
 
         if (serverPlayer.getMainHandItem().getItem() instanceof ISpellbook || serverPlayer.getMainHandItem().getItem() instanceof IScroll)
-            playerMagicData.setPlayerCastingItem(serverPlayer.getMainHandItem());
+            magicData.setPlayerCastingItem(serverPlayer.getMainHandItem());
         else
-            playerMagicData.setPlayerCastingItem(serverPlayer.getOffhandItem());
+            magicData.setPlayerCastingItem(serverPlayer.getOffhandItem());
 
     }
 
