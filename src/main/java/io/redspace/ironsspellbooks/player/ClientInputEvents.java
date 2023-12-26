@@ -96,8 +96,8 @@ public final class ClientInputEvents {
             return;
         }
         handleRightClickSuppression(button, action);
-        if (event.getKey() == InputConstants.KEY_LSHIFT) {
-            isShiftKeyDown = event.getAction() >= InputConstants.PRESS;
+        if (button == InputConstants.KEY_LSHIFT) {
+            isShiftKeyDown = action >= InputConstants.PRESS;
         }
         for (int i = 0; i < QUICK_CAST_STATES.size(); i++) {
             //IronsSpellbooks.LOGGER.debug("onKeyInput i:{}",i);

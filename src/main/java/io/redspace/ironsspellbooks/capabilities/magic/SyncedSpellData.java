@@ -270,7 +270,7 @@ public class SyncedSpellData {
      */
     public SyncedSpellData getPersistentData(){
         SyncedSpellData persistentData = new SyncedSpellData(this.livingEntity);
-        persistentData.learnedSpellData = this.learnedSpellData;
+        persistentData.learnedSpellData.learnedSpells.addAll(this.learnedSpellData.learnedSpells);
         return persistentData;
     }
 }
