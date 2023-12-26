@@ -306,15 +306,16 @@ public abstract class AbstractSpell {
             Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
         }
 
-        if (castSource == CastSource.RECAST) {
-            magicData.getPlayerRecasts().decrementRecastCount(getSpellId());
-        }
-
         if (triggerCooldown) {
             magicManager.addCooldown(serverPlayer, this, castSource);
         }
 
         onCast(world, spellLevel, serverPlayer, magicData);
+
+        if (castSource == CastSource.RECAST) {
+            magicData.getPlayerRecasts().decrementRecastCount(getSpellId());
+        }
+
         Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), this.getLevel(spellLevel, serverPlayer), castSource, magicData.getAdditionalCastData()), serverPlayer);
 
         if (serverPlayer.getMainHandItem().getItem() instanceof ISpellbook || serverPlayer.getMainHandItem().getItem() instanceof IScroll)
