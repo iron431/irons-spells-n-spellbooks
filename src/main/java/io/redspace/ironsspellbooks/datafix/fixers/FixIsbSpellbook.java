@@ -48,7 +48,7 @@ public class FixIsbSpellbook extends DataFixerElement {
     }
 
     private boolean fixSpellbookSpellIds(ListTag listTagSpells) {
-        IronsSpellbooks.LOGGER.debug("fixSpellbookSpellIds: {}", listTagSpells);
+        //IronsSpellbooks.LOGGER.debug("fixSpellbookSpellIds: {}", listTagSpells);
         AtomicBoolean fixed = new AtomicBoolean(false);
         listTagSpells.forEach(tag -> {
             CompoundTag spellTag = (CompoundTag) tag;

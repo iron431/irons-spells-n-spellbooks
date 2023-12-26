@@ -11,19 +11,20 @@
     "EntityMixin",
     "ItemMixin",
     "LivingEntityMixin",
+    "OverworldBiomeBuilderMixin",
     "SmithingMenuMixin",
     "TetraBladedItemMixin",
     "TridentItemMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",
+    "ClientEntityMixin",
     "EntityRendererMixin",
     "GuiMixin",
     "LocalPlayerMixin",
     "MinecraftMixin",
     "ParticleMixin",
-    "SpinAttackEffectLayerMixin",
-    "ClientEntityMixin"
+    "SpinAttackEffectLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
