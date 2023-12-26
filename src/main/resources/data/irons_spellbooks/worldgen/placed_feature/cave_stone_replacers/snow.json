@@ -1,0 +1,55 @@
+{
+  "feature": {
+    "type": "minecraft:netherrack_replace_blobs",
+    "config": {
+      "state": {
+        "Name": "minecraft:snow_block",
+        "Properties": {
+          "axis": "y"
+        }
+      },
+      "target": {
+        "Name": "minecraft:stone"
+      },
+      "radius": {
+        "type": "minecraft:uniform",
+        "value": {
+          "min_inclusive": 5,
+          "max_inclusive": 12
+        }
+      }
+    }
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": {
+        "type": "minecraft:weighted_list",
+        "distribution": [
+          {
+            "weight": 100,
+            "data": 180
+          }
+        ]
+      }
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "above_bottom": 64
+        },
+        "max_inclusive": {
+          "absolute": 256
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

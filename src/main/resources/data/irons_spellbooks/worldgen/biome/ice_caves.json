@@ -1,7 +1,7 @@
 {
-  "temperature": 0.5,
+  "temperature": 0.0,
   "downfall": 0.5,
-  "precipitation": "rain",
+  "precipitation": "snow",
   "effects": {
     "sky_color": 7907327,
     "fog_color": 12638463,
@@ -13,7 +13,7 @@
       "options": {
         "type": "irons_spellbooks:snowflake"
       },
-      "probability": 1
+      "probability": 0.03
     },
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
@@ -124,6 +124,9 @@
     ]
   },
   "features": [
+    [
+      "irons_spellbooks:cave_stone_replacers/calcite"
+    ],
     [
       "minecraft:lake_lava_underground",
       "minecraft:lake_lava_surface"
