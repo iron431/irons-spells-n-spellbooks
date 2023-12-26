@@ -1,0 +1,65 @@
+{
+  "feature": {
+    "type": "minecraft:disk",
+    "config": {
+      "state_provider": {
+        "fallback": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "minecraft:packed_ice"
+          }
+        },
+        "rules": []
+      },
+      "target": {
+        "type": "minecraft:solid"
+      },
+      "radius": {
+        "type": "minecraft:clamped_normal",
+        "value": {
+          "min_inclusive": 1,
+          "max_inclusive": 8,
+          "mean": 2.6,
+          "deviation": 1.5
+        }
+      },
+      "half_height": 0
+    }
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": {
+        "type": "minecraft:weighted_list",
+        "distribution": [
+          {
+            "weight": 100,
+            "data": 180
+          }
+        ]
+      }
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "above_bottom": 6
+        },
+        "max_inclusive": {
+          "absolute": 64
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    },
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 15
+    }
+  ]
+}

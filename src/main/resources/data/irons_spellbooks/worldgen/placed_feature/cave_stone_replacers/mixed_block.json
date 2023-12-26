@@ -1,23 +1,20 @@
 {
   "feature": {
-    "type": "minecraft:netherrack_replace_blobs",
+    "type": "minecraft:scattered_ore",
     "config": {
-      "state": {
-        "Name": "minecraft:snow_block",
-        "Properties": {
-          "axis": "y"
+      "size": 20,
+      "discard_chance_on_air_exposure": 0,
+      "targets": [
+        {
+          "target": {
+            "predicate_type": "minecraft:tag_match",
+            "tag": "minecraft:base_stone_overworld"
+          },
+          "state": {
+            "Name": "minecraft:diorite"
+          }
         }
-      },
-      "target": {
-        "Name": "minecraft:stone"
-      },
-      "radius": {
-        "type": "minecraft:uniform",
-        "value": {
-          "min_inclusive": 5,
-          "max_inclusive": 12
-        }
-      }
+      ]
     }
   },
   "placement": [
@@ -41,10 +38,10 @@
       "height": {
         "type": "minecraft:uniform",
         "min_inclusive": {
-          "above_bottom": 64
+          "above_bottom": 6
         },
         "max_inclusive": {
-          "absolute": 256
+          "absolute": 64
         }
       }
     },

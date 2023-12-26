@@ -125,7 +125,13 @@
   },
   "features": [
     [
-      "irons_spellbooks:cave_stone_replacers/calcite"
+      "irons_spellbooks:cave_stone_replacers/stone_to_snow",
+      "irons_spellbooks:cave_stone_replacers/deepslate_to_snow",
+      "irons_spellbooks:cave_stone_replacers/ice_streaks",
+      "irons_spellbooks:cave_stone_replacers/icicles",
+      "irons_spellbooks:cave_stone_replacers/mixed_block",
+      "irons_spellbooks:cave_stone_replacers/powder_snow_patches",
+      "irons_spellbooks:cave_stone_replacers/snow_layers"
     ],
     [
       "minecraft:lake_lava_underground",

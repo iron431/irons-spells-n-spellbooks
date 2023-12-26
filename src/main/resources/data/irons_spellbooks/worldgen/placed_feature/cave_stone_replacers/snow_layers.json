@@ -1,21 +1,22 @@
 {
   "feature": {
-    "type": "minecraft:netherrack_replace_blobs",
+    "type": "minecraft:block_pile",
     "config": {
-      "state": {
-        "Name": "minecraft:calcite",
-        "Properties": {
-          "axis": "y"
-        }
-      },
-      "target": {
-        "Name": "minecraft:stone"
-      },
-      "radius": {
-        "type": "minecraft:uniform",
-        "value": {
-          "min_inclusive": 1,
-          "max_inclusive": 12
+      "state_provider": {
+        "type": "minecraft:randomized_int_state_provider",
+        "property": "layers",
+        "values": {
+          "type": "minecraft:biased_to_bottom",
+          "value": {
+            "min_inclusive": 1,
+            "max_inclusive": 4
+          }
+        },
+        "source": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "minecraft:snow"
+          }
         }
       }
     }
@@ -41,10 +42,10 @@
       "height": {
         "type": "minecraft:uniform",
         "min_inclusive": {
-          "above_bottom": 0
+          "above_bottom": 6
         },
         "max_inclusive": {
-          "absolute": 256
+          "absolute": 64
         }
       }
     },
