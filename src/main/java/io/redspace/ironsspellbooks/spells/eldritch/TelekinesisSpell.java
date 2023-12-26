@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.TelekinesisData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,11 +49,16 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
             .build();
 
     public TelekinesisSpell() {
-        this.manaCostPerLevel = 10;
+        this.manaCostPerLevel = 0;
         this.baseSpellPower = 8;
         this.spellPowerPerLevel = 4;
         this.castTime = 100;
         this.baseManaCost = 40;
+    }
+
+    @Override
+    public int getCastTime(int spellLevel) {
+        return castTime + 20 * (spellLevel - 1);
     }
 
     @Override
@@ -81,32 +88,55 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
 
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, getRange(spellLevel, entity), .15f);
+        if (Utils.preCastTargetHelper(level, entity, playerMagicData, this, getRange(spellLevel, entity), .15f)) {
+            var target = ((CastTargetingData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
+            if (target == null) {
+                return false;
+            }
+            playerMagicData.setAdditionalCastData(new TelekinesisData(entity.distanceTo(target), target));
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
-            var targetEntity = targetData.getTarget((ServerLevel) world);
+    public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
+        super.onServerCastTick(level, spellLevel, entity, playerMagicData);
+        if (playerMagicData != null && (playerMagicData.getCastDurationRemaining()) % 3 == 0) {
+            handleTelekinesis((ServerLevel) level, entity, playerMagicData, .5f);
+        }
+    }
+
+    private void handleTelekinesis(ServerLevel world, LivingEntity entity, MagicData playerMagicData, float strength) {
+        if (playerMagicData.getAdditionalCastData() instanceof TelekinesisData targetData) {
+            var targetEntity = targetData.getTarget(world);
             if (targetEntity != null) {
                 if ((targetEntity.isRemoved() || targetEntity.isDeadOrDying()) && entity instanceof ServerPlayer serverPlayer) {
                     Utils.serverSideCancelCast(serverPlayer);
                     return;
                 }
-                targetEntity.resetFallDistance();
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY.get(), 10, 0));
                 float resistance = Mth.clamp(1 - (float) targetEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), .2f, 1f);
-                Vec3 force = (entity.getForward().normalize().scale(targetEntity.distanceTo(entity)).add(entity.position()).subtract(targetEntity.position())).scale(.15f * resistance);
+                float lockedDistance = targetData.getDistance();
+                float actualDistance = entity.distanceTo(targetEntity);
+                float distance = Mth.lerp(actualDistance > lockedDistance ? .25f : .1f, lockedDistance, actualDistance);
+                targetData.setDistance(distance);
+                Vec3 force = (entity.getForward().normalize().scale(targetData.getDistance()).add(entity.position()).subtract(targetEntity.position())).scale(.15f * resistance * strength);
                 Vec3 travel = new Vec3(targetEntity.getX() - targetEntity.xOld, targetEntity.getY() - targetEntity.yOld, targetEntity.getZ() - targetEntity.zOld);
-                int airborne = (int) (travel.x * travel.x + travel.z * travel.z) / 2;
-                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 30, airborne));
+                if (force.y > 0) {
+                    targetEntity.resetFallDistance();
+                }
+                if ((playerMagicData.getCastDurationRemaining()) % 10 == 0) {
+                    int airborne = (int) (travel.x * travel.x + travel.z * travel.z) / 2;
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE.get(), 31, airborne));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY.get(), 11, 0));
+                }
                 targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(force));
                 targetEntity.hurtMarked = true;
             }
         }
-
-        super.onCast(world, spellLevel, entity, playerMagicData);
     }
+
 
     @Override
     public Vector3f getTargetingColor() {
@@ -115,7 +145,7 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
     }
 
     private int getRange(int spellLevel, LivingEntity caster) {
-        return 8 + (spellLevel - 1) * 4;
+        return 12 + (spellLevel - 1) * 2;
     }
 
     @Override

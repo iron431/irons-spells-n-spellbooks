@@ -122,11 +122,10 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 entity.push(diff.x, diff.y, diff.z);
                 if (this.tickCount % 10 == 0) {
                     if (distance < 3f && canHitEntity(entity))
-                        DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.BLACK_HOLE_SPELL.get().getSchoolType());
+                        DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()));
                 }
                 entity.resetFallDistance();
             }
-
         }
         if (!level.isClientSide) {
             if (tickCount > 20 * 16 * 2) {
@@ -137,7 +136,6 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 //TODO: stop sound
                 this.playSound(SoundRegistry.BLACK_HOLE_LOOP.get(), getRadius() / 3f, 1);
             }
-
         }
     }
 

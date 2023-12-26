@@ -174,9 +174,6 @@ public class ClientSpellCastHelper {
     /**
      * Animation Helper
      */
-
-    private static boolean didModify = false;
-
     private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         //IronsSpellbooks.LOGGER.debug("animatePlayerStart {} {}", player, resourceLocation);
         var keyframeAnimation = PlayerAnimationRegistry.getAnimation(resourceLocation);

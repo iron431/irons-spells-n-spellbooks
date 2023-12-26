@@ -35,6 +35,7 @@ public final class ClientInputEvents {
     private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
+    public static boolean isShiftKeyDown;
 
     @SubscribeEvent
     public static void clientMouseScrolled(InputEvent.MouseScrollingEvent event) {
@@ -92,7 +93,9 @@ public final class ClientInputEvents {
             return;
         }
         handleRightClickSuppression(button, action);
-
+        if (button == InputConstants.KEY_LSHIFT) {
+            isShiftKeyDown = action >= InputConstants.PRESS;
+        }
         for (int i = 0; i < QUICK_CAST_STATES.size(); i++) {
             //IronsSpellbooks.LOGGER.debug("onKeyInput i:{}",i);
             if (QUICK_CAST_STATES.get(i).wasPressed()) {

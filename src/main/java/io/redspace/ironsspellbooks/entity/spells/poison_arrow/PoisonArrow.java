@@ -53,7 +53,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
             super.tick();
             //IronsSpellbooks.LOGGER.debug("Poison Arrow Flying!! {}", inGround);
         } else {
-            if (++age > EXPIRE_TIME) {
+            if (tickCount > EXPIRE_TIME) {
                 discard();
                 return;
             }
@@ -109,7 +109,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         if (level.isClientSide)
             return;
         Entity entity = entityHitResult.getEntity();
-        boolean hit = DamageSources.applyDamage(entity, getDamage(), SpellRegistry.POISON_ARROW_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.POISON_ARROW_SPELL.get().getSchoolType());
+        boolean hit = DamageSources.applyDamage(entity, getDamage(), SpellRegistry.POISON_ARROW_SPELL.get().getDamageSource(this, getOwner()));
         //TODO: add evasion and stuff. Also do this for all other projectiles?
         boolean ignore = entity.getType() == EntityType.ENDERMAN;
         if (hit) {
@@ -118,7 +118,6 @@ public class PoisonArrow extends AbstractMagicProjectile {
                     createPoisonCloud(entity.position());
                 if (entity instanceof LivingEntity livingEntity)
                     livingEntity.setArrowCount(livingEntity.getArrowCount() + 1);
-                var spawn = entityHitResult.getLocation();
             }
             this.discard();
         } else {
@@ -131,11 +130,11 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-        pCompound.putBoolean("inGround", this.inGround);
-        pCompound.putBoolean("hasEmittedPoison", hasEmittedPoison);
-        pCompound.putFloat("aoeDamage", aoeDamage);
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putBoolean("inGround", this.inGround);
+        tag.putBoolean("hasEmittedPoison", hasEmittedPoison);
+        tag.putFloat("aoeDamage", aoeDamage);
     }
 
     public void createPoisonCloud(Vec3 location) {
@@ -151,11 +150,11 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        this.inGround = pCompound.getBoolean("inGround");
-        this.hasEmittedPoison = pCompound.getBoolean("hasEmittedPoison");
-        this.aoeDamage = pCompound.getFloat("aoeDamage");
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.inGround = tag.getBoolean("inGround");
+        this.hasEmittedPoison = tag.getBoolean("hasEmittedPoison");
+        this.aoeDamage = tag.getFloat("aoeDamage");
     }
 
     @Override

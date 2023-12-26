@@ -66,7 +66,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
         super.onHitEntity(entityHitResult);
         //irons_spellbooks.LOGGER.debug("MagicMissileProjectile.onHitEntity");
 
-        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.MAGIC_MISSILE_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.MAGIC_MISSILE_SPELL.get().getSchoolType());
+        DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.MAGIC_MISSILE_SPELL.get().getDamageSource(this, getOwner()));
         discard();
 
     }
@@ -79,7 +79,7 @@ public class MagicMissileProjectile extends AbstractMagicProjectile {
             double dy = Utils.random.nextDouble() * 2 * speed - speed;
             double dz = Utils.random.nextDouble() * 2 * speed - speed;
             level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx, this.getY() + dy, this.getZ() + dz, dx, dy, dz);
-            if (age > 1)
+            if (tickCount > 1)
                 level.addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx - getDeltaMovement().x / 2, this.getY() + dy - getDeltaMovement().y / 2, this.getZ() + dz - getDeltaMovement().z / 2, dx, dy, dz);
 
         }

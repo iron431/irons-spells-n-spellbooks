@@ -5,12 +5,18 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,6 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Max;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ShockwaveParticle extends TextureSheetParticle {
@@ -25,8 +32,10 @@ public class ShockwaveParticle extends TextureSheetParticle {
     private static final Vector3f TRANSFORM_VECTOR = new Vector3f(-1.0F, -1.0F, 0.0F);
     private static final float DEGREES_90 = Mth.PI / 2f;
     private final float targetSize;
+    private final boolean isFullbright;
+    private final Optional<ParticleOptions> trailParticle;
 
-    ShockwaveParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, ShockwaveParticleOptions options) {
+    ShockwaveParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, IShockwaveParticleOptions options) {
         super(pLevel, pX, pY, pZ, 0, 0, 0);
 
         this.xd = xd;
@@ -39,10 +48,12 @@ public class ShockwaveParticle extends TextureSheetParticle {
         this.gravity = .1f;
 
         float f = random.nextFloat() * 0.14F + 0.85F;
-        this.rCol = options.getColor().x() * f;
-        this.gCol = options.getColor().y() * f;
-        this.bCol = options.getColor().z() * f;
+        this.rCol = options.color().x() * f;
+        this.gCol = options.color().y() * f;
+        this.bCol = options.color().z() * f;
         this.friction = 1;
+        this.isFullbright = options.isFullbright();
+        this.trailParticle = options.trailParticle();
     }
 
     @Override
@@ -60,14 +71,28 @@ public class ShockwaveParticle extends TextureSheetParticle {
             //IronsSpellbooks.LOGGER.debug("Removing shockwave particle {}/{} ({}/{})", age, lifetime, getQuadSize(0), targetSize);
             this.remove();
         } else {
-            this.yd -= 0.04D * (double) this.gravity;
             this.move(this.xd, this.yd, this.zd);
             this.yd *= .85f;
             this.xd *= .94f;
             this.zd *= .94f;
+            if (this.trailParticle.isPresent()) {
+                float radius = getQuadSize(1);
+                float circumference = radius * 2 * Mth.PI;
+                int particles = (int) Mth.clamp(circumference / 5, 5, MAX_PARTICLES);
+                float degreesPerParticle = 360f / particles;
+                for (int i = 0; i < particles; i++) {
+                    float f = degreesPerParticle * i + Utils.random.nextInt((int) degreesPerParticle);
+                    float x = Mth.cos((f) * Mth.DEG_TO_RAD) * radius;
+                    float z = Mth.sin((f) * Mth.DEG_TO_RAD) * radius;
+                    this.level.addParticle(trailParticle.get(), this.x + x, this.y, this.z + z, 0, .05, 0);
+                }
+            }
         }
 
     }
+
+    static final int MAX_PARTICLES = 30;
+
 
     /**
      * Since we are so big, we always want to render ourselves even if the player does not have a direct line of sight to our origin
@@ -80,7 +105,6 @@ public class ShockwaveParticle extends TextureSheetParticle {
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialticks) {
         this.alpha = 1.0F - Mth.clamp((this.age + partialticks) / (float) this.lifetime, 0, 1F);
-
         this.renderRotatedParticle(buffer, camera, partialticks, (p_234005_) -> {
             p_234005_.mul(Vector3f.YP.rotation(0));
             p_234005_.mul(Vector3f.XP.rotation(-DEGREES_90));
@@ -133,19 +157,22 @@ public class ShockwaveParticle extends TextureSheetParticle {
 
     @Override
     protected int getLightColor(float pPartialTick) {
+        if (isFullbright) {
+            return LightTexture.FULL_BRIGHT;
+        }
         BlockPos blockpos = new BlockPos(this.x, this.y, this.z).above();
         return this.level.hasChunkAt(blockpos) ? LevelRenderer.getLightColor(this.level, blockpos) : 0;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Provider implements ParticleProvider<ShockwaveParticleOptions> {
+    public static class Provider implements ParticleProvider<IShockwaveParticleOptions> {
         private final SpriteSet sprite;
 
         public Provider(SpriteSet pSprite) {
             this.sprite = pSprite;
         }
 
-        public Particle createParticle(@NotNull ShockwaveParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+        public Particle createParticle(@NotNull IShockwaveParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
             ShockwaveParticle shriekparticle = new ShockwaveParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, options);
             shriekparticle.pickSprite(this.sprite);
             shriekparticle.setAlpha(1.0F);

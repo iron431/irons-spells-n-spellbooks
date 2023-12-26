@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EntityType;
@@ -30,26 +31,29 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
             return;
         }
         Vec3 rotation = owner.getLookAngle().normalize();
-        var pos = owner.position().add(rotation.scale(1.6));
+        var pos = owner.position().add(rotation.scale(1.5));
 
         double x = pos.x;
         double y = pos.y + owner.getEyeHeight() * .9f;
         double z = pos.z;
 
         double speed = random.nextDouble() * .4 + .45;
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 10; i++) {
             double offset = .25;
             double ox = Math.random() * 2 * offset - offset;
             double oy = Math.random() * 2 * offset - offset;
             double oz = Math.random() * 2 * offset - offset;
 
             double angularness = .8;
-            Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random()  * 2 * angularness - angularness, Math.random()  * 2 * angularness - angularness).normalize();
+            Vec3 randomVec = new Vec3(Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness, Math.random() * 2 * angularness - angularness).normalize();
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
             level.addParticle(Math.random() > .05 ? ParticleTypes.SNOWFLAKE : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
+
         }
-
-
+        if (tickCount % 5 == 0) {
+            var forward = rotation.scale(.5f);
+            level.addParticle(ParticleRegistry.RING_SMOKE_PARTICLE.get(), x, y, z, forward.x, forward.y, forward.z);
+        }
     }
 
     @Override

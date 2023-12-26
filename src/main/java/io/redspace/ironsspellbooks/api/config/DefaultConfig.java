@@ -25,8 +25,8 @@ public class DefaultConfig {
         return this;
     }
 
-    public DefaultConfig setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public DefaultConfig setDeprecated(boolean deprecated) {
+        this.enabled = !deprecated;
         return this;
     }
 

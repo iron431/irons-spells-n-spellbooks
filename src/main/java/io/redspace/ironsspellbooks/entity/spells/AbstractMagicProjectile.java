@@ -21,7 +21,6 @@ import java.util.Optional;
 public abstract class AbstractMagicProjectile extends Projectile implements AntiMagicSusceptible {
     protected static final int EXPIRE_TIME = 15 * 20;
 
-    protected int age;
     protected float damage;
     protected float explosionRadius;
 
@@ -67,14 +66,12 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     public void tick() {
         super.tick();
-        if (age > EXPIRE_TIME) {
+        if (tickCount > EXPIRE_TIME) {
             discard();
             return;
         }
         if (level.isClientSide) {
             trailParticles();
-
-
         }
         HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
         if (hitresult.getType() != HitResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
@@ -86,8 +83,6 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
             Vec3 vec34 = this.getDeltaMovement();
             this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
         }
-
-        age++;
     }
 
     @Override
@@ -119,20 +114,23 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-        pCompound.putFloat("Damage", this.getDamage());
-        pCompound.putFloat("ExplosionRadius", explosionRadius);
-
-
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putFloat("Damage", this.getDamage());
+        if (explosionRadius != 0) {
+            tag.putFloat("ExplosionRadius", explosionRadius);
+        }
+        tag.putInt("Age", tickCount);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        this.damage = pCompound.getFloat("Damage");
-        this.explosionRadius = pCompound.getFloat("ExplosionRadius");
-
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.damage = tag.getFloat("Damage");
+        if (tag.contains("ExplosionRadius")) {
+            this.explosionRadius = tag.getFloat("ExplosionRadius");
+        }
+        this.tickCount = tag.getInt("Age");
     }
 
     @Override

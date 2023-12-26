@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -34,14 +35,14 @@ public class TooltipsUtils {
         var title = getTitleComponent(spellData, player);
         var uniqueInfo = spell.getUniqueInfo(spellData.getLevel(), player);
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellData.getLevel(), player)).withStyle(ChatFormatting.BLUE);
-        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, castSource), 1)).withStyle(ChatFormatting.BLUE);
+        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, castSource), 2)).withStyle(ChatFormatting.BLUE);
 
         List<Component> lines = new ArrayList<>();
         lines.add(Component.empty());
         lines.add(title);
         uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(getStyleFor(player, spell)))));
         if (spell.getCastType() != CastType.INSTANT) {
-            lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellData.getLevel(), player), 1)).withStyle(ChatFormatting.BLUE)));
+            lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellData.getLevel(), player), 2)).withStyle(ChatFormatting.BLUE)));
         }
         if (castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get())
             lines.add(manaCost);
@@ -66,10 +67,10 @@ public class TooltipsUtils {
         var uniqueInfo = spell.getUniqueInfo(spellData.getLevel(), player);
         var whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellData.getLevel(), player)).withStyle(ChatFormatting.BLUE);
-        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, CastSource.SCROLL), 1)).withStyle(ChatFormatting.BLUE);
+        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, CastSource.SCROLL), 2)).withStyle(ChatFormatting.BLUE);
         MutableComponent castType = null;
         if (spell.getCastType() != CastType.INSTANT) {
-            castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellData.getLevel(), player), 1)).withStyle(ChatFormatting.BLUE)));
+            castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellData.getLevel(), player), 2)).withStyle(ChatFormatting.BLUE)));
         }
         List<Component> lines = new ArrayList<>();
         lines.add(Component.literal(" ").append(title));
@@ -84,6 +85,18 @@ public class TooltipsUtils {
         lines.add(spell.getSchoolType().getDisplayName().copy());
 
         return lines;
+    }
+
+    public static void addShiftTooltip(List<Component> currentTooltip, List<Component> tooltipToAdd) {
+        addShiftTooltip(currentTooltip, Component.translatable("tooltip.irons_spellbooks.shift_tooltip").withStyle(ChatFormatting.GRAY), tooltipToAdd);
+    }
+
+    public static void addShiftTooltip(List<Component> currentTooltip, Component shiftHeader, List<Component> tooltipToAdd) {
+        if (ClientInputEvents.isShiftKeyDown) {
+            currentTooltip.addAll(tooltipToAdd);
+        } else {
+            currentTooltip.add(shiftHeader);
+        }
     }
 
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);

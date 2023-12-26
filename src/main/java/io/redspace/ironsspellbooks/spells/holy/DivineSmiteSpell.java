@@ -24,6 +24,7 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -95,43 +96,35 @@ public class DivineSmiteSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float radius = 1.75f;
-        Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1, 0, 1).normalize().scale(1.35f)), 2);
-        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.HOLY.get().getTargetingColor(), radius * 2), smiteLocation.x, smiteLocation.y + .15f, smiteLocation.z, 1, 0, 0, 0, 0, true);
+        Vec3 smiteLocation = Utils.moveToRelativeGroundLevel(level, entity.getEyePosition().add(entity.getForward().multiply(1.35f, 0, 1.35f)), 1);
+        MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.HOLY.get().getTargetingColor(), radius * 2, true), smiteLocation.x, smiteLocation.y + .15f, smiteLocation.z, 1, 0, 0, 0, 0, true);
         MagicManager.spawnParticles(level, ParticleTypes.ELECTRIC_SPARK, smiteLocation.x, smiteLocation.y + .15f, smiteLocation.z, 50, 0, 0, 0, 1, false);
         CameraShakeManager.addCameraShake(new CameraShakeData(10, smiteLocation, 10));
         var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
         for (Entity targetEntity : entities) {
             //double distance = targetEntity.distanceToSqr(smiteLocation);
-            if (/*distance < radius * radius && */Utils.hasLineOfSight(level, smiteLocation, targetEntity.getBoundingBox().getCenter(), true)) {
-                DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity));
+            if (/*distance < radius * radius && */Utils.hasLineOfSight(level, smiteLocation.add(0, 1, 0), targetEntity.getBoundingBox().getCenter(), true)) {
+                if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity))) {
+                    int i = EnchantmentHelper.getFireAspect(entity);
+                    if (i > 0) {
+                        targetEntity.setSecondsOnFire(i * 4);
+                    }
+                    EnchantmentHelper.doPostDamageEffects(entity, targetEntity);
+                }
             }
         }
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        //IronsSpellbooks.LOGGER.debug("SmitingStrikeSpell.getDamage {} + {} + {}", getSpellPower(spellLevel, entity), base, enchant);
-        return getSpellPower(spellLevel, entity) + getWeaponDamage(entity);
+        //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
+        return getSpellPower(spellLevel, entity) + Utils.getWeaponDamage(entity, MobType.UNDEAD);
     }
 
-    private float getWeaponDamage(LivingEntity entity) {
-        if (entity != null) {
-            float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
-            float fist = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
-            if (weapon == fist) {
-                //Remove fist damage if they are not using a melee weapon
-                weapon -= fist;
-            }
-            //Setting mob type to undead means the smite enchantment also adds to the spell's damage. Seems fitting.
-            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), MobType.UNDEAD);
-            return weapon + enchant;
-        }
-        return 0;
-    }
 
     private String getDamageText(int spellLevel, LivingEntity entity) {
         if (entity != null) {
-            float weaponDamage = getWeaponDamage(entity);
+            float weaponDamage = Utils.getWeaponDamage(entity, MobType.UNDEAD);
             String plus = "";
             if (weaponDamage > 0) {
                 plus = String.format(" (+%s)", Utils.stringTruncation(weaponDamage, 1));

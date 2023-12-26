@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
@@ -141,8 +142,14 @@ public class SpellBook extends CurioBaseItem implements ISpellbook {
                 SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
                 for (int i = 0; i < spells.size(); i++) {
                     if ((MinecraftInstanceHelper.getPlayer() != null && Utils.getPlayerSpellbookStack(MinecraftInstanceHelper.getPlayer()) == itemStack) && spellSelectionManager.getCurrentSelection().equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && i == spellSelectionManager.getSelectionIndex()) {
-                        //TODO: shift tooltip when merged with main
-                        lines.add(Component.literal("> ").append(TooltipsUtils.getTitleComponent(spells.get(i), (LocalPlayer) player).withStyle(ChatFormatting.BOLD)));
+                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(itemStack, spellSelectionManager.getSelectedSpellData(), CastSource.SPELLBOOK, (LocalPlayer) player);
+                        shiftMessage.remove(0);
+                        TooltipsUtils.addShiftTooltip(
+                                lines,
+                                Component.literal("> ").append(TooltipsUtils.getTitleComponent(spells.get(i), (LocalPlayer) player).withStyle(ChatFormatting.BOLD)),
+                                shiftMessage
+                        );
+                        //lines.add();
                     } else {
                         lines.add(TooltipsUtils.getTitleComponent(spells.get(i), (LocalPlayer) player));
                     }

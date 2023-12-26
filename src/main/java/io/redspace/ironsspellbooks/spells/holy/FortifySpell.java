@@ -85,8 +85,7 @@ public class FortifySpell extends AbstractSpell {
         super.onServerPreCast(level, spellLevel, entity, playerMagicData);
         if (playerMagicData == null)
             return;
-        TargetedAreaEntity targetedAreaEntity = TargetedAreaEntity.createTargetAreaEntity(level, entity.position(), radius, 16239960);
-        targetedAreaEntity.setOwner(entity);
+        TargetedAreaEntity targetedAreaEntity = TargetedAreaEntity.createTargetAreaEntity(level, entity.position(), radius, 16239960, entity);
         playerMagicData.setAdditionalCastData(new TargetAreaCastData(entity.position(), targetedAreaEntity));
     }
 

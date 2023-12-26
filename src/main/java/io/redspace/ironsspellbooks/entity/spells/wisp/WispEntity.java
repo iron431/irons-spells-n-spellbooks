@@ -221,6 +221,7 @@ public class WispEntity extends PathfinderMob implements IAnimatable {
 
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
+                .add(Attributes.ATTACK_KNOCKBACK, 1.0)
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
                 .add(Attributes.MAX_HEALTH, 20.0)
                 .add(Attributes.FOLLOW_RANGE, 40.0)

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.spells;
 
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 public class TargetAreaCastData extends EntityCastData {
@@ -16,4 +17,8 @@ public class TargetAreaCastData extends EntityCastData {
         return center;
     }
 
+    @Override
+    public TargetedAreaEntity getCastingEntity() {
+        return (TargetedAreaEntity) super.getCastingEntity();
+    }
 }
