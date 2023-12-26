@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.player;
 
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
@@ -10,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.registries.BiomeRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -205,5 +209,24 @@ public class ClientPlayerEvents {
             event.setGreen(f1 * .15f);
             event.setBlue(f2 * .15f);
         }
+    }
+
+    @SubscribeEvent
+    public static void customFog(ViewportEvent.RenderFog event) {
+        //var player = MinecraftInstanceHelper.getPlayer();
+        //if (player != null) {
+        //    var biome = player.level.getBiome(player.blockPosition());
+        //    if (biome.is(BiomeRegistry.ICE_CAVES_KEY)) {
+                //event.setNearPlaneDistance(0f);
+                //event.setFarPlaneDistance(1f);
+                event.setNearPlaneDistance(-4);
+                event.setFarPlaneDistance(24);
+                IronsSpellbooks.LOGGER.debug("client in ice caves: {}",event.getMode());
+        RenderSystem.setShaderFogStart(event.getNearPlaneDistance());
+        RenderSystem.setShaderFogEnd(event.getFarPlaneDistance());
+        RenderSystem.setShaderFogShape(event.getFogShape());
+        //    }
+        //}
+
     }
 }

@@ -16,8 +16,8 @@
       "probability": 0.03
     },
     "mood_sound": {
-      "sound": "minecraft:ambient.cave",
-      "tick_delay": 6000,
+      "sound": "minecraft:item.elytra.flying",
+      "tick_delay": 60,
       "block_search_extent": 8,
       "offset": 2
     },
@@ -54,7 +54,7 @@
   "spawn_costs": {},
   "carvers": {
     "air": [
-      "minecraft:canyon"
+      "minecraft:nether_cave"
     ]
   },
   "features": [
@@ -104,12 +104,13 @@
       "minecraft:ore_lapis",
       "minecraft:ore_lapis_buried",
       "minecraft:ore_copper",
-      "minecraft:underwater_magma",
       "minecraft:disk_sand",
       "minecraft:disk_clay",
       "minecraft:disk_gravel"
     ],
     [
+      "irons_spellbooks:ice_caves/freeze_lava",
+      "irons_spellbooks:ice_caves/freeze_water"
     ],
     [
       "minecraft:freeze_top_layer"
