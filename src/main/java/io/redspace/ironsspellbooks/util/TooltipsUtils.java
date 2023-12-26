@@ -88,13 +88,16 @@ public class TooltipsUtils {
     }
 
     public static void addShiftTooltip(List<Component> currentTooltip, List<Component> tooltipToAdd) {
+        addShiftTooltip(currentTooltip, Component.translatable("tooltip.irons_spellbooks.shift_tooltip").withStyle(ChatFormatting.GRAY), tooltipToAdd);
+    }
+
+    public static void addShiftTooltip(List<Component> currentTooltip, Component shiftHeader, List<Component> tooltipToAdd) {
         if (ClientInputEvents.isShiftKeyDown) {
             currentTooltip.addAll(tooltipToAdd);
         } else {
-            currentTooltip.add(Component.translatable("tooltip.irons_spellbooks.shift_tooltip").withStyle(ChatFormatting.GRAY));
+            currentTooltip.add(shiftHeader);
         }
     }
-
 
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
     private static final Style OBFUSCATED_STYLE = AbstractEldritchSpell.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
