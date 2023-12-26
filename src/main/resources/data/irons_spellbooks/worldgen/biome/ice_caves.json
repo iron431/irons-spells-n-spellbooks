@@ -30,115 +30,47 @@
   },
   "spawners": {
     "ambient": [
-      {
-        "type": "minecraft:bat",
-        "weight": 10,
-        "minCount": 8,
-        "maxCount": 8
-      }
     ],
     "axolotls": [
-      {
-        "type": "minecraft:axolotl",
-        "weight": 10,
-        "minCount": 4,
-        "maxCount": 6
-      }
     ],
     "creature": [],
     "misc": [],
     "monster": [
       {
-        "type": "minecraft:spider",
+        "type": "minecraft:stray",
         "weight": 100,
         "minCount": 4,
         "maxCount": 4
-      },
-      {
-        "type": "minecraft:zombie",
-        "weight": 95,
-        "minCount": 4,
-        "maxCount": 4
-      },
-      {
-        "type": "minecraft:zombie_villager",
-        "weight": 5,
-        "minCount": 1,
-        "maxCount": 1
-      },
-      {
-        "type": "minecraft:skeleton",
-        "weight": 100,
-        "minCount": 4,
-        "maxCount": 4
-      },
-      {
-        "type": "minecraft:creeper",
-        "weight": 100,
-        "minCount": 4,
-        "maxCount": 4
-      },
-      {
-        "type": "minecraft:slime",
-        "weight": 100,
-        "minCount": 4,
-        "maxCount": 4
-      },
-      {
-        "type": "minecraft:enderman",
-        "weight": 10,
-        "minCount": 1,
-        "maxCount": 4
-      },
-      {
-        "type": "minecraft:witch",
-        "weight": 5,
-        "minCount": 1,
-        "maxCount": 1
       }
     ],
     "underground_water_creature": [
-      {
-        "type": "minecraft:glow_squid",
-        "weight": 10,
-        "minCount": 4,
-        "maxCount": 6
-      }
+
     ],
     "water_ambient": [
-      {
-        "type": "minecraft:tropical_fish",
-        "weight": 25,
-        "minCount": 8,
-        "maxCount": 8
-      }
+
     ],
     "water_creature": []
   },
   "spawn_costs": {},
   "carvers": {
     "air": [
-      "minecraft:cave",
-      "minecraft:cave_extra_underground",
       "minecraft:canyon"
     ]
   },
   "features": [
     [
-      "irons_spellbooks:cave_stone_replacers/mixed_diorite",
-      "irons_spellbooks:cave_stone_replacers/mixed_ice",
-      "irons_spellbooks:cave_stone_replacers/stone_to_snow",
-      "irons_spellbooks:cave_stone_replacers/deepslate_to_snow",
-      "irons_spellbooks:cave_stone_replacers/ice_streaks",
-      "irons_spellbooks:cave_stone_replacers/icicles",
-      "irons_spellbooks:cave_stone_replacers/powder_snow_patches",
-      "irons_spellbooks:cave_stone_replacers/snow_and_ice_patches",
-      "irons_spellbooks:cave_stone_replacers/snow_layers",
-      "irons_spellbooks:cave_stone_replacers/ice_piles"
+      "irons_spellbooks:ice_caves/mixed_diorite",
+      "irons_spellbooks:ice_caves/mixed_ice",
+      "irons_spellbooks:ice_caves/calcite_replacer_stone",
+      "irons_spellbooks:ice_caves/calcite_replacer_deepslate",
+      "irons_spellbooks:ice_caves/ice_streaks",
+      "irons_spellbooks:ice_caves/icicles",
+      "irons_spellbooks:ice_caves/powder_snow_patches",
+      "irons_spellbooks:ice_caves/snow_and_ice_patches",
+      "irons_spellbooks:ice_caves/snow_layers",
+      "irons_spellbooks:ice_caves/ice_piles"
     ],
     [
-      "minecraft:lake_lava_underground",
-      "minecraft:lake_lava_surface"
     ],
     [
       "minecraft:amethyst_geode"
