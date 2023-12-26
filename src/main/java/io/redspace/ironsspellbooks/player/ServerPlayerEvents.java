@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.data.IronsSpellBooksWorldData;
 import io.redspace.ironsspellbooks.datafix.IronsWorldUpgrader;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
@@ -55,6 +56,7 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -77,7 +79,14 @@ public class ServerPlayerEvents {
 //    }
 
     @SubscribeEvent
+    public static void onServerStoppingEvent(ServerStoppingEvent event) {
+        IronsSpellBooksWorldData.INSTANCE.save();
+    }
+
+    @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+        IronsSpellBooksWorldData.init(event.getServer().storageSource);
+
         if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
             var server = event.getServer();
             var storageSource = server.storageSource;
@@ -196,7 +205,7 @@ public class ServerPlayerEvents {
             event.getOriginal().reviveCaps();
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
-            newMagicData.setSyncedData(oldMagicData.getSyncedData());
+            newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData());
             newMagicData.getSyncedData().doSync();
             event.getOriginal().invalidateCaps();
         }
@@ -351,14 +360,18 @@ public class ServerPlayerEvents {
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         if (event.getRayTraceResult() instanceof EntityHitResult entityHitResult) {
             var victim = entityHitResult.getEntity();
+            IronsSpellbooks.LOGGER.debug("onProjectileImpact: {}", victim);
             if (victim instanceof AbstractSpellCastingMob || victim instanceof Player) {
+                IronsSpellbooks.LOGGER.debug("onProjectileImpact: is a casting mob");
                 var livingEntity = (LivingEntity) victim;
-                MagicData playerMagicData = MagicData.getPlayerMagicData(livingEntity);
-                if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
+                SyncedSpellData syncedSpellData = livingEntity.level.isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getPlayerMagicData(livingEntity).getSyncedData();
+                if (syncedSpellData.hasEffect(SyncedSpellData.EVASION)) {
+                    IronsSpellbooks.LOGGER.debug("onProjectileImpact: evasion");
                     if (EvasionEffect.doEffect(livingEntity, new IndirectEntityDamageSource("noop", event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
-                } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                } else if (syncedSpellData.hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                    IronsSpellbooks.LOGGER.debug("onProjectileImpact: abyssal shroud");
                     if (AbyssalShroudEffect.doEffect(livingEntity, new IndirectEntityDamageSource("noop", event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
@@ -426,6 +439,21 @@ public class ServerPlayerEvents {
 //                    serverPlayer.addEffect(new MobEffectInstance(MobEffectRegistry.ENCHANTED_WARD.get(), 40, 0, false, false, false));
 
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void changeDigSpeed(PlayerEvent.BreakSpeed event) {
+        //This event is getting run on the server and the client, and because the client is aware of its own status effects, this works
+        //(If it did not get run on the client, then breaking particles would not match)
+        var player = event.getEntity();
+        if (player.hasEffect(MobEffectRegistry.HASTENED.get())) {
+            int i = 1 + player.getEffect(MobEffectRegistry.HASTENED.get()).getAmplifier();
+            event.setNewSpeed(event.getNewSpeed() * Utils.intPow(1.2f, i));
+        }
+        if (player.hasEffect(MobEffectRegistry.SLOWED.get())) {
+            int i = 1 + player.getEffect(MobEffectRegistry.SLOWED.get()).getAmplifier();
+            event.setNewSpeed(event.getNewSpeed() * Utils.intPow(.8f, i));
         }
     }
 }

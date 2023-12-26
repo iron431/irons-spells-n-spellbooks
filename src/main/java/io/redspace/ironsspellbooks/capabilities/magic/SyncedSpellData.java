@@ -264,4 +264,13 @@ public class SyncedSpellData {
                 castingSpellLevel,
                 syncedEffectFlags);
     }
+
+    /**
+     * @return Retuns a copy of this SyncedSpellData, but with only data for things that should be persisted after death.
+     */
+    public SyncedSpellData getPersistentData(){
+        SyncedSpellData persistentData = new SyncedSpellData(this.livingEntity);
+        persistentData.learnedSpellData = this.learnedSpellData;
+        return persistentData;
+    }
 }

@@ -6,15 +6,24 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,30 +35,28 @@ public class FrostbiteSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.frostbite_success_chance", Utils.stringTruncation(getSpellPower(spellLevel, caster), 1))
-
+                Component.translatable("ui.irons_spellbooks.percent_damage", Utils.stringTruncation(getPercentDamage(spellLevel, caster) * 100, 1))
         );
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
             .setSchoolResource(SchoolRegistry.ICE_RESOURCE)
-            .setMaxLevel(0)
+            .setMaxLevel(5)
             .setCooldownSeconds(0)
-            .setEnabled(false)
             .build();
 
     public FrostbiteSpell() {
         this.manaCostPerLevel = 50;
-        this.baseSpellPower = 1;
-        this.spellPowerPerLevel = 3;
-        this.castTime = 0;
+        this.baseSpellPower = 75;
+        this.spellPowerPerLevel = 15;
+        this.castTime = 40;
         this.baseManaCost = 100;
     }
 
     @Override
     public CastType getCastType() {
-        return CastType.INSTANT;
+        return CastType.LONG;
     }
 
     @Override
@@ -73,25 +80,79 @@ public class FrostbiteSpell extends AbstractSpell {
     }
 
     @Override
+    public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        return Utils.preCastTargetHelper(level, entity, playerMagicData, this, 48, .15f);
+    }
+
+    @Override
+    public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
+        if (playerMagicData != null && playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetingData) {
+            LivingEntity target = targetingData.getTarget((ServerLevel) level);
+            if (target != null) {
+                float i = playerMagicData.getCastCompletionPercent();
+                float f = entity.tickCount;
+                float distance = entity.distanceTo(target);
+                float density = 2;
+                Vec3 start = target.position().add(0, entity.getBbHeight() * .5f, 0);
+                Vec3 delta = entity.position().subtract(target.position()).normalize();
+                start = start.add(delta.scale(i * distance));
+                MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE,
+                        start.x + beamNoise((f + i + 50) * 1.25f) * .25f,
+                        start.y + beamNoise((f + i) * 1.5f) * .25f,
+                        start.z + beamNoise((f + i + 84) * 1.25f) * .25f,
+                        1, 0, 0, 0, 0, false);
+            }
+        }
+        super.onServerCastTick(level, spellLevel, entity, playerMagicData);
+    }
+
+    private float beamNoise(float f) {
+        f = f % 360;
+        return (Mth.cos(f * .25f) * 2f + Mth.sin(f) + Mth.cos(2 * f) * .25f) * .4f;
+    }
+
+    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        HitResult raycast = Utils.raycastForEntity(level, entity, 48, true);
-        if (raycast.getType() == HitResult.Type.ENTITY) {
-            Entity target = ((EntityHitResult) raycast).getEntity();
-            if (target instanceof LivingEntity livingTarget) {
-                float threshold = getSpellPower(spellLevel, entity);
-                float hpPercent = livingTarget.getHealth() / livingTarget.getMaxHealth();
-                boolean success = false;
-                /*
-                 *   The Chance to succeed and inflict frostbite is based off of the current target's health
-                 *   If their health is below our spell power, we automatically succeed
-                 *   Otherwise, we have a chance to succeed
-                 * */
-                if (livingTarget.getHealth() <= threshold)
-                    success = true;
-                //else if()
-                //livingTarget.addEffect();
+        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetingData) {
+            LivingEntity target = targetingData.getTarget((ServerLevel) level);
+            if (target != null) {
+                float damage = getPercentDamage(spellLevel, entity) * target.getTicksFrozen() / 20f;
+                DamageSources.applyDamage(target, damage, getDamageSource(entity));
+                target.setTicksFrozen(0);
+                MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, target.getX(), target.getY() + target.getBbHeight() * .5f, target.getZ(), 35, target.getBbWidth() * .5f, target.getBbHeight() * .5f, target.getBbWidth() * .5f, .03, false);
+                if (target.isDeadOrDying()) {
+                    spawnIcicleShards(target.getBoundingBox().getCenter(), damage, entity);
+                    //TODO: this may be dangerous as hell
+                    target.discard();
+                }
             }
         }
         super.onCast(level, spellLevel, entity, playerMagicData);
+    }
+
+    private void spawnIcicleShards(Vec3 origin, float damage, LivingEntity owner) {
+        int count = 8;
+        int offset = 360 / count;
+        for (int i = 0; i < count; i++) {
+
+            Vec3 motion = new Vec3(0, 0, 0.55);
+            motion = motion.xRot(30 * Mth.DEG_TO_RAD);
+            motion = motion.yRot(offset * i * Mth.DEG_TO_RAD);
+
+
+            IcicleProjectile shard = new IcicleProjectile(owner.level, owner);
+            shard.setDamage(damage / count);
+            shard.setDeltaMovement(motion);
+
+            Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.5f));
+            var angle = Utils.rotationFromDirection(motion);
+
+            shard.moveTo(spawn.x, spawn.y - shard.getBoundingBox().getYsize() / 2, spawn.z, angle.y, angle.x);
+            owner.level.addFreshEntity(shard);
+        }
+    }
+
+    public float getPercentDamage(int spellLevel, LivingEntity caster) {
+        return getSpellPower(spellLevel, caster) * .01f;
     }
 }

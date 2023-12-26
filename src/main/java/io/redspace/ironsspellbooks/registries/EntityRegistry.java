@@ -14,14 +14,12 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.archevoker.ArchevokerEnti
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer.CryomancerEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.priest.PriestEntity;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.pyromancer.PyromancerEntity;
-import io.redspace.ironsspellbooks.entity.spells.ChainLightning;
-import io.redspace.ironsspellbooks.entity.spells.EarthquakeAoe;
-import io.redspace.ironsspellbooks.entity.spells.ExtendedWitherSkull;
+import io.redspace.ironsspellbooks.entity.spells.*;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
+import io.redspace.ironsspellbooks.entity.spells.flame_strike.FlameStrike;
 import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
-import io.redspace.ironsspellbooks.entity.spells.HealingAoe;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrb;
 import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
@@ -51,6 +49,7 @@ import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonSplash;
 import io.redspace.ironsspellbooks.entity.spells.ray_of_frost.RayOfFrostVisualEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.RootEntity;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
+import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.entity.spells.sunbeam.Sunbeam;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
@@ -86,52 +85,52 @@ public class EntityRegistry {
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer").toString()));
 
     public static final RegistryObject<EntityType<MagicMissileProjectile>> MAGIC_MISSILE_PROJECTILE =
-            ENTITIES.register("magic_missile_projectile", () -> EntityType.Builder.<MagicMissileProjectile>of(MagicMissileProjectile::new, MobCategory.MISC)
+            ENTITIES.register("magic_missile", () -> EntityType.Builder.<MagicMissileProjectile>of(MagicMissileProjectile::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "magic_missile_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "magic_missile").toString()));
 
     public static final RegistryObject<EntityType<ConeOfColdProjectile>> CONE_OF_COLD_PROJECTILE =
-            ENTITIES.register("cone_of_cold_projectile", () -> EntityType.Builder.<ConeOfColdProjectile>of(ConeOfColdProjectile::new, MobCategory.MISC)
+            ENTITIES.register("cone_of_cold", () -> EntityType.Builder.<ConeOfColdProjectile>of(ConeOfColdProjectile::new, MobCategory.MISC)
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "cone_of_cold_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "cone_of_cold").toString()));
 
     public static final RegistryObject<EntityType<BloodSlashProjectile>> BLOOD_SLASH_PROJECTILE =
-            ENTITIES.register("blood_slash_projectile", () -> EntityType.Builder.<BloodSlashProjectile>of(BloodSlashProjectile::new, MobCategory.MISC)
+            ENTITIES.register("blood_slash", () -> EntityType.Builder.<BloodSlashProjectile>of(BloodSlashProjectile::new, MobCategory.MISC)
                     .sized(2f, .5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "blood_slash_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "blood_slash").toString()));
 
     public static final RegistryObject<EntityType<ElectrocuteProjectile>> ELECTROCUTE_PROJECTILE =
-            ENTITIES.register("electrocute_projectile", () -> EntityType.Builder.<ElectrocuteProjectile>of(ElectrocuteProjectile::new, MobCategory.MISC)
+            ENTITIES.register("electrocute", () -> EntityType.Builder.<ElectrocuteProjectile>of(ElectrocuteProjectile::new, MobCategory.MISC)
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "electrocute_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "electrocute").toString()));
 
     public static final RegistryObject<EntityType<FireboltProjectile>> FIREBOLT_PROJECTILE =
-            ENTITIES.register("firebolt_projectile", () -> EntityType.Builder.<FireboltProjectile>of(FireboltProjectile::new, MobCategory.MISC)
+            ENTITIES.register("firebolt", () -> EntityType.Builder.<FireboltProjectile>of(FireboltProjectile::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "firebolt_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "firebolt").toString()));
 
     public static final RegistryObject<EntityType<IcicleProjectile>> ICICLE_PROJECTILE =
-            ENTITIES.register("icicle_projectile", () -> EntityType.Builder.<IcicleProjectile>of(IcicleProjectile::new, MobCategory.MISC)
+            ENTITIES.register("icicle", () -> EntityType.Builder.<IcicleProjectile>of(IcicleProjectile::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "icicle_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "icicle").toString()));
 
     public static final RegistryObject<EntityType<FireBreathProjectile>> FIRE_BREATH_PROJECTILE =
-            ENTITIES.register("fire_breath_projectile", () -> EntityType.Builder.<FireBreathProjectile>of(FireBreathProjectile::new, MobCategory.MISC)
+            ENTITIES.register("fire_breath", () -> EntityType.Builder.<FireBreathProjectile>of(FireBreathProjectile::new, MobCategory.MISC)
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_breath_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "fire_breath").toString()));
 
     public static final RegistryObject<EntityType<DragonBreathProjectile>> DRAGON_BREATH_PROJECTILE =
-            ENTITIES.register("dragon_breath_projectile", () -> EntityType.Builder.<DragonBreathProjectile>of(DragonBreathProjectile::new, MobCategory.MISC)
+            ENTITIES.register("dragon_breath", () -> EntityType.Builder.<DragonBreathProjectile>of(DragonBreathProjectile::new, MobCategory.MISC)
                     .sized(1f, 1f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "dragon_breath").toString()));
 
     public static final RegistryObject<EntityType<DebugWizard>> DEBUG_WIZARD =
             ENTITIES.register("debug_wizard", () -> EntityType.Builder.<DebugWizard>of(DebugWizard::new, MobCategory.MONSTER)
@@ -176,10 +175,10 @@ public class EntityRegistry {
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "cryomancer").toString()));
 
     public static final RegistryObject<EntityType<LightningLanceProjectile>> LIGHTNING_LANCE_PROJECTILE =
-            ENTITIES.register("lightning_lance_projectile", () -> EntityType.Builder.<LightningLanceProjectile>of(LightningLanceProjectile::new, MobCategory.MISC)
+            ENTITIES.register("lightning_lance", () -> EntityType.Builder.<LightningLanceProjectile>of(LightningLanceProjectile::new, MobCategory.MISC)
                     .sized(1.25f, 1.25f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "lightning_lance_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "lightning_lance").toString()));
 
     public static final RegistryObject<EntityType<NecromancerEntity>> NECROMANCER =
             ENTITIES.register("necromancer", () -> EntityType.Builder.of(NecromancerEntity::new, MobCategory.MONSTER)
@@ -200,22 +199,22 @@ public class EntityRegistry {
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "summoned_skeleton").toString()));
 
     public static final RegistryObject<EntityType<ExtendedWitherSkull>> WITHER_SKULL_PROJECTILE =
-            ENTITIES.register("wither_skull_projectile", () -> EntityType.Builder.<ExtendedWitherSkull>of(ExtendedWitherSkull::new, MobCategory.MISC)
+            ENTITIES.register("wither_skull", () -> EntityType.Builder.<ExtendedWitherSkull>of(ExtendedWitherSkull::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "wither_skull_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "wither_skull").toString()));
 
     public static final RegistryObject<EntityType<MagicArrowProjectile>> MAGIC_ARROW_PROJECTILE =
-            ENTITIES.register("magic_arrow_projectile", () -> EntityType.Builder.<MagicArrowProjectile>of(MagicArrowProjectile::new, MobCategory.MISC)
+            ENTITIES.register("magic_arrow", () -> EntityType.Builder.<MagicArrowProjectile>of(MagicArrowProjectile::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "magic_arrow_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "magic_arrow").toString()));
 
     public static final RegistryObject<EntityType<CreeperHeadProjectile>> CREEPER_HEAD_PROJECTILE =
-            ENTITIES.register("creeper_head_projectile", () -> EntityType.Builder.<CreeperHeadProjectile>of(CreeperHeadProjectile::new, MobCategory.MISC)
+            ENTITIES.register("creeper_head", () -> EntityType.Builder.<CreeperHeadProjectile>of(CreeperHeadProjectile::new, MobCategory.MISC)
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
-                    .build(new ResourceLocation(IronsSpellbooks.MODID, "creeper_head_projectile").toString()));
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "creeper_head").toString()));
 
     public static final RegistryObject<EntityType<FrozenHumanoid>> FROZEN_HUMANOID =
             ENTITIES.register("frozen_humanoid", () -> EntityType.Builder.<FrozenHumanoid>of(FrozenHumanoid::new, MobCategory.MISC)
@@ -319,6 +318,12 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "poison_arrow").toString()));
+
+    public static final RegistryObject<EntityType<SmallMagicArrow>> SMALL_MAGIC_ARROW =
+            ENTITIES.register("small_magic_arrow", () -> EntityType.Builder.<SmallMagicArrow>of(SmallMagicArrow::new, MobCategory.MISC)
+                    .sized(.5f, .5f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "small_magic_arrow").toString()));
 
     public static final RegistryObject<EntityType<PoisonSplash>> POISON_SPLASH =
             ENTITIES.register("poison_splash", () -> EntityType.Builder.<PoisonSplash>of(PoisonSplash::new, MobCategory.MISC)
@@ -447,4 +452,16 @@ public class EntityRegistry {
                     .sized(.9f, .9f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "firefly_swarm").toString()));
+
+    public static final RegistryObject<EntityType<FlameStrike>> FLAME_STRIKE =
+            ENTITIES.register("flame_strike", () -> EntityType.Builder.<FlameStrike>of(FlameStrike::new, MobCategory.MISC)
+                    .sized(5f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "flame_strike").toString()));
+
+    public static final RegistryObject<EntityType<ArrowVolleyEntity>> ARROW_VOLLEY_ENTITY =
+            ENTITIES.register("arrow_volley", () -> EntityType.Builder.<ArrowVolleyEntity>of(ArrowVolleyEntity::new, MobCategory.MISC)
+                    .sized(1f, 1f)
+                    .clientTrackingRange(64)
+                    .build(new ResourceLocation(IronsSpellbooks.MODID, "arrow_volley").toString()));
 }

@@ -481,5 +481,25 @@
       "irons_spellbooks:equip_spell_book_2",
       "irons_spellbooks:equip_spell_book_3"
     ]
+  },
+  "spell.heat_surge.prepare": {
+    "sounds": [
+      "irons_spellbooks:heat_surge_prepare"
+    ]
+  },
+  "spell.frostwave.prepare": {
+    "sounds": [
+      "irons_spellbooks:frostwave_prepare"
+    ]
+  },
+  "spell.arrow_volley.prepare": {
+    "sounds": [
+      "irons_spellbooks:arrow_volley_prepare"
+    ]
+  },
+  "bow_shoot": {
+    "sounds": [
+      "irons_spellbooks:bow_shoot"
+    ]
   }
 }

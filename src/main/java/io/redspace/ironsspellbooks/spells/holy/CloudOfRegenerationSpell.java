@@ -41,7 +41,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
             .setMaxLevel(5)
             .setCooldownSeconds(35)
-            .setEnabled(false)
+            .setDeprecated(true)
             .build();
 
     public CloudOfRegenerationSpell() {

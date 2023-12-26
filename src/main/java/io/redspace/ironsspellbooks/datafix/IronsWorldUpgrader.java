@@ -6,10 +6,8 @@ import com.google.common.collect.Lists;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.data.IronsSpellBooksWorldData;
 import io.redspace.ironsspellbooks.util.ByteHelper;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatMaps;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenCustomHashMap;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -20,7 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.storage.ChunkStorage;
 import net.minecraft.world.level.chunk.storage.RegionFile;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.LevelStorageSource;
 
 import java.io.File;
@@ -46,31 +43,13 @@ public class IronsWorldUpgrader {
     private int skipped;
     private int fixes;
     private boolean running;
-    private final Object2FloatMap<ResourceKey<Level>> progressMap = Object2FloatMaps.synchronize(new Object2FloatOpenCustomHashMap<>(Util.identityStrategy()));
     private static final Pattern REGEX = Pattern.compile("^r\\.(-?[0-9]+)\\.(-?[0-9]+)\\.mca$");
-    private final DimensionDataStorage overworldDataStorage;
-    private Set<ResourceKey<Level>> levels = null;
+    private final Set<ResourceKey<Level>> levels;
 
     public IronsWorldUpgrader(LevelStorageSource.LevelStorageAccess pLevelStorage, WorldGenSettings pWorldGenSettings) {
         this.levels = pWorldGenSettings.levels();
         this.levelStorage = pLevelStorage;
         this.dataFixer = new DataFixerBuilder(1).buildUnoptimized();
-
-        var file = this.levelStorage.getDimensionPath(Level.OVERWORLD).resolve("data").toFile();
-
-        try {
-            if (!file.exists()) {
-                file.mkdir();
-            }
-        } catch (Exception e) {
-
-        }
-
-        this.overworldDataStorage = new DimensionDataStorage(file, dataFixer);
-        IronsSpellBooksWorldData.INSTANCE = overworldDataStorage.computeIfAbsent(
-                IronsSpellBooksWorldData::load,
-                IronsSpellBooksWorldData::new,
-                IronsSpellbooks.MODID);
     }
 
     public boolean worldNeedsUpgrading() {
@@ -111,7 +90,6 @@ public class IronsWorldUpgrader {
 
             int previousVersion = IronsSpellBooksWorldData.INSTANCE.getDataVersion();
             IronsSpellBooksWorldData.INSTANCE.setDataVersion(IRONS_WORLD_DATA_VERSION);
-            overworldDataStorage.save();
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader V{} -> V{} completed", previousVersion, IRONS_WORLD_DATA_VERSION);
         }
     }

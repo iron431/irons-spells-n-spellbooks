@@ -44,7 +44,10 @@ public class CounterspellSpell extends AbstractSpell {
                     MobEffectRegistry.REND.get(),
                     MobEffectRegistry.SPIDER_ASPECT.get(),
                     MobEffectRegistry.BLIGHT.get(),
-                    MobEffectRegistry.OAKSKIN.get()
+                    MobEffectRegistry.OAKSKIN.get(),
+                    MobEffectRegistry.PLANAR_SIGHT.get(),
+                    MobEffectRegistry.HASTENED.get(),
+                    MobEffectRegistry.SLOWED.get()
             ));
 
     public CounterspellSpell() {
