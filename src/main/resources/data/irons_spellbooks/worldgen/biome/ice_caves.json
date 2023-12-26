@@ -3,10 +3,18 @@
   "downfall": 0.5,
   "precipitation": "rain",
   "effects": {
-    "sky_color": 12638463,
-    "fog_color": 8882055,
-    "water_color": 4159204,
+    "sky_color": 7907327,
+    "fog_color": 12638463,
+    "water_color": 4147940,
     "water_fog_color": 329011,
+    "grass_color": 9629104,
+    "foliage_color": 10610899,
+    "particle": {
+      "options": {
+        "type": "irons_spellbooks:snowflake"
+      },
+      "probability": 1
+    },
     "mood_sound": {
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000,

@@ -18,7 +18,7 @@ public class BiomeRegistry {
     public static final String ICE_CAVES = "ice_caves";
     public static final ResourceKey<Biome> ICE_CAVES_KEY = ResourceKey.create(ForgeRegistries.Keys.BIOMES, new ResourceLocation(IronsSpellbooks.MODID, ICE_CAVES));
 
-    RegistryObject<Biome> ice = BiomeRegistry.registerBiome(BiomeRegistry.ICE_CAVES, OverworldBiomes::lushCaves);
+    //RegistryObject<Biome> ice = ;
 
     public static RegistryObject<Biome> registerBiome(String id, Supplier<Biome> biomeSupplier) {
         return BIOMES.register(id, biomeSupplier);
@@ -26,5 +26,7 @@ public class BiomeRegistry {
 
     public static void register(IEventBus eventBus) {
         BIOMES.register(eventBus);
+        // this goes here.
+        BiomeRegistry.registerBiome(BiomeRegistry.ICE_CAVES, OverworldBiomes::lushCaves);
     }
 }
