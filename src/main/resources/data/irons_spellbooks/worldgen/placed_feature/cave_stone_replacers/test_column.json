@@ -1,0 +1,54 @@
+{
+  "feature": {
+    "type": "minecraft:dripstone_cluster",
+    "config": {
+      "floor_to_ceiling_search_range": 4,
+      "height": {
+        "type": "minecraft:uniform",
+        "value": {
+          "min_inclusive": 1,
+          "max_inclusive": 4
+        }
+      },
+      "radius": {
+        "type": "minecraft:uniform",
+        "value": {
+          "min_inclusive": 1,
+          "max_inclusive": 3
+        }
+      },
+      "max_stalagmite_stalactite_height_diff": 5,
+      "height_deviation": 1,
+      "dripstone_block_layer_thickness": 1,
+      "density": 1,
+      "wetness": 1,
+      "chance_of_dripstone_column_at_max_distance_from_center": 0.2,
+      "max_distance_from_edge_affecting_chance_of_dripstone_column": 1,
+      "max_distance_from_center_affecting_height_bias": 1
+    }
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 120
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "above_bottom": 6
+        },
+        "max_inclusive": {
+          "absolute": 64
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

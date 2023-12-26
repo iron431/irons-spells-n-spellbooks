@@ -1,18 +1,11 @@
 {
   "feature": {
-    "type": "minecraft:netherrack_replace_blobs",
+    "type": "minecraft:block_pile",
     "config": {
-      "state": {
-        "Name": "minecraft:calcite"
-      },
-      "target": {
-        "Name": "minecraft:deepslate"
-      },
-      "radius": {
-        "type": "minecraft:uniform",
-        "value": {
-          "min_inclusive": 5,
-          "max_inclusive": 12
+      "state_provider": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "minecraft:ice"
         }
       }
     }
@@ -20,7 +13,7 @@
   "placement": [
     {
       "type": "minecraft:count",
-      "count": 120
+      "count": 256
     },
     {
       "type": "minecraft:in_square"
@@ -30,10 +23,10 @@
       "height": {
         "type": "minecraft:uniform",
         "min_inclusive": {
-          "above_bottom": 0
+          "above_bottom": 6
         },
         "max_inclusive": {
-          "absolute": 256
+          "absolute": 64
         }
       }
     },

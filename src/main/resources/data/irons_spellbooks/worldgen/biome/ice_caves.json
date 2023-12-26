@@ -125,13 +125,16 @@
   },
   "features": [
     [
+      "irons_spellbooks:cave_stone_replacers/mixed_diorite",
+      "irons_spellbooks:cave_stone_replacers/mixed_ice",
       "irons_spellbooks:cave_stone_replacers/stone_to_snow",
       "irons_spellbooks:cave_stone_replacers/deepslate_to_snow",
       "irons_spellbooks:cave_stone_replacers/ice_streaks",
       "irons_spellbooks:cave_stone_replacers/icicles",
-      "irons_spellbooks:cave_stone_replacers/mixed_block",
       "irons_spellbooks:cave_stone_replacers/powder_snow_patches",
-      "irons_spellbooks:cave_stone_replacers/snow_layers"
+      "irons_spellbooks:cave_stone_replacers/snow_and_ice_patches",
+      "irons_spellbooks:cave_stone_replacers/snow_layers",
+      "irons_spellbooks:cave_stone_replacers/ice_piles"
     ],
     [
       "minecraft:lake_lava_underground",
@@ -175,8 +178,6 @@
       "minecraft:disk_gravel"
     ],
     [
-      "minecraft:spring_water",
-      "minecraft:spring_lava"
     ],
     [
       "minecraft:freeze_top_layer"

@@ -3,23 +3,23 @@
     "type": "minecraft:delta_feature",
     "config": {
       "contents": {
-        "Name": "minecraft:powder_snow"
+        "Name": "minecraft:snow_block"
       },
       "rim": {
-        "Name": "minecraft:snow_block"
+        "Name": "minecraft:packed_ice"
       },
       "size": {
         "type": "minecraft:biased_to_bottom",
         "value": {
           "min_inclusive": 3,
-          "max_inclusive": 16
+          "max_inclusive": 10
         }
       },
       "rim_size": {
         "type": "minecraft:biased_to_bottom",
         "value": {
           "min_inclusive": 1,
-          "max_inclusive": 6
+          "max_inclusive": 3
         }
       }
     }

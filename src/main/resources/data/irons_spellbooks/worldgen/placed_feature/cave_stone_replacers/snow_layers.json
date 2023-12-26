@@ -1,38 +1,52 @@
 {
   "feature": {
-    "type": "minecraft:block_pile",
+    "type": "minecraft:flower",
     "config": {
-      "state_provider": {
-        "type": "minecraft:randomized_int_state_provider",
-        "property": "layers",
-        "values": {
-          "type": "minecraft:biased_to_bottom",
-          "value": {
-            "min_inclusive": 1,
-            "max_inclusive": 4
+      "tries": 1,
+      "xz_spread": 10,
+      "y_spread": 3,
+      "feature": {
+        "feature": {
+          "type": "minecraft:block_pile",
+          "config": {
+            "state_provider": {
+              "type": "minecraft:randomized_int_state_provider",
+              "property": "layers",
+              "values": {
+                "type": "minecraft:biased_to_bottom",
+                "value": {
+                  "min_inclusive": 1,
+                  "max_inclusive": 4
+                }
+              },
+              "source": {
+                "type": "minecraft:simple_state_provider",
+                "state": {
+                  "Name": "minecraft:snow"
+                }
+              }
+            }
           }
         },
-        "source": {
-          "type": "minecraft:simple_state_provider",
-          "state": {
-            "Name": "minecraft:snow"
+        "placement": [
+          {
+            "type": "minecraft:count",
+            "count": {
+              "type": "minecraft:biased_to_bottom",
+              "value": {
+                "min_inclusive": 5,
+                "max_inclusive": 12
+              }
+            }
           }
-        }
+        ]
       }
     }
   },
   "placement": [
     {
       "type": "minecraft:count",
-      "count": {
-        "type": "minecraft:weighted_list",
-        "distribution": [
-          {
-            "weight": 100,
-            "data": 180
-          }
-        ]
-      }
+      "count": 256
     },
     {
       "type": "minecraft:in_square"

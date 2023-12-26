@@ -1,0 +1,44 @@
+{
+  "feature": {
+    "type": "minecraft:scattered_ore",
+    "config": {
+      "size": 20,
+      "discard_chance_on_air_exposure": 0,
+      "targets": [
+        {
+          "target": {
+            "predicate_type": "minecraft:tag_match",
+            "tag": "minecraft:base_stone_overworld"
+          },
+          "state": {
+            "Name": "minecraft:diorite"
+          }
+        }
+      ]
+    }
+  },
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 256
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "above_bottom": 6
+        },
+        "max_inclusive": {
+          "absolute": 64
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

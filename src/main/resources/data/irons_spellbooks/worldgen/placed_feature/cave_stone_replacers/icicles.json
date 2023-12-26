@@ -10,10 +10,12 @@
       "layers": [
         {
           "height": {
-            "type": "minecraft:uniform",
+            "type": "minecraft:clamped_normal",
             "value": {
-              "min_inclusive": 4,
-              "max_inclusive": 10
+              "min_inclusive": 2,
+              "max_inclusive": 8,
+              "mean": 4,
+              "deviation": 1
             }
           },
           "provider": {
@@ -29,15 +31,7 @@
   "placement": [
     {
       "type": "minecraft:count",
-      "count": {
-        "type": "minecraft:weighted_list",
-        "distribution": [
-          {
-            "weight": 100,
-            "data": 180
-          }
-        ]
-      }
+      "count": 256
     },
     {
       "type": "minecraft:in_square"

@@ -3,7 +3,7 @@
     "type": "minecraft:netherrack_replace_blobs",
     "config": {
       "state": {
-        "Name": "minecraft:calcite"
+        "Name": "minecraft:blackstone"
       },
       "target": {
         "Name": "minecraft:stone"
@@ -20,15 +20,7 @@
   "placement": [
     {
       "type": "minecraft:count",
-      "count": {
-        "type": "minecraft:weighted_list",
-        "distribution": [
-          {
-            "weight": 100,
-            "data": 180
-          }
-        ]
-      }
+      "count": 120
     },
     {
       "type": "minecraft:in_square"
