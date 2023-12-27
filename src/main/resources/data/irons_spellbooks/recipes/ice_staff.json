@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  F",
+    " A ",
+    "A  "
+  ],
+  "key": {
+    "A": {
+      "item": "irons_spellbooks:arcane_salvage"
+    },
+    "F": {
+      "item": "irons_spellbooks:frostward_ring"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:ice_staff",
+    "count": 1
+  }
+}
