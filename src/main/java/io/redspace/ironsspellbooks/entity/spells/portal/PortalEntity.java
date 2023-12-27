@@ -15,7 +15,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
@@ -35,7 +34,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     private static final EntityDataAccessor<Optional<UUID>> DATA_ID_OWNER_UUID;
-    private static final int collisionCheckTicks = 5;
+    private static final int collisionCheckTicks = 1;
 
     private long ticksToLive = 50000;
 
@@ -69,28 +68,28 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     public void checkForEntitiesToTeleport() {
         if (this.level.isClientSide) return;
 
-        level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(1.1, 1.1, 1.1)).forEach(livingEntity -> {
+        level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1.1, 1.1, 1.1), (entity -> !(entity instanceof PortalEntity))).forEach(entity -> {
             //TODO: remove extraneous logging
-            IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}", livingEntity);
+            IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}", entity);
 
-            PortalManager.INSTANCE.processDelayCooldown(uuid, livingEntity.getUUID(), collisionCheckTicks);
+            PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), collisionCheckTicks);
 
-            if (PortalManager.INSTANCE.canUsePortal(this, livingEntity)) {
-                IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{}", livingEntity);
+            if (PortalManager.INSTANCE.canUsePortal(this, entity)) {
+                IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{}", entity);
 
-                PortalManager.INSTANCE.addPortalCooldown(livingEntity, uuid);
+                PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
 
                 var portalData = PortalManager.INSTANCE.getPortalData(this);
                 portalData.getConnectedPortalPos(uuid).ifPresent(globalPos -> {
                     if (level.dimension().equals(globalPos.dimension())) {
-                        livingEntity.teleportTo(globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ());
+                        entity.teleportTo(globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ());
                     } else {
-                        IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", livingEntity, globalPos.dimension());
+                        IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, globalPos.dimension());
                         var server = level.getServer();
                         if (server != null) {
                             var dim = server.getLevel(globalPos.dimension());
                             if (dim != null) {
-                                livingEntity.changeDimension(dim, new PortalTeleporter(globalPos.pos()));
+                                entity.changeDimension(dim, new PortalTeleporter(globalPos.pos()));
                             }
                         }
                     }

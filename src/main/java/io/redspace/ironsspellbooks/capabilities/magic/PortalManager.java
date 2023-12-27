@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
@@ -18,13 +18,13 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
 
     public static final PortalManager INSTANCE = new PortalManager();
 
-    //HashMap<PortalID, HashMap<PlayerID, CooldownExpiration>>
+    //HashMap<PortalID, HashMap<EntityId, CooldownExpiration>>
     private final HashMap<UUID, HashMap<UUID, AtomicInteger>> cooldownLookup = new HashMap<>();
 
     //HashMap<PortalID, PortalData>
     private final HashMap<UUID, PortalData> portalLookup = new HashMap<>();
 
-    private static final int cooldownTicks = 15;
+    private static final int cooldownTicks = 10;
 
     public PortalData getPortalData(PortalEntity portalEntity) {
         return portalLookup.get(portalEntity.getUUID());
@@ -34,7 +34,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         portalLookup.put(portalEntityUUID, portalData);
     }
 
-    public void addPortalCooldown(LivingEntity livingEntity, UUID portalId) {
+    public void addPortalCooldown(Entity entity, UUID portalId) {
         var portalData = portalLookup.get(portalId);
 
         if (portalData == null) {
@@ -42,32 +42,21 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         }
 
         var playerMap = cooldownLookup.computeIfAbsent(portalData.getConnectedPortalUUID(portalId), k -> new HashMap<>());
-        playerMap.put(livingEntity.getUUID(), new AtomicInteger(cooldownTicks));
+        playerMap.put(entity.getUUID(), new AtomicInteger(cooldownTicks));
     }
 
-    public boolean isEntityOnCooldown(LivingEntity livingEntity, UUID portalId) {
+    public boolean isEntityOnCooldown(Entity entity, UUID portalId) {
         var playerMap = cooldownLookup.get(portalId);
 
-        if (playerMap != null && playerMap.containsKey(livingEntity.getUUID())) {
+        if (playerMap != null && playerMap.containsKey(entity.getUUID())) {
             return true;
         }
 
         return false;
     }
 
-    public boolean hasConnectedPortal(PortalEntity portalEntity) {
-        var portalData = portalLookup.get(portalEntity.getUUID());
-
-        if (portalData == null) {
-            IronsSpellbooks.LOGGER.debug("Portal manaager.. Shouldn't get here");
-        }
-
-        return portalData != null &&
-                portalLookup.get(portalEntity.getUUID()).getConnectedPortalUUID(portalEntity.getUUID()) != null;
-    }
-
-    public boolean canUsePortal(PortalEntity portalEntity, LivingEntity livingEntity) {
-        if (portalEntity == null || livingEntity == null) {
+    public boolean canUsePortal(PortalEntity portalEntity, Entity entity) {
+        if (portalEntity == null || entity == null) {
             return false;
         }
 
@@ -78,8 +67,8 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
                 portalData.portalEntityId2 != null &&
                 portalLookup.containsKey(portalData.portalEntityId1) &&
                 portalLookup.containsKey(portalData.portalEntityId2) &&
-                !isEntityOnCooldown(livingEntity, portalData.portalEntityId1) &&
-                !isEntityOnCooldown(livingEntity, portalData.portalEntityId2);
+                !isEntityOnCooldown(entity, portalData.portalEntityId1) &&
+                !isEntityOnCooldown(entity, portalData.portalEntityId2);
     }
 
     public void handleAntiMagic(PortalEntity portalEntity, MagicData magicData) {
