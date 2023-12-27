@@ -72,6 +72,13 @@ public class PlayerRecasts {
         recastLookup.put(recastInstance.spellId, recastInstance);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void tickRecasts() {
+        if (!recastLookup.isEmpty()) {
+            recastLookup.values().stream().toList().forEach(x -> x.remainingTicks--);
+        }
+    }
+
     public boolean hasRecastsActive() {
         return !recastLookup.isEmpty();
     }

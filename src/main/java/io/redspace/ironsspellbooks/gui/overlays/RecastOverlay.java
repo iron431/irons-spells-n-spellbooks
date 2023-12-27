@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -63,6 +64,9 @@ public class RecastOverlay extends GuiComponent {
                 //orb
                 blit(poseStack, orbX, barY, ORB_TEXTURE_OFFSET_X, ORB_TEXTURE_OFFSET_Y, ORB_WIDTH, ORB_WIDTH, 256, 256);
             }
+
+            int textX = (barX + (ORB_WIDTH + CONNECTOR_WIDTH) * total);
+            gui.getFont().draw(poseStack, String.format("%ds",recastInstance.getTicksRemaining()/20), textX, barY, ChatFormatting.WHITE.getColor());
         }
     }
 }

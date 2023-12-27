@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
@@ -19,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -123,6 +125,28 @@ public class PortalSpell extends AbstractSpell {
         portalEntity.setYRot(rotation);
         level.addFreshEntity(portalEntity);
         return portalEntity;
+    }
+
+    @Override
+    public void onRecastFinished(ServerPlayer serverPlayer, int spellLevel, int recastsRemainingAtCancel, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
+        if (recastResult != RecastResult.USED_ALL_RECASTS) {
+            if (castDataSerializable instanceof PortalData portalData && portalData.portalEntityId1 != null) {
+                if (portalData.globalPos1 != null) {
+                    var server = serverPlayer.getServer();
+                    if (server != null) {
+                        var level = server.getLevel(portalData.globalPos1.dimension());
+                        if (level != null) {
+                            var portal1 = level.getEntity(portalData.portalEntityId1);
+                            if (portal1 != null) {
+                                portal1.discard();
+                            } else {
+                                PortalManager.INSTANCE.removePortalData(portalData.portalEntityId1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public int getRecastDuration(int spellLevel, LivingEntity caster) {

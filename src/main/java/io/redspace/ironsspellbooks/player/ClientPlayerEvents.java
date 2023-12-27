@@ -50,6 +50,7 @@ public class ClientPlayerEvents {
         if (event.side.isClient() && event.phase == TickEvent.Phase.END && event.player == Minecraft.getInstance().player) {
             var level = Minecraft.getInstance().level;
 
+            ClientMagicData.getRecasts().tickRecasts();
             ClientMagicData.getCooldowns().tick(1);
             if (ClientMagicData.getCastDuration() > 0) {
                 ClientMagicData.handleCastDuration();

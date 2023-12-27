@@ -3,12 +3,14 @@ package io.redspace.ironsspellbooks.entity.spells.portal;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -36,7 +38,6 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     private static final EntityDataAccessor<Optional<UUID>> DATA_ID_OWNER_UUID;
-    private static final int collisionCheckTicks = 1;
 
     private long ticksToLive = 50000;
 
@@ -50,21 +51,24 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         super(portalEntityEntityType, level);
     }
 
-//    public UUID getOwnerUUID() {
-//        return ownerUUID;
-//    }
-//
-//    public LivingEntity getOwner() {
-//        if (owner == null && ownerUUID != null) {
-//            owner = level.getPlayerByUUID(ownerUUID);
-//        }
-//
-//        return owner;
-//    }
-
     @Override
     public void onAntiMagic(MagicData magicData) {
-        PortalManager.INSTANCE.handleAntiMagic(this, magicData);
+        if (!level.isClientSide) {
+            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
+            discard();
+        }
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        if (level.isClientSide) return;
+
+        var removalReason = getRemovalReason();
+        if (removalReason != null && removalReason.shouldDestroy()) {
+            PortalManager.INSTANCE.killPortal(uuid, getOwnerUUID());
+        }
+
+        super.onRemovedFromWorld();
     }
 
     public void checkForEntitiesToTeleport() {
@@ -74,7 +78,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
             //TODO: remove extraneous logging
             IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}", entity);
 
-            PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), collisionCheckTicks);
+            PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
 
             if (PortalManager.INSTANCE.canUsePortal(this, entity)) {
                 IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{}", entity);
@@ -118,13 +122,13 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
             spawnParticles(.5f, new Vector3f(.8f, .15f, .65f));
             spawnParticles(.36f, new Vector3f(.5f, .05f, .6f));
             spawnParticles(.2f, new Vector3f(1f, .2f, .7f));
-        } else if (level.getGameTime() % collisionCheckTicks == 0) {
-            PortalManager.INSTANCE.processCooldownTick(uuid, -collisionCheckTicks);
-            checkForEntitiesToTeleport();
+            return;
         }
 
-        ticksToLive--;
-        if (ticksToLive <= 0) {
+        PortalManager.INSTANCE.processCooldownTick(uuid, -1);
+        checkForEntitiesToTeleport();
+
+        if (--ticksToLive <= 0) {
             discard();
         }
     }
@@ -141,19 +145,31 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         }
     }
 
+    public void setOwnerUUID(@Nullable UUID uuid) {
+        this.entityData.set(DATA_ID_OWNER_UUID, Optional.ofNullable(uuid));
+    }
+
     public UUID getOwnerUUID() {
         return this.entityData
                 .get(DATA_ID_OWNER_UUID)
                 .orElseGet(() -> this.entityData.get(DATA_ID_OWNER_UUID).orElse(null));
     }
 
+//    public UUID getOwnerUUID() {
+//        return ownerUUID;
+//    }
+//
+//    public LivingEntity getOwner() {
+//        if (owner == null && ownerUUID != null) {
+//            owner = level.getPlayerByUUID(ownerUUID);
+//        }
+//
+//        return owner;
+//    }
+
     @Override
     public @NotNull Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    public void setOwnerUUID(@Nullable UUID uuid) {
-        this.entityData.set(DATA_ID_OWNER_UUID, Optional.ofNullable(uuid));
     }
 
     @Override
@@ -172,22 +188,6 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
         compoundTag.putLong("ticksToLive", ticksToLive);
     }
-
-//    @Override
-//    protected void readAdditionalSaveData(CompoundTag compoundTag) {
-//        if (compoundTag.contains("ownerUUID")) {
-//            ownerUUID = compoundTag.getUUID("ownerUUID");
-//        }
-//    }
-//
-//    @Override
-//    protected void addAdditionalSaveData(@NotNull CompoundTag compoundTag) {
-//        if (ownerUUID != null) {
-//            compoundTag.putUUID("ownerUUID", ownerUUID);
-//        }
-//    }
-
-
 }
 
 
