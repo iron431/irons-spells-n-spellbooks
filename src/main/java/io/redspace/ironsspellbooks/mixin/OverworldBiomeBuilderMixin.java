@@ -56,9 +56,6 @@ import java.util.function.Consumer;
 @Mixin(OverworldBiomeBuilder.class)
 public abstract class OverworldBiomeBuilderMixin {
 
-    @Shadow
-    @Final
-    private Climate.Parameter FULL_RANGE;
     private final Climate.Parameter FULL_SPAN = Climate.Parameter.span(-1.0F, 1.0F);
 
     private void addCaveBiome(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> consumer, Climate.Parameter temperature, Climate.Parameter humidity, Climate.Parameter continentalness, Climate.Parameter erosion, Climate.Parameter weirdness, float offset, ResourceKey<Biome> biome) {
@@ -67,10 +64,8 @@ public abstract class OverworldBiomeBuilderMixin {
 
     @Inject(method="addUndergroundBiomes", at = @At("TAIL"))
     private void writeCaveBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> consumer, CallbackInfo ci) {
-        // Rose Quartz Caves
-        this.addCaveBiome(consumer, Climate.Parameter .span(0.5F, 1F), FULL_SPAN, Climate.Parameter .span(-1.0F, -0.3F), FULL_SPAN, FULL_SPAN, 0.0F, BiomeRegistry.ICE_CAVES_KEY);
-
-        // Goop Caves
-        //this.addCaveBiome(consumer, Climate.Parameter .span(-1.0F, -0.7F), Climate.Parameter .span(-1.0F, -0.5F), FULL_SPAN, FULL_SPAN, FULL_RANGE, 0.0F, ModBiomes.GOOP_CAVES);
+        //https://minecraft.fandom.com/wiki/Biome#Temperature_2
+        //                          Temperature                           Humiditiy                     continentialness                    erosion     weridness
+        this.addCaveBiome(consumer, Climate.Parameter.span(-1.0F, 0F), Climate.Parameter.point(0), Climate.Parameter.span(-1.0F, -0.3F), FULL_SPAN, Climate.Parameter.span(-1.0F, -0.3F), 0.0F, BiomeRegistry.ICE_CAVES_KEY);
     }
 }

@@ -213,10 +213,10 @@ public class ClientPlayerEvents {
 
     @SubscribeEvent
     public static void customFog(ViewportEvent.RenderFog event) {
-        //var player = MinecraftInstanceHelper.getPlayer();
-        //if (player != null) {
-        //    var biome = player.level.getBiome(player.blockPosition());
-        //    if (biome.is(BiomeRegistry.ICE_CAVES_KEY)) {
+        var player = MinecraftInstanceHelper.getPlayer();
+        if (player != null) {
+            var biome = player.level.getBiome(player.blockPosition());
+            if (biome.is(BiomeRegistry.ICE_CAVES_KEY)) {
                 //event.setNearPlaneDistance(0f);
                 //event.setFarPlaneDistance(1f);
                 event.setNearPlaneDistance(-4);
@@ -225,8 +225,8 @@ public class ClientPlayerEvents {
         RenderSystem.setShaderFogStart(event.getNearPlaneDistance());
         RenderSystem.setShaderFogEnd(event.getFarPlaneDistance());
         RenderSystem.setShaderFogShape(event.getFogShape());
-        //    }
-        //}
+            }
+        }
 
     }
 }
