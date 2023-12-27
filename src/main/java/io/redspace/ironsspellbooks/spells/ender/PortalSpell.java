@@ -14,8 +14,6 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.ironsspellbooks.util.Log;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -26,9 +24,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +68,7 @@ public class PortalSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundEvents.PORTAL_TRIGGER);
+        return Optional.of(SoundEvents.ENDERMAN_TELEPORT);
     }
 
     @Override
@@ -100,10 +96,20 @@ public class PortalSpell extends AbstractSpell {
                 if (portalData.globalPos1 != null & portalData.portalEntityId1 != null) {
                     portalData.globalPos2 = PortalPos.of(player.level.dimension(), portalLocation, portalRotation);
                     portalData.setPortalDuration(getPortalDuration(spellLevel, player));
-                    PortalEntity secondPortalEntity = setupPortalEntity(level, portalData, player, portalLocation, portalRotation);
+                    PortalEntity secondPortalEntity = setupPortalEntity(serverLevel, portalData, player, portalLocation, portalRotation);
+                    secondPortalEntity.setPortalConnected();
                     portalData.portalEntityId2 = secondPortalEntity.getUUID();
                     PortalManager.INSTANCE.addPortalData(portalData.portalEntityId1, portalData);
                     PortalManager.INSTANCE.addPortalData(portalData.portalEntityId2, portalData);
+
+                    var firstPortalLevel = serverLevel.getServer().getLevel(portalData.globalPos1.dimension());
+                    if (firstPortalLevel != null) {
+                        var firstPortalEntity = (PortalEntity) firstPortalLevel.getEntity(portalData.portalEntityId1);
+                        if (firstPortalEntity != null) {
+                            firstPortalEntity.setPortalConnected();
+                            firstPortalEntity.setTicksToLive(portalData.ticksToLive);
+                        }
+                    }
                 }
             } else {
                 var portalData = new PortalData();

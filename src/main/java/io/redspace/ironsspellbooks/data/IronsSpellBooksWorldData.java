@@ -36,7 +36,6 @@ public class IronsSpellBooksWorldData extends SavedData {
                 IronsSpellbooks.MODID);
 
         IronsSpellBooksWorldData.INSTANCE.overworldDataStorage = overworldDataStorage;
-
     }
 
     public IronsSpellBooksWorldData() {
@@ -51,7 +50,7 @@ public class IronsSpellBooksWorldData extends SavedData {
         return dataVersion;
     }
 
-    public void save(){
+    public void save() {
         overworldDataStorage.save();
     }
 

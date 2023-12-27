@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.data.IronsSpellBooksWorldData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +34,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
 
     public void addPortalData(UUID portalEntityUUID, PortalData portalData) {
         portalLookup.put(portalEntityUUID, portalData);
+        IronsSpellBooksWorldData.INSTANCE.setDirty();
     }
 
     public void addPortalCooldown(Entity entity, UUID portalId) {
@@ -53,6 +55,17 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
             return true;
         }
 
+        return false;
+    }
+
+    public boolean isPortalConnected(UUID portalID) {
+        var portalData = portalLookup.get(portalID);
+        if (portalData != null) {
+            var connectedPortal = portalData.getConnectedPortalUUID(portalID);
+            if (connectedPortal != null) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -96,6 +109,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     public void removePortalData(UUID portalUUID) {
         portalLookup.remove(portalUUID);
         cooldownLookup.remove(portalUUID);
+        IronsSpellBooksWorldData.INSTANCE.setDirty();
     }
 
     public void killPortal(UUID portalUUID, UUID ownerUUID) {
@@ -104,7 +118,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         if (removedPortalData != null) {
             if (removedPortalData.portalEntityId2 == null || removedPortalData.globalPos2 == null) {
                 tryCancelRecast(portalUUID, ownerUUID);
-
+            } else {
                 var connectedPortalUUID = removedPortalData.getConnectedPortalUUID(portalUUID);
                 if (connectedPortalUUID != null) {
                     removedPortalData = portalLookup.remove(connectedPortalUUID);
@@ -124,6 +138,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         }
 
         cooldownLookup.remove(portalUUID);
+        IronsSpellBooksWorldData.INSTANCE.setDirty();
     }
 
     private void tryCancelRecast(UUID portalUUID, UUID ownerUUID) {
@@ -137,7 +152,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
                 if (recastInstance != null) {
                     if (recastInstance.castData instanceof PortalData portalData) {
                         if (portalData.portalEntityId1 == portalUUID) {
-                            playerRecasts.removeRecast(spellId);
+                            playerRecasts.removeRecast(recastInstance, RecastResult.COUNTERSPELL);
                             return;
                         }
                     }
@@ -145,7 +160,6 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
             }
         });
     }
-
 
     @Override
     public CompoundTag serializeNBT() {

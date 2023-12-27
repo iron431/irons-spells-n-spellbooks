@@ -169,7 +169,7 @@ public class PlayerRecasts {
         triggerRecastComplete(recastInstance, recastResult);
     }
 
-    private void removeRecast(RecastInstance recastInstance, RecastResult recastResult) {
+    public void removeRecast(RecastInstance recastInstance, RecastResult recastResult) {
         removeRecast(recastInstance, recastResult, true);
     }
 

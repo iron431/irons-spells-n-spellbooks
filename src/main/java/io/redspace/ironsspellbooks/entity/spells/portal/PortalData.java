@@ -1,9 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.portal;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.util.NBT;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,13 +15,13 @@ public class PortalData implements ICastDataSerializable {
     public UUID portalEntityId1;
     public PortalPos globalPos2;
     public UUID portalEntityId2;
-    public long expiresOnGameTick;
+    public int ticksToLive;
 
     public PortalData() {
     }
 
     public void setPortalDuration(int ticksToLive) {
-        expiresOnGameTick = IronsSpellbooks.OVERWORLD.getGameTime() + ticksToLive;
+        this.ticksToLive = ticksToLive;
     }
 
     public Optional<PortalPos> getConnectedPortalPos(UUID portalId) {
@@ -48,7 +46,7 @@ public class PortalData implements ICastDataSerializable {
 
     @Override
     public void writeToBuffer(FriendlyByteBuf buffer) {
-        buffer.writeLong(expiresOnGameTick);
+        buffer.writeLong(ticksToLive);
 
         if (globalPos1 != null && portalEntityId1 != null) {
             buffer.writeBoolean(true);
@@ -83,7 +81,7 @@ public class PortalData implements ICastDataSerializable {
 
     @Override
     public void readFromBuffer(FriendlyByteBuf buffer) {
-        expiresOnGameTick = buffer.readLong();
+        ticksToLive = buffer.readInt();
         if (buffer.readBoolean()) {
             globalPos1 = readPortalPosFromBuffer(buffer);
             portalEntityId1 = buffer.readUUID();
@@ -103,7 +101,7 @@ public class PortalData implements ICastDataSerializable {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putLong("remainingTicks", expiresOnGameTick - IronsSpellbooks.OVERWORLD.getGameTime());
+        tag.putInt("ticksToLive", ticksToLive);
 
         if (globalPos1 != null) {
             tag.put("gp1", NBT.writePortalPos(globalPos1));
@@ -120,8 +118,7 @@ public class PortalData implements ICastDataSerializable {
 
     @Override
     public void deserializeNBT(CompoundTag compoundTag) {
-        var remainingTicks = compoundTag.getLong("remainingTicks");
-        expiresOnGameTick = IronsSpellbooks.OVERWORLD.getGameTime() + remainingTicks;
+        ticksToLive = compoundTag.getInt("ticksToLive");
 
         if (compoundTag.contains("gp1") && compoundTag.contains("pe1")) {
             this.globalPos1 = NBT.readPortalPos(compoundTag.getCompound("gp1"));

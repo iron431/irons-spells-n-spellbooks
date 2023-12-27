@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -35,16 +34,19 @@ import java.util.UUID;
 public class PortalEntity extends Entity implements AntiMagicSusceptible {
     static {
         DATA_ID_OWNER_UUID = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+        DATA_PORTAL_CONNECTED = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.BOOLEAN);
     }
 
     private static final EntityDataAccessor<Optional<UUID>> DATA_ID_OWNER_UUID;
+    private static final EntityDataAccessor<Boolean> DATA_PORTAL_CONNECTED;
 
-    private long ticksToLive = 50000;
+    private long ticksToLive = 0;
+    private boolean isPortalConnected = false;
 
     public PortalEntity(Level level, PortalData portalData) {
         this(EntityRegistry.PORTAL.get(), level);
         PortalManager.INSTANCE.addPortalData(uuid, portalData);
-        this.ticksToLive = (portalData.expiresOnGameTick - level.getGameTime());
+        this.ticksToLive = portalData.ticksToLive;
     }
 
     public PortalEntity(EntityType<PortalEntity> portalEntityEntityType, Level level) {
@@ -54,7 +56,6 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     @Override
     public void onAntiMagic(MagicData magicData) {
         if (!level.isClientSide) {
-            MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             discard();
         }
     }
@@ -67,6 +68,8 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         if (removalReason != null && removalReason.shouldDestroy()) {
             PortalManager.INSTANCE.killPortal(uuid, getOwnerUUID());
         }
+
+        MagicManager.spawnParticles(level, ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
 
         super.onRemovedFromWorld();
     }
@@ -115,13 +118,18 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         return new Vec3(globalPos.pos().x - offset.x, globalPos.pos().y - offset.y, globalPos.pos().z - offset.z);
     }
 
+    public void setTicksToLive(int ticksToLive) {
+        this.ticksToLive = ticksToLive;
+    }
+
     @Override
     public void tick() {
-        //IronsSpellbooks.LOGGER.debug("PortalEntity.tick isClientSide:{}, connectedPortal:{}", level.isClientSide, connectedPortal);
         if (level.isClientSide) {
             spawnParticles(.5f, new Vector3f(.8f, .15f, .65f));
-            spawnParticles(.36f, new Vector3f(.5f, .05f, .6f));
-            spawnParticles(.2f, new Vector3f(1f, .2f, .7f));
+            if (isPortalConnected) {
+                spawnParticles(.36f, new Vector3f(.5f, .05f, .6f));
+                spawnParticles(.2f, new Vector3f(1f, .2f, .7f));
+            }
             return;
         }
 
@@ -134,7 +142,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     public void spawnParticles(float radius, Vector3f color) {
-        int particles = 50;
+        int particles = 40;
         float step = 6.28f / particles;
         Vec3 center = this.getBoundingBox().getCenter();
         for (int i = 0; i < particles; i++) {
@@ -155,17 +163,13 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                 .orElseGet(() -> this.entityData.get(DATA_ID_OWNER_UUID).orElse(null));
     }
 
-//    public UUID getOwnerUUID() {
-//        return ownerUUID;
-//    }
-//
-//    public LivingEntity getOwner() {
-//        if (owner == null && ownerUUID != null) {
-//            owner = level.getPlayerByUUID(ownerUUID);
-//        }
-//
-//        return owner;
-//    }
+    public void setPortalConnected() {
+        this.entityData.set(DATA_PORTAL_CONNECTED, true);
+    }
+
+    public boolean getPortalConnected() {
+        return this.entityData.get(DATA_PORTAL_CONNECTED);
+    }
 
     @Override
     public @NotNull Packet<?> getAddEntityPacket() {
@@ -175,12 +179,36 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     @Override
     protected void defineSynchedData() {
         this.entityData.define(DATA_ID_OWNER_UUID, Optional.empty());
+        this.entityData.define(DATA_PORTAL_CONNECTED, false);
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
+        super.onSyncedDataUpdated(pKey);
+
+        if (!level.isClientSide) {
+            return;
+        }
+
+        if (pKey.getId() == DATA_PORTAL_CONNECTED.getId()) {
+            isPortalConnected = getPortalConnected();
+        }
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         if (compoundTag.contains("ticksToLive")) {
             ticksToLive = compoundTag.getLong("ticksToLive");
+        }
+
+        var portalData = PortalManager.INSTANCE.getPortalData(this);
+
+        if (portalData == null) {
+            ticksToLive = 0;
+        } else {
+            if (portalData.portalEntityId1 != null && portalData.portalEntityId2 != null) {
+                setPortalConnected();
+            }
         }
     }
 
