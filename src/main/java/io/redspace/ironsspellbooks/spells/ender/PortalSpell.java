@@ -11,7 +11,9 @@ import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
+import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.ironsspellbooks.util.Log;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -19,10 +21,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,41 +90,39 @@ public class PortalSpell extends AbstractSpell {
         }
 
         if (entity instanceof Player player && level instanceof ServerLevel serverLevel) {
-
+            Vec3 portalLocation = TeleportSpell.findTeleportLocation(level, entity, getCastDistance(spellLevel, entity));
+            float portalRotation = 90 + Utils.getAngle(portalLocation.x, portalLocation.z, entity.getX(), entity.getZ()) * Mth.RAD_TO_DEG;
             if (playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId())) {
                 var portalData = (PortalData) playerMagicData.getPlayerRecasts().getRecastInstance(getSpellId()).getCastData();
 
                 if (portalData.globalPos1 != null & portalData.portalEntityId1 != null) {
-                    var blockHitResult = Utils.getTargetBlock(level, player, ClipContext.Fluid.NONE, getCastDistance(spellLevel, player));
-                    var pos = blockHitResult.getBlockPos();
-                    portalData.globalPos2 = GlobalPos.of(player.level.dimension(), pos.above(2));
+                    portalData.globalPos2 = PortalPos.of(player.level.dimension(), portalLocation, portalRotation);
                     portalData.setPortalDuration(getPortalDuration(spellLevel, player));
-                    var secondPortalEntity = new PortalEntity(level, portalData);
-                    secondPortalEntity.setOwnerUUID(player.getUUID());
+                    PortalEntity secondPortalEntity = setupPortalEntity(level, portalData, player, portalLocation, portalRotation);
                     portalData.portalEntityId2 = secondPortalEntity.getUUID();
-
                     PortalManager.INSTANCE.addPortalData(portalData.portalEntityId1, portalData);
                     PortalManager.INSTANCE.addPortalData(portalData.portalEntityId2, portalData);
-
-                    secondPortalEntity.moveTo(new Vec3(portalData.globalPos2.pos().getX(), portalData.globalPos2.pos().getY(), portalData.globalPos2.pos().getZ()));
-                    level.addFreshEntity(secondPortalEntity);
                 }
             } else {
-                var blockHitResult = Utils.getTargetBlock(level, player, ClipContext.Fluid.NONE, getCastDistance(spellLevel, player));
-                var pos = blockHitResult.getBlockPos();
                 var portalData = new PortalData();
                 portalData.setPortalDuration(getRecastDuration(spellLevel, player) + 10);
-                var portalEntity = new PortalEntity(level, portalData);
-                portalEntity.setOwnerUUID(player.getUUID());
-                portalData.globalPos1 = GlobalPos.of(player.level.dimension(), pos.above(2));
+                PortalEntity portalEntity = setupPortalEntity(level, portalData, player, portalLocation, portalRotation);
+                portalData.globalPos1 = PortalPos.of(player.level.dimension(), portalLocation, portalRotation);
                 portalData.portalEntityId1 = portalEntity.getUUID();
-                portalEntity.moveTo(new Vec3(portalData.globalPos1.pos().getX(), portalData.globalPos1.pos().getY(), portalData.globalPos1.pos().getZ()));
-                level.addFreshEntity(portalEntity);
                 playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, 1, getRecastDuration(spellLevel, player), portalData));
             }
         }
 
         super.onCast(level, spellLevel, entity, playerMagicData);
+    }
+
+    private PortalEntity setupPortalEntity(Level level, PortalData portalData, Player owner, Vec3 spawnPos, float rotation) {
+        var portalEntity = new PortalEntity(level, portalData);
+        portalEntity.setOwnerUUID(owner.getUUID());
+        portalEntity.moveTo(spawnPos);
+        portalEntity.setYRot(rotation);
+        level.addFreshEntity(portalEntity);
+        return portalEntity;
     }
 
     public int getRecastDuration(int spellLevel, LivingEntity caster) {
@@ -140,7 +142,7 @@ public class PortalSpell extends AbstractSpell {
 
     private float getCastDistance(int spellLevel, LivingEntity sourceEntity) {
         //TODO: revisit this
-        return 200;
+        return 48;
     }
 
     @Override

@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.data;
 
 import com.mojang.datafixers.DataFixerBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -65,6 +66,7 @@ public class IronsSpellBooksWorldData extends SavedData {
         var tag = new CompoundTag();
         tag.putInt("dataVersion", dataVersion);
         tag.put("GuidingBoltManager", GuidingBoltManager.INSTANCE.serializeNBT());
+        tag.put("PortalManager", PortalManager.INSTANCE.serializeNBT());
         return tag;
     }
 
@@ -73,6 +75,9 @@ public class IronsSpellBooksWorldData extends SavedData {
 
         if (tag.contains("GuidingBoltManager")) {
             GuidingBoltManager.INSTANCE.deserializeNBT((CompoundTag) tag.get("GuidingBoltManager"));
+        }
+        if (tag.contains("PortalManager")) {
+            PortalManager.INSTANCE.deserializeNBT((CompoundTag) tag.get("PortalManager"));
         }
 
         return new IronsSpellBooksWorldData(dataVersion);

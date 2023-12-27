@@ -14,8 +14,8 @@ import java.util.function.Function;
 public class PortalTeleporter implements ITeleporter {
     private final Vec3 destinationPosition;
 
-    PortalTeleporter(BlockPos destinationPosition) {
-        this.destinationPosition = new Vec3(destinationPosition.getX(), destinationPosition.getY(), destinationPosition.getZ());
+    PortalTeleporter(Vec3 destinationPosition) {
+        this.destinationPosition = destinationPosition;
     }
 
     @Override

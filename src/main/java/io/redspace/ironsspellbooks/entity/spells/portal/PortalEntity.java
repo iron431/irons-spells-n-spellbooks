@@ -6,6 +6,8 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -68,7 +70,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     public void checkForEntitiesToTeleport() {
         if (this.level.isClientSide) return;
 
-        level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(1.1, 1.1, 1.1), (entity -> !(entity instanceof PortalEntity))).forEach(entity -> {
+        level.getEntitiesOfClass(Entity.class, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL))).forEach(entity -> {
             //TODO: remove extraneous logging
             IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}", entity);
 
@@ -80,16 +82,22 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                 PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
 
                 var portalData = PortalManager.INSTANCE.getPortalData(this);
-                portalData.getConnectedPortalPos(uuid).ifPresent(globalPos -> {
-                    if (level.dimension().equals(globalPos.dimension())) {
-                        entity.teleportTo(globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ());
+                portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
+                    float deltaRot = (entity.getYRot() - this.getYRot()) + (portalPos.rotation() - this.getYRot());
+                    Vec3 offset = new Vec3(this.getX() - entity.getX(), this.getY() - entity.getY(), this.getZ() - entity.getZ()).yRot(deltaRot * Mth.DEG_TO_RAD);
+                    Vec3 destination = portalPos.pos().subtract(offset);
+                    entity.setYRot(entity.getYRot() + deltaRot);
+                    entity.setDeltaMovement(entity.getDeltaMovement().yRot(deltaRot));
+                    if (level.dimension().equals(portalPos.dimension())) {
+                        entity.teleportTo(destination.x, destination.y, destination.z);
+                        entity.setOldPosAndRot();
                     } else {
-                        IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, globalPos.dimension());
+                        IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
                         var server = level.getServer();
                         if (server != null) {
-                            var dim = server.getLevel(globalPos.dimension());
+                            var dim = server.getLevel(portalPos.dimension());
                             if (dim != null) {
-                                entity.changeDimension(dim, new PortalTeleporter(globalPos.pos()));
+                                entity.changeDimension(dim, new PortalTeleporter(destination));
                             }
                         }
                     }
@@ -98,11 +106,18 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         });
     }
 
+    private Vec3 getDestinationPosition(PortalPos globalPos, Entity entity) {
+        Vec3 offset = new Vec3(this.getX() - entity.getX(), this.getY() - entity.getY(), this.getZ() - entity.getZ());
+        return new Vec3(globalPos.pos().x - offset.x, globalPos.pos().y - offset.y, globalPos.pos().z - offset.z);
+    }
+
     @Override
     public void tick() {
         //IronsSpellbooks.LOGGER.debug("PortalEntity.tick isClientSide:{}, connectedPortal:{}", level.isClientSide, connectedPortal);
         if (level.isClientSide) {
-            spawnParticles();
+            spawnParticles(.5f, new Vector3f(.8f, .15f, .65f));
+            spawnParticles(.36f, new Vector3f(.5f, .05f, .6f));
+            spawnParticles(.2f, new Vector3f(1f, .2f, .7f));
         } else if (level.getGameTime() % collisionCheckTicks == 0) {
             PortalManager.INSTANCE.processCooldownTick(uuid, -collisionCheckTicks);
             checkForEntitiesToTeleport();
@@ -114,16 +129,15 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
         }
     }
 
-    public void spawnParticles() {
-        int particles = 100;
-        float radius = 1f;
+    public void spawnParticles(float radius, Vector3f color) {
+        int particles = 50;
         float step = 6.28f / particles;
-        var color = new Vector3f(.5f, .05f, .6f);
+        Vec3 center = this.getBoundingBox().getCenter();
         for (int i = 0; i < particles; i++) {
             float x = Mth.cos(i * step) * radius;
             float y = Mth.sin(i * step) * radius * 2;
-            Vec3 offset = new Vec3(x, y, 0).yRot(this.getYRot() * Mth.DEG_TO_RAD);
-            level.addParticle(new DustParticleOptions(color, .5f), getX() + offset.x, getY() + offset.y, getZ() + offset.z, 1d, 0d, 0);
+            Vec3 offset = new Vec3(x, y, 0).yRot(-this.getYRot() * Mth.DEG_TO_RAD);
+            level.addParticle(new DustParticleOptions(color, .5f), true, center.x + offset.x, center.y + offset.y, center.z + offset.z, 1d, 0d, 0);
         }
     }
 

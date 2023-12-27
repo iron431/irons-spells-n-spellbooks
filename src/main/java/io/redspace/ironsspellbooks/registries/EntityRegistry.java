@@ -468,7 +468,7 @@ public class EntityRegistry {
 
     public static final RegistryObject<EntityType<PortalEntity>> PORTAL =
             ENTITIES.register("portal", () -> EntityType.Builder.<PortalEntity>of(PortalEntity::new, MobCategory.MISC)
-                    .sized(1f, 1f)
+                    .sized(.8f, 2f)
                     .clientTrackingRange(64)
                     .build(new ResourceLocation(IronsSpellbooks.MODID, "portal").toString()));
 }

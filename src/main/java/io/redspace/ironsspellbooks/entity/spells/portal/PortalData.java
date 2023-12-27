@@ -4,16 +4,18 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import io.redspace.ironsspellbooks.util.NBT;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class PortalData implements ICastDataSerializable {
-    public GlobalPos globalPos1;
+    public PortalPos globalPos1;
     public UUID portalEntityId1;
-    public GlobalPos globalPos2;
+    public PortalPos globalPos2;
     public UUID portalEntityId2;
     public long expiresOnGameTick;
 
@@ -24,7 +26,7 @@ public class PortalData implements ICastDataSerializable {
         expiresOnGameTick = IronsSpellbooks.OVERWORLD.getGameTime() + ticksToLive;
     }
 
-    public Optional<GlobalPos> getConnectedPortalPos(UUID portalId) {
+    public Optional<PortalPos> getConnectedPortalPos(UUID portalId) {
         if (portalEntityId1.equals(portalId)) {
             return Optional.of(globalPos2);
         } else if (portalEntityId2.equals(portalId)) {
@@ -50,12 +52,12 @@ public class PortalData implements ICastDataSerializable {
 
         if (globalPos1 != null && portalEntityId1 != null) {
             buffer.writeBoolean(true);
-            buffer.writeGlobalPos(globalPos1);
+            writePortalPosToBuffer(buffer, globalPos1);
             buffer.writeUUID(portalEntityId1);
 
             if (globalPos2 != null && portalEntityId2 != null) {
                 buffer.writeBoolean(true);
-                buffer.writeGlobalPos(globalPos2);
+                writePortalPosToBuffer(buffer, globalPos2);
                 buffer.writeUUID(portalEntityId2);
             } else {
                 buffer.writeBoolean(false);
@@ -65,15 +67,29 @@ public class PortalData implements ICastDataSerializable {
         }
     }
 
+    //TODO: make buffer utils class?
+    private void writePortalPosToBuffer(FriendlyByteBuf buffer, PortalPos pos) {
+        buffer.writeResourceKey(pos.dimension());
+        Vec3 vec3 = pos.pos();
+        buffer.writeInt((int) (vec3.x * 10));
+        buffer.writeInt((int) (vec3.y * 10));
+        buffer.writeInt((int) (vec3.z * 10));
+        buffer.writeFloat(pos.rotation());
+    }
+
+    private PortalPos readPortalPosFromBuffer(FriendlyByteBuf buffer) {
+        return PortalPos.of(buffer.readResourceKey(Registry.DIMENSION_REGISTRY), new Vec3(buffer.readInt() / 10.0, buffer.readInt() / 10.0, buffer.readInt() / 10.0), buffer.readFloat());
+    }
+
     @Override
     public void readFromBuffer(FriendlyByteBuf buffer) {
         expiresOnGameTick = buffer.readLong();
         if (buffer.readBoolean()) {
-            globalPos1 = buffer.readGlobalPos();
+            globalPos1 = readPortalPosFromBuffer(buffer);
             portalEntityId1 = buffer.readUUID();
 
             if (buffer.readBoolean()) {
-                globalPos2 = buffer.readGlobalPos();
+                globalPos2 = readPortalPosFromBuffer(buffer);
                 portalEntityId2 = buffer.readUUID();
             }
         }
@@ -90,11 +106,11 @@ public class PortalData implements ICastDataSerializable {
         tag.putLong("remainingTicks", expiresOnGameTick - IronsSpellbooks.OVERWORLD.getGameTime());
 
         if (globalPos1 != null) {
-            tag.put("gp1", NBT.writeGlobalPos(globalPos1));
+            tag.put("gp1", NBT.writePortalPos(globalPos1));
             tag.putUUID("pe1", portalEntityId1);
 
             if (globalPos2 != null) {
-                tag.put("gp2", NBT.writeGlobalPos(globalPos2));
+                tag.put("gp2", NBT.writePortalPos(globalPos2));
                 tag.putUUID("pe2", portalEntityId2);
             }
         }
@@ -108,11 +124,11 @@ public class PortalData implements ICastDataSerializable {
         expiresOnGameTick = IronsSpellbooks.OVERWORLD.getGameTime() + remainingTicks;
 
         if (compoundTag.contains("gp1") && compoundTag.contains("pe1")) {
-            this.globalPos1 = NBT.readGlobalPos(compoundTag.getCompound("gp1"));
+            this.globalPos1 = NBT.readPortalPos(compoundTag.getCompound("gp1"));
             this.portalEntityId1 = compoundTag.getUUID("pe1");
 
             if (compoundTag.contains("gp2") && compoundTag.contains("pe2")) {
-                this.globalPos2 = NBT.readGlobalPos(compoundTag.getCompound("gp2"));
+                this.globalPos2 = NBT.readPortalPos(compoundTag.getCompound("gp2"));
                 this.portalEntityId2 = compoundTag.getUUID("pe2");
             }
         }
