@@ -31,12 +31,10 @@ public class GenericDefendVillageTargetGoal extends TargetGoal {
      */
     public boolean canUse() {
         AABB aabb = this.protector.getBoundingBox().inflate(10.0D, 8.0D, 10.0D);
-        List<? extends LivingEntity> list = this.protector.level.getNearbyEntities(Villager.class, this.attackTargeting, this.protector, aabb);
+        List<Villager> list = this.protector.level.getNearbyEntities(Villager.class, this.attackTargeting, this.protector, aabb);
         List<Player> list1 = this.protector.level.getNearbyPlayers(this.attackTargeting, this.protector, aabb);
 
-        for(LivingEntity livingentity : list) {
-            Villager villager = (Villager)livingentity;
-
+        for(Villager villager : list) {
             for(Player player : list1) {
                 int i = villager.getPlayerReputation(player);
                 if (i <= -100) {
