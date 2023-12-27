@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.item;
 import com.mojang.datafixers.util.Pair;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -37,7 +38,7 @@ public class FurledMapItem extends Item {
     public static String FURLED_MAP_DESCRIPTION = "description";
 
     public FurledMapItem() {
-        super(new Properties().tab(SpellbookModCreativeTabs.SPELL_MATERIALS_TAB).stacksTo(1));
+        super(ItemPropertiesHelper.material().stacksTo(1));
     }
 
     @Override
