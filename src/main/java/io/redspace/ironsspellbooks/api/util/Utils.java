@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.api.util;
 
 import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -54,7 +55,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
@@ -68,6 +68,10 @@ import java.util.function.Predicate;
 public class Utils {
 
     public static final RandomSource random = RandomSource.createThreadSafe();
+
+    public static long getServerTick() {
+        return IronsSpellbooks.OVERWORLD.getGameTime();
+    }
 
     public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
@@ -677,7 +681,7 @@ public class Utils {
                 //Remove fist damage if they are not using a melee weapon
                 weapon -= fist;
             }
-            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(),entityForDamageBonus);
+            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), entityForDamageBonus);
             return weapon + enchant;
         }
         return 0;

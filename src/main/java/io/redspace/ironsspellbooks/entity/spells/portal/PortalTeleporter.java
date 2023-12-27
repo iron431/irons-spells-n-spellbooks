@@ -20,15 +20,13 @@ public class PortalTeleporter implements ITeleporter {
 
     @Override
     public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-        if (destinationPosition != null) {
-            entity.moveTo(destinationPosition);
-        }
-        return entity;
+        entity.fallDistance = 0;
+        return repositionEntity.apply(false);
     }
 
     @Override
     public @Nullable PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
-        return ITeleporter.super.getPortalInfo(entity, destWorld, defaultPortalInfo);
+        return new PortalInfo(destinationPosition, Vec3.ZERO, entity.getYRot(), entity.getXRot());
     }
 
     @Override

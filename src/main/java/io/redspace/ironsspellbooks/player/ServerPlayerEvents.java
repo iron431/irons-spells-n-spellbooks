@@ -57,6 +57,8 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -85,6 +87,18 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void onServerStoppedEvent(ServerStoppedEvent event) {
+        IronsSpellbooks.MCS = null;
+        IronsSpellbooks.OVERWORLD = null;
+    }
+
+    @SubscribeEvent
+    public static void onServerStarted(ServerStartedEvent event){
+        IronsSpellbooks.MCS = event.getServer();
+        IronsSpellbooks.OVERWORLD = IronsSpellbooks.MCS.overworld();
+    }
+
+    @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         IronsSpellBooksWorldData.init(event.getServer().storageSource);
 
@@ -95,6 +109,8 @@ public class ServerPlayerEvents {
             iwu.runUpgrade();
             IronsSpellbooks.LOGGER.debug("IWU:{}", iwu.tempCount);
         }
+
+        event.getServer();
     }
 
     @SubscribeEvent
