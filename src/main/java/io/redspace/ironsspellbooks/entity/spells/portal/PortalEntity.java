@@ -90,13 +90,13 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                 var portalData = PortalManager.INSTANCE.getPortalData(this);
                 portalData.getConnectedPortalPos(uuid).ifPresent(portalPos -> {
                     float deltaRot = (entity.getYRot() - this.getYRot()) + (portalPos.rotation() - this.getYRot());
-                    Vec3 offset = new Vec3(this.getX() - entity.getX(), this.getY() - entity.getY(), this.getZ() - entity.getZ()).yRot(deltaRot * Mth.DEG_TO_RAD);
-                    Vec3 destination = portalPos.pos().subtract(offset);
-                    entity.setYRot(entity.getYRot() + deltaRot);
-                    entity.setDeltaMovement(entity.getDeltaMovement().yRot(deltaRot));
+                    //Vec3 offset = new Vec3(this.getX() - entity.getX(), this.getY() - entity.getY(), this.getZ() - entity.getZ()).yRot(deltaRot * Mth.DEG_TO_RAD);
+                    Vec3 destination = portalPos.pos().add(0, entity.getY() - this.getY(), 0);
+                    entity.setYRot(portalPos.rotation());
+                    //entity.setYRot(entity.getYRot() + deltaRot);
+                    //entity.setDeltaMovement(entity.getDeltaMovement().yRot(deltaRot));
                     if (level.dimension().equals(portalPos.dimension())) {
                         entity.teleportTo(destination.x, destination.y, destination.z);
-                        entity.setOldPosAndRot();
                     } else {
                         IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
                         var server = level.getServer();
