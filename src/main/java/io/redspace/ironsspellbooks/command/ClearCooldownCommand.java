@@ -14,7 +14,7 @@ import java.util.Collection;
 
 public class ClearCooldownCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("clearCooldown")
+        LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("clearCooldowns")
                 .requires((p) -> p.hasPermission(2))
                 .then(Commands.literal("all")
                         .executes((context) -> clearCooldowns(context.getSource(), null)))
