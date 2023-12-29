@@ -5,5 +5,6 @@ public enum RecastResult {
     COUNTERSPELL,
     DEATH,
     USED_ALL_RECASTS,
+    COMMAND,
     USER_CANCEL
 }

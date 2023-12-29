@@ -95,6 +95,11 @@ public class MagicManager implements IMagicManager {
         Messages.sendToPlayer(new ClientboundSyncCooldown(spell.getSpellId(), effectiveCooldown), serverPlayer);
     }
 
+    public void clearCooldowns(ServerPlayer serverPlayer) {
+        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().clearCooldowns();
+        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().syncToPlayer(serverPlayer);
+    }
+
     public static int getEffectiveSpellCooldown(AbstractSpell spell, Player player, CastSource castSource) {
         double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION.get());
 

@@ -23,6 +23,9 @@ public class CommandRegistry {
         ManaCommand.register(commandDispatcher);
         GenerateModList.register(commandDispatcher);
         LearnCommand.register(commandDispatcher);
+        ClearCooldownCommand.register(commandDispatcher);
+        ClearRecastsCommand.register(commandDispatcher);
+
         if (!FMLLoader.isProduction()) {
             GenerateSiteData.register(commandDispatcher);
             IronsDebugCommand.register(commandDispatcher);
