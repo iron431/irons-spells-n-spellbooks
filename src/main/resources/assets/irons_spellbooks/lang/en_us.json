@@ -429,6 +429,7 @@
   "spell.irons_spellbooks.frostwave": "Frostwave",
   "spell.irons_spellbooks.heat_surge": "Heat Surge",
   "spell.irons_spellbooks.arrow_volley": "Arrow Volley",
+  "spell.irons_spellbooks.recall": "Recall",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -513,6 +514,7 @@
   "spell.irons_spellbooks.frostwave.guide": "Cascade a wave of frost magic in a radius around you, afflicting creatures with chilled. Chilled creatures are slowed, and have their incoming freeze time doubled.",
   "spell.irons_spellbooks.heat_surge.guide": "Emanate a surge of fiery magic, igniting and rending creatures in a radius around you. Rended creatures have reduced armor.",
   "spell.irons_spellbooks.arrow_volley.guide": "Around a targeted creature or block, summon a rolling wave of magical arrows from the sky.",
+  "spell.irons_spellbooks.recall.guide": "Warps you back to your spawn location, or world spawn if there is none.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
