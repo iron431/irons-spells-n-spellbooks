@@ -252,12 +252,12 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
                 if (Log.SPELL_DEBUG) {
                     IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.3");
                 }
-                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, playerMagicData);
+                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, CastSource.MOB, playerMagicData);
             }
             castComplete();
         } else if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
-                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, playerMagicData);
+                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, CastSource.MOB, playerMagicData);
             }
         }
     }

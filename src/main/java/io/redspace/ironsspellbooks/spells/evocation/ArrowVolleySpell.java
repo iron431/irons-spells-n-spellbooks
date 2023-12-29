@@ -9,7 +9,6 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.ArrowVolleyEntity;
-import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
@@ -22,9 +21,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -87,7 +83,7 @@ public class ArrowVolleySpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 targetLocation = null;
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
             targetLocation = castTargetingData.getTargetPosition((ServerLevel) level);
@@ -114,7 +110,7 @@ public class ArrowVolleySpell extends AbstractSpell {
         arrowVolleyEntity.setRows(getRows(spellLevel, entity));
         level.addFreshEntity(arrowVolleyEntity);
 
-        super.onCast(level, spellLevel, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private int getCount(int spellLevel, LivingEntity entity) {

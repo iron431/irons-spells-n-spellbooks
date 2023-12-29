@@ -73,7 +73,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
 
         SummonedPolarBear polarBear = new SummonedPolarBear(world, entity);
@@ -91,7 +91,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
             effectAmplifier += entity.getEffect(MobEffectRegistry.POLAR_BEAR_TIMER.get()).getAmplifier() + 1;
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.POLAR_BEAR_TIMER.get(), summonTime, effectAmplifier, false, false, true));
 
-        super.onCast(world, spellLevel, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 
     private float getBearHealth(int spellLevel, LivingEntity caster) {

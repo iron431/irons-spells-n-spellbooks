@@ -82,7 +82,7 @@ public class FireflySwarmSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 spawn = null;
         Entity target = null;
 
@@ -104,7 +104,7 @@ public class FireflySwarmSpell extends AbstractSpell {
         fireflies.moveTo(spawn.add(0, .5, 0));
         level.addFreshEntity(fireflies);
 
-        super.onCast(level, spellLevel, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {

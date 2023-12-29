@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
@@ -40,7 +39,7 @@ public class PortalSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
             .setMaxLevel(5)
-            .setCooldownSeconds(100)
+            .setCooldownSeconds(10)
             .build();
 
     public PortalSpell() {
@@ -82,7 +81,7 @@ public class PortalSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("PortalSpell.onCast isClient:{}, entity:{}, pmd:{}", level.isClientSide, entity, playerMagicData);
         }
@@ -117,11 +116,11 @@ public class PortalSpell extends AbstractSpell {
                 PortalEntity portalEntity = setupPortalEntity(level, portalData, player, portalLocation, portalRotation);
                 portalData.globalPos1 = PortalPos.of(player.level.dimension(), portalLocation, portalRotation);
                 portalData.portalEntityId1 = portalEntity.getUUID();
-                playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, 1, getRecastDuration(spellLevel, player), portalData));
+                playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, 1, getRecastDuration(spellLevel, player), castSource, portalData), playerMagicData);
             }
         }
 
-        super.onCast(level, spellLevel, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private PortalEntity setupPortalEntity(Level level, PortalData portalData, Player owner, Vec3 spawnPos, float rotation) {
@@ -134,7 +133,7 @@ public class PortalSpell extends AbstractSpell {
     }
 
     @Override
-    public void onRecastFinished(ServerPlayer serverPlayer, int spellLevel, int recastsRemainingAtCancel, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
+    public void onRecastFinished(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
         if (recastResult != RecastResult.USED_ALL_RECASTS) {
             if (castDataSerializable instanceof PortalData portalData && portalData.portalEntityId1 != null) {
                 if (portalData.globalPos1 != null) {
@@ -153,6 +152,7 @@ public class PortalSpell extends AbstractSpell {
                 }
             }
         }
+        super.onRecastFinished(serverPlayer, recastInstance, recastResult, castDataSerializable);
     }
 
     public int getRecastDuration(int spellLevel, LivingEntity caster) {
@@ -179,10 +179,4 @@ public class PortalSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getCastDistance(spellLevel, caster), 1)));
     }
-
-    @Override
-    public AnimationHolder getCastStartAnimation() {
-        return AnimationHolder.none();
-    }
-
 }

@@ -43,6 +43,10 @@ public class PlayerCooldowns {
         return spellCooldowns;
     }
 
+    public boolean removeCooldown(String spellId) {
+        return spellCooldowns.remove(spellId) != null;
+    }
+
     public void addCooldown(AbstractSpell spell, int durationTicks) {
         spellCooldowns.put(spell.getSpellId(), new CooldownInstance(durationTicks));
     }

@@ -2,9 +2,10 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 
 import com.google.common.collect.Maps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.network.ClientBoundRemoveRecast;
 import io.redspace.ironsspellbooks.network.ClientBoundSyncRecast;
 import io.redspace.ironsspellbooks.network.ClientboundSyncRecasts;
@@ -14,13 +15,12 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 
 public class PlayerRecasts {
-    private static final RecastInstance EMPTY = new RecastInstance(SpellRegistry.none().getSpellId(), 0, 0, 0, null);
+    private static final RecastInstance EMPTY = new RecastInstance(SpellRegistry.none().getSpellId(), 0, 0, 0, CastSource.NONE, null);
     private final Map<String, RecastInstance> recastLookup;
 
     //This will only be null on the client side
@@ -42,20 +42,17 @@ public class PlayerRecasts {
         this.serverPlayer = null;
     }
 
-    public boolean addRecast(RecastInstance recastInstance) {
+    public boolean addRecast(RecastInstance recastInstance, MagicData magicData) {
         var existingRecastInstance = recastLookup.get(recastInstance.spellId);
 
         if (!isRecastActive(existingRecastInstance)) {
+            magicData.getPlayerCooldowns().removeCooldown(recastInstance.spellId);
             recastLookup.put(recastInstance.spellId, recastInstance);
             syncToPlayer(recastInstance);
             return true;
         }
 
         return false;
-    }
-
-    public boolean addRecast(@NotNull String spellId, int spellLevel, int remainingRecasts, int ticksRemaining, ICastDataSerializable castData) {
-        return addRecast(new RecastInstance(spellId, spellLevel, remainingRecasts, ticksRemaining, castData));
     }
 
     public boolean isRecastActive(RecastInstance recastInstance) {
@@ -158,7 +155,7 @@ public class PlayerRecasts {
     }
 
     private void triggerRecastComplete(RecastInstance recastInstance, RecastResult recastResult) {
-        SpellRegistry.getSpell(recastInstance.getSpellId()).onRecastFinished(serverPlayer, recastInstance.spellLevel, recastInstance.remainingRecasts, recastResult, recastInstance.castData);
+        SpellRegistry.getSpell(recastInstance.getSpellId()).onRecastFinished(serverPlayer, recastInstance, recastResult, recastInstance.castData);
     }
 
     private void removeRecast(RecastInstance recastInstance, RecastResult recastResult, boolean doSync) {

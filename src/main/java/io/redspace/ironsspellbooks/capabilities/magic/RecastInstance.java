@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.api.network.ISerializable;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,17 +16,19 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     protected ICastDataSerializable castData;
     protected int ticksToLive;
     protected int remainingTicks;
+    protected CastSource castSource;
 
     public RecastInstance() {
     }
 
-    public RecastInstance(String spellId, int spellLevel, int remainingRecasts, int ticksToLive, ICastDataSerializable castData) {
+    public RecastInstance(String spellId, int spellLevel, int remainingRecasts, int ticksToLive, CastSource castSource, ICastDataSerializable castData) {
         this.spellId = spellId;
         this.spellLevel = spellLevel;
         this.remainingRecasts = remainingRecasts;
         this.totalRecasts = remainingRecasts + 1;
         this.ticksToLive = ticksToLive;
         this.remainingTicks = ticksToLive;
+        this.castSource = castSource;
         this.castData = castData;
     }
 
@@ -53,6 +56,10 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         return remainingTicks;
     }
 
+    public CastSource getCastSource() {
+        return castSource;
+    }
+
     public ICastDataSerializable getCastData() {
         return castData;
     }
@@ -65,6 +72,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         buffer.writeInt(totalRecasts);
         buffer.writeInt(ticksToLive);
         buffer.writeInt(remainingTicks);
+        buffer.writeEnum(castSource);
 
         if (castData != null) {
             buffer.writeBoolean(true);
@@ -82,6 +90,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         totalRecasts = buffer.readInt();
         ticksToLive = buffer.readInt();
         remainingTicks = buffer.readInt();
+        castSource = buffer.readEnum(CastSource.class);
 
         var hasCastData = buffer.readBoolean();
         if (hasCastData) {
@@ -100,6 +109,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         tag.putInt("totalRecasts", totalRecasts);
         tag.putInt("ticksToLive", ticksToLive);
         tag.putInt("ticksRemaining", remainingTicks);
+        tag.putString("castSource", castSource.toString());
 
         if (castData != null) {
             tag.put("cd", castData.serializeNBT());
@@ -115,6 +125,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         totalRecasts = compoundTag.getInt("totalRecasts");
         ticksToLive = compoundTag.getInt("ticksToLive");
         remainingTicks = compoundTag.getInt("ticksRemaining");
+        castSource = CastSource.valueOf(compoundTag.getString("castSource"));
 
         if (compoundTag.contains("cd")) {
             castData = SpellRegistry.getSpell(spellId).getEmptyCastData();

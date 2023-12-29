@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.IndirectSpellDamageSource;
@@ -190,6 +191,7 @@ public abstract class AbstractSpell {
     public AnimationHolder getCastFinishAnimation() {
         return switch (getCastType()) {
             case LONG -> ANIMATION_LONG_CAST_FINISH;
+            case INSTANT -> AnimationHolder.pass();
             default -> AnimationHolder.none();
         };
     }
@@ -255,10 +257,6 @@ public abstract class AbstractSpell {
         var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
 
         if (!playerMagicData.isCasting()) {
-            if (playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId())) {
-                castSource = CastSource.RECAST;
-            }
-
             CastResult castResult = canBeCastedBy(spellLevel, castSource, playerMagicData, serverPlayer);
             if (castResult.message != null) {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(castResult.message));
@@ -297,43 +295,48 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.castSpell isClient:{}, spell{}({})", world.isClientSide, getSpellId(), spellLevel);
         }
 
-        var magicManager = MagicHelper.MAGIC_MANAGER;
         MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
+        var playerRecasts = magicData.getPlayerRecasts();
+        var playerAlreadyHasRecast = playerRecasts.hasRecastForSpell(getSpellId());
 
-        if (castSource.consumesMana()) {
+        if (castSource.consumesMana() && !playerAlreadyHasRecast) {
             int newMana = magicData.getMana() - getManaCost(spellLevel, serverPlayer);
             magicData.setMana(newMana);
             Messages.sendToPlayer(new ClientboundSyncMana(magicData), serverPlayer);
         }
 
-        if (triggerCooldown) {
-            magicManager.addCooldown(serverPlayer, this, castSource);
-        }
+        onCast(world, spellLevel, serverPlayer, castSource, magicData);
 
-        onCast(world, spellLevel, serverPlayer, magicData);
+        //If onCast just added a recast then don't decrement it
 
-        if (castSource == CastSource.RECAST) {
-            magicData.getPlayerRecasts().decrementRecastCount(getSpellId());
+        var playerHasRecastsLeft = playerRecasts.hasRecastForSpell(getSpellId());
+        if (playerAlreadyHasRecast && playerHasRecastsLeft) {
+            playerRecasts.decrementRecastCount(getSpellId());
+        } else if (!playerHasRecastsLeft && triggerCooldown) {
+            MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, this, castSource);
         }
 
         Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), this.getLevel(spellLevel, serverPlayer), castSource, magicData.getAdditionalCastData()), serverPlayer);
 
-        if (serverPlayer.getMainHandItem().getItem() instanceof ISpellbook || serverPlayer.getMainHandItem().getItem() instanceof IScroll)
+        if (serverPlayer.getMainHandItem().getItem() instanceof ISpellbook || serverPlayer.getMainHandItem().getItem() instanceof IScroll) {
             magicData.setPlayerCastingItem(serverPlayer.getMainHandItem());
-        else
+        } else {
             magicData.setPlayerCastingItem(serverPlayer.getOffhandItem());
-
+        }
     }
 
-    public void onRecastFinished(ServerPlayer serverPlayer, int spellLevel, int recastsRemainingAtCancel, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
-        //TODO: put this in a Log.SPELL_DEBUG conditional
-        IronsSpellbooks.LOGGER.debug("{} onRecastFinished player:{}, spellLevel:{}, recastsRemainingAtCancel:{}, recastResult:{}, castDataSerializable:{}",
-                getSpellName(),
-                serverPlayer,
-                spellLevel,
-                recastsRemainingAtCancel,
-                recastResult,
-                castDataSerializable);
+    //Call this at the end of your override
+    public void onRecastFinished(ServerPlayer serverPlayer, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
+        if (Log.SPELL_DEBUG) {
+            IronsSpellbooks.LOGGER.debug("AbstractSpell.{}.onRecastFinished, player:{}, recastResult:{}, recastInstance:{}, castDataSerializable:{}",
+                    getSpellName(),
+                    serverPlayer,
+                    recastResult,
+                    recastInstance,
+                    castDataSerializable);
+        }
+
+        MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, this, recastInstance.getCastSource());
     }
 
     /**
@@ -345,10 +348,16 @@ public abstract class AbstractSpell {
         }
     }
 
+
+    @Deprecated(forRemoval = true, since = "Use onCast that includes a castSource")
+    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+        onCast(level, spellLevel, entity, CastSource.NONE, playerMagicData);
+    }
+
     /**
      * The primary spell effect handling goes here. Called Server Side
      */
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
         }
@@ -372,10 +381,11 @@ public abstract class AbstractSpell {
 
         boolean hasEnoughMana = playerMana - getManaCost(spellLevel, player) >= 0;
         boolean isSpellOnCooldown = playerMagicData.getPlayerCooldowns().isOnCooldown(this);
+        boolean hasRecastForSpell = playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId());
 
         if ((castSource == CastSource.SPELLBOOK || castSource == CastSource.SWORD) && isSpellOnCooldown) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_cooldown", getDisplayName(player)).withStyle(ChatFormatting.RED));
-        } else if (castSource.consumesMana() && !hasEnoughMana) {
+        } else if (!hasRecastForSpell && castSource.consumesMana() && !hasEnoughMana) {
             return new CastResult(CastResult.Type.FAILURE, Component.translatable("ui.irons_spellbooks.cast_error_mana", getDisplayName(player)).withStyle(ChatFormatting.RED));
         } else {
             return new CastResult(CastResult.Type.SUCCESS);
