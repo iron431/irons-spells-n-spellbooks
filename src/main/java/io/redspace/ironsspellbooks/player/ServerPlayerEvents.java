@@ -37,6 +37,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.monster.Creeper;
@@ -400,6 +401,9 @@ public class ServerPlayerEvents {
         if (mob.fireImmune()) {
             //Fire immune (blazes, pyromancer, etc) take 50% fire damage
             mob.getAttributes().getInstance(AttributeRegistry.FIRE_MAGIC_RESIST.get()).setBaseValue(1.5);
+        }
+        if (mob.getType() == EntityType.BLAZE) {
+            mob.getAttributes().getInstance(AttributeRegistry.ICE_MAGIC_RESIST.get()).setBaseValue(0.5);
         }
     }
 
