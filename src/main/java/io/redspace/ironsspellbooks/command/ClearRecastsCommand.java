@@ -28,13 +28,7 @@ public class ClearRecastsCommand {
 
     private static int clearRecast(CommandSourceStack source, @Nullable Collection<ServerPlayer> targets) {
         if (targets != null && !targets.isEmpty()) {
-            targets.forEach((serverPlayer -> {
-                MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
-                PlayerRecasts playerRecasts = magicData.getPlayerRecasts();
-                playerRecasts.getAllRecasts().forEach(recastInstance -> {
-                    playerRecasts.removeRecast(recastInstance, RecastResult.COMMAND);
-                });
-            }));
+            targets.forEach((ClearRecastsCommand::removeRecastForPlayer));
 
             if (!targets.isEmpty()) {
                 source.sendSuccess(Component.translatable("commands.clearRecast.success"), true);
@@ -45,16 +39,18 @@ public class ClearRecastsCommand {
             source.getServer().getAllLevels().forEach(level -> {
                 level.getPlayers(player -> {
                     return true;
-                }).forEach(serverPlayer -> {
-                    MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
-                    PlayerRecasts playerRecasts = magicData.getPlayerRecasts();
-                    playerRecasts.getAllRecasts().forEach(recastInstance -> {
-                        playerRecasts.removeRecast(recastInstance, RecastResult.COMMAND);
-                    });
-                });
+                }).forEach(ClearRecastsCommand::removeRecastForPlayer);
             });
             source.sendSuccess(Component.translatable("commands.clearRecast.success"), true);
             return 1;
         }
+    }
+
+    private static void removeRecastForPlayer(ServerPlayer serverPlayer) {
+        MagicData magicData = MagicData.getPlayerMagicData(serverPlayer);
+        PlayerRecasts playerRecasts = magicData.getPlayerRecasts();
+        playerRecasts.getAllRecasts().forEach(recastInstance -> {
+            playerRecasts.removeRecast(recastInstance, RecastResult.COMMAND);
+        });
     }
 }
