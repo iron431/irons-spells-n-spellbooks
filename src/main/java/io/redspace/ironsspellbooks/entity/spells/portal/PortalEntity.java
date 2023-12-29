@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -124,11 +125,11 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     @Override
     public void tick() {
         if (level.isClientSide) {
-            spawnParticles(.5f, new Vector3f(.8f, .15f, .65f));
-            if (isPortalConnected) {
-                spawnParticles(.36f, new Vector3f(.5f, .05f, .6f));
-                spawnParticles(.2f, new Vector3f(1f, .2f, .7f));
-            }
+//            spawnParticles(.5f, new Vector3f(.8f, .15f, .65f));
+//            if (isPortalConnected) {
+//                spawnParticles(.36f, new Vector3f(.5f, .05f, .6f));
+//                spawnParticles(.2f, new Vector3f(1f, .2f, .7f));
+//            }
             return;
         }
 
@@ -148,7 +149,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
             float x = Mth.cos(i * step) * radius;
             float y = Mth.sin(i * step) * radius * 2;
             Vec3 offset = new Vec3(x, y, 0).yRot(-this.getYRot() * Mth.DEG_TO_RAD);
-            level.addParticle(new DustParticleOptions(color, .5f), true, center.x + offset.x, center.y + offset.y, center.z + offset.z, 1d, 0d, 0);
+            level.addParticle(ParticleHelper.UNSTABLE_ENDER, true, center.x + offset.x, center.y + offset.y, center.z + offset.z, 0d, 0d, 0);
         }
     }
 
