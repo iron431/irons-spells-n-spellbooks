@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.effect.guiding_bolt;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.effect.MagicMobEffect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 
-public class GuidingBoltEffect extends MobEffect {
+public class GuidingBoltEffect extends MagicMobEffect {
     public GuidingBoltEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }
