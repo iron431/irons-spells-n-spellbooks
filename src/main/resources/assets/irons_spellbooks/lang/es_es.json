@@ -875,5 +875,8 @@
   "effect.irons_spellbooks.hastened.description": "Aumenta la velocidad de movimiento, la velocidad de ataque, la velocidad de minería, la regeneración de maná y la reducción del tiempo de lanzamiento.",
   "entity.irons_spellbooks.small_magic_arrow": "Flecha de Magia",
   "itemGroup.spell_materials_tab": "Materiales de Iron's Spellbooks",
-  "itemGroup.spell_equipment_tab": "Equipamiento de Iron's Spellbooks"
+  "itemGroup.spell_equipment_tab": "Equipamiento de Iron's Spellbooks",
+
+  "curios.identifier.spellbook": "Libro de Hechizos",
+  "curios.modifiers.spellbook": "Cuando está equipado como Libro de Hechizos:"
 }
