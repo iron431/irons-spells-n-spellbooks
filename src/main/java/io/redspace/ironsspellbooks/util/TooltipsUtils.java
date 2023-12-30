@@ -30,14 +30,14 @@ import java.util.List;
 public class TooltipsUtils {
 
 
-    public static List<Component> formatActiveSpellTooltip(ItemStack stack, SpellData spellData, CastSource castSource, @Nonnull LocalPlayer player) {
+    public static List<MutableComponent> formatActiveSpellTooltip(ItemStack stack, SpellData spellData, CastSource castSource, @Nonnull LocalPlayer player) {
         var spell = spellData.getSpell();
         var title = getTitleComponent(spellData, player);
         var uniqueInfo = spell.getUniqueInfo(spellData.getLevel(), player);
         var manaCost = getManaCostComponent(spell.getCastType(), spell.getManaCost(spellData.getLevel(), player)).withStyle(ChatFormatting.BLUE);
         var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, castSource), 2)).withStyle(ChatFormatting.BLUE);
 
-        List<Component> lines = new ArrayList<>();
+        List<MutableComponent> lines = new ArrayList<>();
         lines.add(Component.empty());
         lines.add(title);
         uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(getStyleFor(player, spell)))));

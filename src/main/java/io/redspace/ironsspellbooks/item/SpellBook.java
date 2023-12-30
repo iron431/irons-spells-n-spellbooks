@@ -16,7 +16,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -31,6 +33,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpellBook extends CurioBaseItem implements ISpellbook {
     protected final SpellRarity rarity;
@@ -139,19 +142,20 @@ public class SpellBook extends CurioBaseItem implements ISpellbook {
             var spells = spellbookData.getActiveInscribedSpells();
             if (spells.size() != 0) {
                 lines.add(Component.empty());
+                lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
                 SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
                 for (int i = 0; i < spells.size(); i++) {
+                    var spellText = TooltipsUtils.getTitleComponent(spells.get(i), (LocalPlayer) player).setStyle(Style.EMPTY);
                     if ((MinecraftInstanceHelper.getPlayer() != null && Utils.getPlayerSpellbookStack(MinecraftInstanceHelper.getPlayer()) == itemStack) && spellSelectionManager.getCurrentSelection().equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && i == spellSelectionManager.getSelectionIndex()) {
                         var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(itemStack, spellSelectionManager.getSelectedSpellData(), CastSource.SPELLBOOK, (LocalPlayer) player);
                         shiftMessage.remove(0);
                         TooltipsUtils.addShiftTooltip(
                                 lines,
-                                Component.literal("> ").append(TooltipsUtils.getTitleComponent(spells.get(i), (LocalPlayer) player).withStyle(ChatFormatting.BOLD)),
-                                shiftMessage
+                                Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
+                                shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
                         );
-                        //lines.add();
                     } else {
-                        lines.add(TooltipsUtils.getTitleComponent(spells.get(i), (LocalPlayer) player));
+                        lines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
                     }
                 }
             }
