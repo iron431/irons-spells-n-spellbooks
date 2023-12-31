@@ -73,21 +73,24 @@ public class Scroll extends Item implements IScroll {
         var spell = spellData.getSpell();
 
         if (level.isClientSide) {
-            if (ClientMagicData.isCasting() || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
-                return InteractionResultHolder.fail(stack);
+            if (ClientMagicData.isCasting()) {
+                return InteractionResultHolder.consume(stack);
+            } else if (!ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
+                return InteractionResultHolder.pass(stack);
             } else {
-                return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                return InteractionResultHolder.consume(stack);
             }
         }
 
         if (spell.attemptInitiateCast(stack, spellData.getLevel(), level, player, CastSource.SCROLL, false)) {
             if (spell.getCastType() == CastType.INSTANT) {
+                //TODO: i think magic manager should handle this
                 removeScrollAfterCast((ServerPlayer) player, stack);
             }
             if (spell.getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }
-            return InteractionResultHolder.success(stack);
+            return InteractionResultHolder.consume(stack);
         } else {
             return InteractionResultHolder.fail(stack);
         }

@@ -1,19 +1,10 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
-import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
-import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -25,7 +16,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.List;
 
