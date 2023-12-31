@@ -32,8 +32,8 @@ public class HeatSurgeSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.rend", Utils.stringTruncation((getRendAmplifier(spellLevel, caster) + 1) * 5, 1)),
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 2))
         );
     }
 
@@ -85,7 +85,7 @@ public class HeatSurgeSpell extends AbstractSpell {
             if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(entity) < radius * radius) {
                 int i = getDuration(spellLevel, entity);
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND.get(), i, getRendAmplifier(spellLevel, entity)));
-                livingEntity.setSecondsOnFire(i / 40);
+                livingEntity.setSecondsOnFire(i / 20);
                 MagicManager.spawnParticles(level, ParticleHelper.EMBERS, livingEntity.getX(), livingEntity.getY() + livingEntity.getBbHeight() * .5f, livingEntity.getZ(), 50, livingEntity.getBbWidth() * .5f, livingEntity.getBbHeight() * .5f, livingEntity.getBbWidth() * .5f, .03, false);
             }
         });
@@ -101,7 +101,7 @@ public class HeatSurgeSpell extends AbstractSpell {
     }
 
     public int getRendAmplifier(int spellLevel, LivingEntity caster) {
-        return (int) (getEntityPowerMultiplier(caster) * this.getLevel(spellLevel, caster));
+        return 2 + (int) (getEntityPowerMultiplier(caster) * this.getLevel(spellLevel, caster));
     }
 
     @Override
