@@ -134,6 +134,7 @@ public class ClientPlayerEvents {
         MinecraftInstanceHelper.ifPlayerPresent((player1) -> {
             var player = (LocalPlayer) player1;
             var spelldata = SpellData.getSpellData(stack);
+            var lines = event.getToolTip();
             if (spelldata != SpellData.EMPTY) {
                 //Scrolls take care of themselves
                 if (!(stack.getItem() instanceof Scroll)) {
@@ -143,10 +144,8 @@ public class ClientPlayerEvents {
                     //Indent the title because we have an additional header
                     additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
                     //Make room for the stuff the advanced tooltips add to the tooltip
-                    if (event.getFlags().isAdvanced())
-                        event.getToolTip().addAll(event.getToolTip().size() - getAdvancedOffset(stack), additionalLines);
-                    else
-                        event.getToolTip().addAll(additionalLines);
+                    int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+                    lines.addAll(i, additionalLines);
                 }
             } else if (stack.getItem() instanceof CastingItem) {
                 spelldata = new SpellSelectionManager(player).getSelectedSpellData();
@@ -157,24 +156,11 @@ public class ClientPlayerEvents {
                     //Indent the title because we have an additional header
                     additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
                     //Make room for the stuff the advanced tooltips add to the tooltip
-                    if (event.getFlags().isAdvanced())
-                        event.getToolTip().addAll(event.getToolTip().size() - getAdvancedOffset(stack), additionalLines);
-                    else
-                        event.getToolTip().addAll(additionalLines);
+                    int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+                    lines.addAll(i, additionalLines);
                 }
             }
         });
-    }
-
-    private static int getAdvancedOffset(ItemStack itemStack) {
-        int offset = 1;
-        if (itemStack.isDamaged()) {
-            offset++;
-        }
-        if (itemStack.hasTag()) {
-            offset++;
-        }
-        return offset;
     }
 
     @SubscribeEvent

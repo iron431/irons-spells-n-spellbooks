@@ -6,9 +6,7 @@ import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import net.minecraft.ChatFormatting;
@@ -17,18 +15,53 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class TooltipsUtils {
 
+    public static int indexOfComponent(List<Component> lines, String key) {
+        return indexOfInternal(lines, key::equals);
+    }
+
+    public static int indexOfComponentRegex(List<Component> lines, String regex) {
+        //IronsSpellbooks.LOGGER.debug("TooltipsUtils.indexOfComponentRegex: {}", regex);
+        return indexOfInternal(lines, (string -> string.matches(regex)));
+    }
+
+    public static int indexOfAdvancedText(List<Component> lines, ItemStack itemStack) {
+        return indexOfComponentRegex(lines, "item.durability|item.nbt_tags|" + ForgeRegistries.ITEMS.getKey(itemStack.getItem()));
+    }
+
+    private static int indexOfInternal(List<Component> lines, Predicate<String> comparator) {
+        int size = lines.size();
+        for (int i = 0; i < size; i++) {
+            var component = lines.get(i);
+            if (component.getContents() instanceof TranslatableContents translatableContents) {
+                //IronsSpellbooks.LOGGER.debug("TooltipsUtils.indexOfInternal {}: {}: {}", i, translatableContents.getKey(), comparator.test(translatableContents.getKey()));
+                if (comparator.test(translatableContents.getKey())) {
+                    return i;
+                }
+            } else if (component.getContents() instanceof LiteralContents literalContents) {
+                //IronsSpellbooks.LOGGER.debug("TooltipsUtils.indexOfInternal {}: {}: {}", i, literalContents.text(), comparator.test(literalContents.text()));
+                if (comparator.test(literalContents.text())) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
 
     public static List<MutableComponent> formatActiveSpellTooltip(ItemStack stack, SpellData spellData, CastSource castSource, @Nonnull LocalPlayer player) {
         var spell = spellData.getSpell();
@@ -50,8 +83,6 @@ public class TooltipsUtils {
             lines.add(cooldownTime);
         return lines;
     }
-
-
 
     public static List<Component> formatScrollTooltip(ItemStack stack, @Nonnull LocalPlayer player) {
         var spellData = SpellData.getSpellData(stack);

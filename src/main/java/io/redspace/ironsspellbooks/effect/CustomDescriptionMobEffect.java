@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
@@ -20,13 +21,13 @@ public abstract class CustomDescriptionMobEffect extends MobEffect {
 
         var header = net.minecraft.network.chat.Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE);
         var newLines = new ArrayList<Component>();
-        int i = tooltipLines.indexOf(header);
+        int i = TooltipsUtils.indexOfComponent(tooltipLines, "potion.whenDrank");
 
         if (i < 0) {
             newLines.add(net.minecraft.network.chat.Component.empty());
             newLines.add(header);
             newLines.add(description);
-            i = isAdvanced ? tooltipLines.size() - (itemStack.hasTag() ? 2 : 1) : tooltipLines.size();
+            i = isAdvanced ? TooltipsUtils.indexOfAdvancedText(tooltipLines, itemStack) : tooltipLines.size();
         } else {
             newLines.add(description);
             i++;
