@@ -584,4 +584,8 @@ public abstract class AbstractSpell {
     public boolean canBeInterrupted(@Nullable Player player){
         return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
     }
+
+    public boolean stopSoundOnCancel(){
+        return false;
+    }
 }

@@ -105,6 +105,11 @@ public class HeatSurgeSpell extends AbstractSpell {
     }
 
     @Override
+    public void onServerCastComplete(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData, boolean cancelled) {
+        super.onServerCastComplete(level, spellLevel, entity, playerMagicData, cancelled);
+    }
+
+    @Override
     public AnimationHolder getCastStartAnimation() {
         return SpellAnimations.CHARGE_RAISED_HAND;
     }
@@ -112,5 +117,10 @@ public class HeatSurgeSpell extends AbstractSpell {
     @Override
     public AnimationHolder getCastFinishAnimation() {
         return SpellAnimations.TOUCH_GROUND_ANIMATION;
+    }
+
+    @Override
+    public boolean stopSoundOnCancel() {
+        return true;
     }
 }

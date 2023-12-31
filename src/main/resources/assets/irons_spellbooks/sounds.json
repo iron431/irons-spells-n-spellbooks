@@ -493,5 +493,10 @@
     "sounds": [
       "irons_spellbooks:bow_shoot"
     ]
+  },
+  "spell.recall.prepare": {
+    "sounds": [
+      "irons_spellbooks:recall_prepare"
+    ]
   }
 }

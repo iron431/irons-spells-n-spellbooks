@@ -92,6 +92,7 @@ public class SoundRegistry {
     public static RegistryObject<SoundEvent> FROSTWAVE_PREPARE = registerSoundEvent("spell.frostwave.prepare");
     public static RegistryObject<SoundEvent> ARROW_VOLLEY_PREPARE = registerSoundEvent("spell.arrow_volley.prepare");
     public static RegistryObject<SoundEvent> BOW_SHOOT = registerSoundEvent("bow_shoot");
+    public static RegistryObject<SoundEvent> RECALL_PREPARE = registerSoundEvent("spell.recall.prepare");
 
     public static RegistryObject<SoundEvent> DEAD_KING_SWING = registerSoundEvent("entity.dead_king.attack_swing");
     public static RegistryObject<SoundEvent> DEAD_KING_SLAM = registerSoundEvent("entity.dead_king.attack_slam");
