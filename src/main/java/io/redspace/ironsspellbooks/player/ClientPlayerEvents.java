@@ -214,17 +214,17 @@ public class ClientPlayerEvents {
     @SubscribeEvent
     public static void customFog(ViewportEvent.RenderFog event) {
         var player = MinecraftInstanceHelper.getPlayer();
-        if (player != null) {
+        if (player != null && !player.isSpectator()) {
             var biome = player.level.getBiome(player.blockPosition());
             if (biome.is(BiomeRegistry.ICE_CAVES_KEY)) {
                 //event.setNearPlaneDistance(0f);
                 //event.setFarPlaneDistance(1f);
                 event.setNearPlaneDistance(-4);
                 event.setFarPlaneDistance(24);
-                IronsSpellbooks.LOGGER.debug("client in ice caves: {}",event.getMode());
-        RenderSystem.setShaderFogStart(event.getNearPlaneDistance());
-        RenderSystem.setShaderFogEnd(event.getFarPlaneDistance());
-        RenderSystem.setShaderFogShape(event.getFogShape());
+                IronsSpellbooks.LOGGER.debug("client in ice caves: {}", event.getMode());
+                RenderSystem.setShaderFogStart(event.getNearPlaneDistance());
+                RenderSystem.setShaderFogEnd(event.getFarPlaneDistance());
+                RenderSystem.setShaderFogShape(event.getFogShape());
             }
         }
 
