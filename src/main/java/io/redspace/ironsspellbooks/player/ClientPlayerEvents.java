@@ -179,48 +179,49 @@ public class ClientPlayerEvents {
                     }
                 } else {
                     int i = TooltipsUtils.indexOfComponent(lines, "item.modifiers.mainhand");
-                    int endIndex = 0;
-                    List<Integer> linesToGrab = new ArrayList<>();
-                    for (int j = i; j < lines.size(); j++) {
-                        var contents = lines.get(j).getContents();
-                        if (contents instanceof TranslatableContents translatableContents) {
-                            //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip translatableContents {}/{} :{}", j, lines.size(), translatableContents.getKey());
-                            if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip attribute line: {} | args: {}", lines.get(j).getString(), translatableContents.getArgs());
-                                endIndex = j;
-                                for (Object arg : translatableContents.getArgs()) {
-                                    if (arg instanceof Component component && component.getContents() instanceof TranslatableContents translatableContents2) {
-                                        //IronsSpellbooks.LOGGER.debug("attribute.modifier arg translatable key: {} ({})", translatableContents2.getKey(), getAttributeForDescriptionId(translatableContents2.getKey()));
-                                        if (getAttributeForDescriptionId(translatableContents2.getKey()) instanceof IMagicAttribute) {
-                                            linesToGrab.add(j);
+                    if (i >= 0) {
+                        int endIndex = 0;
+                        List<Integer> linesToGrab = new ArrayList<>();
+                        for (int j = i; j < lines.size(); j++) {
+                            var contents = lines.get(j).getContents();
+                            if (contents instanceof TranslatableContents translatableContents) {
+                                //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip translatableContents {}/{} :{}", j, lines.size(), translatableContents.getKey());
+                                if (translatableContents.getKey().startsWith("attribute.modifier")) {
+                                    //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip attribute line: {} | args: {}", lines.get(j).getString(), translatableContents.getArgs());
+                                    endIndex = j;
+                                    for (Object arg : translatableContents.getArgs()) {
+                                        if (arg instanceof Component component && component.getContents() instanceof TranslatableContents translatableContents2) {
+                                            //IronsSpellbooks.LOGGER.debug("attribute.modifier arg translatable key: {} ({})", translatableContents2.getKey(), getAttributeForDescriptionId(translatableContents2.getKey()));
+                                            if (getAttributeForDescriptionId(translatableContents2.getKey()) instanceof IMagicAttribute) {
+                                                linesToGrab.add(j);
+                                            }
+                                        }
+                                    }
+                                } else if (i != j && translatableContents.getKey().startsWith("item.modifiers")) {
+                                    break;
+                                }
+                            } else {
+                                //Based on the ItemStack tooltip code, the only attributes getting here should be the base UUID attributes
+                                for (Component line : lines.get(j).getSiblings()) {
+                                    if (line.getContents() instanceof TranslatableContents translatableContents) {
+                                        if (translatableContents.getKey().startsWith("attribute.modifier")) {
+                                            endIndex = j;
                                         }
                                     }
                                 }
-                            } else if (i != j && translatableContents.getKey().startsWith("item.modifiers")) {
-                                break;
-                            }
-                        } else {
-                            //Based on the ItemStack tooltip code, the only attributes getting here should be the base UUID attributes
-                            for (Component line : lines.get(j).getSiblings()) {
-                                if (line.getContents() instanceof TranslatableContents translatableContents) {
-                                    if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                        endIndex = j;
-                                    }
-                                }
                             }
                         }
-                    }
-                    //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: lines to grab: {}", linesToGrab);
-                    if (!linesToGrab.isEmpty()) {
-                        //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: end index: {} ({})", endIndex, lines.get(endIndex));
-                        lines.add(++endIndex, Component.empty());
-                        lines.add(++endIndex, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
-                        for (Integer index : linesToGrab) {
-                            endIndex++;
-                            lines.add(endIndex, lines.get(index));
-                        }
-                        for (int j = linesToGrab.size() - 1; j >= 0; j--) {
-                            lines.remove((int) linesToGrab.get(j));
+                        //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: lines to grab: {}", linesToGrab);
+                        if (!linesToGrab.isEmpty()) {
+                            //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: end index: {} ({})", endIndex, lines.get(endIndex));
+                            lines.add(++endIndex, Component.empty());
+                            lines.add(++endIndex, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
+                            for (Integer index : linesToGrab) {
+                                lines.add(++endIndex, lines.get(index));
+                            }
+                            for (int j = linesToGrab.size() - 1; j >= 0; j--) {
+                                lines.remove((int) linesToGrab.get(j));
+                            }
                         }
                     }
                 }
