@@ -1,20 +1,17 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "  F",
-    " A ",
-    "A  "
-  ],
-  "key": {
-    "A": {
-      "item": "irons_spellbooks:arcane_salvage"
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "irons_spellbooks:weapon_schematics"
     },
-    "F": {
-      "item": "irons_spellbooks:frostward_ring"
+    {
+      "item": "irons_spellbooks:ice_helve"
+    },
+    {
+      "item": "irons_spellbooks:ice_crystal"
     }
-  },
+  ],
   "result": {
-    "item": "irons_spellbooks:ice_staff",
-    "count": 1
+    "item": "irons_spellbooks:ice_staff"
   }
 }
