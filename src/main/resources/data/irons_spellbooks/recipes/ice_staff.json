@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "irons_spellbooks:weapon_schematics"
+    },
+    {
+      "item": "irons_spellbooks:ice_helve"
+    },
+    {
+      "item": "irons_spellbooks:ice_crystal"
+    }
+  ],
+  "result": {
+    "item": "irons_spellbooks:ice_staff"
+  }
+}

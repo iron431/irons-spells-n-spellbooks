@@ -215,6 +215,7 @@ public class ClientPlayerEvents {
     public static void customFog(ViewportEvent.RenderFog event) {
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null && !player.isSpectator()) {
+            //TODO: blend biomes (see ClientLevel#calculateBlockTint)
             var biome = player.level.getBiome(player.blockPosition());
             if (biome.is(BiomeRegistry.ICE_CAVES_KEY)) {
                 //event.setNearPlaneDistance(0f);
