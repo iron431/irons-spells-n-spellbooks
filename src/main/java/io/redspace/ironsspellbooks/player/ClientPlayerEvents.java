@@ -184,13 +184,13 @@ public class ClientPlayerEvents {
                     for (int j = i; j < lines.size(); j++) {
                         var contents = lines.get(j).getContents();
                         if (contents instanceof TranslatableContents translatableContents) {
-                            IronsSpellbooks.LOGGER.debug("FormatMultiTooltip translatableContents {}/{} :{}", j, lines.size(), translatableContents.getKey());
+                            //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip translatableContents {}/{} :{}", j, lines.size(), translatableContents.getKey());
                             if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                IronsSpellbooks.LOGGER.debug("FormatMultiTooltip attribute line: {} | args: {}", lines.get(j).getString(), translatableContents.getArgs());
+                                //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip attribute line: {} | args: {}", lines.get(j).getString(), translatableContents.getArgs());
                                 endIndex = j;
                                 for (Object arg : translatableContents.getArgs()) {
                                     if (arg instanceof Component component && component.getContents() instanceof TranslatableContents translatableContents2) {
-                                        IronsSpellbooks.LOGGER.debug("attribute.modifier arg translatable key: {} ({})", translatableContents2.getKey(), getAttributeForDescriptionId(translatableContents2.getKey()));
+                                        //IronsSpellbooks.LOGGER.debug("attribute.modifier arg translatable key: {} ({})", translatableContents2.getKey(), getAttributeForDescriptionId(translatableContents2.getKey()));
                                         if (getAttributeForDescriptionId(translatableContents2.getKey()) instanceof IMagicAttribute) {
                                             linesToGrab.add(j);
                                         }
@@ -210,9 +210,9 @@ public class ClientPlayerEvents {
                             }
                         }
                     }
-                    IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: lines to grab: {}", linesToGrab);
+                    //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: lines to grab: {}", linesToGrab);
                     if (!linesToGrab.isEmpty()) {
-                        IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: end index: {} ({})", endIndex, lines.get(endIndex));
+                        //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: end index: {} ({})", endIndex, lines.get(endIndex));
                         lines.add(++endIndex, Component.empty());
                         lines.add(++endIndex, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
                         for (Integer index : linesToGrab) {
