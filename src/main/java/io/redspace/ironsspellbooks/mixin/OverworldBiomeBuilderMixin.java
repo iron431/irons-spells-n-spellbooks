@@ -56,22 +56,25 @@ import java.util.function.Consumer;
 @Mixin(OverworldBiomeBuilder.class)
 public abstract class OverworldBiomeBuilderMixin {
 
-    private final Climate.Parameter FULL_SPAN = Climate.Parameter.span(-1.0F, 1.0F);
-
-    private void addCaveBiome(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> consumer, ResourceKey<Biome> biome, Climate.Parameter temperature, Climate.Parameter humidity, Climate.Parameter continentalness, Climate.Parameter erosion, Climate.Parameter weirdness, float offset) {
-    }
-
     @Inject(method = "addUndergroundBiomes", at = @At("TAIL"))
     private void writeCaveBiomes(Consumer<Pair<Climate.ParameterPoint, ResourceKey<Biome>>> consumer, CallbackInfo ci) {
         //https://minecraft.fandom.com/wiki/Biome#Temperature_2
         consumer.accept(Pair.of(
+//                Climate.parameters(
+//                        Climate.Parameter.span(-1.1F, -0.6F),   // Temperature
+//                        Climate.Parameter.span(-1F, -0.2F),     // Humidity
+//                        Climate.Parameter.span(0.7F, 0.8F),     // Continentialness
+//                        Climate.Parameter.span(0.0F, 0.2F),     // Erosion
+//                        Climate.Parameter.span(0.9F, 1.1F),     // Depth
+//                        Climate.Parameter.span(-0.6F, -0.2F),   // Weirdness
+//                        0.0F),
                 Climate.parameters(
                         Climate.Parameter.span(-1.1F, -0.6F),   // Temperature
-                        Climate.Parameter.span(-1F, -0.2F),     // Humidity
-                        Climate.Parameter.span(0.7F, 0.8F),     // Continentialness
-                        Climate.Parameter.span(0.0F, 0.2F),     // Erosion
-                        Climate.Parameter.span(0.9F, 1.1F),     // Depth
-                        Climate.Parameter.span(-0.6F, -0.2F),   // Weirdness
+                        Climate.Parameter.span(-1F, 1F),     // Humidity
+                        Climate.Parameter.span(0.7F, 0.9F),     // Continentialness
+                        Climate.Parameter.span(-0.6F, -0.2F),     // Erosion
+                        Climate.Parameter.span(0.8F, 1.1F),     // Depth
+                        Climate.Parameter.span(-1.0F, 1.0F),   // Weirdness
                         0.0F),
                 BiomeRegistry.ICE_CAVES_KEY));
 //        this.addCaveBiome(consumer, ,
