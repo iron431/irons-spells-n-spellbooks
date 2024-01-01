@@ -104,48 +104,12 @@ public class ServerPlayerEvents {
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             // TODO: do we still need to apply this to non-scrolls after curio casting?
-            // Spell Cancellation Logic
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()
                     && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1)
                     && (event.getFrom().getItem() instanceof SpellBook || SpellData.hasSpellData(event.getFrom()))) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
-
-//            // Staff Offhand attributes
-//            /*
-//            Only one item can change at a time.
-//            - If we select a mainhand staff, we want to nullify offhand staff attributes.
-//            - If we deselect a mainhand staff, we want to restore offhand staff attributes.
-//            - If we select an offhand staff, we want to nullify the attributes if we have a mainhand staff selected
-//            - If we deselect an offhand staff, we dont care
-//             */
-//            // Every reference to "staff" is a reference to a casting implement, actually
-//            if (event.getSlot().getType() == EquipmentSlot.Type.HAND) {
-//                ItemStack newItemStack = event.getTo();
-//                ItemStack oldItemStack = event.getFrom();
-//                EquipmentSlot slot = event.getSlot();
-//                IronsSpellbooks.LOGGER.debug("ServerPlayerEvents.onLivingEquipmentChangeEvent Hands: {}| {} -> {}", slot, oldItemStack, newItemStack);
-//                boolean deselectingStaff = oldItemStack.getItem() instanceof CastingItem;
-//                boolean selectingStaff = newItemStack.getItem() instanceof CastingItem;
-//                if (slot == EquipmentSlot.MAINHAND) {
-//                    ItemStack offhandStack = serverPlayer.getOffhandItem();
-//                    if (offhandStack.getItem() instanceof CastingItem) {
-//                        if (selectingStaff) {
-//                            serverPlayer.getAttributes().removeAttributeModifiers(offhandStack.getAttributeModifiers(EquipmentSlot.MAINHAND));
-//                        } else if (deselectingStaff) {
-//                            serverPlayer.getAttributes().addTransientAttributeModifiers(offhandStack.getAttributeModifiers(EquipmentSlot.MAINHAND));
-//                        }
-//                    }
-//                } else if (slot == EquipmentSlot.OFFHAND) {
-//                    ItemStack mainhandStack = serverPlayer.getMainHandItem();
-//                    if (deselectingStaff) {
-//                        serverPlayer.getAttributes().removeAttributeModifiers(oldItemStack.getAttributeModifiers(EquipmentSlot.MAINHAND));
-//                    } else if (selectingStaff && !(mainhandStack.getItem() instanceof CastingItem)) {
-//                        serverPlayer.getAttributes().addTransientAttributeModifiers(newItemStack.getAttributeModifiers(EquipmentSlot.MAINHAND));
-//                    }
-//                }
-//            }
         }
     }
 
