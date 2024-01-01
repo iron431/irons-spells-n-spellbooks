@@ -227,6 +227,8 @@
   "tooltip.irons_spellbooks.oakskin_description": "+%d%% Damage Reduction",
   "tooltip.irons_spellbooks.evasion_description": " Allows %d Hits to be Evaded",
   "tooltip.irons_spellbooks.passive_ability": " Passive Ability (%s cooldown):",
+  "tooltip.irons_spellbooks.modifiers.multihand" : "When in Either Hand:",
+
   "ui.irons_spellbooks.unlearned_spell": "Unlearned Spell",
   "ui.irons_spellbooks.arcane_anvil_title": "Arcane Anvil",
   "ui.irons_spellbooks.inscription_table_title": "Inscription Table",

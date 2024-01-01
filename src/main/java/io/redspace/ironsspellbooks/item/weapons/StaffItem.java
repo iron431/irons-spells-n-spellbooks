@@ -15,6 +15,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -33,8 +34,9 @@ public class StaffItem extends CastingItem {
         this.defaultModifiers = builder.build();
     }
 
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
-        return pEquipmentSlot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(pEquipmentSlot);
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        return (slot == EquipmentSlot.MAINHAND/* || pEquipmentSlot == EquipmentSlot.OFFHAND*/) ? this.defaultModifiers : super.getAttributeModifiers(slot, stack);
     }
 
     @Override

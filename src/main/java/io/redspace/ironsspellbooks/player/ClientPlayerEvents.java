@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
@@ -158,6 +159,12 @@ public class ClientPlayerEvents {
                     //Make room for the stuff the advanced tooltips add to the tooltip
                     int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                     lines.addAll(i, additionalLines);
+                }
+            }
+            if (stack.getItem() instanceof IMultihandWeapon) {
+                int i = TooltipsUtils.indexOfComponent(lines, "item.modifiers.mainhand");
+                if (i >= 0) {
+                    lines.set(i, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
                 }
             }
         });
