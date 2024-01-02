@@ -11,7 +11,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.data.IronsSpellBooksWorldData;
+import io.redspace.ironsspellbooks.data.DataFixerStorage;
+import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datafix.IronsWorldUpgrader;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
@@ -57,7 +58,7 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -75,15 +76,14 @@ public class ServerPlayerEvents {
 //            }
 //        }
 //    }
-
     @SubscribeEvent
-    public static void onServerStoppingEvent(ServerStoppingEvent event) {
-        IronsSpellBooksWorldData.INSTANCE.save();
+    public static void onServerStartedEvent(ServerStartedEvent event) {
+        IronsDataStorage.init(event.getServer().overworld().getDataStorage());
     }
 
     @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-        IronsSpellBooksWorldData.init(event.getServer().storageSource);
+        DataFixerStorage.init(event.getServer().storageSource);
 
         if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
             var server = event.getServer();
