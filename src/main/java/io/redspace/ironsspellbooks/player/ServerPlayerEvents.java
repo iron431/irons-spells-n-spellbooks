@@ -185,7 +185,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
-            if (event.isWasDeath()) {
+            boolean keepEverything = !event.isWasDeath();
                 //Persist summon timers across death
                 event.getOriginal().getActiveEffects().forEach((effect -> {
                     //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
@@ -193,12 +193,13 @@ public class ServerPlayerEvents {
                         newServerPlayer.addEffect(effect, newServerPlayer);
                     }
                 }));
-            }
             event.getOriginal().reviveCaps();
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
-            newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData());
+            //TODO: Vanilla does not persist mobeffects, even with keepinventory. Should we?
+            newMagicData.setSyncedData(/*keepEverything ? oldMagicData.getSyncedData() : */oldMagicData.getSyncedData().getPersistentData());
             newMagicData.getSyncedData().doSync();
+            oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
             event.getOriginal().invalidateCaps();
         }
     }
