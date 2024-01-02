@@ -103,7 +103,7 @@ public class DivineSmiteSpell extends AbstractSpell {
         var entities = level.getEntities(entity, AABB.ofSize(smiteLocation, radius * 2, radius * 4, radius * 2));
         for (Entity targetEntity : entities) {
             //double distance = targetEntity.distanceToSqr(smiteLocation);
-            if (/*distance < radius * radius && */Utils.hasLineOfSight(level, smiteLocation.add(0, 1, 0), targetEntity.getBoundingBox().getCenter(), true)) {
+            if (targetEntity.isAlive() && targetEntity.isPickable() && Utils.hasLineOfSight(level, smiteLocation.add(0, 1, 0), targetEntity.getBoundingBox().getCenter(), true)) {
                 if (DamageSources.applyDamage(targetEntity, getDamage(spellLevel, entity), this.getDamageSource(entity))) {
                     int i = EnchantmentHelper.getFireAspect(entity);
                     if (i > 0) {
