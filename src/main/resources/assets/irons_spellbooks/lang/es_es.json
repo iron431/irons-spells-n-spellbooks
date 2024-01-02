@@ -213,6 +213,8 @@
   "tooltip.irons_spellbooks.oakskin_description": "+%d%% Reducción de Daño",
   "tooltip.irons_spellbooks.evasion_description": "Permite evadir %d golpes",
   "tooltip.irons_spellbooks.passive_ability": " Habilidad pasiva (%s tiempo de Enfriamiento):",
+  "tooltip.irons_spellbooks.modifiers.multihand" : "Cuando está en cualquier Mano:",
+
   "ui.irons_spellbooks.unlearned_spell": "Hechizo Sin Aprender",
   "ui.irons_spellbooks.arcane_anvil_title": "Yunque Arcano",
   "ui.irons_spellbooks.inscription_table_title": "Mesa de Inscripción",
@@ -878,5 +880,20 @@
   "itemGroup.spell_equipment_tab": "Equipamiento de Iron's Spellbooks",
 
   "curios.identifier.spellbook": "Libro de Hechizos",
-  "curios.modifiers.spellbook": "Cuando está equipado como Libro de Hechizos:"
+  "curios.modifiers.spellbook": "Cuando está equipado como Libro de Hechizos:",
+
+  "item.irons_spellbooks.dev_staff": "Cetro de Pruebas",
+  "item.irons_spellbooks.graybeard_staff": "Bastón de Barba Gris",
+  "item.irons_spellbooks.translated_archevoker_log": "Diario de Investigación traducido",
+  "item.irons_spellbooks.archevoker_log": "Diario de Investigación",
+  "item.irons_spellbooks.archevoker_log.header": "Día ",
+  "item.irons_spellbooks.archevoker_log.page_1": "Llegamos al lugar al que §eÉl §rnos envió poco antes del último anochecer, fue una marcha de muchos días. La última vez dormimos en el suelo; Esta mañana nos levantamos con un nuevo propósito, comenzando a construir una barrera de troncos y un hogar de piedra.",
+  "item.irons_spellbooks.archevoker_log.page_2": "La construcción está casi terminada. Mientras escribo, los suministros llegan a nuestro hospicio: madera recién tallada de la zona, un envío de vidrio de Fort Greater. El descubrimiento aguarda en cada encantamiento.",
+  "item.irons_spellbooks.archevoker_log.page_3": "Nunca lo había creído posible, esta magia parece estar jugando con mi mente. Juro que solía haber un sótano debajo de la capilla, pero incluso mi segundo al mando dice que nunca fue así... ¿Seguramente no puedo ser yo el que se está volviendo loco...o si?",
+  "item.irons_spellbooks.archevoker_log.page_4": "Los exploradores han regresado con noticias fantásticas, la de un pueblo, y no demasiado lejos para devolver los suministros aquí con facilidad después del asedio. Sin embargo, la investigación mágica en esta área parece no ser concluyente. Es posible que lo abandonemos pronto.",
+  "item.irons_spellbooks.ice_staff": "Cetro Helado",
+  "tooltip.irons_spellbooks.spellbook_tooltip": "Hechizos Inscritos:",
+  "tooltip.irons_spellbooks.casting_implement_tooltip": "Hechizo activo:",
+  "ui.irons_spellbooks.spellbook_cast_error": "El libro de hechizos debe estar en la ranura del Curios. Utilice el teclado o la Vara para lanzar el hechizo.",
+  "key.irons_spellbooks.spellbook_cast": "Lanzar hechizo seleccionado"
 }
