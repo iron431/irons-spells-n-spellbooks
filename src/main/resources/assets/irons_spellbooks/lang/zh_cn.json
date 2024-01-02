@@ -500,6 +500,13 @@
   "death.attack.heartstop": "%1$s的心脏永久停止了",
   "death.attack.heartstop.player": "%1$s的心脏被%2$s打碎了",
 
+  "death.attack.fire_field": "%1$s在%2$s的灼焰场域中表演煮自己",
+  "death.attack.fire_field.item": "%1$s在%2$s用%3$s召唤的灼焰场域中表演煮自己",
+  "death.attack.dragon_breath_pool": "%1$s被熏死在了%2$s的龙息当中",
+  "death.attack.dragon_breath_pool.item": "%1$s被熏死在了%2$s用%3$s吐的龙息当中",
+  "death.attack.poison_cloud": "%1$s在%2$s的毒雾中因窒息而亡",
+  "death.attack.poison_cloud.item": "%1$s在%2$s用%3$s召唤的毒雾中因窒息而亡",
+
   "death.attack.irons_spellbooks.raise_dead": "%1$s被%2$s召唤出的亡灵狠狠虐待了",
   "death.attack.irons_spellbooks.summon_vex": "%1$s被%2$s召唤的恼鬼剁成了碎片",
   "death.attack.irons_spellbooks.summon_polar_bear": "%1$s被%2$s召唤的北极熊一掌拍死了",
@@ -509,7 +516,6 @@
   "death.attack.irons_spellbooks.fire_breath": "%1$s被%2$s烈焰吐息烤熟了",
   "death.attack.irons_spellbooks.fireball": "%1$s被%2$s使用火球抹杀了",
   "death.attack.irons_spellbooks.dragon_breath": "%1$s被%2$s一口龙息喷死了",
-  "death.attack.irons_spellbooks.dragon_breath_pool": "%1$s站在%2$s的龙息之中",
   "death.attack.irons_spellbooks.ice_block": "%1$s被%2$s用冰块砸死了",
   "death.attack.irons_spellbooks.magic_arrow": "%1$s被%2$s用魔法箭刺穿了身体",
   "death.attack.irons_spellbooks.burning_dash": "%1$s被%2$s撞死了",
@@ -534,11 +540,9 @@
   "death.attack.irons_spellbooks.ascension": "%2$s帮助%1$s“飞升”到了他的下辈子",
   "death.attack.irons_spellbooks.poison_breath": "%1$s被%2$s的毒雾融化了",
   "death.attack.irons_spellbooks.poison_arrow": "%1$s被%2$s的毒箭刺穿了",
-  "death.attack.irons_spellbooks.poison_cloud": "%1$s被%2$s的毒云窒息致死了",
   "death.attack.irons_spellbooks.poison_splash": "%1$s被%2$s的毒液飞溅融化了",
   "death.attack.irons_spellbooks.black_hole": "%1$s的原子被%2$s的黑洞碾了个粉碎",
   "death.attack.irons_spellbooks.blood_needles": "%1$s被%2$s使用血针刺得千疮百孔",
-  "death.attack.irons_spellbooks.fire_field": "%1$s在%2$s的灼焰场域中烧死了",
   "death.attack.irons_spellbooks.starfall": "%1$s被%2$s召唤的流星砸成了一滩烂泥",
   "death.attack.irons_spellbooks.magma_bomb": "%1$s被%2$s炸飞了",
   "death.attack.irons_spellbooks.guiding_bolt": "%2$s指引%1$s走入了坟墓",
@@ -550,10 +554,6 @@
   "death.attack.irons_spellbooks.sonic_boom": "%1$s被%2$s的音爆摧毁了",
   "death.attack.irons_spellbooks.divine_smite": "%1$s被%2$s击毙",
   "death.attack.irons_spellbooks.thunder_step": "%1$s在%2$s的路径中被电击",
-
-  "death.attack.fire_field.item": "%1$s在%2$s用%3$s召唤的灼焰场域中表演煮自己",
-  "death.attack.dragon_breath_pool.item": "%1$s被熏死在了%2$s用%3$s吐的龙息当中",
-  "death.attack.poison_cloud.item": "%1$s在%2$s用%3$s召唤的毒雾中因窒息而亡",
 
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s被%2$s用%3$s召唤出的亡灵狠狠虐待了",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s被%2$s用%3$s召唤的恼鬼剁成了碎片",
@@ -662,6 +662,8 @@
   "commands.mana.add.success.single": "将 %2$s 的法力值增加 %1$s",
   "commands.irons_spellbooks.generate_mod_list.failed": "生成模组列表失败",
   "commands.irons_spellbooks.generate_mod_list.success": "已将模组列表保存为 %s",
+  "commands.irons_spellbooks.create_imbued_sword.failed": "创建法力注入剑失败",
+  "commands.irons_spellbooks.generate_recipe_data.failed": "地点数据生成失败",
 
   "entity.irons_spellbooks.wisp": "圣灵",
   "entity.irons_spellbooks.sunbeam": "烈阳射线",
@@ -722,6 +724,7 @@
 
   "itemGroup.spell_materials_tab": "铁之咒语与魔法书 - 材料",
   "itemGroup.spell_equipment_tab": "铁之咒语与魔法书 - 装备",
+  "itemGroup.irons_spellbooks.spellbook_scrolls_tab": "铁之咒语与魔法书 - 卷轴",
 
   "advancements.irons_spellbooks.root.title": "铁之咒语与魔法书",
   "advancements.irons_spellbooks.root.description": "你仅是窥探了整个世界的冰山一角……",
