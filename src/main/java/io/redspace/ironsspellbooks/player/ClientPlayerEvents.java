@@ -82,7 +82,7 @@ public class ClientPlayerEvents {
                                 entity.level.addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
                             }
                         } else if (spellData.getCastingSpellId().equals(SpellRegistry.RECALL_SPELL.get().getSpellId())) {
-                            //RecallSpell.ambientParticles(livingEntity, spellData);
+                            RecallSpell.ambientParticles(livingEntity, spellData);
                         }
                     }
                 });
