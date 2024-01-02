@@ -6,9 +6,9 @@
     "#minecraft:is_hill",
     "#minecraft:is_forest",
     "#forge:is_desert",
+    "#forge:is_plains",
     "minecraft:windswept_savanna",
     "minecraft:savanna",
-    "minecraft:plains",
     "minecraft:savanna_plateau"
   ]
 }

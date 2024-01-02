@@ -3,7 +3,7 @@
   "start_pool": "irons_spellbooks:pyromancer_tower/start_pool",
   "size": 7,
 
-  "biomes": "#irons_spellbooks:has_structure/evoker_fort",
+  "biomes": "#irons_spellbooks:has_structure/pyromancer_tower",
   "terrain_adaptation": "beard_thin",
   "use_expansion_hack": false,
 
