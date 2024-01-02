@@ -1,12 +1,11 @@
 package io.redspace.ironsspellbooks.gui.scroll_forge;
 
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeTile;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -117,7 +116,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);
-                SpellData.setSpellData(resultStack, spell, spell.getMinLevelForRarity(inkItem.getRarity()));
+                Scroll.createSpellSlotContainer(spell, spell.getMinLevelForRarity(inkItem.getRarity()), resultStack);
             }
         }
 

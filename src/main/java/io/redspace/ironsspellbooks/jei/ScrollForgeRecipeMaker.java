@@ -3,9 +3,8 @@ package io.redspace.ironsspellbooks.jei;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -70,7 +69,7 @@ public final class ScrollForgeRecipeMaker {
 
     private static ItemStack getScrollStack(AbstractSpell spell, int spellLevel) {
         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-        SpellData.setSpellData(scrollStack, spell, spellLevel);
+        Scroll.createSpellSlotContainer(spell, spellLevel, scrollStack);
         return scrollStack;
     }
 }

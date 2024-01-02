@@ -62,6 +62,14 @@ public class SpellSlot implements Comparable<SpellSlot> {
         return spellLevel;
     }
 
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public boolean canRemove() {
+        return !locked;
+    }
+
     public SpellRarity getRarity() {
         return getSpell().getRarity(getLevel());
     }

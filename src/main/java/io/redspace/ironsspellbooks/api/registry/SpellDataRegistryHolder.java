@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.registry;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.api.spells.SpellSlot;
 import net.minecraftforge.registries.RegistryObject;
 
 public class SpellDataRegistryHolder {
@@ -14,7 +14,7 @@ public class SpellDataRegistryHolder {
         this.spellLevel = spellLevel;
     }
 
-    public SpellData getSpellData() {
-        return new SpellData(registrySpell.get(), spellLevel);
+    public SpellSlot getSpellSlot() {
+        return new SpellSlot(registrySpell.get(), spellLevel);
     }
 }

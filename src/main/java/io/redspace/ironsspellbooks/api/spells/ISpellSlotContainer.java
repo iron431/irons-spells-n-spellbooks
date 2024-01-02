@@ -12,9 +12,12 @@ public interface ISpellSlotContainer extends INBTSerializable<CompoundTag> {
     int getMaxSlotCount();
     int getUsedSlotCount();
     int getNextAvailableSlot();
-    SpellSlot getSpellAtSlot(int index);
+    SpellSlot getSlotAtIndex(int index);
+    int getSlotIndexForSpell(AbstractSpell spell);
     boolean addSpellAtSlot(AbstractSpell spell, int level, int index, boolean locked, ItemStack itemStack);
     boolean addSpellToOpenSlot(AbstractSpell spell, int level, boolean locked, ItemStack itemStack);
     boolean removeSpellAtSlot(int index, ItemStack itemStack);
     boolean removeSpellSlot(AbstractSpell spell, ItemStack itemStack);
+    boolean isEmpty();
+    void save(ItemStack stack);
 }

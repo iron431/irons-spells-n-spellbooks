@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.api.magic;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -8,7 +7,6 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -142,8 +140,8 @@ public class MagicData {
         return getSyncedData().getCastingSpellId();
     }
 
-    public SpellData getCastingSpell() {
-        return new SpellData(SpellRegistry.getSpell(getSyncedData().getCastingSpellId()), castingSpellLevel);
+    public SpellSlot getCastingSpell() {
+        return new SpellSlot(SpellRegistry.getSpell(getSyncedData().getCastingSpellId()), castingSpellLevel);
     }
 
     public int getCastingSpellLevel() {

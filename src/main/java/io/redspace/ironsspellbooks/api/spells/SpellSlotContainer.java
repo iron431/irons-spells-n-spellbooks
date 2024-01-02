@@ -32,9 +32,32 @@ public class SpellSlotContainer implements ISpellSlotContainer {
         this.slots = new SpellSlot[this.maxSlots];
     }
 
-    private void save(ItemStack stack) {
+    public SpellSlotContainer(ItemStack itemStack) {
+        CompoundTag tag = itemStack.getTagElement(SPELL_SLOT_CONTAINER);
+        if (tag != null) {
+            deserializeNBT(tag);
+        }
+    }
+
+    @Override
+    public int getMaxSlotCount() {
+        return maxSlots;
+    }
+
+    @Override
+    public int getUsedSlotCount() {
+        return activeSlots;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return activeSlots == 0;
+    }
+
+    @Override
+    public void save(ItemStack stack) {
         if (stack != null) {
-            writeNbtToStack(stack, this);
+            setNbtOnStack(stack, this);
         }
     }
 
@@ -51,26 +74,31 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     }
 
     @Override
-    public int getMaxSlotCount() {
-        return maxSlots;
-    }
-
-    @Override
-    public int getUsedSlotCount() {
-        return activeSlots;
-    }
-
-    @Override
     public int getNextAvailableSlot() {
         return ArrayUtils.indexOf(this.slots, null);
     }
 
     @Override
-    public SpellSlot getSpellAtSlot(int index) {
-        if (index >= 0 && index < slots.length)
-            return slots[index];
-        else
-            return SpellSlot.EMPTY;
+    public SpellSlot getSlotAtIndex(int index) {
+        if (index >= 0 && index < slots.length) {
+            var result = slots[index];
+            if (result != null) {
+                return slots[index];
+            }
+        }
+        return SpellSlot.EMPTY;
+    }
+
+    @Override
+    public int getSlotIndexForSpell(AbstractSpell spell) {
+        for (int i = 0; i < slots.length; i++) {
+            var s = slots[i];
+
+            if (s != null && s.equals(spell)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -102,6 +130,7 @@ public class SpellSlotContainer implements ISpellSlotContainer {
         return false;
     }
 
+    @Override
     public boolean removeSpellSlot(AbstractSpell spell, ItemStack itemStack) {
         if (spell == null) {
             return false;
@@ -158,22 +187,36 @@ public class SpellSlotContainer implements ISpellSlotContainer {
         }
     }
 
-    public static void writeNbtToStack(ItemStack stack, SpellSlotContainer spellSlotContainer) {
+    public static void setNbtOnStack(ItemStack stack, ISpellSlotContainer spellSlotContainer) {
         if (stack != null && spellSlotContainer != null) {
             stack.addTagElement(SPELL_SLOT_CONTAINER, spellSlotContainer.serializeNBT());
         }
     }
 
     public static ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
+        return getSpellSlotContainer(itemStack, false);
+    }
+
+    public static ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack, boolean nbtOnly) {
         CompoundTag tag = itemStack.getTagElement(SPELL_SLOT_CONTAINER);
         if (tag != null) {
             var ssc = new SpellSlotContainer();
             ssc.deserializeNBT(tag);
             return ssc;
-        } else if (itemStack.getItem() instanceof IContainsSpells iContainsSpells) {
+        } else if (!nbtOnly && itemStack.getItem() instanceof IContainSpells iContainsSpells) {
             return iContainsSpells.getSpellSlotContainer(itemStack);
         }
 
         return new SpellSlotContainer(0);
+    }
+
+    public static boolean isSpellContainer(ItemStack itemStack) {
+        if (itemStack != null) {
+            var tag = itemStack.getTag();
+            if (tag != null && tag.contains(SPELL_SLOT_CONTAINER)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

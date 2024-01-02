@@ -105,14 +105,6 @@ public abstract class AbstractSpell {
         return 1;
     }
 
-    /**
-     * @deprecated See player sensitive version, {@link AbstractSpell#getDisplayName(Player player)}
-     */
-    @Deprecated(forRemoval = true)
-    public MutableComponent getDisplayName() {
-        return Component.translatable(getComponentId());
-    }
-
     public MutableComponent getDisplayName(Player player) {
         return Component.translatable(getComponentId());
     }

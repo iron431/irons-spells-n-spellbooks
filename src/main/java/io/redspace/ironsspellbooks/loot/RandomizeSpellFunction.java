@@ -3,13 +3,12 @@ package io.redspace.ironsspellbooks.loot;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.registries.LootRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.registries.LootRegistry;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -50,13 +49,12 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
                 abstractSpell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
             }
 
-            var spellId = abstractSpell.getSpellId();
             int maxLevel = abstractSpell.getMaxLevel();
             float quality = qualityRange.getFloat(lootContext);
             //https://www.desmos.com/calculator/ablc1wg06w
             //quality = quality * (float) Math.sin(1.57 * quality * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
-            SpellData.setSpellData(itemStack, spellId, spellLevel);
+            Scroll.createSpellSlotContainer(abstractSpell, spellLevel, itemStack);
         }
         return itemStack;
     }

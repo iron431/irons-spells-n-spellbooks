@@ -1,15 +1,13 @@
 package io.redspace.ironsspellbooks.command;
 
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
-import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.loot.SpellFilter;
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
+import io.redspace.ironsspellbooks.loot.SpellFilter;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -32,8 +30,9 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            var spellBookData = new SpellBookData(slots);
-            SpellBookData.setSpellBookData(itemstack, spellBookData);
+            var ssc = new SpellSlotContainer(slots);
+            ssc.save(itemstack);
+
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
             }
@@ -46,14 +45,14 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            var spellBookData = new SpellBookData(slots);
+            var ssc = new SpellSlotContainer(slots);
             for (int i = 0; i < slots; i++) {
                 AbstractSpell spell;
                 do {
                     spell = new SpellFilter().getRandomSpell(source.getLevel().random);
-                } while (!spellBookData.addSpell(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel()), itemstack));
+                } while (!ssc.addSpellToOpenSlot(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel()), false, null));
             }
-            SpellBookData.setSpellBookData(itemstack, spellBookData);
+            ssc.save(itemstack);
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
             }

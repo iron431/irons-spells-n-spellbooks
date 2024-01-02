@@ -3,12 +3,8 @@ package io.redspace.ironsspellbooks.api.util;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -54,7 +50,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
@@ -311,7 +306,7 @@ public class Utils {
         var spellItem = ssm.getSelectedSpellSlot();
         if (spellItem != null) {
             var spellData = ssm.getSelectedSpellData();
-            if (spellData != SpellData.EMPTY) {
+            if (spellData != SpellSlot.EMPTY) {
                 var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                 if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
                     ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
@@ -327,13 +322,13 @@ public class Utils {
         var ssm = new SpellSelectionManager(serverPlayer);
         var spellItem = ssm.getSpellSlot(slot);
 
-        if (spellItem != null && spellItem.spellData != SpellData.EMPTY) {
+        if (spellItem != null && spellItem.spellSlot != SpellSlot.EMPTY) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellItem.spellData.getSpell().getSpellId())) {
+            if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellItem.spellSlot.getSpell().getSpellId())) {
                 ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
             }
 
-            return spellItem.spellData.getSpell().attemptInitiateCast(null, spellItem.spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD, true);
+            return spellItem.spellSlot.getSpell().attemptInitiateCast(null, spellItem.spellSlot.getLevel(), serverPlayer.level, serverPlayer, spellItem.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD, true);
         }
         return false;
     }
@@ -510,14 +505,14 @@ public class Utils {
         return TetraProxy.PROXY.canImbue(itemStack);
     }
 
-    public static InteractionResultHolder<ItemStack> onUseCastingHelper(@NotNull Level level, Player player, @NotNull InteractionHand hand, ItemStack stack, SpellData spellData) {
-        var spell = spellData.getSpell();
+    public static InteractionResultHolder<ItemStack> onUseCastingHelper(@NotNull Level level, Player player, @NotNull InteractionHand hand, ItemStack stack, SpellSlot spellSlot) {
+        var spell = spellSlot.getSpell();
         if (spell != SpellRegistry.none()) {
             if (level.isClientSide) {
                 if (ClientMagicData.isCasting()) {
                     //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.1 {} {}", level.isClientSide, hand);
                     return InteractionResultHolder.consume(stack);
-                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost(spellData.getLevel(), null)) || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
+                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost(spellSlot.getLevel(), null)) || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
                     //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.2 {} {}", level.isClientSide, hand);
                     return InteractionResultHolder.pass(stack);
                 } else {
@@ -526,7 +521,7 @@ public class Utils {
                 }
             }
 
-            if (spell.attemptInitiateCast(stack, spellData.getLevel(), level, player, CastSource.SWORD, true)) {
+            if (spell.attemptInitiateCast(stack, spellSlot.getLevel(), level, player, CastSource.SWORD, true)) {
                 if (spell.getCastType().holdToCast()) {
                     player.startUsingItem(hand);
                 }

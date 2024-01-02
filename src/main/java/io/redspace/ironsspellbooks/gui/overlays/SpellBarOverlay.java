@@ -1,13 +1,13 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.api.spells.SpellSlot;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
@@ -46,16 +46,16 @@ public class SpellBarOverlay extends GuiComponent {
         //
         //TODO: cache again
         ClientRenderCache.generateRelativeLocations(20, 22);
-        var swsm = new SpellSelectionManager(player);
-        int totalSpellsAvailable = swsm.getSpellCount();
-        List<SpellData> spells = swsm.getAllSpells().stream().map((slot) -> slot.spellData).toList();
-        int spellbookCount = swsm.getSpellsForSlot(Curios.SPELLBOOK_SLOT).size();
+        var ssm = new SpellSelectionManager(player);
+        int totalSpellsAvailable = ssm.getSpellCount();
+        List<SpellSlot> spells = ssm.getAllSpells().stream().map((slot) -> slot.spellSlot).toList();
+        int spellbookCount = ssm.getSpellsForSlot(Curios.SPELLBOOK_SLOT).size();
         var locations = ClientRenderCache.relativeSpellBarSlotLocations;
         int approximateWidth = locations.size() / 3;
         //Move spellbar away from hotbar as it gets bigger
         centerX -= approximateWidth * 5;
         //var spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
-        int selectedSpellIndex = swsm.getSelectionIndex();
+        int selectedSpellIndex = ssm.getSelectionIndex();
 
         //Slot Border
         setTranslucentTexture(TEXTURE);

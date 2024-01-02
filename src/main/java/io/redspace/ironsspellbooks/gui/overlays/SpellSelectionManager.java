@@ -3,9 +3,9 @@ package io.redspace.ironsspellbooks.gui.overlays;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.IContainSpells;
+import io.redspace.ironsspellbooks.api.spells.SpellSlot;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
@@ -25,14 +25,14 @@ public class SpellSelectionManager {
     public static final String MAINHAND = EquipmentSlot.MAINHAND.getName();
     public static final String OFFHAND = EquipmentSlot.OFFHAND.getName();
 
-    private final List<SpellSlot> spellSlotList;
+    private final List<SelectionOption> selectionOptionList;
     private SpellSelection spellSelection = null;
     private int selectionIndex = -1;
     private boolean selectionValid = false;
     private final Player player;
 
     public SpellSelectionManager(@NotNull Player player) {
-        this.spellSlotList = new ArrayList<>();
+        this.selectionOptionList = new ArrayList<>();
         this.player = player;
 
         init(player);
@@ -45,9 +45,8 @@ public class SpellSelectionManager {
             spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
         }
 
-        initSpellbook(player);
-
         //TODO: support dynamic slot detection
+        initItem(Utils.getPlayerSpellbookStack(player), Curios.SPELLBOOK_SLOT);
         initItem(player.getMainHandItem(), MAINHAND);
         initItem(player.getOffhandItem(), OFFHAND);
 
@@ -58,37 +57,46 @@ public class SpellSelectionManager {
             tryLastSelection();
         }
 
-        if (!selectionValid && !spellSlotList.isEmpty()) {
-            var spellSlot = spellSlotList.get(0);
-            setSpellSelection(new SpellSelection(spellSlot.slot, spellSlot.slotIndex));
+        if (!selectionValid && !selectionOptionList.isEmpty()) {
+            var selectionOption = selectionOptionList.get(0);
+            setSpellSelection(new SpellSelection(selectionOption.slot, selectionOption.slotIndex));
             selectionIndex = 0;
             selectionValid = true;
         }
     }
 
-    private void initSpellbook(Player player) {
-        var spellbookStack = Utils.getPlayerSpellbookStack(player);
-        var spellBookData = SpellBookData.getSpellBookData(spellbookStack);
-        var activeSpellbookSpells = spellBookData.getActiveInscribedSpells();
+//    private void initSpellbook(Player player) {
+//        var spellbookStack = Utils.getPlayerSpellbookStack(player);
+//        var ssc = SpellSlotContainer.getSpellSlotContainer(spellbookStack);
+//        var activeSpells = spellBookData.getActiveInscribedSpells();
+//
+//        for (int i = 0; i < activeSpells.size(); i++) {
+//            selectionOptionList.add(new SelectionOption(activeSpells.get(i), Curios.SPELLBOOK_SLOT, i, i));
+//        }
+//
+//        if (spellSelection.equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && spellSelection.index < selectionOptionList.size()) {
+//            selectionIndex = spellSelection.index;
+//            selectionValid = true;
+//        }
+//    }
 
-        for (int i = 0; i < activeSpellbookSpells.size(); i++) {
-            spellSlotList.add(new SpellSlot(activeSpellbookSpells.get(i), Curios.SPELLBOOK_SLOT, i, i));
-        }
+    private void initItem(ItemStack itemStack, String equipmentSlot) {
+        var currentGlobalIndex = selectionOptionList.size();
+        if (itemStack.getItem() instanceof IContainSpells iContainSpells) {
+            //TODO: in the future when equipment can be imbued we need to handle handle IContainSpells.mustBeEquipped
+            if (iContainSpells.includeInSpellWheel()) {
+                var ssc = iContainSpells.getSpellSlotContainer(itemStack);
 
-        if (spellSelection.equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && spellSelection.index < spellSlotList.size()) {
-            selectionIndex = spellSelection.index;
-            selectionValid = true;
-        }
-    }
+                var activeSpellSlots = ssc.getActiveSpellSlots();
+                for (int i = 0; i < activeSpellSlots.size(); i++) {
+                    var spellSlot = activeSpellSlots.get(i);
+                    selectionOptionList.add(new SelectionOption(spellSlot, equipmentSlot, i, selectionOptionList.size()));
 
-    private void initItem(ItemStack itemStack, String slot) {
-        //TODO: expand this to allow an item to have more than 1 spell
-        var spellData = SpellData.getSpellData(itemStack, false);
-        if (spellData != SpellData.EMPTY) {
-            spellSlotList.add(new SpellSlot(spellData, slot, 0, spellSlotList.size()));
-            if (spellSelection.equipmentSlot.equals(slot)) {
-                selectionIndex = spellSlotList.size() - 1;
-                selectionValid = true;
+                    if (i == 0 && spellSelection.equipmentSlot.equals(equipmentSlot)) {
+                        selectionIndex = selectionOptionList.size() - 1;
+                        selectionValid = true;
+                    }
+                }
             }
         }
     }
@@ -124,8 +132,8 @@ public class SpellSelectionManager {
 
     @OnlyIn(Dist.CLIENT)
     public void makeSelection(int index) {
-        if (index != selectionIndex && index >= 0 && index < spellSlotList.size()) {
-            var item = spellSlotList.get(index);
+        if (index != selectionIndex && index >= 0 && index < selectionOptionList.size()) {
+            var item = selectionOptionList.get(index);
             spellSelection.makeSelection(item.slot, item.slotIndex);
             selectionIndex = index;
             selectionValid = true;
@@ -148,18 +156,18 @@ public class SpellSelectionManager {
         return spellSelection;
     }
 
-    public SpellSlot getSpellSlot(int index) {
-        if (index >= 0 && index < spellSlotList.size()) {
-            return spellSlotList.get(index);
+    public SelectionOption getSpellSlot(int index) {
+        if (index >= 0 && index < selectionOptionList.size()) {
+            return selectionOptionList.get(index);
         }
         return null;
     }
 
-    public SpellData getSpellData(int index) {
-        if (index >= 0 && index < spellSlotList.size()) {
-            return spellSlotList.get(index).spellData;
+    public SpellSlot getSpellData(int index) {
+        if (index >= 0 && index < selectionOptionList.size()) {
+            return selectionOptionList.get(index).spellSlot;
         }
-        return SpellData.EMPTY;
+        return SpellSlot.EMPTY;
     }
 
     public int getSelectionIndex() {
@@ -167,47 +175,47 @@ public class SpellSelectionManager {
     }
 
     @Nullable
-    public SpellSlot getSelectedSpellSlot() {
-        if (selectionIndex >= 0 && selectionIndex < spellSlotList.size()) {
-            return spellSlotList.get(selectionIndex);
+    public SpellSelectionManager.SelectionOption getSelectedSpellSlot() {
+        if (selectionIndex >= 0 && selectionIndex < selectionOptionList.size()) {
+            return selectionOptionList.get(selectionIndex);
         }
         return null;
     }
 
-    public SpellData getSelectedSpellData() {
-        return selectionIndex >= 0 && selectionIndex < spellSlotList.size() ? spellSlotList.get(selectionIndex).spellData : SpellData.EMPTY;
+    public SpellSlot getSelectedSpellData() {
+        return selectionIndex >= 0 && selectionIndex < selectionOptionList.size() ? selectionOptionList.get(selectionIndex).spellSlot : SpellSlot.EMPTY;
     }
 
-    public List<SpellSlot> getSpellsForSlot(String slot) {
-        return spellSlotList.stream().filter(spellSlot -> spellSlot.slot.equals(slot)).toList();
+    public List<SelectionOption> getSpellsForSlot(String slot) {
+        return selectionOptionList.stream().filter(selectionOption -> selectionOption.slot.equals(slot)).toList();
     }
 
-    public List<SpellSlot> getAllSpells() {
-        return spellSlotList;
+    public List<SelectionOption> getAllSpells() {
+        return selectionOptionList;
     }
 
-    public SpellData getSpellForSlot(String slot, int index) {
+    public SpellSlot getSpellForSlot(String slot, int index) {
         var spells = getSpellsForSlot(slot);
 
         if (index >= 0 && index < spells.size()) {
-            return spells.get(index).spellData;
+            return spells.get(index).spellSlot;
         }
 
-        return SpellData.EMPTY;
+        return SpellSlot.EMPTY;
     }
 
     public int getSpellCount() {
-        return spellSlotList.size();
+        return selectionOptionList.size();
     }
 
-    public static class SpellSlot {
-        public SpellData spellData;
+    public static class SelectionOption {
+        public SpellSlot spellSlot;
         public String slot;
         public int slotIndex;
         public int globalIndex;
 
-        public SpellSlot(SpellData spell, String slot, int slotIndex, int globalIndex) {
-            this.spellData = spell;
+        public SelectionOption(SpellSlot spellSlot, String slot, int slotIndex, int globalIndex) {
+            this.spellSlot = spellSlot;
             this.slot = slot;
             this.slotIndex = slotIndex;
             this.globalIndex = globalIndex;

@@ -5,12 +5,12 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.SpellSlot;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.Log;
@@ -58,7 +58,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     private final MagicData playerMagicData = new MagicData(true);
     private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E"), "Drinking speed penalty", -0.15D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-    private @Nullable SpellData castingSpell;
+    private @Nullable SpellSlot castingSpell;
     private final HashMap<String, AbstractSpell> spells = Maps.newHashMap();
     private int drinkTime;
     public boolean hasUsedSingleAttack;
@@ -277,7 +277,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         }
 
         //TODO: why is this using the spells collection instead of the data being passed in?
-        castingSpell = new SpellData(spell, spellLevel);
+        castingSpell = new SpellSlot(spell, spellLevel);
 
         if (getTarget() != null) {
             forceLookAtTarget(getTarget());

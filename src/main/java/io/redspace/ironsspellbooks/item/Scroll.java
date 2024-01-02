@@ -3,11 +3,8 @@ package io.redspace.ironsspellbooks.item;
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -28,15 +25,23 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Scroll extends Item implements IScroll {
+public class Scroll extends Item implements IScroll, IContainSpells {
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
+    private AbstractSpell getSpellFromStack(ItemStack itemStack) {
+        return new SpellSlotContainer(itemStack).getSlotAtIndex(0).getSpell();
+    }
+
+    private SpellSlot getSpellSlotFromStack(ItemStack itemStack) {
+        return new SpellSlotContainer(itemStack).getSlotAtIndex(0);
+    }
+
     @Override
-    public void fillItemCategory(@NotNull CreativeModeTab category, @NotNull NonNullList<ItemStack> items) {
-        if (/*category == SpellbookModCreativeTabs.SPELL_EQUIPMENT_TAB ||*/ category == CreativeModeTab.TAB_SEARCH) {
+    public void fillItemCategory(@NotNull CreativeModeTab category, @NotNull NonNullList<ItemStack> itemStackList) {
+        if (category == CreativeModeTab.TAB_SEARCH) {
             SpellRegistry.REGISTRY.get().getValues().stream()
                     .filter(AbstractSpell::isEnabled)
                     .forEach(spell -> {
@@ -44,8 +49,9 @@ public class Scroll extends Item implements IScroll {
 
                         for (int i = min; i <= spell.getMaxLevel(); i++) {
                             var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                            SpellData.setSpellData(itemstack, spell, i);
-                            items.add(itemstack);
+                            var ssc = createSpellSlotContainer(spell, i, itemstack);
+                            SpellSlotContainer.setNbtOnStack(itemstack, ssc);
+                            itemStackList.add(itemstack);
                         }
                     });
         }
@@ -55,6 +61,12 @@ public class Scroll extends Item implements IScroll {
         if (!serverPlayer.isCreative()) {
             stack.shrink(1);
         }
+    }
+
+    public static SpellSlotContainer createSpellSlotContainer(AbstractSpell spell, int spellLevel, ItemStack itemStack) {
+        var ssc = new SpellSlotContainer(1);
+        ssc.addSpellAtSlot(spell, spellLevel, 0, true, itemStack);
+        return ssc;
     }
 
     public static boolean attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
@@ -69,8 +81,8 @@ public class Scroll extends Item implements IScroll {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        var spellData = SpellData.getSpellData(stack);
-        var spell = spellData.getSpell();
+        var spellSlot = getSpellSlotFromStack(stack);
+        var spell = spellSlot.getSpell();
 
         if (level.isClientSide) {
             if (ClientMagicData.isCasting()) {
@@ -82,7 +94,7 @@ public class Scroll extends Item implements IScroll {
             }
         }
 
-        if (spell.attemptInitiateCast(stack, spellData.getLevel(), level, player, CastSource.SCROLL, false)) {
+        if (spell.attemptInitiateCast(stack, spellSlot.getLevel(), level, player, CastSource.SCROLL, false)) {
             if (spell.getCastType() == CastType.INSTANT) {
                 //TODO: i think magic manager should handle this
                 removeScrollAfterCast((ServerPlayer) player, stack);
@@ -102,14 +114,13 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack pStack) {
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack pStack) {
         return UseAnim.BOW;
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
-        //entity.stopUsingItem();
-        if (SpellData.getSpellData(itemStack).getSpell().getCastType() != CastType.CONTINUOUS || getUseDuration(itemStack) - ticksUsed >= 4) {
+    public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity entity, int ticksUsed) {
+        if (getSpellFromStack(itemStack).getCastType() != CastType.CONTINUOUS || getUseDuration(itemStack) - ticksUsed >= 4) {
             Utils.releaseUsingHelper(entity, itemStack, ticksUsed);
         }
         super.releaseUsing(itemStack, level, entity, ticksUsed);
@@ -117,15 +128,28 @@ public class Scroll extends Item implements IScroll {
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
-        var scrollData = SpellData.getSpellData(itemStack);
-        return scrollData.getDisplayName();
-
+        return getSpellSlotFromStack(itemStack).getDisplayName();
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, List<Component> lines, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
         if (MinecraftInstanceHelper.instance.player() instanceof LocalPlayer localPlayer)
             lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, localPlayer));
         super.appendHoverText(itemStack, level, lines, flag);
+    }
+
+    @Override
+    public ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
+        return new SpellSlotContainer(itemStack);
+    }
+
+    @Override
+    public boolean mustBeEquipped() {
+        return false;
+    }
+
+    @Override
+    public boolean includeInSpellWheel() {
+        return false;
     }
 }

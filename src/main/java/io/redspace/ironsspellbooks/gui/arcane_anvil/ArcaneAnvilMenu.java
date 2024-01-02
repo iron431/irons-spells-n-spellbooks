@@ -1,22 +1,21 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
+import io.redspace.ironsspellbooks.api.spells.IContainSpells;
+import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -24,8 +23,6 @@ import net.minecraft.world.inventory.ItemCombinerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.Arrays;
 
 public class ArcaneAnvilMenu extends ItemCombinerMenu {
     public ArcaneAnvilMenu(int pContainerId, Inventory inventory, ContainerLevelAccess containerLevelAccess) {
@@ -71,49 +68,49 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         ItemStack modifierItemStack = inputSlots.getItem(1);
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             //Scroll Merging
-            if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof Scroll) {
-                var spellData1 = SpellData.getSpellData(baseItemStack);
-                var spellData2 = SpellData.getSpellData(modifierItemStack);
-                if (spellData1.equals(spellData2)) {
-                    if (spellData1.getLevel() < ServerConfigs.getSpellConfig(spellData1.getSpell()).maxLevel()) {
+            if (baseItemStack.getItem() instanceof Scroll scroll1 && modifierItemStack.getItem() instanceof Scroll scroll2) {
+                var spellSlot1 = scroll1.getSpellSlotContainer(baseItemStack).getSlotAtIndex(0);
+                var spellSlot2 = scroll2.getSpellSlotContainer(modifierItemStack).getSlotAtIndex(0);
+
+                if (spellSlot1.equals(spellSlot2)) {
+                    if (spellSlot1.getLevel() < ServerConfigs.getSpellConfig(spellSlot1.getSpell()).maxLevel()) {
                         result = new ItemStack(ItemRegistry.SCROLL.get());
-                        SpellData.setSpellData(result, spellData1.getSpell(), spellData1.getLevel() + 1);
+                        Scroll.createSpellSlotContainer(spellSlot1.getSpell(), spellSlot1.getLevel() + 1, result);
                     }
                 }
             }
             //Unique Weapon Improving
-            else if (baseItemStack.getItem() instanceof UniqueItem && modifierItemStack.getItem() instanceof Scroll) {
-                var scrollData = SpellData.getSpellData(modifierItemStack);
-                if (baseItemStack.getItem() instanceof SpellBook) {
-                    SpellBookData spellBookData = SpellBookData.getSpellBookData(baseItemStack);
-                    var spells = spellBookData.getInscribedSpells();
-                    for (int i = 0; i < spells.length; i++) {
-                        var spellData = spells[i];
-                        if (spellData.getSpell() == scrollData.getSpell()) {
-                            if (spellData.getLevel() < scrollData.getLevel()) {
-                                result = baseItemStack.copy();
-                                var newData = SpellBookData.getSpellBookData(result);
-                                newData.removeSpell(i, result);
-                                newData.addSpell(scrollData.getSpell(), scrollData.getLevel(), i, result);
-                                SpellBookData.setSpellBookData(result, newData);
-                                result.getOrCreateTag().putBoolean("Improved", true);
-                            }
+            else if (baseItemStack.getItem() instanceof UniqueItem && modifierItemStack.getItem() instanceof Scroll scroll) {
+                var scrollSlot = scroll.getSpellSlotContainer(modifierItemStack).getSlotAtIndex(0);
+                if (baseItemStack.getItem() instanceof ISpellSlotContainer spellSlotContainer) {
+                    var matchIndex = spellSlotContainer.getSlotIndexForSpell(scrollSlot.getSpell());
+                    if (matchIndex >= 0) {
+                        var spellSlot = spellSlotContainer.getSlotAtIndex(matchIndex);
+                        if (spellSlot.getLevel() < scrollSlot.getLevel() && spellSlot.isLocked()) {
+                            result = baseItemStack.copy();
+                            spellSlotContainer.removeSpellAtSlot(matchIndex, null);
+                            spellSlotContainer.addSpellAtSlot(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, null);
+                            SpellSlotContainer.setNbtOnStack(result, spellSlotContainer);
+                            result.getOrCreateTag().putBoolean("Improved", true);
                         }
-                    }
-                } else {
-                    var spellData = SpellData.getSpellData(baseItemStack);
-                    if (spellData.getSpell() == scrollData.getSpell() && spellData.getLevel() < scrollData.getLevel()) {
-                        result = baseItemStack.copy();
-                        SpellData.setSpellData(result, scrollData);
-                        result.getOrCreateTag().putBoolean("Improved", true);
                     }
                 }
             }
             //Weapon Imbuement
-            else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
+            else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll scroll) {
                 result = baseItemStack.copy();
-                var scrollData = SpellData.getSpellData(modifierItemStack);
-                SpellData.setSpellData(result, scrollData);
+                if (result.getItem() instanceof IContainSpells iContainSpells) {
+                    var scrollSlot = scroll.getSpellSlotContainer(modifierItemStack).getSlotAtIndex(0);
+                    var spellSlotContainer = iContainSpells.getSpellSlotContainer(result);
+                    var nextSlotIndex = spellSlotContainer.getNextAvailableSlot();
+
+                    if (nextSlotIndex == -1) {
+                        nextSlotIndex = 0;
+                    }
+
+                    spellSlotContainer.removeSpellAtSlot(0, null);
+                    spellSlotContainer.addSpellAtSlot(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false, result);
+                }
             }
             //Upgrade System
             else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getCount() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {

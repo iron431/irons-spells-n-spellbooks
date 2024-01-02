@@ -2,9 +2,10 @@ package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.IContainSpells;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.nbt.CompoundTag;
@@ -155,7 +156,10 @@ public class AdditionalWanderingTrades {
                         ListTag itemsTag = new ListTag();
                         for (ItemStack scroll : items) {
                             itemsTag.add(scroll.save(new CompoundTag()));
-                            quality += SpellData.getSpellData(scroll).getRarity().getValue() + 1;
+
+                            if (scroll.getItem() instanceof Scroll tmpScroll) {
+                                quality += tmpScroll.getSpellSlotContainer(scroll).getSlotAtIndex(0).getRarity().getValue() + 1;
+                            }
                         }
                         forSale.getOrCreateTag().put("Items", itemsTag);
                         ItemStack cost = new ItemStack(Items.EMERALD, quality * 4 + random.nextIntBetweenInclusive(8, 16));
@@ -191,7 +195,7 @@ public class AdditionalWanderingTrades {
         public MerchantOffer getOffer(Entity pTrader, RandomSource random) {
             AbstractSpell spell = spellFilter.getRandomSpell(random);
             int level = random.nextIntBetweenInclusive(1, spell.getMaxLevel());
-            SpellData.setSpellData(forSale, spell, level);
+            Scroll.createSpellSlotContainer(spell, level, forSale);
             this.price.setCount(spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7));
             return new MerchantOffer(price, price2, forSale, maxTrades, xp, priceMult);
         }
@@ -207,7 +211,9 @@ public class AdditionalWanderingTrades {
 
         @Override
         public boolean satisfiedBy(ItemStack offerA, ItemStack offerB) {
-            return offerA.is(ItemRegistry.SCROLL.get()) && SpellData.getSpellData(offerA).getRarity() == scrollRarity && offerA.getCount() >= this.getCostA().getCount() &&
+            var offerARarity = ((IContainSpells)offerA.getItem()).getSpellSlotContainer(offerA).getSlotAtIndex(0).getRarity();
+
+            return offerA.is(ItemRegistry.SCROLL.get()) && offerARarity == scrollRarity && offerA.getCount() >= this.getCostA().getCount() &&
                     this.isRequiredItem(offerB, this.getCostB()) && offerB.getCount() >= this.getCostB().getCount();
         }
 

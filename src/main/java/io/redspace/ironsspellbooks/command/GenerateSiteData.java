@@ -3,12 +3,11 @@ package io.redspace.ironsspellbooks.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
-import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
@@ -269,8 +268,10 @@ public class GenerateSiteData {
     }
 
     private static String getSpells(ItemStack itemStack) {
-        if (itemStack.getItem() instanceof SpellBook) {
-            return SpellBookData.getSpellBookData(itemStack).getActiveInscribedSpells().stream().map(spell -> {
+        if (itemStack.getItem() instanceof SpellBook spellBook) {
+            var ssc = spellBook.getSpellSlotContainer(itemStack);
+
+            return ssc.getActiveSpellSlots().stream().map(spell -> {
                 return spell.getSpell().getDisplayName(null).getString() + " (" + spell.getLevel() + ")";
             }).collect(Collectors.joining(", "));
         }

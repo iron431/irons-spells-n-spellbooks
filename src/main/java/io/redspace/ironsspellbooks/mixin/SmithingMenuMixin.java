@@ -1,9 +1,8 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.SmithingMenu;
@@ -44,8 +43,9 @@ public abstract class SmithingMenuMixin {
             if (result.is(ItemRegistry.SCROLL.get()))
                 return;
             boolean flag = false;
-            if (SpellData.hasSpellData(result)) {
-                result.removeTagKey(SpellData.ISB_SPELL);
+
+            if (SpellSlotContainer.isSpellContainer(result)) {
+                result.removeTagKey(SpellSlotContainer.SPELL_SLOT_CONTAINER);
                 flag = true;
             } else if (UpgradeData.hasUpgradeData(result)) {
                 UpgradeData.removeUpgradeData(result);
@@ -57,13 +57,5 @@ public abstract class SmithingMenuMixin {
                 ci.cancel();
             }
         }
-//        if (pInv.getItem(1).getItem().equals(Items.FLINT)) {
-//            ItemStack result = cir.getReturnValue();
-//            if (SpellData.hasSpellData(result))
-//                result.removeTagKey(SpellData.ISB_SPELL);
-//            else if (UpgradeUtils.isUpgraded(result))
-//                result.removeTagKey(UpgradeUtils.Upgrades);
-//        }
     }
-
 }

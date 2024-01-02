@@ -1,13 +1,10 @@
 package io.redspace.ironsspellbooks.datafix;
 
 import com.google.common.collect.ImmutableMap;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.item.curios.RingData;
-import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.datafix.fixers.*;
 import io.redspace.ironsspellbooks.spells.blood.*;
+import io.redspace.ironsspellbooks.spells.eldritch.AbyssalShroudSpell;
+import io.redspace.ironsspellbooks.spells.eldritch.SculkTentaclesSpell;
 import io.redspace.ironsspellbooks.spells.ender.*;
 import io.redspace.ironsspellbooks.spells.evocation.*;
 import io.redspace.ironsspellbooks.spells.fire.*;
@@ -15,16 +12,11 @@ import io.redspace.ironsspellbooks.spells.holy.*;
 import io.redspace.ironsspellbooks.spells.ice.*;
 import io.redspace.ironsspellbooks.spells.lightning.*;
 import io.redspace.ironsspellbooks.spells.nature.*;
-import io.redspace.ironsspellbooks.spells.eldritch.AbyssalShroudSpell;
-import io.redspace.ironsspellbooks.spells.ender.BlackHoleSpell;
-import io.redspace.ironsspellbooks.spells.eldritch.SculkTentaclesSpell;
-import net.minecraft.nbt.*;
-import net.minecraftforge.fml.ModList;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;

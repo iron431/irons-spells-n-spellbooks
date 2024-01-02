@@ -2,10 +2,13 @@ package io.redspace.ironsspellbooks.item;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
+import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.SpellSlot;
+import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -17,7 +20,7 @@ import java.util.function.Supplier;
 
 public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueItem {
 
-    List<SpellData> spellData = null;
+    List<SpellSlot> spellSlots = null;
     SpellDataRegistryHolder[] spellDataRegistryHolders;
 
     public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders, Supplier<Multimap<Attribute, AttributeModifier>> defaultModifiers) {
@@ -29,12 +32,12 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
         this(rarity, spellDataRegistryHolders, HashMultimap::create);
     }
 
-    public List<SpellData> getSpells() {
-        if (spellData == null) {
-            spellData = Arrays.stream(spellDataRegistryHolders).map(SpellDataRegistryHolder::getSpellData).toList();
+    public List<SpellSlot> getSpells() {
+        if (spellSlots == null) {
+            spellSlots = Arrays.stream(spellDataRegistryHolders).map(SpellDataRegistryHolder::getSpellSlot).toList();
             spellDataRegistryHolders = null;
         }
-        return spellData;
+        return spellSlots;
     }
 
     @Override
@@ -50,5 +53,22 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
     @Override
     public boolean isUnique() {
         return true;
+    }
+
+    public ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
+        if (itemStack == null) {
+            return new SpellSlotContainer(0);
+        }
+
+        CompoundTag tag = itemStack.getTagElement(SpellSlotContainer.SPELL_SLOT_CONTAINER);
+
+        if (tag != null) {
+            return new SpellSlotContainer(itemStack);
+        } else {
+            var ssc = new SpellSlotContainer(getMaxSpellSlots());
+            getSpells().forEach(spellSlot -> ssc.addSpellToOpenSlot(spellSlot.getSpell(), spellSlot.getLevel(), true, null));
+            ssc.save(itemStack);
+            return ssc;
+        }
     }
 }

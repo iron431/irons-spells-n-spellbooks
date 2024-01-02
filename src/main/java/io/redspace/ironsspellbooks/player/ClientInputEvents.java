@@ -2,8 +2,6 @@ package io.redspace.ironsspellbooks.player;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.gui.overlays.SpellWheelOverlay;
 import io.redspace.ironsspellbooks.network.ServerboundCast;
@@ -16,7 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -51,7 +48,7 @@ public final class ClientInputEvents {
                 SpellSelectionManager spellSelectionManager = new SpellSelectionManager(MinecraftInstanceHelper.getPlayer());
                 if (spellSelectionManager.getSpellCount() > 0) {
                     int direction = Mth.clamp((int) event.getScrollDelta(), -1, 1);
-                    List<SpellSelectionManager.SpellSlot> spellbookSpells = spellSelectionManager.getAllSpells();
+                    List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();
                     int spellCount = spellbookSpells.size();
                     int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
                     int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;

@@ -6,19 +6,19 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRecipeRegistry;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -165,7 +165,7 @@ public final class AlchemistCauldronRecipeMaker {
 
     private static ItemStack getScrollStack(ItemStack stack, AbstractSpell spell, int spellLevel) {
         var scrollStack = stack.copy();
-        SpellData.setSpellData(scrollStack, spell, spellLevel);
+        Scroll.createSpellSlotContainer(spell, spellLevel, scrollStack);
         return scrollStack;
     }
 

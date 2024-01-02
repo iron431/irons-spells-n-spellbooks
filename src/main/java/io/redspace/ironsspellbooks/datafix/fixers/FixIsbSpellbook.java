@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.datafix.fixers;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.datafix.DataFixerElement;
 import io.redspace.ironsspellbooks.datafix.DataFixerHelpers;
 import net.minecraft.nbt.CompoundTag;
