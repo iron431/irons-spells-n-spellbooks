@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -34,9 +36,11 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
 
     @Override
     public void tick() {
-        if (!this.level.isClientSide) {
-            this.explode();
-        }
+    }
+
+    @Override
+    public void shoot(double pX, double pY, double pZ, float pVelocity, float pInaccuracy) {
+        explode();
     }
 
     private void explode() {
@@ -48,29 +52,13 @@ public class ExtendedFireworkRocket extends FireworkRocketEntity implements Anti
     }
 
     private void dealExplosionDamage() {
-        //Copied from private FireworkRocketEntity dealExplosionDamage
-        Vec3 pos = this.position();
-        boolean los = false;
+        Vec3 hitPos = this.position();
         double explosionRadius = 2;
-        for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(explosionRadius))) {
-            if (this.distanceToSqr(livingentity) <= explosionRadius * explosionRadius && canHitEntity(livingentity)) {
-
-                for (int i = 0; i < 2; ++i) {
-                    Vec3 targetPos = new Vec3(livingentity.getX(), livingentity.getY(0.5D * (double) i), livingentity.getZ());
-                    HitResult hitresult = this.level.clip(new ClipContext(pos, targetPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
-                    if (hitresult.getType() == HitResult.Type.MISS) {
-                        los = true;
-                        break;
-                    }
-                }
-
-                if (los) {
-                    var spell = SpellRegistry.FIRECRACKER_SPELL.get();
-                    DamageSources.applyDamage(livingentity, this.getDamage(), spell.getDamageSource(this, getOwner()), spell.getSchoolType());
-                }
+        for (LivingEntity livingentity : level.getEntitiesOfClass(LivingEntity.class, new AABB(hitPos.subtract(explosionRadius, explosionRadius, explosionRadius), hitPos.add(explosionRadius, explosionRadius, explosionRadius)))) {
+            if (livingentity.isAlive() && livingentity.isPickable() && Utils.hasLineOfSight(level, hitPos, livingentity.getBoundingBox().getCenter(), true)) {
+                DamageSources.applyDamage(livingentity, this.getDamage(), SpellRegistry.FIRECRACKER_SPELL.get().getDamageSource(this, getOwner()));
             }
         }
-
     }
 
     @Override

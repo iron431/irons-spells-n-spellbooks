@@ -10,7 +10,7 @@ public class WizardRecoverGoal extends Goal {
     protected int delay = 15;
 
     public WizardRecoverGoal(AbstractSpellCastingMob mob) {
-        this(mob, 25, 80);
+        this(mob, 50, 120);
     }
 
     public WizardRecoverGoal(AbstractSpellCastingMob mob, int minDelay, int maxDelay) {

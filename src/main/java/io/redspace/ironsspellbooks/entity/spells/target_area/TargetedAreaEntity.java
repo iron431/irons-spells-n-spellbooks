@@ -1,10 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.target_area;
 
+import com.mojang.math.Vector3f;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -15,7 +17,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidType;
-import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -69,17 +70,29 @@ public class TargetedAreaEntity extends Entity {
         return targetedAreaEntity;
     }
 
+    public static TargetedAreaEntity createTargetAreaEntity(Level level, Vec3 center, float radius, int color, Entity owner) {
+        TargetedAreaEntity targetedAreaEntity = new TargetedAreaEntity(level, radius, color);
+        targetedAreaEntity.setPos(center);
+        targetedAreaEntity.setOwner(owner);
+        level.addFreshEntity(targetedAreaEntity);
+        return targetedAreaEntity;
+    }
+
     @Override
     public void tick() {
+        this.firstTick = false;
         var owner = getOwner();
-        xOld = getX();
-        yOld = getY();
-        zOld = getZ();
         if (owner != null) {
             setPos(owner.position());
             this.xOld = owner.xOld;
             this.yOld = owner.yOld;
             this.zOld = owner.zOld;
+            this.xo = owner.xo;
+            this.yo = owner.yo;
+            this.zo = owner.zo;
+            IronsSpellbooks.LOGGER.debug("TargetAreaEntity pos: {}", position());
+            IronsSpellbooks.LOGGER.debug("TargetAreaEntity oldpos: {}, {}, {}", xOld, yOld, zOld);
+            IronsSpellbooks.LOGGER.debug("TargetAreaEntity opos: {}, {}, {}", xo, yo, zo);
         }
         if (!level.isClientSide
                 && (duration > 0 && tickCount > duration
@@ -137,14 +150,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     public Vector3f getColor() {
-        int color = this.getEntityData().get(DATA_COLOR);
-        //Clever color mapping, taken from potionutils get color
-        int red = (color >> 16) & 0xFF;
-        int green = (color >> 8) & 0xFF;
-        int blue = color & 0xFF;
-
-        return new Vector3f(red / 255.0f, green / 255.0f, blue / 255.0f);
-
+        return Utils.deconstructRGB(this.getEntityData().get(DATA_COLOR));
     }
 
     public int getColorRaw() {
@@ -192,8 +198,17 @@ public class TargetedAreaEntity extends Entity {
         }
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return new ClientboundAddEntityPacket(this);
+    public Packet<?> getAddEntityPacket() {
+        Entity entity = this.getOwner();
+        return new ClientboundAddEntityPacket(this, entity == null ? 0 : entity.getId());
+    }
+
+    public void recreateFromPacket(ClientboundAddEntityPacket pPacket) {
+        super.recreateFromPacket(pPacket);
+        Entity entity = this.level.getEntity(pPacket.getData());
+        if (entity != null) {
+            this.setOwner(entity);
+        }
+
     }
 }

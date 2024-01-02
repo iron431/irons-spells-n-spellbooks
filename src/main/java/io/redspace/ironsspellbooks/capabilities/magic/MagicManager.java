@@ -51,7 +51,7 @@ public class MagicManager implements IMagicManager {
         boolean doManaRegen = level.getServer().getTickCount() % MANA_REGEN_TICKS == 0;
         //IronsSpellbooks.LOGGER.debug("MagicManager.tick: {}, {}, {}, {}, {}", this.hashCode(), level.hashCode(), level.getServer().getTickCount(), level.players().size(), doManaRegen);
 
-        level.players().forEach(player -> {
+        level.players().stream().toList().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {
                 MagicData playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                 playerMagicData.getPlayerCooldowns().tick(1);

@@ -473,5 +473,30 @@
     "sounds": [
       "irons_spellbooks:planar_sight_cast"
     ]
+  },
+  "spell.heat_surge.prepare": {
+    "sounds": [
+      "irons_spellbooks:heat_surge_prepare"
+    ]
+  },
+  "spell.frostwave.prepare": {
+    "sounds": [
+      "irons_spellbooks:frostwave_prepare"
+    ]
+  },
+  "spell.arrow_volley.prepare": {
+    "sounds": [
+      "irons_spellbooks:arrow_volley_prepare"
+    ]
+  },
+  "bow_shoot": {
+    "sounds": [
+      "irons_spellbooks:bow_shoot"
+    ]
+  },
+  "spell.recall.prepare": {
+    "sounds": [
+      "irons_spellbooks:recall_prepare"
+    ]
   }
 }

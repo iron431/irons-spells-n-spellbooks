@@ -75,14 +75,12 @@ public class FirecrackerSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         Vec3 shootAngle = entity.getLookAngle().normalize();
-        float speed = 2.5f;
 
-        Vec3 hitPos = Utils.raycastForEntity(world, entity, getRange(spellLevel, entity), true).getLocation();
-        Vec3 spawn = hitPos.subtract(shootAngle.scale(.5f));
-
+        Vec3 spawn = Utils.raycastForEntity(world, entity, getRange(spellLevel, entity), true).getLocation().subtract(shootAngle.scale(.25f));
         ExtendedFireworkRocket firework = new ExtendedFireworkRocket(world, randomFireworkRocket(), entity, spawn.x, spawn.y, spawn.z, true, getDamage(spellLevel, entity));
         world.addFreshEntity(firework);
-        firework.shoot(shootAngle.x, shootAngle.y, shootAngle.z, speed, 0);
+        firework.shoot(shootAngle.x, shootAngle.y, shootAngle.z, 0, 0);
+
         super.onCast(world, spellLevel, entity, playerMagicData);
     }
 
@@ -91,7 +89,7 @@ public class FirecrackerSpell extends AbstractSpell {
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {
-        return getSpellPower(spellLevel, entity) * .5f;
+        return getSpellPower(spellLevel, entity);
     }
 
     private ItemStack randomFireworkRocket() {
@@ -101,7 +99,11 @@ public class FirecrackerSpell extends AbstractSpell {
         //https://minecraft.fandom.com/wiki/Firework_Rocket#Data_values
         ListTag explosions = new ListTag();
         CompoundTag explosion = new CompoundTag();
-        explosion.putByte("Type", (byte) (random.nextInt(3) * 2));
+        byte type = (byte) (random.nextInt(3) * 2);
+        if (random.nextFloat() < .08f) { //8% chance for creeper face explosion
+            type = 3;
+        }
+        explosion.putByte("Type", type);
         if (random.nextInt(3) == 0)
             explosion.putByte("Trail", (byte) 1);
         if (random.nextInt(3) == 0)

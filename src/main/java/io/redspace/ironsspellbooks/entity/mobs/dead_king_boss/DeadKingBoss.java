@@ -114,7 +114,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy {
                 List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.BLOOD_STEP_SPELL.get()),
                 List.of(/*SpellType.BLOOD_STEP_SPELL*/),
                 List.of()
-        ).setMeleeBias(0.75f).setShouldFlee(false);
+        ).setMeleeBias(0.75f).setAllowFleeing(false);
     }
 
     protected void setFirstPhaseGoals() {

@@ -16,6 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -72,12 +73,16 @@ public class LightningBoltSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        Vec3 pos = Utils.raycastForEntity(level, entity, 100, true, 1f).getLocation();
+        var result = Utils.raycastForEntity(level, entity, 64, true, 1f);
+        Vec3 pos = result.getLocation();
         LightningBolt lightningBolt = new ExtendedLightningBolt(level, entity, getSpellPower(spellLevel, entity));
-        //lightningBolt.setDamage(getSpellPower(entity));
-        lightningBolt.setPos(Utils.moveToRelativeGroundLevel(level, pos, 10));
-        if (entity instanceof ServerPlayer serverPlayer)
+        if (result.getType() != HitResult.Type.ENTITY) {
+            pos = Utils.moveToRelativeGroundLevel(level, pos, 10);
+        }
+        lightningBolt.setPos(pos);
+        if (entity instanceof ServerPlayer serverPlayer) {
             lightningBolt.setCause(serverPlayer);
+        }
         level.addFreshEntity(lightningBolt);
         super.onCast(level, spellLevel, entity, playerMagicData);
     }

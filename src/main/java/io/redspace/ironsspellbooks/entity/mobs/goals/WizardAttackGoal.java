@@ -2,10 +2,9 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -41,7 +40,8 @@ public class WizardAttackGoal extends Goal {
     protected int singleUseLevel;
 
     protected boolean isFlying;
-    protected boolean shouldFlee;
+    protected boolean allowFleeing;
+    protected int fleeCooldown;
 
     protected final ArrayList<AbstractSpell> attackSpells = new ArrayList<>();
     protected final ArrayList<AbstractSpell> defenseSpells = new ArrayList<>();
@@ -66,7 +66,7 @@ public class WizardAttackGoal extends Goal {
         this.attackIntervalMax = pAttackIntervalMax;
         this.attackRadius = 20;
         this.attackRadiusSqr = attackRadius * attackRadius;
-        shouldFlee = true;
+        allowFleeing = true;
     }
 
     public WizardAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
@@ -106,8 +106,8 @@ public class WizardAttackGoal extends Goal {
         return this;
     }
 
-    public WizardAttackGoal setShouldFlee(boolean shouldFlee) {
-        this.shouldFlee = shouldFlee;
+    public WizardAttackGoal setAllowFleeing(boolean allowFleeing) {
+        this.allowFleeing = allowFleeing;
         return this;
     }
 
@@ -158,9 +158,9 @@ public class WizardAttackGoal extends Goal {
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         hasLineOfSight = this.mob.getSensing().hasLineOfSight(this.target);
         if (hasLineOfSight) {
-            ++this.seeTime;
+            this.seeTime++;
         } else {
-            this.seeTime = 0;
+            this.seeTime--;
         }
 
 //        //search for projectiles around the mob
@@ -185,17 +185,18 @@ public class WizardAttackGoal extends Goal {
         handleAttackLogic(distanceSquared);
 
         singleUseDelay--;
-
     }
 
     protected void handleAttackLogic(double distanceSquared) {
+        if (seeTime < -50) {
+            return;
+        }
         if (--this.attackTime == 0) {
-
+            resetAttackTimer(distanceSquared);
             if (!mob.isCasting() && !mob.isDrinkingPotion()) {
                 doSpellAction();
             }
 
-            resetAttackTimer(distanceSquared);
             //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.2: attackTime.1: {}", attackTime);
         } else if (this.attackTime < 0) {
             this.attackTime = Mth.floor(Mth.lerp(Math.sqrt(distanceSquared) / (double) this.attackRadius, (double) this.attackIntervalMin, (double) this.attackIntervalMax));
@@ -219,7 +220,7 @@ public class WizardAttackGoal extends Goal {
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
-        if (shouldFlee && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
+        if (allowFleeing && (!mob.isCasting() && attackTime > 10) && --fleeCooldown <= 0 && distanceSquared < attackRadiusSqr * (fleeDist * fleeDist)) {
             Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
             if (flee != null) {
                 this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);
@@ -278,14 +279,19 @@ public class WizardAttackGoal extends Goal {
         if (!mob.hasUsedSingleAttack && singleUseSpell != SpellRegistry.none() && singleUseDelay <= 0) {
             mob.hasUsedSingleAttack = true;
             mob.initiateCastSpell(singleUseSpell, singleUseLevel);
+            fleeCooldown = 7 + singleUseSpell.getCastTime(singleUseLevel);
         } else {
             var spell = getNextSpellType();
             int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
             spellLevel = Math.max(spellLevel, 1);
 
-            //Make sure cast is valid
-            if (!spell.shouldAIStopCasting(spellLevel, mob, target))
+            //Make sure cast is valid. if not, try again shortly
+            if (!spell.shouldAIStopCasting(spellLevel, mob, target)) {
                 mob.initiateCastSpell(spell, spellLevel);
+                fleeCooldown = 7 + spell.getCastTime(spellLevel);
+            } else {
+                attackTime = 5;
+            }
         }
     }
 

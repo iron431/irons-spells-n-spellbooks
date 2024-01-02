@@ -29,7 +29,7 @@ public class SunbeamSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2))
         );
     }
 
@@ -38,7 +38,6 @@ public class SunbeamSpell extends AbstractSpell {
             .setSchoolResource(SchoolRegistry.HOLY_RESOURCE)
             .setMaxLevel(10)
             .setCooldownSeconds(20)
-            .setEnabled(false)
             .build();
 
     public SunbeamSpell() {
