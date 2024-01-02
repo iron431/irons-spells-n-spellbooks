@@ -4,12 +4,11 @@ import com.mojang.datafixers.util.Pair;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
-import io.redspace.ironsspellbooks.util.SpellbookModCreativeTabs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -50,8 +49,8 @@ public class FurledMapItem extends Item {
             player.getCooldowns().addCooldown(ItemRegistry.FURLED_MAP.get(), 50);
             if (tag != null && tag.contains(FURLED_MAP_NBT, 10) && tag.getCompound(FURLED_MAP_NBT).contains(FURLED_MAP_LOCATION)) {
                 ResourceLocation destinationResource = new ResourceLocation(tag.getCompound(FURLED_MAP_NBT).getString(FURLED_MAP_LOCATION));
-                ResourceKey<Structure> structureResourceKey = ResourceKey.create(Registry.STRUCTURE_REGISTRY, destinationResource);
-                var holder = serverlevel.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY).getHolder(structureResourceKey).map(HolderSet::direct);
+                ResourceKey<Structure> structureResourceKey = ResourceKey.create(Registries.STRUCTURE, destinationResource);
+                var holder = serverlevel.registryAccess().registryOrThrow(Registries.STRUCTURE).getHolder(structureResourceKey).map(HolderSet::direct);
                 //IronsSpellbooks.LOGGER.debug("FurledMapItem: found location: {}", structureResourceKey);
                 if (holder.isPresent()) {
                     Pair<BlockPos, Holder<Structure>> pair = serverlevel.getChunkSource().getGenerator().findNearestMapStructure(serverlevel, holder.get(), player.blockPosition(), 100, ServerConfigs.FURLED_MAPS_SKIP_CHUNKS.get());

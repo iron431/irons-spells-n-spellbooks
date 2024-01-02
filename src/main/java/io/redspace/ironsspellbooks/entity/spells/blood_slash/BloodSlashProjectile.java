@@ -108,7 +108,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
         setRadius(getRadius() + 0.12f);
 
         if (!level.isClientSide) {
-            HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
+            HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
             if (hitresult.getType() == HitResult.Type.BLOCK) {
                 onHitBlock((BlockHitResult) hitresult);
             }

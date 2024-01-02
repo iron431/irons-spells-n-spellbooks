@@ -99,7 +99,7 @@ public class CounterspellSpell extends AbstractSpell {
             for (float i = 1; i < 40; i += .5f) {
                 Vec3 pos = entity.getEyePosition().add(forward.scale(i));
                 MagicManager.spawnParticles(world, ParticleTypes.ENCHANT, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
-                if (!world.getBlockState(new BlockPos(pos)).isAir()) {
+                if (!world.getBlockState(BlockPos.containing(pos)).isAir()) {
                     break;
                 }
             }

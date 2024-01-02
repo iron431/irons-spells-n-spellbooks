@@ -34,7 +34,6 @@ public class DataFixerStorage extends SavedData {
                 IronsSpellbooks.MODID);
 
         DataFixerStorage.INSTANCE.overworldDataStorage = overworldDataStorage;
-
     }
 
     public DataFixerStorage() {

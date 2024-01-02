@@ -60,6 +60,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
@@ -510,8 +511,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         private BibleTrade() {
             super((trader, random) -> {
                 if (!trader.level.isClientSide) {
-                    LootTable loottable = trader.level.getServer().getLootTables().get(IronsSpellbooks.id("magic_items/archevoker_logbook_translated"));
-                    var context = new LootContext.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
+                    LootTable loottable = trader.level.getServer().getLootData().getLootTable(IronsSpellbooks.id("magic_items/archevoker_logbook_translated"));
+                    var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
                     var items = loottable.getRandomItems(context);
                     if (!items.isEmpty()) {
                         ItemStack cost = items.get(0);

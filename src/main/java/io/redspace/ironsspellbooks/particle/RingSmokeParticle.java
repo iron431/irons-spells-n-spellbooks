@@ -1,27 +1,21 @@
 package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
-import com.sun.jna.platform.win32.Dxva2;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import net.minecraft.Util;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -87,22 +81,22 @@ public class RingSmokeParticle extends TextureSheetParticle {
         //Quaternion rot = new Quaternion(rx, ry, 0, false);
         this.renderRotatedParticle(buffer, camera, partialticks, (quaternion) -> {
             //quaternion.mul(Vector3f.XP.rotation(-degrees90));
-            quaternion.mul(Vector3f.YP.rotation(ry));
-            quaternion.mul(Vector3f.XP.rotation(rx));
+            quaternion.mul(Axis.YP.rotation(ry));
+            quaternion.mul(Axis.XP.rotation(rx));
 //            quaternion.mul(rot);
 //            quaternion.mul(rot);
 
         });
         //back face
         this.renderRotatedParticle(buffer, camera, partialticks, (quaternion) -> {
-            quaternion.mul(Vector3f.YP.rotation(ry));
-            quaternion.mul(Vector3f.XP.rotation(Mth.PI));
-            quaternion.mul(Vector3f.XP.rotation(rx));
+            quaternion.mul(Axis.YP.rotation(ry));
+            quaternion.mul(Axis.XP.rotation(Mth.PI));
+            quaternion.mul(Axis.XP.rotation(rx));
             //quaternion.mul(Vector3f.YP.rotation(-(ry - degrees90)));
         });
     }
 
-    private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, Consumer<Quaternion> pQuaternion) {
+    private void renderRotatedParticle(VertexConsumer pConsumer, Camera camera, float partialTick, Consumer<Quaternionf> pQuaternion) {
         /*
         Copied from Shriek Particle
          */
@@ -110,7 +104,7 @@ public class RingSmokeParticle extends TextureSheetParticle {
         float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
-        Quaternion quaternion = new Quaternion(ROTATION_VECTOR, 0.0F, true);
+        Quaternionf quaternion = (new Quaternionf()).setAngleAxis(0.0F, ROTATION_VECTOR.x(), ROTATION_VECTOR.y(), ROTATION_VECTOR.z());
 
         pQuaternion.accept(quaternion);
         //TRANSFORM_VECTOR.transform(quaternion);
@@ -119,7 +113,7 @@ public class RingSmokeParticle extends TextureSheetParticle {
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            vector3f.transform(quaternion);
+            vector3f.rotate(quaternion);
             vector3f.mul(f3);
             vector3f.add(f, f1, f2);
         }
@@ -146,7 +140,7 @@ public class RingSmokeParticle extends TextureSheetParticle {
         if (isFullbright) {
             return LightTexture.FULL_BRIGHT;
         }
-        BlockPos blockpos = new BlockPos(this.x, this.y, this.z).above();
+        BlockPos blockpos = BlockPos.containing(this.x, this.y, this.z).above();
         return this.level.hasChunkAt(blockpos) ? LevelRenderer.getLightColor(this.level, blockpos) : 0;
     }
 

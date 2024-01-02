@@ -140,7 +140,7 @@ public class RecallSpell extends AbstractSpell {
             return RespawnAnchorBlock.findStandUpPosition(EntityType.PLAYER, level, spawnBlockpos);
         } else if (block instanceof BedBlock && BedBlock.canSetSpawn(level)) {
             IronsSpellbooks.LOGGER.debug("RecallSpell.findSpawnPosition.bed");
-            return BedBlock.findStandUpPosition(EntityType.PLAYER, level, spawnBlockpos, player.getYRot());
+            return BedBlock.findStandUpPosition(EntityType.PLAYER, level, spawnBlockpos, player.getDirection(), player.getYRot());
         } else {
             return Optional.empty();
 //            boolean flag = block.isPossibleToRespawnInThis();

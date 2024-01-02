@@ -2,19 +2,18 @@ package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.DustParticleOptionsBase;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -73,10 +72,11 @@ public class TrailShockwaveParticleOptions extends DustParticleOptionsBase imple
         Copied From Dust Particle Options
          */
     public static final Codec<IShockwaveParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) ->
-            p_175793_.group(Vector3f.CODEC.fieldOf("color").forGetter(IShockwaveParticleOptions::color),
-                    Codec.FLOAT.fieldOf("scale").forGetter(IShockwaveParticleOptions::getScale),
-                    Codec.BOOL.fieldOf("fullbright").forGetter(IShockwaveParticleOptions::isFullbright),
-                    Codec.STRING.fieldOf("trailParticle").forGetter(IShockwaveParticleOptions::trailParticleRaw)
+            p_175793_.group(
+                    ExtraCodecs.VECTOR3F.fieldOf("color").forGetter((options) -> ((TrailShockwaveParticleOptions) options).color),
+                    Codec.FLOAT.fieldOf("scale").forGetter((options) -> ((TrailShockwaveParticleOptions) options).scale),
+                    Codec.BOOL.fieldOf("fullbright").forGetter((options) -> ((TrailShockwaveParticleOptions) options).fullbright),
+                    Codec.STRING.fieldOf("trailParticle").forGetter((options) -> ((TrailShockwaveParticleOptions) options).trailParticle)
             ).apply(p_175793_, TrailShockwaveParticleOptions::new));
     @SuppressWarnings("deprecation")
     public static final Deserializer<IShockwaveParticleOptions> DESERIALIZER = new Deserializer<IShockwaveParticleOptions>() {

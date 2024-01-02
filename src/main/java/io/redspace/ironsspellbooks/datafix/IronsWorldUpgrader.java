@@ -64,20 +64,7 @@ public class IronsWorldUpgrader {
         }
 
         this.dataFixer = new DataFixerBuilder(1).buildUnoptimized();
-//        var file = this.levelStorage.getDimensionPath(Level.OVERWORLD).resolve("data").toFile();
-//
-//        try {
-//            if (!file.exists()) {
-//                file.mkdir();
-//            }
-//        } catch (Exception ignored) {
-//        }
-//
-//        this.overworldDataStorage = new DimensionDataStorage(file, dataFixer);
-//        IronsSpellBooksWorldData.INSTANCE = overworldDataStorage.computeIfAbsent(
-//                IronsSpellBooksWorldData::load,
-//                IronsSpellBooksWorldData::new,
-//                IronsSpellbooks.MODID);
+
     }
 
     public boolean worldNeedsUpgrading() {
