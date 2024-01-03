@@ -73,10 +73,10 @@ public class TrailShockwaveParticleOptions extends DustParticleOptionsBase imple
          */
     public static final Codec<IShockwaveParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) ->
             p_175793_.group(
-                    ExtraCodecs.VECTOR3F.fieldOf("color").forGetter((options) -> ((TrailShockwaveParticleOptions) options).color),
-                    Codec.FLOAT.fieldOf("scale").forGetter((options) -> ((TrailShockwaveParticleOptions) options).scale),
-                    Codec.BOOL.fieldOf("fullbright").forGetter((options) -> ((TrailShockwaveParticleOptions) options).fullbright),
-                    Codec.STRING.fieldOf("trailParticle").forGetter((options) -> ((TrailShockwaveParticleOptions) options).trailParticle)
+                    ExtraCodecs.VECTOR3F.fieldOf("color").forGetter(IShockwaveParticleOptions::color),
+                    Codec.FLOAT.fieldOf("scale").forGetter(IShockwaveParticleOptions::getScale),
+                    Codec.BOOL.fieldOf("fullbright").forGetter(IShockwaveParticleOptions::isFullbright),
+                    Codec.STRING.fieldOf("trailParticle").forGetter(IShockwaveParticleOptions::trailParticleRaw)
             ).apply(p_175793_, TrailShockwaveParticleOptions::new));
     @SuppressWarnings("deprecation")
     public static final Deserializer<IShockwaveParticleOptions> DESERIALIZER = new Deserializer<IShockwaveParticleOptions>() {
