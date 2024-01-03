@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -31,7 +30,7 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            var ssc = new SpellSlotContainer(slots, CastSource.SPELLBOOK);
+            var ssc = new SpellSlotContainer(slots, true, true);
             ssc.save(itemstack);
 
             if (serverPlayer.getInventory().add(itemstack)) {
@@ -46,7 +45,7 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            var ssc = new SpellSlotContainer(slots, CastSource.SPELLBOOK);
+            var ssc = new SpellSlotContainer(slots, true, true);
             for (int i = 0; i < slots; i++) {
                 AbstractSpell spell;
                 do {

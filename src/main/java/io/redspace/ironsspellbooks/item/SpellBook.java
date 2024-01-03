@@ -174,7 +174,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IContainSpel
         if (SpellSlotContainer.isSpellContainer(itemStack)) {
             return new SpellSlotContainer(itemStack);
         } else {
-            return new SpellSlotContainer(getMaxSpellSlots(), CastSource.SPELLBOOK);
+            return new SpellSlotContainer(getMaxSpellSlots(), true, true);
         }
     }
 }

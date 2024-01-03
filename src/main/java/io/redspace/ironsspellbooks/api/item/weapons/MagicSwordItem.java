@@ -1,7 +1,10 @@
 package io.redspace.ironsspellbooks.api.item.weapons;
 
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.IContainSpells;
+import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellSlot;
+import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +51,7 @@ public class MagicSwordItem extends ExtendedSwordItem implements IContainSpells 
         if (SpellSlotContainer.isSpellContainer(itemStack)) {
             return new SpellSlotContainer(itemStack);
         } else {
-            var ssc = new SpellSlotContainer(spellDataRegistryHolders.length, CastSource.SWORD);
+            var ssc = new SpellSlotContainer(spellDataRegistryHolders.length, true, false);
             getSpells().forEach(spellSlot -> ssc.addSpellToOpenSlot(spellSlot.getSpell(), spellSlot.getLevel(), true, null));
             ssc.save(itemStack);
             return ssc;

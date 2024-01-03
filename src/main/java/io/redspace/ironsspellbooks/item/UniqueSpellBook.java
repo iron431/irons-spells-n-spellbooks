@@ -3,7 +3,10 @@ package io.redspace.ironsspellbooks.item;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.SpellSlot;
+import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -59,7 +62,7 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
         if (SpellSlotContainer.isSpellContainer(itemStack)) {
             return new SpellSlotContainer(itemStack);
         } else {
-            var ssc = new SpellSlotContainer(getMaxSpellSlots(), CastSource.SPELLBOOK);
+            var ssc = new SpellSlotContainer(getMaxSpellSlots(), true, true);
             getSpells().forEach(spellSlot -> ssc.addSpellToOpenSlot(spellSlot.getSpell(), spellSlot.getLevel(), true, null));
             ssc.save(itemStack);
             return ssc;

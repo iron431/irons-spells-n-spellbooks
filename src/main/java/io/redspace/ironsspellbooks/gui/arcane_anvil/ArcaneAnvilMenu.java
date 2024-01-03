@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -103,7 +102,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 if (SpellSlotContainer.isSpellContainer(result)) {
                     spellSlotContainer = new SpellSlotContainer(result);
                 } else {
-                    spellSlotContainer = new SpellSlotContainer(1, CastSource.SWORD);
+                    spellSlotContainer = new SpellSlotContainer(1, true, false);
                 }
 
                 var scrollSlot = scroll.getSpellSlotContainer(modifierItemStack).getSlotAtIndex(0);

@@ -19,7 +19,8 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     public static final String SPELL_SLOT_CONTAINER = "ISB_Spells";
     public static final String SLOTS = "slots";
     public static final String MAX_SLOTS = "maxSlots";
-    public static final String CAST_SOURCE = "source";
+    public static final String MUST_EQUIP = "mustEquip";
+    public static final String SPELL_WHEEL = "spellWheel";
 
     //Slot Data
     public static final String SLOT_INDEX = "index";
@@ -30,15 +31,17 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     private SpellSlot[] slots;
     private int maxSlots = 0;
     private int activeSlots = 0;
-    private CastSource castSource = CastSource.NONE;
+    private boolean spellWheel = false;
+    private boolean mustEquip = true;
 
     public SpellSlotContainer() {
     }
 
-    public SpellSlotContainer(int maxSpellSlots, CastSource castSource) {
+    public SpellSlotContainer(int maxSpellSlots, boolean spellWheel, boolean mustEquip) {
         this.maxSlots = maxSpellSlots;
         this.slots = new SpellSlot[this.maxSlots];
-        this.castSource = castSource;
+        this.spellWheel = spellWheel;
+        this.mustEquip = mustEquip;
     }
 
     public SpellSlotContainer(ItemStack itemStack) {
@@ -89,6 +92,16 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     @Override
     public int getNextAvailableSlot() {
         return ArrayUtils.indexOf(this.slots, null);
+    }
+
+    @Override
+    public boolean mustEquip() {
+        return mustEquip;
+    }
+
+    @Override
+    public boolean spellWheel() {
+        return spellWheel;
     }
 
     @Override
@@ -163,7 +176,8 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     public CompoundTag serializeNBT() {
         var rootTag = new CompoundTag();
         rootTag.putInt(MAX_SLOTS, maxSlots);
-        rootTag.putString(CAST_SOURCE, castSource.toString());
+        rootTag.putBoolean(MUST_EQUIP, mustEquip);
+        rootTag.putBoolean(SPELL_WHEEL, spellWheel);
         var listTag = new ListTag();
         for (int i = 0; i < maxSlots; i++) {
             var spellSlot = slots[i];
@@ -183,7 +197,8 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.maxSlots = nbt.getInt(MAX_SLOTS);
-        this.castSource = CastSource.valueOf(nbt.getString(CAST_SOURCE));
+        this.mustEquip = nbt.getBoolean(MUST_EQUIP);
+        this.spellWheel = nbt.getBoolean(SPELL_WHEEL);
         this.slots = new SpellSlot[maxSlots];
         activeSlots = 0;
         ListTag listTagSpells = (ListTag) nbt.get(SLOTS);
@@ -234,14 +249,14 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     private static void convertTag(CompoundTag tag, ItemStack itemStack) {
         if (tag.contains(LegacySpellData.ISB_SPELL)) {
             var legacySpellData = LegacySpellData.getSpellData(itemStack);
-            var ssc = new SpellSlotContainer(1, itemStack.getItem() instanceof Scroll ? CastSource.SCROLL : CastSource.SWORD);
+            var ssc = new SpellSlotContainer(1, !(itemStack.getItem() instanceof Scroll), false);
             ssc.addSpellAtSlot(legacySpellData.spell, legacySpellData.spellLevel, 0, itemStack.getItem() instanceof UniqueItem, null);
             itemStack.addTagElement(SPELL_SLOT_CONTAINER, ssc.serializeNBT());
             itemStack.removeTagKey(LegacySpellData.ISB_SPELL);
         } else if (tag.contains(LegacySpellBookData.ISB_SPELLBOOK)) {
             var legcySpellBookData = LegacySpellBookData.getSpellBookData(itemStack);
             var newSize = ((SpellBook)itemStack.getItem()).getMaxSpellSlots();
-            var ssc = new SpellSlotContainer(newSize, CastSource.SPELLBOOK);
+            var ssc = new SpellSlotContainer(newSize, true, true);
             var unique = itemStack.getItem() instanceof UniqueItem;
             for (int i = 0; i < legcySpellBookData.transcribedSpells.length; i++) {
                 var legacySpellData = legcySpellBookData.transcribedSpells[i];

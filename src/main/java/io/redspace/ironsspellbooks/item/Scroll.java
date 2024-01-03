@@ -64,7 +64,7 @@ public class Scroll extends Item implements IScroll, IContainSpells {
     }
 
     public static SpellSlotContainer createSpellSlotContainer(AbstractSpell spell, int spellLevel, ItemStack itemStack) {
-        var ssc = new SpellSlotContainer(1, CastSource.SCROLL);
+        var ssc = new SpellSlotContainer(1, false, false);
         ssc.addSpellAtSlot(spell, spellLevel, 0, true, itemStack);
         return ssc;
     }
@@ -141,15 +141,5 @@ public class Scroll extends Item implements IScroll, IContainSpells {
     @Override
     public ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
         return new SpellSlotContainer(itemStack);
-    }
-
-    @Override
-    public boolean mustBeEquipped() {
-        return false;
-    }
-
-    @Override
-    public boolean includeInSpellWheel() {
-        return false;
     }
 }
