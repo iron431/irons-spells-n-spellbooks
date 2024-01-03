@@ -46,11 +46,7 @@ public class SpellSlotContainer implements ISpellSlotContainer {
         if (tag != null) {
             deserializeNBT(tag);
         } else {
-            tag = itemStack.getTag();
-            if (tag != null && isLegacyTagFormat(tag)) {
-                convertTag(tag, itemStack);
-                deserializeNBT(tag);
-            }
+            convertLegacyData(itemStack);
         }
     }
 
@@ -224,13 +220,24 @@ public class SpellSlotContainer implements ISpellSlotContainer {
         return tag.contains(LegacySpellData.ISB_SPELL) || tag.contains(LegacySpellBookData.ISB_SPELLBOOK);
     }
 
+    private void convertLegacyData(ItemStack itemStack) {
+        var tag = itemStack.getTag();
+        if (tag != null && isLegacyTagFormat(tag)) {
+            convertTag(tag, itemStack);
+            CompoundTag convertedTag = itemStack.getTagElement(SPELL_SLOT_CONTAINER);
+            if (convertedTag != null) {
+                deserializeNBT(convertedTag);
+            }
+        }
+    }
+
     private static void convertTag(CompoundTag tag, ItemStack itemStack) {
         if (tag.contains(LegacySpellData.ISB_SPELL)) {
             var legacySpellData = LegacySpellData.getSpellData(itemStack);
             var ssc = new SpellSlotContainer(1, itemStack.getItem() instanceof Scroll ? CastSource.SCROLL : CastSource.SWORD);
             ssc.addSpellAtSlot(legacySpellData.spell, legacySpellData.spellLevel, 0, itemStack.getItem() instanceof UniqueItem, null);
-            tag.put(SPELL_SLOT_CONTAINER, ssc.serializeNBT());
-            tag.remove(LegacySpellData.ISB_SPELL);
+            itemStack.addTagElement(SPELL_SLOT_CONTAINER, ssc.serializeNBT());
+            itemStack.removeTagKey(LegacySpellData.ISB_SPELL);
         } else if (tag.contains(LegacySpellBookData.ISB_SPELLBOOK)) {
             var legcySpellBookData = LegacySpellBookData.getSpellBookData(itemStack);
             var newSize = ((SpellBook)itemStack.getItem()).getMaxSpellSlots();
@@ -242,8 +249,8 @@ public class SpellSlotContainer implements ISpellSlotContainer {
                     ssc.addSpellAtSlot(legacySpellData.spell, legacySpellData.spellLevel, i, unique, null);
                 }
             }
-            tag.put(SPELL_SLOT_CONTAINER, ssc.serializeNBT());
-            tag.remove(LegacySpellBookData.ISB_SPELLBOOK);
+            itemStack.addTagElement(SPELL_SLOT_CONTAINER, ssc.serializeNBT());
+            itemStack.removeTagKey(LegacySpellBookData.ISB_SPELLBOOK);
         }
     }
 
