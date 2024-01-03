@@ -13,7 +13,6 @@ import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
@@ -172,9 +171,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IContainSpel
             return new SpellSlotContainer();
         }
 
-        CompoundTag tag = itemStack.getTagElement(SpellSlotContainer.SPELL_SLOT_CONTAINER);
-
-        if (tag != null) {
+        if (SpellSlotContainer.isSpellContainer(itemStack)) {
             return new SpellSlotContainer(itemStack);
         } else {
             return new SpellSlotContainer(getMaxSpellSlots(), CastSource.SPELLBOOK);

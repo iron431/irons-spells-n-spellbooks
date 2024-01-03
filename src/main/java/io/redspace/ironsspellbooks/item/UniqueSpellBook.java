@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -21,7 +20,7 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
     SpellDataRegistryHolder[] spellDataRegistryHolders;
 
     public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders, Supplier<Multimap<Attribute, AttributeModifier>> defaultModifiers) {
-        super(spellDataRegistryHolders.length, rarity, defaultModifiers.get());
+        super(10, rarity, defaultModifiers.get());
         this.spellDataRegistryHolders = spellDataRegistryHolders;
     }
 
@@ -57,9 +56,7 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
             return new SpellSlotContainer();
         }
 
-        CompoundTag tag = itemStack.getTagElement(SpellSlotContainer.SPELL_SLOT_CONTAINER);
-
-        if (tag != null) {
+        if (SpellSlotContainer.isSpellContainer(itemStack)) {
             return new SpellSlotContainer(itemStack);
         } else {
             var ssc = new SpellSlotContainer(getMaxSpellSlots(), CastSource.SPELLBOOK);

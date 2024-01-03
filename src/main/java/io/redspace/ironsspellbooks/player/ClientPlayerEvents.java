@@ -153,7 +153,7 @@ public class ClientPlayerEvents {
                     int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                     lines.addAll(i, additionalLines);
                 }
-            } else if (!(stack.getItem() instanceof SpellBook)) {
+            } else if (SpellSlotContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
                 var spellContainer = new SpellSlotContainer(stack);
                 if (!spellContainer.isEmpty()) {
                     var additionalLines = new ArrayList<Component>();

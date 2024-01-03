@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.api.item.weapons;
 
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.*;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
@@ -46,9 +45,7 @@ public class MagicSwordItem extends ExtendedSwordItem implements IContainSpells 
             return new SpellSlotContainer();
         }
 
-        CompoundTag tag = itemStack.getTagElement(SpellSlotContainer.SPELL_SLOT_CONTAINER);
-
-        if (tag != null) {
+        if (SpellSlotContainer.isSpellContainer(itemStack)) {
             return new SpellSlotContainer(itemStack);
         } else {
             var ssc = new SpellSlotContainer(spellDataRegistryHolders.length, CastSource.SWORD);
