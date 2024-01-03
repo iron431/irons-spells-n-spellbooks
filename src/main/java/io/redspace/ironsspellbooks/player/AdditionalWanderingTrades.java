@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.IContainSpells;
+import io.redspace.ironsspellbooks.api.spells.IHaveSpellList;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -158,7 +158,7 @@ public class AdditionalWanderingTrades {
                             itemsTag.add(scroll.save(new CompoundTag()));
 
                             if (scroll.getItem() instanceof Scroll tmpScroll) {
-                                quality += tmpScroll.getSpellSlotContainer(scroll).getSlotAtIndex(0).getRarity().getValue() + 1;
+                                quality += tmpScroll.getSpellList(scroll).getSpellAtIndex(0).getRarity().getValue() + 1;
                             }
                         }
                         forSale.getOrCreateTag().put("Items", itemsTag);
@@ -195,7 +195,7 @@ public class AdditionalWanderingTrades {
         public MerchantOffer getOffer(Entity pTrader, RandomSource random) {
             AbstractSpell spell = spellFilter.getRandomSpell(random);
             int level = random.nextIntBetweenInclusive(1, spell.getMaxLevel());
-            Scroll.createSpellSlotContainer(spell, level, forSale);
+            Scroll.createSpellList(spell, level, forSale);
             this.price.setCount(spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7));
             return new MerchantOffer(price, price2, forSale, maxTrades, xp, priceMult);
         }
@@ -211,7 +211,7 @@ public class AdditionalWanderingTrades {
 
         @Override
         public boolean satisfiedBy(ItemStack offerA, ItemStack offerB) {
-            var offerARarity = ((IContainSpells)offerA.getItem()).getSpellSlotContainer(offerA).getSlotAtIndex(0).getRarity();
+            var offerARarity = ((IHaveSpellList)offerA.getItem()).getSpellList(offerA).getSpellAtIndex(0).getRarity();
 
             return offerA.is(ItemRegistry.SCROLL.get()) && offerARarity == scrollRarity && offerA.getCount() >= this.getCostA().getCount() &&
                     this.isRequiredItem(offerB, this.getCostB()) && offerB.getCount() >= this.getCostB().getCount();

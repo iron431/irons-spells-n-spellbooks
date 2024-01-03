@@ -246,10 +246,10 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     public static Item getInkFromScroll(ItemStack scrollStack) {
         if (scrollStack.getItem() instanceof Scroll scroll) {
-            var ssc = scroll.getSpellSlotContainer(scrollStack);
-            var spellSlot = ssc.getSlotAtIndex(0);
+            var spellList = scroll.getSpellList(scrollStack);
+            var spellData = spellList.getSpellAtIndex(0);
 
-            SpellRarity rarity = spellSlot.getSpell().getRarity(spellSlot.getLevel());
+            SpellRarity rarity = spellData.getSpell().getRarity(spellData.getLevel());
             return switch (rarity) {
                 case COMMON -> ItemRegistry.INK_COMMON.get();
                 case UNCOMMON -> ItemRegistry.INK_UNCOMMON.get();

@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.SpellSlot;
-import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.api.spells.SpellList;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
@@ -143,7 +143,7 @@ public class ClientPlayerEvents {
 
             if (stack.getItem() instanceof CastingItem) {
                 var spellSlot = new SpellSelectionManager(player).getSelectedSpellData();
-                if (spellSlot != SpellSlot.EMPTY) {
+                if (spellSlot != SpellData.EMPTY) {
                     var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
                     //Add header
                     additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
@@ -153,11 +153,11 @@ public class ClientPlayerEvents {
                     int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                     lines.addAll(i, additionalLines);
                 }
-            } else if (SpellSlotContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
-                var spellContainer = new SpellSlotContainer(stack);
+            } else if (SpellList.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
+                var spellContainer = new SpellList(stack);
                 if (!spellContainer.isEmpty()) {
                     var additionalLines = new ArrayList<Component>();
-                    spellContainer.getActiveSpellSlots().forEach(spellSlot -> {
+                    spellContainer.getActiveSpells().forEach(spellSlot -> {
                         var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
                         //Indent the title because we'll have an additional header
                         spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));

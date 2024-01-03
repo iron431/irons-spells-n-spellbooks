@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
-import io.redspace.ironsspellbooks.api.spells.IContainSpells;
-import io.redspace.ironsspellbooks.api.spells.SpellSlot;
+import io.redspace.ironsspellbooks.api.spells.IHaveSpellList;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -91,8 +91,8 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             public void onTake(Player player, ItemStack stack) {
                 //Ironsspellbooks.logger.debug("InscriptionTableMenu.take spell!");
                 var spellBookStack = spellBookSlot.getItem();
-                var ssc = ((IContainSpells) spellBookStack.getItem()).getSpellSlotContainer(spellBookStack);
-                ssc.removeSpellAtSlot(selectedSpellIndex, spellBookStack);
+                var spellList = ((IHaveSpellList) spellBookStack.getItem()).getSpellList(spellBookStack);
+                spellList.removeSpellAtIndex(selectedSpellIndex, spellBookStack);
                 super.onTake(player, spellBookStack);
             }
         };
@@ -144,11 +144,11 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack scrollItemStack = getScrollSlot().getItem();
 
         if (spellBookItemStack.getItem() instanceof SpellBook spellBook && scrollItemStack.getItem() instanceof Scroll scroll) {
-            var bookContainer = spellBook.getSpellSlotContainer(spellBookItemStack);
-            var scrollContainer = scroll.getSpellSlotContainer(scrollItemStack);
-            var scrollSlot = scrollContainer.getSlotAtIndex(0);
+            var bookContainer = spellBook.getSpellList(spellBookItemStack);
+            var scrollContainer = scroll.getSpellList(scrollItemStack);
+            var scrollSlot = scrollContainer.getSpellAtIndex(0);
 
-            if (bookContainer.addSpellAtSlot(scrollSlot.getSpell(), scrollSlot.getLevel(), selectedIndex, false, spellBookItemStack)) {
+            if (bookContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), selectedIndex, false, spellBookItemStack)) {
                 getScrollSlot().remove(1);
             }
         }
@@ -160,8 +160,8 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         if (pId < 0) {
             var scrollStack = getScrollSlot().getItem();
             if (selectedSpellIndex >= 0 && scrollStack.getItem() instanceof Scroll scroll) {
-                SpellSlot spellSlot = scroll.getSpellSlotContainer(scrollStack).getSlotAtIndex(0);
-                if (MinecraftForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellSlot)))
+                SpellData spellData = scroll.getSpellList(scrollStack).getSpellAtIndex(0);
+                if (MinecraftForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)))
                     return false;
                 doInscription(selectedSpellIndex);
             }
@@ -179,14 +179,14 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack spellBookStack = spellBookSlot.getItem();
 
         if (spellBookStack.getItem() instanceof SpellBook spellBook) {
-            var ssc = spellBook.getSpellSlotContainer(spellBookStack);
+            var spellList = spellBook.getSpellList(spellBookStack);
             if (selectedSpellIndex >= 0) {
-                var spellSlot = ssc.getSlotAtIndex(selectedSpellIndex);
+                var spellData = spellList.getSpellAtIndex(selectedSpellIndex);
 
-                if (spellSlot != null && spellSlot.canRemove()) {
+                if (spellData != null && spellData.canRemove()) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
-                    Scroll.createSpellSlotContainer(spellSlot.getSpell(), spellSlot.getLevel(), resultStack);
+                    Scroll.createSpellList(spellData.getSpell(), spellData.getLevel(), resultStack);
                 }
             }
         }

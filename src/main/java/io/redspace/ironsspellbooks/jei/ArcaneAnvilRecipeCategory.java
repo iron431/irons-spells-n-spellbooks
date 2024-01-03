@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellList;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -110,18 +110,18 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
             var minecraft = Minecraft.getInstance();
             drawScrollInfo(minecraft,
                     poseStack,
-                    leftScroll.getSpellSlotContainer(leftStack.get()),
-                    outputScroll.getSpellSlotContainer(leftStack.get()));
+                    leftScroll.getSpellList(leftStack.get()),
+                    outputScroll.getSpellList(leftStack.get()));
         }
     }
 
-    private void drawScrollInfo(Minecraft minecraft, PoseStack poseStack, ISpellSlotContainer leftScroll, ISpellSlotContainer outputScroll) {
+    private void drawScrollInfo(Minecraft minecraft, PoseStack poseStack, ISpellList leftScroll, ISpellList outputScroll) {
 
-        var inputSpellData = leftScroll.getSlotAtIndex(0);
+        var inputSpellData = leftScroll.getSpellAtIndex(0);
         var inputText = String.format("L%d", inputSpellData.getLevel());
         var inputColor = inputSpellData.getSpell().getRarity(inputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
-        var outputSpellData =  outputScroll.getSlotAtIndex(0);
+        var outputSpellData =  outputScroll.getSpellAtIndex(0);
         var outputText = String.format("L%d", outputSpellData.getLevel());
         var outputColor = outputSpellData.getSpell().getRarity(outputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 

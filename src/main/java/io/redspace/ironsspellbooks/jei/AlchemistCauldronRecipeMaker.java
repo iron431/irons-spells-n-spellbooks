@@ -165,7 +165,7 @@ public final class AlchemistCauldronRecipeMaker {
 
     private static ItemStack getScrollStack(ItemStack stack, AbstractSpell spell, int spellLevel) {
         var scrollStack = stack.copy();
-        Scroll.createSpellSlotContainer(spell, spellLevel, scrollStack);
+        Scroll.createSpellList(spell, spellLevel, scrollStack);
         return scrollStack;
     }
 

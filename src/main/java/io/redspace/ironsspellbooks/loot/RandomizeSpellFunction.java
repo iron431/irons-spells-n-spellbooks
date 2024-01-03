@@ -54,7 +54,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             //https://www.desmos.com/calculator/ablc1wg06w
             //quality = quality * (float) Math.sin(1.57 * quality * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
-            Scroll.createSpellSlotContainer(abstractSpell, spellLevel, itemStack);
+            Scroll.createSpellList(abstractSpell, spellLevel, itemStack);
         }
         return itemStack;
     }

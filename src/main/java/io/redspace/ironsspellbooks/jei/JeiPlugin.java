@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellList;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
@@ -66,7 +66,7 @@ public class JeiPlugin implements IModPlugin {
                 IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
                         .forEach((spellLevel) -> {
                             var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-                            Scroll.createSpellSlotContainer(spell, spellLevel, scrollStack);
+                            Scroll.createSpellList(spell, spellLevel, scrollStack);
                             list.add(scrollStack);
                         });
                 registration.addIngredientInfo(list, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spell.getComponentId())));
@@ -102,7 +102,7 @@ public class JeiPlugin implements IModPlugin {
 
     private static final IIngredientSubtypeInterpreter<ItemStack> SCROLL_INTERPRETER = (stack, context) -> {
         if (stack.hasTag()) {
-            var ss = new SpellSlotContainer(stack).getSlotAtIndex(0);
+            var ss = new SpellList(stack).getSpellAtIndex(0);
             return String.format("scroll:%s:%d", ss.getSpell().getSpellId(), ss.getLevel());
         }
 

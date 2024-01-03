@@ -44,7 +44,7 @@ public class CreateScrollCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemStack = new ItemStack(ItemRegistry.SCROLL.get());
-            Scroll.createSpellSlotContainer(abstractSpell, spellLevel, itemStack);
+            Scroll.createSpellList(abstractSpell, spellLevel, itemStack);
             if (serverPlayer.getInventory().add(itemStack)) {
                 return 1;
             }

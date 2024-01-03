@@ -140,8 +140,8 @@ public class MagicData {
         return getSyncedData().getCastingSpellId();
     }
 
-    public SpellSlot getCastingSpell() {
-        return new SpellSlot(SpellRegistry.getSpell(getSyncedData().getCastingSpellId()), castingSpellLevel);
+    public SpellData getCastingSpell() {
+        return new SpellData(SpellRegistry.getSpell(getSyncedData().getCastingSpellId()), castingSpellLevel);
     }
 
     public int getCastingSpellLevel() {

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.SpellSlot;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
@@ -28,20 +28,20 @@ public class CastingItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
-        SpellSelectionManager.SelectionOption selectionOption = spellSelectionManager.getSelectedSpellSlot();
-        if (selectionOption == null || selectionOption.spellSlot.equals(SpellSlot.EMPTY)) {
+        SpellSelectionManager.SelectionOption selectionOption = spellSelectionManager.getSelection();
+        if (selectionOption == null || selectionOption.spellData.equals(SpellData.EMPTY)) {
             //IronsSpellbooks.LOGGER.debug("CastingItem.Use.1 {} {}", level.isClientSide, hand);
             return InteractionResultHolder.pass(itemStack);
         }
-        SpellSlot spellSlot = selectionOption.spellSlot;
+        SpellData spellData = selectionOption.spellData;
 
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {
                 //IronsSpellbooks.LOGGER.debug("CastingItem.Use.2 {} {}", level.isClientSide, hand);
                 return InteractionResultHolder.consume(itemStack);
-            } else if (ClientMagicData.getPlayerMana() < spellSlot.getSpell().getManaCost(spellSlot.getLevel(), player)
-                    || ClientMagicData.getCooldowns().isOnCooldown(spellSlot.getSpell())
-                    || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellSlot.getSpell())) {
+            } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellData.getLevel(), player)
+                    || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
+                    || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
                 //IronsSpellbooks.LOGGER.debug("CastingItem.Use.3 {} {}", level.isClientSide, hand);
                 return InteractionResultHolder.pass(itemStack);
             } else {
@@ -50,8 +50,8 @@ public class CastingItem extends Item {
             }
         }
 
-        if (spellSlot.getSpell().attemptInitiateCast(itemStack, spellSlot.getLevel(), level, player, selectionOption.getCastSource(), true)) {
-            if (spellSlot.getSpell().getCastType().holdToCast()) {
+        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, selectionOption.getCastSource(), true)) {
+            if (spellData.getSpell().getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }
             //IronsSpellbooks.LOGGER.debug("CastingItem.Use.5 {} {}", level.isClientSide, hand);

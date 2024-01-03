@@ -116,7 +116,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);
-                Scroll.createSpellSlotContainer(spell, spell.getMinLevelForRarity(inkItem.getRarity()), resultStack);
+                Scroll.createSpellList(spell, spell.getMinLevelForRarity(inkItem.getRarity()), resultStack);
             }
         }
 

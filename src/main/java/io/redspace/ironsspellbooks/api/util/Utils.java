@@ -303,10 +303,10 @@ public class Utils {
 
     public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
         var ssm = new SpellSelectionManager(serverPlayer);
-        var spellItem = ssm.getSelectedSpellSlot();
+        var spellItem = ssm.getSelection();
         if (spellItem != null) {
             var spellData = ssm.getSelectedSpellData();
-            if (spellData != SpellSlot.EMPTY) {
+            if (spellData != SpellData.EMPTY) {
                 var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                 if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
                     ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
@@ -322,13 +322,13 @@ public class Utils {
         var ssm = new SpellSelectionManager(serverPlayer);
         var spellItem = ssm.getSpellSlot(slot);
 
-        if (spellItem != null && spellItem.spellSlot != SpellSlot.EMPTY) {
+        if (spellItem != null && spellItem.spellData != SpellData.EMPTY) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellItem.spellSlot.getSpell().getSpellId())) {
+            if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellItem.spellData.getSpell().getSpellId())) {
                 ServerboundCancelCast.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
             }
 
-            return spellItem.spellSlot.getSpell().attemptInitiateCast(null, spellItem.spellSlot.getLevel(), serverPlayer.level, serverPlayer, spellItem.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD, true);
+            return spellItem.spellData.getSpell().attemptInitiateCast(null, spellItem.spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.slot.equals(Curios.SPELLBOOK_SLOT) ? CastSource.SPELLBOOK : CastSource.SWORD, true);
         }
         return false;
     }
@@ -505,14 +505,14 @@ public class Utils {
         return TetraProxy.PROXY.canImbue(itemStack);
     }
 
-    public static InteractionResultHolder<ItemStack> onUseCastingHelper(@NotNull Level level, Player player, @NotNull InteractionHand hand, ItemStack stack, SpellSlot spellSlot) {
-        var spell = spellSlot.getSpell();
+    public static InteractionResultHolder<ItemStack> onUseCastingHelper(@NotNull Level level, Player player, @NotNull InteractionHand hand, ItemStack stack, SpellData spellData) {
+        var spell = spellData.getSpell();
         if (spell != SpellRegistry.none()) {
             if (level.isClientSide) {
                 if (ClientMagicData.isCasting()) {
                     //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.1 {} {}", level.isClientSide, hand);
                     return InteractionResultHolder.consume(stack);
-                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost(spellSlot.getLevel(), null)) || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
+                } else if (ClientMagicData.getCooldowns().isOnCooldown(spell) || (ServerConfigs.SWORDS_CONSUME_MANA.get() && ClientMagicData.getPlayerMana() < spell.getManaCost(spellData.getLevel(), null)) || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
                     //IronsSpellbooks.LOGGER.debug("SwordItemMixin.use.2 {} {}", level.isClientSide, hand);
                     return InteractionResultHolder.pass(stack);
                 } else {
@@ -521,7 +521,7 @@ public class Utils {
                 }
             }
 
-            if (spell.attemptInitiateCast(stack, spellSlot.getLevel(), level, player, CastSource.SWORD, true)) {
+            if (spell.attemptInitiateCast(stack, spellData.getLevel(), level, player, CastSource.SWORD, true)) {
                 if (spell.getCastType().holdToCast()) {
                     player.startUsingItem(hand);
                 }

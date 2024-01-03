@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.events;
 
 
-import io.redspace.ironsspellbooks.api.spells.SpellSlot;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -18,18 +18,18 @@ import net.minecraftforge.eventbus.api.Cancelable;
  * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
  **/
 public class InscribeSpellEvent extends PlayerEvent {
-    private final SpellSlot spellSlot;
+    private final SpellData spellData;
 
-    public InscribeSpellEvent(Player player, SpellSlot spellSlot)
+    public InscribeSpellEvent(Player player, SpellData spellData)
     {
         super(player);
-        this.spellSlot = spellSlot;
+        this.spellData = spellData;
     }
 
     @Override
     public boolean isCancelable() { return true; }
 
-    public SpellSlot getSpellSlot() {
-        return this.spellSlot;
+    public SpellData getSpellData() {
+        return this.spellData;
     }
 }

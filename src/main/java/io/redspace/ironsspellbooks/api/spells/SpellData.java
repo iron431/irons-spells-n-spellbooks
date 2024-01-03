@@ -8,27 +8,27 @@ import net.minecraft.network.chat.MutableComponent;
 
 import java.util.Objects;
 
-public class SpellSlot implements Comparable<SpellSlot> {
+public class SpellData implements Comparable<SpellData> {
     public static final String SPELL_ID = "id";
     public static final String SPELL_LEVEL = "level";
     public static final String SPELL_LOCKED = "locked";
-    public static final SpellSlot EMPTY = new SpellSlot(SpellRegistry.none(), 0, false);
+    public static final SpellData EMPTY = new SpellData(SpellRegistry.none(), 0, false);
     private MutableComponent displayName;
     protected final AbstractSpell spell;
     protected final int spellLevel;
     protected final boolean locked;
 
-    private SpellSlot() throws Exception {
+    private SpellData() throws Exception {
         throw new Exception("Cannot create empty spell slots.");
     }
 
-    public SpellSlot(AbstractSpell spell, int level, boolean locked) {
+    public SpellData(AbstractSpell spell, int level, boolean locked) {
         this.spell = Objects.requireNonNull(spell);
         this.spellLevel = level;
         this.locked = locked;
     }
 
-    public SpellSlot(AbstractSpell spell, int level) {
+    public SpellData(AbstractSpell spell, int level) {
         this(spell, level, false);
     }
 
@@ -87,7 +87,7 @@ public class SpellSlot implements Comparable<SpellSlot> {
             return true;
         }
 
-        if (obj instanceof SpellSlot other) {
+        if (obj instanceof SpellData other) {
             return this.spell.equals(other.spell) && this.spellLevel == other.spellLevel;
         }
 
@@ -98,7 +98,7 @@ public class SpellSlot implements Comparable<SpellSlot> {
         return 31 * this.spell.hashCode() + this.spellLevel;
     }
 
-    public int compareTo(SpellSlot other) {
+    public int compareTo(SpellData other) {
         int i = this.spell.getSpellId().compareTo(other.spell.getSpellId());
         if (i == 0) {
             i = Integer.compare(this.spellLevel, other.spellLevel);

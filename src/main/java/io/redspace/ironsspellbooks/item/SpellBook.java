@@ -31,7 +31,7 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SpellBook extends CurioBaseItem implements ISpellbook, IContainSpells {
+public class SpellBook extends CurioBaseItem implements ISpellbook, IHaveSpellList {
     protected final SpellRarity rarity;
     protected final int maxSpellSlots;
 
@@ -65,7 +65,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IContainSpel
         return super.use(pLevel, pPlayer, pUsedHand);
     }
 
-    //    @Override
+//    @Override
 //    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 //        ItemStack itemStack = player.getItemInHand(hand);
 //        var spellBookData = SpellBookData.getSpellBookData(itemStack);
@@ -133,9 +133,9 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IContainSpel
         }
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null) {
-            var ssc = getSpellSlotContainer(itemStack);
-            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", ssc.getMaxSlotCount()).withStyle(ChatFormatting.GRAY));
-            var activeSpellSlots = ssc.getActiveSpellSlots();
+            var spellList = getSpellList(itemStack);
+            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", spellList.getMaxSpellCount()).withStyle(ChatFormatting.GRAY));
+            var activeSpellSlots = spellList.getActiveSpells();
             if (!activeSpellSlots.isEmpty()) {
                 lines.add(Component.empty());
                 lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
@@ -166,15 +166,15 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IContainSpel
     }
 
     @Override
-    public ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
+    public ISpellList getSpellList(ItemStack itemStack) {
         if (itemStack == null) {
-            return new SpellSlotContainer();
+            return new SpellList();
         }
 
-        if (SpellSlotContainer.isSpellContainer(itemStack)) {
-            return new SpellSlotContainer(itemStack);
+        if (SpellList.isSpellContainer(itemStack)) {
+            return new SpellList(itemStack);
         } else {
-            return new SpellSlotContainer(getMaxSpellSlots(), true, true);
+            return new SpellList(getMaxSpellSlots(), true, true);
         }
     }
 }

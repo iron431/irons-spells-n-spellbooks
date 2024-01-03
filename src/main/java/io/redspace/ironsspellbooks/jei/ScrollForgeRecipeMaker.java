@@ -69,7 +69,7 @@ public final class ScrollForgeRecipeMaker {
 
     private static ItemStack getScrollStack(AbstractSpell spell, int spellLevel) {
         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-        Scroll.createSpellSlotContainer(spell, spellLevel, scrollStack);
+        Scroll.createSpellList(spell, spellLevel, scrollStack);
         return scrollStack;
     }
 }

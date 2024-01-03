@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SpellSlotContainer implements ISpellSlotContainer {
+public class SpellList implements ISpellList {
     //Container Root
     public static final String SPELL_SLOT_CONTAINER = "ISB_Spells";
-    public static final String SLOTS = "slots";
-    public static final String MAX_SLOTS = "maxSlots";
+    public static final String SPELL_DATA = "data";
+    public static final String MAX_SLOTS = "maxSpells";
     public static final String MUST_EQUIP = "mustEquip";
     public static final String SPELL_WHEEL = "spellWheel";
 
@@ -28,23 +28,23 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     public static final String SPELL_LEVEL = "level";
     public static final String SPELL_LOCKED = "locked";
 
-    private SpellSlot[] slots;
-    private int maxSlots = 0;
+    private SpellData[] slots;
+    private int maxSpells = 0;
     private int activeSlots = 0;
     private boolean spellWheel = false;
     private boolean mustEquip = true;
 
-    public SpellSlotContainer() {
+    public SpellList() {
     }
 
-    public SpellSlotContainer(int maxSpellSlots, boolean spellWheel, boolean mustEquip) {
-        this.maxSlots = maxSpellSlots;
-        this.slots = new SpellSlot[this.maxSlots];
+    public SpellList(int maxSpells, boolean spellWheel, boolean mustEquip) {
+        this.maxSpells = maxSpells;
+        this.slots = new SpellData[this.maxSpells];
         this.spellWheel = spellWheel;
         this.mustEquip = mustEquip;
     }
 
-    public SpellSlotContainer(ItemStack itemStack) {
+    public SpellList(ItemStack itemStack) {
         CompoundTag tag = itemStack.getTagElement(SPELL_SLOT_CONTAINER);
         if (tag != null) {
             deserializeNBT(tag);
@@ -54,12 +54,12 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     }
 
     @Override
-    public int getMaxSlotCount() {
-        return maxSlots;
+    public int getMaxSpellCount() {
+        return maxSpells;
     }
 
     @Override
-    public int getUsedSlotCount() {
+    public int getActiveSpellCount() {
         return activeSlots;
     }
 
@@ -76,21 +76,21 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     }
 
     @Override
-    public SpellSlot[] getAllSpellSlots() {
-        var result = new SpellSlot[maxSlots];
-        if (maxSlots > 0) {
+    public SpellData[] getAllSpells() {
+        var result = new SpellData[maxSpells];
+        if (maxSpells > 0) {
             System.arraycopy(slots, 0, result, 0, slots.length);
         }
         return result;
     }
 
     @Override
-    public List<SpellSlot> getActiveSpellSlots() {
+    public List<SpellData> getActiveSpells() {
         return Arrays.stream(this.slots).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
-    public int getNextAvailableSlot() {
+    public int getNextAvailableIndex() {
         return ArrayUtils.indexOf(this.slots, null);
     }
 
@@ -105,19 +105,19 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     }
 
     @Override
-    public SpellSlot getSlotAtIndex(int index) {
-        if (index >= 0 && index < maxSlots) {
+    public SpellData getSpellAtIndex(int index) {
+        if (index >= 0 && index < maxSpells) {
             var result = slots[index];
             if (result != null) {
                 return slots[index];
             }
         }
-        return SpellSlot.EMPTY;
+        return SpellData.EMPTY;
     }
 
     @Override
-    public int getSlotIndexForSpell(AbstractSpell spell) {
-        for (int i = 0; i < maxSlots; i++) {
+    public int getIndexForSpell(AbstractSpell spell) {
+        for (int i = 0; i < maxSpells; i++) {
             var s = slots[i];
 
             if (s != null && s.equals(spell)) {
@@ -128,11 +128,11 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     }
 
     @Override
-    public boolean addSpellAtSlot(AbstractSpell spell, int level, int index, boolean locked, ItemStack itemStack) {
-        if (index > -1 && index < maxSlots &&
+    public boolean addSpellAtIndex(AbstractSpell spell, int level, int index, boolean locked, ItemStack itemStack) {
+        if (index > -1 && index < maxSpells &&
                 slots[index] == null &&
                 Arrays.stream(slots).noneMatch(s -> s != null && s.getSpell().equals(spell))) {
-            slots[index] = new SpellSlot(spell, level, locked);
+            slots[index] = new SpellData(spell, level, locked);
             activeSlots++;
             save(itemStack);
             return true;
@@ -141,13 +141,13 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     }
 
     @Override
-    public boolean addSpellToOpenSlot(AbstractSpell spell, int level, boolean locked, ItemStack itemStack) {
-        return addSpellAtSlot(spell, level, getNextAvailableSlot(), locked, itemStack);
+    public boolean addSpell(AbstractSpell spell, int level, boolean locked, ItemStack itemStack) {
+        return addSpellAtIndex(spell, level, getNextAvailableIndex(), locked, itemStack);
     }
 
     @Override
-    public boolean removeSpellAtSlot(int index, ItemStack itemStack) {
-        if (index > -1 && index < maxSlots && slots[index] != null) {
+    public boolean removeSpellAtIndex(int index, ItemStack itemStack) {
+        if (index > -1 && index < maxSpells && slots[index] != null) {
             slots[index] = null;
             activeSlots--;
             save(itemStack);
@@ -157,15 +157,15 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     }
 
     @Override
-    public boolean removeSpellSlot(AbstractSpell spell, ItemStack itemStack) {
+    public boolean removeSpell(AbstractSpell spell, ItemStack itemStack) {
         if (spell == null) {
             return false;
         }
 
-        for (int i = 0; i < maxSlots; i++) {
-            var spellSLot = slots[i];
-            if (spellSLot != null && spell.equals(spellSLot.spell)) {
-                return removeSpellAtSlot(i, itemStack);
+        for (int i = 0; i < maxSpells; i++) {
+            var spellData = slots[i];
+            if (spellData != null && spell.equals(spellData.spell)) {
+                return removeSpellAtIndex(i, itemStack);
             }
             break;
         }
@@ -175,33 +175,33 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     @Override
     public CompoundTag serializeNBT() {
         var rootTag = new CompoundTag();
-        rootTag.putInt(MAX_SLOTS, maxSlots);
+        rootTag.putInt(MAX_SLOTS, maxSpells);
         rootTag.putBoolean(MUST_EQUIP, mustEquip);
         rootTag.putBoolean(SPELL_WHEEL, spellWheel);
         var listTag = new ListTag();
-        for (int i = 0; i < maxSlots; i++) {
-            var spellSlot = slots[i];
-            if (spellSlot != null) {
+        for (int i = 0; i < maxSpells; i++) {
+            var spellData = slots[i];
+            if (spellData != null) {
                 CompoundTag slotTag = new CompoundTag();
-                slotTag.putString(SPELL_ID, spellSlot.spell.getSpellId());
-                slotTag.putInt(SPELL_LEVEL, spellSlot.spellLevel);
-                slotTag.putBoolean(SPELL_LOCKED, spellSlot.locked);
+                slotTag.putString(SPELL_ID, spellData.spell.getSpellId());
+                slotTag.putInt(SPELL_LEVEL, spellData.spellLevel);
+                slotTag.putBoolean(SPELL_LOCKED, spellData.locked);
                 slotTag.putInt(SLOT_INDEX, i);
                 listTag.add(slotTag);
             }
         }
-        rootTag.put(SLOTS, listTag);
+        rootTag.put(SPELL_DATA, listTag);
         return rootTag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.maxSlots = nbt.getInt(MAX_SLOTS);
+        this.maxSpells = nbt.getInt(MAX_SLOTS);
         this.mustEquip = nbt.getBoolean(MUST_EQUIP);
         this.spellWheel = nbt.getBoolean(SPELL_WHEEL);
-        this.slots = new SpellSlot[maxSlots];
+        this.slots = new SpellData[maxSpells];
         activeSlots = 0;
-        ListTag listTagSpells = (ListTag) nbt.get(SLOTS);
+        ListTag listTagSpells = (ListTag) nbt.get(SPELL_DATA);
         if (listTagSpells != null && !listTagSpells.isEmpty()) {
             listTagSpells.forEach(tagSlot -> {
                 CompoundTag t = (CompoundTag) tagSlot;
@@ -209,15 +209,15 @@ public class SpellSlotContainer implements ISpellSlotContainer {
                 int level = t.getInt(SPELL_LEVEL);
                 boolean locked = t.getBoolean(SPELL_LOCKED);
                 int index = t.getInt(SLOT_INDEX);
-                slots[index] = new SpellSlot(SpellRegistry.getSpell(id), level, locked);
+                slots[index] = new SpellData(SpellRegistry.getSpell(id), level, locked);
                 activeSlots++;
             });
         }
     }
 
-    public static void setNbtOnStack(ItemStack stack, ISpellSlotContainer spellSlotContainer) {
-        if (stack != null && spellSlotContainer != null) {
-            stack.addTagElement(SPELL_SLOT_CONTAINER, spellSlotContainer.serializeNBT());
+    public static void setNbtOnStack(ItemStack stack, ISpellList spellList) {
+        if (stack != null && spellList != null) {
+            stack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
         }
     }
 
@@ -249,22 +249,22 @@ public class SpellSlotContainer implements ISpellSlotContainer {
     private static void convertTag(CompoundTag tag, ItemStack itemStack) {
         if (tag.contains(LegacySpellData.ISB_SPELL)) {
             var legacySpellData = LegacySpellData.getSpellData(itemStack);
-            var ssc = new SpellSlotContainer(1, !(itemStack.getItem() instanceof Scroll), false);
-            ssc.addSpellAtSlot(legacySpellData.spell, legacySpellData.spellLevel, 0, itemStack.getItem() instanceof UniqueItem, null);
-            itemStack.addTagElement(SPELL_SLOT_CONTAINER, ssc.serializeNBT());
+            var spellList = new SpellList(1, !(itemStack.getItem() instanceof Scroll), false);
+            spellList.addSpellAtIndex(legacySpellData.spell, legacySpellData.spellLevel, 0, itemStack.getItem() instanceof UniqueItem, null);
+            itemStack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
             itemStack.removeTagKey(LegacySpellData.ISB_SPELL);
         } else if (tag.contains(LegacySpellBookData.ISB_SPELLBOOK)) {
             var legcySpellBookData = LegacySpellBookData.getSpellBookData(itemStack);
             var newSize = ((SpellBook)itemStack.getItem()).getMaxSpellSlots();
-            var ssc = new SpellSlotContainer(newSize, true, true);
+            var spellList = new SpellList(newSize, true, true);
             var unique = itemStack.getItem() instanceof UniqueItem;
             for (int i = 0; i < legcySpellBookData.transcribedSpells.length; i++) {
                 var legacySpellData = legcySpellBookData.transcribedSpells[i];
                 if (legacySpellData != null) {
-                    ssc.addSpellAtSlot(legacySpellData.spell, legacySpellData.spellLevel, i, unique, null);
+                    spellList.addSpellAtIndex(legacySpellData.spell, legacySpellData.spellLevel, i, unique, null);
                 }
             }
-            itemStack.addTagElement(SPELL_SLOT_CONTAINER, ssc.serializeNBT());
+            itemStack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
             itemStack.removeTagKey(LegacySpellBookData.ISB_SPELLBOOK);
         }
     }

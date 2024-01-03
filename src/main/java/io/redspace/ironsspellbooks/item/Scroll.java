@@ -25,18 +25,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Scroll extends Item implements IScroll, IContainSpells {
+public class Scroll extends Item implements IScroll, IHaveSpellList {
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     private AbstractSpell getSpellFromStack(ItemStack itemStack) {
-        return new SpellSlotContainer(itemStack).getSlotAtIndex(0).getSpell();
+        return new SpellList(itemStack).getSpellAtIndex(0).getSpell();
     }
 
-    private SpellSlot getSpellSlotFromStack(ItemStack itemStack) {
-        return new SpellSlotContainer(itemStack).getSlotAtIndex(0);
+    private SpellData getSpellSlotFromStack(ItemStack itemStack) {
+        return new SpellList(itemStack).getSpellAtIndex(0);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class Scroll extends Item implements IScroll, IContainSpells {
 
                         for (int i = min; i <= spell.getMaxLevel(); i++) {
                             var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                            var ssc = createSpellSlotContainer(spell, i, itemstack);
-                            SpellSlotContainer.setNbtOnStack(itemstack, ssc);
+                            var spellList = createSpellList(spell, i, itemstack);
+                            SpellList.setNbtOnStack(itemstack, spellList);
                             itemStackList.add(itemstack);
                         }
                     });
@@ -63,10 +63,10 @@ public class Scroll extends Item implements IScroll, IContainSpells {
         }
     }
 
-    public static SpellSlotContainer createSpellSlotContainer(AbstractSpell spell, int spellLevel, ItemStack itemStack) {
-        var ssc = new SpellSlotContainer(1, false, false);
-        ssc.addSpellAtSlot(spell, spellLevel, 0, true, itemStack);
-        return ssc;
+    public static SpellList createSpellList(AbstractSpell spell, int spellLevel, ItemStack itemStack) {
+        var spellList = new SpellList(1, false, false);
+        spellList.addSpellAtIndex(spell, spellLevel, 0, true, itemStack);
+        return spellList;
     }
 
     public static boolean attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
@@ -139,7 +139,7 @@ public class Scroll extends Item implements IScroll, IContainSpells {
     }
 
     @Override
-    public ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
-        return new SpellSlotContainer(itemStack);
+    public ISpellList getSpellList(ItemStack itemStack) {
+        return new SpellList(itemStack);
     }
 }

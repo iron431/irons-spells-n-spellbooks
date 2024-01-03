@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
-import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellList;
+import io.redspace.ironsspellbooks.api.spells.SpellList;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -68,28 +68,28 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             //Scroll Merging
             if (baseItemStack.getItem() instanceof Scroll scroll1 && modifierItemStack.getItem() instanceof Scroll scroll2) {
-                var spellSlot1 = scroll1.getSpellSlotContainer(baseItemStack).getSlotAtIndex(0);
-                var spellSlot2 = scroll2.getSpellSlotContainer(modifierItemStack).getSlotAtIndex(0);
+                var spell1 = scroll1.getSpellList(baseItemStack).getSpellAtIndex(0);
+                var spell2 = scroll2.getSpellList(modifierItemStack).getSpellAtIndex(0);
 
-                if (spellSlot1.equals(spellSlot2)) {
-                    if (spellSlot1.getLevel() < ServerConfigs.getSpellConfig(spellSlot1.getSpell()).maxLevel()) {
+                if (spell1.equals(spell2)) {
+                    if (spell1.getLevel() < ServerConfigs.getSpellConfig(spell1.getSpell()).maxLevel()) {
                         result = new ItemStack(ItemRegistry.SCROLL.get());
-                        Scroll.createSpellSlotContainer(spellSlot1.getSpell(), spellSlot1.getLevel() + 1, result);
+                        Scroll.createSpellList(spell1.getSpell(), spell1.getLevel() + 1, result);
                     }
                 }
             }
             //Unique Weapon Improving
             else if (baseItemStack.getItem() instanceof UniqueItem && modifierItemStack.getItem() instanceof Scroll scroll) {
-                var scrollSlot = scroll.getSpellSlotContainer(modifierItemStack).getSlotAtIndex(0);
-                if (baseItemStack.getItem() instanceof ISpellSlotContainer spellSlotContainer) {
-                    var matchIndex = spellSlotContainer.getSlotIndexForSpell(scrollSlot.getSpell());
+                var scrollSlot = scroll.getSpellList(modifierItemStack).getSpellAtIndex(0);
+                if (baseItemStack.getItem() instanceof ISpellList iSpellList) {
+                    var matchIndex = iSpellList.getIndexForSpell(scrollSlot.getSpell());
                     if (matchIndex >= 0) {
-                        var spellSlot = spellSlotContainer.getSlotAtIndex(matchIndex);
-                        if (spellSlot.getLevel() < scrollSlot.getLevel() && spellSlot.isLocked()) {
+                        var spellData = iSpellList.getSpellAtIndex(matchIndex);
+                        if (spellData.getLevel() < scrollSlot.getLevel() && spellData.isLocked()) {
                             result = baseItemStack.copy();
-                            spellSlotContainer.removeSpellAtSlot(matchIndex, null);
-                            spellSlotContainer.addSpellAtSlot(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, null);
-                            SpellSlotContainer.setNbtOnStack(result, spellSlotContainer);
+                            iSpellList.removeSpellAtIndex(matchIndex, null);
+                            iSpellList.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, null);
+                            SpellList.setNbtOnStack(result, iSpellList);
                             result.getOrCreateTag().putBoolean("Improved", true);
                         }
                     }
@@ -98,23 +98,23 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             //Weapon Imbuement
             else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll scroll) {
                 result = baseItemStack.copy();
-                SpellSlotContainer spellSlotContainer;
-                if (SpellSlotContainer.isSpellContainer(result)) {
-                    spellSlotContainer = new SpellSlotContainer(result);
+                SpellList spellList;
+                if (SpellList.isSpellContainer(result)) {
+                    spellList = new SpellList(result);
                 } else {
-                    spellSlotContainer = new SpellSlotContainer(1, true, false);
+                    spellList = new SpellList(1, true, false);
                 }
 
-                var scrollSlot = scroll.getSpellSlotContainer(modifierItemStack).getSlotAtIndex(0);
-                var nextSlotIndex = spellSlotContainer.getNextAvailableSlot();
+                var scrollSlot = scroll.getSpellList(modifierItemStack).getSpellAtIndex(0);
+                var nextSlotIndex = spellList.getNextAvailableIndex();
 
                 if (nextSlotIndex == -1) {
                     nextSlotIndex = 0;
                 }
 
-                spellSlotContainer.removeSpellAtSlot(0, null);
-                spellSlotContainer.addSpellAtSlot(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false, null);
-                spellSlotContainer.save(result);
+                spellList.removeSpellAtIndex(0, null);
+                spellList.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false, null);
+                spellList.save(result);
             }
             //Upgrade System
             else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getCount() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {
