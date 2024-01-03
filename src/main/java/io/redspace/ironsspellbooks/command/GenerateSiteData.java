@@ -32,7 +32,13 @@ import java.util.stream.Collectors;
 
 public class GenerateSiteData {
 
-    private static final LazyOptional<List<Item>> ITEM_BLACKLIST = LazyOptional.of(() -> List.of(ItemRegistry.INVISIBILITY_RING.get(), ItemRegistry.TEST_CLAYMORE.get(), ItemRegistry.LURKER_RING.get()));
+    private static final LazyOptional<List<Item>> ITEM_BLACKLIST = LazyOptional.of(() -> List.of(
+            ItemRegistry.INVISIBILITY_RING.get(),
+            ItemRegistry.TEST_CLAYMORE.get(),
+            ItemRegistry.LURKER_RING.get(),
+            ItemRegistry.SPELLBREAKER.get(),
+            ItemRegistry.AUTOLOADER_CROSSBOW.get()
+    ));
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_recipe_data.failed"));
 
     private static final String RECIPE_DATA_TEMPLATE = """
