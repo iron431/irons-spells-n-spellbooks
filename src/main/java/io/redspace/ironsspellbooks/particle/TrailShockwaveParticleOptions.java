@@ -96,6 +96,13 @@ public class TrailShockwaveParticleOptions extends DustParticleOptionsBase imple
         }
     };
 
+    @Override
+    public void writeToNetwork(FriendlyByteBuf pBuffer) {
+        super.writeToNetwork(pBuffer);
+        pBuffer.writeBoolean(fullbright);
+        pBuffer.writeUtf(trailParticle);
+    }
+
     public @NotNull ParticleType<IShockwaveParticleOptions> getType() {
         return ParticleRegistry.TRAIL_SHOCKWAVE_PARTICLE.get();
     }
