@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +13,7 @@ public abstract class TetraBladedItemMixin {
 
     @Inject(method = "getUseDuration", at = @At("HEAD"), cancellable = true)
     public void getUseDuration(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
-        if (!SpellData.getSpellData(stack).equals(SpellData.EMPTY)) {
+        if(SpellSlotContainer.isSpellContainer(stack)){
             cir.setReturnValue(7200);
         }
     }

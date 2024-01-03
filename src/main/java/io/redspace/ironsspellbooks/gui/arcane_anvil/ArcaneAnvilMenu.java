@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
-import io.redspace.ironsspellbooks.api.spells.IContainSpells;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -99,18 +99,23 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             //Weapon Imbuement
             else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll scroll) {
                 result = baseItemStack.copy();
-                if (result.getItem() instanceof IContainSpells iContainSpells) {
-                    var scrollSlot = scroll.getSpellSlotContainer(modifierItemStack).getSlotAtIndex(0);
-                    var spellSlotContainer = iContainSpells.getSpellSlotContainer(result);
-                    var nextSlotIndex = spellSlotContainer.getNextAvailableSlot();
-
-                    if (nextSlotIndex == -1) {
-                        nextSlotIndex = 0;
-                    }
-
-                    spellSlotContainer.removeSpellAtSlot(0, null);
-                    spellSlotContainer.addSpellAtSlot(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false, result);
+                SpellSlotContainer spellSlotContainer;
+                if (SpellSlotContainer.isSpellContainer(result)) {
+                    spellSlotContainer = new SpellSlotContainer(result);
+                } else {
+                    spellSlotContainer = new SpellSlotContainer(1, CastSource.SWORD);
                 }
+
+                var scrollSlot = scroll.getSpellSlotContainer(modifierItemStack).getSlotAtIndex(0);
+                var nextSlotIndex = spellSlotContainer.getNextAvailableSlot();
+
+                if (nextSlotIndex == -1) {
+                    nextSlotIndex = 0;
+                }
+
+                spellSlotContainer.removeSpellAtSlot(0, null);
+                spellSlotContainer.addSpellAtSlot(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false, null);
+                spellSlotContainer.save(result);
             }
             //Upgrade System
             else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getCount() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.getItem() instanceof UpgradeOrbItem upgradeOrb) {

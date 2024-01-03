@@ -134,7 +134,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IContainSpel
         }
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null) {
-            var ssc = SpellSlotContainer.getSpellSlotContainer(itemStack);
+            var ssc = getSpellSlotContainer(itemStack);
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", ssc.getMaxSlotCount()).withStyle(ChatFormatting.GRAY));
             var activeSpellSlots = ssc.getActiveSpellSlots();
             if (!activeSpellSlots.isEmpty()) {
@@ -169,7 +169,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IContainSpel
     @Override
     public ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
         if (itemStack == null) {
-            return new SpellSlotContainer(0);
+            return new SpellSlotContainer();
         }
 
         CompoundTag tag = itemStack.getTagElement(SpellSlotContainer.SPELL_SLOT_CONTAINER);
@@ -177,7 +177,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IContainSpel
         if (tag != null) {
             return new SpellSlotContainer(itemStack);
         } else {
-            return new SpellSlotContainer(getMaxSpellSlots());
+            return new SpellSlotContainer(getMaxSpellSlots(), CastSource.SPELLBOOK);
         }
     }
 }

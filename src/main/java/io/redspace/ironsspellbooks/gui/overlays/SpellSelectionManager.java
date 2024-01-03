@@ -82,7 +82,7 @@ public class SpellSelectionManager {
 
     private void initItem(ItemStack itemStack, String equipmentSlot) {
         var currentGlobalIndex = selectionOptionList.size();
-        if (itemStack.getItem() instanceof IContainSpells iContainSpells) {
+        if (itemStack != null && itemStack.getItem() instanceof IContainSpells iContainSpells) {
             //TODO: in the future when equipment can be imbued we need to handle handle IContainSpells.mustBeEquipped
             if (iContainSpells.includeInSpellWheel()) {
                 var ssc = iContainSpells.getSpellSlotContainer(itemStack);

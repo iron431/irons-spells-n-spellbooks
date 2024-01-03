@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.gui.inscription_table;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.IContainSpells;
 import io.redspace.ironsspellbooks.api.spells.SpellSlot;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -329,7 +329,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var spellBookSlot = menu.slots.get(SPELLBOOK_SLOT);
         var spellBookItemStack = spellBookSlot.getItem();
 
-        var spellBookContainer = (ISpellSlotContainer) spellBookItemStack.getItem();
+        var iContainSpells = (IContainSpells) spellBookItemStack.getItem();
+        var spellBookContainer = iContainSpells.getSpellSlotContainer(spellBookItemStack);
+
         var storedSpells = spellBookContainer.getAllSpellSlots();
         int spellCount = spellBookContainer.getMaxSlotCount();
         if (spellCount > 15) {

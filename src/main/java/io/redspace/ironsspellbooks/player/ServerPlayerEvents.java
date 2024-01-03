@@ -3,12 +3,12 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.data.IronsSpellBooksWorldData;
@@ -19,7 +19,6 @@ import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
-import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -98,7 +97,6 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
-
         if (event.getEntity().level.isClientSide) {
             return;
         }
@@ -107,12 +105,9 @@ public class ServerPlayerEvents {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()
                     && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1)
-                    && (event.getFrom().getItem() instanceof SpellBook || SpellData.hasSpellData(event.getFrom()))) {
+                    && (SpellSlotContainer.isSpellContainer(event.getFrom()))) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
-
-
-
         }
     }
 

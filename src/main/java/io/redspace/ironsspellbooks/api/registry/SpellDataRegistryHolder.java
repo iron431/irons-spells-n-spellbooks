@@ -17,4 +17,8 @@ public class SpellDataRegistryHolder {
     public SpellSlot getSpellSlot() {
         return new SpellSlot(registrySpell.get(), spellLevel);
     }
+
+    public static SpellDataRegistryHolder[] of(SpellDataRegistryHolder... args) {
+        return args;
+    }
 }

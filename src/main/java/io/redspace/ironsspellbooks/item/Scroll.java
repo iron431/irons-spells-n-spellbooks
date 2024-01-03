@@ -64,7 +64,7 @@ public class Scroll extends Item implements IScroll, IContainSpells {
     }
 
     public static SpellSlotContainer createSpellSlotContainer(AbstractSpell spell, int spellLevel, ItemStack itemStack) {
-        var ssc = new SpellSlotContainer(1);
+        var ssc = new SpellSlotContainer(1, CastSource.SCROLL);
         ssc.addSpellAtSlot(spell, spellLevel, 0, true, itemStack);
         return ssc;
     }

@@ -3,10 +3,7 @@ package io.redspace.ironsspellbooks.item;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
-import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.spells.SpellSlot;
-import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -57,7 +54,7 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
 
     public ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
         if (itemStack == null) {
-            return new SpellSlotContainer(0);
+            return new SpellSlotContainer();
         }
 
         CompoundTag tag = itemStack.getTagElement(SpellSlotContainer.SPELL_SLOT_CONTAINER);
@@ -65,7 +62,7 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
         if (tag != null) {
             return new SpellSlotContainer(itemStack);
         } else {
-            var ssc = new SpellSlotContainer(getMaxSpellSlots());
+            var ssc = new SpellSlotContainer(getMaxSpellSlots(), CastSource.SPELLBOOK);
             getSpells().forEach(spellSlot -> ssc.addSpellToOpenSlot(spellSlot.getSpell(), spellSlot.getLevel(), true, null));
             ssc.save(itemStack);
             return ssc;

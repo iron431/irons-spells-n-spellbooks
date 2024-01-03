@@ -1,10 +1,7 @@
 package io.redspace.ironsspellbooks.api.item.weapons;
 
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
-import io.redspace.ironsspellbooks.api.spells.IContainSpells;
-import io.redspace.ironsspellbooks.api.spells.ISpellSlotContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellSlot;
-import io.redspace.ironsspellbooks.api.spells.SpellSlotContainer;
+import io.redspace.ironsspellbooks.api.spells.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -46,7 +43,7 @@ public class MagicSwordItem extends ExtendedSwordItem implements IContainSpells 
     @Override
     public ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
         if (itemStack == null) {
-            return new SpellSlotContainer(0);
+            return new SpellSlotContainer();
         }
 
         CompoundTag tag = itemStack.getTagElement(SpellSlotContainer.SPELL_SLOT_CONTAINER);
@@ -54,7 +51,7 @@ public class MagicSwordItem extends ExtendedSwordItem implements IContainSpells 
         if (tag != null) {
             return new SpellSlotContainer(itemStack);
         } else {
-            var ssc = new SpellSlotContainer(spellDataRegistryHolders.length);
+            var ssc = new SpellSlotContainer(spellDataRegistryHolders.length, CastSource.SWORD);
             getSpells().forEach(spellSlot -> ssc.addSpellToOpenSlot(spellSlot.getSpell(), spellSlot.getLevel(), true, null));
             ssc.save(itemStack);
             return ssc;

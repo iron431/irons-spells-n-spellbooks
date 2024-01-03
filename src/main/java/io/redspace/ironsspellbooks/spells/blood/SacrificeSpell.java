@@ -20,7 +20,6 @@ import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.particle.FireworkParticles;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
@@ -88,7 +87,7 @@ public class SacrificeSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
+    public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         float aimAssist = .25f;
         float range = 25f;
         Vec3 start = entity.getEyePosition();
@@ -98,7 +97,7 @@ public class SacrificeSpell extends AbstractSpell {
             playerMagicData.setAdditionalCastData(new CastTargetingData(livingTarget));
             if (entity instanceof ServerPlayer serverPlayer) {
                 Messages.sendToPlayer(new ClientboundSyncTargetingData(livingTarget, this), serverPlayer);
-                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), this.getDisplayName()).withStyle(ChatFormatting.GREEN)));
+                serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.spell_target_success", livingTarget.getDisplayName().getString(), this.getDisplayName(serverPlayer)).withStyle(ChatFormatting.GREEN)));
             }
             return true;
         } else if (entity instanceof ServerPlayer serverPlayer) {
