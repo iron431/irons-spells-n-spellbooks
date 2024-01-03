@@ -75,6 +75,12 @@ public class ShockwaveParticleOptions extends DustParticleOptionsBase implements
         }
     };
 
+    @Override
+    public void writeToNetwork(FriendlyByteBuf pBuffer) {
+        super.writeToNetwork(pBuffer);
+        pBuffer.writeBoolean(fullbright);
+    }
+
     public @NotNull ParticleType<IShockwaveParticleOptions> getType() {
         return ParticleRegistry.SHOCKWAVE_PARTICLE.get();
     }
