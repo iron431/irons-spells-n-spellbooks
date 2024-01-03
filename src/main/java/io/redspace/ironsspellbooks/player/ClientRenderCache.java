@@ -37,14 +37,13 @@ public class ClientRenderCache {
         return new int[]{topRow, middleRow, bottomRow};
     }
 
-    public static void generateRelativeLocations(int boxSize, int spriteSize) {
+    public static void generateRelativeLocations(SpellSelectionManager manager, int boxSize, int spriteSize) {
         relativeSpellBarSlotLocations.clear();
 //        if (spellBookData == null)
 //            return;
         var player = MinecraftInstanceHelper.getPlayer();
         if (player == null)
             return;
-        SpellSelectionManager manager = new SpellSelectionManager(player);
         int spellCount = manager.getSpellCount();
         int[] rowCounts = getRowCounts(spellCount);
 

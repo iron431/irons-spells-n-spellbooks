@@ -45,8 +45,8 @@ public class SpellBarOverlay extends GuiComponent {
         //  Render Spells
         //
         //TODO: cache again
-        ClientRenderCache.generateRelativeLocations(20, 22);
         var ssm = new SpellSelectionManager(player);
+        ClientRenderCache.generateRelativeLocations(ssm, 20, 22);
         int totalSpellsAvailable = ssm.getSpellCount();
         List<SpellSlot> spells = ssm.getAllSpells().stream().map((slot) -> slot.spellSlot).toList();
         int spellbookCount = ssm.getSpellsForSlot(Curios.SPELLBOOK_SLOT).size();
