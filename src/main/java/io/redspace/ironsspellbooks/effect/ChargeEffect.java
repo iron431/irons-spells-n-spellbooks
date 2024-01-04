@@ -7,7 +7,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 
-public class ChargeEffect extends MobEffect {
+public class ChargeEffect extends MagicMobEffect {
     public static final float ATTACK_DAMAGE_PER_LEVEL = .1f;
     public static final float SPEED_PER_LEVEL = .2f;
     public static final float SPELL_POWER_PER_LEVEL = .05f;

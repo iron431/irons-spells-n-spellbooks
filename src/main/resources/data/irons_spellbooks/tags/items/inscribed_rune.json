@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "irons_spellbooks:fire_rune",
+    "irons_spellbooks:ice_rune",
+    "irons_spellbooks:lightning_rune",
+    "irons_spellbooks:holy_rune",
+    "irons_spellbooks:ender_rune",
+    "irons_spellbooks:blood_rune",
+    "irons_spellbooks:evocation_rune",
+    "irons_spellbooks:nature_rune",
+    "irons_spellbooks:arcane_rune",
+    "irons_spellbooks:protection_rune",
+    "irons_spellbooks:cooldown_rune"
+  ]
+}

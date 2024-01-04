@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.effect.guiding_bolt;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.data.IronsSpellBooksWorldData;
+import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -33,13 +33,13 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     public void startTracking(LivingEntity entity) {
         if (!trackedEntities.containsKey(entity.getUUID())) {
             trackedEntities.put(entity.getUUID(), new ArrayList<>());
-            IronsSpellBooksWorldData.INSTANCE.setDirty();
+            IronsDataStorage.INSTANCE.setDirty();
         }
     }
 
     public void stopTracking(LivingEntity entity) {
         trackedEntities.remove(entity.getUUID());
-        IronsSpellBooksWorldData.INSTANCE.setDirty();
+        IronsDataStorage.INSTANCE.setDirty();
     }
 
     @Override

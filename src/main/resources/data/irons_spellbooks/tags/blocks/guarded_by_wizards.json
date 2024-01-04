@@ -1,7 +1,6 @@
 {
   "values": [
     "#forge:chests",
-    "#forge:barrels",
-    "irons_spellbooks:inscription_table"
+    "#forge:barrels"
   ]
 }

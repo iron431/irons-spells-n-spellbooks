@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
@@ -19,6 +18,7 @@ import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
+import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -26,10 +26,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -83,15 +81,20 @@ public class ClientPlayerEvents {
                     /*
                     Current Casting Spell Visuals
                      */
-                    if (spellData.isCasting() && spellData.getCastingSpellId().equals(SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId())) {
-                        Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);
-                        for (int i = 0; i < 8; i++) {
-                            Vec3 motion = new Vec3(
-                                    Utils.getRandomScaled(.2f),
-                                    Utils.getRandomScaled(.2f),
-                                    Utils.getRandomScaled(.2f)
-                            );
-                            entity.level.addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
+                    //TODO: what is this, shouldnt there be an onClientCastTick?
+                    if (spellData.isCasting()) {
+                        if (spellData.getCastingSpellId().equals(SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId())) {
+                            Vec3 impact = Utils.raycastForEntity(entity.level, entity, RayOfSiphoningSpell.getRange(0), true).getLocation().subtract(0, .25, 0);
+                            for (int i = 0; i < 8; i++) {
+                                Vec3 motion = new Vec3(
+                                        Utils.getRandomScaled(.2f),
+                                        Utils.getRandomScaled(.2f),
+                                        Utils.getRandomScaled(.2f)
+                                );
+                                entity.level.addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
+                            }
+                        } else if (spellData.getCastingSpellId().equals(SpellRegistry.RECALL_SPELL.get().getSpellId())) {
+                            RecallSpell.ambientParticles(livingEntity, spellData);
                         }
                     }
                 });

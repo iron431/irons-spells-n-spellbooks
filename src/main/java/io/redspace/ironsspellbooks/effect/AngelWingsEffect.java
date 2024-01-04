@@ -8,7 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import org.jetbrains.annotations.NotNull;
 
-public class AngelWingsEffect extends MobEffect {
+public class AngelWingsEffect extends MagicMobEffect {
 
     private LivingEntity livingEntity;
 

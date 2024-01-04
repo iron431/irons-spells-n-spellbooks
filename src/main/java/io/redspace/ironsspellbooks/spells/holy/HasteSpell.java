@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.effect.BlightEffect;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.ironsspellbooks.network.spell.ClientboundHealParticles;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.spells.TargetedTargetAreaCastData;
 import net.minecraft.ChatFormatting;
@@ -85,7 +86,7 @@ public class HasteSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
+        return Optional.of(SoundRegistry.CLOUD_OF_REGEN_LOOP.get());
     }
 
     @Override
@@ -117,7 +118,7 @@ public class HasteSpell extends AbstractSpell {
                 float radius = 3;
                 AtomicInteger targets = new AtomicInteger(0);
                 targetEntity.level.getEntitiesOfClass(LivingEntity.class, targetEntity.getBoundingBox().inflate(radius)).forEach((victim) -> {
-                    if (targets.get() < MAX_TARGETS && victim.distanceToSqr(targetEntity) < radius * radius && (Utils.shouldHealEntity(entity, targetEntity) || targetEntity == targetData.getTarget((ServerLevel) world))) {
+                    if (targets.get() < MAX_TARGETS && victim.distanceToSqr(targetEntity) < radius * radius && Utils.shouldHealEntity(entity, victim)) {
                         victim.addEffect(new MobEffectInstance(MobEffectRegistry.HASTENED.get(), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
                         targets.incrementAndGet();
                     }
