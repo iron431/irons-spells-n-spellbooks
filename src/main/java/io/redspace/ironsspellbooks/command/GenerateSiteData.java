@@ -281,7 +281,7 @@ public class GenerateSiteData {
 
     private static String getSpells(ItemStack itemStack) {
         if (itemStack.getItem() instanceof SpellBook spellBook) {
-            var spellList = spellBook.getSpellList(itemStack);
+            var spellList = spellBook.initializeSpellContainer(itemStack);
 
             return spellList.getActiveSpells().stream().map(spell -> {
                 return spell.getSpell().getDisplayName(null).getString() + " (" + spell.getLevel() + ")";

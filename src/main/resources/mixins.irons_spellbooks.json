@@ -12,7 +12,6 @@
     "ItemMixin",
     "LivingEntityMixin",
     "SmithingMenuMixin",
-    "TetraBladedItemMixin",
     "TridentItemMixin"
   ],
   "client": [

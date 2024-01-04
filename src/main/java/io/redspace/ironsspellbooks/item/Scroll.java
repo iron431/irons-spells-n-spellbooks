@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -25,18 +26,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Scroll extends Item implements IScroll, IHaveSpellList {
+public class Scroll extends Item implements IScroll, IPresetSpellContainer {
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     private AbstractSpell getSpellFromStack(ItemStack itemStack) {
-        return new SpellList(itemStack).getSpellAtIndex(0).getSpell();
+        return ISpellContainer.get(itemStack).getSpellAtIndex(0).getSpell();
     }
 
     private SpellData getSpellSlotFromStack(ItemStack itemStack) {
-        return new SpellList(itemStack).getSpellAtIndex(0);
+        return ISpellContainer.get(itemStack).getSpellAtIndex(0);
     }
 
     @Override
@@ -49,8 +50,8 @@ public class Scroll extends Item implements IScroll, IHaveSpellList {
 
                         for (int i = min; i <= spell.getMaxLevel(); i++) {
                             var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                            var spellList = createSpellList(spell, i, itemstack);
-                            SpellList.setNbtOnStack(itemstack, spellList);
+                            var spellList = ISpellContainer.createScrollContainer(spell, i, itemstack);
+                            SpellContainer.setNbtOnStack(itemstack, spellList);
                             itemStackList.add(itemstack);
                         }
                     });
@@ -61,12 +62,6 @@ public class Scroll extends Item implements IScroll, IHaveSpellList {
         if (!serverPlayer.isCreative()) {
             stack.shrink(1);
         }
-    }
-
-    public static SpellList createSpellList(AbstractSpell spell, int spellLevel, ItemStack itemStack) {
-        var spellList = new SpellList(1, false, false);
-        spellList.addSpellAtIndex(spell, spellLevel, 0, true, itemStack);
-        return spellList;
     }
 
     public static boolean attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
@@ -139,7 +134,7 @@ public class Scroll extends Item implements IScroll, IHaveSpellList {
     }
 
     @Override
-    public ISpellList getSpellList(ItemStack itemStack) {
-        return new SpellList(itemStack);
+    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
+        return ISpellContainer.get(itemStack);
     }
 }

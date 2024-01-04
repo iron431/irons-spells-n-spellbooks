@@ -31,6 +31,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.AnimationState;
@@ -305,6 +306,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         if (!level.isClientSide) {
             castingSpell.getSpell().onServerPreCast(level, castingSpell.getLevel(), this, playerMagicData);
         }
+    }
+
+    public void notifyDangerousProjectile(Projectile projectile) {
+
     }
 
     public boolean isCasting() {

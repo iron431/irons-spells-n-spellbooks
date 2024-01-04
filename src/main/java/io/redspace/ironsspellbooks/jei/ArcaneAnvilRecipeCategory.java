@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.ISpellList;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -110,12 +110,12 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
             var minecraft = Minecraft.getInstance();
             drawScrollInfo(minecraft,
                     poseStack,
-                    leftScroll.getSpellList(leftStack.get()),
-                    outputScroll.getSpellList(leftStack.get()));
+                    leftScroll.initializeSpellContainer(leftStack.get()),
+                    outputScroll.initializeSpellContainer(leftStack.get()));
         }
     }
 
-    private void drawScrollInfo(Minecraft minecraft, PoseStack poseStack, ISpellList leftScroll, ISpellList outputScroll) {
+    private void drawScrollInfo(Minecraft minecraft, PoseStack poseStack, ISpellContainer leftScroll, ISpellContainer outputScroll) {
 
         var inputSpellData = leftScroll.getSpellAtIndex(0);
         var inputText = String.format("L%d", inputSpellData.getLevel());

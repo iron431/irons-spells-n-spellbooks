@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.api.item.weapons;
 
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
-import io.redspace.ironsspellbooks.api.spells.IHaveSpellList;
-import io.redspace.ironsspellbooks.api.spells.ISpellList;
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.api.spells.SpellList;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class MagicSwordItem extends ExtendedSwordItem implements IHaveSpellList {
+public class MagicSwordItem extends ExtendedSwordItem implements IPresetSpellContainer {
 
     List<SpellData> spellData = null;
     SpellDataRegistryHolder[] spellDataRegistryHolders;
@@ -34,18 +34,18 @@ public class MagicSwordItem extends ExtendedSwordItem implements IHaveSpellList 
 
 
     @Override
-    public ISpellList getSpellList(ItemStack itemStack) {
+    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
         if (itemStack == null) {
-            return new SpellList();
+            return new SpellContainer();
         }
 
-        if (SpellList.isSpellList(itemStack)) {
-            return new SpellList(itemStack);
+        if (ISpellContainer.isSpellContainer(itemStack)) {
+            return ISpellContainer.get(itemStack);
         } else {
-            var spellList = new SpellList(spellDataRegistryHolders.length, true, false);
-            getSpells().forEach(spellData -> spellList.addSpell(spellData.getSpell(), spellData.getLevel(), true, null));
-            spellList.save(itemStack);
-            return spellList;
+            var spellContainer = ISpellContainer.create(spellDataRegistryHolders.length, true, false);
+            getSpells().forEach(spellData -> spellContainer.addSpell(spellData.getSpell(), spellData.getLevel(), true, null));
+            spellContainer.save(itemStack);
+            return spellContainer;
         }
     }
 }

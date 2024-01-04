@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.api.spells.SpellList;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -49,7 +49,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
@@ -166,8 +165,8 @@ public class ClientPlayerEvents {
                     int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                     lines.addAll(i, additionalLines);
                 }
-            } else if (SpellList.isSpellList(stack) && !(stack.getItem() instanceof SpellBook)) {
-                var spellContainer = new SpellList(stack);
+            } else if (ISpellContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
+                var spellContainer = ISpellContainer.get(stack);
                 if (!spellContainer.isEmpty()) {
                     var additionalLines = new ArrayList<Component>();
                     spellContainer.getActiveSpells().forEach(spellSlot -> {

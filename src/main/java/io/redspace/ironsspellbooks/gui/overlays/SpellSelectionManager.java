@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.gui.overlays;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.api.spells.SpellList;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
@@ -83,10 +83,10 @@ public class SpellSelectionManager {
 
     private void initItem(ItemStack itemStack, String equipmentSlot) {
         var currentGlobalIndex = selectionOptionList.size();
-        if (SpellList.isSpellList(itemStack)) {
-            var spellList = new SpellList(itemStack);
-            if (spellList.spellWheel() && (!spellList.mustEquip() || (!equipmentSlot.equals(MAINHAND) && !equipmentSlot.equals(OFFHAND)))) {
-                var activeSpells = spellList.getActiveSpells();
+        if (ISpellContainer.isSpellContainer(itemStack)) {
+            var spellContainer =ISpellContainer.get(itemStack);
+            if (spellContainer.spellWheel() && (!spellContainer.mustEquip() || (!equipmentSlot.equals(MAINHAND) && !equipmentSlot.equals(OFFHAND)))) {
+                var activeSpells = spellContainer.getActiveSpells();
                 for (int i = 0; i < activeSpells.size(); i++) {
                     var spellSlot = activeSpells.get(i);
                     selectionOptionList.add(new SelectionOption(spellSlot, equipmentSlot, i, selectionOptionList.size()));

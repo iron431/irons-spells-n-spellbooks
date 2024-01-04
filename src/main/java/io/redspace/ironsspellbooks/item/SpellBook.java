@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.item;
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
@@ -31,7 +32,7 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SpellBook extends CurioBaseItem implements ISpellbook, IHaveSpellList {
+public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpellContainer {
     protected final SpellRarity rarity;
     protected final int maxSpellSlots;
 
@@ -133,7 +134,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IHaveSpellLi
         }
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null) {
-            var spellList = getSpellList(itemStack);
+            var spellList = initializeSpellContainer(itemStack);
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", spellList.getMaxSpellCount()).withStyle(ChatFormatting.GRAY));
             var activeSpellSlots = spellList.getActiveSpells();
             if (!activeSpellSlots.isEmpty()) {
@@ -166,15 +167,15 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IHaveSpellLi
     }
 
     @Override
-    public ISpellList getSpellList(ItemStack itemStack) {
+    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
         if (itemStack == null) {
-            return new SpellList();
+            return new SpellContainer();
         }
 
-        if (SpellList.isSpellList(itemStack)) {
-            return new SpellList(itemStack);
+        if (ISpellContainer.isSpellContainer(itemStack)) {
+            return ISpellContainer.get(itemStack);
         } else {
-            return new SpellList(getMaxSpellSlots(), true, true);
+            return ISpellContainer.create(getMaxSpellSlots(), true, true);
         }
     }
 }

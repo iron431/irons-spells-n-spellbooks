@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.api.spells.SpellList;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -23,23 +24,6 @@ public abstract class ItemMixin {
         //IronsSpellbooks.LOGGER.info("{}", cir.getReturnValue().getString());
         if (UpgradeData.hasUpgradeData(stack)) {
             cir.setReturnValue(Component.translatable("tooltip.irons_spellbooks.upgrade_plus_format", cir.getReturnValue(), UpgradeData.getUpgradeData(stack).getCount()));
-        }
-    }
-
-    /**
-     * Necessary for any item to be able to have a use duration for being imbued with a continuous cast
-     */
-    @Inject(method = "getUseDuration", at = @At("HEAD"), cancellable = true)
-    public void getUseDuration(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
-        if (SpellList.isSpellList(stack)) {
-            cir.setReturnValue(7200);
-        }
-    }
-
-    @Inject(method = "getUseAnimation", at = @At("HEAD"), cancellable = true)
-    public void getUseAnimation(ItemStack stack, CallbackInfoReturnable<UseAnim> cir) {
-        if (SpellList.isSpellList(stack)) {
-            cir.setReturnValue(UseAnim.BOW);
         }
     }
 }

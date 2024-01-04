@@ -6,7 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -44,7 +44,7 @@ public class CreateScrollCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemStack = new ItemStack(ItemRegistry.SCROLL.get());
-            Scroll.createSpellList(abstractSpell, spellLevel, itemStack);
+            ISpellContainer.createScrollContainer(abstractSpell, spellLevel, itemStack);
             if (serverPlayer.getInventory().add(itemStack)) {
                 return 1;
             }

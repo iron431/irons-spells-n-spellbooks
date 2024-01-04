@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.runtime.IIngredientManager;
@@ -90,7 +90,7 @@ public final class ArcaneAnvilRecipeMaker {
 
     private static ItemStack getScrollStack(ItemStack stack, AbstractSpell spell, int spellLevel) {
         var scrollStack = stack.copy();
-        Scroll.createSpellList(spell, spellLevel, scrollStack);
+        ISpellContainer.createScrollContainer(spell, spellLevel, scrollStack);
         return scrollStack;
     }
 }

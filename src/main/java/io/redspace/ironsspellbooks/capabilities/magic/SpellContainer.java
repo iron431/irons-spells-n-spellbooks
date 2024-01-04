@@ -1,6 +1,7 @@
-package io.redspace.ironsspellbooks.api.spells;
+package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SpellList implements ISpellList {
+public class SpellContainer implements ISpellContainer {
     //Container Root
     public static final String SPELL_SLOT_CONTAINER = "ISB_Spells";
     public static final String SPELL_DATA = "data";
@@ -35,17 +36,18 @@ public class SpellList implements ISpellList {
     private boolean spellWheel = false;
     private boolean mustEquip = true;
 
-    public SpellList() {
+
+    public SpellContainer() {
     }
 
-    public SpellList(int maxSpells, boolean spellWheel, boolean mustEquip) {
+    public SpellContainer(int maxSpells, boolean spellWheel, boolean mustEquip) {
         this.maxSpells = maxSpells;
         this.slots = new SpellData[this.maxSpells];
         this.spellWheel = spellWheel;
         this.mustEquip = mustEquip;
     }
 
-    public SpellList(ItemStack itemStack) {
+    public SpellContainer(ItemStack itemStack) {
         CompoundTag tag = itemStack.getTagElement(SPELL_SLOT_CONTAINER);
         if (tag != null) {
             deserializeNBT(tag);
@@ -121,7 +123,7 @@ public class SpellList implements ISpellList {
         for (int i = 0; i < maxSpells; i++) {
             var s = slots[i];
 
-            if (s != null && s.spell.equals(spell)) {
+            if (s != null && s.getSpell().equals(spell)) {
                 return i;
             }
         }
@@ -165,7 +167,7 @@ public class SpellList implements ISpellList {
 
         for (int i = 0; i < maxSpells; i++) {
             var spellData = slots[i];
-            if (spellData != null && spell.equals(spellData.spell)) {
+            if (spellData != null && spell.equals(spellData.getSpell())) {
                 return removeSpellAtIndex(i, itemStack);
             }
             break;
@@ -184,9 +186,9 @@ public class SpellList implements ISpellList {
             var spellData = slots[i];
             if (spellData != null) {
                 CompoundTag slotTag = new CompoundTag();
-                slotTag.putString(SPELL_ID, spellData.spell.getSpellId());
-                slotTag.putInt(SPELL_LEVEL, spellData.spellLevel);
-                slotTag.putBoolean(SPELL_LOCKED, spellData.locked);
+                slotTag.putString(SPELL_ID, spellData.getSpell().getSpellId());
+                slotTag.putInt(SPELL_LEVEL, spellData.getLevel());
+                slotTag.putBoolean(SPELL_LOCKED, spellData.isLocked());
                 slotTag.putInt(SLOT_INDEX, i);
                 listTag.add(slotTag);
             }
@@ -220,23 +222,13 @@ public class SpellList implements ISpellList {
         }
     }
 
-    public static void setNbtOnStack(ItemStack stack, ISpellList spellList) {
+    public static void setNbtOnStack(ItemStack stack, ISpellContainer spellList) {
         if (stack != null && spellList != null) {
             stack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
         }
     }
 
-    public static boolean isSpellList(ItemStack itemStack) {
-        if (itemStack != null) {
-            var tag = itemStack.getTag();
-            if (tag != null && (tag.contains(SPELL_SLOT_CONTAINER) || isLegacyTagFormat(tag))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean isLegacyTagFormat(CompoundTag tag) {
+    public static boolean isLegacyTagFormat(CompoundTag tag) {
         return tag.contains(LegacySpellData.ISB_SPELL) || tag.contains(LegacySpellBookData.ISB_SPELLBOOK);
     }
 
@@ -254,42 +246,25 @@ public class SpellList implements ISpellList {
     private static void convertTag(CompoundTag tag, ItemStack itemStack) {
         if (tag.contains(LegacySpellData.ISB_SPELL)) {
             var legacySpellData = LegacySpellData.getSpellData(itemStack);
-            var spellList = new SpellList(1, !(itemStack.getItem() instanceof Scroll), false);
-            spellList.addSpellAtIndex(legacySpellData.spell, legacySpellData.spellLevel, 0, itemStack.getItem() instanceof UniqueItem, null);
-            itemStack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
+            var spellContainer = new SpellContainer(1, !(itemStack.getItem() instanceof Scroll), false);
+            spellContainer.addSpellAtIndex(legacySpellData.spell, legacySpellData.spellLevel, 0, itemStack.getItem() instanceof UniqueItem, null);
+            itemStack.addTagElement(SPELL_SLOT_CONTAINER, spellContainer.serializeNBT());
             itemStack.removeTagKey(LegacySpellData.ISB_SPELL);
         } else if (tag.contains(LegacySpellBookData.ISB_SPELLBOOK)) {
             if (itemStack.getItem() instanceof SpellBook spellBookItem) {
                 var legcySpellBookData = LegacySpellBookData.getSpellBookData(itemStack);
                 var newSize = spellBookItem.getMaxSpellSlots();
-                var spellList = new SpellList(newSize, true, true);
+                var spellContainer = new SpellContainer(newSize, true, true);
                 var unique = itemStack.getItem() instanceof UniqueItem;
                 for (int i = 0; i < legcySpellBookData.transcribedSpells.length; i++) {
                     var legacySpellData = legcySpellBookData.transcribedSpells[i];
                     if (legacySpellData != null) {
-                        spellList.addSpellAtIndex(legacySpellData.spell, legacySpellData.spellLevel, i, unique, null);
+                        spellContainer.addSpellAtIndex(legacySpellData.spell, legacySpellData.spellLevel, i, unique, null);
                     }
                 }
-                itemStack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
+                itemStack.addTagElement(SPELL_SLOT_CONTAINER, spellContainer.serializeNBT());
             }
             itemStack.removeTagKey(LegacySpellBookData.ISB_SPELLBOOK);
         }
     }
-
-    //    public static ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack) {
-    //        return getSpellSlotContainer(itemStack, false);
-    //    }
-    //
-    //    public static ISpellSlotContainer getSpellSlotContainer(ItemStack itemStack, boolean nbtOnly) {
-    //        CompoundTag tag = itemStack.getTagElement(SPELL_SLOT_CONTAINER);
-    //        if (tag != null) {
-    //            var ssc = new SpellSlotContainer();
-    //            ssc.deserializeNBT(tag);
-    //            return ssc;
-    //        } else if (!nbtOnly && itemStack.getItem() instanceof IContainSpells iContainsSpells) {
-    //            return iContainsSpells.getSpellSlotContainer(itemStack);
-    //        }
-    //
-    //        return new SpellSlotContainer();
-    //    }
 }

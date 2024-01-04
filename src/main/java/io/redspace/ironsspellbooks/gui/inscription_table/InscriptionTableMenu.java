@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
-import io.redspace.ironsspellbooks.api.spells.IHaveSpellList;
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -91,7 +92,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             public void onTake(Player player, ItemStack stack) {
                 //Ironsspellbooks.logger.debug("InscriptionTableMenu.take spell!");
                 var spellBookStack = spellBookSlot.getItem();
-                var spellList = ((IHaveSpellList) spellBookStack.getItem()).getSpellList(spellBookStack);
+                var spellList = ((IPresetSpellContainer) spellBookStack.getItem()).initializeSpellContainer(spellBookStack);
                 spellList.removeSpellAtIndex(selectedSpellIndex, spellBookStack);
                 super.onTake(player, spellBookStack);
             }
@@ -144,8 +145,8 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack scrollItemStack = getScrollSlot().getItem();
 
         if (spellBookItemStack.getItem() instanceof SpellBook spellBook && scrollItemStack.getItem() instanceof Scroll scroll) {
-            var bookContainer = spellBook.getSpellList(spellBookItemStack);
-            var scrollContainer = scroll.getSpellList(scrollItemStack);
+            var bookContainer = spellBook.initializeSpellContainer(spellBookItemStack);
+            var scrollContainer = scroll.initializeSpellContainer(scrollItemStack);
             var scrollSlot = scrollContainer.getSpellAtIndex(0);
 
             if (bookContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), selectedIndex, false, spellBookItemStack)) {
@@ -160,7 +161,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         if (pId < 0) {
             var scrollStack = getScrollSlot().getItem();
             if (selectedSpellIndex >= 0 && scrollStack.getItem() instanceof Scroll scroll) {
-                SpellData spellData = scroll.getSpellList(scrollStack).getSpellAtIndex(0);
+                SpellData spellData = scroll.initializeSpellContainer(scrollStack).getSpellAtIndex(0);
                 if (MinecraftForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)))
                     return false;
                 doInscription(selectedSpellIndex);
@@ -179,14 +180,14 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack spellBookStack = spellBookSlot.getItem();
 
         if (spellBookStack.getItem() instanceof SpellBook spellBook) {
-            var spellList = spellBook.getSpellList(spellBookStack);
+            var spellList = spellBook.initializeSpellContainer(spellBookStack);
             if (selectedSpellIndex >= 0) {
                 var spellData = spellList.getSpellAtIndex(selectedSpellIndex);
 
                 if (spellData != SpellData.EMPTY && spellData.canRemove()) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
-                    Scroll.createSpellList(spellData.getSpell(), spellData.getLevel(), resultStack);
+                    ISpellContainer.createScrollContainer(spellData.getSpell(), spellData.getLevel(), resultStack);
                 }
             }
         }
