@@ -5,17 +5,20 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellList;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import java.util.List;
 import java.util.NavigableMap;
@@ -54,7 +57,13 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             //https://www.desmos.com/calculator/ablc1wg06w
             //quality = quality * (float) Math.sin(1.57 * quality * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
-            Scroll.createSpellList(abstractSpell, spellLevel, itemStack);
+            if (itemStack.getItem() instanceof Scroll) {
+                Scroll.createSpellList(abstractSpell, spellLevel, itemStack);
+            } else {
+                //TODO: this is a lot of logic to inline every time you want an imbued item, needs unified helper on spell list or something
+                SpellList imbuedData = new SpellList(1, true, (itemStack.getItem() instanceof ArmorItem || itemStack.getItem() instanceof ICurioItem));
+                imbuedData.addSpellAtIndex(abstractSpell, spellLevel, 0, false, itemStack);
+            }
         }
         return itemStack;
     }
