@@ -174,9 +174,8 @@ public class ItemRegistry {
     public static final RegistryObject<Item> SHRIVING_STONE = ITEMS.register("shriving_stone", ShrivingStoneItem::new);
     public static final RegistryObject<Item> ELDRITCH_PAGE = ITEMS.register("eldritch_manuscript", () -> new EldritchManuscript(ItemPropertiesHelper.material().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> LOST_KNOWLEDGE_FRAGMENT = ITEMS.register("ancient_knowledge_fragment", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
-    public static final RegistryObject<Item> ICE_HELVE = ITEMS.register("ice_helve", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> ICE_HELVE = ITEMS.register("ice_helve", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.COMMON)));
     public static final RegistryObject<Item> ICE_CRYSTAL = ITEMS.register("ice_crystal", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.RARE)));
-    public static final RegistryObject<Item> WEAPON_SCHEMATICS = ITEMS.register("weapon_schematics", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON)));
 
     /**
      * Block Items
