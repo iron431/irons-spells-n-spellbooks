@@ -100,14 +100,14 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     }
 
     /**
-     * @return The amount of anger triggers (ie chests opened, amount of damage taken) that must be surpassed in order to become hostile
+     * @return The amount of anger triggers (ie chests opened, amount of damage taken) that must be met in order to become hostile
      */
     public int getAngerThreshold() {
-        return 1;
+        return 2;
     }
 
     public boolean isHostileTowards(LivingEntity entity) {
-        return isAngryAt(entity) && angerLevel > getAngerThreshold();
+        return isAngryAt(entity) && angerLevel >= getAngerThreshold();
     }
 
     /**

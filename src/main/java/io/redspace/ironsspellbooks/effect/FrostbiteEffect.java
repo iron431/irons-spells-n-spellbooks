@@ -6,7 +6,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 
-public class FrostbiteEffect extends MobEffect {
+public class FrostbiteEffect extends MagicMobEffect {
 
     public FrostbiteEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);

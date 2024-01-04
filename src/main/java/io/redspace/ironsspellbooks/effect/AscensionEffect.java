@@ -10,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.phys.Vec3;
 
-public class AscensionEffect extends MobEffect {
+public class AscensionEffect extends MagicMobEffect {
 
     public AscensionEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);

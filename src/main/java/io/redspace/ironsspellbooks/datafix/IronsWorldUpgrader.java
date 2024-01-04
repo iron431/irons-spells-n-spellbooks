@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.data.IronsSpellBooksWorldData;
+import io.redspace.ironsspellbooks.data.DataFixerStorage;
 import io.redspace.ironsspellbooks.util.ByteHelper;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
@@ -53,7 +53,7 @@ public class IronsWorldUpgrader {
     }
 
     public boolean worldNeedsUpgrading() {
-        return IronsSpellBooksWorldData.INSTANCE.getDataVersion() < IRONS_WORLD_DATA_VERSION;
+        return DataFixerStorage.INSTANCE.getDataVersion() < IRONS_WORLD_DATA_VERSION;
     }
 
     public void runUpgrade() {
@@ -88,8 +88,8 @@ public class IronsWorldUpgrader {
             millis = Util.getMillis() - millis;
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader finished fixDimensionStorage after {} ms. tags fixed:{} ", millis, this.fixes);
 
-            int previousVersion = IronsSpellBooksWorldData.INSTANCE.getDataVersion();
-            IronsSpellBooksWorldData.INSTANCE.setDataVersion(IRONS_WORLD_DATA_VERSION);
+            int previousVersion = DataFixerStorage.INSTANCE.getDataVersion();
+            DataFixerStorage.INSTANCE.setDataVersion(IRONS_WORLD_DATA_VERSION);
             IronsSpellbooks.LOGGER.info("IronsWorldUpgrader V{} -> V{} completed", previousVersion, IRONS_WORLD_DATA_VERSION);
         }
     }

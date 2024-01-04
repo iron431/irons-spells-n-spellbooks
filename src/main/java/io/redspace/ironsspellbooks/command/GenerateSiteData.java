@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -31,7 +32,13 @@ import java.util.stream.Collectors;
 
 public class GenerateSiteData {
 
-    private static final LazyOptional<List<Item>> ITEM_BLACKLIST = LazyOptional.of(() -> List.of(ItemRegistry.INVISIBILITY_RING.get(), ItemRegistry.TEST_CLAYMORE.get(), ItemRegistry.LURKER_RING.get()));
+    private static final LazyOptional<List<Item>> ITEM_BLACKLIST = LazyOptional.of(() -> List.of(
+            ItemRegistry.INVISIBILITY_RING.get(),
+            ItemRegistry.TEST_CLAYMORE.get(),
+            ItemRegistry.LURKER_RING.get(),
+            ItemRegistry.SPELLBREAKER.get(),
+            ItemRegistry.AUTOLOADER_CROSSBOW.get()
+    ));
     private static final SimpleCommandExceptionType ERROR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.generate_recipe_data.failed"));
 
     private static final String RECIPE_DATA_TEMPLATE = """
@@ -112,7 +119,6 @@ public class GenerateSiteData {
             var curioBuilder = new StringBuilder();
             var blockBuilder = new StringBuilder();
 
-            var armorTypes = List.of("Archevoker", "Cryomancer", "Cultist", "Electromancer", "Priest", "Pumpkin", "Pyromancer", "Shadow-Walker", "Wandering Magician", "Scarecrow", "Plagued");
             Set<Item> itemsTracked = new HashSet<>();
             //This will exclude these items
             itemsTracked.add(ItemRegistry.WIMPY_SPELL_BOOK.get());
@@ -212,7 +218,7 @@ public class GenerateSiteData {
             return "Ink";
         } else if (item.getDescriptionId().contains("rune")) {
             return "Runes";
-        } else if (item instanceof UpgradeOrbItem) {
+        } else if (item instanceof UpgradeOrbItem || item == ItemRegistry.UPGRADE_ORB.get()) {
             return "Upgrade Orbs";
         } else if (item instanceof SimpleElixir) {
             return "Elixirs";
@@ -222,10 +228,10 @@ public class GenerateSiteData {
     }
 
     @NotNull
-    private static ArrayList<RecipeData> getRecipeData(Recipe<?> recipe) {
+    private static ArrayList<RecipeIngredientData> getRecipeData(Recipe<?> recipe) {
         var resultItemResourceLocation = ForgeRegistries.ITEMS.getKey(recipe.getResultItem().getItem());
-        var recipeData = new ArrayList<RecipeData>(10);
-        recipeData.add(new RecipeData(
+        var recipeData = new ArrayList<RecipeIngredientData>(10);
+        recipeData.add(new RecipeIngredientData(
                 resultItemResourceLocation.toString(),
                 recipe.getResultItem().getItem().getName(ItemStack.EMPTY).getString(),
                 String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
@@ -233,11 +239,11 @@ public class GenerateSiteData {
         );
         if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
             recipe.getIngredients().forEach(ingredient -> {
-                handleIngeredient(ingredient, recipeData, recipe);
+                handleIngredient(ingredient, recipeData, recipe);
             });
         } else if (recipe instanceof UpgradeRecipe upgradeRecipe) {
-            handleIngeredient(upgradeRecipe.base, recipeData, recipe);
-            handleIngeredient(upgradeRecipe.addition, recipeData, recipe);
+            handleIngredient(upgradeRecipe.base, recipeData, recipe);
+            handleIngredient(upgradeRecipe.addition, recipeData, recipe);
         }
         return recipeData;
     }
@@ -264,6 +270,12 @@ public class GenerateSiteData {
                 .replace("holy_upgrade_orb.png", "holy_upgrade_orb.gif")
                 .replace("lightning_upgrade_orb.png", "lightning_upgrade_orb.gif")
                 .replace("ender_upgrade_orb.png", "ender_upgrade_orb.gif")
+                .replace("mana_upgrade_orb.png", "upgrade_orb_mana.gif")
+                .replace("protection_upgrade_orb.png", "upgrade_orb_protection.gif")
+                .replace("ice_upgrade_orb.png", "upgrade_orb_ice.gif")
+                .replace("evocation_upgrade_orb.png", "upgrade_orb_evocation.gif")
+                .replace("cooldown_upgrade_orb.png", "upgrade_orb_cooldown.gif")
+                .replace("blood_upgrade_orb.png", "upgrade_orb_blood.gif")
                 .replace("wayward_compass.png", "wayward_compass.gif");
     }
 
@@ -294,40 +306,40 @@ public class GenerateSiteData {
                 .replace(":", ":<br>");
     }
 
-    private static void appendToBuilder(StringBuilder sb, Recipe recipe, List<RecipeData> recipeData, String group, String tooltip) {
+    private static void appendToBuilder(StringBuilder sb, Recipe recipe, List<RecipeIngredientData> recipeIngredientData, String group, String tooltip) {
         sb.append(String.format(RECIPE_DATA_TEMPLATE,
-                getRecipeDataAtIndex(recipeData, 0).id,
-                getRecipeDataAtIndex(recipeData, 0).name,
-                getRecipeDataAtIndex(recipeData, 0).path,
+                getRecipeDataAtIndex(recipeIngredientData, 0).id,
+                getRecipeDataAtIndex(recipeIngredientData, 0).name,
+                getRecipeDataAtIndex(recipeIngredientData, 0).path,
                 group,
                 recipe.getType(),
-                getRecipeDataAtIndex(recipeData, 1).id,
-                getRecipeDataAtIndex(recipeData, 1).name,
-                getRecipeDataAtIndex(recipeData, 1).path,
-                getRecipeDataAtIndex(recipeData, 2).id,
-                getRecipeDataAtIndex(recipeData, 2).name,
-                getRecipeDataAtIndex(recipeData, 2).path,
-                getRecipeDataAtIndex(recipeData, 3).id,
-                getRecipeDataAtIndex(recipeData, 3).name,
-                getRecipeDataAtIndex(recipeData, 3).path,
-                getRecipeDataAtIndex(recipeData, 4).id,
-                getRecipeDataAtIndex(recipeData, 4).name,
-                getRecipeDataAtIndex(recipeData, 4).path,
-                getRecipeDataAtIndex(recipeData, 5).id,
-                getRecipeDataAtIndex(recipeData, 5).name,
-                getRecipeDataAtIndex(recipeData, 5).path,
-                getRecipeDataAtIndex(recipeData, 6).id,
-                getRecipeDataAtIndex(recipeData, 6).name,
-                getRecipeDataAtIndex(recipeData, 6).path,
-                getRecipeDataAtIndex(recipeData, 7).id,
-                getRecipeDataAtIndex(recipeData, 7).name,
-                getRecipeDataAtIndex(recipeData, 7).path,
-                getRecipeDataAtIndex(recipeData, 8).id,
-                getRecipeDataAtIndex(recipeData, 8).name,
-                getRecipeDataAtIndex(recipeData, 8).path,
-                getRecipeDataAtIndex(recipeData, 9).id,
-                getRecipeDataAtIndex(recipeData, 9).name,
-                getRecipeDataAtIndex(recipeData, 9).path,
+                getRecipeDataAtIndex(recipeIngredientData, 1).id,
+                getRecipeDataAtIndex(recipeIngredientData, 1).name,
+                getRecipeDataAtIndex(recipeIngredientData, 1).path,
+                getRecipeDataAtIndex(recipeIngredientData, 2).id,
+                getRecipeDataAtIndex(recipeIngredientData, 2).name,
+                getRecipeDataAtIndex(recipeIngredientData, 2).path,
+                getRecipeDataAtIndex(recipeIngredientData, 3).id,
+                getRecipeDataAtIndex(recipeIngredientData, 3).name,
+                getRecipeDataAtIndex(recipeIngredientData, 3).path,
+                getRecipeDataAtIndex(recipeIngredientData, 4).id,
+                getRecipeDataAtIndex(recipeIngredientData, 4).name,
+                getRecipeDataAtIndex(recipeIngredientData, 4).path,
+                getRecipeDataAtIndex(recipeIngredientData, 5).id,
+                getRecipeDataAtIndex(recipeIngredientData, 5).name,
+                getRecipeDataAtIndex(recipeIngredientData, 5).path,
+                getRecipeDataAtIndex(recipeIngredientData, 6).id,
+                getRecipeDataAtIndex(recipeIngredientData, 6).name,
+                getRecipeDataAtIndex(recipeIngredientData, 6).path,
+                getRecipeDataAtIndex(recipeIngredientData, 7).id,
+                getRecipeDataAtIndex(recipeIngredientData, 7).name,
+                getRecipeDataAtIndex(recipeIngredientData, 7).path,
+                getRecipeDataAtIndex(recipeIngredientData, 8).id,
+                getRecipeDataAtIndex(recipeIngredientData, 8).name,
+                getRecipeDataAtIndex(recipeIngredientData, 8).path,
+                getRecipeDataAtIndex(recipeIngredientData, 9).id,
+                getRecipeDataAtIndex(recipeIngredientData, 9).name,
+                getRecipeDataAtIndex(recipeIngredientData, 9).path,
                 tooltip
         ));
     }
@@ -354,7 +366,7 @@ public class GenerateSiteData {
         ));
     }
 
-    private static void handleIngeredient(Ingredient ingredient, ArrayList<RecipeData> recipeData, Recipe recipe) {
+    private static void handleIngredient(Ingredient ingredient, ArrayList<RecipeIngredientData> recipeData, Recipe recipe) {
         Arrays.stream(ingredient.getItems())
                 .findFirst()
                 .ifPresentOrElse(itemStack -> {
@@ -366,28 +378,31 @@ public class GenerateSiteData {
                     } else {
                         path = String.format("/img/items/minecraft/%s.png", itemResource.getPath());
                     }
-
-                    recipeData.add(new RecipeData(
+                    //Detect a specific ingredient tag and replace it will a gif of all applicable items
+                    if (itemStack.is(ModTags.INSCRIBED_RUNES) && recipe.getResultItem().is(ItemRegistry.BLANK_RUNE.get())) {
+                        path = "/img/items/all_runes.gif";
+                    }
+                    recipeData.add(new RecipeIngredientData(
                             itemResource.toString(),
                             itemStack.getItem().getName(ItemStack.EMPTY).getString(),
                             path,
                             recipe.getResultItem().getItem()));
 
                 }, () -> {
-                    recipeData.add(RecipeData.EMPTY);
+                    recipeData.add(RecipeIngredientData.EMPTY);
                 });
     }
 
-    private static RecipeData getRecipeDataAtIndex(List<RecipeData> recipeData, int index) {
-        if (index < recipeData.size()) {
-            return recipeData.get(index);
+    private static RecipeIngredientData getRecipeDataAtIndex(List<RecipeIngredientData> recipeIngredientData, int index) {
+        if (index < recipeIngredientData.size()) {
+            return recipeIngredientData.get(index);
         } else {
-            return RecipeData.EMPTY;
+            return RecipeIngredientData.EMPTY;
         }
     }
 
-    private record RecipeData(String id, String name, String path, Item item) {
-        public static RecipeData EMPTY = new RecipeData("", "", "", null);
+    private record RecipeIngredientData(String id, String name, String path, Item item) {
+        public static RecipeIngredientData EMPTY = new RecipeIngredientData("", "", "", null);
     }
 
     private static void generateSpellData() {

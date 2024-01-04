@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.data;
 
 import com.mojang.datafixers.DataFixerBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -10,8 +9,8 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import org.jetbrains.annotations.NotNull;
 
-public class IronsSpellBooksWorldData extends SavedData {
-    public static IronsSpellBooksWorldData INSTANCE;
+public class DataFixerStorage extends SavedData {
+    public static DataFixerStorage INSTANCE;
     private DimensionDataStorage overworldDataStorage;
     private int dataVersion;
 
@@ -29,29 +28,25 @@ public class IronsSpellBooksWorldData extends SavedData {
 
         var overworldDataStorage = new DimensionDataStorage(file, dataFixer);
 
-        IronsSpellBooksWorldData.INSTANCE = overworldDataStorage.computeIfAbsent(
-                IronsSpellBooksWorldData::load,
-                IronsSpellBooksWorldData::new,
+        DataFixerStorage.INSTANCE = overworldDataStorage.computeIfAbsent(
+                DataFixerStorage::load,
+                DataFixerStorage::new,
                 IronsSpellbooks.MODID);
 
-        IronsSpellBooksWorldData.INSTANCE.overworldDataStorage = overworldDataStorage;
+        DataFixerStorage.INSTANCE.overworldDataStorage = overworldDataStorage;
 
     }
 
-    public IronsSpellBooksWorldData() {
+    public DataFixerStorage() {
         dataVersion = 0;
     }
 
-    public IronsSpellBooksWorldData(int dataVersion) {
+    public DataFixerStorage(int dataVersion) {
         this.dataVersion = dataVersion;
     }
 
     public int getDataVersion() {
         return dataVersion;
-    }
-
-    public void save(){
-        overworldDataStorage.save();
     }
 
     public void setDataVersion(int dataVersion) {
@@ -64,17 +59,11 @@ public class IronsSpellBooksWorldData extends SavedData {
     public @NotNull CompoundTag save(@NotNull CompoundTag pCompoundTag) {
         var tag = new CompoundTag();
         tag.putInt("dataVersion", dataVersion);
-        tag.put("GuidingBoltManager", GuidingBoltManager.INSTANCE.serializeNBT());
         return tag;
     }
 
-    public static IronsSpellBooksWorldData load(CompoundTag tag) {
+    public static DataFixerStorage load(CompoundTag tag) {
         int dataVersion = tag.getInt("dataVersion");
-
-        if (tag.contains("GuidingBoltManager")) {
-            GuidingBoltManager.INSTANCE.deserializeNBT((CompoundTag) tag.get("GuidingBoltManager"));
-        }
-
-        return new IronsSpellBooksWorldData(dataVersion);
+        return new DataFixerStorage(dataVersion);
     }
 }

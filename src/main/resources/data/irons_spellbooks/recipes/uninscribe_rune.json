@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "irons_spellbooks:inscribed_rune"
+    },
+    {
+      "item": "irons_spellbooks:shriving_stone"
+    }
+  ],
+  "result": {
+    "item": "irons_spellbooks:blank_rune"
+  }
+}

@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber()
-public class BlightEffect extends MobEffect {
+public class BlightEffect extends MagicMobEffect {
     public static final float DAMAGE_PER_LEVEL = -.05f;
     public static final float HEALING_PER_LEVEL = -.10f;
 
