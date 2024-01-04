@@ -259,17 +259,19 @@ public class SpellList implements ISpellList {
             itemStack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
             itemStack.removeTagKey(LegacySpellData.ISB_SPELL);
         } else if (tag.contains(LegacySpellBookData.ISB_SPELLBOOK)) {
-            var legcySpellBookData = LegacySpellBookData.getSpellBookData(itemStack);
-            var newSize = ((SpellBook)itemStack.getItem()).getMaxSpellSlots();
-            var spellList = new SpellList(newSize, true, true);
-            var unique = itemStack.getItem() instanceof UniqueItem;
-            for (int i = 0; i < legcySpellBookData.transcribedSpells.length; i++) {
-                var legacySpellData = legcySpellBookData.transcribedSpells[i];
-                if (legacySpellData != null) {
-                    spellList.addSpellAtIndex(legacySpellData.spell, legacySpellData.spellLevel, i, unique, null);
+            if (itemStack.getItem() instanceof SpellBook spellBookItem) {
+                var legcySpellBookData = LegacySpellBookData.getSpellBookData(itemStack);
+                var newSize = spellBookItem.getMaxSpellSlots();
+                var spellList = new SpellList(newSize, true, true);
+                var unique = itemStack.getItem() instanceof UniqueItem;
+                for (int i = 0; i < legcySpellBookData.transcribedSpells.length; i++) {
+                    var legacySpellData = legcySpellBookData.transcribedSpells[i];
+                    if (legacySpellData != null) {
+                        spellList.addSpellAtIndex(legacySpellData.spell, legacySpellData.spellLevel, i, unique, null);
+                    }
                 }
+                itemStack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
             }
-            itemStack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
             itemStack.removeTagKey(LegacySpellBookData.ISB_SPELLBOOK);
         }
     }
