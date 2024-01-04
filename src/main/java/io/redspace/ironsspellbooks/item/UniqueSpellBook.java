@@ -59,7 +59,7 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
             return new SpellList();
         }
 
-        if (SpellList.isSpellContainer(itemStack)) {
+        if (SpellList.isSpellList(itemStack)) {
             return new SpellList(itemStack);
         } else {
             var spellList = new SpellList(getMaxSpellSlots(), true, true);

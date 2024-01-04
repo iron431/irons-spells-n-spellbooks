@@ -39,7 +39,7 @@ public class MagicSwordItem extends ExtendedSwordItem implements IHaveSpellList 
             return new SpellList();
         }
 
-        if (SpellList.isSpellContainer(itemStack)) {
+        if (SpellList.isSpellList(itemStack)) {
             return new SpellList(itemStack);
         } else {
             var spellList = new SpellList(spellDataRegistryHolders.length, true, false);

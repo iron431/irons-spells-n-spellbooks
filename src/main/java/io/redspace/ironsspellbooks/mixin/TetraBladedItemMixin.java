@@ -13,7 +13,7 @@ public abstract class TetraBladedItemMixin {
 
     @Inject(method = "getUseDuration", at = @At("HEAD"), cancellable = true)
     public void getUseDuration(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
-        if(SpellList.isSpellContainer(stack)){
+        if(SpellList.isSpellList(stack)){
             cir.setReturnValue(7200);
         }
     }

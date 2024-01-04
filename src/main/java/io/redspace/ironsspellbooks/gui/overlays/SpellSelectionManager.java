@@ -3,8 +3,8 @@ package io.redspace.ironsspellbooks.gui.overlays;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.IHaveSpellList;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.api.spells.SpellList;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
@@ -34,19 +34,20 @@ public class SpellSelectionManager {
     public SpellSelectionManager(@NotNull Player player) {
         this.selectionOptionList = new ArrayList<>();
         this.player = player;
-
         init(player);
     }
 
     private void init(Player player) {
         if (player.level.isClientSide) {
             spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
+            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init spellSelection:{}", spellSelection);
         } else {
             spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
         }
 
         //TODO: support dynamic slot detection
         initItem(Utils.getPlayerSpellbookStack(player), Curios.SPELLBOOK_SLOT);
+        initItem(player.getItemBySlot(EquipmentSlot.CHEST), EquipmentSlot.CHEST.getName());
         initItem(player.getMainHandItem(), MAINHAND);
         initItem(player.getOffhandItem(), OFFHAND);
 
@@ -82,16 +83,15 @@ public class SpellSelectionManager {
 
     private void initItem(ItemStack itemStack, String equipmentSlot) {
         var currentGlobalIndex = selectionOptionList.size();
-        if (itemStack != null && itemStack.getItem() instanceof IHaveSpellList iHaveSpellList) {
-            //TODO: handle mustEquip
-            var spellList = iHaveSpellList.getSpellList(itemStack);
-            if (spellList.spellWheel()) {
+        if (SpellList.isSpellList(itemStack)) {
+            var spellList = new SpellList(itemStack);
+            if (spellList.spellWheel() && (!spellList.mustEquip() || (!equipmentSlot.equals(MAINHAND) && !equipmentSlot.equals(OFFHAND)))) {
                 var activeSpells = spellList.getActiveSpells();
                 for (int i = 0; i < activeSpells.size(); i++) {
                     var spellSlot = activeSpells.get(i);
                     selectionOptionList.add(new SelectionOption(spellSlot, equipmentSlot, i, selectionOptionList.size()));
 
-                    if (i == 0 && spellSelection.equipmentSlot.equals(equipmentSlot)) {
+                    if (spellSelection.index == i && spellSelection.equipmentSlot.equals(equipmentSlot)) {
                         selectionIndex = selectionOptionList.size() - 1;
                         selectionValid = true;
                     }
@@ -171,6 +171,10 @@ public class SpellSelectionManager {
 
     public int getSelectionIndex() {
         return selectionIndex;
+    }
+
+    public int getGlobalSelectionIndex() {
+        return getSelection().globalIndex;
     }
 
     @Nullable

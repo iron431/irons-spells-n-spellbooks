@@ -55,7 +55,7 @@ public class SpellBarOverlay extends GuiComponent {
         //Move spellbar away from hotbar as it gets bigger
         centerX -= approximateWidth * 5;
         //var spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
-        int selectedSpellIndex = ssm.getSelectionIndex();
+        int selectedSpellIndex = ssm.getGlobalSelectionIndex();
 
         //Slot Border
         setTranslucentTexture(TEXTURE);

@@ -105,7 +105,7 @@ public class ServerPlayerEvents {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting()
                     && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1)
-                    && (SpellList.isSpellContainer(event.getFrom()))) {
+                    && (SpellList.isSpellList(event.getFrom()))) {
                 Utils.serverSideCancelCast(serverPlayer);
             }
         }

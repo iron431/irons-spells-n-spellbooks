@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import io.redspace.ironsspellbooks.item.UniqueSpellBook;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
@@ -128,8 +127,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private int getErrorCode() {
         if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellbook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
             var scrollContainer = scroll.getSpellList(menu.getScrollSlot().getItem());
-            var spellData = scrollContainer.getSpellAtIndex(0);
-            if (spellbook.getRarity().compareRarity(spellData.getSpell().getRarity(spellData.getLevel())) < 0)
+            var spellSlot = scrollContainer.getSpellAtIndex(0);
+            if (spellbook.getRarity().compareRarity(spellSlot.getSpell().getRarity(spellSlot.getLevel())) < 0)
                 return 1;
         }
 
@@ -189,7 +188,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         if (slot.hasSpell()) {
             drawSpellIcon(poseStack, pos, slot);
             setTexture(TEXTURE);
-            if (hovering && menu.getSpellBookSlot().getItem().getItem() instanceof UniqueSpellBook)
+            if (hovering && !slot.spellData.canRemove())
                 this.blit(poseStack, (int) pos.x, (int) pos.y, 76, 166, 19, 19);
         }
         if (index == selectedSpellIndex)
@@ -412,10 +411,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
             //  Is the spellbook a high enough rarity?
             if (spellBook.getRarity().compareRarity(scrollSlot.getSpell().getRarity(scrollSlot.getLevel())) < 0)
-                return;
-
-            //  Is the Spell Book unique? (shouldn't even be possible to get this far but...)
-            if (spellBook.isUnique())
                 return;
 
             //  Quick inscribe

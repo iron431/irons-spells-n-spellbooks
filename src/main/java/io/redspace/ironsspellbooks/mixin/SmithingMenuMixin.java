@@ -44,7 +44,7 @@ public abstract class SmithingMenuMixin {
                 return;
             boolean flag = false;
 
-            if (SpellList.isSpellContainer(result)) {
+            if (SpellList.isSpellList(result)) {
                 result.removeTagKey(SpellList.SPELL_SLOT_CONTAINER);
                 flag = true;
             } else if (UpgradeData.hasUpgradeData(result)) {

@@ -99,7 +99,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll scroll) {
                 result = baseItemStack.copy();
                 SpellList spellList;
-                if (SpellList.isSpellContainer(result)) {
+                if (SpellList.isSpellList(result)) {
                     spellList = new SpellList(result);
                 } else {
                     spellList = new SpellList(1, true, false);

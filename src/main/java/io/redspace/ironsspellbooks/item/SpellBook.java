@@ -171,7 +171,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IHaveSpellLi
             return new SpellList();
         }
 
-        if (SpellList.isSpellContainer(itemStack)) {
+        if (SpellList.isSpellList(itemStack)) {
             return new SpellList(itemStack);
         } else {
             return new SpellList(getMaxSpellSlots(), true, true);

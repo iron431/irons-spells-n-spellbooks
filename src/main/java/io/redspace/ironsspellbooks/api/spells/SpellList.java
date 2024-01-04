@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -85,7 +86,7 @@ public class SpellList implements ISpellList {
     }
 
     @Override
-    public List<SpellData> getActiveSpells() {
+    public @NotNull List<SpellData> getActiveSpells() {
         return Arrays.stream(this.slots).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
@@ -105,7 +106,7 @@ public class SpellList implements ISpellList {
     }
 
     @Override
-    public SpellData getSpellAtIndex(int index) {
+    public @NotNull SpellData getSpellAtIndex(int index) {
         if (index >= 0 && index < maxSpells) {
             var result = slots[index];
             if (result != null) {
@@ -209,8 +210,12 @@ public class SpellList implements ISpellList {
                 int level = t.getInt(SPELL_LEVEL);
                 boolean locked = t.getBoolean(SPELL_LOCKED);
                 int index = t.getInt(SLOT_INDEX);
-                slots[index] = new SpellData(SpellRegistry.getSpell(id), level, locked);
-                activeSlots++;
+                if (index < slots.length) {
+                    slots[index] = new SpellData(SpellRegistry.getSpell(id), level, locked);
+                    activeSlots++;
+                } else {
+                    int x = 0;
+                }
             });
         }
     }
@@ -221,7 +226,7 @@ public class SpellList implements ISpellList {
         }
     }
 
-    public static boolean isSpellContainer(ItemStack itemStack) {
+    public static boolean isSpellList(ItemStack itemStack) {
         if (itemStack != null) {
             var tag = itemStack.getTag();
             if (tag != null && (tag.contains(SPELL_SLOT_CONTAINER) || isLegacyTagFormat(tag))) {

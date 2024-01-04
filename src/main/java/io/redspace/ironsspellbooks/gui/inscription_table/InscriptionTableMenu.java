@@ -183,7 +183,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             if (selectedSpellIndex >= 0) {
                 var spellData = spellList.getSpellAtIndex(selectedSpellIndex);
 
-                if (spellData != null && spellData.canRemove()) {
+                if (spellData != SpellData.EMPTY && spellData.canRemove()) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
                     Scroll.createSpellList(spellData.getSpell(), spellData.getLevel(), resultStack);
