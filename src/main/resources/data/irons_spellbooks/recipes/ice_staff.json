@@ -2,13 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "irons_spellbooks:weapon_schematics"
+      "item": "irons_spellbooks:frosted_helve"
     },
     {
-      "item": "irons_spellbooks:ice_helve"
-    },
-    {
-      "item": "irons_spellbooks:ice_crystal"
+      "item": "irons_spellbooks:permafrost_shard"
     }
   ],
   "result": {
