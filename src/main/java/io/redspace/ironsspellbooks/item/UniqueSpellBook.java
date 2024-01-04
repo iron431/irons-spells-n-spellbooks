@@ -23,12 +23,21 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
     SpellDataRegistryHolder[] spellDataRegistryHolders;
 
     public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders, Supplier<Multimap<Attribute, AttributeModifier>> defaultModifiers) {
-        super(10, rarity, defaultModifiers.get());
+        super(spellDataRegistryHolders.length, rarity, defaultModifiers.get());
+        this.spellDataRegistryHolders = spellDataRegistryHolders;
+    }
+
+    public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders, int additionalSlots, Supplier<Multimap<Attribute, AttributeModifier>> defaultModifiers) {
+        super(spellDataRegistryHolders.length + additionalSlots, rarity, defaultModifiers.get());
         this.spellDataRegistryHolders = spellDataRegistryHolders;
     }
 
     public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders) {
         this(rarity, spellDataRegistryHolders, HashMultimap::create);
+    }
+
+    public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders, int additionalSlots) {
+        this(rarity, spellDataRegistryHolders, additionalSlots, HashMultimap::create);
     }
 
     public List<SpellData> getSpells() {

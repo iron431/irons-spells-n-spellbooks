@@ -121,7 +121,7 @@ public class SpellList implements ISpellList {
         for (int i = 0; i < maxSpells; i++) {
             var s = slots[i];
 
-            if (s != null && s.equals(spell)) {
+            if (s != null && s.spell.equals(spell)) {
                 return i;
             }
         }

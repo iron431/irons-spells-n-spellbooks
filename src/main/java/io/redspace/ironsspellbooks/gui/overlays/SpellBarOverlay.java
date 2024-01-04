@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
@@ -33,7 +32,9 @@ public class SpellBarOverlay extends GuiComponent {
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         Player player = Minecraft.getInstance().player;
 
-        if (!Utils.isPlayerHoldingSpellBook(player))
+        var ssm = new SpellSelectionManager(player);
+
+        if (ssm.getSpellCount() <= 0)
             return;
         //System.out.println("SpellBarDisplay: Holding Spellbook");
 
@@ -45,7 +46,6 @@ public class SpellBarOverlay extends GuiComponent {
         //  Render Spells
         //
         //TODO: cache again
-        var ssm = new SpellSelectionManager(player);
         ClientRenderCache.generateRelativeLocations(ssm, 20, 22);
         int totalSpellsAvailable = ssm.getSpellCount();
         List<SpellData> spells = ssm.getAllSpells().stream().map((slot) -> slot.spellData).toList();

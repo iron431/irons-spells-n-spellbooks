@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
-import io.redspace.ironsspellbooks.api.spells.ISpellList;
 import io.redspace.ironsspellbooks.api.spells.SpellList;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
@@ -81,15 +80,16 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             //Unique Weapon Improving
             else if (baseItemStack.getItem() instanceof UniqueItem && modifierItemStack.getItem() instanceof Scroll scroll) {
                 var scrollSlot = scroll.getSpellList(modifierItemStack).getSpellAtIndex(0);
-                if (baseItemStack.getItem() instanceof ISpellList iSpellList) {
-                    var matchIndex = iSpellList.getIndexForSpell(scrollSlot.getSpell());
+                if (SpellList.isSpellList(baseItemStack)) {
+                    var spellList = new SpellList(baseItemStack);
+                    var matchIndex = spellList.getIndexForSpell(scrollSlot.getSpell());
                     if (matchIndex >= 0) {
-                        var spellData = iSpellList.getSpellAtIndex(matchIndex);
+                        var spellData = spellList.getSpellAtIndex(matchIndex);
                         if (spellData.getLevel() < scrollSlot.getLevel() && spellData.isLocked()) {
                             result = baseItemStack.copy();
-                            iSpellList.removeSpellAtIndex(matchIndex, null);
-                            iSpellList.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, null);
-                            SpellList.setNbtOnStack(result, iSpellList);
+                            spellList.removeSpellAtIndex(matchIndex, null);
+                            spellList.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true, null);
+                            SpellList.setNbtOnStack(result, spellList);
                             result.getOrCreateTag().putBoolean("Improved", true);
                         }
                     }
