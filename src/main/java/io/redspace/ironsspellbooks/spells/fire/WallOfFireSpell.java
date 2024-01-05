@@ -10,11 +10,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.damage.ISpellDamageSource;
-import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
-import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
-import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
-import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -101,7 +97,6 @@ public class WallOfFireSpell extends AbstractSpell {
         return 3;
     }
 
-
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         if (playerMagicData.getPlayerRecasts().hasRecastForSpell(this)) {
@@ -110,7 +105,7 @@ public class WallOfFireSpell extends AbstractSpell {
         } else {
             var fireWallData = new FireWallData(getWallLength(spellLevel, entity));
             addAnchor(fireWallData, world, entity);
-            playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity) - 1, 60, castSource, fireWallData), playerMagicData);
+            playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 60, castSource, fireWallData), playerMagicData);
         }
 
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);

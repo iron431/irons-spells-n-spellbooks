@@ -40,7 +40,7 @@ public class SpellSelectionManager {
     private void init(Player player) {
         if (player.level.isClientSide) {
             spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
-            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init spellSelection:{}", spellSelection);
+            //IronsSpellbooks.LOGGER.debug("SpellSelectionManager init spellSelection:{}", spellSelection);
         } else {
             spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
         }
