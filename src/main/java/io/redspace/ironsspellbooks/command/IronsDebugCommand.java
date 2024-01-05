@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -20,7 +21,11 @@ public class IronsDebugCommand {
             return p_138819_.hasPermission(2);
         }).then(Commands.argument("dataType", EnumArgument.enumArgument(IronsDebugCommandTypes.class)).executes((commandContext) -> {
             return getDataForType(commandContext.getSource(), commandContext.getArgument("dataType", IronsDebugCommandTypes.class));
-        })));
+        })).then(Commands.literal("spellCount").executes((commandContext -> {
+            int i = SpellRegistry.getEnabledSpells().size();
+            commandContext.getSource().sendSuccess(Component.literal(String.valueOf(i)), true);
+            return i;
+        }))));
     }
 
     public static int getDataForType(CommandSourceStack source, IronsDebugCommandTypes ironsDebugCommandTypes) {
