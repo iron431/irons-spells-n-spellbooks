@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 
-public class HeartstopEffect extends MobEffect {
+public class HeartstopEffect extends MagicMobEffect {
     private int duration;
 
     public HeartstopEffect(MobEffectCategory pCategory, int pColor) {

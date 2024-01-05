@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.player;
 
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.world.phys.Vec2;
@@ -14,7 +13,6 @@ public class ClientRenderCache {
      * SPELL BAR RENDER CACHING
      *************************/
     public static List<Vec2> relativeSpellBarSlotLocations = Lists.newArrayList();
-
 
     public static int[] getRowCounts(int spellCount) {
         int topRow = 0;
@@ -39,14 +37,13 @@ public class ClientRenderCache {
         return new int[]{topRow, middleRow, bottomRow};
     }
 
-    public static void generateRelativeLocations(int boxSize, int spriteSize) {
+    public static void generateRelativeLocations(SpellSelectionManager manager, int boxSize, int spriteSize) {
         relativeSpellBarSlotLocations.clear();
 //        if (spellBookData == null)
 //            return;
         var player = MinecraftInstanceHelper.getPlayer();
         if (player == null)
             return;
-        SpellSelectionManager manager = new SpellSelectionManager(player);
         int spellCount = manager.getSpellCount();
         int[] rowCounts = getRowCounts(spellCount);
 

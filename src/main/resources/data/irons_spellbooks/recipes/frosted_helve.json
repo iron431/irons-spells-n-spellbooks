@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " BI",
+    "BIB",
+    "IB "
+  ],
+  "key": {
+    "B": {
+      "item": "irons_spellbooks:frozen_bone"
+    },
+    "I": {
+      "item": "irons_spellbooks:arcane_ingot"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:frosted_helve",
+    "count": 1
+  }
+}

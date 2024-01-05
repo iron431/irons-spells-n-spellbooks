@@ -41,7 +41,7 @@ public class MagicManager implements IMagicManager {
     public void tick(Level level) {
         boolean doManaRegen = level.getServer().getTickCount() % MANA_REGEN_TICKS == 0;
 
-        level.players().forEach(player -> {
+        level.players().stream().toList().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {
                 MagicData playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                 playerMagicData.getPlayerCooldowns().tick(1);

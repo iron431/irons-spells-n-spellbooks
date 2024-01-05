@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -104,20 +104,24 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
             return;
         }
 
-        if (leftStack.get().getItem() instanceof Scroll
-                && rightStack.get().getItem() instanceof Scroll
-                && outputStack.get().getItem() instanceof Scroll) {
+        if (leftStack.get().getItem() instanceof Scroll leftScroll
+                && rightStack.get().getItem() instanceof Scroll rightScroll
+                && outputStack.get().getItem() instanceof Scroll outputScroll) {
             var minecraft = Minecraft.getInstance();
-            drawScrollInfo(minecraft, poseStack, leftStack.get(), outputStack.get());
+            drawScrollInfo(minecraft,
+                    poseStack,
+                    leftScroll.initializeSpellContainer(leftStack.get()),
+                    outputScroll.initializeSpellContainer(leftStack.get()));
         }
     }
 
-    private void drawScrollInfo(Minecraft minecraft, PoseStack poseStack, ItemStack leftStack, ItemStack outputStack) {
-        var inputSpellData = SpellData.getSpellData(leftStack);
+    private void drawScrollInfo(Minecraft minecraft, PoseStack poseStack, ISpellContainer leftScroll, ISpellContainer outputScroll) {
+
+        var inputSpellData = leftScroll.getSpellAtIndex(0);
         var inputText = String.format("L%d", inputSpellData.getLevel());
         var inputColor = inputSpellData.getSpell().getRarity(inputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
-        var outputSpellData = SpellData.getSpellData(outputStack);
+        var outputSpellData =  outputScroll.getSpellAtIndex(0);
         var outputText = String.format("L%d", outputSpellData.getLevel());
         var outputColor = outputSpellData.getSpell().getRarity(outputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 

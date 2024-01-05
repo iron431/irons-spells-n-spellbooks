@@ -11,8 +11,8 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import org.jetbrains.annotations.NotNull;
 
-public class IronsSpellBooksWorldData extends SavedData {
-    public static IronsSpellBooksWorldData INSTANCE;
+public class DataFixerStorage extends SavedData {
+    public static DataFixerStorage INSTANCE;
     private DimensionDataStorage overworldDataStorage;
     private int dataVersion;
 
@@ -30,28 +30,25 @@ public class IronsSpellBooksWorldData extends SavedData {
 
         var overworldDataStorage = new DimensionDataStorage(file, dataFixer);
 
-        IronsSpellBooksWorldData.INSTANCE = overworldDataStorage.computeIfAbsent(
-                IronsSpellBooksWorldData::load,
-                IronsSpellBooksWorldData::new,
+        DataFixerStorage.INSTANCE = overworldDataStorage.computeIfAbsent(
+                DataFixerStorage::load,
+                DataFixerStorage::new,
                 IronsSpellbooks.MODID);
 
-        IronsSpellBooksWorldData.INSTANCE.overworldDataStorage = overworldDataStorage;
+        DataFixerStorage.INSTANCE.overworldDataStorage = overworldDataStorage;
+
     }
 
-    public IronsSpellBooksWorldData() {
+    public DataFixerStorage() {
         dataVersion = 0;
     }
 
-    public IronsSpellBooksWorldData(int dataVersion) {
+    public DataFixerStorage(int dataVersion) {
         this.dataVersion = dataVersion;
     }
 
     public int getDataVersion() {
         return dataVersion;
-    }
-
-    public void save() {
-        overworldDataStorage.save();
     }
 
     public void setDataVersion(int dataVersion) {
@@ -69,7 +66,7 @@ public class IronsSpellBooksWorldData extends SavedData {
         return tag;
     }
 
-    public static IronsSpellBooksWorldData load(CompoundTag tag) {
+    public static DataFixerStorage load(CompoundTag tag) {
         int dataVersion = tag.getInt("dataVersion");
 
         if (tag.contains("GuidingBoltManager")) {
@@ -79,6 +76,6 @@ public class IronsSpellBooksWorldData extends SavedData {
             PortalManager.INSTANCE.deserializeNBT((CompoundTag) tag.get("PortalManager"));
         }
 
-        return new IronsSpellBooksWorldData(dataVersion);
+        return new DataFixerStorage(dataVersion);
     }
 }

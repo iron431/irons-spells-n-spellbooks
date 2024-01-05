@@ -15,7 +15,9 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -38,14 +40,12 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(2, new RestrictSunGoal(this));
-        this.goalSelector.addGoal(3, new FleeSunGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new WizardAttackGoal(this, 1.25f, 35, 80)
                 .setSpells(
                         List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.MAGIC_MISSILE_SPELL.get()),
-                        List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.FORTIFY_SPELL.get()),
+                        List.of(SpellRegistry.FANG_WARD_SPELL.get()),
                         List.of(),
-                        List.of(SpellRegistry.BLIGHT_SPELL.get())
+                        List.of(SpellRegistry.BLIGHT_SPELL.get(), SpellRegistry.ROOT_SPELL.get())
                 )
                 .setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 80, 350, 4, 5)
                 .setDrinksPotions());
@@ -97,22 +97,6 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
     @Override
     public MobType getMobType() {
         return MobType.UNDEAD;
-    }
-
-    @Override
-    public void aiStep() {
-        boolean flag = this.isSunBurnTick();
-        if (flag) {
-            ItemStack itemstack = this.getItemBySlot(EquipmentSlot.HEAD);
-            if (!itemstack.isEmpty()) {
-                flag = false;
-            }
-
-            if (flag) {
-                this.setSecondsOnFire(8);
-            }
-        }
-        super.aiStep();
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {

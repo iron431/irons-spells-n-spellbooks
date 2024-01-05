@@ -2,10 +2,9 @@ package io.redspace.ironsspellbooks.jei;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
-import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -21,7 +20,7 @@ import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;
@@ -66,7 +65,7 @@ public class JeiPlugin implements IModPlugin {
                 IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
                         .forEach((spellLevel) -> {
                             var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-                            SpellData.setSpellData(scrollStack, spell, spellLevel);
+                            ISpellContainer.createScrollContainer(spell, spellLevel, scrollStack);
                             list.add(scrollStack);
                         });
                 registration.addIngredientInfo(list, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spell.getComponentId())));
@@ -102,8 +101,8 @@ public class JeiPlugin implements IModPlugin {
 
     private static final IIngredientSubtypeInterpreter<ItemStack> SCROLL_INTERPRETER = (stack, context) -> {
         if (stack.hasTag()) {
-            var spellData = SpellData.getSpellData(stack);
-            return String.format("scroll:%s:%d", spellData.getSpell().getSpellId(), spellData.getLevel());
+            var ss = ISpellContainer.get(stack).getSpellAtIndex(0);
+            return String.format("scroll:%s:%d", ss.getSpell().getSpellId(), ss.getLevel());
         }
 
         return IIngredientSubtypeInterpreter.NONE;

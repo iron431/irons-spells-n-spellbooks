@@ -17,7 +17,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.Vec3;
 
-public class AbyssalShroudEffect extends MobEffect {
+public class AbyssalShroudEffect extends MagicMobEffect {
 
     public AbyssalShroudEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);

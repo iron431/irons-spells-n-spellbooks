@@ -4,12 +4,8 @@ import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -312,7 +308,7 @@ public class Utils {
 
     public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
         var ssm = new SpellSelectionManager(serverPlayer);
-        var spellItem = ssm.getSelectedSpellSlot();
+        var spellItem = ssm.getSelection();
         if (spellItem != null) {
             var spellData = ssm.getSelectedSpellData();
             if (spellData != SpellData.EMPTY) {

@@ -37,6 +37,24 @@
         "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:evoker_fort/halves/gallows",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "location": "irons_spellbooks:evoker_fort/halves/campsite",
+        "processors": "irons_spellbooks:evoker_fort_randomizer",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
     }
   ]
 }

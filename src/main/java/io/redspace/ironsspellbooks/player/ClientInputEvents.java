@@ -48,7 +48,7 @@ public final class ClientInputEvents {
                 SpellSelectionManager spellSelectionManager = new SpellSelectionManager(MinecraftInstanceHelper.getPlayer());
                 if (spellSelectionManager.getSpellCount() > 0) {
                     int direction = Mth.clamp((int) event.getScrollDelta(), -1, 1);
-                    List<SpellSelectionManager.SpellSlot> spellbookSpells = spellSelectionManager.getAllSpells();
+                    List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();
                     int spellCount = spellbookSpells.size();
                     int scrollIndex = (Mth.clamp(spellSelectionManager.getSelectionIndex(), 0, spellCount) - direction);
                     int selectedIndex = (Mth.clamp(scrollIndex, -1, spellCount + 1) + spellCount) % spellCount;

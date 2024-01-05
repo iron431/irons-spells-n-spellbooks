@@ -254,6 +254,10 @@ public class ClientSpellCastHelper {
             }
         }
 
+        if (cancelled && spell.stopSoundOnCancel()) {
+            spell.getCastStartSound().ifPresent((soundEvent) -> Minecraft.getInstance().getSoundManager().stop(soundEvent.getLocation(), null));
+        }
+
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {
             if (spell.getCastType().holdToCast()) {
                 ClientSpellCastHelper.setSuppressRightClicks(true);

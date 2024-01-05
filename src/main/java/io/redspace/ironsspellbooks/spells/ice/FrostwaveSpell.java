@@ -32,8 +32,8 @@ public class FrostwaveSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 1)),
-                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 1))
+                Component.translatable("ui.irons_spellbooks.effect_length", Utils.timeFromTicks(getDuration(spellLevel, caster), 2)),
+                Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(getRadius(spellLevel, caster), 2))
         );
     }
 
@@ -91,7 +91,7 @@ public class FrostwaveSpell extends AbstractSpell {
     }
 
     public float getRadius(int spellLevel, LivingEntity caster) {
-        return 8 + spellLevel * .5f;
+        return 6 + spellLevel * .75f;
     }
 
     public int getDuration(int spellLevel, LivingEntity caster) {

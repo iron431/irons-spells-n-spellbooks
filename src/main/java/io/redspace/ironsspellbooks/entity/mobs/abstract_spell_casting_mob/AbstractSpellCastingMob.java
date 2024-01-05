@@ -5,12 +5,12 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.Log;
@@ -31,6 +31,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.AnimationState;
@@ -105,7 +106,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
 
     private void finishDrinkingPotion() {
         setDrinkingPotion(false);
-        this.heal(Math.min(10, getMaxHealth() / 4));
+        this.heal(Math.min(Math.max(10, getMaxHealth() / 10), getMaxHealth() / 4));
         this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_MODIFIER_DRINKING);
         if (!this.isSilent()) {
             this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_DRINK, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
@@ -307,6 +308,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
         }
     }
 
+    public void notifyDangerousProjectile(Projectile projectile) {
+
+    }
+
     public boolean isCasting() {
         return playerMagicData.isCasting();
     }
@@ -482,7 +487,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements I
     }
 
     private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        if(spell.getCastFinishAnimation() == AnimationHolder.pass()){
+        if (spell.getCastFinishAnimation() == AnimationHolder.pass()) {
             return;
         }
         spell.getCastFinishAnimation().getForMob().ifPresentOrElse(animationBuilder -> {

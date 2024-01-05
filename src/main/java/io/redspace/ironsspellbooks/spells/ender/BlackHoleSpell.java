@@ -116,4 +116,9 @@ public class BlackHoleSpell extends AbstractSpell {
     public AnimationHolder getCastFinishAnimation() {
         return SpellAnimations.FINISH_ANIMATION;
     }
+
+    @Override
+    public boolean stopSoundOnCancel() {
+        return true;
+    }
 }

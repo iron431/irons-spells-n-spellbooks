@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class PlanarSightEffect extends MobEffect {
+public class PlanarSightEffect extends MagicMobEffect {
     public PlanarSightEffect(MobEffectCategory mobEffectCategory, int color) {
         super(mobEffectCategory, color);
     }

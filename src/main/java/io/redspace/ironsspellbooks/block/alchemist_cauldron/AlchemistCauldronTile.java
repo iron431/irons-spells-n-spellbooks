@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
@@ -246,8 +246,10 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public static Item getInkFromScroll(ItemStack scrollStack) {
-        if (scrollStack.getItem() instanceof Scroll) {
-            var spellData = SpellData.getSpellData(scrollStack, true);
+        if (scrollStack.getItem() instanceof Scroll scroll) {
+            var spellContainer = ISpellContainer.get(scrollStack);
+            var spellData = spellContainer.getSpellAtIndex(0);
+
             SpellRarity rarity = spellData.getSpell().getRarity(spellData.getLevel());
             return switch (rarity) {
                 case COMMON -> ItemRegistry.INK_COMMON.get();

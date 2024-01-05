@@ -107,14 +107,6 @@ public abstract class AbstractSpell {
         return 1;
     }
 
-    /**
-     * @deprecated See player sensitive version, {@link AbstractSpell#getDisplayName(Player player)}
-     */
-    @Deprecated(forRemoval = true)
-    public MutableComponent getDisplayName() {
-        return Component.translatable(getComponentId());
-    }
-
     public MutableComponent getDisplayName(Player player) {
         return Component.translatable(getComponentId());
     }
@@ -398,14 +390,6 @@ public abstract class AbstractSpell {
      * Server Side. At this point, the spell is allowed to be cast (mana, cooldown, etc). This checks for limitations of the spell itself, such as if it requires a target but finds none
      */
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        return checkPreCastConditions(level, entity, playerMagicData);
-    }
-
-    /**
-     * Use new level sensitive version {@link AbstractSpell#checkPreCastConditions(Level, int, LivingEntity, MagicData)}.
-     */
-    @Deprecated(forRemoval = true)
-    public boolean checkPreCastConditions(Level level, LivingEntity entity, MagicData playerMagicData) {
         return true;
     }
 
@@ -627,5 +611,9 @@ public abstract class AbstractSpell {
 
     public boolean canBeInterrupted(@Nullable Player player) {
         return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
+    }
+
+    public boolean stopSoundOnCancel(){
+        return false;
     }
 }

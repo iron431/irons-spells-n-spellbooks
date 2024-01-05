@@ -1,19 +1,11 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
-import io.redspace.ironsspellbooks.network.ServerboundQuickCast;
+import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
-import io.redspace.ironsspellbooks.setup.Messages;
-import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
-import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -25,11 +17,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 import java.util.List;
 
-public class CastingItem extends Item {
+public class CastingItem extends Item implements IMultihandWeapon {
     public CastingItem(Properties pProperties) {
         super(pProperties);
     }
@@ -38,12 +29,12 @@ public class CastingItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
-        SpellSelectionManager.SpellSlot spellSlot = spellSelectionManager.getSelectedSpellSlot();
-        if (spellSlot == null || spellSlot.spellData.equals(SpellData.EMPTY)) {
+        SpellSelectionManager.SelectionOption selectionOption = spellSelectionManager.getSelection();
+        if (selectionOption == null || selectionOption.spellData.equals(SpellData.EMPTY)) {
             //IronsSpellbooks.LOGGER.debug("CastingItem.Use.1 {} {}", level.isClientSide, hand);
             return InteractionResultHolder.pass(itemStack);
         }
-        SpellData spellData = spellSlot.spellData;
+        SpellData spellData = selectionOption.spellData;
 
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {
@@ -60,7 +51,7 @@ public class CastingItem extends Item {
             }
         }
 
-        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, spellSlot.getCastSource(), true)) {
+        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, selectionOption.getCastSource(), true)) {
             if (spellData.getSpell().getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }
