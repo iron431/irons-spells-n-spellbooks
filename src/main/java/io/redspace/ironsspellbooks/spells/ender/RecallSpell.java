@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -80,7 +79,7 @@ public class RecallSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         playSound(getCastFinishSound(), entity, false);
         if (entity instanceof ServerPlayer serverPlayer) {
             ServerLevel respawnLevel = ((ServerLevel) world).getServer().getLevel(serverPlayer.getRespawnDimension());
@@ -106,7 +105,7 @@ public class RecallSpell extends AbstractSpell {
                 serverPlayer.teleportTo(pos.getX(), pos.getY(), pos.getZ());
             }
         }
-        super.onCast(world, spellLevel, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 
     public static void ambientParticles(LivingEntity entity, SyncedSpellData spellData) {
@@ -121,7 +120,7 @@ public class RecallSpell extends AbstractSpell {
     }
 
     @Override
-    protected void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
+    public void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
         sound.ifPresent(soundEvent -> entity.playSound(soundEvent, 2.0f, 1f));
     }
 

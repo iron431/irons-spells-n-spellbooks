@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.data.IronsSpellBooksWorldData;
+import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +34,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
 
     public void addPortalData(UUID portalEntityUUID, PortalData portalData) {
         portalLookup.put(portalEntityUUID, portalData);
-        IronsSpellBooksWorldData.INSTANCE.setDirty();
+        IronsDataStorage.INSTANCE.setDirty();
     }
 
     public void addPortalCooldown(Entity entity, UUID portalId) {
@@ -109,7 +109,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
     public void removePortalData(UUID portalUUID) {
         portalLookup.remove(portalUUID);
         cooldownLookup.remove(portalUUID);
-        IronsSpellBooksWorldData.INSTANCE.setDirty();
+        IronsDataStorage.INSTANCE.setDirty();
     }
 
     public void killPortal(UUID portalUUID, UUID ownerUUID) {
@@ -138,7 +138,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         }
 
         cooldownLookup.remove(portalUUID);
-        IronsSpellBooksWorldData.INSTANCE.setDirty();
+        IronsDataStorage.INSTANCE.setDirty();
     }
 
     private void tryCancelRecast(UUID portalUUID, UUID ownerUUID) {
