@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.entity.spells.wall_of_fire;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -80,12 +82,12 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             subEntity.yOld = pos.y;
             subEntity.zOld = pos.z;
             if (level.isClientSide) {
-                for (int j = 0; j < 3; j++) {
-                    double offset = .5;
+                for (int j = 0; j < 1; j++) {
+                    double offset = .25;
                     double ox = (Math.random() * 2 * offset - offset);
-                    double oy = Math.random() * 2 * offset - offset;
+                    double oy = Math.random() * 2 * offset;
                     double oz = Math.random() * 2 * offset - offset;
-                    level.addParticle(ParticleTypes.FLAME, pos.x + ox, pos.y + oy - .25, pos.z + oz, 0, Math.random() * .3, 0);
+                    level.addParticle(ParticleHelper.FIRE, pos.x + ox, pos.y + oy, pos.z + oz, 0, Math.random() * .3, 0);
                 }
 
             } else {
@@ -118,11 +120,12 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
                 double x = start.x + dirVec.x * currentStep;
                 double y = start.y + dirVec.y * currentStep;
                 double z = start.z + dirVec.z * currentStep;
-                double groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) x, (int) z);
+                double groundY = Utils.moveToRelativeGroundLevel(level, new Vec3(x, y, z), 4, 4).y;
                 //y += Math.min(5, Math.abs(y - groundY)) * y < groundY ? 1 : -1;
-
-                if (Math.abs(y - groundY) < 2)
-                    y += (groundY - y) * .75;
+                var dy = Math.abs(y - groundY);
+                if (dy < 2 || dy > 4) {
+                    y = groundY;
+                }
                 //Vec3 pos = new Vec3(, start.y + dirVec.y * x, start.z + dirVec.z * x);
 
                 Vec3 pos = new Vec3(x, y, z);
@@ -171,6 +174,8 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             compoundTag.putUUID("Owner", this.ownerUUID);
         }
         compoundTag.putInt("lifetime", lifetime);
+
+        //TODO: use castData
         ListTag anchors = new ListTag();
         for (Vec3 vec : anchorPoints) {
             CompoundTag anchor = new CompoundTag();
@@ -192,6 +197,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
             this.lifetime = compoundTag.getInt("lifetime");
 
         //9 is list tag id
+        //TODO: use castData
         anchorPoints = new ArrayList<>();
         if (compoundTag.contains("Anchors", 9)) {
             ListTag anchors = (ListTag) compoundTag.get("Anchors");
@@ -205,8 +211,10 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
 
     }
 
+    @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
         //Ironsspellbooks.logger.debug("WallOfFire.writeSpawnData");
+        //TODO: use castData
         buffer.writeInt(anchorPoints.size());
         for (Vec3 vec : anchorPoints) {
             buffer.writeFloat((float) vec.x);
@@ -215,9 +223,10 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityAdd
         }
     }
 
+    @Override
     public void readSpawnData(FriendlyByteBuf additionalData) {
         //Ironsspellbooks.logger.debug("WallOfFire.readSpawnData");
-
+        //TODO: use castData
         anchorPoints = new ArrayList<>();
         int length = additionalData.readInt();
         for (int i = 0; i < length; i++) {

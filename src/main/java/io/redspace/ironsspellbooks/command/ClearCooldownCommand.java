@@ -16,6 +16,7 @@ public class ClearCooldownCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("clearCooldowns")
                 .requires((p) -> p.hasPermission(2))
+                .executes((context) -> clearCooldowns(context.getSource(), null))
                 .then(Commands.literal("all")
                         .executes((context) -> clearCooldowns(context.getSource(), null)))
                 .then(Commands.literal("player")
