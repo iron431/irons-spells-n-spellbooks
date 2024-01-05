@@ -116,7 +116,7 @@ public class PortalSpell extends AbstractSpell {
                 PortalEntity portalEntity = setupPortalEntity(level, portalData, player, portalLocation, portalRotation);
                 portalData.globalPos1 = PortalPos.of(player.level.dimension(), portalLocation, portalRotation);
                 portalData.portalEntityId1 = portalEntity.getUUID();
-                playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, 1, getRecastDuration(spellLevel, player), castSource, portalData), playerMagicData);
+                playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, 2, getRecastDuration(spellLevel, player), castSource, portalData), playerMagicData);
             }
         }
 

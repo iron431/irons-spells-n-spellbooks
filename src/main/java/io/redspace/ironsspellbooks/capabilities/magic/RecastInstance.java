@@ -21,11 +21,11 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
     public RecastInstance() {
     }
 
-    public RecastInstance(String spellId, int spellLevel, int remainingRecasts, int ticksToLive, CastSource castSource, ICastDataSerializable castData) {
+    public RecastInstance(String spellId, int spellLevel, int totalRecasts, int ticksToLive, CastSource castSource, ICastDataSerializable castData) {
         this.spellId = spellId;
         this.spellLevel = spellLevel;
-        this.remainingRecasts = remainingRecasts;
-        this.totalRecasts = remainingRecasts + 1;
+        this.remainingRecasts = totalRecasts - 1;
+        this.totalRecasts = totalRecasts;
         this.ticksToLive = ticksToLive;
         this.remainingTicks = ticksToLive;
         this.castSource = castSource;

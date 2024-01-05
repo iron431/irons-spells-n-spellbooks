@@ -123,6 +123,7 @@ public class PlayerRecasts {
             recastInstance.remainingRecasts--;
 
             if (recastInstance.remainingRecasts > 0) {
+                recastInstance.remainingTicks = recastInstance.ticksToLive;
                 syncToPlayer(recastInstance);
             } else {
                 removeRecast(recastInstance, RecastResult.USED_ALL_RECASTS);
