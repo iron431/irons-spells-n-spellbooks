@@ -121,7 +121,7 @@ public class BurningDashSpell extends AbstractSpell {
         //Deal Shockwave Damage and particles
         world.getEntities(entity, entity.getBoundingBox().inflate(4)).forEach((target) -> {
             if (target.distanceToSqr(entity) < 16) {
-                DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity), getSchoolType());
+                DamageSources.applyDamage(target, getDamage(spellLevel, entity), getDamageSource(entity));
             }
         });
         MagicManager.spawnParticles(world, ParticleHelper.FIRE, entity.getX(), entity.getY(), entity.getZ(), 75, 1, 0, 1, .08, false);

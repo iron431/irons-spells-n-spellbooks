@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -61,6 +62,11 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public boolean respectsGravity() {
         return false;
+    }
+
+    @Override
+    protected boolean canHitEntity(Entity pTarget) {
+        return super.canHitEntity(pTarget) && pTarget != getOwner();
     }
 
     @Override

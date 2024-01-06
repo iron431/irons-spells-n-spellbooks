@@ -64,7 +64,7 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
         LivingEntity livingentity = this.getOwner();
         if (pTarget.isAlive() && !pTarget.isInvulnerable() && pTarget != livingentity) {
             var spell = SpellRegistry.FANG_STRIKE_SPELL.get();
-            DamageSources.applyDamage(pTarget, damage, spell.getDamageSource(this, getOwner()), spell.getSchoolType());
+            DamageSources.applyDamage(pTarget, damage, spell.getDamageSource(this, getOwner()));
         }
     }
 
