@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.entity.spells.comet;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -74,11 +75,11 @@ public class Comet extends AbstractMagicProjectile {
             impactParticles(xOld, yOld, zOld);
             getImpactSound().ifPresent(this::doImpactSound);
             float explosionRadius = getExplosionRadius();
-            var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius), entity -> !entity.equals(getOwner()));
+            var entities = level.getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());
                 if (distance < explosionRadius * explosionRadius && canHitEntity(entity)) {
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.STARFALL_SPELL.get().getDamageSource(this, getOwner()));
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.STARFALL_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.STARFALL_SPELL.get().getSchoolType());
                 }
             }
             this.discard();
