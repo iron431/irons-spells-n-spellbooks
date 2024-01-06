@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.portal;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
@@ -9,20 +11,18 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
-import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
-import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+
+import static io.redspace.ironsspellbooks.entity.spells.portal.PortalRenderer.CustomerRenderType.crumbling;
 
 public class PortalRenderer extends EntityRenderer<PortalEntity> {
     private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/portal.png");
@@ -44,7 +44,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
 
-        VertexConsumer consumer = bufferSource.getBuffer(MagicArrowRenderer.CustomRenderType.magicNoCull(getTextureLocation()));
+        VertexConsumer consumer = bufferSource.getBuffer(crumbling(getTextureLocation()));
         int anim = (entity.tickCount / ticksPerFrame) % 9;
         float uvMin = anim / (float) frameCount;
         float uvMax = (anim + 1) / (float) frameCount;
@@ -104,4 +104,24 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
     public static ResourceLocation getTextureLocation() {
         return TEXTURE;
     }
+
+
+    public static class CustomerRenderType extends RenderType {
+        public CustomerRenderType(String pName, VertexFormat pFormat, VertexFormat.Mode pMode, int pBufferSize, boolean pAffectsCrumbling, boolean pSortOnUpload, Runnable pSetupState, Runnable pClearState) {
+            super(pName, pFormat, pMode, pBufferSize, pAffectsCrumbling, pSortOnUpload, pSetupState, pClearState);
+        }
+
+        public static @NotNull RenderType crumbling(@NotNull ResourceLocation pLocation) {
+            return create("crumbling", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(pLocation, false, false)).setTransparencyState(ONE_MINUS).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false));
+        }
+
+        protected static final RenderStateShard.TransparencyStateShard ONE_MINUS = new RenderStateShard.TransparencyStateShard("one_minus", () -> {
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.DestFactor.SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        }, () -> {
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+        });
+    }
+
 }
