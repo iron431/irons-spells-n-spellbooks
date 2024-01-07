@@ -111,7 +111,7 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
             drawScrollInfo(minecraft,
                     poseStack,
                     leftScroll.initializeSpellContainer(leftStack.get()),
-                    outputScroll.initializeSpellContainer(leftStack.get()));
+                    outputScroll.initializeSpellContainer(outputStack.get()));
         }
     }
 
