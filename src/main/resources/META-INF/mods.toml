@@ -56,7 +56,7 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
     modId="geckolib" #mandatory
     mandatory=true #mandatory
-    versionRange="[4.1.3,)" #mandatory
+    versionRange="[4.3.1,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]

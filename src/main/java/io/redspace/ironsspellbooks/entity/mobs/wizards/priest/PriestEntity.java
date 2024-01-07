@@ -1,20 +1,24 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.priest;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.item.FurledMapItem;
+import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -25,13 +29,18 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.ai.village.poi.PoiManager;
+import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.npc.VillagerData;
@@ -40,20 +49,37 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.trading.Merchant;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
-public class PriestEntity extends NeutralWizard implements VillagerDataHolder, SupportMob, HomeOwner {
+public class PriestEntity extends NeutralWizard implements VillagerDataHolder, SupportMob, HomeOwner, Merchant {
     private static final EntityDataAccessor<VillagerData> DATA_VILLAGER_DATA = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.VILLAGER_DATA);
     private static final EntityDataAccessor<Boolean> DATA_VILLAGER_UNHAPPY = SynchedEntityData.defineId(PriestEntity.class, EntityDataSerializers.BOOLEAN);
     public GoalSelector supportTargetSelector;
     private int unhappyTimer;
+
+    //Serialized
+    private long lastRestockGameTime;
+    private int numberOfRestocksToday;
+    //Not Serialized
+    private long lastRestockCheckDayTime;
 
     public PriestEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -87,7 +113,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new GenericDefendVillageTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isHostileTowards));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (mob) -> mob instanceof Enemy && !(mob instanceof Creeper)));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
@@ -101,8 +127,15 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        this.setHome(this.blockPosition());
-        IronsSpellbooks.LOGGER.debug("Priest new home: {}", this.getHome());
+        if (this.level instanceof ServerLevel serverLevel) {
+            Optional<BlockPos> optional1 = serverLevel.getPoiManager().find((poiTypeHolder) -> poiTypeHolder.is(PoiTypes.MEETING),
+                    (blockPos) -> true, this.blockPosition(), 100, PoiManager.Occupancy.ANY);
+            optional1.ifPresent((blockPos -> {
+                this.setHome(blockPos);
+                IronsSpellbooks.LOGGER.debug("Priest new home: {}", this.getHome());
+            }));
+        }
+
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
@@ -144,8 +177,13 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         };
     }
 
+    @javax.annotation.Nullable
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.VILLAGER_AMBIENT;
+        if (this.isSleeping()) {
+            return null;
+        } else {
+            return this.isTrading() ? SoundEvents.VILLAGER_TRADE : SoundEvents.VILLAGER_AMBIENT;
+        }
     }
 
     protected SoundEvent getDeathSound() {
@@ -205,20 +243,44 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                             mob.setTarget(this);
             });
         }
+        //One game day = 24,000 ticks
+
         if (unhappyTimer > 0)
             if (--unhappyTimer == 0)
                 this.entityData.set(DATA_VILLAGER_UNHAPPY, false);
-//        this.level.getProfiler().push("priestBrain");
+
 //        this.getBrain().tick((ServerLevel) this.level, this);
-//        this.level.getProfiler().pop();
 //        this.getBrain().setActiveActivityToFirstValid(ImmutableList.of(Activity.CORE));
 
     }
 
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-        setUnhappy();
-        return super.mobInteract(pPlayer, pHand);
+//        if (!level.isClientSide) {
+//            pPlayer.sendSystemMessage(Component.literal(">Game Time: " + this.level.getGameTime()));
+//            pPlayer.sendSystemMessage(Component.literal(">Day Time: " + this.level.getDayTime()));
+//            pPlayer.sendSystemMessage(Component.literal(">Last Restock Game Time: " + this.lastRestockGameTime));
+//            pPlayer.sendSystemMessage(Component.literal(">Last Restock Day Time: " + this.lastRestockCheckDayTime));
+//            pPlayer.sendSystemMessage(Component.literal("delta game time: " + (this.level.getGameTime() - this.lastRestockGameTime)));
+//            pPlayer.sendSystemMessage(Component.literal("delta day time: " + (this.level.dayTime() - this.lastRestockCheckDayTime)));
+//            pPlayer.sendSystemMessage(Component.literal("restocks today: " + numberOfRestocksToday));
+//        }
+
+        boolean preventTrade = this.getOffers().isEmpty() || this.getTarget() != null || isAngryAt(pPlayer);
+        if (pHand == InteractionHand.MAIN_HAND) {
+            if (preventTrade && !this.level.isClientSide) {
+                this.setUnhappy();
+            }
+        }
+        if (!preventTrade) {
+            if (!this.level.isClientSide && !this.getOffers().isEmpty()) {
+                if (shouldRestock()) {
+                    restock();
+                }
+                this.startTrading(pPlayer);
+            }
+        }
+        return InteractionResult.sidedSuccess(this.level.isClientSide);
     }
 
     public void setUnhappy() {
@@ -229,9 +291,39 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         }
     }
 
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        if (this.offers != null && !this.offers.isEmpty()) {
+            pCompound.put("Offers", offers.createTag());
+        }
+        serializeHome(this, pCompound);
+        pCompound.putLong("LastRestock", this.lastRestockGameTime);
+        pCompound.putInt("RestocksToday", this.numberOfRestocksToday);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        if (pCompound.contains("Offers", 10)) {
+            this.offers = new MerchantOffers(pCompound.getCompound("Offers"));
+        }
+        deserializeHome(this, pCompound);
+        this.lastRestockGameTime = pCompound.getLong("LastRestock");
+        this.numberOfRestocksToday = pCompound.getInt("RestocksToday");
+    }
+
+    @Override
+    public Optional<SoundEvent> getAngerSound() {
+        return Optional.of(SoundEvents.VILLAGER_NO);
+    }
+
+    /*
+     * Homeowner Implementations
+     */
     BlockPos homePos;
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     @Override
     public BlockPos getHome() {
         return homePos;
@@ -242,20 +334,196 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.homePos = homePos;
     }
 
+
+    /*
+     * Merchant Implementations
+     */
+    @Nullable
+    private Player tradingPlayer;
+    @Nullable
+    protected MerchantOffers offers;
+
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-        serializeHome(this, pCompound);
+    public void setTradingPlayer(@org.jetbrains.annotations.Nullable Player pTradingPlayer) {
+        this.tradingPlayer = pTradingPlayer;
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public Player getTradingPlayer() {
+        return tradingPlayer;
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        deserializeHome(this, pCompound);
+    public MerchantOffers getOffers() {
+        if (this.offers == null) {
+            this.offers = new MerchantOffers();
+            this.offers.add(new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 24),
+                    ItemStack.EMPTY,
+                    FurledMapItem.of(IronsSpellbooks.id("evoker_fort"), Component.translatable("item.irons_spellbooks.evoker_fort_battle_plans")),
+                    0,
+                    1,
+                    5,
+                    10f
+            ));
+            this.offers.add(new MerchantOffer(
+                    new ItemStack(ItemRegistry.GREATER_HEALING_POTION.get()),
+                    new ItemStack(Items.EMERALD, 18),
+                    3,
+                    0,
+                    0.2F
+            ));
+            this.offers.add(new MerchantOffer(
+                    new ItemStack(Items.EMERALD, 6),
+                    PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.HEALING),
+                    2,
+                    0,
+                    0.2F
+            ));
+            this.offers.add(new BibleTrade().getOffer(this, this.random));
+
+            //We count the creation of our stock as a restock so that we do not immediately refresh trades the same day.
+            numberOfRestocksToday++;
+        }
+        return this.offers;
+    }
+
+    @Override
+    public void overrideOffers(MerchantOffers pOffers) {
+        //Not implemented by villagers. Might be only used client-side
+    }
+
+    public boolean isTrading() {
+        return this.tradingPlayer != null;
+    }
+
+    @Override
+    protected boolean isImmobile() {
+        return super.isImmobile() || isTrading();
+    }
+
+    @Override
+    public void notifyTrade(MerchantOffer pOffer) {
+        pOffer.increaseUses();
+        this.ambientSoundTime = -this.getAmbientSoundInterval();
+        //this.rewardTradeXp(pOffer);
+    }
+
+    @Override
+    public void notifyTradeUpdated(ItemStack pStack) {
+        if (!this.level.isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
+            this.ambientSoundTime = -this.getAmbientSoundInterval();
+            this.playSound(this.getTradeUpdatedSound(!pStack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
+        }
     }
 
 
+    private boolean needsToRestock() {
+        for (MerchantOffer merchantoffer : this.getOffers()) {
+            if (merchantoffer.needsRestock()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private boolean allowedToRestock() {
+        return this.numberOfRestocksToday == 0 && this.level.getGameTime() > this.lastRestockGameTime + 2400L;
+    }
+
+    public boolean shouldRestock() {
+        /*
+        Game time is persistent, Day Time not.
+        Day time does not reset to zero every day, but commands and such often reset it otherwise
+        Therefore, day time is not consistent enough to base our trades off of.
+        (one day is 24,000 ticks)
+         */
+        long timeToNextRestock = this.lastRestockGameTime + 12000L;
+        long currentGameTime = this.level.getGameTime();
+        //If total game time has exceeded one half day, we can restock.
+        boolean hasDayElapsed = currentGameTime > timeToNextRestock;
+
+        long currentDayTime = this.level.getDayTime();
+        if (this.lastRestockCheckDayTime > 0L) {
+            long lastRestockDay = this.lastRestockCheckDayTime / 24000L;
+            long currentDay = currentDayTime / 24000L;
+            //Or, if day time is accurate, and a whole day has passed, we can also restock.
+            hasDayElapsed |= currentDay > lastRestockDay;
+        } else {
+            //Make our day time accurate again
+            this.lastRestockCheckDayTime = currentDayTime;
+        }
+
+        if (hasDayElapsed) {
+            //update times
+            this.lastRestockGameTime = currentGameTime;
+            this.lastRestockCheckDayTime = currentDayTime;
+            this.numberOfRestocksToday = 0;
+        }
+        return this.needsToRestock() && allowedToRestock();
+    }
+
+    protected void restock() {
+        for (MerchantOffer offer : getOffers()) {
+            offer.updateDemand();
+            offer.resetUses();
+        }
+        this.numberOfRestocksToday++;
+    }
+
+    @Override
+    public SoundEvent getNotifyTradeSound() {
+        return SoundEvents.VILLAGER_YES;
+    }
+
+    @Override
+    public boolean isClientSide() {
+        return this.level.isClientSide;
+    }
+
+    protected SoundEvent getTradeUpdatedSound(boolean pIsYesSound) {
+        return pIsYesSound ? SoundEvents.VILLAGER_YES : SoundEvents.VILLAGER_NO;
+    }
+
+    private void startTrading(Player pPlayer) {
+        this.setTradingPlayer(pPlayer);
+        this.lookControl.setLookAt(pPlayer);
+        this.openTradingScreen(pPlayer, this.getDisplayName(), this.getVillagerData().getLevel());
+    }
+
+    @Override
+    public int getVillagerXp() {
+        return 0;
+    }
+
+    @Override
+    public void overrideXp(int pXp) {
+
+    }
+
+    @Override
+    public boolean showProgressBar() {
+        return false;
+    }
+
+    static class BibleTrade extends AdditionalWanderingTrades.SimpleTrade {
+        private BibleTrade() {
+            super((trader, random) -> {
+                if (!trader.level.isClientSide) {
+                    LootTable loottable = trader.level.getServer().getLootData().getLootTable(IronsSpellbooks.id("magic_items/archevoker_logbook_translated"));
+                    var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
+                    var items = loottable.getRandomItems(context);
+                    if (!items.isEmpty()) {
+                        ItemStack cost = items.get(0);
+                        ItemStack forSale = new ItemStack(ItemRegistry.VILLAGER_SPELL_BOOK.get());
+                        return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
+                    }
+                }
+                return null;
+            });
+        }
+    }
     /*
     Brain Testing
      */

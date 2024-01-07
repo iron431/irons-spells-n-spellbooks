@@ -11,6 +11,8 @@ import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
+import io.redspace.ironsspellbooks.data.DataFixerStorage;
+import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datafix.IronsWorldUpgrader;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
@@ -43,6 +45,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -67,6 +70,7 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -91,9 +95,15 @@ public class ServerPlayerEvents {
 //            }
 //        }
 //    }
+    @SubscribeEvent
+    public static void onServerStartedEvent(ServerStartedEvent event) {
+        IronsDataStorage.init(event.getServer().overworld().getDataStorage());
+    }
 
     @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+        DataFixerStorage.init(event.getServer().storageSource);
+
         if (ServerConfigs.RUN_WORLD_UPGRADER.get()) {
             var server = event.getServer();
             new IronsWorldUpgrader(server.storageSource, server.registries()).runUpgrade();
@@ -197,7 +207,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
-            if (event.isWasDeath()) {
+            boolean keepEverything = !event.isWasDeath();
                 //Persist summon timers across death
                 event.getOriginal().getActiveEffects().forEach((effect -> {
                     //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
@@ -205,12 +215,13 @@ public class ServerPlayerEvents {
                         newServerPlayer.addEffect(effect, newServerPlayer);
                     }
                 }));
-            }
             event.getOriginal().reviveCaps();
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
-            newMagicData.setSyncedData(oldMagicData.getSyncedData());
+            //TODO: Vanilla does not persist mobeffects, even with keepinventory. Should we?
+            newMagicData.setSyncedData(/*keepEverything ? oldMagicData.getSyncedData() : */oldMagicData.getSyncedData().getPersistentData());
             newMagicData.getSyncedData().doSync();
+            oldMagicData.getPlayerCooldowns().getSpellCooldowns().forEach((spellId, cooldown) -> newMagicData.getPlayerCooldowns().getSpellCooldowns().put(spellId, cooldown));
             event.getOriginal().invalidateCaps();
         }
     }
@@ -364,14 +375,18 @@ public class ServerPlayerEvents {
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         if (event.getRayTraceResult() instanceof EntityHitResult entityHitResult) {
             var victim = entityHitResult.getEntity();
+            //IronsSpellbooks.LOGGER.debug("onProjectileImpact: {}", victim);
             if (victim instanceof AbstractSpellCastingMob || victim instanceof Player) {
+                //IronsSpellbooks.LOGGER.debug("onProjectileImpact: is a casting mob");
                 var livingEntity = (LivingEntity) victim;
-                MagicData playerMagicData = MagicData.getPlayerMagicData(livingEntity);
-                if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.EVASION)) {
+                SyncedSpellData syncedSpellData = livingEntity.level.isClientSide ? ClientMagicData.getSyncedSpellData(livingEntity) : MagicData.getPlayerMagicData(livingEntity).getSyncedData();
+                if (syncedSpellData.hasEffect(SyncedSpellData.EVASION)) {
+                    //IronsSpellbooks.LOGGER.debug("onProjectileImpact: evasion");
                     if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
-                } else if (playerMagicData.getSyncedData().hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                } else if (syncedSpellData.hasEffect(SyncedSpellData.ABYSSAL_SHROUD)) {
+                    //IronsSpellbooks.LOGGER.debug("onProjectileImpact: abyssal shroud");
                     if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
                         event.setCanceled(true);
                     }
@@ -389,7 +404,8 @@ public class ServerPlayerEvents {
                 creeper.hurt(creeper.damageSources().generic(), 5);
                 player.level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 player.swing(event.getHand());
-                event.setCancellationResult(InteractionResultHolder.sidedSuccess(ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get())), player.level.isClientSide).getResult());
+                event.setCancellationResult(InteractionResultHolder.consume(ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()))).getResult());
+                event.setCanceled(true);
             }
         }
     }
@@ -409,6 +425,9 @@ public class ServerPlayerEvents {
         if (mob.fireImmune()) {
             //Fire immune (blazes, pyromancer, etc) take 50% fire damage
             mob.getAttributes().getInstance(AttributeRegistry.FIRE_MAGIC_RESIST.get()).setBaseValue(1.5);
+        }
+        if (mob.getType() == EntityType.BLAZE) {
+            mob.getAttributes().getInstance(AttributeRegistry.ICE_MAGIC_RESIST.get()).setBaseValue(0.5);
         }
     }
 
@@ -478,6 +497,21 @@ public class ServerPlayerEvents {
                 //IronsSpellbooks.LOGGER.debug("new result: {}", newResult);
 
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void changeDigSpeed(PlayerEvent.BreakSpeed event) {
+        //This event is getting run on the server and the client, and because the client is aware of its own status effects, this works
+        //(If it did not get run on the client, then breaking particles would not match)
+        var player = event.getEntity();
+        if (player.hasEffect(MobEffectRegistry.HASTENED.get())) {
+            int i = 1 + player.getEffect(MobEffectRegistry.HASTENED.get()).getAmplifier();
+            event.setNewSpeed(event.getNewSpeed() * Utils.intPow(1.2f, i));
+        }
+        if (player.hasEffect(MobEffectRegistry.SLOWED.get())) {
+            int i = 1 + player.getEffect(MobEffectRegistry.SLOWED.get()).getAmplifier();
+            event.setNewSpeed(event.getNewSpeed() * Utils.intPow(.8f, i));
         }
     }
 }

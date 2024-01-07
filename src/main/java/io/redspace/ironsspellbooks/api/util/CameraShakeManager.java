@@ -20,26 +20,6 @@ import java.util.List;
 public class CameraShakeManager {
     public static final ArrayList<CameraShakeData> cameraShakeData = new ArrayList<>();
     public static ArrayList<CameraShakeData> clientCameraShakeData = new ArrayList<>();
-
-    //    @SubscribeEvent
-//    public static void onLevelTick(TickEvent.LevelTickEvent event) {
-//        if (event.phase != TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
-//            ServerLevel serverLevel = (ServerLevel) event.level;
-//            ArrayList<CameraShakeData> complete = new ArrayList<>();
-//            //IronsSpellbooks.LOGGER.debug("CameraShakeManager.onWorldTick: tick, side:{} phase:{} level:{}", event.side, event.phase, event.level.dimension());
-//            for (CameraShakeData data : cameraShakeData) {
-//                IronsSpellbooks.LOGGER.debug("{}/{}", data.tickCount, data.duration);
-//                if (data.tickCount++ >= data.duration) {
-//                    complete.add(data);
-//                }
-//            }
-//            if (!complete.isEmpty()) {
-//                IronsSpellbooks.LOGGER.debug("CameraShakeManager.onWorldTick: removing complete data");
-//                cameraShakeData.removeAll(complete);
-//                doSync();
-//            }
-//        }
-//    }
     private static final int tickDelay = 5;
 
     @SubscribeEvent

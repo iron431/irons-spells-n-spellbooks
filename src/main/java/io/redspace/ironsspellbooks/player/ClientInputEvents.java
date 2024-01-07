@@ -38,6 +38,7 @@ public final class ClientInputEvents {
     private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
     public static boolean hasReleasedSinceCasting;
+    public static boolean isShiftKeyDown;
 
     public static int test = 0;
 
@@ -141,6 +142,9 @@ public final class ClientInputEvents {
     public static void onKeyInput(InputEvent.Key event) {
         //IronsSpellbooks.LOGGER.debug("onKeyInput key:{}", event.getKey());
         handleRightClickSuppression(event.getKey(), event.getAction());
+        if (event.getKey() == InputConstants.KEY_LSHIFT) {
+            isShiftKeyDown = event.getAction() >= InputConstants.PRESS;
+        }
 
         for (int i = 0; i < QUICK_CAST_STATES.size(); i++) {
             //IronsSpellbooks.LOGGER.debug("onKeyInput i:{}",i);

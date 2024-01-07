@@ -57,15 +57,7 @@ public class AdditionalWanderingTrades {
                 new InkBuyTrade((InkItem) ItemRegistry.INK_RARE.get()),
                 new InkBuyTrade((InkItem) ItemRegistry.INK_EPIC.get()),
                 new InkBuyTrade((InkItem) ItemRegistry.INK_LEGENDARY.get()),
-                new RandomCurioTrade()/*,
-                SimpleTrade.of((trader, random) -> new MerchantOffer(
-                        new ItemStack(Items.EMERALD, 64 - random.nextIntBetweenInclusive(1, 8)),
-                        new ItemStack(Items.ECHO_SHARD, random.nextIntBetweenInclusive(1, 3)),
-                        FurledMapItem.of(IronsSpellbooks.id("evoker_fort"), Component.translatable("item.irons_spellbooks.evoker_fort_battle_plans")),
-                        8,
-                        0,
-                        .05f
-                ))*/
+                new RandomCurioTrade()
         );
         List<VillagerTrades.ItemListing> additionalRareTrades = List.of(
                 SimpleTrade.of((trader, random) -> new MerchantOffer(
@@ -87,10 +79,10 @@ public class AdditionalWanderingTrades {
         event.getRareTrades().addAll(additionalRareTrades);
     }
 
-    static class SimpleTrade implements VillagerTrades.ItemListing {
+    public static class SimpleTrade implements VillagerTrades.ItemListing {
         final BiFunction<Entity, RandomSource, MerchantOffer> getOffer;
 
-        private SimpleTrade(BiFunction<Entity, RandomSource, MerchantOffer> getOffer) {
+        protected SimpleTrade(BiFunction<Entity, RandomSource, MerchantOffer> getOffer) {
             this.getOffer = getOffer;
         }
 

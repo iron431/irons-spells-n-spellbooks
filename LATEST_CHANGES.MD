@@ -1,57 +1,60 @@
 ### Additions
-- Added New School, Eldritch
-  - Spells
-    - Added Planar Sight Spell
-    - Added Sonic Boom Spell
-    - Added Telekinesis Spell
-    - Reenabled Abyssal Shroud Spell
-    - Reworked Sculk Tentacles Spell (was Void Tentacles)
-  - Items
-    - Added Eldritch Manuscript Item
-    - Added Ancient Knowledge Fragment Item
-  - Research System
-    - Eldritch Spells are unlearned by default. (Cannot be crafted nor cast)
-    - Added Research Menu, accessed by Eldritch Manuscripts
-- Misc
-  - Added Divine Smite Spell
-    - This spell is always uninterruptible
-  - Added additional Wandering Trader trades
-    - Sell ink to Wandering Trader
-    - Buy Curios from Wandering Trader
-    - Buy scrolls from Wandering Trader
-    - Buy mystery bags of scrolls from Wandering Trader
-    - Buy Ancient Knowledge Fragments from Wandering Trader
-  - Added a Patchouli page for Schools
-  - Added a learnSpell command
-  - Added Ukrainian Translations
-  - Added inherent mob spell resistance
-    - Undead are weak to Holy magic and resistant to Blood magic
-    - Fire mobs are resistant to Fire magic
-    - Water mobs are weak to Lightning magic
-  - Added Scroll Bar to Scroll Forge
+- Spells
+  - Added Haste Spell
+  - Added Slow Spell
+  - Added Heat Surge Spell
+  - Added Frostwave Spell
+  - Added Arrow Volley Spell
+  - Added Recall Spell
+- Added Furled Map Item, an NBT-driven holder for a locator map
+- Added Trades to the Priest
+  - Furled Map to Evoker Fort
+  - Buys and Sells health potions
+  - Buys special item for the Villager Bible
+- Added Taiga Priest House Variant
+- Added two new Evoker Fort camp half pieces
+  - Gallows
+  - Campsite
+- Added a recipe to convert inscribed runes back into Blank Runes
+- Added a recipe to convert frozen bones into bone meal
 
 ### Changes
-- Spell Balance
-  - Ice Block Spell now moves faster and initiates its fall sooner
-  - Counterspell Default cooldown reduced from 15s -> 10s (existing worlds need config reset)
-  - Improved Lightningbolt Spell's hit detection/placement
-  - Increased Lightning Lance Spell's Damage
-  - Decreased Lightning Lance Spell's Default Rarity from Rare -> Uncommon (existing worlds need config reset)
-  - Magma Bomb impact damage no longer scales with spell level
-  - Magma Bomb aoe damage slightly increased
-  - Magma Bomb radius is reduced, and now scales with spell power
-  - Gust Spell is less affected by knockback resistance
-- Misc
-  - Unique Spell Books can have their spells improved in the Arcane Anvil, by combining it with a higher level scroll
-  - Evoker Spell Book now gives +10% Evocation Spell Power
-  - Improved animation smoothing
-  - Updated Chinese Translations
+- Neutral Wizards now have anger levels, where actions can make them angry but not aggressive.
+- Neutral Wizards will now be angered by players opening their chests
+- The Priest now has a nosepiece to go with his mask
+- Priest Hood has been renamed to Priest Mask to reflect the texture change
+- Reworked Guiding Bolt's Guided Effect mechanic. It is now much smoother and more consistent.
+- Reworked the "questline" to obtain the Villager Bible
+  - Nitwits no longer spawn in Evoker Forts, nor have trades
+  - The final trade is done with the Priest
+- Improved Wizard fleeing behavior (they will cast backwards less often)
+- Adjusted Cone of Cold's particles
+- Made the Mountain Tower structure less common 
+- Blazes are now vulnerable to Ice magic
+- Divine Smite will now also apply additional enchantment effects, such as fire aspect
+- Improved several mob effect icons
+- Improved Heal Spell icon
+- Improved several spell icon's, courtesy of Renovated Studios
+  - Black Hole
+  - Blood Slash
+  - Devour
+  - Magic Arrow
+  - Poison Arrow
+  - Poison Breath
+  - Fire Breath
+  - Ray of Siphoning
+  - Ray of Frost
+  - Sonic Boom
+  - Starfall
+  - Wall of Fire
 
 ### Fixes
-- Fixed Spell Power and Resistance Attributes not being able to go below 1
-- Fixed Fireward Ring strange behavior due to reliance on mob effect
-
+- Fixed Divine Smite being able to damage Items
+- Fixed Blood Slash's radius calculations
+- Fixed Lightning Bolt Spell's aerial targeting
+- Fixed successfully using a bottle on a creeper to obtain Bottle o' Lightning still causing the offhand to perform an action
+- Fixed Ray of Frost not taking an entity's base freeze time into account when applying freeze
+- Fixed Firecracker Spell's incredibly inconsistent damage
+- Fixed Cooldowns not persisting serverside after death/player clone
 ### API
-- Spells now have methods for crafting criteria, craftability, lootability, and interruptibility
-- Consolidated mana and cooldown checks into a CastResult class
-- Added canBeCastBy (returns CastResult) method to AbstractSpell
+- 

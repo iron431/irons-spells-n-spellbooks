@@ -2,9 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.particle.FogParticleOptions;
-import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
-import io.redspace.ironsspellbooks.particle.ZapParticleOption;
+import io.redspace.ironsspellbooks.particle.*;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -40,14 +38,20 @@ public class ParticleRegistry {
     public static final RegistryObject<SimpleParticleType> SIPHON_PARTICLE = PARTICLE_TYPES.register("spell", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> ACID_PARTICLE = PARTICLE_TYPES.register("acid", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> ACID_BUBBLE_PARTICLE = PARTICLE_TYPES.register("acid_bubble", () -> new SimpleParticleType(false));
+    public static final RegistryObject<SimpleParticleType> RING_SMOKE_PARTICLE = PARTICLE_TYPES.register("ring_smoke", () -> new SimpleParticleType(false));
     public static final RegistryObject<ParticleType<FogParticleOptions>> FOG_PARTICLE = PARTICLE_TYPES.register("fog", () -> new ParticleType<FogParticleOptions>(true, FogParticleOptions.DESERIALIZER) {
         public Codec<FogParticleOptions> codec() {
             return FogParticleOptions.CODEC;
         }
     });
-    public static final RegistryObject<ParticleType<ShockwaveParticleOptions>> SHOCKWAVE_PARTICLE = PARTICLE_TYPES.register("shockwave", () -> new ParticleType<ShockwaveParticleOptions>(false, ShockwaveParticleOptions.DESERIALIZER) {
-        public Codec<ShockwaveParticleOptions> codec() {
+    public static final RegistryObject<ParticleType<IShockwaveParticleOptions>> SHOCKWAVE_PARTICLE = PARTICLE_TYPES.register("shockwave", () -> new ParticleType<IShockwaveParticleOptions>(false, ShockwaveParticleOptions.DESERIALIZER) {
+        public Codec<IShockwaveParticleOptions> codec() {
             return ShockwaveParticleOptions.CODEC;
+        }
+    });
+    public static final RegistryObject<ParticleType<IShockwaveParticleOptions>> TRAIL_SHOCKWAVE_PARTICLE = PARTICLE_TYPES.register("trailed_shockwave", () -> new ParticleType<IShockwaveParticleOptions>(false, TrailShockwaveParticleOptions.DESERIALIZER) {
+        public Codec<IShockwaveParticleOptions> codec() {
+            return TrailShockwaveParticleOptions.CODEC;
         }
     });
     public static final RegistryObject<ParticleType<ZapParticleOption>> ZAP_PARTICLE = PARTICLE_TYPES.register("zap", () -> new ParticleType<ZapParticleOption>(false, ZapParticleOption.DESERIALIZER) {

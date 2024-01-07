@@ -56,6 +56,7 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
@@ -150,12 +151,54 @@ public class Utils {
         return level.getServer().getPlayerList().getPlayer(uuid);
     }
 
-    public static String stringTruncation(double f, int places) {
-        return String.format("%." + (f % 1 == 0 ? 0 : places) + "f", f);
+    public static String stringTruncation(double f, int decimalPlaces) {
+        if (f == Math.floor(f)) {
+            return Integer.toString((int) f);
+        }
+
+        double multiplier = Math.pow(10, decimalPlaces);
+        double truncatedValue = Math.floor(f * multiplier) / multiplier;
+
+        // Convert the truncated value to a string
+        String result = Double.toString(truncatedValue);
+
+        // Remove trailing zeros
+        result = result.replaceAll("0*$", "");
+
+        // Remove the decimal point if there are no decimal places
+        result = result.endsWith(".") ? result.substring(0, result.length() - 1) : result;
+
+        return result;
+    }
+
+    public static float intPow(float f, int exponent) {
+        if (exponent == 0) {
+            return 1;
+        }
+        float b = f;
+        for (int i = 1; i < Math.abs(exponent); i++) {
+            b *= f;
+        }
+        return exponent < 0 ? 1 / b : b;
+    }
+
+    public static double intPow(double d, int exponent) {
+        if (exponent == 0) {
+            return 1;
+        }
+        double b = d;
+        for (int i = 1; i < Math.abs(exponent); i++) {
+            b *= d;
+        }
+        return exponent < 0 ? 1 / b : b;
     }
 
     public static float getAngle(Vec2 a, Vec2 b) {
-        return (float) (Math.atan2(b.y - a.y, b.x - a.x)) + 3.141f;// + (a.x > b.x ? Math.PI : 0));
+        return getAngle(a.x, a.y, b.x, b.y);
+    }
+
+    public static float getAngle(double ax, double ay, double bx, double by) {
+        return (float) (Math.atan2(by - ay, bx - ax)) + 3.141f;// + (a.x > b.x ? Math.PI : 0));
     }
 
     public static BlockHitResult getTargetOld(Level level, Player player, ClipContext.Fluid clipContext, double reach) {
@@ -195,7 +238,10 @@ public class Utils {
             }
         }
         return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getType() == HitResult.Type.MISS;
+    }
 
+    public static boolean hasLineOfSight(Level level, Entity entity1, Entity entity2, boolean checkForShields) {
+        return hasLineOfSight(level, entity1.getBoundingBox().getCenter(), entity2.getBoundingBox().getCenter(), checkForShields);
     }
 
     public static BlockHitResult raycastForBlock(Level level, Vec3 start, Vec3 end, ClipContext.Fluid clipContext) {
@@ -522,11 +568,15 @@ public class Utils {
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxSteps) {
+        return moveToRelativeGroundLevel(level, start, maxSteps, maxSteps);
+    }
+
+    public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxStepsUp, int maxStepsDown) {
         BlockCollisions blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true, (p_286215_, p_286216_) -> {
             return p_286216_;
         });
         if (blockcollisions.hasNext()) {
-            for (int i = 1; i < maxSteps * 2; i++) {
+            for (int i = 1; i < maxStepsUp; i++) {
                 blockcollisions = new BlockCollisions(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i * .5, 0)), true, (p_286215_, p_286216_) -> {
                     return p_286216_;
                 });
@@ -536,7 +586,7 @@ public class Utils {
                 }
             }
         }
-        return level.clip(new ClipContext(start, start.add(0, maxSteps * -2, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
+        return level.clip(new ClipContext(start, start.add(0, -maxStepsDown, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null)).getLocation();
     }
 
     public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
@@ -570,6 +620,22 @@ public class Utils {
         return false;
     }
 
+    public static Vector3f deconstructRGB(int color) {
+        int red = (color >> 16) & 0xFF;
+        int green = (color >> 8) & 0xFF;
+        int blue = color & 0xFF;
+
+        return new Vector3f(red / 255.0f, green / 255.0f, blue / 255.0f);
+    }
+
+    public static int packRGB(Vector3f color) {
+        int red = (int) (color.x() * 255.0f);
+        int green = (int) (color.y() * 255.0f);
+        int blue = (int) (color.z() * 255.0f);
+
+        return (red << 16) | (green << 8) | blue;
+    }
+
     public static CompoundTag saveAllItems(CompoundTag pTag, NonNullList<ItemStack> pList, String location) {
         ListTag listtag = new ListTag();
 
@@ -600,5 +666,19 @@ public class Utils {
                 pList.set(j, ItemStack.of(compoundtag));
             }
         }
+    }
+
+    public static float getWeaponDamage(LivingEntity entity, MobType entityForDamageBonus) {
+        if (entity != null) {
+            float weapon = (float) (entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            float fist = (float) (entity.getAttributeBaseValue(Attributes.ATTACK_DAMAGE));
+            if (weapon <= fist) {
+                //Remove fist damage if they are not using a melee weapon
+                weapon -= fist;
+            }
+            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(),entityForDamageBonus);
+            return weapon + enchant;
+        }
+        return 0;
     }
 }

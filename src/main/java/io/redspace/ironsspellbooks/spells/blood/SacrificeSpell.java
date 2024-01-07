@@ -115,7 +115,7 @@ public class SacrificeSpell extends AbstractSpell {
                 float damage = getDamage(spellLevel, entity);
                 float explosionRadius = 3f;
                 MagicManager.spawnParticles(level, ParticleHelper.BLOOD, targetEntity.getX(), targetEntity.getY() + .25f, targetEntity.getZ(), 100, .03, .4, .03, .4, true);
-                MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.BLOOD.get().getTargetingColor(), explosionRadius), targetEntity.getX(), targetEntity.getY() + .15f, targetEntity.getZ(), 1, 0, 0, 0, 0, true);
+                MagicManager.spawnParticles(level, new ShockwaveParticleOptions(SchoolRegistry.BLOOD.get().getTargetingColor(), explosionRadius, false), targetEntity.getX(), targetEntity.getY() + .15f, targetEntity.getZ(), 1, 0, 0, 0, 0, true);
                 var entities = level.getEntities(targetEntity, targetEntity.getBoundingBox().inflate(explosionRadius));
                 for (Entity victim : entities) {
                     double distance = victim.distanceToSqr(targetEntity.position());

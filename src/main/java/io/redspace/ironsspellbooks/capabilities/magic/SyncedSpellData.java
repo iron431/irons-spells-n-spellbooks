@@ -14,6 +14,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import org.apache.commons.compress.harmony.pack200.NewAttribute;
 import org.jetbrains.annotations.Nullable;
 
 public class SyncedSpellData {
@@ -42,7 +43,7 @@ public class SyncedSpellData {
     private float heartStopAccumulatedDamage;
     private int evasionHitsRemaining;
     private SpinAttackType spinAttackType;
-    private final LearnedSpellData learnedSpellData;
+    private LearnedSpellData learnedSpellData;
     private SpellSelection spellSelection;
 
     //Use this on the client
@@ -263,5 +264,14 @@ public class SyncedSpellData {
                 castingSpellId,
                 castingSpellLevel,
                 syncedEffectFlags);
+    }
+
+    /**
+     * @return Retuns a copy of this SyncedSpellData, but with only data for things that should be persisted after death.
+     */
+    public SyncedSpellData getPersistentData(){
+        SyncedSpellData persistentData = new SyncedSpellData(this.livingEntity);
+        persistentData.learnedSpellData = this.learnedSpellData;
+        return persistentData;
     }
 }

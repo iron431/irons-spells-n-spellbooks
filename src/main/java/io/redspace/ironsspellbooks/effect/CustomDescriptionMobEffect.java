@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CustomDescriptionMobEffect extends MobEffect {
+public abstract class CustomDescriptionMobEffect extends MagicMobEffect {
     protected CustomDescriptionMobEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }

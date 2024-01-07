@@ -14,8 +14,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -87,6 +89,13 @@ public class GustSpell extends AbstractSpell {
         gust.setDealDamageActive();
         gust.tick();
 
+        float kickback = (float) entity.getBoundingBox().getCenter().distanceToSqr(Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, 3.5f).getLocation());
+        kickback = Mth.clamp(1 / (kickback + 1) - .11f, 0f, .95f);
+        if(kickback > 0){
+            entity.setDeltaMovement(entity.getDeltaMovement().subtract(entity.getLookAngle().scale(kickback * spellLevel * .25f)));
+            entity.resetFallDistance();
+            entity.hurtMarked = true;
+        }
         super.onCast(level, spellLevel, entity, playerMagicData);
     }
 

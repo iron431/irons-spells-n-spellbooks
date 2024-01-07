@@ -69,19 +69,19 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-        pCompound.putFloat("zRot", getZRot());
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putFloat("zRot", getZRot());
         if (getScale() != 1)
-            pCompound.putFloat("Scale", getScale());
+            tag.putFloat("Scale", getScale());
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        setZRot(pCompound.getFloat("zRot"));
-        if (pCompound.contains("Scale"))
-            setScale(pCompound.getFloat("Scale"));
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        setZRot(tag.getFloat("zRot"));
+        if (tag.contains("Scale"))
+            setScale(tag.getFloat("Scale"));
     }
 
     @Override

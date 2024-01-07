@@ -42,7 +42,6 @@ public class VillageAddition {
         // Use .legacy( for villages/outposts and .single( for everything else
         SinglePoolElement piece = SinglePoolElement.legacy(nbtPieceRL,
                 emptyProcessorList).apply(StructureTemplatePool.Projection.RIGID);
-
         // Use AccessTransformer or Accessor Mixin to make StructureTemplatePool's templates field public for us to see.
         // Weight is handled by how many times the entry appears in this list.
         // We do not need to worry about immutability as this field is created using Lists.newArrayList(); which makes a mutable list.
@@ -81,6 +80,9 @@ public class VillageAddition {
         addBuildingToPool(templatePoolRegistry, processorListRegistry,
                 new ResourceLocation("minecraft:village/plains/houses"),
                 "irons_spellbooks:priest_house", weight);
+        addBuildingToPool(templatePoolRegistry, processorListRegistry,
+                new ResourceLocation("minecraft:village/taiga/houses"),
+                "irons_spellbooks:priest_house_taiga", weight);
 
 
         //addBuildingToPool(templatePoolRegistry, processorListRegistry,

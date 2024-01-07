@@ -173,9 +173,6 @@ public class ClientSpellCastHelper {
     /**
      * Animation Helper
      */
-
-    private static boolean didModify = false;
-
     private static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         //IronsSpellbooks.LOGGER.debug("animatePlayerStart {} {}", player, resourceLocation);
         var keyframeAnimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
@@ -252,6 +249,10 @@ public class ClientSpellCastHelper {
             if (animationPlayer != null) {
                 animationPlayer.stop();
             }
+        }
+
+        if (cancelled && spell.stopSoundOnCancel()) {
+            spell.getCastStartSound().ifPresent((soundEvent) -> Minecraft.getInstance().getSoundManager().stop(soundEvent.getLocation(), null));
         }
 
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown) {

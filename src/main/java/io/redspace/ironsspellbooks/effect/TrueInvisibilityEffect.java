@@ -13,7 +13,7 @@ import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 
-public class TrueInvisibilityEffect extends MobEffect {
+public class TrueInvisibilityEffect extends MagicMobEffect {
     public TrueInvisibilityEffect(MobEffectCategory pCategory, int pColor) {
         super(pCategory, pColor);
     }

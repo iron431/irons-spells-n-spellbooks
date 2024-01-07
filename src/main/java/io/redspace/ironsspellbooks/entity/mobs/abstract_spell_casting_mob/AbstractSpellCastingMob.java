@@ -103,7 +103,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     private void finishDrinkingPotion() {
         setDrinkingPotion(false);
-        this.heal(Math.min(10, getMaxHealth() / 4));
+        this.heal(Math.min(Math.max(10, getMaxHealth() / 10), getMaxHealth() / 4));
         this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_MODIFIER_DRINKING);
         if (!this.isSilent()) {
             this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_DRINK, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
@@ -486,7 +486,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        if(spell.getCastFinishAnimation() == AnimationHolder.pass()){
+        if (spell.getCastFinishAnimation() == AnimationHolder.pass()) {
             return;
         }
         spell.getCastFinishAnimation().getForMob().ifPresentOrElse(animationBuilder -> {

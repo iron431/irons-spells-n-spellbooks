@@ -97,6 +97,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> STARFALL_SPELL = registerSpell(new StarfallSpell());
     public static final RegistryObject<AbstractSpell> TELEPORT_SPELL = registerSpell(new TeleportSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_ENDER_CHEST_SPELL = registerSpell(new SummonEnderChestSpell());
+    public static final RegistryObject<AbstractSpell> RECALL_SPELL = registerSpell(new RecallSpell());
 
     // EVOCATION
     public static final RegistryObject<AbstractSpell> CHAIN_CREEPER_SPELL = registerSpell(new ChainCreeperSpell());
@@ -110,6 +111,8 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> SPECTRAL_HAMMER_SPELL = registerSpell(new SpectralHammerSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_HORSE_SPELL = registerSpell(new SummonHorseSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_VEX_SPELL = registerSpell(new SummonVexSpell());
+    public static final RegistryObject<AbstractSpell> SLOW_SPELL = registerSpell(new SlowSpell());
+    public static final RegistryObject<AbstractSpell> ARROW_VOLLEY_SPELL = registerSpell(new ArrowVolleySpell());
 
     // FIRE
     public static final RegistryObject<AbstractSpell> BLAZE_STORM_SPELL = registerSpell(new BlazeStormSpell());
@@ -119,6 +122,8 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> FIRE_BREATH_SPELL = registerSpell(new FireBreathSpell());
     public static final RegistryObject<AbstractSpell> MAGMA_BOMB_SPELL = registerSpell(new MagmaBombSpell());
     public static final RegistryObject<AbstractSpell> WALL_OF_FIRE_SPELL = registerSpell(new WallOfFireSpell());
+    public static final RegistryObject<AbstractSpell> HEAT_SURGE_SPELL = registerSpell(new HeatSurgeSpell());
+    //public static final RegistryObject<AbstractSpell> FLAMING_STRIKE = registerSpell(new FlamingStrikeSpell());
 
     // HOLY
     public static final RegistryObject<AbstractSpell> ANGEL_WINGS_SPELL = registerSpell(new AngelWingsSpell());
@@ -129,19 +134,20 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> GUIDING_BOLT_SPELL = registerSpell(new GuidingBoltSpell());
     public static final RegistryObject<AbstractSpell> HEALING_CIRCLE_SPELL = registerSpell(new HealingCircleSpell());
     public static final RegistryObject<AbstractSpell> HEAL_SPELL = registerSpell(new HealSpell());
-    public static final RegistryObject<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
+    //public static final RegistryObject<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
     public static final RegistryObject<AbstractSpell> WISP_SPELL = registerSpell(new WispSpell());
     public static final RegistryObject<AbstractSpell> DIVINE_SMITE_SPELL = registerSpell(new DivineSmiteSpell());
+    public static final RegistryObject<AbstractSpell> HASTE_SPELL = registerSpell(new HasteSpell());
 
     // ICE
     public static final RegistryObject<AbstractSpell> CONE_OF_COLD_SPELL = registerSpell(new ConeOfColdSpell());
-    public static final RegistryObject<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
+//    public static final RegistryObject<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
     public static final RegistryObject<AbstractSpell> FROST_STEP_SPELL = registerSpell(new FrostStepSpell());
     public static final RegistryObject<AbstractSpell> ICE_BLOCK_SPELL = registerSpell(new IceBlockSpell());
     public static final RegistryObject<AbstractSpell> ICICLE_SPELL = registerSpell(new IcicleSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_POLAR_BEAR_SPELL = registerSpell(new SummonPolarBearSpell());
     public static final RegistryObject<AbstractSpell> RAY_OF_FROST_SPELL = registerSpell(new RayOfFrostSpell());
-    //public static final RegistryObject<AbstractSpell> COLDWAVE_SPELL = registerSpell(new ColdwaveSpell());
+    public static final RegistryObject<AbstractSpell> FROSTWAVE_SPELL = registerSpell(new FrostwaveSpell());
 
     // LIGHTNING
     public static final RegistryObject<AbstractSpell> ASCENSION_SPELL = registerSpell(new AscensionSpell());
