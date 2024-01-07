@@ -31,7 +31,7 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalTile> {
 
         if (!heldItem.isEmpty()) {
             Player player = Minecraft.getInstance().player;
-            float bob = (float) (Math.sin((player.tickCount + partialTick) * .1f) * .0875f);
+            float bob = 0;//(float) (Math.sin((player.tickCount + partialTick) * .1f) * .0875f);
             float rotation = player.tickCount * 2 + partialTick;
             renderItem(heldItem, ITEM_POS.add(0, bob, 0), rotation, pedestalTile, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         }

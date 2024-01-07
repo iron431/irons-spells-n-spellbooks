@@ -38,6 +38,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     public AbstractMagicProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        if (!respectsGravity()) {
+            setNoGravity(true);
+        }
     }
 
     public void shoot(Vec3 rotation) {
@@ -60,6 +63,10 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         this.explosionRadius = explosionRadius;
     }
 
+    /**
+     * Should be setting isNoGravity, not deleting its functionality
+     */
+    @Deprecated(forRemoval = true)
     public boolean respectsGravity() {
         return false;
     }
@@ -85,7 +92,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
         }
         setPos(position().add(getDeltaMovement()));
         ProjectileUtil.rotateTowardsMovement(this, 1);
-        if (!this.isNoGravity() && respectsGravity()) {
+        if (!this.isNoGravity()) {
             Vec3 vec34 = this.getDeltaMovement();
             this.setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
         }
@@ -94,12 +101,9 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     protected void onHit(HitResult hitresult) {
         super.onHit(hitresult);
-        double x = xOld;
-        double y = yOld;
-        double z = zOld;
 
         if (!level.isClientSide) {
-            impactParticles(x, y, z);
+            impactParticles(getX(), getY(), getZ());
             getImpactSound().ifPresent(this::doImpactSound);
         }
     }

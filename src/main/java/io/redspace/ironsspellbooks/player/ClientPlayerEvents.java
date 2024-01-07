@@ -20,6 +20,7 @@ import io.redspace.ironsspellbooks.item.weapons.IMultihandWeapon;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
+import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -79,6 +80,9 @@ public class ClientPlayerEvents {
                     }
                     if (spellData.hasEffect(SyncedSpellData.ASCENSION)) {
                         AscensionEffect.ambientParticles(level, livingEntity);
+                    }
+                    if (livingEntity.isAutoSpinAttack() && spellData.getSpinAttackType() == SpinAttackType.FIRE) {
+                        BurningDashSpell.ambientParticles(level, livingEntity);
                     }
                     /*
                     Current Casting Spell Visuals

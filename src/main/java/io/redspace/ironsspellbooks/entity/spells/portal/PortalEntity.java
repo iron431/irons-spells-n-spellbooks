@@ -77,7 +77,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     public void checkForEntitiesToTeleport() {
         if (this.level.isClientSide) return;
 
-        level.getEntitiesOfClass(Entity.class, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL))).forEach(entity -> {
+        level.getEntitiesOfClass(Entity.class, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL) && entity.isPickable())).forEach(entity -> {
             //TODO: remove extraneous logging
             IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}", entity);
 

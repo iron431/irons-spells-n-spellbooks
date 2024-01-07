@@ -57,6 +57,14 @@ public abstract class LivingEntityMixin {
         }
     }
 
+    @Inject(method = "isAutoSpinAttack", at = @At(value = "HEAD"), cancellable = true)
+    public void isAutoSpinAttack(CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity self = (LivingEntity) (Object) this;
+        if (self.hasEffect(MobEffectRegistry.BURNING_DASH.get())) {
+            cir.setReturnValue(true);
+        }
+    }
+
     @Shadow
     abstract ItemStack getLastHandItem(EquipmentSlot pSlot);
 
