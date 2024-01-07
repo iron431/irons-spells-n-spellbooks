@@ -45,7 +45,7 @@ public final class ClientInputEvents {
 
         if (Minecraft.getInstance().screen == null) {
             if (SPELLBAR_MODIFIER_STATE.isHeld()) {
-                SpellSelectionManager spellSelectionManager = new SpellSelectionManager(MinecraftInstanceHelper.getPlayer());
+                SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
                 if (spellSelectionManager.getSpellCount() > 0) {
                     int direction = Mth.clamp((int) event.getScrollDelta(), -1, 1);
                     List<SpellSelectionManager.SelectionOption> spellbookSpells = spellSelectionManager.getAllSpells();

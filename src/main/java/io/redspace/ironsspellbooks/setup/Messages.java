@@ -215,6 +215,12 @@ public class Messages {
                 .consumerMainThread(ClientboundSyncCameraShake::handle)
                 .add();
 
+        net.messageBuilder(ClientboundEquipmentChanged.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundEquipmentChanged::new)
+                .encoder(ClientboundEquipmentChanged::toBytes)
+                .consumerMainThread(ClientboundEquipmentChanged::handle)
+                .add();
+
         net.messageBuilder(ServerboundLearnSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundLearnSpell::new)
                 .encoder(ServerboundLearnSpell::toBytes)

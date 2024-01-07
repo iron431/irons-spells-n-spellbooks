@@ -19,7 +19,7 @@ public class CooldownOverlayItemDecorator implements IItemDecorator {
     public boolean render(Font font, ItemStack stack, int xOffset, int yOffset, float blitOffset) {
         Item item = stack.getItem();
         if (item instanceof CastingItem && MinecraftInstanceHelper.getPlayer() != null) {
-            SpellSelectionManager manager = new SpellSelectionManager(MinecraftInstanceHelper.getPlayer());
+            SpellSelectionManager manager = ClientMagicData.getSpellSelectionManager();
             var spell = manager.getSelectedSpellData().getSpell();
             float f = spell == SpellRegistry.none() ? 0 : ClientMagicData.getCooldownPercent(spell);
             if (f > 0.0F) {
