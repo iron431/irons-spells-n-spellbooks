@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -57,11 +59,6 @@ public class EldritchBlastSpell extends AbstractEldritchSpell {
     }
 
     @Override
-    public int getCastTime(int spellLevel) {
-        return castTime + 10 * (spellLevel - 1);
-    }
-
-    @Override
     public CastType getCastType() {
         return CastType.INSTANT;
     }
@@ -83,7 +80,7 @@ public class EldritchBlastSpell extends AbstractEldritchSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.RAY_OF_FROST.get());
+        return Optional.of(SoundRegistry.TELEKINESIS_CAST.get());
     }
 
     @Override
@@ -98,11 +95,13 @@ public class EldritchBlastSpell extends AbstractEldritchSpell {
         }
 
         var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), true, .15f);
-        level.addFreshEntity(new EldritchBlastVisualEntity(level, entity.getEyePosition(), hitResult.getLocation(), entity));
-        if (hitResult.getType() == HitResult.Type.ENTITY || hitResult.getType() == HitResult.Type.BLOCK) {
-            MagicManager.spawnParticles(level, ParticleHelper.ICY_FOG, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, 4, 0, 0, 0, .3, true);
+        level.addFreshEntity(new EldritchBlastVisualEntity(level, entity.getEyePosition().subtract(0, .75f, 0), hitResult.getLocation(), entity));
+        double distance = entity.getEyePosition().distanceTo(hitResult.getLocation());
+        Vec3 forward = entity.getForward();
+        for (float i = 1; i < distance; i += .5f) {
+            Vec3 pos = entity.getEyePosition().subtract(0, .375f, 0).add(forward.scale(i));
+            MagicManager.spawnParticles(level, ParticleTypes.SMOKE, pos.x, pos.y, pos.z, 1, 0, 0, 0, 0, false);
         }
-
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target instanceof LivingEntity) {
@@ -112,7 +111,6 @@ public class EldritchBlastSpell extends AbstractEldritchSpell {
             }
         }
 
-        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, 50, 0, 0, 0, .3, false);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 

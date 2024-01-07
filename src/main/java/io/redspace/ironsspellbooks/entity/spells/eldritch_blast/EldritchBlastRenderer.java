@@ -1,11 +1,14 @@
 package io.redspace.ironsspellbooks.entity.spells.eldritch_blast;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import net.minecraft.Util;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -24,8 +27,11 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
+
+import static io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastRenderer.CustomerRenderType.crumbling;
 
 public class EldritchBlastRenderer extends EntityRenderer<EldritchBlastVisualEntity> {
 
@@ -73,7 +79,7 @@ public class EldritchBlastRenderer extends EntityRenderer<EldritchBlastVisualEnt
             poseStack.translate(0, length, 0);
             //Render overlay
             //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(TEXTURE_OVERLAY));
-            VertexConsumer consumer = bufferSource.getBuffer(EldritchBlastRenderType.energySwirl(TEXTURE_OVERLAY, 0, 0));
+            VertexConsumer consumer = bufferSource.getBuffer(MagicArrowRenderer.CustomRenderType.magicNoCull(TEXTURE_OVERLAY));
             {
                 poseStack.pushPose();
                 float expansion = Mth.clampedLerp(1.2f, 0, f / (lifetime));
@@ -84,11 +90,11 @@ public class EldritchBlastRenderer extends EntityRenderer<EldritchBlastVisualEnt
                 poseStack.popPose();
             }
             //Render core
-            consumer = bufferSource.getBuffer(EldritchBlastRenderType.eldritchBlast(TEXTURE_CORE));
+            consumer = bufferSource.getBuffer(crumbling(TEXTURE_CORE));
             //consumer = bufferSource.getBuffer(EldritchBlastRenderType.eldritchBlast(TEXTURE_CORE));
             {
                 poseStack.pushPose();
-                float expansion = Mth.clampedLerp(1, 0, f / (lifetime - 8));
+                float expansion = Mth.clampedLerp(1, 0, f / (lifetime - 5));
                 poseStack.scale(expansion, 1, expansion);
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(f * -10));
                 this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
@@ -107,18 +113,21 @@ public class EldritchBlastRenderer extends EntityRenderer<EldritchBlastVisualEnt
         return TEXTURE_CORE;
     }
 
-    static class EldritchBlastRenderType extends RenderType {
-        private static final Function<ResourceLocation, RenderType> ELDRITCH_BLAST = Util.memoize((p_173253_) -> {
-            RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173253_, false, false);
-            return create("eldritch_blast", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RenderStateShard.RENDERTYPE_CRUMBLING_SHADER).setTextureState(renderstateshard$texturestateshard).setTransparencyState(CRUMBLING_TRANSPARENCY).setWriteMaskState(COLOR_WRITE).createCompositeState(false));
-        });
-
-        public EldritchBlastRenderType(String pName, VertexFormat pFormat, VertexFormat.Mode pMode, int pBufferSize, boolean pAffectsCrumbling, boolean pSortOnUpload, Runnable pSetupState, Runnable pClearState) {
+    public static class CustomerRenderType extends RenderType {
+        public CustomerRenderType(String pName, VertexFormat pFormat, VertexFormat.Mode pMode, int pBufferSize, boolean pAffectsCrumbling, boolean pSortOnUpload, Runnable pSetupState, Runnable pClearState) {
             super(pName, pFormat, pMode, pBufferSize, pAffectsCrumbling, pSortOnUpload, pSetupState, pClearState);
         }
 
-        public static RenderType eldritchBlast(ResourceLocation pLocation) {
-            return ELDRITCH_BLAST.apply(pLocation);
+        public static @NotNull RenderType crumbling(@NotNull ResourceLocation pLocation) {
+            return create("crumbling", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(pLocation, false, false)).setTransparencyState(ONE_MINUS).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false));
         }
+
+        protected static final RenderStateShard.TransparencyStateShard ONE_MINUS = new RenderStateShard.TransparencyStateShard("one_minus", () -> {
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.DestFactor.SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        }, () -> {
+            RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
+        });
     }
 }

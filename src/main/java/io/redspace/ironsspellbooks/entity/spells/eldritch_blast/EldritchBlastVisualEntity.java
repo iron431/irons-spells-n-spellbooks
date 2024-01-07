@@ -13,7 +13,7 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 
 public class EldritchBlastVisualEntity extends Entity implements IEntityAdditionalSpawnData {
-    public static final int lifetime = 15;
+    public static final int lifetime = 8;
     public EldritchBlastVisualEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -22,14 +22,14 @@ public class EldritchBlastVisualEntity extends Entity implements IEntityAddition
 
     public EldritchBlastVisualEntity(Level level, Vec3 start, Vec3 end, LivingEntity owner) {
         super(EntityRegistry.ELDRITCH_BLAST_VISUAL_ENTITY.get(), level);
-        this.setPos(start.subtract(0, .75f, 0));
+        this.setPos(start);
         this.distance = (float) start.distanceTo(end);
         this.setRot(owner.getYRot(), owner.getXRot());
     }
 
     @Override
     public void tick() {
-        if (++tickCount > lifetime) {
+        if (tickCount > lifetime) {
             this.discard();
         }
     }
