@@ -2,7 +2,8 @@ package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.item.Scroll;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -205,7 +206,8 @@ public class CreativeTabRegistry {
                     .forEach(spell -> {
                         for (int i = spell.getMinLevel(); i <= spell.getMaxLevel(); i++) {
                             var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                            SpellData.setSpellData(itemstack, spell, i);
+                            ISpellContainer container = ISpellContainer.getOrCreate(itemstack);
+                            container.save(itemstack);
                             event.accept(itemstack);
                         }
                     });

@@ -123,9 +123,9 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             //Shriving Stone
             else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
                 if (!(baseItemStack.getItem() instanceof Scroll)) {
-                    if (SpellData.hasSpellData(baseItemStack)) {
+                    if (ISpellContainer.isSpellContainer(baseItemStack)) {
                         result = baseItemStack.copy();
-                        result.removeTagKey(SpellData.ISB_SPELL);
+                        result.removeTagKey(SpellContainer.SPELL_SLOT_CONTAINER);
 
                     } else if (UpgradeData.hasUpgradeData(baseItemStack)) {
                         result = baseItemStack.copy();

@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
 import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -47,6 +48,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
@@ -67,6 +69,7 @@ import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
@@ -491,8 +494,8 @@ public class ServerPlayerEvents {
             if (newResult.is(ItemRegistry.SCROLL.get()))
                 return;
             boolean flag = false;
-            if (SpellData.hasSpellData(newResult)) {
-                newResult.removeTagKey(SpellData.ISB_SPELL);
+            if (ISpellContainer.isSpellContainer(newResult)) {
+                newResult.removeTagKey(SpellContainer.SPELL_SLOT_CONTAINER);
                 //IronsSpellbooks.LOGGER.debug("spell data");
 
                 flag = true;

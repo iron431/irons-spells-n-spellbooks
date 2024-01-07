@@ -31,7 +31,7 @@ public class ClearRecastsCommand {
             targets.forEach((ClearRecastsCommand::removeRecastForPlayer));
 
             if (!targets.isEmpty()) {
-                source.sendSuccess(Component.translatable("commands.clearRecast.success"), true);
+                source.sendSuccess(()->Component.translatable("commands.clearRecast.success"), true);
             }
 
             return targets.size();
@@ -41,7 +41,7 @@ public class ClearRecastsCommand {
                     return true;
                 }).forEach(ClearRecastsCommand::removeRecastForPlayer);
             });
-            source.sendSuccess(Component.translatable("commands.clearRecast.success"), true);
+            source.sendSuccess(()->Component.translatable("commands.clearRecast.success"), true);
             return 1;
         }
     }

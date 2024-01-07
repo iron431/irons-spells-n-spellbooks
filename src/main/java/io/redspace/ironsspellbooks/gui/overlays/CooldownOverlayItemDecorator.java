@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -16,7 +17,7 @@ import net.minecraftforge.client.IItemDecorator;
 
 public class CooldownOverlayItemDecorator implements IItemDecorator {
     @Override
-    public boolean render(Font font, ItemStack stack, int xOffset, int yOffset, float blitOffset) {
+    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
         Item item = stack.getItem();
         if (item instanceof CastingItem && MinecraftInstanceHelper.getPlayer() != null) {
             SpellSelectionManager manager = ClientMagicData.getSpellSelectionManager();
@@ -39,13 +40,13 @@ public class CooldownOverlayItemDecorator implements IItemDecorator {
 
     private void renderCooldown(int one, int two, float f) {
         RenderSystem.disableDepthTest();
-        RenderSystem.disableTexture();
+        //RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         fillRect(bufferbuilder, one, two + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-        RenderSystem.enableTexture();
+        //RenderSystem.enableTexture();
         RenderSystem.enableDepthTest();
     }
 
@@ -58,4 +59,5 @@ public class CooldownOverlayItemDecorator implements IItemDecorator {
         pRenderer.vertex((double) (pX + pWidth), (double) (pY + 0), 0.0D).color(pRed, pGreen, pBlue, pAlpha).endVertex();
         BufferUploader.drawWithShader(pRenderer.end());
     }
+
 }

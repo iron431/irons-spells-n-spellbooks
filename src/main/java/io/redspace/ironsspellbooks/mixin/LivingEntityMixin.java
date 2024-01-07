@@ -128,7 +128,7 @@ public abstract class LivingEntityMixin {
     }
 
     @Unique
-    private static final Predicate<Attribute> allNonBaseAttackAttributes = (attribute) -> !(attribute == ForgeMod.ATTACK_RANGE.get() || attribute == Attributes.ATTACK_DAMAGE || attribute == Attributes.ATTACK_SPEED || attribute == Attributes.ATTACK_KNOCKBACK);
+    private static final Predicate<Attribute> allNonBaseAttackAttributes = (attribute) -> !(attribute == ForgeMod.ENTITY_REACH.get() || attribute == Attributes.ATTACK_DAMAGE || attribute == Attributes.ATTACK_SPEED || attribute == Attributes.ATTACK_KNOCKBACK);
     @Unique
     private static final Predicate<Attribute> onlyIronAttributes = (attribute) -> attribute instanceof IMagicAttribute;
 

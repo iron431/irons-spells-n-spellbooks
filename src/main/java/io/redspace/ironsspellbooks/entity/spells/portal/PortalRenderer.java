@@ -7,9 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -21,6 +19,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 import static io.redspace.ironsspellbooks.entity.spells.portal.PortalRenderer.CustomerRenderType.crumbling;
 
@@ -34,7 +34,7 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
     @Override
     public void render(PortalEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-entity.getYRot()));
+        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
         poseStack.scale(0.0625f, 0.0625f, 0.0625f);
 
         //poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
@@ -73,21 +73,21 @@ public class PortalRenderer extends EntityRenderer<PortalEntity> {
         super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    private static void debugText(String text, float yOffset, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        matrixStackIn.pushPose();
-        matrixStackIn.translate(0.0D, yOffset, 0.0D);
-
-        matrixStackIn.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
-        matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
-        Matrix4f matrix4f = matrixStackIn.last().pose();
-        float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
-        int j = (int) (f1 * 255.0F) << 24;
-
-        var font = Minecraft.getInstance().font;
-        float f2 = (float) (-font.width(text) / 2);
-        font.drawInBatch(text, f2, 0, 553648127, false, matrix4f, bufferIn, true, j, packedLightIn);
-        matrixStackIn.popPose();
-    }
+//    private static void debugText(String text, float yOffset, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+//        matrixStackIn.pushPose();
+//        matrixStackIn.translate(0.0D, yOffset, 0.0D);
+//
+//        matrixStackIn.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
+//        matrixStackIn.scale(-0.025F, -0.025F, 0.025F);
+//        Matrix4f matrix4f = matrixStackIn.last().pose();
+//        float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
+//        int j = (int) (f1 * 255.0F) << 24;
+//
+//        var font = Minecraft.getInstance().font;
+//        float f2 = (float) (-font.width(text) / 2);
+//        font.drawInBatch(text, f2, 0, 553648127, false, matrix4f, bufferIn, true, j, packedLightIn);
+//        matrixStackIn.popPose();
+//    }
 
     static int frameCount = 10;
     static int ticksPerFrame = 2;

@@ -92,19 +92,19 @@ public class Messages {
         net.messageBuilder(ClientboundSyncRecasts.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundSyncRecasts::new)
                 .encoder(ClientboundSyncRecasts::toBytes)
-                .consumer(ClientboundSyncRecasts::handle)
+                .consumerMainThread(ClientboundSyncRecasts::handle)
                 .add();
 
         net.messageBuilder(ClientBoundSyncRecast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientBoundSyncRecast::new)
                 .encoder(ClientBoundSyncRecast::toBytes)
-                .consumer(ClientBoundSyncRecast::handle)
+                .consumerMainThread(ClientBoundSyncRecast::handle)
                 .add();
 
         net.messageBuilder(ClientBoundRemoveRecast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientBoundRemoveRecast::new)
                 .encoder(ClientBoundRemoveRecast::toBytes)
-                .consumer(ClientBoundRemoveRecast::handle)
+                .consumerMainThread(ClientBoundRemoveRecast::handle)
                 .add();
 
         net.messageBuilder(ClientboundTeleportParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)

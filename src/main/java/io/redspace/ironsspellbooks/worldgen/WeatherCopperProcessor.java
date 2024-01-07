@@ -39,21 +39,21 @@ public class WeatherCopperProcessor extends StructureProcessor {
     @Nullable
     @Override
     public StructureTemplate.StructureBlockInfo process(@Nonnull LevelReader level, @Nonnull BlockPos jigsawPiecePos, @Nonnull BlockPos jigsawPieceBottomCenterPos, @Nonnull StructureTemplate.StructureBlockInfo blockInfoLocal, @Nonnull StructureTemplate.StructureBlockInfo blockInfoGlobal, @Nonnull StructurePlaceSettings settings, @Nullable StructureTemplate template) {
-        if (blockInfoGlobal.state.getBlock() instanceof WeatheringCopper copperBlock) {
+        if (blockInfoGlobal.state().getBlock() instanceof WeatheringCopper copperBlock) {
             float f = Mth.lerp(Utils.random.nextFloat(), bias, 1);
             int weatherStage = (int) (f * 4);
-            BlockState state = blockInfoGlobal.state;
+            BlockState state = blockInfoGlobal.state();
             //IronsSpellbooks.LOGGER.debug("WeatherCopperProcessor.original state: {}", state.toString());
             for (int i = 0; i < weatherStage; i++) {
                 var nextState = copperBlock.getNext(state);
                 if (nextState.isPresent()) {
-                    state = nextState.get().getBlock().withPropertiesOf(blockInfoGlobal.state);
+                    state = nextState.get().getBlock().withPropertiesOf(blockInfoGlobal.state());
                 }
                 //IronsSpellbooks.LOGGER.debug("WeatherCopperProcessor.nextState: {}", state.toString());
             }
             //IronsSpellbooks.LOGGER.debug("WeatherCopperProcessor.final state: {}", state.toString());
 
-            return new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos, state, blockInfoGlobal.nbt);
+            return new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos(), state, blockInfoGlobal.nbt());
         }
 
         return blockInfoGlobal;

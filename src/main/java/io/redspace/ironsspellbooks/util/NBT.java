@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceKey;
@@ -15,7 +16,7 @@ public class NBT {
         var resourcelocation = new ResourceLocation(compoundTag.getString("res"));
         var posTag = (CompoundTag) compoundTag.get("pos");
         var blockPos = NbtUtils.readBlockPos(posTag);
-        var resourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, resourcelocation);
+        var resourceKey = ResourceKey.create(Registries.DIMENSION, resourcelocation);
         return GlobalPos.of(resourceKey, blockPos);
     }
 
@@ -45,7 +46,7 @@ public class NBT {
         var resourcelocation = new ResourceLocation(compoundTag.getString("res"));
         var posTag = (CompoundTag) compoundTag.get("pos");
         var pos = readVec3(posTag);
-        var resourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, resourcelocation);
+        var resourceKey = ResourceKey.create(Registries.DIMENSION, resourcelocation);
         var rotation = compoundTag.getFloat("rot");
         return PortalPos.of(resourceKey, pos, rotation);
     }
