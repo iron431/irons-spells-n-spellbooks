@@ -1,12 +1,16 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
-import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -140,7 +144,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
             if (!activeSpellSlots.isEmpty()) {
                 lines.add(Component.empty());
                 lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
-                SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
+                SpellSelectionManager spellSelectionManager = player.level.isClientSide ? ClientMagicData.getSpellSelectionManager() : new SpellSelectionManager(player);
                 for (int i = 0; i < activeSpellSlots.size(); i++) {
                     var spellText = TooltipsUtils.getTitleComponent(activeSpellSlots.get(i), (LocalPlayer) player).setStyle(Style.EMPTY);
                     if ((MinecraftInstanceHelper.getPlayer() != null && Utils.getPlayerSpellbookStack(MinecraftInstanceHelper.getPlayer()) == itemStack) && spellSelectionManager.getCurrentSelection().equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && i == spellSelectionManager.getSelectionIndex()) {

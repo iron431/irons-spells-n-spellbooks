@@ -68,7 +68,7 @@ public class SpellWheelOverlay extends GuiComponent {
         }
 
         //TODO: consider making this persist as an optimization.. would need to take into account any equipment changes though as we currently get that for free with it living here
-        swsm = new SpellSelectionManager(player);
+        swsm = ClientMagicData.getSpellSelectionManager();
         int totalSpellsAvailable = swsm.getSpellCount();
 
         if (totalSpellsAvailable <= 0) {

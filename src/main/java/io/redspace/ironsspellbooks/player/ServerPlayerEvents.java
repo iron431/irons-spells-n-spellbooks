@@ -21,10 +21,13 @@ import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
+import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
+import io.redspace.ironsspellbooks.network.ClientboundEquipmentChanged;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
@@ -60,12 +63,11 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
+import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 import java.util.Optional;
 
@@ -110,23 +112,36 @@ public class ServerPlayerEvents {
             iwu.runUpgrade();
             IronsSpellbooks.LOGGER.debug("IWU:{}", iwu.tempCount);
         }
-
-        event.getServer();
     }
 
     @SubscribeEvent
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
-        if (event.getEntity().level.isClientSide) {
-            return;
-        }
-
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.isCasting()
-                    && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1)
-                    && (ISpellContainer.isSpellContainer(event.getFrom()))) {
+
+            if (playerMagicData.isCasting() && (event.getFrom().getItem() instanceof CastingItem || event.getTo().getItem() instanceof CastingItem)) {
                 Utils.serverSideCancelCast(serverPlayer);
+                Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+                return;
             }
+
+            var isFromSpellContainer = ISpellContainer.isSpellContainer(event.getFrom());
+            if (isFromSpellContainer && ISpellContainer.get(event.getFrom()).getIndexForSpell(playerMagicData.getCastingSpell().getSpell()) >= 0) {
+                if (playerMagicData.isCasting()) {
+                    Utils.serverSideCancelCast(serverPlayer);
+                }
+                Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+            } else if (isFromSpellContainer || ISpellContainer.isSpellContainer(event.getTo())) {
+                Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCurioChangeEvent(CurioChangeEvent event) {
+        var entity = event.getEntity();
+        if (entity instanceof ServerPlayer serverPlayer && (ISpellContainer.isSpellContainer(event.getFrom()) || ISpellContainer.isSpellContainer(event.getTo()))) {
+            Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
         }
     }
 

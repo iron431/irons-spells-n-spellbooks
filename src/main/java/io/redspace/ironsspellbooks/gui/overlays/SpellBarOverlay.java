@@ -32,7 +32,7 @@ public class SpellBarOverlay extends GuiComponent {
     public static void render(ForgeGui gui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         Player player = Minecraft.getInstance().player;
 
-        var ssm = new SpellSelectionManager(player);
+        var ssm = ClientMagicData.getSpellSelectionManager();
 
         if (ssm.getSpellCount() <= 0)
             return;

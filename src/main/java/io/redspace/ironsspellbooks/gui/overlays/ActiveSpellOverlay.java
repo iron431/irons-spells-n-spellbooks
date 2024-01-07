@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
@@ -34,7 +33,7 @@ public class ActiveSpellOverlay extends GuiComponent {
             if (ISpellContainer.isSpellContainer(stack)) {
                 spell = ISpellContainer.get(stack).getSpellAtIndex(0).getSpell();
             } else {
-                spell = new SpellSelectionManager(player).getSelectedSpellData().getSpell();
+                spell = ClientMagicData.getSpellSelectionManager().getSelectedSpellData().getSpell();
             }
         } else {
             stack = player.getOffhandItem();
@@ -42,7 +41,7 @@ public class ActiveSpellOverlay extends GuiComponent {
                 if (ISpellContainer.isSpellContainer(stack)) {
                     spell = ISpellContainer.get(stack).getSpellAtIndex(0).getSpell();
                 } else {
-                    spell = new SpellSelectionManager(player).getSelectedSpellData().getSpell();
+                    spell = ClientMagicData.getSpellSelectionManager().getSelectedSpellData().getSpell();
                 }
             } else {
                 return;

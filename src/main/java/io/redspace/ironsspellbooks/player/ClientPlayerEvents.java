@@ -12,7 +12,6 @@ import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.AscensionEffect;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -23,6 +22,7 @@ import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.spells.ender.RecallSpell;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
@@ -159,7 +159,8 @@ public class ClientPlayerEvents {
             var lines = event.getToolTip();
 
             if (stack.getItem() instanceof CastingItem) {
-                var spellSlot = new SpellSelectionManager(player).getSelectedSpellData();
+
+                var spellSlot = ClientMagicData.getSpellSelectionManager().getSelectedSpellData();
                 if (spellSlot != SpellData.EMPTY) {
                     var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
                     //Add header
