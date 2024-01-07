@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.registries;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.item.Scroll;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -16,7 +15,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import java.util.Arrays;
 
 
 @Mod.EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -44,7 +42,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.VILLAGER_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.DRUIDIC_SPELL_BOOK.get());
                 entries.accept(ItemRegistry.BLOOD_STAFF.get());
-                entries.accept(ItemRegistry.dev_staff.get());
+                entries.accept(ItemRegistry.GRAYBEARD_STAFF.get());
+                entries.accept(ItemRegistry.ICE_STAFF.get());
                 entries.accept(ItemRegistry.MAGEHUNTER.get());
                 entries.accept(ItemRegistry.KEEPER_FLAMBERGE.get());
                 entries.accept(ItemRegistry.WAYWARD_COMPASS.get());
@@ -149,6 +148,8 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.SHRIVING_STONE.get());
                 entries.accept(ItemRegistry.ELDRITCH_PAGE.get());
                 entries.accept(ItemRegistry.LOST_KNOWLEDGE_FRAGMENT.get());
+                entries.accept(ItemRegistry.ICE_CRYSTAL.get());
+                entries.accept(ItemRegistry.FROSTED_HELVE.get());
 
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
                 entries.accept(ItemRegistry.FIRE_RUNE.get());
