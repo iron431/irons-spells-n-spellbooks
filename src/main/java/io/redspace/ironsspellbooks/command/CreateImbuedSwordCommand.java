@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -60,8 +60,9 @@ public class CreateImbuedSwordCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(itemInput.getItem());
-            if (itemstack.getItem() instanceof SwordItem) {
-                SpellData.setSpellData(itemstack, abstractSpell, spellLevel);
+            if (itemstack.getItem() instanceof SwordItem swordItem) {
+                var spellContainer = ISpellContainer.create(1, true, false);
+                spellContainer.addSpell(abstractSpell, spellLevel, false, itemstack);
                 if (serverPlayer.getInventory().add(itemstack)) {
                     return 1;
                 }

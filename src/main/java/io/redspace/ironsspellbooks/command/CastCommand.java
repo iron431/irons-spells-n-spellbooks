@@ -71,7 +71,7 @@ public class CastCommand {
                 }
 
                 if (spell.getCastType() == CastType.INSTANT) {
-                    spell.onCast(source.getLevel(), spellLevel, livingEntity, magicData);
+                    spell.onCast(source.getLevel(), spellLevel, livingEntity, CastSource.COMMAND, magicData);
                     spell.onServerCastComplete(source.getLevel(), spellLevel, livingEntity, magicData, false);
                 } else {
                     int effectiveCastTime = spell.getEffectiveCastTime(spellLevel, livingEntity);

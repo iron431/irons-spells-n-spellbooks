@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.data;
 
 import com.mojang.datafixers.DataFixerBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
+import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -58,11 +60,21 @@ public class DataFixerStorage extends SavedData {
     public @NotNull CompoundTag save(@NotNull CompoundTag pCompoundTag) {
         var tag = new CompoundTag();
         tag.putInt("dataVersion", dataVersion);
+        tag.put("GuidingBoltManager", GuidingBoltManager.INSTANCE.serializeNBT());
+        tag.put("PortalManager", PortalManager.INSTANCE.serializeNBT());
         return tag;
     }
 
     public static DataFixerStorage load(CompoundTag tag) {
         int dataVersion = tag.getInt("dataVersion");
+
+        if (tag.contains("GuidingBoltManager")) {
+            GuidingBoltManager.INSTANCE.deserializeNBT((CompoundTag) tag.get("GuidingBoltManager"));
+        }
+        if (tag.contains("PortalManager")) {
+            PortalManager.INSTANCE.deserializeNBT((CompoundTag) tag.get("PortalManager"));
+        }
+
         return new DataFixerStorage(dataVersion);
     }
 }

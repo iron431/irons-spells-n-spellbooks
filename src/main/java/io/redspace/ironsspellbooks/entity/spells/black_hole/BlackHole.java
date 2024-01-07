@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -46,6 +47,8 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         this.setPos(d0, d1, d2);
     }
 
+
+    private int soundTick;
     private float damage;
 
     public void setDamage(float damage) {
@@ -109,22 +112,28 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         super.tick();
         int update = Math.max((int) (getRadius() / 2), 2);
         //prevent lag from giagantic black holes
-        if (tickCount % update == 0)
+        if (tickCount % update == 0) {
             updateTrackingEntities();
+        }
+        var bb = this.getBoundingBox();
+        float radius = (float) (bb.getXsize());
+        boolean hitTick = this.tickCount % 10 == 0;
         for (Entity entity : trackingEntities) {
-            if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity)) {
-                Vec3 center = this.position().add(0, this.getBoundingBox().getYsize() / 2, 0);
+            if (entity.isPickable() && entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity)) {
+                Vec3 center = bb.getCenter();
                 float distance = (float) center.distanceTo(entity.position());
-                float radius = (float) (this.getBoundingBox().getXsize());
+                if (distance > radius) {
+                    continue;
+                }
                 float f = 1 - distance / radius;
                 float scale = f * f * f * f * .25f;
+
                 Vec3 diff = center.subtract(entity.position()).scale(scale);
                 entity.push(diff.x, diff.y, diff.z);
-                if (this.tickCount % 10 == 0) {
-                    if (distance < 3f && canHitEntity(entity))
-                        DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()));
+                if (hitTick && distance < 9 && canHitEntity(entity)) {
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.BLACK_HOLE_SPELL.get().getDamageSource(this, getOwner()));
                 }
-                entity.resetFallDistance();
+                entity.fallDistance = 0;
             }
         }
         if (!level().isClientSide) {
@@ -133,7 +142,6 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 this.playSound(SoundRegistry.BLACK_HOLE_CAST.get(), getRadius() / 2f, 1);
                 MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, getX(), getY() + getRadius(), getZ(), 200, 1, 1, 1, 1, true);
             } else if ((tickCount - 1) % loopSoundDurationInTicks == 0) {
-                //TODO: stop sound
                 this.playSound(SoundRegistry.BLACK_HOLE_LOOP.get(), getRadius() / 3f, 1);
             }
         }

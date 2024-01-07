@@ -92,7 +92,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = 2.75f;
         Vec3 hitLocation = entity.position().add(0, entity.getBbHeight() * .3f, 0).add(entity.getForward().multiply(1.45f, 0, 1.45f));
         var entities = level.getEntities(entity, AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
@@ -108,7 +108,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
         flameStrike.moveTo(hitLocation);
         flameStrike.setYRot(entity.getYRot());
         level.addFreshEntity(flameStrike);
-        super.onCast(level, spellLevel, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     @Override

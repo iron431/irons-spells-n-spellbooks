@@ -4,10 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
-import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.particle.ZapParticleOption;
@@ -78,7 +75,7 @@ public class ThunderStepSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         var teleportData = (TeleportSpell.TeleportData) playerMagicData.getAdditionalCastData();
         Vec3 dest = null;
         if (teleportData != null) {
@@ -114,7 +111,7 @@ public class ThunderStepSpell extends AbstractSpell {
 
         entity.playSound(getCastFinishSound().get(), 2.0f, 1.0f);
 
-        super.onCast(level, spellLevel, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private void zapEntitiesBetween(LivingEntity caster, int spellLevel, Vec3 blockEnd) {

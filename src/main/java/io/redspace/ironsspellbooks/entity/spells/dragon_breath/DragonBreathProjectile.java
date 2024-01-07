@@ -51,7 +51,7 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        if (DamageSources.applyDamage(entity, damage, SpellRegistry.DRAGON_BREATH_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.DRAGON_BREATH_SPELL.get().getSchoolType())) {
+        if (DamageSources.applyDamage(entity, damage, SpellRegistry.DRAGON_BREATH_SPELL.get().getDamageSource(this, getOwner()))) {
             if (random.nextFloat() < .3f)
                 createDragonBreathPuddle(entity.position());
         }

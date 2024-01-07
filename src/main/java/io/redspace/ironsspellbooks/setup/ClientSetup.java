@@ -51,6 +51,7 @@ import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileRenderer;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.MagmaBallRenderer;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.portal.PortalRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ray_of_frost.RayOfFrostRenderer;
 import io.redspace.ironsspellbooks.entity.spells.root.RootRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
@@ -62,7 +63,8 @@ import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerR
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacleRenderer;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispRenderer;
-import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.gui.overlays.CooldownOverlayItemDecorator;
+import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.item.armor.*;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
@@ -92,10 +94,12 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -251,6 +255,7 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.FALLING_BLOCK.get(), VisualFallingBlockRenderer::new);
         event.registerEntityRenderer(EntityRegistry.RAY_OF_FROST_VISUAL_ENTITY.get(), RayOfFrostRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ELDRITCH_BLAST_VISUAL_ENTITY.get(), EldritchBlastRenderer::new);
+        event.registerEntityRenderer(EntityRegistry.PORTAL.get(), PortalRenderer::new);
         event.registerEntityRenderer(EntityRegistry.SMALL_MAGIC_ARROW.get(), SmallMagicArrowRenderer::new);
         event.registerEntityRenderer(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), NoopRenderer::new);
 
@@ -300,7 +305,7 @@ public class ClientSetup {
             ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("charged"), (itemStack, clientLevel, livingEntity, i) -> livingEntity != null && CrossbowItem.isCharged(itemStack) ? 1.0F : 0.0F);
             ItemProperties.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new ResourceLocation("firework"), (itemStack, clientLevel, livingEntity, i) -> livingEntity != null && CrossbowItem.isCharged(itemStack) && CrossbowItem.containsChargedProjectile(itemStack, Items.FIREWORK_ROCKET) ? 1.0F : 0.0F);
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
-            //            ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
+//            ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
 
         });
 
@@ -353,6 +358,12 @@ public class ClientSetup {
         event.register(IronsSpellbooks.id("item/magehunter_normal"));
         event.register(IronsSpellbooks.id("item/truthseeker_gui"));
         event.register(IronsSpellbooks.id("item/truthseeker_normal"));
+    }
+
+    @SubscribeEvent
+    public static void registerItemDecorators(RegisterItemDecorationsEvent event) {
+        ForgeRegistries.ITEMS.getValues().stream().filter((item -> item instanceof CastingItem)).forEach((item -> event.register(item, new CooldownOverlayItemDecorator())));
+        event.register(ItemRegistry.AUTOLOADER_CROSSBOW.get(), new CooldownOverlayItemDecorator());
     }
 }
 

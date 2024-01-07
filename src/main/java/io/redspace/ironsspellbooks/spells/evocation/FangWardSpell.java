@@ -2,11 +2,11 @@ package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.entity.spells.ExtendedEvokerFang;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.entity.spells.ExtendedEvokerFang;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -74,7 +74,7 @@ public class FangWardSpell extends AbstractSpell {
 
 
     @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         int rings = getRings(spellLevel, entity);
         int count = 5;
         Vec3 center = entity.getEyePosition();
@@ -90,7 +90,7 @@ public class FangWardSpell extends AbstractSpell {
                 }
             }
         }
-        super.onCast(world, spellLevel, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 
     private float get2DAngle(Vec3 a, Vec3 b) {

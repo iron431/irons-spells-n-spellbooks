@@ -1,14 +1,10 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import net.minecraft.ChatFormatting;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -22,7 +18,7 @@ public class CastBarOverlay implements IGuiOverlay {
     static final int IMAGE_HEIGHT = 21;
 
     public void render(ForgeGui gui, GuiGraphics guiHelper, float partialTick, int screenWidth, int screenHeight) {
-        if (!ClientMagicData.isCasting())
+        if (!ClientMagicData.isCasting() || ClientMagicData.isCasting() && ClientMagicData.getCastType() == CastType.INSTANT)
             return;
 
         float castCompletionPercent = ClientMagicData.getCastCompletionPercent();

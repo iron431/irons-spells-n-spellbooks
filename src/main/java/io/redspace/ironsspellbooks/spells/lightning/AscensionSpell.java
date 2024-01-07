@@ -5,10 +5,10 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.ImpulseCastData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -92,7 +92,7 @@ public class AscensionSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
 
         entity.addEffect(new MobEffectInstance(MobEffectRegistry.ASCENSION.get(), 80, 0, false, false, true));
 
@@ -116,7 +116,7 @@ public class AscensionSpell extends AbstractSpell {
             double distance = target.distanceToSqr(strikePos);
             if (distance < radius * radius) {
                 float finalDamage = (float) (getDamage(spellLevel, entity) * (1 - distance / (radius * radius)));
-                DamageSources.applyDamage(target, finalDamage, getDamageSource(lightningBolt, entity), getSchoolType());
+                DamageSources.applyDamage(target, finalDamage, getDamageSource(lightningBolt, entity));
                 if (target instanceof Creeper creeper)
                     creeper.thunderHit((ServerLevel) level, lightningBolt);
             }
@@ -128,7 +128,7 @@ public class AscensionSpell extends AbstractSpell {
         entity.hasImpulse = true;
 
 
-        super.onCast(level, spellLevel, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private int getDamage(int spellLevel, LivingEntity caster) {

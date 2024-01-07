@@ -3,10 +3,8 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
@@ -24,10 +22,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Scroll extends Item implements IScroll {
+public class Scroll extends Item implements IScroll, IPresetSpellContainer {
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
+    }
+
+    private AbstractSpell getSpellFromStack(ItemStack itemStack) {
+        return ISpellContainer.get(itemStack).getSpellAtIndex(0).getSpell();
+    }
+
+    private SpellData getSpellSlotFromStack(ItemStack itemStack) {
+        return ISpellContainer.get(itemStack).getSpellAtIndex(0);
     }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
@@ -48,25 +54,28 @@ public class Scroll extends Item implements IScroll {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        var spellData = SpellData.getSpellData(stack);
-        var spell = spellData.getSpell();
+        var spellSlot = getSpellSlotFromStack(stack);
+        var spell = spellSlot.getSpell();
 
         if (level.isClientSide) {
-            if (ClientMagicData.isCasting() || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
-                return InteractionResultHolder.fail(stack);
+            if (ClientMagicData.isCasting()) {
+                return InteractionResultHolder.consume(stack);
+            } else if (!ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
+                return InteractionResultHolder.pass(stack);
             } else {
-                return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                return InteractionResultHolder.consume(stack);
             }
         }
 
-        if (spell.attemptInitiateCast(stack, spellData.getLevel(), level, player, CastSource.SCROLL, false)) {
+        if (spell.attemptInitiateCast(stack, spellSlot.getLevel(), level, player, CastSource.SCROLL, false)) {
             if (spell.getCastType() == CastType.INSTANT) {
+                //TODO: i think magic manager should handle this
                 removeScrollAfterCast((ServerPlayer) player, stack);
             }
             if (spell.getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }
-            return InteractionResultHolder.success(stack);
+            return InteractionResultHolder.consume(stack);
         } else {
             return InteractionResultHolder.fail(stack);
         }
@@ -78,14 +87,13 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack pStack) {
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack pStack) {
         return UseAnim.BOW;
     }
 
     @Override
-    public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, LivingEntity entity, int ticksUsed) {
-        //entity.stopUsingItem();
-        if (SpellData.getSpellData(itemStack).getSpell().getCastType() != CastType.CONTINUOUS || getUseDuration(itemStack) - ticksUsed >= 4) {
+    public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull LivingEntity entity, int ticksUsed) {
+        if (getSpellFromStack(itemStack).getCastType() != CastType.CONTINUOUS || getUseDuration(itemStack) - ticksUsed >= 4) {
             Utils.releaseUsingHelper(entity, itemStack, ticksUsed);
         }
         super.releaseUsing(itemStack, level, entity, ticksUsed);
@@ -93,15 +101,18 @@ public class Scroll extends Item implements IScroll {
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
-        var scrollData = SpellData.getSpellData(itemStack);
-        return scrollData.getDisplayName();
-
+        return getSpellSlotFromStack(itemStack).getDisplayName();
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, List<Component> lines, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
         if (MinecraftInstanceHelper.instance.player() instanceof LocalPlayer localPlayer)
             lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, localPlayer));
         super.appendHoverText(itemStack, level, lines, flag);
+    }
+
+    @Override
+    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
+        return ISpellContainer.get(itemStack);
     }
 }

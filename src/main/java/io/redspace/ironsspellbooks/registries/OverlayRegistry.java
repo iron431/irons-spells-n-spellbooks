@@ -19,7 +19,8 @@ public class OverlayRegistry {
 //
         event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "mana_overlay", ManaBarOverlay.instance);
         event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "spell_bar", SpellBarOverlay.instance);
-        event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "imbued_spell", ImbuedSpellOverlay.instance);
+        event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "scroll_overlay", ActiveSpellOverlay.instance);
+        event.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "recast_bar", RecastOverlay.instance);
 
         event.registerAbove(VanillaGuiOverlay.PLAYER_LIST.id(), "spell_wheel", SpellWheelOverlay.instance);
         event.registerAbove(VanillaGuiOverlay.PLAYER_LIST.id(), "screen_effects", ScreenEffectsOverlay.instance);

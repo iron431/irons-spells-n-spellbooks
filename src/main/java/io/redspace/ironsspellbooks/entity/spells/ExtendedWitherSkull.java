@@ -49,7 +49,7 @@ public class ExtendedWitherSkull extends WitherSkull implements AntiMagicSuscept
                 if (distance < explosionRadius * explosionRadius  && canHitEntity(entity)) {
                     float damage = (float) (this.damage * (1 - distance / (explosionRadius * explosionRadius)));
                     var spell = SpellRegistry.WITHER_SKULL_SPELL.get();
-                    DamageSources.applyDamage(entity, damage, spell.getDamageSource(this, getOwner()), spell.getSchoolType());
+                    DamageSources.applyDamage(entity, damage, spell.getDamageSource(this, getOwner()));
                 }
             }
 

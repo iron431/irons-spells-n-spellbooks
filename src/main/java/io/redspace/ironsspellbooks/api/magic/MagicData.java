@@ -1,20 +1,21 @@
 package io.redspace.ironsspellbooks.api.magic;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.events.ChangeManaEvent;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.capabilities.magic.PlayerMagicProvider;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,17 +34,20 @@ public class MagicData {
     public MagicData(ServerPlayer serverPlayer) {
         this(false);
         this.serverPlayer = serverPlayer;
+        this.playerRecasts = new PlayerRecasts(serverPlayer);
     }
 
     public void setServerPlayer(ServerPlayer serverPlayer) {
-        if (this.serverPlayer == null) {
+        if (this.serverPlayer == null && serverPlayer != null) {
             this.serverPlayer = serverPlayer;
+            this.playerRecasts = new PlayerRecasts(serverPlayer);
         }
     }
 
     private ServerPlayer serverPlayer = null;
     public static final String MANA = "mana";
     public static final String COOLDOWNS = "cooldowns";
+    public static final String RECASTS = "recasts";
 
     /********* MANA *******************************************************/
 
@@ -202,6 +206,19 @@ public class MagicData {
         return this.playerCooldowns;
     }
 
+    /********* RECASTS *******************************************************/
+
+    private PlayerRecasts playerRecasts = new PlayerRecasts();
+
+    public PlayerRecasts getPlayerRecasts() {
+        return this.playerRecasts;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void setPlayerRecasts(PlayerRecasts playerRecasts) {
+        this.playerRecasts = playerRecasts;
+    }
+
     /********* SYSTEM *******************************************************/
 
     public static MagicData getPlayerMagicData(LivingEntity livingEntity) {
@@ -221,21 +238,20 @@ public class MagicData {
                 return pmd;
             }
             return new MagicData(serverPlayer);
-        } else
+        } else {
             return new MagicData(null);
-
-
+        }
     }
 
     public void saveNBTData(CompoundTag compound) {
         compound.putInt(MANA, (int) mana);
 
         if (playerCooldowns.hasCooldownsActive()) {
-            ListTag listTag = new ListTag();
-            playerCooldowns.saveNBTData(listTag);
-            if (!listTag.isEmpty()) {
-                compound.put(COOLDOWNS, listTag);
-            }
+            compound.put(COOLDOWNS, playerCooldowns.saveNBTData());
+        }
+
+        if (playerRecasts.hasRecastsActive()) {
+            compound.put(RECASTS, playerRecasts.saveNBTData());
         }
 
         getSyncedData().saveNBTData(compound);
@@ -244,9 +260,14 @@ public class MagicData {
     public void loadNBTData(CompoundTag compound) {
         mana = compound.getInt(MANA);
 
-        ListTag listTag = (ListTag) compound.get(COOLDOWNS);
+        var listTag = (ListTag) compound.get(COOLDOWNS);
         if (listTag != null && !listTag.isEmpty()) {
             playerCooldowns.loadNBTData(listTag);
+        }
+
+        listTag = (ListTag) compound.get(RECASTS);
+        if (listTag != null && !listTag.isEmpty()) {
+            playerRecasts.loadNBTData(listTag);
         }
 
         getSyncedData().loadNBTData(compound);

@@ -120,7 +120,7 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        DamageSources.applyDamage(entity, damage, SpellRegistry.ELECTROCUTE_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.ELECTROCUTE_SPELL.get().getSchoolType());
+        DamageSources.applyDamage(entity, damage, SpellRegistry.ELECTROCUTE_SPELL.get().getDamageSource(this, getOwner()));
 
         MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 10, entity.getBbWidth() / 3, entity.getBbHeight() / 3, entity.getBbWidth() / 3, 0.1, false);
     }

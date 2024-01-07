@@ -69,7 +69,7 @@ public class SpellWheelOverlay implements IGuiOverlay {
         }
 
         //TODO: consider making this persist as an optimization.. would need to take into account any equipment changes though as we currently get that for free with it living here
-        swsm = new SpellSelectionManager(player);
+        swsm = ClientMagicData.getSpellSelectionManager();
         int totalSpellsAvailable = swsm.getSpellCount();
 
         if (totalSpellsAvailable <= 0) {
@@ -106,8 +106,8 @@ public class SpellWheelOverlay implements IGuiOverlay {
         final BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        drawRadialBackgrounds(buffer, centerX, centerY, wheelSelection, swsm);
-        drawDividingLines(buffer, centerX, centerY, swsm);
+        drawRadialBackgrounds(buffer, centerX, centerY, wheelSelection);
+        drawDividingLines(buffer, centerX, centerY);
 
         tesselator.end();
         RenderSystem.disableBlend();
@@ -221,7 +221,7 @@ public class SpellWheelOverlay implements IGuiOverlay {
         RenderSystem.disableBlend();
     }
 
-    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex, SpellSelectionManager swsm) {
+    private void drawRadialBackgrounds(BufferBuilder buffer, double centerX, double centerY, int selectedSpellIndex) {
         double quarterCircle = Math.PI / 2;
         int totalSpellsAvailable = swsm.getSpellCount();
         int segments;
@@ -275,7 +275,7 @@ public class SpellWheelOverlay implements IGuiOverlay {
         }
     }
 
-    private void drawDividingLines(BufferBuilder buffer, double centerX, double centerY, SpellSelectionManager swsm) {
+    private void drawDividingLines(BufferBuilder buffer, double centerX, double centerY) {
         int totalSpellsAvailable = swsm.getSpellCount();
 
         if (totalSpellsAvailable <= 1)

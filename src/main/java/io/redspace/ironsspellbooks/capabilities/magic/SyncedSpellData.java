@@ -14,7 +14,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import org.apache.commons.compress.harmony.pack200.NewAttribute;
 import org.jetbrains.annotations.Nullable;
 
 public class SyncedSpellData {
@@ -271,7 +270,7 @@ public class SyncedSpellData {
      */
     public SyncedSpellData getPersistentData(){
         SyncedSpellData persistentData = new SyncedSpellData(this.livingEntity);
-        persistentData.learnedSpellData = this.learnedSpellData;
+        persistentData.learnedSpellData.learnedSpells.addAll(this.learnedSpellData.learnedSpells);
         return persistentData;
     }
 }

@@ -5,12 +5,12 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import io.redspace.ironsspellbooks.util.Log;
@@ -31,6 +31,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -250,12 +251,12 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 if (Log.SPELL_DEBUG) {
                     IronsSpellbooks.LOGGER.debug("ASCM.customServerAiStep.3");
                 }
-                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, playerMagicData);
+                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, CastSource.MOB, playerMagicData);
             }
             castComplete();
         } else if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
             if ((playerMagicData.getCastDurationRemaining() + 1) % 10 == 0) {
-                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, playerMagicData);
+                castingSpell.getSpell().onCast(level, castingSpell.getLevel(), this, CastSource.MOB, playerMagicData);
             }
         }
     }
@@ -303,6 +304,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         if (!level.isClientSide) {
             castingSpell.getSpell().onServerPreCast(level, castingSpell.getLevel(), this, playerMagicData);
         }
+    }
+
+    public void notifyDangerousProjectile(Projectile projectile) {
+
     }
 
     public boolean isCasting() {

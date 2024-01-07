@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlo
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicEvents;
 import io.redspace.ironsspellbooks.compat.CompatHandler;
-import io.redspace.ironsspellbooks.player.CommonPlayerEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
@@ -41,8 +40,6 @@ public class ModSetup {
         //bus.addListener(ManaEvents::onPlayerCloned);
         bus.addListener(MagicEvents::onRegisterCapabilities);
         bus.addListener(MagicEvents::onWorldTick);
-        bus.addListener(CommonPlayerEvents::onPlayerRightClickItem);
-        bus.addListener(CommonPlayerEvents::onUseItemStop);
 
         //SPELLBOOKS
         //bus.addGenericListener(ItemStack.class, SpellBookDataEvents::onAttachCapabilities);

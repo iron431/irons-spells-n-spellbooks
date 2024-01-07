@@ -5,10 +5,10 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
-import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
-import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -77,7 +77,7 @@ public class BlackHoleSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
 
         HitResult raycast = Utils.raycastForEntity(level, entity, 16 + radius * 1.5f, true);
@@ -96,7 +96,7 @@ public class BlackHoleSpell extends AbstractSpell {
         blackHole.setDamage(getDamage(spellLevel, entity));
         blackHole.moveTo(center);
         level.addFreshEntity(blackHole);
-        super.onCast(level, spellLevel, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     private float getDamage(int spellLevel, LivingEntity entity) {

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  E",
+    " S ",
+    "I  "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:wooden_shovel"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "E": {
+      "item": "irons_spellbooks:arcane_essence"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:graybeard_staff",
+    "count": 1
+  }
+}

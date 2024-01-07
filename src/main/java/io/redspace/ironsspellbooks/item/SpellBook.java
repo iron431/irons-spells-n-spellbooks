@@ -1,12 +1,16 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
+import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -30,22 +34,23 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class SpellBook extends CurioBaseItem implements ISpellbook {
+public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpellContainer {
     protected final SpellRarity rarity;
-    protected final int spellSlots;
+    protected final int maxSpellSlots;
 
     public SpellBook() {
         this(1, SpellRarity.COMMON);
     }
 
-    public SpellBook(int spellSlots, SpellRarity rarity) {
-        this(spellSlots, rarity, ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON));
+    public SpellBook(int maxSpellSlots, SpellRarity rarity) {
+        this(maxSpellSlots, rarity, ItemPropertiesHelper.equipment().stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
-    public SpellBook(int spellSlots, SpellRarity rarity, Item.Properties pProperties) {
+    public SpellBook(int maxSpellSlots, SpellRarity rarity, Item.Properties pProperties) {
         super(pProperties);
-        this.spellSlots = spellSlots;
+        this.maxSpellSlots = maxSpellSlots;
         this.rarity = rarity;
     }
 
@@ -53,8 +58,8 @@ public class SpellBook extends CurioBaseItem implements ISpellbook {
         return rarity;
     }
 
-    public int getSpellSlots() {
-        return spellSlots;
+    public int getMaxSpellSlots() {
+        return maxSpellSlots;
     }
 
     @Override
@@ -65,7 +70,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook {
         return super.use(pLevel, pPlayer, pUsedHand);
     }
 
-    //    @Override
+//    @Override
 //    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 //        ItemStack itemStack = player.getItemInHand(hand);
 //        var spellBookData = SpellBookData.getSpellBookData(itemStack);
@@ -133,18 +138,25 @@ public class SpellBook extends CurioBaseItem implements ISpellbook {
         }
         var player = MinecraftInstanceHelper.getPlayer();
         if (player != null) {
-            var spellbookData = SpellBookData.getSpellBookData(itemStack);
-            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", spellbookData.getSpellSlots()).withStyle(ChatFormatting.GRAY));
-            var spells = spellbookData.getActiveInscribedSpells();
-            if (spells.size() != 0) {
+            var spellList = initializeSpellContainer(itemStack);
+            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", spellList.getMaxSpellCount()).withStyle(ChatFormatting.GRAY));
+            var activeSpellSlots = spellList.getActiveSpells();
+            if (!activeSpellSlots.isEmpty()) {
                 lines.add(Component.empty());
-                SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
-                for (int i = 0; i < spells.size(); i++) {
+                lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
+                SpellSelectionManager spellSelectionManager = player.level.isClientSide ? ClientMagicData.getSpellSelectionManager() : new SpellSelectionManager(player);
+                for (int i = 0; i < activeSpellSlots.size(); i++) {
+                    var spellText = TooltipsUtils.getTitleComponent(activeSpellSlots.get(i), (LocalPlayer) player).setStyle(Style.EMPTY);
                     if ((MinecraftInstanceHelper.getPlayer() != null && Utils.getPlayerSpellbookStack(MinecraftInstanceHelper.getPlayer()) == itemStack) && spellSelectionManager.getCurrentSelection().equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && i == spellSelectionManager.getSelectionIndex()) {
-                        //TODO: shift tooltip when merged with main
-                        lines.add(Component.literal("> ").append(TooltipsUtils.getTitleComponent(spells.get(i), (LocalPlayer) player).withStyle(ChatFormatting.BOLD)));
+                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(itemStack, spellSelectionManager.getSelectedSpellData(), CastSource.SPELLBOOK, (LocalPlayer) player);
+                        shiftMessage.remove(0);
+                        TooltipsUtils.addShiftTooltip(
+                                lines,
+                                Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
+                                shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
+                        );
                     } else {
-                        lines.add(TooltipsUtils.getTitleComponent(spells.get(i), (LocalPlayer) player));
+                        lines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
                     }
                 }
             }
@@ -156,5 +168,18 @@ public class SpellBook extends CurioBaseItem implements ISpellbook {
     @Override
     public ICurio.SoundInfo getEquipSound(SlotContext slotContext, ItemStack stack) {
         return new ICurio.SoundInfo(SoundRegistry.EQUIP_SPELL_BOOK.get(), 1.0f, 1.0f);
+    }
+
+    @Override
+    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
+        if (itemStack == null) {
+            return new SpellContainer();
+        }
+
+        if (ISpellContainer.isSpellContainer(itemStack)) {
+            return ISpellContainer.get(itemStack);
+        } else {
+            return ISpellContainer.create(getMaxSpellSlots(), true, true);
+        }
     }
 }

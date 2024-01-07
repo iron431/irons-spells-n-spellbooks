@@ -3,12 +3,8 @@ package io.redspace.ironsspellbooks.api.util;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
-import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -28,8 +24,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -56,11 +50,10 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,6 +64,10 @@ import java.util.function.Predicate;
 public class Utils {
 
     public static final RandomSource random = RandomSource.createThreadSafe();
+
+    public static long getServerTick() {
+        return IronsSpellbooks.OVERWORLD.getGameTime();
+    }
 
     public static String getStackTraceAsString() {
         var trace = Arrays.stream(Thread.currentThread().getStackTrace());
@@ -311,7 +308,7 @@ public class Utils {
 
     public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
         var ssm = new SpellSelectionManager(serverPlayer);
-        var spellItem = ssm.getSelectedSpellSlot();
+        var spellItem = ssm.getSelection();
         if (spellItem != null) {
             var spellData = ssm.getSelectedSpellData();
             if (spellData != SpellData.EMPTY) {
@@ -467,6 +464,14 @@ public class Utils {
                 getRandomScaled(scale),
                 getRandomScaled(scale),
                 getRandomScaled(scale)
+        );
+    }
+
+    public static Vector3f getRandomVec3f(double scale) {
+        return new Vector3f(
+                (float) getRandomScaled(scale),
+                (float) getRandomScaled(scale),
+                (float) getRandomScaled(scale)
         );
     }
 
@@ -676,7 +681,7 @@ public class Utils {
                 //Remove fist damage if they are not using a melee weapon
                 weapon -= fist;
             }
-            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(),entityForDamageBonus);
+            float enchant = EnchantmentHelper.getDamageBonus(entity.getMainHandItem(), entityForDamageBonus);
             return weapon + enchant;
         }
         return 0;

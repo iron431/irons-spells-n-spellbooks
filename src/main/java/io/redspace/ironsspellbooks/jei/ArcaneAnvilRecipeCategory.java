@@ -1,8 +1,7 @@
 package io.redspace.ironsspellbooks.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -19,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -104,20 +102,25 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilRec
         if (leftStack.isEmpty() || rightStack.isEmpty() || outputStack.isEmpty()) {
             return;
         }
-        if (leftStack.get().getItem() instanceof Scroll
-                && rightStack.get().getItem() instanceof Scroll
-                && outputStack.get().getItem() instanceof Scroll) {
+
+        if (leftStack.get().getItem() instanceof Scroll leftScroll
+                && rightStack.get().getItem() instanceof Scroll rightScroll
+                && outputStack.get().getItem() instanceof Scroll outputScroll) {
             var minecraft = Minecraft.getInstance();
-            drawScrollInfo(minecraft, guiGraphics, leftStack.get(), outputStack.get());
+            drawScrollInfo(minecraft,
+                    guiGraphics,
+                    leftScroll.initializeSpellContainer(leftStack.get()),
+                    outputScroll.initializeSpellContainer(leftStack.get()));
         }
     }
 
-    private void drawScrollInfo(Minecraft minecraft, GuiGraphics guiGraphics, ItemStack leftStack, ItemStack outputStack) {
-        var inputSpellData = SpellData.getSpellData(leftStack);
+    private void drawScrollInfo(Minecraft minecraft, GuiGraphics guiGraphics, ISpellContainer leftScroll, ISpellContainer outputScroll) {
+
+        var inputSpellData = leftScroll.getSpellAtIndex(0);
         var inputText = String.format("L%d", inputSpellData.getLevel());
         var inputColor = inputSpellData.getSpell().getRarity(inputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 
-        var outputSpellData = SpellData.getSpellData(outputStack);
+        var outputSpellData =  outputScroll.getSpellAtIndex(0);
         var outputText = String.format("L%d", outputSpellData.getLevel());
         var outputColor = outputSpellData.getSpell().getRarity(outputSpellData.getLevel()).getChatFormatting().getColor().intValue();
 

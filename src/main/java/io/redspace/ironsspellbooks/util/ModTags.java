@@ -25,6 +25,7 @@ public class ModTags {
     public static final TagKey<Item> EVOCATION_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "evocation_focus"));
     public static final TagKey<Item> ELDRITCH_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "eldritch_focus"));
     public static final TagKey<Item> NATURE_FOCUS = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "nature_focus"));
+    public static final TagKey<Item> INSCRIBED_RUNES = ItemTags.create(new ResourceLocation(IronsSpellbooks.MODID, "inscribed_rune"));
     public static final TagKey<Block> SPECTRAL_HAMMER_MINEABLE = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer_mineable"));
     public static final TagKey<Block> GUARDED_BY_WIZARDS = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "guarded_by_wizards"));
 
@@ -35,6 +36,7 @@ public class ModTags {
     public static final TagKey<EntityType<?>> ALWAYS_HEAL = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "always_heal"));
     public static final TagKey<EntityType<?>> CANT_ROOT = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "cant_root"));
     public static final TagKey<EntityType<?>> VILLAGE_ALLIES = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "village_allies"));
+    public static final TagKey<EntityType<?>> CANT_USE_PORTAL = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "cant_use_portal"));
 
     private static TagKey<DamageType> create(String tag) {
         return TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(IronsSpellbooks.MODID, tag));

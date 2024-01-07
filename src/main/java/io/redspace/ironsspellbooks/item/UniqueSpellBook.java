@@ -2,8 +2,10 @@ package io.redspace.ironsspellbooks.item;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import net.minecraft.network.chat.Component;
@@ -25,8 +27,17 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
         this.spellDataRegistryHolders = spellDataRegistryHolders;
     }
 
+    public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders, int additionalSlots, Supplier<Multimap<Attribute, AttributeModifier>> defaultModifiers) {
+        super(spellDataRegistryHolders.length + additionalSlots, rarity, defaultModifiers.get());
+        this.spellDataRegistryHolders = spellDataRegistryHolders;
+    }
+
     public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders) {
         this(rarity, spellDataRegistryHolders, HashMultimap::create);
+    }
+
+    public UniqueSpellBook(SpellRarity rarity, SpellDataRegistryHolder[] spellDataRegistryHolders, int additionalSlots) {
+        this(rarity, spellDataRegistryHolders, additionalSlots, HashMultimap::create);
     }
 
     public List<SpellData> getSpells() {
@@ -50,5 +61,20 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
     @Override
     public boolean isUnique() {
         return true;
+    }
+
+    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
+        if (itemStack == null) {
+            return new SpellContainer();
+        }
+
+        if (ISpellContainer.isSpellContainer(itemStack)) {
+            return ISpellContainer.get(itemStack);
+        } else {
+            var spellContainer = ISpellContainer.create(getMaxSpellSlots(), true, true);
+            getSpells().forEach(spellSlot -> spellContainer.addSpell(spellSlot.getSpell(), spellSlot.getLevel(), true, null));
+            spellContainer.save(itemStack);
+            return spellContainer;
+        }
     }
 }

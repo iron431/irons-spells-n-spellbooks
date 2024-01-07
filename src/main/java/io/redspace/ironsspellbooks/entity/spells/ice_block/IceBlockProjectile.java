@@ -108,7 +108,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
             return;
         if (!canHitEntity(target) || victims.contains(target))
             return;
-        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()), SpellRegistry.ICE_BLOCK_SPELL.get().getSchoolType());
+        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this, getOwner()));
         if (flag) {
             victims.add(target);
             target.invulnerableTime = 0;

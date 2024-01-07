@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.loot.AppendLootModifier;
+import io.redspace.ironsspellbooks.loot.FurledMapLootFunction;
 import io.redspace.ironsspellbooks.loot.RandomizeRingEnhancementFunction;
 import io.redspace.ironsspellbooks.loot.RandomizeSpellFunction;
 import com.mojang.serialization.Codec;
@@ -23,8 +24,12 @@ public class LootRegistry {
         LOOT_MODIFIER_SERIALIZERS.register(eventBus);
     }
 
-    public static final RegistryObject<LootItemFunctionType> RANDOMIZE_SPELL_FUNCTION = LOOT_FUNCTIONS.register("randomize_spell", () -> new LootItemFunctionType(new RandomizeSpellFunction.Serializer()));
-    public static final RegistryObject<LootItemFunctionType> RANDOMIZE_SPELL_RING_FUNCTION = LOOT_FUNCTIONS.register("randomize_ring_enhancement", () -> new LootItemFunctionType(new RandomizeRingEnhancementFunction.Serializer()));
+    public static final RegistryObject<LootItemFunctionType> RANDOMIZE_SPELL_FUNCTION = LOOT_FUNCTIONS.register("randomize_spell",
+            () -> new LootItemFunctionType(new RandomizeSpellFunction.Serializer()));
+    public static final RegistryObject<LootItemFunctionType> RANDOMIZE_SPELL_RING_FUNCTION = LOOT_FUNCTIONS.register("randomize_ring_enhancement",
+            () -> new LootItemFunctionType(new RandomizeRingEnhancementFunction.Serializer()));
+    public static final RegistryObject<LootItemFunctionType> SET_FURLED_MAP_FUNCTION = LOOT_FUNCTIONS.register("set_furled_map",
+            () -> new LootItemFunctionType(new FurledMapLootFunction.Serializer()));
 
     public static final RegistryObject<Codec<? extends IGlobalLootModifier>> APPEND_LOOT_MODIFIER = LOOT_MODIFIER_SERIALIZERS.register("append_loot", AppendLootModifier.CODEC);
 }

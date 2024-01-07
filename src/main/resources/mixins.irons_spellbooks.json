@@ -11,14 +11,12 @@
     "EntityMixin",
     "ItemMixin",
     "LivingEntityMixin",
-    "TetraBladedItemMixin",
     "TridentItemMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",
     "EntityRendererMixin",
     "GuiMixin",
-    "ItemRendererMixin",
     "LocalPlayerMixin",
     "MinecraftMixin",
     "ParticleMixin",

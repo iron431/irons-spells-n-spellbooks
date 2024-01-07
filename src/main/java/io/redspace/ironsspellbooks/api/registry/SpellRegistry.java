@@ -98,6 +98,7 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> TELEPORT_SPELL = registerSpell(new TeleportSpell());
     public static final RegistryObject<AbstractSpell> SUMMON_ENDER_CHEST_SPELL = registerSpell(new SummonEnderChestSpell());
     public static final RegistryObject<AbstractSpell> RECALL_SPELL = registerSpell(new RecallSpell());
+    public static final RegistryObject<AbstractSpell> PORTAL_SPELL = registerSpell(new PortalSpell());
 
     // EVOCATION
     public static final RegistryObject<AbstractSpell> CHAIN_CREEPER_SPELL = registerSpell(new ChainCreeperSpell());
@@ -177,5 +178,5 @@ public class SpellRegistry {
     public static final RegistryObject<AbstractSpell> SONIC_BOOM_SPELL = registerSpell(new SonicBoomSpell());
     public static final RegistryObject<AbstractSpell> PLANAR_SIGHT_SPELL = registerSpell(new PlanarSightSpell());
     public static final RegistryObject<AbstractSpell> TELEKINESIS_SPELL = registerSpell(new TelekinesisSpell());
-//    public static final RegistryObject<AbstractSpell> ELDRITCH_BLAST_SPELL = registerSpell(new EldritchBlastSpell());
+    public static final RegistryObject<AbstractSpell> ELDRITCH_BLAST_SPELL = registerSpell(new EldritchBlastSpell());
 }

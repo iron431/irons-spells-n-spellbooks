@@ -1,0 +1,15 @@
+{
+  "name": "irons_spellbooks:impaled_icebreaker_pool",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "location": "irons_spellbooks:impaled_icebreaker",
+        "processors": "irons_spellbooks:mostly_weather_copper",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

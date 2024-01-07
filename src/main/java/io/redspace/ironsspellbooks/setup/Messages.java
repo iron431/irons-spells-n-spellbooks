@@ -89,6 +89,24 @@ public class Messages {
                 .consumerMainThread(ClientboundSyncCooldowns::handle)
                 .add();
 
+        net.messageBuilder(ClientboundSyncRecasts.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncRecasts::new)
+                .encoder(ClientboundSyncRecasts::toBytes)
+                .consumer(ClientboundSyncRecasts::handle)
+                .add();
+
+        net.messageBuilder(ClientBoundSyncRecast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientBoundSyncRecast::new)
+                .encoder(ClientBoundSyncRecast::toBytes)
+                .consumer(ClientBoundSyncRecast::handle)
+                .add();
+
+        net.messageBuilder(ClientBoundRemoveRecast.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientBoundRemoveRecast::new)
+                .encoder(ClientBoundRemoveRecast::toBytes)
+                .consumer(ClientBoundRemoveRecast::handle)
+                .add();
+
         net.messageBuilder(ClientboundTeleportParticles.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(ClientboundTeleportParticles::new)
                 .encoder(ClientboundTeleportParticles::toBytes)
@@ -100,7 +118,6 @@ public class Messages {
                 .encoder(ClientboundFrostStepParticles::toBytes)
                 .consumerMainThread(ClientboundFrostStepParticles::handle)
                 .add();
-
 
         net.messageBuilder(ServerboundScrollForgeSelectSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)
                 .decoder(ServerboundScrollForgeSelectSpell::new)
@@ -196,6 +213,12 @@ public class Messages {
                 .decoder(ClientboundSyncCameraShake::new)
                 .encoder(ClientboundSyncCameraShake::toBytes)
                 .consumerMainThread(ClientboundSyncCameraShake::handle)
+                .add();
+
+        net.messageBuilder(ClientboundEquipmentChanged.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundEquipmentChanged::new)
+                .encoder(ClientboundEquipmentChanged::toBytes)
+                .consumerMainThread(ClientboundEquipmentChanged::handle)
                 .add();
 
         net.messageBuilder(ServerboundLearnSpell.class, id(), NetworkDirection.PLAY_TO_SERVER)

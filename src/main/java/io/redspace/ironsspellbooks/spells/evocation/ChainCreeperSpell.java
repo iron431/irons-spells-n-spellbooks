@@ -5,9 +5,9 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -81,7 +81,7 @@ public class ChainCreeperSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 spawn = null;
         if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData castTargetingData) {
             spawn = castTargetingData.getTargetPosition((ServerLevel) level);
@@ -96,7 +96,7 @@ public class ChainCreeperSpell extends AbstractSpell {
         }
         summonCreeperRing(level, entity, spawn.add(0, 0.5, 0), getDamage(spellLevel, entity), getCount(spellLevel, entity));
 
-        super.onCast(level, spellLevel, entity, playerMagicData);
+        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 
     public static void summonCreeperRing(Level level, LivingEntity owner, Vec3 origin, float damage, int count) {

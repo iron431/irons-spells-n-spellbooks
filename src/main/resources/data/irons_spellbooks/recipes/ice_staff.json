@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "irons_spellbooks:frosted_helve"
+    },
+    {
+      "item": "irons_spellbooks:permafrost_shard"
+    }
+  ],
+  "result": {
+    "item": "irons_spellbooks:ice_staff"
+  }
+}

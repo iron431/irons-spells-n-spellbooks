@@ -1,22 +1,24 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
-import io.redspace.ironsspellbooks.capabilities.spellbook.SpellBookData;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
-import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
@@ -90,8 +92,8 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             public void onTake(Player player, ItemStack stack) {
                 //Ironsspellbooks.logger.debug("InscriptionTableMenu.take spell!");
                 var spellBookStack = spellBookSlot.getItem();
-                var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
-                spellBookData.removeSpell(selectedSpellIndex, spellBookStack);
+                var spellList = ((IPresetSpellContainer) spellBookStack.getItem()).initializeSpellContainer(spellBookStack);
+                spellList.removeSpellAtIndex(selectedSpellIndex, spellBookStack);
                 super.onTake(player, spellBookStack);
             }
         };
@@ -143,10 +145,13 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack scrollItemStack = getScrollSlot().getItem();
 
         if (spellBookItemStack.getItem() instanceof SpellBook spellBook && scrollItemStack.getItem() instanceof Scroll scroll) {
-            var spellBookData = SpellBookData.getSpellBookData(spellBookItemStack);
-            var scrollData = SpellData.getSpellData(scrollItemStack);
-            if (spellBookData.addSpell(scrollData.getSpell(), scrollData.getLevel(), selectedIndex, spellBookItemStack))
+            var bookContainer = spellBook.initializeSpellContainer(spellBookItemStack);
+            var scrollContainer = scroll.initializeSpellContainer(scrollItemStack);
+            var scrollSlot = scrollContainer.getSpellAtIndex(0);
+
+            if (bookContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), selectedIndex, false, spellBookItemStack)) {
                 getScrollSlot().remove(1);
+            }
         }
     }
 
@@ -154,8 +159,9 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     public boolean clickMenuButton(Player pPlayer, int pId) {
         //Called whenever the client clicks on a button. The ID passed in is the spell slot index or -1. If it is positive, it is to select that slot. If it is negative, it is to inscribe
         if (pId < 0) {
-            if (selectedSpellIndex >= 0 && getScrollSlot().getItem().is(ItemRegistry.SCROLL.get())) {
-                SpellData spellData = SpellData.getSpellData(getScrollSlot().getItem());
+            var scrollStack = getScrollSlot().getItem();
+            if (selectedSpellIndex >= 0 && scrollStack.getItem() instanceof Scroll scroll) {
+                SpellData spellData = scroll.initializeSpellContainer(scrollStack).getSpellAtIndex(0);
                 if (MinecraftForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)))
                     return false;
                 doInscription(selectedSpellIndex);
@@ -174,13 +180,14 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack spellBookStack = spellBookSlot.getItem();
 
         if (spellBookStack.getItem() instanceof SpellBook spellBook) {
-            if (!spellBook.isUnique()) {
-                var spellBookData = SpellBookData.getSpellBookData(spellBookStack);
-                if (selectedSpellIndex >= 0 && spellBookData.getSpell(selectedSpellIndex) != null) {
+            var spellList = spellBook.initializeSpellContainer(spellBookStack);
+            if (selectedSpellIndex >= 0) {
+                var spellData = spellList.getSpellAtIndex(selectedSpellIndex);
+
+                if (spellData != SpellData.EMPTY && spellData.canRemove()) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
-                    var spellData = spellBookData.getSpell(selectedSpellIndex);
-                    SpellData.setSpellData(resultStack, spellData);
+                    ISpellContainer.createScrollContainer(spellData.getSpell(), spellData.getLevel(), resultStack);
                 }
             }
         }

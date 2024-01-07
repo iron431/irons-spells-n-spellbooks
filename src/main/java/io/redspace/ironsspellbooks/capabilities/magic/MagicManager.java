@@ -24,15 +24,6 @@ public class MagicManager implements IMagicManager {
     public static final int MANA_REGEN_TICKS = 10;
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
-    /**
-     * Deprecated Helper Method. Use {@link MagicData#setMana(float)} instead.
-     */
-    @Deprecated
-    public void setPlayerCurrentMana(ServerPlayer serverPlayer, int newManaValue) {
-        var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-        playerMagicData.setMana(newManaValue);
-    }
-
     public void regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
         float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
@@ -49,17 +40,17 @@ public class MagicManager implements IMagicManager {
 
     public void tick(Level level) {
         boolean doManaRegen = level.getServer().getTickCount() % MANA_REGEN_TICKS == 0;
-        //IronsSpellbooks.LOGGER.debug("MagicManager.tick: {}, {}, {}, {}, {}", this.hashCode(), level.hashCode(), level.getServer().getTickCount(), level.players().size(), doManaRegen);
 
         level.players().stream().toList().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {
                 MagicData playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
                 playerMagicData.getPlayerCooldowns().tick(1);
+                playerMagicData.getPlayerRecasts().tick(2);
 
                 if (playerMagicData.isCasting()) {
                     playerMagicData.handleCastDuration();
                     var spell = SpellRegistry.getSpell(playerMagicData.getCastingSpellId());
-                    if (spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) {
+                    if ((spell.getCastType() == CastType.LONG && !serverPlayer.isUsingItem()) || spell.getCastType() == CastType.INSTANT) {
                         if (playerMagicData.getCastDurationRemaining() <= 0) {
                             spell.castSpell(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData.getCastSource(), true);
                             spell.onServerCastComplete(serverPlayer.level, playerMagicData.getCastingSpellLevel(), serverPlayer, playerMagicData, false);
@@ -102,6 +93,11 @@ public class MagicManager implements IMagicManager {
 
         MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().addCooldown(spell, effectiveCooldown);
         Messages.sendToPlayer(new ClientboundSyncCooldown(spell.getSpellId(), effectiveCooldown), serverPlayer);
+    }
+
+    public void clearCooldowns(ServerPlayer serverPlayer) {
+        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().clearCooldowns();
+        MagicData.getPlayerMagicData(serverPlayer).getPlayerCooldowns().syncToPlayer(serverPlayer);
     }
 
     public static int getEffectiveSpellCooldown(AbstractSpell spell, Player player, CastSource castSource) {

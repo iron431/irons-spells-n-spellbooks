@@ -45,12 +45,13 @@ public class ClientboundSyncCooldowns {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
+            var cooldowns = ClientMagicData.getCooldowns();
+            cooldowns.clearCooldowns();
             this.spellCooldowns.forEach((k, v) -> {
                 //irons_spellbooks.LOGGER.debug("ClientboundSyncCooldowns {} {} {}", k, v.getSpellCooldown(), v.getCooldownRemaining());
-                ClientMagicData.getCooldowns().addCooldown(k, v.getSpellCooldown(), v.getCooldownRemaining());
+                cooldowns.addCooldown(k, v.getSpellCooldown(), v.getCooldownRemaining());
             });
             ClientMagicData.resetClientCastState(null);
-
         });
         return true;
     }

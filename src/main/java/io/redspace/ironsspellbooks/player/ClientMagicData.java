@@ -2,19 +2,23 @@ package io.redspace.ironsspellbooks.player;
 
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
+import io.redspace.ironsspellbooks.capabilities.magic.ClientSpellTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerCooldowns;
+import io.redspace.ironsspellbooks.capabilities.magic.PlayerRecasts;
+import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -31,6 +35,34 @@ public class ClientMagicData {
      */
     private static final HashMap<Integer, SyncedSpellData> playerSyncedDataLookup = new HashMap<>();
     private static final SyncedSpellData emptySyncedData = new SyncedSpellData(-999);
+
+    /**
+     * Spell Selections
+     */
+    static SpellSelectionManager spellSelectionManager;
+
+    public static SpellSelectionManager getSpellSelectionManager() {
+        if (spellSelectionManager == null) {
+            var player = Minecraft.getInstance().player;
+            if (player != null) {
+                spellSelectionManager = new SpellSelectionManager(player);
+            }
+
+        }
+
+        return spellSelectionManager;
+    }
+
+    public static void updateSpellSelectionManager(@NotNull ServerPlayer player) {
+        spellSelectionManager = new SpellSelectionManager(player);
+    }
+
+    public static void updateSpellSelectionManager() {
+        var player = Minecraft.getInstance().player;
+        if (player != null) {
+            spellSelectionManager = new SpellSelectionManager(Minecraft.getInstance().player);
+        }
+    }
 
     /**
      * Local Targeting data
@@ -56,9 +88,16 @@ public class ClientMagicData {
      */
     public static HashMap<UUID, KeyframeAnimationPlayer> castingAnimationPlayerLookup = new HashMap<>();
 
-
     public static PlayerCooldowns getCooldowns() {
         return playerMagicData.getPlayerCooldowns();
+    }
+
+    public static PlayerRecasts getRecasts() {
+        return playerMagicData.getPlayerRecasts();
+    }
+
+    public static void setRecasts(PlayerRecasts playerRecasts) {
+        playerMagicData.setPlayerRecasts(playerRecasts);
     }
 
     public static float getCooldownPercent(AbstractSpell spell) {
@@ -136,7 +175,7 @@ public class ClientMagicData {
     }
 
     public static void handlePlayerSyncedData(SyncedSpellData playerSyncedData) {
-        IronsSpellbooks.LOGGER.debug("SyncedSpellData.getSyncedSpellData spellWheelSelection:{}", playerSyncedData.getSpellSelection());
+        //IronsSpellbooks.LOGGER.debug("SyncedSpellData.getSyncedSpellData spellWheelSelection:{}", playerSyncedData.getSpellSelection());
         playerSyncedDataLookup.put(playerSyncedData.getServerPlayerId(), playerSyncedData);
     }
 

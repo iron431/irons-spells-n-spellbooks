@@ -5,19 +5,23 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastInstance;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
-import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -37,6 +41,7 @@ public class WallOfFireSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
         return List.of(
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(getDamage(spellLevel, caster), 2)),
                 Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(getWallLength(spellLevel, caster), 1))
         );
     }
@@ -52,13 +57,13 @@ public class WallOfFireSpell extends AbstractSpell {
         this.manaCostPerLevel = 5;
         this.baseSpellPower = 4;
         this.spellPowerPerLevel = 1;
-        this.castTime = 100;
+        this.castTime = 0;
         this.baseManaCost = 10;
     }
 
     @Override
     public CastType getCastType() {
-        return CastType.CONTINUOUS;
+        return CastType.INSTANT;
     }
 
     @Override
@@ -82,54 +87,53 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
-    public void onCast(Level world, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        if (playerMagicData.isCasting() && playerMagicData.getCastingSpellId().equals(this.getSpellId()) && playerMagicData.getAdditionalCastData() == null) {
-            //IronsSpellbooks.LOGGER.debug("WallOfFireSpell: creating new data");
+    public ICastDataSerializable getEmptyCastData() {
+        return new FireWallData(0);
+    }
+
+    @Override
+    public int getRecastCount(int spellLevel, @Nullable LivingEntity entity) {
+        return 3;
+    }
+
+
+    @Override
+    public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
+        if (playerMagicData.getPlayerRecasts().hasRecastForSpell(this)) {
+            var recast = playerMagicData.getPlayerRecasts().getRecastInstance(getSpellId());
+            var fireWallData = (FireWallData) recast.getCastData();
+            addAnchor(fireWallData, world, entity, recast);
+        } else {
             var fireWallData = new FireWallData(getWallLength(spellLevel, entity));
-            playerMagicData.setAdditionalCastData(fireWallData);
-
+            var recast = new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 40, castSource, fireWallData);
+            addAnchor(fireWallData, world, entity, recast);
+            playerMagicData.getPlayerRecasts().addRecast(recast, playerMagicData);
         }
-        //IronsSpellbooks.LOGGER.debug(playerMagicData.toString());
-        //if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData)
 
-        super.onCast(world, spellLevel, entity, playerMagicData);
+        super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }
 
     @Override
-    public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
-        //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastTick");
-        if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
-            //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastTick {}", fireWallData.ticks);
-            if (fireWallData.ticks++ % 4 == 0) {
-                addAnchor(fireWallData, level, entity);
-            }
-        }
-
-    }
-
-    @Override
-    public void onServerCastComplete(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData, boolean cancelled) {
-        //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.1");
-        if (playerMagicData.getAdditionalCastData() instanceof FireWallData fireWallData) {
-            //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.2");
-            if (fireWallData.anchors.size() == 1) {
-                //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.3");
-                addAnchor(fireWallData, level, entity);
+    public void onRecastFinished(ServerPlayer entity, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
+        if (!recastResult.isFailure()) {
+            var level = entity.level;
+            var fireWallData = (FireWallData) recastInstance.getCastData();
+            if (fireWallData.anchorPoints.size() == 1) {
+                addAnchor(fireWallData, level, entity, recastInstance);
             }
 
-            if (fireWallData.anchors.size() > 0) {
-                //IronsSpellbooks.LOGGER.debug("WallOfFireSpell.onServerCastComplete.4");
-                WallOfFireEntity fireWall = new WallOfFireEntity(level, entity, fireWallData.anchors, getDamage(spellLevel, entity));
-                Vec3 origin = fireWallData.anchors.get(0);
-                for (int i = 1; i < fireWallData.anchors.size(); i++) {
-                    origin.add(fireWallData.anchors.get(i));
+            if (fireWallData.anchorPoints.size() > 0) {
+                WallOfFireEntity fireWall = new WallOfFireEntity(level, entity, fireWallData.anchorPoints, getDamage(recastInstance.getSpellLevel(), entity));
+                Vec3 origin = fireWallData.anchorPoints.get(0);
+                for (int i = 1; i < fireWallData.anchorPoints.size(); i++) {
+                    origin.add(fireWallData.anchorPoints.get(i));
                 }
-                origin.scale(1 / (float) fireWallData.anchors.size());
+                origin.scale(1 / (float) fireWallData.anchorPoints.size());
                 fireWall.setPos(origin);
                 level.addFreshEntity(fireWall);
             }
         }
-        super.onServerCastComplete(level, spellLevel, entity, playerMagicData, false);
+        super.onRecastFinished(entity, recastInstance, recastResult, castDataSerializable);
     }
 
     @Override
@@ -138,21 +142,20 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     private float getWallLength(int spellLevel, LivingEntity entity) {
-        return 10 + getLevel(spellLevel, entity) * 2;
+        return 10 + getLevel(spellLevel, entity) * 2 * getEntityPowerMultiplier(entity);
     }
 
     private float getDamage(int spellLevel, LivingEntity sourceEntity) {
         return getSpellPower(spellLevel, sourceEntity);
     }
 
-    public void addAnchor(FireWallData fireWallData, Level level, LivingEntity entity) {
+    public void addAnchor(FireWallData fireWallData, Level level, LivingEntity entity, RecastInstance recastInstance) {
         Vec3 anchor = Utils.getTargetBlock(level, entity, ClipContext.Fluid.ANY, 20).getLocation();
 
         anchor = setOnGround(anchor, level);
-        var anchorPoints = fireWallData.anchors;
+        var anchorPoints = fireWallData.anchorPoints;
         if (anchorPoints.size() == 0) {
             anchorPoints.add(anchor);
-
         } else {
             int i = anchorPoints.size();
             float distance = (float) anchorPoints.get(i - 1).distanceTo(anchor);
@@ -161,24 +164,19 @@ public class WallOfFireSpell extends AbstractSpell {
                 //point fits, continue
                 fireWallData.accumulatedDistance += distance;
                 anchorPoints.add(anchor);
-                //irons_spellbooks.LOGGER.debug("WallOfFire: this anchor fits (length {})", distance);
-
             } else {
                 //too long, clip and cancel spell
                 anchor = anchorPoints.get(i - 1).add(anchor.subtract(anchorPoints.get(i - 1)).normalize().scale(maxDistance));
                 anchor = setOnGround(anchor, level);
                 anchorPoints.add(anchor);
                 if (entity instanceof ServerPlayer serverPlayer) {
-                    var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-                    boolean triggerCooldown = playerMagicData.getCastSource() != CastSource.SCROLL;
-                    ServerboundCancelCast.cancelCast(serverPlayer, triggerCooldown);
+                    if (recastInstance.getRemainingRecasts() > 0) {
+                        MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeRecast(recastInstance, RecastResult.USED_ALL_RECASTS);
+                    }
                 }
             }
-            //irons_spellbooks.LOGGER.debug("WallOfFire.maxDistance: {}", this.maxTotalDistance);
-            //irons_spellbooks.LOGGER.debug("WallOfFire.currentDistance: {}", this.accumulatedDistance);
         }
         MagicManager.spawnParticles(level, ParticleTypes.FLAME, anchor.x, anchor.y + 1.5, anchor.z, 5, .05, .25, .05, 0, true);
-        //IronsSpellbooks.LOGGER.debug("WallOfFireSpell: adding anchor");
     }
 
     private Vec3 setOnGround(Vec3 in, Level level) {
@@ -195,9 +193,9 @@ public class WallOfFireSpell extends AbstractSpell {
         }
     }
 
-    public class FireWallData implements ICastData {
+    public class FireWallData implements ICastDataSerializable {
         private Entity castingEntity;
-        public List<Vec3> anchors = new ArrayList<>();
+        public List<Vec3> anchorPoints = new ArrayList<>();
         public float maxTotalDistance;
         public float accumulatedDistance;
         public int ticks;
@@ -209,6 +207,53 @@ public class WallOfFireSpell extends AbstractSpell {
         @Override
         public void reset() {
 
+        }
+
+        @Override
+        public void writeToBuffer(FriendlyByteBuf buffer) {
+            buffer.writeInt(anchorPoints.size());
+            for (Vec3 vec : anchorPoints) {
+                buffer.writeFloat((float) vec.x);
+                buffer.writeFloat((float) vec.y);
+                buffer.writeFloat((float) vec.z);
+            }
+        }
+
+        @Override
+        public void readFromBuffer(FriendlyByteBuf buffer) {
+            anchorPoints = new ArrayList<>();
+            int length = buffer.readInt();
+            for (int i = 0; i < length; i++) {
+                anchorPoints.add(new Vec3(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()));
+            }
+        }
+
+        @Override
+        public CompoundTag serializeNBT() {
+            CompoundTag compoundTag = new CompoundTag();
+            ListTag anchors = new ListTag();
+            for (Vec3 vec : anchorPoints) {
+                CompoundTag anchor = new CompoundTag();
+                anchor.putFloat("x", (float) vec.x);
+                anchor.putFloat("y", (float) vec.y);
+                anchor.putFloat("z", (float) vec.z);
+                anchors.add(anchor);
+            }
+            compoundTag.put("Anchors", anchors);
+            return compoundTag;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundTag nbt) {
+            this.anchorPoints = new ArrayList<>();
+            if (nbt.contains("Anchors", 9)) {
+                ListTag anchors = (ListTag) nbt.get("Anchors");
+                for (Tag tag : anchors) {
+                    if (tag instanceof CompoundTag anchor) {
+                        this.anchorPoints.add(new Vec3(anchor.getDouble("x"), anchor.getDouble("y"), anchor.getDouble("z")));
+                    }
+                }
+            }
         }
     }
 }

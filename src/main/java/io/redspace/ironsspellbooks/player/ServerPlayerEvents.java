@@ -3,41 +3,38 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
+import io.redspace.ironsspellbooks.capabilities.magic.RecastResult;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
-import io.redspace.ironsspellbooks.capabilities.spell.SpellData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.data.DataFixerStorage;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.datafix.IronsWorldUpgrader;
+import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.effect.AbyssalShroudEffect;
 import io.redspace.ironsspellbooks.effect.EvasionEffect;
 import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
 import io.redspace.ironsspellbooks.effect.SummonTimer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
-import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
+import io.redspace.ironsspellbooks.network.ClientboundEquipmentChanged;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.WorldStem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -48,20 +45,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
@@ -71,10 +64,12 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
+import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 import java.util.Optional;
 
@@ -101,6 +96,18 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
+    public static void onServerStoppedEvent(ServerStoppedEvent event) {
+        IronsSpellbooks.MCS = null;
+        IronsSpellbooks.OVERWORLD = null;
+    }
+
+    @SubscribeEvent
+    public static void onServerStarted(ServerStartedEvent event){
+        IronsSpellbooks.MCS = event.getServer();
+        IronsSpellbooks.OVERWORLD = IronsSpellbooks.MCS.overworld();
+    }
+
+    @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
         DataFixerStorage.init(event.getServer().storageSource);
 
@@ -112,21 +119,32 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
-
-        if (event.getEntity().level.isClientSide) {
-            return;
-        }
-
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
-            if (playerMagicData.isCasting()
-                    && (event.getSlot().getIndex() == 0 || event.getSlot().getIndex() == 1)
-                    && (event.getFrom().getItem() instanceof SpellBook || SpellData.hasSpellData(event.getFrom()))) {
+
+            if (playerMagicData.isCasting() && (event.getFrom().getItem() instanceof CastingItem || event.getTo().getItem() instanceof CastingItem)) {
                 Utils.serverSideCancelCast(serverPlayer);
+                Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+                return;
             }
 
+            var isFromSpellContainer = ISpellContainer.isSpellContainer(event.getFrom());
+            if (isFromSpellContainer && ISpellContainer.get(event.getFrom()).getIndexForSpell(playerMagicData.getCastingSpell().getSpell()) >= 0) {
+                if (playerMagicData.isCasting()) {
+                    Utils.serverSideCancelCast(serverPlayer);
+                }
+                Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+            } else if (isFromSpellContainer || ISpellContainer.isSpellContainer(event.getTo())) {
+                Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
+            }
+        }
+    }
 
-
+    @SubscribeEvent
+    public static void onCurioChangeEvent(CurioChangeEvent event) {
+        var entity = event.getEntity();
+        if (entity instanceof ServerPlayer serverPlayer && (ISpellContainer.isSpellContainer(event.getFrom()) || ISpellContainer.isSpellContainer(event.getTo()))) {
+            Messages.sendToPlayer(new ClientboundEquipmentChanged(), serverPlayer);
         }
     }
 
@@ -192,6 +210,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
+            playerMagicData.getPlayerRecasts().syncAllToPlayer();
             playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
             CameraShakeManager.doSync(serverPlayer);
         }
@@ -201,6 +220,7 @@ public class ServerPlayerEvents {
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             Utils.serverSideCancelCast(serverPlayer);
+            MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
         }
     }
 
