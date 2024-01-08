@@ -65,9 +65,9 @@ public class ShockwaveParticleOptions extends DustParticleOptionsBase implements
     //1.19.2 new shit
     public static final Codec<IShockwaveParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) ->
             p_175793_.group(
-                    ExtraCodecs.VECTOR3F.fieldOf("color").forGetter(IShockwaveParticleOptions::color),
-                    Codec.FLOAT.fieldOf("scale").forGetter(IShockwaveParticleOptions::getScale),
-                    Codec.BOOL.fieldOf("fullbright").forGetter(IShockwaveParticleOptions::isFullbright)
+                    ExtraCodecs.VECTOR3F.fieldOf("color").forGetter((option) -> ((ShockwaveParticleOptions) option).color),
+                    Codec.FLOAT.fieldOf("scale").forGetter((option) -> ((ShockwaveParticleOptions) option).scale),
+                    Codec.BOOL.fieldOf("fullbright").forGetter((option) -> ((ShockwaveParticleOptions) option).fullbright)
             ).apply(p_175793_, ShockwaveParticleOptions::new));
     @SuppressWarnings("deprecation")
     public static final Deserializer<IShockwaveParticleOptions> DESERIALIZER = new Deserializer<IShockwaveParticleOptions>() {
