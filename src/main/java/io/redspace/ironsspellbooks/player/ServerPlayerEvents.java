@@ -25,6 +25,7 @@ import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.network.ClientboundEquipmentChanged;
+import io.redspace.ironsspellbooks.network.ClientboundSyncMana;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -215,6 +216,7 @@ public class ServerPlayerEvents {
             playerMagicData.getPlayerCooldowns().syncToPlayer(serverPlayer);
             playerMagicData.getPlayerRecasts().syncAllToPlayer();
             playerMagicData.getSyncedData().syncToPlayer(serverPlayer);
+            Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
             CameraShakeManager.doSync(serverPlayer);
         }
     }
