@@ -24,19 +24,23 @@ public class MagicManager implements IMagicManager {
     public static final int MANA_REGEN_TICKS = 10;
     public static final int CONTINUOUS_CAST_TICK_INTERVAL = 10;
 
-    public void regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
+    public boolean regenPlayerMana(ServerPlayer serverPlayer, MagicData playerMagicData) {
         int playerMaxMana = (int) serverPlayer.getAttributeValue(MAX_MANA.get());
-        float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
-        var increment = Math.max(playerMaxMana * playerManaRegenMultiplier * .01f, 1);
-
-        if (playerMagicData.getMana() != playerMaxMana) {
-            if (playerMagicData.getMana() + increment < playerMaxMana) {
+        int mana = playerMagicData.getMana();
+        if (mana != playerMaxMana) {
+            float playerManaRegenMultiplier = (float) serverPlayer.getAttributeValue(MANA_REGEN.get());
+            var increment = Math.max(playerMaxMana * playerManaRegenMultiplier * .01f, 1);
+            if (mana + increment < playerMaxMana) {
                 playerMagicData.addMana(increment);
             } else {
                 playerMagicData.setMana(playerMaxMana);
             }
+            return true;
+        } else {
+            return false;
         }
     }
+
 
     public void tick(Level level) {
         boolean doManaRegen = level.getServer().getTickCount() % MANA_REGEN_TICKS == 0;
@@ -79,8 +83,9 @@ public class MagicManager implements IMagicManager {
                 }
 
                 if (doManaRegen) {
-                    regenPlayerMana(serverPlayer, playerMagicData);
-                    Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
+                    if (regenPlayerMana(serverPlayer, playerMagicData)) {
+                        Messages.sendToPlayer(new ClientboundSyncMana(playerMagicData), serverPlayer);
+                    }
                 }
             }
         });
