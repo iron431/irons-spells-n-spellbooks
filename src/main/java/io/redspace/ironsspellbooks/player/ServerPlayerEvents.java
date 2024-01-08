@@ -434,7 +434,7 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void handleResistanceAttributesOnSpawn(MobSpawnEvent event) {
+    public static void handleResistanceAttributesOnSpawn(MobSpawnEvent.FinalizeSpawn event) {
         var mob = event.getEntity();
         //Attributes should never be null because all living entities have these attributes
         if (mob.getMobType() == MobType.UNDEAD) {
