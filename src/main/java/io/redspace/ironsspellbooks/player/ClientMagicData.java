@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.util.Log;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,7 +44,7 @@ public class ClientMagicData {
 
     public static SpellSelectionManager getSpellSelectionManager() {
         if (spellSelectionManager == null) {
-            var player = Minecraft.getInstance().player;
+            var player = MinecraftInstanceHelper.getPlayer();
             if (player != null) {
                 spellSelectionManager = new SpellSelectionManager(player);
             }
