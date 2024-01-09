@@ -261,6 +261,9 @@ public abstract class AbstractSpell {
                 return false;
             }
 
+            if (serverPlayer.isUsingItem()) {
+                serverPlayer.stopUsingItem();
+            }
             int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
 
             playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
