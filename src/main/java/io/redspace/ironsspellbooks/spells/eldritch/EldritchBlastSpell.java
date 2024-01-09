@@ -91,7 +91,7 @@ public class EldritchBlastSpell extends AbstractEldritchSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         if (!playerMagicData.getPlayerRecasts().hasRecastForSpell(getSpellId())) {
-            playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 4000, castSource, null), playerMagicData);
+            playerMagicData.getPlayerRecasts().addRecast(new RecastInstance(getSpellId(), spellLevel, getRecastCount(spellLevel, entity), 50, castSource, null), playerMagicData);
         }
 
         var hitResult = Utils.raycastForEntity(level, entity, getRange(spellLevel, entity), true, .15f);
