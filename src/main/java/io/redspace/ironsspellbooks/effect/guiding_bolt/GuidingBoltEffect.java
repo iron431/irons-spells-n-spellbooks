@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.effect.guiding_bolt;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.effect.MagicMobEffect;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -28,14 +26,14 @@ public class GuidingBoltEffect extends MagicMobEffect {
     @Override
     public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        IronsSpellbooks.LOGGER.debug("GuidingBoltEffect adding to tracked entities: {}", pLivingEntity);
+        //IronsSpellbooks.LOGGER.debug("GuidingBoltEffect adding to tracked entities: {}", pLivingEntity);
         GuidingBoltManager.INSTANCE.startTracking(pLivingEntity);
     }
 
     @Override
     public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
         super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
-        IronsSpellbooks.LOGGER.debug("GuidingBoltEffect removing from tracked entities: {}", pLivingEntity);
+        //IronsSpellbooks.LOGGER.debug("GuidingBoltEffect removing from tracked entities: {}", pLivingEntity);
         GuidingBoltManager.INSTANCE.stopTracking(pLivingEntity);
     }
 }

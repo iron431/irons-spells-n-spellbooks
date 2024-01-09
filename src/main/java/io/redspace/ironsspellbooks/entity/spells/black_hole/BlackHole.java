@@ -119,7 +119,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         float radius = (float) (bb.getXsize());
         boolean hitTick = this.tickCount % 10 == 0;
         for (Entity entity : trackingEntities) {
-            if (entity.isPickable() && entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity)) {
+            if (entity != getOwner() && !DamageSources.isFriendlyFireBetween(getOwner(), entity)) {
                 Vec3 center = bb.getCenter();
                 float distance = (float) center.distanceTo(entity.position());
                 if (distance > radius) {

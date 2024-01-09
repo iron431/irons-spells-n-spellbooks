@@ -153,6 +153,7 @@ public class ClientSetup {
     public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
         addLayerToPlayerSkin(event, "default");
         addLayerToPlayerSkin(event, "slim");
+        do the gold GoldCrownArmorItem renderer;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

@@ -76,11 +76,6 @@ public class FortifySpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public void onServerPreCast(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
         super.onServerPreCast(level, spellLevel, entity, playerMagicData);
         if (playerMagicData == null)

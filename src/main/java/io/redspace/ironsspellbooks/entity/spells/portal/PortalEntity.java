@@ -80,12 +80,12 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
         level.getEntitiesOfClass(Entity.class, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL) && entity.isPickable())).forEach(entity -> {
             //TODO: remove extraneous logging
-            IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}", entity);
+            //IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}", entity);
 
             PortalManager.INSTANCE.processDelayCooldown(uuid, entity.getUUID(), 1);
 
             if (PortalManager.INSTANCE.canUsePortal(this, entity)) {
-                IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{}", entity);
+                //IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{}", entity);
 
                 PortalManager.INSTANCE.addPortalCooldown(entity, uuid);
 
@@ -100,7 +100,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
                     if (level.dimension().equals(portalPos.dimension())) {
                         entity.teleportTo(destination.x, destination.y, destination.z);
                     } else {
-                        IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
+                        //IronsSpellbooks.LOGGER.debug("PortalEntity: teleport entity:{} to dimension: {}", entity, portalPos.dimension());
                         var server = level.getServer();
                         if (server != null) {
                             var dim = server.getLevel(portalPos.dimension());

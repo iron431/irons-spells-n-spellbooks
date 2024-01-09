@@ -22,6 +22,7 @@ public class DragonBreathPool extends AoeEntity {
         setRadius(1.8f);
         this.radiusOnUse = -.15f;
         this.radiusPerTick = -.02f;
+        //IronsSpellbooks.LOGGER.debug("Creating DragonBreathPool");
     }
 
     public DragonBreathPool(Level level) {

@@ -132,7 +132,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                     (blockPos) -> true, this.blockPosition(), 100, PoiManager.Occupancy.ANY);
             optional1.ifPresent((blockPos -> {
                 this.setHome(blockPos);
-                IronsSpellbooks.LOGGER.debug("Priest new home: {}", this.getHome());
+                //IronsSpellbooks.LOGGER.debug("Priest new home: {}", this.getHome());
             }));
         }
 

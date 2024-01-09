@@ -30,6 +30,7 @@ import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import net.minecraft.Util;
@@ -430,6 +431,22 @@ public class ServerPlayerEvents {
                 player.level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 player.swing(event.getHand());
                 event.setCancellationResult(InteractionResultHolder.consume(ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()))).getResult());
+                event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void useItemEvent(PlayerInteractEvent.RightClickItem event) {
+        var entity = event.getEntity();
+        if (entity.level.isClientSide) {
+            MinecraftInstanceHelper.ifPlayerPresent(localPlayer -> {
+                if (ClientMagicData.isCasting() && entity.getUUID().equals(localPlayer.getUUID())) {
+                    event.setCanceled(true);
+                }
+            });
+        } else {
+            if (MagicData.getPlayerMagicData(entity).isCasting()) {
                 event.setCanceled(true);
             }
         }

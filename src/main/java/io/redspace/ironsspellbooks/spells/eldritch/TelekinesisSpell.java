@@ -4,10 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.AutoSpellConfig;
-import io.redspace.ironsspellbooks.api.spells.CastType;
-import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
-import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
@@ -93,7 +90,7 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
             if (target == null) {
                 return false;
             }
-            playerMagicData.setAdditionalCastData(new TelekinesisData(entity.distanceTo(target), target));
+            playerMagicData.setAdditionalCastData(new TelekinesisData(entity.distanceTo(target), target, 6));
             return true;
         } else {
             return false;
@@ -101,10 +98,15 @@ public class TelekinesisSpell extends AbstractEldritchSpell {
     }
 
     @Override
+    public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
+        super.onCast(level, spellLevel, entity, castSource, playerMagicData);
+    }
+
+    @Override
     public void onServerCastTick(Level level, int spellLevel, LivingEntity entity, @Nullable MagicData playerMagicData) {
         super.onServerCastTick(level, spellLevel, entity, playerMagicData);
-        if (playerMagicData != null && (playerMagicData.getCastDurationRemaining()) % 3 == 0) {
-            handleTelekinesis((ServerLevel) level, entity, playerMagicData, .5f);
+        if (playerMagicData != null && (playerMagicData.getCastDurationRemaining()) % 2 == 0) {
+            handleTelekinesis((ServerLevel) level, entity, playerMagicData, .3f);
         }
     }
 

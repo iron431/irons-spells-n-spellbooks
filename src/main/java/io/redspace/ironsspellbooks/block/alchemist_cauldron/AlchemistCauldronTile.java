@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -269,7 +268,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 var newItemCopy = newItem.copy();
                 newItemCopy.setCount(1);
                 container.set(i, newItemCopy);
-                IronsSpellbooks.LOGGER.debug("{}", container.toString());
+                //IronsSpellbooks.LOGGER.debug("{}", container.toString());
                 return true;
             }
         }
@@ -474,7 +473,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     @Override
     public void clearContent() {
-        IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.clearContents");
+        //IronsSpellbooks.LOGGER.debug("AlchemistCauldronTile.clearContents");
     }
 
     @Override

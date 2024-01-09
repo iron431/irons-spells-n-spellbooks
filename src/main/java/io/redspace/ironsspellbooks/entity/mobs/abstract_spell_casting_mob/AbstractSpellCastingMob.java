@@ -327,13 +327,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 teleportPos = Utils.moveToRelativeGroundLevel(level, target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD)).add(randomness), 5);
                 teleportPos = new Vec3(teleportPos.x, teleportPos.y + .1f, teleportPos.z);
                 var reposBB = this.getBoundingBox().move(teleportPos.subtract(this.position()));
-                IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget attempt to teleport to {}:", reposBB.getCenter());
+                //IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget attempt to teleport to {}:", reposBB.getCenter());
                 if (!level.collidesWithSuffocatingBlock(this, reposBB.inflate(-.05f))) {
                     //IronsSpellbooks.LOGGER.debug("\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\nsetTeleportLocationBehindTarget: {} {} {} empty. teleporting\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n", reposBB.minX, reposBB.minY, reposBB.minZ);
                     valid = true;
                     break;
                 }
-                IronsSpellbooks.LOGGER.debug("fail");
+                //IronsSpellbooks.LOGGER.debug("fail");
 
             }
             if (valid) {

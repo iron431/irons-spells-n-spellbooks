@@ -52,16 +52,6 @@ public class SummonEnderChestSpell extends AbstractSpell {
         return spellId;
     }
 
-    @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
     private static final Component CONTAINER_TITLE = Component.translatable("container.enderchest");
 
     @Override

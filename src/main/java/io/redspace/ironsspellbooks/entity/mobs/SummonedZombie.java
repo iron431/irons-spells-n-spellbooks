@@ -3,12 +3,12 @@ package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.*;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -130,8 +130,7 @@ public class SummonedZombie extends Zombie implements MagicSummon, GeoAnimatable
 
     @Override
     public void onRemovedFromWorld() {
-        if (!level().isClientSide)
-            IronsSpellbooks.LOGGER.debug("Summoned Zombie: Removed from world, {}", this.getRemovalReason());
+        //IronsSpellbooks.LOGGER.debug("Summoned Zombie: Removed from world, {}", this.getRemovalReason());
         this.onRemovedHelper(this, MobEffectRegistry.RAISE_DEAD_TIMER.get());
         super.onRemovedFromWorld();
     }

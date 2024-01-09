@@ -63,67 +63,10 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        if (pLevel.isClientSide()) {
-            Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.spellbook_cast_error").withStyle(ChatFormatting.RED), false);
-        }
-        return super.use(pLevel, pPlayer, pUsedHand);
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        //TODO: display error message if the spell book is empty?
+        return true;
     }
-
-//    @Override
-//    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-//        ItemStack itemStack = player.getItemInHand(hand);
-//        var spellBookData = SpellBookData.getSpellBookData(itemStack);
-//        SpellData spellData = spellBookData.getActiveSpell();
-//
-//        if (spellData.equals(SpellData.EMPTY)) {
-//            return InteractionResultHolder.pass(itemStack);
-//        }
-//
-//        if (level.isClientSide()) {
-//            if (ClientMagicData.isCasting()) {
-//                return InteractionResultHolder.fail(itemStack);
-//            } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellData.getLevel(), player)
-//                    || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
-//                    || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
-//                return InteractionResultHolder.pass(itemStack);
-//            } else {
-//                return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
-//            }
-//        }
-//
-//        if (spellData.getSpell().attemptInitiateCast(itemStack, spellData.getLevel(), level, player, CastSource.SPELLBOOK, true)) {
-//            if (spellData.getSpell().getCastType().holdToCast()) {
-//                player.startUsingItem(hand);
-//            }
-//            return InteractionResultHolder.success(itemStack);
-//        } else {
-//            return InteractionResultHolder.fail(itemStack);
-//        }
-//    }
-//
-//    @Override
-//    public int getUseDuration(ItemStack itemStack) {
-//        return 7200;//return getSpellBookData(itemStack).getActiveSpell().getCastTime();
-//    }
-//
-//    @Override
-//    public UseAnim getUseAnimation(ItemStack pStack) {
-//        return UseAnim.BOW;
-//    }
-//
-//    @Override
-//    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-//        return slotChanged;
-//    }
-//
-//    @Override
-//    public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
-//        IronsSpellbooks.LOGGER.debug("Spellbook Release Using ticks used: {}", p_41415_);
-//        entity.stopUsingItem();
-//        Utils.releaseUsingHelper(entity, itemStack, p_41415_);
-//        super.releaseUsing(itemStack, p_41413_, entity, p_41415_);
-//    }
 
     public boolean isUnique() {
         return false;

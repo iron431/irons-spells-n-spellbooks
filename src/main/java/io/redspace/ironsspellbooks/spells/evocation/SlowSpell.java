@@ -77,11 +77,6 @@ public class SlowSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f)) {
             float radius = 3f;

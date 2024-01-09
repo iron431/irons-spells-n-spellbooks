@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.datafix.fixers;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.LegacySpellBookData;
 import io.redspace.ironsspellbooks.datafix.DataFixerElement;
 import io.redspace.ironsspellbooks.datafix.DataFixerHelpers;
@@ -48,7 +47,7 @@ public class FixIsbSpellbook extends DataFixerElement {
     }
 
     private boolean fixSpellbookSpellIds(ListTag listTagSpells) {
-        IronsSpellbooks.LOGGER.debug("fixSpellbookSpellIds: {}", listTagSpells);
+        //IronsSpellbooks.LOGGER.debug("fixSpellbookSpellIds: {}", listTagSpells);
         AtomicBoolean fixed = new AtomicBoolean(false);
         listTagSpells.forEach(tag -> {
             CompoundTag spellTag = (CompoundTag) tag;

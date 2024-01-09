@@ -48,7 +48,7 @@ public class FreezeTetraEffect {
                 if (level > 0) {
                     if (attackedEntity.canFreeze())
                         attackedEntity.setTicksFrozen(attackedEntity.getTicksFrozen() + level * 20);
-                    IronsSpellbooks.LOGGER.debug("FreezeTetraEffect.level: {}", level);
+                    //IronsSpellbooks.LOGGER.debug("FreezeTetraEffect.level: {}", level);
                 }
             }
         }

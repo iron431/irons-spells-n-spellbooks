@@ -109,12 +109,6 @@ public class StarfallSpell extends AbstractSpell {
             }
     }
 
-
-    @Override
-    public void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
-        super.playSound(sound, entity, false);
-    }
-
     private Vec3 raiseWithCollision(Vec3 start, int blocks, Level level) {
         for (int i = 0; i < blocks; i++) {
             Vec3 raised = start.add(0, 1, 0);

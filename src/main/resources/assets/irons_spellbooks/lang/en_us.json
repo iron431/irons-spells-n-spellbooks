@@ -44,6 +44,7 @@
   "item.irons_spellbooks.arcane_ingot": "Arcane Ingot",
   "item.irons_spellbooks.magic_cloth": "Arcane Cloth",
   "item.irons_spellbooks.tarnished_helmet": "Tarnished Crown",
+  "item.irons_spellbooks.gold_crown": "Iron's Crown",
   "item.irons_spellbooks.wandering_magician_helmet": "Wandering Magician Hood",
   "item.irons_spellbooks.wandering_magician_chestplate": "Wandering Magician Robe",
   "item.irons_spellbooks.wandering_magician_leggings": "Wandering Magician Pants",
@@ -289,11 +290,11 @@
   "ui.irons_spellbooks.cast_ready": "Cast!",
   "ui.irons_spellbooks.hits_dodged": "%d Hits Dodged",
   "ui.irons_spellbooks.cast_error_mana": "Not enough mana to cast %s!",
-  "ui.irons_spellbooks.spellbook_cast_error": "Spellbook must be in Curio slot. Use Keybind or Staff to cast.",
   "ui.irons_spellbooks.cast_error_cooldown": "%s is on cooldown.",
   "ui.irons_spellbooks.cast_error_scroll": "%s cannot be casted from a scroll.",
   "ui.irons_spellbooks.cast_error_unlearned": "You can't understand this spell...",
   "ui.irons_spellbooks.cast_error_target": "This spell requires a target.",
+  "ui.irons_spellbooks.cast_error_spectral_hammer": "Target a mineable material.",
   "ui.irons_spellbooks.summon_despawn_message": "%s faded from this world.",
   "ui.irons_spellbooks.spell_target_warning": "%s is targeting you with %s!",
   "ui.irons_spellbooks.spell_target_success": "%s targeted with %s",
@@ -447,6 +448,7 @@
   "spell.irons_spellbooks.heat_surge": "Heat Surge",
   "spell.irons_spellbooks.arrow_volley": "Arrow Volley",
   "spell.irons_spellbooks.recall": "Recall",
+  "spell.irons_spellbooks.eldritch_blast": "Eldritch Blast",
 
   "spell.irons_spellbooks.none.guide": "Nothing to see here!",
   "spell.irons_spellbooks.fireball.guide": "Manifest and throw a ball of fire, exploding and dealing massive damage on impact.",
@@ -533,6 +535,7 @@
   "spell.irons_spellbooks.heat_surge.guide": "Emanate a surge of fiery magic, igniting and rending creatures in a radius around you. Rended creatures have reduced armor.",
   "spell.irons_spellbooks.arrow_volley.guide": "Around a targeted creature or block, summon a rolling wave of magical arrows from the sky.",
   "spell.irons_spellbooks.recall.guide": "Warps you back to your spawn location, or world spawn if there is none.",
+  "spell.irons_spellbooks.eldritch_blast.guide": "Fire rays of pure, devastating energy.",
 
   "death.attack.blood_magic": "%1$s blood magic 1",
   "death.attack.blood_magic.item": "%1$s blood magic 2",
@@ -597,6 +600,7 @@
   "death.attack.irons_spellbooks.sonic_boom": "%1$s was obliterated by %2$s's sonic boom",
   "death.attack.irons_spellbooks.divine_smite": "%1$s was smitten by %2$s",
   "death.attack.irons_spellbooks.thunder_step": "%1$s was electrocuted in %2$s's path",
+  "death.attack.irons_spellbooks.eldritch_blast": "%1$s was blasted away by %2$s",
 
   "death.attack.irons_spellbooks.raise_dead.item": "%1$s was mauled by %2$s's undead using %3$s",
   "death.attack.irons_spellbooks.summon_vex.item": "%1$s was eviscerated by %2$s's vexes using %3$s",
@@ -644,7 +648,8 @@
   "death.attack.irons_spellbooks.ray_of_frost.item": "%1$s was blasted by %2$s's ray of frost while using %3$s",
   "death.attack.irons_spellbooks.sonic_boom.item": "%1$s was obliterated by %2$s's sonic boom caused by %3$s",
   "death.attack.irons_spellbooks.divine_smite.item": "%1$s was smitten by %2$s while using %3$s",
-  "death.attack.irons_spellbooks.thunder_step.item": "%1$s electrocuted in %2$s's path while using %3$s",
+  "death.attack.irons_spellbooks.thunder_step.item": "%1$s was electrocuted in %2$s's path while using %3$s",
+  "death.attack.irons_spellbooks.eldritch_blast.item": "%1$s was blasted away by %2$s while using %3$s",
 
   "effect.irons_spellbooks.blood_slashed": "Blood Slashed",
   "effect.irons_spellbooks.angel_wings": "Angel Wings",
@@ -673,6 +678,7 @@
   "effect.irons_spellbooks.chilled": "Chilled",
   "effect.irons_spellbooks.slowed": "Slowed",
   "effect.irons_spellbooks.hastened": "Hastened",
+  "effect.irons_spellbooks.burning_dash": "Burning Dash",
 
   "effect.irons_spellbooks.heartstop.description": "Become temporarily invulnerable, but take 50% of accumulated damage once it wears off",
   "effect.irons_spellbooks.angel_wings.description": "Grants spectral elytra wings",

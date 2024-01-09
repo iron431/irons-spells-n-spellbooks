@@ -2,8 +2,18 @@
   "values": [
     "#minecraft:base_stone_overworld",
     "#minecraft:base_stone_nether",
-    "#minecraft:ice",
+    "#minecraft:dirt",
     "#minecraft:sand",
-    "minecraft:gravel"
+    "minecraft:gravel",
+    "#minecraft:terracotta",
+    "#minecraft:ice",
+    "#minecraft:nylium",
+    "#minecraft:wart_blocks",
+    "minecraft:soul_sand",
+    "minecraft:soul_soil",
+    "minecraft:sandstone",
+    "minecraft:red_sandstone",
+    "minecraft:calcite",
+    "minecraft:smooth_basalt"
   ]
 }

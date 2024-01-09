@@ -42,13 +42,11 @@ public class Scroll extends Item implements IScroll, IPresetSpellContainer {
         }
     }
 
-    public static boolean attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
+    public static void attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
         ItemStack potentialScroll = MagicData.getPlayerMagicData(serverPlayer).getPlayerCastingItem();
         if (potentialScroll.getItem() instanceof Scroll scroll) {
             scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
-            return true;
-        } else
-            return false;
+        }
     }
 
     @Override
@@ -68,10 +66,6 @@ public class Scroll extends Item implements IScroll, IPresetSpellContainer {
         }
 
         if (spell.attemptInitiateCast(stack, spellSlot.getLevel(), level, player, CastSource.SCROLL, false)) {
-            if (spell.getCastType() == CastType.INSTANT) {
-                //TODO: i think magic manager should handle this
-                removeScrollAfterCast((ServerPlayer) player, stack);
-            }
             if (spell.getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }
