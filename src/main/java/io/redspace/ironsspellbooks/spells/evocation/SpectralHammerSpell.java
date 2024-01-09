@@ -25,7 +25,7 @@ import java.util.Optional;
 public class SpectralHammerSpell extends AbstractSpell {
     private final ResourceLocation spellId = new ResourceLocation(IronsSpellbooks.MODID, "spectral_hammer");
 
-    private static final int distance = 12;
+    private static final int distance = 16;
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -39,7 +39,7 @@ public class SpectralHammerSpell extends AbstractSpell {
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.EVOCATION_RESOURCE)
             .setMaxLevel(5)
-            .setCooldownSeconds(10)
+            .setCooldownSeconds(2)
             .build();
 
     public SpectralHammerSpell() {
