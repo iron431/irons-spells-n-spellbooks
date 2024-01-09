@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.registries;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -150,6 +151,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.LOST_KNOWLEDGE_FRAGMENT.get());
                 entries.accept(ItemRegistry.ICE_CRYSTAL.get());
                 entries.accept(ItemRegistry.FROSTED_HELVE.get());
+                entries.accept(ItemRegistry.FURLED_MAP.get());
 
                 entries.accept(ItemRegistry.BLANK_RUNE.get());
                 entries.accept(ItemRegistry.FIRE_RUNE.get());
@@ -207,8 +209,8 @@ public class CreativeTabRegistry {
                     .forEach(spell -> {
                         for (int i = spell.getMinLevel(); i <= spell.getMaxLevel(); i++) {
                             var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                            ISpellContainer container = ISpellContainer.getOrCreate(itemstack);
-                            container.save(itemstack);
+                            var spellList = ISpellContainer.createScrollContainer(spell, i, itemstack);
+                            spellList.save(itemstack);
                             event.accept(itemstack);
                         }
                     });
