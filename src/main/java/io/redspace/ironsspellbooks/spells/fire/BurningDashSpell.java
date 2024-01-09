@@ -140,14 +140,14 @@ public class BurningDashSpell extends AbstractSpell {
 //    }
 
     public static void ambientParticles(ClientLevel level, LivingEntity entity) {
-        Vec3 motion = entity.getDeltaMovement().normalize().scale(-.25);
-        for (int i = 0; i < 3; i++) {
-            Vec3 random = motion.add(Utils.getRandomVec3(.2));
-            level.addParticle(ParticleHelper.FIRE, entity.getRandomX(1), entity.getY() + Utils.getRandomScaled(1), entity.getRandomZ(1), random.x, random.y, random.z);
+        //Vec3 motion = entity.getDeltaMovement().normalize().scale(-.25);
+        for (int i = 0; i < 2; i++) {
+            Vec3 random = Utils.getRandomVec3(.2);
+            level.addParticle(ParticleHelper.FIRE, entity.getRandomX(0.75), entity.getY() + Utils.getRandomScaled(0.75), entity.getRandomZ(0.75), random.x, random.y, random.z);
         }
         for (int i = 0; i < 6; i++) {
-            Vec3 random = motion.add(Utils.getRandomVec3(.2));
-            level.addParticle(ParticleHelper.EMBERS, entity.getRandomX(1), entity.getY() + Utils.getRandomScaled(1), entity.getRandomZ(1), random.x, random.y, random.z);
+            Vec3 random = Utils.getRandomVec3(.2);
+            level.addParticle(ParticleHelper.EMBERS, entity.getRandomX(0.75), entity.getY() + Utils.getRandomScaled(0.75), entity.getRandomZ(0.75), random.x, random.y, random.z);
         }
     }
 
