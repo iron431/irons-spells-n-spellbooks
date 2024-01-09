@@ -3,9 +3,9 @@ package io.redspace.ironsspellbooks.entity.armor;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.GoldCrownArmorItem;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class GoldCrownModel extends AnimatedGeoModel<GoldCrownArmorItem> {
+public class GoldCrownModel extends GeoModel<GoldCrownArmorItem> {
 
     public GoldCrownModel(){
         super();
@@ -25,10 +25,4 @@ public class GoldCrownModel extends AnimatedGeoModel<GoldCrownArmorItem> {
     public ResourceLocation getAnimationResource(GoldCrownArmorItem animatable) {
         return new ResourceLocation(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
-//    public static String listOfBonesToString(List<IBone> list){
-//        String s = "";
-//        for (IBone o:list)
-//            s += o.getName()+", ";
-//        return s;
-//    }
 }

@@ -126,8 +126,8 @@ dependencies {
     //runtimeOnly fg.deobf("curse.maven:placebo-${placebo_version}")
 
     //QOL
-    runtimeOnly fg.deobf("curse.maven:tslatentitystatus-tes-830420:4746241")
-    runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:3871353")
+    runtimeOnly fg.deobf("curse.maven:tslatentitystatus-tes-830420:5011935")
+    runtimeOnly fg.deobf("curse.maven:mouse-tweaks-60089:4581240")
 
     // JSON ******************************************************************************************************
     implementation "com.google.code.gson:gson:${gson_version}"
