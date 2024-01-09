@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
@@ -9,6 +10,7 @@ import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.network.ServerboundSelectSpell;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +43,9 @@ public class SpellSelectionManager {
 
         if (player.level.isClientSide) {
             spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
-            //IronsSpellbooks.LOGGER.debug("SpellSelectionManager init spellSelection:{}", spellSelection);
+            if (Log.SPELL_SELECTION) {
+                IronsSpellbooks.LOGGER.debug("SpellSelectionManager init spellSelection:{}", spellSelection);
+            }
         } else {
             spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
         }
@@ -55,35 +59,12 @@ public class SpellSelectionManager {
         //Just in case someone wants to mixin to this
         initOther(player);
 
-        if ((selectionIndex == -1 && spellSelection.lastIndex != -1) || (!selectionValid && spellSelection.lastIndex != -1)) {
+        if (!selectionOptionList.isEmpty() && ((selectionIndex == -1 && spellSelection.lastIndex != -1) || (!selectionValid && spellSelection.lastIndex != -1))) {
             tryLastSelection();
-        }
-
-        if (!selectionValid && !selectionOptionList.isEmpty()) {
-            var selectionOption = selectionOptionList.get(0);
-            setSpellSelection(new SpellSelection(selectionOption.slot, selectionOption.slotIndex));
-            selectionIndex = 0;
-            selectionValid = true;
         }
     }
 
-//    private void initSpellbook(Player player) {
-//        var spellbookStack = Utils.getPlayerSpellbookStack(player);
-//        var ssc = SpellSlotContainer.getSpellSlotContainer(spellbookStack);
-//        var activeSpells = spellBookData.getActiveInscribedSpells();
-//
-//        for (int i = 0; i < activeSpells.size(); i++) {
-//            selectionOptionList.add(new SelectionOption(activeSpells.get(i), Curios.SPELLBOOK_SLOT, i, i));
-//        }
-//
-//        if (spellSelection.equipmentSlot.equals(Curios.SPELLBOOK_SLOT) && spellSelection.index < selectionOptionList.size()) {
-//            selectionIndex = spellSelection.index;
-//            selectionValid = true;
-//        }
-//    }
-
     private void initItem(ItemStack itemStack, String equipmentSlot) {
-        var currentGlobalIndex = selectionOptionList.size();
         if (ISpellContainer.isSpellContainer(itemStack)) {
             var spellContainer =ISpellContainer.get(itemStack);
             if (spellContainer.spellWheel() && (!spellContainer.mustEquip() || (!equipmentSlot.equals(MAINHAND) && !equipmentSlot.equals(OFFHAND)))) {
@@ -106,26 +87,19 @@ public class SpellSelectionManager {
     }
 
     private void tryLastSelection() {
-        if (spellSelection.lastEquipmentSlot.equals(Curios.SPELLBOOK_SLOT) && spellSelection.lastIndex >= 0) {
-            var spellbookSpells = getSpellsForSlot(Curios.SPELLBOOK_SLOT);
-            if (spellSelection.lastIndex < spellbookSpells.size()) {
-                selectionIndex = spellSelection.lastIndex;
-                //setSpellSelection(new SpellSelection(Curios.SPELLBOOK_SLOT, spellSelection.lastIndex, spellSelection.equipmentSlot, spellSelection.index));
-                selectionValid = true;
-            }
-        } else if (spellSelection.lastEquipmentSlot.equals(MAINHAND)) {
-            var spellSlots = getSpellsForSlot(MAINHAND);
-            if (!spellSlots.isEmpty()) {
-                //setSpellSelection(new SpellSelection(MAINHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
-                selectionIndex = spellSlots.get(0).globalIndex;
-                selectionValid = true;
-            }
-        } else if (spellSelection.lastEquipmentSlot.equals(OFFHAND)) {
-            var spellSlots = getSpellsForSlot(OFFHAND);
-            if (!spellSlots.isEmpty()) {
-                //setSpellSelection(new SpellSelection(OFFHAND, 0, spellSelection.equipmentSlot, spellSelection.index));
-                selectionIndex = spellSlots.get(0).globalIndex;
-                selectionValid = true;
+        if (spellSelection.lastEquipmentSlot.isEmpty()) {
+            selectionIndex = 0;
+            selectionValid = true;
+        } else {
+            var spellsForSlot = getSpellsForSlot(spellSelection.lastEquipmentSlot);
+            if (!spellsForSlot.isEmpty()) {
+                if (spellSelection.lastIndex < spellsForSlot.size()) {
+                    selectionIndex = spellsForSlot.get(spellSelection.lastIndex).globalIndex;
+                    selectionValid = true;
+                } else {
+                    selectionIndex = spellsForSlot.get(0).globalIndex;
+                    selectionValid = true;
+                }
             }
         }
     }
@@ -144,7 +118,9 @@ public class SpellSelectionManager {
     }
 
     private void setSpellSelection(SpellSelection spellSelection) {
-        //IronsSpellbooks.LOGGER.debug("SSM.setSpellSelection old:{} new:{}", this.spellSelection, spellSelection);
+        if (Log.SPELL_SELECTION) {
+            IronsSpellbooks.LOGGER.debug("SSM.setSpellSelection old:{} new:{}", this.spellSelection, spellSelection);
+        }
 
         this.spellSelection = spellSelection;
         if (player.level.isClientSide) {
@@ -177,6 +153,12 @@ public class SpellSelectionManager {
     }
 
     public int getGlobalSelectionIndex() {
+        var selection = getSelection();
+
+        if (selection == null) {
+            return -1;
+        }
+
         return getSelection().globalIndex;
     }
 
@@ -184,6 +166,8 @@ public class SpellSelectionManager {
     public SpellSelectionManager.SelectionOption getSelection() {
         if (selectionIndex >= 0 && selectionIndex < selectionOptionList.size()) {
             return selectionOptionList.get(selectionIndex);
+        } else if (!selectionOptionList.isEmpty()) {
+            return selectionOptionList.get(0);
         }
         return null;
     }

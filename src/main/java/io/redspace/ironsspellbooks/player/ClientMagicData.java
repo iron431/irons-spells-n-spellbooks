@@ -176,7 +176,9 @@ public class ClientMagicData {
     }
 
     public static void handlePlayerSyncedData(SyncedSpellData playerSyncedData) {
-        //IronsSpellbooks.LOGGER.debug("SyncedSpellData.getSyncedSpellData spellWheelSelection:{}", playerSyncedData.getSpellSelection());
+        if (Log.SPELL_SELECTION) {
+            IronsSpellbooks.LOGGER.debug("ClientMagicData.handlePlayerSyncedData {}", playerSyncedData.getSpellSelection());
+        }
         playerSyncedDataLookup.put(playerSyncedData.getServerPlayerId(), playerSyncedData);
     }
 
