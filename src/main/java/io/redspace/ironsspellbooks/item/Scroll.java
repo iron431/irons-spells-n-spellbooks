@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
@@ -64,13 +63,11 @@ public class Scroll extends Item implements IScroll, IPresetSpellContainer {
         }
     }
 
-    public static boolean attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
+    public static void attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
         ItemStack potentialScroll = MagicData.getPlayerMagicData(serverPlayer).getPlayerCastingItem();
         if (potentialScroll.getItem() instanceof Scroll scroll) {
             scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
-            return true;
-        } else
-            return false;
+        }
     }
 
     @Override
@@ -90,10 +87,6 @@ public class Scroll extends Item implements IScroll, IPresetSpellContainer {
         }
 
         if (spell.attemptInitiateCast(stack, spellSlot.getLevel(), level, player, CastSource.SCROLL, false)) {
-            if (spell.getCastType() == CastType.INSTANT) {
-                //TODO: i think magic manager should handle this
-                removeScrollAfterCast((ServerPlayer) player, stack);
-            }
             if (spell.getCastType().holdToCast()) {
                 player.startUsingItem(hand);
             }

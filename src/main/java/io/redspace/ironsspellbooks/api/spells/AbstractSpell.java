@@ -261,18 +261,10 @@ public abstract class AbstractSpell {
                 return false;
             }
 
-            var castType = getCastType();
             int effectiveCastTime = getEffectiveCastTime(spellLevel, player);
 
             playerMagicData.initiateCast(this, getLevel(spellLevel, player), effectiveCastTime, castSource);
-
-            if (castType.holdToCast()) {
-                if (Objects.equals(player.getMainHandItem(), stack)) {
-                    serverPlayer.startUsingItem(InteractionHand.MAIN_HAND);
-                } else if (Objects.equals(player.getOffhandItem(), stack)) {
-                    serverPlayer.startUsingItem(InteractionHand.OFF_HAND);
-                }
-            }
+            playerMagicData.setPlayerCastingItem(stack);
 
             onServerPreCast(player.level, spellLevel, player, playerMagicData);
             Messages.sendToPlayer(new ClientboundUpdateCastingState(getSpellId(), getLevel(spellLevel, player), effectiveCastTime, castSource), serverPlayer);
@@ -312,12 +304,6 @@ public abstract class AbstractSpell {
         }
 
         Messages.sendToPlayer(new ClientboundOnClientCast(this.getSpellId(), this.getLevel(spellLevel, serverPlayer), castSource, magicData.getAdditionalCastData()), serverPlayer);
-
-        if (serverPlayer.getMainHandItem().getItem() instanceof ISpellbook || serverPlayer.getMainHandItem().getItem() instanceof IScroll) {
-            magicData.setPlayerCastingItem(serverPlayer.getMainHandItem());
-        } else {
-            magicData.setPlayerCastingItem(serverPlayer.getOffhandItem());
-        }
     }
 
     //Call this at the end of your override

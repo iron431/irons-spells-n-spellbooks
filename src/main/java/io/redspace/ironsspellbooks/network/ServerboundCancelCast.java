@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.network;
 
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -43,12 +44,10 @@ public class ServerboundCancelCast {
                 if (triggerCooldown) {
                     MagicHelper.MAGIC_MANAGER.addCooldown(serverPlayer, spellData.getSpell(), playerMagicData.getCastSource());
                 }
-
-                playerMagicData.getCastingSpell().getSpell().onServerCastComplete(serverPlayer.level, spellData.getLevel(), serverPlayer, playerMagicData, true);
-
-                if (spellData.getSpell().getCastType() == CastType.CONTINUOUS) {
+                if (playerMagicData.getCastSource() == CastSource.SCROLL && spellData.getSpell().getCastType() == CastType.CONTINUOUS) {
                     Scroll.attemptRemoveScrollAfterCast(serverPlayer);
                 }
+                playerMagicData.getCastingSpell().getSpell().onServerCastComplete(serverPlayer.level, spellData.getLevel(), serverPlayer, playerMagicData, true);
             }
         }
     }
