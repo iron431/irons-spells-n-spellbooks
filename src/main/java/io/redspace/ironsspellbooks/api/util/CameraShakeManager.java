@@ -38,7 +38,7 @@ public class CameraShakeManager {
                 }
             }
             if (!complete.isEmpty()) {
-                IronsSpellbooks.LOGGER.debug("CameraShakeManager.onWorldTick: removing complete data");
+                //IronsSpellbooks.LOGGER.debug("CameraShakeManager.onWorldTick: removing complete data");
                 cameraShakeData.removeAll(complete);
                 doSync();
             }

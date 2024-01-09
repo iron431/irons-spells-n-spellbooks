@@ -23,7 +23,7 @@ public class ClientboundSyncCameraShake {
     public ClientboundSyncCameraShake(FriendlyByteBuf buf) {
         cameraShakeData = new ArrayList<>();
         int i = buf.readInt();
-        IronsSpellbooks.LOGGER.debug("ClientboundSyncCameraShake construct from buf: {}", i);
+        //IronsSpellbooks.LOGGER.debug("ClientboundSyncCameraShake construct from buf: {}", i);
         for (int j = 0; j < i; j++) {
             cameraShakeData.add(CameraShakeData.deserializeFromBuffer(buf));
         }
@@ -31,7 +31,7 @@ public class ClientboundSyncCameraShake {
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(cameraShakeData.size());
-        IronsSpellbooks.LOGGER.debug("ClientboundSyncCameraShake.toBytes: {}", cameraShakeData.size());
+        //IronsSpellbooks.LOGGER.debug("ClientboundSyncCameraShake.toBytes: {}", cameraShakeData.size());
 
         for (CameraShakeData data : cameraShakeData)
             data.serializeToBuffer(buf);
@@ -41,7 +41,7 @@ public class ClientboundSyncCameraShake {
         NetworkEvent.Context ctx = supplier.get();
 
         ctx.enqueueWork(() -> {
-            IronsSpellbooks.LOGGER.debug("ClientboundsyncCameraShakeData {}", cameraShakeData.size());
+            //IronsSpellbooks.LOGGER.debug("ClientboundsyncCameraShakeData {}", cameraShakeData.size());
             CameraShakeManager.clientCameraShakeData = cameraShakeData;
         });
 

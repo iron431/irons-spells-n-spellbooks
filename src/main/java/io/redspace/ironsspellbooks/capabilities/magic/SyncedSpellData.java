@@ -162,7 +162,7 @@ public class SyncedSpellData {
     }
 
     public void setSpellSelection(SpellSelection spellSelection) {
-        IronsSpellbooks.LOGGER.debug("SyncedSpellData.setSpellSelection {}", spellSelection);
+        //IronsSpellbooks.LOGGER.debug("SyncedSpellData.setSpellSelection {}", spellSelection);
         this.spellSelection = spellSelection;
         doSync();
     }
