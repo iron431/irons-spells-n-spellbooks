@@ -150,6 +150,9 @@ public abstract class AbstractSpell {
     }
 
     public int getCastTime(int spellLevel) {
+        if (this.getCastType() == CastType.INSTANT) {
+            return 0;
+        }
         return this.castTime;
     }
 
