@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells.dragon_breath;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
@@ -23,7 +22,7 @@ public class DragonBreathPool extends AoeEntity {
         setRadius(1.8f);
         this.radiusOnUse = -.15f;
         this.radiusPerTick = -.02f;
-        IronsSpellbooks.LOGGER.debug("Creating DragonBreathPool");
+        //IronsSpellbooks.LOGGER.debug("Creating DragonBreathPool");
     }
 
     public DragonBreathPool(Level level) {

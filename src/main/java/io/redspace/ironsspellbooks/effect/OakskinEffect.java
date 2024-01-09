@@ -41,7 +41,7 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
             float before = event.getAmount();
             float multiplier = 1 - getReductionAmount(lvl);
             event.setAmount(event.getAmount() * multiplier);
-            IronsSpellbooks.LOGGER.debug("OakskinEffect.reduceDamage: {}->{}", before, event.getAmount());
+            //IronsSpellbooks.LOGGER.debug("OakskinEffect.reduceDamage: {}->{}", before, event.getAmount());
         }
     }
 

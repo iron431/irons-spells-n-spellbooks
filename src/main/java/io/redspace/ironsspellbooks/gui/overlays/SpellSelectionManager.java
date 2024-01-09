@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
@@ -145,7 +144,7 @@ public class SpellSelectionManager {
     }
 
     private void setSpellSelection(SpellSelection spellSelection) {
-        IronsSpellbooks.LOGGER.debug("SSM.setSpellSelection old:{} new:{}", this.spellSelection, spellSelection);
+        //IronsSpellbooks.LOGGER.debug("SSM.setSpellSelection old:{} new:{}", this.spellSelection, spellSelection);
 
         this.spellSelection = spellSelection;
         if (player.level.isClientSide) {

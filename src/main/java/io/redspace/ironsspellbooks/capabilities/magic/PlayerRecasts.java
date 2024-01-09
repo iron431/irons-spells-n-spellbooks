@@ -115,8 +115,7 @@ public class PlayerRecasts {
     }
 
     public void decrementRecastCount(String spellId) {
-        //TODO: remove this log
-        IronsSpellbooks.LOGGER.debug("PlayerRecasts: {} {}", serverPlayer, spellId);
+        //IronsSpellbooks.LOGGER.debug("PlayerRecasts: {} {}", serverPlayer, spellId);
         var recastInstance = recastLookup.get(spellId);
 
         if (isRecastActive(recastInstance)) {

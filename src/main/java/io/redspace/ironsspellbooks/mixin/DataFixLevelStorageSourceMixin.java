@@ -2,10 +2,8 @@ package io.redspace.ironsspellbooks.mixin;
 
 import com.mojang.datafixers.DataFixer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.datafix.IronsTagTraverser;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

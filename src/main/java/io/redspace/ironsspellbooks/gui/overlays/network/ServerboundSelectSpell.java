@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.overlays.network;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelection;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,7 +31,7 @@ public class ServerboundSelectSpell {
             // Here we are server side
             ServerPlayer serverPlayer = ctx.getSender();
             if (serverPlayer != null) {
-                IronsSpellbooks.LOGGER.debug("ServerboundSelectSpell.handle {}", spellSelection);
+                //IronsSpellbooks.LOGGER.debug("ServerboundSelectSpell.handle {}", spellSelection);
                 MagicData.getPlayerMagicData(serverPlayer).getSyncedData().setSpellSelection(spellSelection);
             }
         });

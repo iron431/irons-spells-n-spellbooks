@@ -38,17 +38,17 @@ public class InstantManaEffect extends CustomDescriptionMobEffect {
 
     @Override
     public void applyInstantenousEffect(@Nullable Entity pSource, @Nullable Entity pIndirectSource, LivingEntity livingEntity, int pAmplifier, double pHealth) {
-        IronsSpellbooks.LOGGER.debug("Instant mana applying effect");
+        //IronsSpellbooks.LOGGER.debug("Instant mana applying effect");
         int i = pAmplifier + 1;
         int maxMana = (int) livingEntity.getAttributeValue(AttributeRegistry.MAX_MANA.get());
         int manaAdd = (int) (i * manaPerAmplifier + (maxMana * (i * manaPerAmplifierPercent)));
         MagicData pmg = MagicData.getPlayerMagicData(livingEntity);
-        IronsSpellbooks.LOGGER.debug("old mana: {}", pmg.getMana());
+        //IronsSpellbooks.LOGGER.debug("old mana: {}", pmg.getMana());
         pmg.setMana(pmg.getMana() + manaAdd);
         if (livingEntity instanceof ServerPlayer serverPlayer) {
             Messages.sendToPlayer(new ClientboundSyncMana(pmg), serverPlayer);
         }
-        IronsSpellbooks.LOGGER.debug("new mana: {}", pmg.getMana());
+        //IronsSpellbooks.LOGGER.debug("new mana: {}", pmg.getMana());
 
     }
 

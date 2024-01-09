@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
@@ -81,7 +80,7 @@ public class CastingItem extends Item implements IMultihandWeapon {
 
     @Override
     public void releaseUsing(ItemStack itemStack, Level p_41413_, LivingEntity entity, int p_41415_) {
-        IronsSpellbooks.LOGGER.debug("Spellbook Release Using ticks used: {}", p_41415_);
+        //IronsSpellbooks.LOGGER.debug("Spellbook Release Using ticks used: {}", p_41415_);
         entity.stopUsingItem();
         Utils.releaseUsingHelper(entity, itemStack, p_41415_);
         super.releaseUsing(itemStack, p_41413_, entity, p_41415_);

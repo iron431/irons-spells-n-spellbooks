@@ -4,7 +4,6 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -79,7 +78,7 @@ public class GeoHumanoidRenderer<T extends Mob & IAnimatable> extends ExtendedGe
     @Override
     protected void prepareArmorPositionAndScale(GeoBone bone, List<ModelPart.Cube> cubeList, ModelPart sourceLimb, PoseStack poseStack, boolean geoArmor, boolean modMatrixRot) {
         if (bone.getName().equals(GenericCustomArmorRenderer.leggingTorsoLayerBone)) {
-            IronsSpellbooks.LOGGER.debug("GeoHumanoidRenderer: attempting to prepare leggingTorsoLayer");
+            //IronsSpellbooks.LOGGER.debug("GeoHumanoidRenderer: attempting to prepare leggingTorsoLayer");
             super.prepareArmorPositionAndScale((GeoBone) this.modelProvider.getBone(DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT), cubeList, sourceLimb, poseStack, false, modMatrixRot);
         } else {
             super.prepareArmorPositionAndScale(bone, cubeList, sourceLimb, poseStack, false, modMatrixRot);

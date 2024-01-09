@@ -85,10 +85,10 @@ public class RecallSpell extends AbstractSpell {
             ServerLevel respawnLevel = ((ServerLevel) world).getServer().getLevel(serverPlayer.getRespawnDimension());
             respawnLevel = respawnLevel == null ? world.getServer().overworld() : respawnLevel;
             var spawnLocation = findSpawnPosition(respawnLevel, serverPlayer);
-            IronsSpellbooks.LOGGER.debug("Recall.onCast findSpawnLocation: {}", spawnLocation);
+            //IronsSpellbooks.LOGGER.debug("Recall.onCast findSpawnLocation: {}", spawnLocation);
             if (spawnLocation.isPresent()) {
                 Vec3 vec3 = spawnLocation.get();
-                IronsSpellbooks.LOGGER.debug("Recall.onCast.a dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
+                //IronsSpellbooks.LOGGER.debug("Recall.onCast.a dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
                 if (serverPlayer.level.dimension() != respawnLevel.dimension()) {
                     serverPlayer.changeDimension(respawnLevel, new PortalTeleporter(vec3));
                 } else {
@@ -96,7 +96,7 @@ public class RecallSpell extends AbstractSpell {
                 }
             } else {
                 respawnLevel = world.getServer().overworld();
-                IronsSpellbooks.LOGGER.debug("Recall.onCast.b dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
+                //IronsSpellbooks.LOGGER.debug("Recall.onCast.b dimension: {} -> {}", serverPlayer.level.dimension(), respawnLevel.dimension());
                 if (serverPlayer.level.dimension() != respawnLevel.dimension()) {
                     serverPlayer.changeDimension(respawnLevel, new PortalTeleporter(Vec3.ZERO));
                 }
@@ -135,10 +135,10 @@ public class RecallSpell extends AbstractSpell {
         BlockState blockstate = level.getBlockState(spawnBlockpos);
         Block block = blockstate.getBlock();
         if (block instanceof RespawnAnchorBlock && blockstate.getValue(RespawnAnchorBlock.CHARGE) > 0 && RespawnAnchorBlock.canSetSpawn(level)) {
-            IronsSpellbooks.LOGGER.debug("RecallSpell.findSpawnPosition.respawnAnchor");
+            //IronsSpellbooks.LOGGER.debug("RecallSpell.findSpawnPosition.respawnAnchor");
             return RespawnAnchorBlock.findStandUpPosition(EntityType.PLAYER, level, spawnBlockpos);
         } else if (block instanceof BedBlock && BedBlock.canSetSpawn(level)) {
-            IronsSpellbooks.LOGGER.debug("RecallSpell.findSpawnPosition.bed");
+            //IronsSpellbooks.LOGGER.debug("RecallSpell.findSpawnPosition.bed");
             return BedBlock.findStandUpPosition(EntityType.PLAYER, level, spawnBlockpos, player.getYRot());
         } else {
             return Optional.empty();

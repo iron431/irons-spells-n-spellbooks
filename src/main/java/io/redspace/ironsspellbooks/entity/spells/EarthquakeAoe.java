@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
@@ -196,7 +195,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.slownessAmplifier = pCompound.getInt("Slowness");
-        IronsSpellbooks.LOGGER.debug("EarthquakeAoe readAdditionalSaveData");
+        //IronsSpellbooks.LOGGER.debug("EarthquakeAoe readAdditionalSaveData");
         createScreenShake();
     }
 }

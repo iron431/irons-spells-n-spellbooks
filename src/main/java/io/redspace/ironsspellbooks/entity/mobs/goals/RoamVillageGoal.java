@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.server.level.ServerLevel;
@@ -25,11 +24,11 @@ public class RoamVillageGoal extends PatrolNearLocationGoal {
     @Override
     protected @Nullable Vec3 getPosition() {
         if (villagePoi != null) {
-            IronsSpellbooks.LOGGER.debug("RoamVillageGoal: finding position ({})", villagePoi.pos());
+            //IronsSpellbooks.LOGGER.debug("RoamVillageGoal: finding position ({})", villagePoi.pos());
 
             return Vec3.atBottomCenterOf(villagePoi.pos());
         }
-        IronsSpellbooks.LOGGER.debug("RoamVillageGoal: village poi null. going to: {}", super.getPosition());
+        //IronsSpellbooks.LOGGER.debug("RoamVillageGoal: village poi null. going to: {}", super.getPosition());
 
         return super.getPosition();
     }

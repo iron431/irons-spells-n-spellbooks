@@ -32,7 +32,6 @@ import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -68,7 +67,6 @@ import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.checkerframework.checker.units.qual.C;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
@@ -114,7 +112,7 @@ public class ServerPlayerEvents {
             var storageSource = server.storageSource;
             var iwu = new IronsWorldUpgrader(storageSource, server.getWorldData().worldGenSettings());
             iwu.runUpgrade();
-            IronsSpellbooks.LOGGER.debug("IWU:{}", iwu.tempCount);
+            //IronsSpellbooks.LOGGER.debug("IWU:{}", iwu.tempCount);
         }
     }
 
