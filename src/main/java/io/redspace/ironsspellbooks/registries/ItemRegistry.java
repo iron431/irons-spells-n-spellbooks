@@ -243,6 +243,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> PLAGUED_BOOTS = ITEMS.register("plagued_boots", () -> new PlaguedArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
 
     public static final RegistryObject<Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<Item> DEV_CROWN = ITEMS.register("gold_crown", () -> new GoldCrownArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));
 
     /**
      * Curios

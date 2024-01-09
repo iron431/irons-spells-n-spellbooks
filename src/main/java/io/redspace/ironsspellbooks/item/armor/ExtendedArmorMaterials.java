@@ -29,6 +29,11 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
             AttributeRegistry.MANA_REGEN.get(), new AttributeModifier("Mana Regen", .25, AttributeModifier.Operation.MULTIPLY_TOTAL),
             Attributes.ATTACK_DAMAGE, new AttributeModifier("minus damage", -.15, AttributeModifier.Operation.MULTIPLY_TOTAL)
     )),
+    DEV("dev", 25, new int[]{0, 0, 0, 20}, 15, SoundEvents.ARMOR_EQUIP_DIAMOND, 0.0F, 0.0F, () -> Ingredient.of(Items.GOLD_INGOT), Map.of(
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 10000, AttributeModifier.Operation.ADDITION),
+            AttributeRegistry.COOLDOWN_REDUCTION.get(), new AttributeModifier("Mana Regen", .75, AttributeModifier.Operation.MULTIPLY_TOTAL),
+            AttributeRegistry.SPELL_POWER.get(), new AttributeModifier("Mana Regen", 1.00, AttributeModifier.Operation.MULTIPLY_TOTAL)
+    )),
     WANDERING_MAGICIAN("wandering_magician", 10, new int[]{2, 5, 6, 2}, 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(Items.LEATHER), Map.of(
             AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 25, AttributeModifier.Operation.ADDITION)
     )),
