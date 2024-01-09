@@ -289,7 +289,6 @@
   "ui.irons_spellbooks.cast_ready": "Cast!",
   "ui.irons_spellbooks.hits_dodged": "%d Hits Dodged",
   "ui.irons_spellbooks.cast_error_mana": "Not enough mana to cast %s!",
-  "ui.irons_spellbooks.spellbook_cast_error": "Spellbook must be in Curio slot. Use Keybind or Staff to cast.",
   "ui.irons_spellbooks.cast_error_cooldown": "%s is on cooldown.",
   "ui.irons_spellbooks.cast_error_scroll": "%s cannot be casted from a scroll.",
   "ui.irons_spellbooks.cast_error_unlearned": "You can't understand this spell...",

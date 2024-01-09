@@ -62,12 +62,17 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
         return maxSpellSlots;
     }
 
+//    @Override
+//    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+//        if (pLevel.isClientSide()) {
+//            Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.spellbook_cast_error").withStyle(ChatFormatting.RED), false);
+//        }
+//        return super.use(pLevel, pPlayer, pUsedHand);
+//    }
+
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        if (pLevel.isClientSide()) {
-            Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.spellbook_cast_error").withStyle(ChatFormatting.RED), false);
-        }
-        return super.use(pLevel, pPlayer, pUsedHand);
+    public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
+        return true;
     }
 
 //    @Override
