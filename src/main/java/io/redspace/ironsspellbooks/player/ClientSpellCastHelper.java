@@ -241,7 +241,6 @@ public class ClientSpellCastHelper {
 
         var spell = SpellRegistry.getSpell(spellId);
 
-        spell.playSound(spell.getCastFinishSound(), player, true);
 
         var finishAnimation = spell.getCastFinishAnimation();
 
@@ -254,7 +253,9 @@ public class ClientSpellCastHelper {
             }
         }
 
-        if (cancelled && spell.stopSoundOnCancel()) {
+        if (!cancelled) {
+            spell.playSound(spell.getCastFinishSound(), player);
+        } else if (spell.stopSoundOnCancel()) {
             spell.getCastStartSound().ifPresent((soundEvent) -> Minecraft.getInstance().getSoundManager().stop(soundEvent.getLocation(), null));
         }
 

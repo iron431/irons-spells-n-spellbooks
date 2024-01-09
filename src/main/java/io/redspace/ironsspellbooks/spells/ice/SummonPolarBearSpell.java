@@ -68,11 +68,6 @@ public class SummonPolarBearSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         int summonTime = 20 * 60 * 10;
 

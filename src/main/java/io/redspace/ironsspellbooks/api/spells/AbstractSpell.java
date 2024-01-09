@@ -158,11 +158,11 @@ public abstract class AbstractSpell {
     }
 
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(defaultCastSound());
+        return Optional.empty();
     }
 
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
+        return Optional.of(defaultCastSound());
     }
 
     /**
@@ -354,15 +354,7 @@ public abstract class AbstractSpell {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onCast isClient:{}, spell{}({}), pmd:{}", level.isClientSide, getSpellId(), spellLevel, playerMagicData);
         }
 
-        playSound(getCastFinishSound(), entity, true);
-    }
-
-    public void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
-        if (sound.isPresent()) {
-            entity.playSound(sound.get(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
-        } else if (playDefaultSound) {
-            entity.playSound(defaultCastSound(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
-        }
+        playSound(getCastFinishSound(), entity);
     }
 
     /**
@@ -393,8 +385,8 @@ public abstract class AbstractSpell {
         return true;
     }
 
-    protected void playSound(Optional<SoundEvent> sound, Entity entity) {
-        playSound(sound, entity, false);
+    public void playSound(Optional<SoundEvent> sound, Entity entity) {
+        sound.ifPresent((soundEvent -> entity.playSound(soundEvent, 2.0f, .9f + Utils.random.nextFloat() * .2f)));
     }
 
     private SoundEvent defaultCastSound() {

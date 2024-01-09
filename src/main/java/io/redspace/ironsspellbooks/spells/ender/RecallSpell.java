@@ -80,7 +80,7 @@ public class RecallSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        playSound(getCastFinishSound(), entity, false);
+        playSound(getCastFinishSound(), entity);
         if (entity instanceof ServerPlayer serverPlayer) {
             ServerLevel respawnLevel = ((ServerLevel) world).getServer().getLevel(serverPlayer.getRespawnDimension());
             respawnLevel = respawnLevel == null ? world.getServer().overworld() : respawnLevel;
@@ -120,7 +120,7 @@ public class RecallSpell extends AbstractSpell {
     }
 
     @Override
-    public void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
+    public void playSound(Optional<SoundEvent> sound, Entity entity) {
         sound.ifPresent(soundEvent -> entity.playSound(soundEvent, 2.0f, 1f));
     }
 

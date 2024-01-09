@@ -73,11 +73,6 @@ public class HeatSurgeSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
         MagicManager.spawnParticles(level, new TrailShockwaveParticleOptions(SchoolRegistry.FIRE.get().getTargetingColor(), radius, true, "irons_spellbooks:fire"), entity.getX(), entity.getY() + .15f, entity.getZ(), 1, 0, 0, 0, 0, true);

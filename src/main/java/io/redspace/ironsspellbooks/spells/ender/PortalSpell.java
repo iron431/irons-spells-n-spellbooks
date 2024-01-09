@@ -38,14 +38,14 @@ public class PortalSpell extends AbstractSpell {
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
             .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
-            .setMaxLevel(5)
-            .setCooldownSeconds(10)
+            .setMaxLevel(1)
+            .setCooldownSeconds(180)
             .build();
 
     public PortalSpell() {
         this.baseSpellPower = 10;
         this.spellPowerPerLevel = 10;
-        this.baseManaCost = 50;
+        this.baseManaCost = 200;
         this.manaCostPerLevel = 10;
         this.castTime = 0;
     }

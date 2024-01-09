@@ -66,16 +66,6 @@ public class SpectralHammerSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         return Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, distance).getType() == HitResult.Type.BLOCK;
     }

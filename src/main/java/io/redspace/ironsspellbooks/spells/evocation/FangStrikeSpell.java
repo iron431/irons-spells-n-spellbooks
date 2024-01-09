@@ -69,11 +69,6 @@ public class FangStrikeSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 forward = entity.getForward().multiply(1, 0, 1).normalize();
         Vec3 start = entity.getEyePosition().add(forward.scale(1.5));

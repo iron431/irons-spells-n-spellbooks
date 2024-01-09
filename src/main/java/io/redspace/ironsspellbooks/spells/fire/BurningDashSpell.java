@@ -89,16 +89,6 @@ public class BurningDashSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         entity.hasImpulse = true;
         float multiplier = (15 + getSpellPower(spellLevel, entity)) / 12f;

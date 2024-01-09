@@ -63,16 +63,6 @@ public class FirecrackerSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         Vec3 shootAngle = entity.getLookAngle().normalize();
         Vec3 spawn = Utils.raycastForEntity(world, entity, getRange(spellLevel, entity), true).getLocation().subtract(shootAngle.scale(.25f));

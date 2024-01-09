@@ -105,7 +105,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
             }
             if (waveAnim >= 0) {
                 var circumference = waveAnim * 2 * 3.14f;
-                int blocks = Mth.clamp((int) circumference, 0, 200);
+                int blocks = Mth.clamp((int) circumference, 0, 25);
                 float anglePerBlock = 360f / blocks;
                 for (int i = 0; i < blocks; i++) {
                     Vec3 vec3 = new Vec3(

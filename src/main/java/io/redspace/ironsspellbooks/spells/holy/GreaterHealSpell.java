@@ -61,16 +61,6 @@ public class GreaterHealSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float healAmount = entity.getMaxHealth();
         MinecraftForge.EVENT_BUS.post(new SpellHealEvent(entity, entity, healAmount, getSchoolType()));

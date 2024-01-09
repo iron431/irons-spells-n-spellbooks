@@ -82,16 +82,6 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<SoundEvent> getCastStartSound() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.empty();
-    }
-
-    @Override
     public ICastDataSerializable getEmptyCastData() {
         return new FireWallData(0);
     }

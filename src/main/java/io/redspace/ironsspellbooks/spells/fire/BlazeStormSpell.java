@@ -108,9 +108,4 @@ public class BlazeStormSpell extends AbstractSpell {
     public DamageSource getDamageSource(@Nullable Entity projectile, Entity attacker) {
         return ((ISpellDamageSource) super.getDamageSource(projectile, attacker)).setFireTime(2).get();
     }
-
-    @Override
-    public void playSound(Optional<SoundEvent> sound, Entity entity, boolean playDefaultSound) {
-        super.playSound(sound, entity, false);
-    }
 }
