@@ -51,7 +51,7 @@ public class Scroll extends Item implements IScroll, IPresetSpellContainer {
                         for (int i = min; i <= spell.getMaxLevel(); i++) {
                             var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
                             var spellList = ISpellContainer.createScrollContainer(spell, i, itemstack);
-                            SpellContainer.setNbtOnStack(itemstack, spellList);
+                            spellList.save(itemstack);
                             itemStackList.add(itemstack);
                         }
                     });

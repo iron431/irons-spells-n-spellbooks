@@ -74,7 +74,7 @@ public class SpellContainer implements ISpellContainer {
     @Override
     public void save(ItemStack stack) {
         if (stack != null) {
-            setNbtOnStack(stack, this);
+            stack.addTagElement(SPELL_SLOT_CONTAINER, this.serializeNBT());
         }
     }
 
@@ -219,12 +219,6 @@ public class SpellContainer implements ISpellContainer {
                     int x = 0;
                 }
             });
-        }
-    }
-
-    public static void setNbtOnStack(ItemStack stack, ISpellContainer spellList) {
-        if (stack != null && spellList != null) {
-            stack.addTagElement(SPELL_SLOT_CONTAINER, spellList.serializeNBT());
         }
     }
 
