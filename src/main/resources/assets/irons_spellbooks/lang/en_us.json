@@ -294,6 +294,7 @@
   "ui.irons_spellbooks.cast_error_scroll": "%s cannot be casted from a scroll.",
   "ui.irons_spellbooks.cast_error_unlearned": "You can't understand this spell...",
   "ui.irons_spellbooks.cast_error_target": "This spell requires a target.",
+  "ui.irons_spellbooks.cast_error_spectral_hammer": "Target a mineable material.",
   "ui.irons_spellbooks.summon_despawn_message": "%s faded from this world.",
   "ui.irons_spellbooks.spell_target_warning": "%s is targeting you with %s!",
   "ui.irons_spellbooks.spell_target_success": "%s targeted with %s",
