@@ -482,18 +482,6 @@ public class ServerPlayerEvents {
                         level.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);
                     });
                 }
-                //TODO: Citadel reimplementation
-//                //boolean inStructure = MAGIC_AURA_PREDICATE.matches(serverPlayer.getLevel(), serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ());
-//                //boolean inStructure = serverPlayer.getLevel().structureManager().get
-//                //var structure = serverPlayer.getLevel().structureManager().getStructureAt(serverPlayer.blockPosition());
-//                var structureManager = serverPlayer.getLevel().structureManager();
-//                Structure structureKey = structureManager.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY).get(ModTags.MAGIC_AURA_TEMP);
-//                var structure = structureManager.getStructureAt(serverPlayer.blockPosition(), structureKey);
-//                boolean inStructure = structure != StructureStart.INVALID_START /*&& structure.getBoundingBox().isInside(serverPlayer.blockPosition())*/;
-//                //IronsSpellbooks.LOGGER.debug("ServerPlayerEvents: In citadel: {}", inStructure);
-//                if (inStructure && !ItemRegistry.ENCHANTED_WARD_AMULET.get().isEquippedBy(serverPlayer))
-//                    serverPlayer.addEffect(new MobEffectInstance(MobEffectRegistry.ENCHANTED_WARD.get(), 40, 0, false, false, false));
-
             }
         }
     }

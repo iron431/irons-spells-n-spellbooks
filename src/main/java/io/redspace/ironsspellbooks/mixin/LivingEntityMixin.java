@@ -91,7 +91,7 @@ public abstract class LivingEntityMixin {
             if (selected || deselected) {
                 if (slot == EquipmentSlot.MAINHAND) {
                     ItemStack offhandStack = self.getOffhandItem();
-                    if (offhandStack.getItem() instanceof IMultihandWeapon && !ItemStack.isSameItem(offhandStack, currentStack)) {
+                    if (offhandStack.getItem() instanceof IMultihandWeapon && !ItemStack.isSame(offhandStack, currentStack)) {
                         // If we select a mainhand item, revoke offhand attributes
                         // If we deselect a mainhand item, reinstate offhand attributes
                         if (selected) {
@@ -110,7 +110,7 @@ public abstract class LivingEntityMixin {
                             self.getAttributes().addTransientAttributeModifiers(filterApplicableAttributes(currentStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
                         }
                     }
-                    if (deselected && !ItemStack.isSameItem(mainhandStack, oldStack)) {
+                    if (deselected && !ItemStack.isSame(mainhandStack, oldStack)) {
                         self.getAttributes().removeAttributeModifiers(filterApplicableAttributes(oldStack.getAttributeModifiers(EquipmentSlot.MAINHAND)));
                     }
                 }
