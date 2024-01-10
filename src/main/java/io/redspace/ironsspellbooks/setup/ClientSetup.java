@@ -360,8 +360,6 @@ public class ClientSetup {
 
         TetraProxy.PROXY.initClient();
 
-        //TODO: Citadel reimplementation
-        //e.enqueueWork(() -> ItemProperties.register(ItemRegistry.ANTIQUATED_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> AntiquatedCompass.getCitadelLocation(entity, itemStack.getOrCreateTag()))));
     }
 
     @SubscribeEvent
