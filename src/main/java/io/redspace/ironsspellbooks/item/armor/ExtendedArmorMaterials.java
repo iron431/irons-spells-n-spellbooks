@@ -48,6 +48,7 @@ public enum ExtendedArmorMaterials implements ArmorMaterial {
             AttributeRegistry.EVOCATION_SPELL_POWER.get(), new AttributeModifier("Evocation Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     CULTIST("cultist", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
+            AttributeRegistry.MAX_MANA.get(), new AttributeModifier("Max Mana", 100, AttributeModifier.Operation.ADDITION),
             AttributeRegistry.BLOOD_SPELL_POWER.get(), new AttributeModifier("Blood Power", .08, AttributeModifier.Operation.MULTIPLY_BASE)
     )),
     PRIEST("priest", 38, schoolArmorMap(), 15, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()), Map.of(
