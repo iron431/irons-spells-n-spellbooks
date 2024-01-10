@@ -35,7 +35,7 @@ public class ShockwaveParticle extends TextureSheetParticle {
     private final boolean isFullbright;
     private final Optional<ParticleOptions> trailParticle;
 
-    ShockwaveParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, IShockwaveParticleOptions options) {
+    ShockwaveParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, ShockwaveParticleOptions options) {
         super(pLevel, pX, pY, pZ, 0, 0, 0);
 
         this.xd = xd;
@@ -165,14 +165,14 @@ public class ShockwaveParticle extends TextureSheetParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static class Provider implements ParticleProvider<IShockwaveParticleOptions> {
+    public static class Provider implements ParticleProvider<ShockwaveParticleOptions> {
         private final SpriteSet sprite;
 
         public Provider(SpriteSet pSprite) {
             this.sprite = pSprite;
         }
 
-        public Particle createParticle(@NotNull IShockwaveParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+        public Particle createParticle(@NotNull ShockwaveParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
             ShockwaveParticle shriekparticle = new ShockwaveParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, options);
             shriekparticle.pickSprite(this.sprite);
             shriekparticle.setAlpha(1.0F);

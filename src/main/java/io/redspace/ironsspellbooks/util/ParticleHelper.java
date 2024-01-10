@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.util;
 
 import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.particle.FogParticleOptions;
-import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 

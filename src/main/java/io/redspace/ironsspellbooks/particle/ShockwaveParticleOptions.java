@@ -10,43 +10,51 @@ import net.minecraft.core.particles.DustParticleOptionsBase;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class ShockwaveParticleOptions extends DustParticleOptionsBase implements IShockwaveParticleOptions {
-    //Shadows dumb private scale
-    protected final float scale;
+public class ShockwaveParticleOptions extends DustParticleOptionsBase {
+    protected final float unclampedScale;
     protected final boolean fullbright;
+    protected final String trailParticleRaw;
 
-    public ShockwaveParticleOptions(Vector3f color, float scale, boolean glowing) {
+    public ShockwaveParticleOptions(Vector3f color, float scale, boolean glowing, String trailParticle) {
         super(color, scale);
         //Super clamped scale to 4
-        this.scale = Math.max(this.getScale(), scale);
+        this.unclampedScale = scale;
         this.fullbright = glowing;
+        this.trailParticleRaw = trailParticle;
+    }
+
+    public ShockwaveParticleOptions(Vector3f color, float scale, boolean glowing) {
+        this(color, scale, glowing, "");
     }
 
     @Override
     public float getScale() {
-        return this.scale;
+        return this.unclampedScale;
     }
 
-    @Override
     public boolean isFullbright() {
         return this.fullbright;
     }
 
-    @Override
     public Optional<ParticleOptions> trailParticle() {
+        //This is only called once per construction of a particle
+        try {
+            var type = ForgeRegistries.PARTICLE_TYPES.getValue(new ResourceLocation(ShockwaveParticleOptions.this.trailParticleRaw));
+            if (type instanceof ParticleOptions particleOptions) {
+                return Optional.of(particleOptions);
+            }
+        } catch (Exception ignored) {
+
+        }
         return Optional.empty();
     }
 
-    @Override
-    public String trailParticleRaw() {
-        return "";
-    }
-
-    @Override
     public Vector3f color() {
         return color;
     }
@@ -54,34 +62,41 @@ public class ShockwaveParticleOptions extends DustParticleOptionsBase implements
     /*
         Copied From Dust Particle Options
          */
-    public static final Codec<IShockwaveParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) ->
-            p_175793_.group(Vector3f.CODEC.fieldOf("color").forGetter(IShockwaveParticleOptions::color),
-                    Codec.FLOAT.fieldOf("scale").forGetter(IShockwaveParticleOptions::getScale),
-                    Codec.BOOL.fieldOf("fullbright").forGetter(IShockwaveParticleOptions::isFullbright)
+    public static final Codec<ShockwaveParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) ->
+            p_175793_.group(Vector3f.CODEC.fieldOf("color").forGetter((option) -> option.color),
+                    Codec.FLOAT.fieldOf("scale").forGetter((option) -> option.unclampedScale),
+                    Codec.BOOL.fieldOf("fullbright").forGetter((option) -> option.fullbright),
+                    Codec.STRING.fieldOf("particle").forGetter((option) -> option.trailParticleRaw)
             ).apply(p_175793_, ShockwaveParticleOptions::new));
     @SuppressWarnings("deprecation")
-    public static final Deserializer<IShockwaveParticleOptions> DESERIALIZER = new Deserializer<IShockwaveParticleOptions>() {
-        public @NotNull IShockwaveParticleOptions fromCommand(@NotNull ParticleType<IShockwaveParticleOptions> p_123689_, @NotNull StringReader p_123690_) throws CommandSyntaxException {
-            Vector3f vector3f = DustParticleOptionsBase.readVector3f(p_123690_);
-            p_123690_.expect(' ');
-            float f = p_123690_.readFloat();
-            p_123690_.expect(' ');
-            boolean glowing = p_123690_.readBoolean();
-            return new ShockwaveParticleOptions(vector3f, f, glowing);
+    public static final Deserializer<ShockwaveParticleOptions> DESERIALIZER = new Deserializer<ShockwaveParticleOptions>() {
+        public @NotNull ShockwaveParticleOptions fromCommand(@NotNull ParticleType<ShockwaveParticleOptions> p_123689_, @NotNull StringReader reader) throws CommandSyntaxException {
+            Vector3f vector3f = DustParticleOptionsBase.readVector3f(reader);
+            reader.expect(' ');
+            float f = reader.readFloat();
+            reader.expect(' ');
+            boolean glowing = reader.readBoolean();
+            reader.expect(' ');
+            String particle = reader.readString();
+            return new ShockwaveParticleOptions(vector3f, f, glowing, particle);
         }
 
-        public @NotNull IShockwaveParticleOptions fromNetwork(@NotNull ParticleType<IShockwaveParticleOptions> p_123692_, @NotNull FriendlyByteBuf p_123693_) {
-            return new ShockwaveParticleOptions(DustParticleOptionsBase.readVector3f(p_123693_), p_123693_.readFloat(), p_123693_.readBoolean());
+        public @NotNull ShockwaveParticleOptions fromNetwork(@NotNull ParticleType<ShockwaveParticleOptions> p_123692_, @NotNull FriendlyByteBuf buf) {
+            return new ShockwaveParticleOptions(DustParticleOptionsBase.readVector3f(buf), buf.readFloat(), buf.readBoolean(), buf.readUtf());
         }
     };
 
     @Override
     public void writeToNetwork(FriendlyByteBuf pBuffer) {
-        super.writeToNetwork(pBuffer);
+        pBuffer.writeFloat(this.color.x());
+        pBuffer.writeFloat(this.color.y());
+        pBuffer.writeFloat(this.color.z());
+        pBuffer.writeFloat(this.unclampedScale);
         pBuffer.writeBoolean(fullbright);
+        pBuffer.writeUtf(trailParticleRaw);
     }
 
-    public @NotNull ParticleType<IShockwaveParticleOptions> getType() {
+    public @NotNull ParticleType<ShockwaveParticleOptions> getType() {
         return ParticleRegistry.SHOCKWAVE_PARTICLE.get();
     }
 }

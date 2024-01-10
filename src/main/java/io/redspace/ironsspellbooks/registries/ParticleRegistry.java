@@ -44,14 +44,9 @@ public class ParticleRegistry {
             return FogParticleOptions.CODEC;
         }
     });
-    public static final RegistryObject<ParticleType<IShockwaveParticleOptions>> SHOCKWAVE_PARTICLE = PARTICLE_TYPES.register("shockwave", () -> new ParticleType<IShockwaveParticleOptions>(false, ShockwaveParticleOptions.DESERIALIZER) {
-        public Codec<IShockwaveParticleOptions> codec() {
+    public static final RegistryObject<ParticleType<ShockwaveParticleOptions>> SHOCKWAVE_PARTICLE = PARTICLE_TYPES.register("shockwave", () -> new ParticleType<>(false, ShockwaveParticleOptions.DESERIALIZER) {
+        public Codec<ShockwaveParticleOptions> codec() {
             return ShockwaveParticleOptions.CODEC;
-        }
-    });
-    public static final RegistryObject<ParticleType<IShockwaveParticleOptions>> TRAIL_SHOCKWAVE_PARTICLE = PARTICLE_TYPES.register("trailed_shockwave", () -> new ParticleType<IShockwaveParticleOptions>(false, TrailShockwaveParticleOptions.DESERIALIZER) {
-        public Codec<IShockwaveParticleOptions> codec() {
-            return TrailShockwaveParticleOptions.CODEC;
         }
     });
     public static final RegistryObject<ParticleType<ZapParticleOption>> ZAP_PARTICLE = PARTICLE_TYPES.register("zap", () -> new ParticleType<ZapParticleOption>(false, ZapParticleOption.DESERIALIZER) {
