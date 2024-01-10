@@ -6,28 +6,29 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Mod.EventBusSubscriber
 public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
 
     public static final GuidingBoltManager INSTANCE = new GuidingBoltManager();
     private final HashMap<UUID, ArrayList<Projectile>> trackedEntities = new HashMap<>();
+    private final HashMap<ResourceKey<Level>, List<Projectile>> dirtyProjectiles = new HashMap<>();
     private final int tickDelay = 3;
 
     public void startTracking(LivingEntity entity) {
@@ -69,20 +70,37 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     @SubscribeEvent
     public static void onProjectileShot(EntityJoinLevelEvent event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
-            if (/*!INSTANCE.trackedEntities.isEmpty() && */event.getEntity() instanceof Projectile projectile && /*projectile.getDeltaMovement() != Vec3.ZERO && */projectile.level.isLoaded(projectile.blockPosition())) {
-                Vec3 start = projectile.position();
-                int searchRange = 32;
-                Vec3 end = Utils.raycastForBlock(event.getLevel(), start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();
-                for (Map.Entry<UUID, ArrayList<Projectile>> entry : GuidingBoltManager.INSTANCE.trackedEntities.entrySet()) {
-                    var entity = serverLevel.getEntity(entry.getKey());
-                    if (entity != null) {
-                        if (Math.abs(entity.getX() - projectile.getX()) > searchRange || Math.abs(entity.getY() - projectile.getY()) > searchRange || Math.abs(entity.getZ() - projectile.getZ()) > searchRange) {
-                            continue;
-                        }
-                        if (Utils.checkEntityIntersecting(entity, start, end, 3f).getType() == HitResult.Type.ENTITY) {
-                            entry.getValue().add(projectile);
+            if (!INSTANCE.trackedEntities.isEmpty() && event.getEntity() instanceof Projectile projectile) {
+                INSTANCE.dirtyProjectiles.computeIfAbsent(serverLevel.dimension(), (key) -> new ArrayList<>()).add(projectile);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void serverTick(TickEvent.LevelTickEvent event) {
+        if (event.phase == TickEvent.Phase.START || INSTANCE.dirtyProjectiles.isEmpty()) {
+            return;
+        }
+        if (event.level instanceof ServerLevel serverLevel) {
+            var list = INSTANCE.dirtyProjectiles.getOrDefault(serverLevel.dimension(), List.of());
+            for (int i = list.size() - 1; i >= 0; i--) {
+                var projectile = list.get(i);
+                if (projectile.isAddedToWorld()) {
+                    Vec3 start = projectile.position();
+                    int searchRange = 32;
+                    Vec3 end = Utils.raycastForBlock(serverLevel, start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();
+                    for (Map.Entry<UUID, ArrayList<Projectile>> entry : GuidingBoltManager.INSTANCE.trackedEntities.entrySet()) {
+                        var entity = serverLevel.getEntity(entry.getKey());
+                        if (entity != null) {
+                            if (Math.abs(entity.getX() - projectile.getX()) > searchRange || Math.abs(entity.getY() - projectile.getY()) > searchRange || Math.abs(entity.getZ() - projectile.getZ()) > searchRange) {
+                                continue;
+                            }
+                            if (Utils.checkEntityIntersecting(entity, start, end, 3f).getType() == HitResult.Type.ENTITY) {
+                                entry.getValue().add(projectile);
+                            }
                         }
                     }
+                    list.remove(i);
                 }
             }
         }
