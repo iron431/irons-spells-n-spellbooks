@@ -440,7 +440,8 @@ public class ServerPlayerEvents {
                 }
             });
         } else {
-            if (MagicData.getPlayerMagicData(entity).isCasting()) {
+            var magicData = MagicData.getPlayerMagicData(entity);
+            if (magicData.isCasting() && event.getItemStack() != magicData.getPlayerCastingItem()) {
                 event.setCanceled(true);
             }
         }
