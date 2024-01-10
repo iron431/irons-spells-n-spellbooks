@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
@@ -11,8 +10,10 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.util.Optional;
 
@@ -63,7 +64,7 @@ public class ShockwaveParticleOptions extends DustParticleOptionsBase {
         Copied From Dust Particle Options
          */
     public static final Codec<ShockwaveParticleOptions> CODEC = RecordCodecBuilder.create((p_175793_) ->
-            p_175793_.group(Vector3f.CODEC.fieldOf("color").forGetter((option) -> option.color),
+            p_175793_.group(ExtraCodecs.VECTOR3F.fieldOf("color").forGetter((option) -> option.color),
                     Codec.FLOAT.fieldOf("scale").forGetter((option) -> option.unclampedScale),
                     Codec.BOOL.fieldOf("fullbright").forGetter((option) -> option.fullbright),
                     Codec.STRING.fieldOf("particle").forGetter((option) -> option.trailParticleRaw)
