@@ -69,7 +69,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     @SubscribeEvent
     public static void onProjectileShot(EntityJoinLevelEvent event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
-            if (event.getEntity() instanceof Projectile projectile) {
+            if (/*!INSTANCE.trackedEntities.isEmpty() && */event.getEntity() instanceof Projectile projectile && /*projectile.getDeltaMovement() != Vec3.ZERO && */projectile.level.isLoaded(projectile.blockPosition())) {
                 Vec3 start = projectile.position();
                 int searchRange = 32;
                 Vec3 end = Utils.raycastForBlock(event.getLevel(), start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();
