@@ -320,8 +320,7 @@ public class Utils {
     }
 
     public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
-        var spellContainer = ISpellContainer.get(Utils.getPlayerSpellbookStack(serverPlayer));
-        var spellData = spellContainer.getSpellAtIndex(slot);
+        var spellData = ISpellContainer.get(Utils.getPlayerSpellbookStack(serverPlayer)).getSpellAtIndex(slot);
         if (spellData != SpellData.EMPTY) {
             var playerMagicData = MagicData.getPlayerMagicData(serverPlayer);
             if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
