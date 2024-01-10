@@ -20,7 +20,6 @@ import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.particle.FireworkParticles;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
