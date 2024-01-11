@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import net.minecraft.world.effect.MobEffect;
@@ -31,10 +33,23 @@ public class BurningDashEffect extends MobEffect {
             livingEntity.removeEffect(this);
         }
         livingEntity.fallDistance = 0;
-     }
+    }
 
     @Override
     public boolean isDurationEffectTick(int pDuration, int pAmplifier) {
         return true;
+    }
+
+    @Override
+    public void addAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
+        super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+        pLivingEntity.setLivingEntityFlag(4, true);
+
+    }
+
+    @Override
+    public void removeAttributeModifiers(LivingEntity pLivingEntity, AttributeMap pAttributeMap, int pAmplifier) {
+        super.removeAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+        pLivingEntity.setLivingEntityFlag(4, false);
     }
 }
