@@ -473,7 +473,7 @@ public class ServerPlayerEvents {
         var entity = event.getEntity();
         var level = entity.level;
         if (!level.isClientSide) {
-            if (entity.tickCount % 20 == 0) {
+            if (entity.tickCount % 40 == 0) {
                 BlockPos pos = entity.blockPosition();
                 BlockState blockState = entity.getLevel().getBlockState(pos);
                 if (blockState.is(Blocks.CAULDRON)) {
