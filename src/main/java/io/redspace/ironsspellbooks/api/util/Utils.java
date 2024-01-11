@@ -349,7 +349,7 @@ public class Utils {
         }
 
         if (!hits.isEmpty()) {
-            hits.sort((o1, o2) -> (int) (o1.getLocation().distanceToSqr(start) - o2.getLocation().distanceToSqr(start)));
+            hits.sort((o1, o2) -> (int) (o1.getLocation().distanceToSqr(start) < o2.getLocation().distanceToSqr(start) ? -1 : 1));
             return hits.get(0);
         } else if (checkForBlocks) {
             return blockHitResult;
