@@ -74,8 +74,6 @@ public interface ISpellContainer extends INBTSerializable<CompoundTag> {
     static ISpellContainer getOrCreate(ItemStack itemStack) {
         if (isSpellContainer(itemStack)) {
             return new SpellContainer(itemStack);
-        } else if (itemStack.getItem() instanceof IPresetSpellContainer iPresetSpellContainer) {
-            return iPresetSpellContainer.initializeSpellContainer(itemStack);
         } else {
             return new SpellContainer(1, true, false);
         }

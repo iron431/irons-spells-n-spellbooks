@@ -10,19 +10,20 @@
     "DataFixPlayerDataStorageMixin",
     "EntityMixin",
     "ItemMixin",
+    "ItemStackMixin",
     "LivingEntityMixin",
     "SmithingMenuMixin",
     "TridentItemMixin"
   ],
   "client": [
     "AbstractClientPlayerMixin",
+    "ClientEntityMixin",
     "EntityRendererMixin",
     "GuiMixin",
     "LocalPlayerMixin",
     "MinecraftMixin",
     "ParticleMixin",
-    "SpinAttackEffectLayerMixin",
-    "ClientEntityMixin"
+    "SpinAttackEffectLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

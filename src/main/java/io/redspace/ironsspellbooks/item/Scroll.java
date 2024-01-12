@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class Scroll extends Item implements IScroll, IPresetSpellContainer {
+public class Scroll extends Item implements IScroll {
 
     public Scroll() {
         super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON));
@@ -124,10 +124,5 @@ public class Scroll extends Item implements IScroll, IPresetSpellContainer {
         if (MinecraftInstanceHelper.instance.player() instanceof LocalPlayer localPlayer)
             lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, localPlayer));
         super.appendHoverText(itemStack, level, lines, flag);
-    }
-
-    @Override
-    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
-        return ISpellContainer.get(itemStack);
     }
 }

@@ -5,6 +5,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueSpellBook;
@@ -280,8 +281,8 @@ public class GenerateSiteData {
     }
 
     private static String getSpells(ItemStack itemStack) {
-        if (itemStack.getItem() instanceof SpellBook spellBook) {
-            var spellList = spellBook.initializeSpellContainer(itemStack);
+        if (itemStack.getItem() instanceof SpellBook) {
+            var spellList = ISpellContainer.get(itemStack);
 
             return spellList.getActiveSpells().stream().map(spell -> {
                 return spell.getSpell().getDisplayName(null).getString() + " (" + spell.getLevel() + ")";

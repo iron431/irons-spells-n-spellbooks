@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
@@ -16,13 +15,9 @@ import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -73,15 +68,15 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
         if (!this.isUnique()) {
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", this.rarity.getDisplayName()).withStyle(ChatFormatting.GRAY));
         } else {
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324))).withStyle(ChatFormatting.GRAY));
         }
         var player = MinecraftInstanceHelper.getPlayer();
-        if (player != null) {
-            var spellList = initializeSpellContainer(itemStack);
+        if (player != null && ISpellContainer.isSpellContainer(itemStack)) {
+            var spellList = ISpellContainer.get(itemStack);
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", spellList.getMaxSpellCount()).withStyle(ChatFormatting.GRAY));
             var activeSpellSlots = spellList.getActiveSpells();
             if (!activeSpellSlots.isEmpty()) {
@@ -114,15 +109,13 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
     }
 
     @Override
-    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
+    public void initializeSpellContainer(ItemStack itemStack) {
         if (itemStack == null) {
-            return new SpellContainer();
+            return;
         }
 
-        if (ISpellContainer.isSpellContainer(itemStack)) {
-            return ISpellContainer.get(itemStack);
-        } else {
-            return ISpellContainer.create(getMaxSpellSlots(), true, true);
+        if (!ISpellContainer.isSpellContainer(itemStack)) {
+            ISpellContainer.create(getMaxSpellSlots(), true, true);
         }
     }
 }
