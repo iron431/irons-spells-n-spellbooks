@@ -18,8 +18,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.ISlotType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SpellSelectionManager {
@@ -50,11 +53,14 @@ public class SpellSelectionManager {
             spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
         }
 
-        //TODO: support dynamic slot detection
+        //TODO: support dynamic slot detection for curios
         initItem(Utils.getPlayerSpellbookStack(player), Curios.SPELLBOOK_SLOT);
+        initItem(player.getItemBySlot(EquipmentSlot.HEAD), EquipmentSlot.HEAD.getName());
         initItem(player.getItemBySlot(EquipmentSlot.CHEST), EquipmentSlot.CHEST.getName());
-        initItem(player.getMainHandItem(), MAINHAND);
-        initItem(player.getOffhandItem(), OFFHAND);
+        initItem(player.getItemBySlot(EquipmentSlot.LEGS), EquipmentSlot.LEGS.getName());
+        initItem(player.getItemBySlot(EquipmentSlot.FEET), EquipmentSlot.FEET.getName());
+        initItem(player.getItemBySlot(EquipmentSlot.MAINHAND), EquipmentSlot.MAINHAND.getName());
+        initItem(player.getItemBySlot(EquipmentSlot.OFFHAND), EquipmentSlot.OFFHAND.getName());
 
         //Just in case someone wants to mixin to this
         initOther(player);
