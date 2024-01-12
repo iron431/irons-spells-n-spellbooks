@@ -32,10 +32,10 @@ public class UpgradeUtils {
     );
 
     public static String getRelevantEquipmentSlot(ItemStack itemStack) {
-        if (itemStack.getItem() instanceof ICurioItem curioItem) {
-            for (ISlotType slot : CuriosApi.getSlotHelper().getSlotTypes()) {
+        if (itemStack.getItem() instanceof ICurioItem) {
+            for (ISlotType slot : CuriosApi.getSlots().values()) {
                 SlotContext context = new SlotContext(slot.getIdentifier(), null, -1, false, false);
-                if (CuriosApi.getCuriosHelper().isStackValid(context, itemStack)) {
+                if (CuriosApi.isStackValid(context, itemStack)) {
                     return slot.getIdentifier();
                 }
             }

@@ -170,13 +170,17 @@ dependencies {
 
 def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
 def replaceProperties = [
-        minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-        forge_version       : forge_version, forge_version_range: forge_version_range,
-        loader_version_range: loader_version_range,
-        mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-        mod_authors         : mod_authors, mod_description: mod_description, mod_credits: mod_credits,
-        mod_issue_tracker   : mod_issue_tracker, mod_display_url: mod_display_url,
-        mod_logo_file       : mod_logo_file
+        minecraft_version      : minecraft_version, minecraft_version_range: minecraft_version_range,
+        forge_version          : forge_version, forge_version_range: forge_version_range,
+        loader_version_range   : loader_version_range,
+        mod_id                 : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+        mod_authors            : mod_authors, mod_description: mod_description, mod_credits: mod_credits,
+        mod_issue_tracker      : mod_issue_tracker, mod_display_url: mod_display_url,
+        mod_logo_file          : mod_logo_file,
+        curios_version         : curios_version,
+        caelus_version         : caelus_version,
+        player_animator_version: player_animator_version,
+        geckolib_version       : geckolib_version
 ]
 
 processResources {

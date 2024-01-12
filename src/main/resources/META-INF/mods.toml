@@ -50,25 +50,25 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
     modId="playeranimator" #mandatory
     mandatory=true #mandatory
-    versionRange="1.0.2" #mandatory
+    versionRange="[${player_animator_version},)" #mandatory
     ordering="AFTER"
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="geckolib" #mandatory
     mandatory=true #mandatory
-    versionRange="[4.3.1,)" #mandatory
+    versionRange="[${geckolib_version},)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="curios" #mandatory
     mandatory=true #mandatory
-    versionRange="[5.3.0+1.20.1,)" #mandatory
+    versionRange="[${curios_version},)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="caelus" #mandatory
     mandatory=true #mandatory
-    versionRange="[3.1.0+1.20,)" #mandatory
+    versionRange="[${caelus_version},)" #mandatory
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
