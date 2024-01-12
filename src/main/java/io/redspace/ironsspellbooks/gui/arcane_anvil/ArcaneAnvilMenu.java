@@ -118,6 +118,10 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 UpgradeData.getUpgradeData(result).addUpgrade(result, upgradeOrb.getUpgradeType(), slot);
                 //IronsSpellbooks.LOGGER.debug("ArcaneAnvilMenu: upgrade system test: total upgrades on {}: {}", result.getDisplayName().getString(), UpgradeUtils.getUpgradeCount(result));
             }
+            //Shriving Stone
+            else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
+                result = Utils.handleShriving(baseItemStack);
+            }
         }
 
         resultSlots.setItem(0, result);

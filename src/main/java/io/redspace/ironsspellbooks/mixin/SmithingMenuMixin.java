@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -42,26 +43,9 @@ public abstract class SmithingMenuMixin {
         var baseSlot = menu.getSlot(0);
         if (baseSlot.hasItem() && menu.getSlot(1).getItem().getItem().equals(ItemRegistry.SHRIVING_STONE.get())) {
             var resultSlot = menu.getSlot(2);
-            ItemStack result = baseSlot.getItem().copy();
-            if (result.is(ItemRegistry.SCROLL.get()))
-                return;
-            boolean flag = false;
-
-            if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook)) {
-                if (result.getItem() instanceof IPresetSpellContainer) {
-                    var spellContainer = ISpellContainer.get(result);
-                    spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell(), result));
-                } else {
-                    result.removeTagKey(SpellContainer.SPELL_SLOT_CONTAINER);
-                }
-                flag = true;
-            }
-            if (UpgradeData.hasUpgradeData(result)) {
-                UpgradeData.removeUpgradeData(result);
-                flag = true;
-            }
-            if (flag) {
-                resultSlot.set(result);
+            ItemStack resultStack = Utils.handleShriving(baseSlot.getItem());
+            if (!resultStack.isEmpty()) {
+                resultSlot.set(resultStack);
                 selectedRecipe = fakeRecipe;
                 ci.cancel();
             }

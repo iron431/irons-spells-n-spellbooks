@@ -5,6 +5,8 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.capabilities.magic.CastTargetingData;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
+import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -18,6 +20,7 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
+import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
@@ -511,6 +514,38 @@ public class Utils {
             return true;
 
         return TetraProxy.PROXY.canImbue(itemStack);
+    }
+
+    /**
+     * Returns a result item, or ItemStack.empty if there is no result
+     *
+     * @param baseStack
+     * @return
+     */
+    public static ItemStack handleShriving(ItemStack baseStack) {
+        ItemStack result = baseStack.copy();
+        if (result.is(ItemRegistry.SCROLL.get()))
+            return ItemStack.EMPTY;
+        boolean hasResult = false;
+
+        if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook)) {
+            if (result.getItem() instanceof IPresetSpellContainer) {
+                var spellContainer = ISpellContainer.get(result);
+                spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell(), result));
+            } else {
+                result.removeTagKey(SpellContainer.SPELL_SLOT_CONTAINER);
+            }
+            hasResult = true;
+        }
+        if (UpgradeData.hasUpgradeData(result)) {
+            UpgradeData.removeUpgradeData(result);
+            hasResult = true;
+        }
+        if (hasResult) {
+            return result;
+        } else {
+            return ItemStack.EMPTY;
+        }
     }
 
     public static boolean validAntiMagicTarget(Entity entity) {
