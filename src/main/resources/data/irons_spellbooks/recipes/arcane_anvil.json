@@ -3,7 +3,7 @@
   "pattern": [
     "AAA",
     " D ",
-    "VNV"
+    "SVS"
   ],
   "key": {
     "D": {
@@ -12,8 +12,8 @@
     "V": {
       "item": "minecraft:anvil"
     },
-    "N": {
-      "tag": "forge:ingots/netherite"
+    "S": {
+      "item": "minecraft:polished_deepslate"
     },
     "A": {
       "tag": "forge:storage_blocks/amethyst"
