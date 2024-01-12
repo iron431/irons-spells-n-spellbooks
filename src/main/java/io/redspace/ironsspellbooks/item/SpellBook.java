@@ -115,7 +115,8 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
         }
 
         if (!ISpellContainer.isSpellContainer(itemStack)) {
-            ISpellContainer.create(getMaxSpellSlots(), true, true);
+            var spellContainer = ISpellContainer.create(getMaxSpellSlots(), true, true);
+            spellContainer.save(itemStack);
         }
     }
 }
