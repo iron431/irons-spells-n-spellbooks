@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,23 +24,20 @@ public class ScreenEffectsOverlay implements IGuiOverlay {
         //screenWidth = gui.getMinecraft().getWindow().getScreenWidth();
         //screenHeight = gui.getMinecraft().getWindow().getScreenHeight();
         Player player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+        //var bloodPower = String.format( "blood power:  %.2f", player.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER.get()));
+        //var icePower = String.format(   "ice power:    %.2f", player.getAttributeValue(AttributeRegistry.ICE_SPELL_POWER.get()));
+        //guiHelper.drawString(gui.getFont(), bloodPower, 10, 10, 0xFFFFFF);
+        //guiHelper.drawString(gui.getFont(), icePower, 10, 10 + gui.getFont().lineHeight, 0xFFFFFF);
         if (player.hasEffect(MobEffectRegistry.HEARTSTOP.get())) {
 
-            // setupRenderer(1, 0, 0, .25f, HEARSTOP_TEXTURE);
+            setupRenderer(1, 0, 0, .25f, HEARTSTOP_TEXTURE);
             //gui.blit(poseStack, 0, 0, 0, 0, screenWidth, screenHeight);
             renderOverlay(HEARTSTOP_TEXTURE, .5f, 1, 1, 0.5f, screenWidth, screenHeight);
 
         }
-
-        //TODO: Citadel reimplementation
-//        if (player.hasEffect(MobEffectRegistry.ENCHANTED_WARD.get())) {
-//            //0-1
-//            float opacity = (float) ((Math.cos(player.tickCount * .2f) + 1) * .5f);
-//            opacity = .25f + opacity * .75f;
-//            //0.25-1
-//            renderOverlay(MAGIC_AURA_TEXTURE, 1 *  opacity, .5f *  opacity, 0, 1, screenWidth, screenHeight);
-//        }
-
     }
 
     private static void setupRenderer(float r, float g, float b, float a, ResourceLocation texture) {

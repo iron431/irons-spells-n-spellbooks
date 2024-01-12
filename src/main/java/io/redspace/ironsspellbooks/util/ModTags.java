@@ -30,8 +30,6 @@ public class ModTags {
     public static final TagKey<Block> GUARDED_BY_WIZARDS = BlockTags.create(new ResourceLocation(IronsSpellbooks.MODID, "guarded_by_wizards"));
 
     public static final TagKey<Structure> WAYWARD_COMPASS_LOCATOR = TagKey.create(Registries.STRUCTURE, new ResourceLocation(IronsSpellbooks.MODID, "wayward_compass_locator"));
-    public static final TagKey<Structure> ANTIQUATED_COMPASS_LOCATOR = TagKey.create(Registries.STRUCTURE, new ResourceLocation(IronsSpellbooks.MODID, "antiquated_compass_locator"));
-    public static final ResourceKey<Structure> MAGIC_AURA_TEMP = ResourceKey.create(Registries.STRUCTURE, new ResourceLocation(IronsSpellbooks.MODID, "citadel"));
 
     public static final TagKey<EntityType<?>> ALWAYS_HEAL = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "always_heal"));
     public static final TagKey<EntityType<?>> CANT_ROOT = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(IronsSpellbooks.MODID, "cant_root"));

@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.util;
 
 import io.redspace.ironsspellbooks.particle.FogParticleOptions;
-import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import net.minecraft.core.particles.ParticleOptions;
 import org.joml.Vector3f;

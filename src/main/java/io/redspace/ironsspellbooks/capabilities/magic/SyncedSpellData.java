@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.network.ClientboundSyncEntityData;
 import io.redspace.ironsspellbooks.network.ClientboundSyncPlayerData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.setup.Messages;
+import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -162,7 +163,9 @@ public class SyncedSpellData {
     }
 
     public void setSpellSelection(SpellSelection spellSelection) {
-        //IronsSpellbooks.LOGGER.debug("SyncedSpellData.setSpellSelection {}", spellSelection);
+        if (Log.SPELL_SELECTION) {
+            IronsSpellbooks.LOGGER.debug("SyncedSpellData.setSpellSelection {}", spellSelection);
+        }
         this.spellSelection = spellSelection;
         doSync();
     }

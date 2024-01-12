@@ -72,7 +72,7 @@ public class CameraShakeManager {
         }
 
         var player = event.getCamera().getEntity();
-        List<CameraShakeData> closestCameraShakes = clientCameraShakeData.stream().sorted((o1, o2) -> (int) (o1.origin.distanceToSqr(player.position()) - o2.origin.distanceToSqr(player.position()))).toList();
+        List<CameraShakeData> closestCameraShakes = clientCameraShakeData.stream().sorted((o1, o2) -> o1.origin.distanceToSqr(player.position()) < o2.origin.distanceToSqr(player.position()) ? -1 : 1).toList();
         var cameraShake = closestCameraShakes.get(0);
         var closestPos = cameraShake.origin;
 

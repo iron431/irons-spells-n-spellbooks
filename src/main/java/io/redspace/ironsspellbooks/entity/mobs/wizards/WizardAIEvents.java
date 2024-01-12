@@ -47,22 +47,6 @@ public class WizardAIEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onProjectileShot(EntityJoinLevelEvent event) {
-        if (event.getLevel() instanceof ServerLevel serverLevel) {
-            if (event.getEntity() instanceof Projectile projectile) {
-                Vec3 start = projectile.position();
-                int searchRange = 16;
-                Vec3 end = Utils.raycastForBlock(event.getLevel(), start, projectile.getDeltaMovement().normalize().scale(searchRange).add(start), ClipContext.Fluid.NONE).getLocation();
-                serverLevel.getEntitiesOfClass(AbstractSpellCastingMob.class, new AABB(start.x, start.y, start.z, end.x, end.y, end.z)).forEach(castingMob -> {
-                    if (Utils.checkEntityIntersecting(castingMob, start, end, 0f).getType()== HitResult.Type.ENTITY) {
-
-                    }
-                });
-            }
-        }
-    }
-
     public static void angerNearbyWizards(Player player, int angerLevel, boolean requireLineOfSight, boolean blockRelated) {
         if (player.getAbilities().instabuild) {
             return;

@@ -277,14 +277,12 @@ public class ClientSetup {
         event.registerSpriteSet(ParticleRegistry.EMBER_PARTICLE.get(), EmberParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.SIPHON_PARTICLE.get(), SiphonParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.FOG_PARTICLE.get(), FogParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.SHOCKWAVE_PARTICLE.get(), ShockwaveParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.ACID_PARTICLE.get(), AcidParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.ACID_BUBBLE_PARTICLE.get(), AcidBubbleParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.ZAP_PARTICLE.get(), ZapParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.FIREFLY_PARTICLE.get(), FireflyParticle.Provider::new);
-        event.registerSpriteSet(ParticleRegistry.SHOCKWAVE_PARTICLE.get(), ShockwaveParticle.Provider::new);
-        event.registerSpriteSet(ParticleRegistry.TRAIL_SHOCKWAVE_PARTICLE.get(), ShockwaveParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.RING_SMOKE_PARTICLE.get(), RingSmokeParticle.Provider::new);
-
     }
 
     @SubscribeEvent
@@ -345,8 +343,6 @@ public class ClientSetup {
 
         TetraProxy.PROXY.initClient();
 
-        //TODO: Citadel reimplementation
-        //e.enqueueWork(() -> ItemProperties.register(ItemRegistry.ANTIQUATED_COMPASS.get(), new ResourceLocation("angle"), new CompassItemPropertyFunction((level, itemStack, entity) -> AntiquatedCompass.getCitadelLocation(entity, itemStack.getOrCreateTag()))));
     }
 
     @SubscribeEvent
