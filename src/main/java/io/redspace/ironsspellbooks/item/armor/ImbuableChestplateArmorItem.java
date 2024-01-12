@@ -7,8 +7,8 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class ImbuableChestplateArmorItem extends ExtendedArmorItem implements IPresetSpellContainer {
-    public ImbuableChestplateArmorItem(ExtendedArmorMaterials material, EquipmentSlot slot, Properties settings) {
-        super(material, slot, settings);
+    public ImbuableChestplateArmorItem(ExtendedArmorMaterials material, Type type, Properties settings) {
+        super(material, type, settings);
     }
 
     @Override
@@ -17,7 +17,7 @@ public abstract class ImbuableChestplateArmorItem extends ExtendedArmorItem impl
             return;
         }
 
-        if (itemStack.getItem() instanceof ArmorItem armorItem && armorItem.getSlot() == EquipmentSlot.CHEST) {
+        if (itemStack.getItem() instanceof ArmorItem armorItem && armorItem.getType() == Type.CHESTPLATE) {
             if (!ISpellContainer.isSpellContainer(itemStack)) {
                 var spellContainer = ISpellContainer.create(1, true, true);
                 spellContainer.save(itemStack);

@@ -241,10 +241,10 @@ public class ItemRegistry {
     public static final RegistryObject<Item> PLAGUED_LEGGINGS = ITEMS.register("plagued_leggings", () -> new PlaguedArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
     public static final RegistryObject<Item> PLAGUED_BOOTS = ITEMS.register("plagued_boots", () -> new PlaguedArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
 
-    public static final RegistryObject<Item> NETHERITE_MAGE_HELMET = ITEMS.register("netherite_mage_helmet", () -> new NetheriteMageArmorItem(EquipmentSlot.HEAD, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> NETHERITE_MAGE_CHESTPLATE = ITEMS.register("netherite_mage_chestplate", () -> new NetheriteMageArmorItem(EquipmentSlot.CHEST, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> NETHERITE_MAGE_LEGGINGS = ITEMS.register("netherite_mage_leggings", () -> new NetheriteMageArmorItem(EquipmentSlot.LEGS, ItemPropertiesHelper.equipment()));
-    public static final RegistryObject<Item> NETHERITE_MAGE_BOOTS = ITEMS.register("netherite_mage_boots", () -> new NetheriteMageArmorItem(EquipmentSlot.FEET, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> NETHERITE_MAGE_HELMET = ITEMS.register("netherite_mage_helmet", () -> new NetheriteMageArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> NETHERITE_MAGE_CHESTPLATE = ITEMS.register("netherite_mage_chestplate", () -> new NetheriteMageArmorItem(ArmorItem.Type.CHESTPLATE, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> NETHERITE_MAGE_LEGGINGS = ITEMS.register("netherite_mage_leggings", () -> new NetheriteMageArmorItem(ArmorItem.Type.LEGGINGS, ItemPropertiesHelper.equipment()));
+    public static final RegistryObject<Item> NETHERITE_MAGE_BOOTS = ITEMS.register("netherite_mage_boots", () -> new NetheriteMageArmorItem(ArmorItem.Type.BOOTS, ItemPropertiesHelper.equipment()));
 
     public static final RegistryObject<Item> TARNISHED_CROWN = ITEMS.register("tarnished_helmet", () -> new TarnishedCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.equipment().rarity(Rarity.UNCOMMON)));
     public static final RegistryObject<Item> DEV_CROWN = ITEMS.register("gold_crown", () -> new GoldCrownArmorItem(ArmorItem.Type.HELMET, ItemPropertiesHelper.hidden(1).rarity(Rarity.EPIC)));

@@ -89,6 +89,10 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.PLAGUED_CHESTPLATE.get());
                 entries.accept(ItemRegistry.PLAGUED_LEGGINGS.get());
                 entries.accept(ItemRegistry.PLAGUED_BOOTS.get());
+                entries.accept(ItemRegistry.NETHERITE_MAGE_HELMET.get());
+                entries.accept(ItemRegistry.NETHERITE_MAGE_CHESTPLATE.get());
+                entries.accept(ItemRegistry.NETHERITE_MAGE_LEGGINGS.get());
+                entries.accept(ItemRegistry.NETHERITE_MAGE_BOOTS.get());
                 entries.accept(ItemRegistry.TARNISHED_CROWN.get());
 
                 entries.accept(ItemRegistry.MANA_RING.get());

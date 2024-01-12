@@ -1,17 +1,16 @@
 package io.redspace.ironsspellbooks.entity.armor.netherite;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.item.armor.ArchevokerArmorItem;
 import io.redspace.ironsspellbooks.item.armor.NetheriteMageArmorItem;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.DefaultedItemGeoModel;
 
-public class NetheriteMageArmorModel extends AnimatedGeoModel<NetheriteMageArmorItem> {
+public class NetheriteMageArmorModel extends DefaultedItemGeoModel<NetheriteMageArmorItem> {
 
     public NetheriteMageArmorModel(){
-        super();
-
+        super(new ResourceLocation(IronsSpellbooks.MODID, ""));
     }
+
     @Override
     public ResourceLocation getModelResource(NetheriteMageArmorItem object) {
         return new ResourceLocation(IronsSpellbooks.MODID, "geo/netherite_armor.geo.json");
