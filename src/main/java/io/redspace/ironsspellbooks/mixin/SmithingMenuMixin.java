@@ -1,8 +1,10 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
+import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -45,8 +47,13 @@ public abstract class SmithingMenuMixin {
                 return;
             boolean flag = false;
 
-            if (ISpellContainer.isSpellContainer(result)) {
-                result.removeTagKey(SpellContainer.SPELL_SLOT_CONTAINER);
+            if (ISpellContainer.isSpellContainer(result) && !(result.getItem() instanceof SpellBook)) {
+                if (result.getItem() instanceof IPresetSpellContainer) {
+                    var spellContainer = ISpellContainer.get(result);
+                    spellContainer.getActiveSpells().forEach(spellData -> spellContainer.removeSpell(spellData.getSpell(), result));
+                } else {
+                    result.removeTagKey(SpellContainer.SPELL_SLOT_CONTAINER);
+                }
                 flag = true;
             } else if (UpgradeData.hasUpgradeData(result)) {
                 UpgradeData.removeUpgradeData(result);

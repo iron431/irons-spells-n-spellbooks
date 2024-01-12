@@ -210,6 +210,8 @@
   "tooltip.irons_spellbooks.spellbook_tooltip": "Inscribed Spells:",
   "tooltip.irons_spellbooks.upgrade_tooltip": "When used for Upgrade:",
   "tooltip.irons_spellbooks.imbued_tooltip": "Imbued Spell:",
+  "tooltip.irons_spellbooks.can_be_imbued": "Can be Imbued",
+  "tooltip.irons_spellbooks.imbue_slots": "Imbue Slots: %d/%d",
   "tooltip.irons_spellbooks.casting_implement_tooltip": "Active Spell:",
   "tooltip.irons_spellbooks.spell_title": "%s [Lvl %d]",
   "tooltip.irons_spellbooks.mana_cost": " %d Mana Cost",
