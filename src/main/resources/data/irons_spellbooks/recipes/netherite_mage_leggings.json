@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CRC",
+    "C C"
+  ],
+  "key": {
+    "C": {
+      "item": "irons_spellbooks:magic_cloth"
+    },
+    "R": {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+  "result": {
+    "item": "irons_spellbooks:netherite_mage_leggings",
+    "count": 1
+  }
+}

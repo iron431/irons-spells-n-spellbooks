@@ -15,6 +15,8 @@ import io.redspace.ironsspellbooks.compat.tetra.TetraProxy;
 import io.redspace.ironsspellbooks.effect.PlanarSightEffect;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.armor.*;
+import io.redspace.ironsspellbooks.entity.armor.netherite.NetheriteMageArmorModel;
+import io.redspace.ironsspellbooks.entity.armor.netherite.NetheriteMageArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.simple_wizard.WizardArmorRenderer;
@@ -58,7 +60,6 @@ import io.redspace.ironsspellbooks.entity.spells.root.RootRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
-import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrow;
 import io.redspace.ironsspellbooks.entity.spells.small_magic_arrow.SmallMagicArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammerRenderer;
 import io.redspace.ironsspellbooks.entity.spells.target_area.TargetAreaRenderer;
@@ -165,6 +166,7 @@ public class ClientSetup {
         GeoArmorRenderer.registerArmorRenderer(PumpkinArmorItem.class, () -> new PumpkinArmorRenderer(new PumpkinArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(PlaguedArmorItem.class, () -> new GenericCustomArmorRenderer(new PlaguedArmorModel()));
         GeoArmorRenderer.registerArmorRenderer(GoldCrownArmorItem.class, () -> new GenericCustomArmorRenderer(new GoldCrownModel()));
+        GeoArmorRenderer.registerArmorRenderer(NetheriteMageArmorItem.class, () -> new NetheriteMageArmorRenderer(new NetheriteMageArmorModel()));
 
         //Ironsspellbooks.logger.debug("registerRenderers: EntityRenderersEvent.AddLayers event: {}", event.toString());
 
