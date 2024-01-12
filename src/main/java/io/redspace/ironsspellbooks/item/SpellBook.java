@@ -46,7 +46,8 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
     public SpellBook(int maxSpellSlots, SpellRarity rarity, Item.Properties pProperties) {
         super(pProperties);
         this.maxSpellSlots = maxSpellSlots;
-        this.rarity = rarity;
+        //TODO: testing rarity removal
+        this.rarity = SpellRarity.LEGENDARY;//rarity;
     }
 
     public SpellRarity getRarity() {
@@ -70,7 +71,8 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
         if (!this.isUnique()) {
-            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", this.rarity.getDisplayName()).withStyle(ChatFormatting.GRAY));
+            //TODO: testing rarity removal
+//s            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", this.rarity.getDisplayName()).withStyle(ChatFormatting.GRAY));
         } else {
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(Style.EMPTY.withColor(0xe04324))).withStyle(ChatFormatting.GRAY));
         }
