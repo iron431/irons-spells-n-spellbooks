@@ -31,6 +31,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -181,7 +182,9 @@ public class ClientPlayerEvents {
                 }
             } else if (ISpellContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
                 var spellContainer = ISpellContainer.get(stack);
+                int i = 1;
                 if (!spellContainer.isEmpty()) {
+                    i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                     var additionalLines = new ArrayList<Component>();
                     spellContainer.getActiveSpells().forEach(spellSlot -> {
                         var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot, CastSource.SWORD, player);
@@ -191,8 +194,16 @@ public class ClientPlayerEvents {
                     });
                     //Add header to sword tooltip
                     additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY));
-                    int i = event.getFlags().isAdvanced() ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
                     lines.addAll(i, additionalLines);
+                }
+                if (spellContainer.getActiveSpellCount() < spellContainer.getMaxSpellCount()) {
+                    var component = Component.translatable("tooltip.irons_spellbooks.can_be_imbued");
+                    for (int j = 0; j < spellContainer.getMaxSpellCount() - spellContainer.getActiveSpellCount(); j++) {
+                        component.append(Component.literal(" <>"));
+                    }
+                    component.setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY));
+                    //additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.imbue_slots", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.WHITE));
+                    lines.add(i, component);
                 }
             }
             if (stack.getItem() instanceof IMultihandWeapon) {

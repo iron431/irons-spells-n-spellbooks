@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class PriestArmorItem extends ExtendedArmorItem{
+public class PriestArmorItem extends ImbuableChestplateArmorItem{
     public PriestArmorItem(ArmorItem.Type slot, Properties settings) {
         super(ExtendedArmorMaterials.PRIEST, slot, settings);
     }

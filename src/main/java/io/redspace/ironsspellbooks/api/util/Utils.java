@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.gui.overlays.SpellSelectionManager;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
@@ -493,12 +494,20 @@ public class Utils {
     }
 
     public static boolean canImbue(ItemStack itemStack) {
-        String id = ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString();
-        if (ServerConfigs.IMBUE_BLACKLIST.get().contains(id))
+        if (itemStack.getItem() instanceof UniqueItem) {
             return false;
-        if (ServerConfigs.IMBUE_WHITELIST.get().contains(id))
+        }
+        String id = ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString();
+        if (ServerConfigs.IMBUE_BLACKLIST.get().contains(id)) {
+            return false;
+        }
+        if (ServerConfigs.IMBUE_WHITELIST.get().contains(id)) {
             return true;
-        if ((itemStack.getItem() instanceof SwordItem swordItem && !(swordItem instanceof UniqueItem)))
+        }
+        if (itemStack.getItem() instanceof SwordItem) {
+            return true;
+        }
+        if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook))
             return true;
 
         return TetraProxy.PROXY.canImbue(itemStack);

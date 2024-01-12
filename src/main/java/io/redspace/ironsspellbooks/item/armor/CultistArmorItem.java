@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class CultistArmorItem extends ExtendedArmorItem{
+public class CultistArmorItem extends ImbuableChestplateArmorItem{
     public CultistArmorItem(ArmorItem.Type slot, Properties settings) {
         super(ExtendedArmorMaterials.CULTIST, slot, settings);
     }

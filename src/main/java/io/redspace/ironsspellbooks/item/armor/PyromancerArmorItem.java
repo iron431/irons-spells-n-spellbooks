@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class PyromancerArmorItem extends ExtendedArmorItem{
+public class PyromancerArmorItem extends ImbuableChestplateArmorItem{
     public PyromancerArmorItem(Type slot, Properties settings) {
         super(ExtendedArmorMaterials.PYROMANCER, slot, settings);
     }

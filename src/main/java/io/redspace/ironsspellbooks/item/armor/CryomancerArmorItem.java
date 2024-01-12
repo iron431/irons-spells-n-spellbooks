@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class CryomancerArmorItem extends ExtendedArmorItem {
+public class CryomancerArmorItem extends ImbuableChestplateArmorItem {
     public CryomancerArmorItem(ArmorItem.Type slot, Properties settings) {
         super(ExtendedArmorMaterials.CRYOMANCER, slot, settings);
     }

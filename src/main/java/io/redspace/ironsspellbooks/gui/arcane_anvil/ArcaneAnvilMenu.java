@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.UpgradeData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -68,9 +67,9 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         ItemStack modifierItemStack = inputSlots.getItem(1);
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             //Scroll Merging
-            if (baseItemStack.getItem() instanceof Scroll scroll1 && modifierItemStack.getItem() instanceof Scroll scroll2) {
-                var spell1 = scroll1.initializeSpellContainer(baseItemStack).getSpellAtIndex(0);
-                var spell2 = scroll2.initializeSpellContainer(modifierItemStack).getSpellAtIndex(0);
+            if (baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof Scroll) {
+                var spell1 = ISpellContainer.get(baseItemStack).getSpellAtIndex(0);
+                var spell2 = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
 
                 if (spell1.equals(spell2)) {
                     if (spell1.getLevel() < ServerConfigs.getSpellConfig(spell1.getSpell()).maxLevel()) {
@@ -81,7 +80,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             }
             //Unique Weapon Improving
             else if (baseItemStack.getItem() instanceof UniqueItem && modifierItemStack.getItem() instanceof Scroll scroll) {
-                var scrollSlot = scroll.initializeSpellContainer(modifierItemStack).getSpellAtIndex(0);
+                var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
                 if (ISpellContainer.isSpellContainer(baseItemStack)) {
                     var spellContainer = ISpellContainer.get(baseItemStack);
                     var matchIndex = spellContainer.getIndexForSpell(scrollSlot.getSpell());
@@ -102,7 +101,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                 result = baseItemStack.copy();
                 ISpellContainer spellContainer = ISpellContainer.getOrCreate(baseItemStack);
 
-                var scrollSlot = scroll.initializeSpellContainer(modifierItemStack).getSpellAtIndex(0);
+                var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
                 var nextSlotIndex = spellContainer.getNextAvailableIndex();
 
                 if (nextSlotIndex == -1) {

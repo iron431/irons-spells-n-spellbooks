@@ -159,8 +159,8 @@ public class AdditionalWanderingTrades {
                         for (ItemStack scroll : items) {
                             itemsTag.add(scroll.save(new CompoundTag()));
 
-                            if (scroll.getItem() instanceof Scroll tmpScroll) {
-                                quality += tmpScroll.initializeSpellContainer(scroll).getSpellAtIndex(0).getRarity().getValue() + 1;
+                            if (scroll.getItem() instanceof Scroll) {
+                                quality += ISpellContainer.get(scroll).getSpellAtIndex(0).getRarity().getValue() + 1;
                             }
                         }
                         forSale.getOrCreateTag().put("Items", itemsTag);

@@ -118,6 +118,7 @@ public class DataFixerHelpers {
             .build();
 
     public static List<DataFixerElement> DATA_FIXER_ELEMENTS = List.of(
+            new FixSpellbookSlots(),
             new FixIsbEnhance(),
             new FixTetra(),
             new FixApoth(),
@@ -125,7 +126,6 @@ public class DataFixerHelpers {
             new FixIsbSpell(),
             new FixItemNames(),
             new FixUpgradeType());
-
 
     public static List<byte[]> DATA_MATCHER_TARGETS = ((Supplier<List<byte[]>>)
             () -> {

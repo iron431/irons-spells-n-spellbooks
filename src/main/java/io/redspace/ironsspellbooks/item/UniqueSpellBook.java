@@ -4,9 +4,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.item.spell_books.SimpleAttributeSpellBook;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -63,7 +63,7 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
         return true;
     }
 
-    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
+    public ISpellContainer initializeSpellContainerOLD(ItemStack itemStack) {
         if (itemStack == null) {
             return new SpellContainer();
         }
@@ -75,6 +75,18 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
             getSpells().forEach(spellSlot -> spellContainer.addSpell(spellSlot.getSpell(), spellSlot.getLevel(), true, null));
             spellContainer.save(itemStack);
             return spellContainer;
+        }
+    }
+
+    public void initializeSpellContainer(ItemStack itemStack) {
+        if (itemStack == null) {
+            return;
+        }
+
+        if (!ISpellContainer.isSpellContainer(itemStack)) {
+            var spellContainer = ISpellContainer.create(getMaxSpellSlots(), true, true);
+            getSpells().forEach(spellSlot -> spellContainer.addSpell(spellSlot.getSpell(), spellSlot.getLevel(), true, null));
+            spellContainer.save(itemStack);
         }
     }
 }

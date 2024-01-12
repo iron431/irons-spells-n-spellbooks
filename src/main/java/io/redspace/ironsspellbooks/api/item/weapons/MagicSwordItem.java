@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.api.item.weapons;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
-import io.redspace.ironsspellbooks.capabilities.magic.SpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -32,20 +31,17 @@ public class MagicSwordItem extends ExtendedSwordItem implements IPresetSpellCon
         return spellData;
     }
 
-
     @Override
-    public ISpellContainer initializeSpellContainer(ItemStack itemStack) {
+    public void initializeSpellContainer(ItemStack itemStack) {
         if (itemStack == null) {
-            return new SpellContainer();
+            return;
         }
 
-        if (ISpellContainer.isSpellContainer(itemStack)) {
-            return ISpellContainer.get(itemStack);
-        } else {
-            var spellContainer = ISpellContainer.create(spellDataRegistryHolders.length, true, false);
-            getSpells().forEach(spellData -> spellContainer.addSpell(spellData.getSpell(), spellData.getLevel(), true, null));
+        if (!ISpellContainer.isSpellContainer(itemStack)) {
+            var spells = getSpells();
+            var spellContainer = ISpellContainer.create(spells.size(), true, false);
+            spells.forEach(spellData -> spellContainer.addSpell(spellData.getSpell(), spellData.getLevel(), true, null));
             spellContainer.save(itemStack);
-            return spellContainer;
         }
     }
 }

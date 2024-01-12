@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.gui.inscription_table;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
+import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
@@ -127,8 +127,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private int getErrorCode() {
+
+
         if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellbook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
-            var scrollContainer = scroll.initializeSpellContainer(menu.getScrollSlot().getItem());
+            var scrollContainer = ISpellContainer.get(menu.getScrollSlot().getItem());
             var spellSlot = scrollContainer.getSpellAtIndex(0);
             if (spellbook.getRarity().compareRarity(spellSlot.getSpell().getRarity(spellSlot.getLevel())) < 0)
                 return 1;
@@ -326,8 +328,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var spellBookSlot = menu.slots.get(SPELLBOOK_SLOT);
         var spellBookItemStack = spellBookSlot.getItem();
 
-        var iContainSpells = (IPresetSpellContainer) spellBookItemStack.getItem();
-        var spellBookContainer = iContainSpells.initializeSpellContainer(spellBookItemStack);
+        var spellBookContainer = ISpellContainer.get(spellBookItemStack);
 
         var storedSpells = spellBookContainer.getAllSpells();
         int spellCount = spellBookContainer.getMaxSpellCount();
@@ -386,8 +387,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private void onSpellBookSlotChanged() {
         isDirty = true;
         var spellBookStack = menu.slots.get(SPELLBOOK_SLOT).getItem();
-        if (spellBookStack.getItem() instanceof SpellBook spellBook) {
-            var spellBookContainer = spellBook.initializeSpellContainer(spellBookStack);
+        if (spellBookStack.getItem() instanceof SpellBook) {
+            var spellBookContainer = ISpellContainer.get(spellBookStack);
             if (spellBookContainer.getMaxSpellCount() <= selectedSpellIndex) {
                 resetSelectedSpell();
             }
@@ -404,10 +405,10 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellBook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
 
             //  Is the spell book bricked?
-            if (spellSlots.size() <= 0)
+            if (spellSlots.isEmpty())
                 return;
 
-            var scrollContainer = scroll.initializeSpellContainer(menu.getScrollSlot().getItem());
+            var scrollContainer = ISpellContainer.get(menu.getScrollSlot().getItem());
             var scrollSlot = scrollContainer.getSpellAtIndex(0);
 
             //  Is the spellbook a high enough rarity?

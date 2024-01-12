@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
 import io.redspace.ironsspellbooks.spells.eldritch.AbstractEldritchSpell;
 import net.minecraft.ChatFormatting;
@@ -82,8 +83,8 @@ public class TooltipsUtils {
     }
 
     public static List<Component> formatScrollTooltip(ItemStack stack, @Nonnull LocalPlayer player) {
-        if (stack.getItem() instanceof IPresetSpellContainer iPresetSpellContainer) {
-            var spellList = iPresetSpellContainer.initializeSpellContainer(stack);
+        if (stack.getItem() instanceof Scroll) {
+            var spellList = ISpellContainer.get(stack);
 
             if (spellList.isEmpty()) {
                 return List.of();

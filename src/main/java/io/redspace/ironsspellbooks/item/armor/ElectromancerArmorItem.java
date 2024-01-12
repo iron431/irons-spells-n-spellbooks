@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class ElectromancerArmorItem extends ExtendedArmorItem implements ArmorCapeProvider {
+public class ElectromancerArmorItem extends ImbuableChestplateArmorItem implements ArmorCapeProvider {
     public ElectromancerArmorItem(ArmorItem.Type slot, Properties settings) {
         super(ExtendedArmorMaterials.ELECTROMANCER, slot, settings);
     }
