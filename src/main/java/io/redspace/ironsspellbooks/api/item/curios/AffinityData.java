@@ -5,28 +5,29 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-public class RingData {
+public class AffinityData {
     public static final String ISB_ENHANCE = "ISBEnhance";
     String spellId;
+    public static final AffinityData NONE =  new AffinityData(SpellRegistry.none().getSpellId());
 
-    private RingData(String id) {
+    private AffinityData(String id) {
         this.spellId = id;
     }
 
-    public static RingData getRingData(ItemStack stack) {
-        if (hasRingData(stack)) {
-            return new RingData(stack.getOrCreateTag().getString(ISB_ENHANCE));
+    public static AffinityData getAffinityData(ItemStack stack) {
+        if (hasAffinityData(stack)) {
+            return new AffinityData(stack.getOrCreateTag().getString(ISB_ENHANCE));
         } else {
-            return new RingData(SpellRegistry.none().getSpellId());
+            return NONE;
         }
     }
 
-    public static void setRingData(ItemStack stack, AbstractSpell spell) {
+    public static void setAffinityData(ItemStack stack, AbstractSpell spell) {
         var spellTag = stack.getOrCreateTag();
         spellTag.putString(ISB_ENHANCE, spell.getSpellId());
     }
 
-    public static boolean hasRingData(ItemStack itemStack) {
+    public static boolean hasAffinityData(ItemStack itemStack) {
         return itemStack.getTag() != null && itemStack.getTag().contains(ISB_ENHANCE);
     }
 

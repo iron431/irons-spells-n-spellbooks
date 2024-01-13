@@ -5,9 +5,7 @@ import com.mojang.math.Vector3f;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
-import io.redspace.ironsspellbooks.api.item.IScroll;
-import io.redspace.ironsspellbooks.api.item.ISpellbook;
-import io.redspace.ironsspellbooks.api.item.curios.RingData;
+import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -138,7 +136,7 @@ public abstract class AbstractSpell {
     }
 
     private boolean filterCurios(ItemStack itemStack) {
-        return RingData.hasRingData(itemStack) && RingData.getRingData(itemStack).getSpell().equals(this);
+        return AffinityData.hasAffinityData(itemStack) && AffinityData.getAffinityData(itemStack).getSpell().equals(this);
     }
 
     public int getManaCost(int level, @Nullable LivingEntity caster) {

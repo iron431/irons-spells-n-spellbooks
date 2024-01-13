@@ -78,6 +78,7 @@ public class UniqueSpellBook extends SimpleAttributeSpellBook implements UniqueI
         }
     }
 
+    @Override
     public void initializeSpellContainer(ItemStack itemStack) {
         if (itemStack == null) {
             return;
