@@ -4,8 +4,6 @@ import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.events.SpellCastEvent;
-import io.redspace.ironsspellbooks.api.item.IScroll;
-import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.api.item.curios.RingData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.MagicHelper;
@@ -35,7 +33,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -329,12 +326,6 @@ public abstract class AbstractSpell {
         if (Log.SPELL_DEBUG) {
             IronsSpellbooks.LOGGER.debug("AbstractSpell.onClientCast isClient:{}, spell{}({})", level.isClientSide, getSpellId(), spellLevel);
         }
-    }
-
-
-    @Deprecated(forRemoval = true, since = "Use onCast that includes a castSource")
-    public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
-        onCast(level, spellLevel, entity, CastSource.NONE, playerMagicData);
     }
 
     /**
