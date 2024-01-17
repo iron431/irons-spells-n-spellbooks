@@ -54,6 +54,6 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
     }
 
     public static ResourceLocation getAffinityRingModelLocation(SchoolType schoolType) {
-        return new ResourceLocation(schoolType.getId().getNamespace(), String.format("item/affinity_ring_%s", schoolType.getId().getPath()))
+        return new ResourceLocation(schoolType.getId().getNamespace(), String.format("item/affinity_ring_%s", schoolType.getId().getPath()));
     }
 }

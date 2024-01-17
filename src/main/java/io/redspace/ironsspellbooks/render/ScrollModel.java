@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.render;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.client.resources.model.BakedModel;
@@ -20,6 +21,7 @@ public class ScrollModel extends NBTOverrideItemModel {
         if (ISpellContainer.isSpellContainer(itemStack)) {
             //TODO: post event so that other mods can register a custom model, ie scroll texture per spell?
             var school = ISpellContainer.get(itemStack).getSpellAtIndex(0).getSpell().getSchoolType();
+//            IronsSpellbooks.LOGGER.debug("ScrollModel.getModelFromTag");
             return Optional.of(getScrollModelLocation(school));
         }
         return Optional.empty();

@@ -38,9 +38,9 @@ public abstract class NBTOverrideItemModel implements BakedModel {
                 if (itemStack.hasTag()) {
                     var override = getModelFromTag(itemStack, itemStack.getTag());
                     if (override.isPresent()) {
-                        return Minecraft.getInstance().getModelManager().getModel(
-                                new ModelResourceLocation(override.get(), "inventory")
-                        );
+                        var manager = Minecraft.getInstance().getModelManager();
+                        var model = manager.getModel(override.get());
+                        return model.equals(manager.getMissingModel()) ? original : model;
                     }
                 }
 
