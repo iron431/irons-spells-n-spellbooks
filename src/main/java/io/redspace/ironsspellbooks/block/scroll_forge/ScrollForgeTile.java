@@ -69,6 +69,7 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+        //TODO: only allow one player to access at a time?
         menu = new ScrollForgeMenu(containerId, inventory, this);
         return menu;
     }

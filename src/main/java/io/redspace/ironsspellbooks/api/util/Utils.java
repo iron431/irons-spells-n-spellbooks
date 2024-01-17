@@ -21,6 +21,7 @@ import io.redspace.ironsspellbooks.item.UniqueItem;
 import io.redspace.ironsspellbooks.network.ServerboundCancelCast;
 import io.redspace.ironsspellbooks.network.spell.ClientboundSyncTargetingData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.setup.Messages;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.ChatFormatting;
@@ -33,6 +34,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -52,6 +54,7 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.entity.PartEntity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
 
@@ -136,6 +139,7 @@ public class Utils {
         //return player.getMainHandItem().getItem() instanceof SpellBook || player.getOffhandItem().getItem() instanceof SpellBook;
     }
 
+    @Nullable
     public static ItemStack getPlayerSpellbookStack(@NotNull Player player) {
         return CuriosApi.getCuriosHelper().findCurio(player, Curios.SPELLBOOK_SLOT, 0).map(SlotResult::stack).orElse(null);
     }
@@ -318,6 +322,16 @@ public class Utils {
                 }
 
                 return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getLevel(), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true);
+            }
+        } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
+            //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot
+            ItemStack heldSpellbookStack = serverPlayer.getMainHandItem();
+            if (!(heldSpellbookStack.getItem() instanceof SpellBook)) {
+                heldSpellbookStack = serverPlayer.getOffhandItem();
+            }
+            if (heldSpellbookStack.getItem() instanceof SpellBook) {
+                Utils.setPlayerSpellbookStack(serverPlayer, heldSpellbookStack);
+                serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundRegistry.EQUIP_SPELL_BOOK.get(), SoundSource.PLAYERS, 1, 1);
             }
         }
         return false;

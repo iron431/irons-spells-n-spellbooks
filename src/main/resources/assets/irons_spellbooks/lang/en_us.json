@@ -228,6 +228,7 @@
   "tooltip.irons_spellbooks.spellbook_rarity": "%s Spell Book",
   "tooltip.irons_spellbooks.spellbook_unique": "Unique",
   "tooltip.irons_spellbooks.spellbook_spell_count": "%s Spell Slots",
+  "tooltip.irons_spellbooks.press_to_cast": "Press [%s] to cast",
   "tooltip.irons_spellbooks.cast_continuous": "%s Cast Duration",
   "tooltip.irons_spellbooks.cast_long": "%s Cast Time",
   "tooltip.irons_spellbooks.cast_charge": "%s Charge Time",

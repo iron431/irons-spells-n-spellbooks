@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -36,7 +37,7 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
         if (!AffinityData.hasAffinityData(itemStack)) {
             model = renderer.getItemModelShaper().getModelManager().getModel(defaultModel);
         } else {
-            ResourceLocation modelResource = getAffinityRingModelLocation(AffinityData.getAffinityData(itemStack).getSpell().getSchoolType().getId());
+            ResourceLocation modelResource = getAffinityRingModelLocation(AffinityData.getAffinityData(itemStack).getSpell().getSchoolType());
             model = renderer.getItemModelShaper().getModelManager().getModel(modelResource);
         }
 
@@ -52,9 +53,7 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
         poseStack.popPose();
     }
 
-    public static ResourceLocation getAffinityRingModelLocation(ResourceLocation schoolResource) {
-        String namespace = schoolResource.getNamespace();
-        String schoolName = schoolResource.getPath();
-        return new ResourceLocation(namespace, "item/affinity_ring_" + schoolName);
+    public static ResourceLocation getAffinityRingModelLocation(SchoolType schoolType) {
+        return new ResourceLocation(schoolType.getId().getNamespace(), String.format("item/affinity_ring_%s", schoolType.getId().getPath()))
     }
 }

@@ -6,6 +6,8 @@ import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronRenderer;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalRenderer;
@@ -79,6 +81,7 @@ import io.redspace.ironsspellbooks.render.*;
 import io.redspace.ironsspellbooks.util.IMinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.BookModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.LayerDefinitions;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -87,6 +90,8 @@ import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
@@ -373,6 +378,19 @@ public class ClientSetup {
         event.register(IronsSpellbooks.id("item/magehunter_normal"));
         event.register(IronsSpellbooks.id("item/truthseeker_gui"));
         event.register(IronsSpellbooks.id("item/truthseeker_normal"));
+
+        for (SchoolType schoolType : SchoolRegistry.REGISTRY.get().getValues()) {
+            event.register(AffinityRingRenderer.getAffinityRingModelLocation(schoolType));
+            event.register(ScrollModel.getScrollModelLocation(schoolType));
+        }
+    }
+
+    @SubscribeEvent
+    public static void replaceItemModels(ModelEvent.BakingCompleted event) {
+        ModelResourceLocation key = new ModelResourceLocation(IronsSpellbooks.id("scroll"), "inventory");
+        BakedModel model = event.getModels().get(key);
+        IronsSpellbooks.LOGGER.debug("replaceItemModels {}: {}", key, model.getClass());
+        event.getModels().put(key, new ScrollModel(model, event.getModelBakery()));
     }
 
     @SubscribeEvent
