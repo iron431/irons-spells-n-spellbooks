@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -39,8 +38,9 @@ public abstract class NBTOverrideItemModel implements BakedModel {
                     var override = getModelFromTag(itemStack, itemStack.getTag());
                     if (override.isPresent()) {
                         var manager = Minecraft.getInstance().getModelManager();
+                        var missing = manager.getModel(ModelBakery.MISSING_MODEL_LOCATION);
                         var model = manager.getModel(override.get());
-                        return model.equals(manager.getMissingModel()) ? original : model;
+                        return model == missing ? original : model;
                     }
                 }
 
