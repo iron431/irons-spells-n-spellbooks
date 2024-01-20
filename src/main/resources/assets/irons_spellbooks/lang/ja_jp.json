@@ -1,4 +1,5 @@
- "item.irons_spellbooks.spell_book": "魔導書",
+{
+  "item.irons_spellbooks.spell_book": "魔導書",
   "item.irons_spellbooks.wimpy_spell_book": "軟弱な魔導書",
   "item.irons_spellbooks.evoker_spell_book": "召喚のグリモア",
   "item.irons_spellbooks.illusioner_spell_book": "幻想の書",
