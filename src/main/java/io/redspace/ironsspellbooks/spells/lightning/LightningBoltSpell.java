@@ -20,6 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -79,7 +80,9 @@ public class LightningBoltSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         var result = Utils.raycastForEntity(level, entity, 64, true, 1f);
         Vec3 pos = result.getLocation();
-        if (result.getType() != HitResult.Type.ENTITY) {
+        if (result.getType() == HitResult.Type.ENTITY) {
+            pos = ((EntityHitResult) result).getEntity().position();
+        } else {
             pos = Utils.moveToRelativeGroundLevel(level, pos, 10);
         }
         LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
