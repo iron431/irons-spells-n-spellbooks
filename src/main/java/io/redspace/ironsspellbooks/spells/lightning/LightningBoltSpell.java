@@ -97,7 +97,7 @@ public class LightningBoltSpell extends AbstractSpell {
         var finalpos = pos;
         level.getEntities(entity, AABB.ofSize(finalpos, radius * 2, radius * 2, radius * 2), (target) -> this.canHit(entity, target)).forEach(target -> {
             double distance = target.distanceToSqr(finalpos);
-            if (distance < radius * radius) {
+            if (distance < radius * radius && Utils.hasLineOfSight(level, finalpos.add(0, 2, 0), target.getBoundingBox().getCenter(), true)) {
                 float finalDamage = (float) (damage * (1 - distance / (radius * radius)));
                 DamageSources.applyDamage(target, finalDamage, getDamageSource(lightningBolt, entity));
                 if (target instanceof Creeper creeper) {
