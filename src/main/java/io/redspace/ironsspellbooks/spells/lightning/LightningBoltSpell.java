@@ -5,17 +5,21 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.*;
-import io.redspace.ironsspellbooks.entity.spells.ExtendedLightningBolt;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -75,15 +79,33 @@ public class LightningBoltSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         var result = Utils.raycastForEntity(level, entity, 64, true, 1f);
         Vec3 pos = result.getLocation();
-        LightningBolt lightningBolt = new ExtendedLightningBolt(level, entity, getSpellPower(spellLevel, entity));
         if (result.getType() != HitResult.Type.ENTITY) {
             pos = Utils.moveToRelativeGroundLevel(level, pos, 10);
         }
+        LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
+        lightningBolt.setVisualOnly(true);
+        lightningBolt.setDamage(0);
         lightningBolt.setPos(pos);
-        if (entity instanceof ServerPlayer serverPlayer) {
-            lightningBolt.setCause(serverPlayer);
-        }
         level.addFreshEntity(lightningBolt);
+
+        //livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100));
+        float radius = 4;
+        float damage = getSpellPower(spellLevel, entity);
+        var finalpos = pos;
+        level.getEntities(entity, AABB.ofSize(finalpos, radius * 2, radius * 2, radius * 2), (target) -> this.canHit(entity, target)).forEach(target -> {
+            double distance = target.distanceToSqr(finalpos);
+            if (distance < radius * radius) {
+                float finalDamage = (float) (damage * (1 - distance / (radius * radius)));
+                DamageSources.applyDamage(target, finalDamage, getDamageSource(lightningBolt, entity));
+                if (target instanceof Creeper creeper) {
+                    creeper.thunderHit((ServerLevel) level, lightningBolt);
+                }
+            }
+        });
         super.onCast(level, spellLevel, entity, playerMagicData);
+    }
+
+    private boolean canHit(Entity owner, Entity target) {
+        return target != owner && target.isAlive() && target.isPickable() && !target.isSpectator();
     }
 }

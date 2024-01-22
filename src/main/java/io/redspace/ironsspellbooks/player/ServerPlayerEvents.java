@@ -186,13 +186,13 @@ public class ServerPlayerEvents {
     public static void onPlayerCloned(PlayerEvent.Clone event) {
         if (event.getEntity() instanceof ServerPlayer newServerPlayer) {
             boolean keepEverything = !event.isWasDeath();
-                //Persist summon timers across death
-                event.getOriginal().getActiveEffects().forEach((effect -> {
-                    //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
-                    if (effect.getEffect() instanceof SummonTimer) {
-                        newServerPlayer.addEffect(effect, newServerPlayer);
-                    }
-                }));
+            //Persist summon timers across death
+            event.getOriginal().getActiveEffects().forEach((effect -> {
+                //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
+                if (effect.getEffect() instanceof SummonTimer) {
+                    newServerPlayer.addEffect(effect, newServerPlayer);
+                }
+            }));
             event.getOriginal().reviveCaps();
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(event.getEntity());
@@ -274,6 +274,10 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLivingTakeDamage(LivingDamageEvent event) {
+        if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && event.getSource().isFire() && event.getEntity() instanceof Creeper creeper && creeper.isPowered()) {
+            event.setCanceled(true);
+            return;
+        }
         /*
         Damage Increasing Effects
          */

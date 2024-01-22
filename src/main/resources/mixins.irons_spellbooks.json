@@ -6,6 +6,7 @@
   "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
     "AttributesMixin",
+    "CreeperMixin",
     "DataFixLevelStorageSourceMixin",
     "DataFixPlayerDataStorageMixin",
     "EntityMixin",
@@ -17,14 +18,14 @@
   ],
   "client": [
     "AbstractClientPlayerMixin",
+    "ClientEntityMixin",
     "EntityRendererMixin",
     "GuiMixin",
     "ItemRendererMixin",
     "LocalPlayerMixin",
     "MinecraftMixin",
     "ParticleMixin",
-    "SpinAttackEffectLayerMixin",
-    "ClientEntityMixin"
+    "SpinAttackEffectLayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
