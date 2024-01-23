@@ -91,7 +91,6 @@ public class LightningBoltSpell extends AbstractSpell {
         lightningBolt.setPos(pos);
         level.addFreshEntity(lightningBolt);
 
-        //livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100));
         float radius = 4;
         float damage = getSpellPower(spellLevel, entity);
         var finalpos = pos;
