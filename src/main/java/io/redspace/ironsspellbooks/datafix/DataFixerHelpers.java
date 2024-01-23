@@ -118,7 +118,6 @@ public class DataFixerHelpers {
             .build();
 
     public static List<DataFixerElement> DATA_FIXER_ELEMENTS = List.of(
-            new FixSpellbookSlots(),
             new FixIsbEnhance(),
             new FixTetra(),
             new FixApoth(),
