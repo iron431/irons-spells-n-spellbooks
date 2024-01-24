@@ -15,18 +15,15 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.item.FallingBlockEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.BlockEvent;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -38,7 +35,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 public class SpectralHammer extends LivingEntity implements IAnimatable {
 
@@ -56,6 +52,7 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
     private BlockHitResult blockHitResult;
     private float damageAmount;
     Set<BlockPos> missedBlocks = new HashSet<>();
+    private Player owner;
 
     public SpectralHammer(EntityType<? extends SpectralHammer> entityType, Level level) {
         super(entityType, level);
@@ -65,6 +62,10 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
 
     public SpectralHammer(Level levelIn, LivingEntity owner, BlockHitResult blockHitResult, int depth, int radius) {
         this(EntityRegistry.SPECTRAL_HAMMER.get(), levelIn);
+
+        if (owner instanceof Player player) {
+            this.owner = player;
+        }
 
         this.blockHitResult = blockHitResult;
         this.depth = depth;
@@ -134,14 +135,19 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
                                 missedBlocks.add(pos);
                             } else {
                                 var blockstate = level.getBlockState(pos);
+                                BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, blockstate, owner);
+                                MinecraftForge.EVENT_BUS.post(event);
 
-                                if (count.incrementAndGet() % 5 == 0) {
-                                    level.destroyBlock(pos, false);
-                                }else{
-                                    level.removeBlock(pos, false);
+                                // Handle if the event is canceled
+                                if (!event.isCanceled()) {
+                                    if (count.incrementAndGet() % 5 == 0) {
+                                        level.destroyBlock(pos, false);
+                                    } else {
+                                        level.removeBlock(pos, false);
+                                    }
+                                    //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
+                                    dropResources(blockstate, level, pos).forEach(drops::addItem);
                                 }
-                                //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
-                                dropResources(blockstate, level, pos).forEach(drops::addItem);
                             }
                         });
                         Containers.dropContents(level, this.blockPosition(), drops);
@@ -165,24 +171,46 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
     }
 
     private void collectBlocks(BlockPos blockPos, BlockCollectorHelper bch) {
-        //IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos:{} checked:{} toRemove:{}", blockPos, bch.blocksChecked.size(), bch.blocksToRemove.size());
+        var stack = new Stack<BlockPos>();
+        stack.push(blockPos);
 
-        if (bch.blocksChecked.contains(blockPos) || bch.blocksToRemove.contains(blockPos)) {
-            return;
-        }
+        while (!stack.isEmpty()) {
+            BlockPos currentPos = stack.pop();
 
-        if (bch.isValidBlockToCollect(level, blockPos)) {
-            //IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is valid", blockPos);
-            bch.blocksToRemove.add(blockPos);
-            collectBlocks(blockPos.above(), bch);
-            collectBlocks(blockPos.below(), bch);
-            collectBlocks(blockPos.north(), bch);
-            collectBlocks(blockPos.south(), bch);
-            collectBlocks(blockPos.east(), bch);
-            collectBlocks(blockPos.west(), bch);
-        } else {
-            //IronsSpellbooks.LOGGER.debug("SpectralHammer.collectBlocks: blockPos{} is not valid", blockPos);
-            bch.blocksChecked.add(blockPos);
+            if (bch.blocksChecked.contains(currentPos) || bch.blocksToRemove.contains(currentPos)) {
+                continue;
+            }
+
+            if (bch.isValidBlockToCollect(level, currentPos)) {
+                bch.blocksToRemove.add(currentPos);
+
+                var tmpPos = currentPos.above();
+                if (!bch.blocksChecked.contains(tmpPos) && !bch.blocksToRemove.contains(tmpPos)) {
+                    stack.push(tmpPos);
+                }
+                tmpPos = currentPos.below();
+                if (!bch.blocksChecked.contains(tmpPos) && !bch.blocksToRemove.contains(tmpPos)) {
+                    stack.push(tmpPos);
+                }
+                tmpPos = currentPos.north();
+                if (!bch.blocksChecked.contains(tmpPos) && !bch.blocksToRemove.contains(tmpPos)) {
+                    stack.push(tmpPos);
+                }
+                tmpPos = currentPos.south();
+                if (!bch.blocksChecked.contains(tmpPos) && !bch.blocksToRemove.contains(tmpPos)) {
+                    stack.push(tmpPos);
+                }
+                tmpPos = currentPos.east();
+                if (!bch.blocksChecked.contains(tmpPos) && !bch.blocksToRemove.contains(tmpPos)) {
+                    stack.push(tmpPos);
+                }
+                tmpPos = currentPos.west();
+                if (!bch.blocksChecked.contains(tmpPos) && !bch.blocksToRemove.contains(tmpPos)) {
+                    stack.push(tmpPos);
+                }
+            } else {
+                bch.blocksChecked.add(currentPos);
+            }
         }
     }
 
