@@ -36,6 +36,7 @@ public class ServerConfigs {
     public static final ForgeConfigSpec.ConfigValue<Integer> PRIEST_TOWER_SPAWNRATE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_CAULDRON_BREWING;
     public static final ForgeConfigSpec.ConfigValue<Boolean> FURLED_MAPS_SKIP_CHUNKS;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> BETTER_CREEPER_THUNDERHIT;
 
     //public static final ForgeConfigSpec.ConfigValue<String[]> UPGRADE_BLACKLIST;
 
@@ -71,6 +72,8 @@ public class ServerConfigs {
         ALLOW_CAULDRON_BREWING = BUILDER.worldRestart().define("allowCauldronBrewing", true);
         BUILDER.comment("Whether or not Furled Map items should skip chunks when searching for structures (only find new structures). Can impact performance while searching. Default: true");
         FURLED_MAPS_SKIP_CHUNKS = BUILDER.worldRestart().define("furledMapSkipsExistingChunks", true);
+        BUILDER.comment("Whether or not creepers should be healed and become fire immune when struck by lightning. Default: true");
+        BETTER_CREEPER_THUNDERHIT = BUILDER.worldRestart().define("betterCreeperThunderHit", true);
         BUILDER.pop();
 
         BUILDER.push("Upgrade Overrides");
