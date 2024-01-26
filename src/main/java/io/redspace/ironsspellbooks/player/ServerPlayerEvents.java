@@ -292,7 +292,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLivingTakeDamage(LivingDamageEvent event) {
-        if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && event.getSource().isFire() && event.getEntity() instanceof Creeper creeper && creeper.isPowered()) {
+        if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && event.getSource().is(DamageTypeTags.IS_FIRE) && event.getEntity() instanceof Creeper creeper && creeper.isPowered()) {
             event.setCanceled(true);
             return;
         }

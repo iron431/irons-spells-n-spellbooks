@@ -77,7 +77,7 @@ public class VisualFallingBlockEntity extends FallingBlockEntity {
             this.discard();
         } else {
             this.move(MoverType.SELF, this.getDeltaMovement());
-            if (!this.isNoGravity() && !isOnGround()) {
+            if (!this.isNoGravity() && !onGround()) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.08D, 0.0D));
             }
         }
