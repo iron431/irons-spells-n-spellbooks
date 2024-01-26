@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.entity.VisualFallingBlockEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -51,7 +53,6 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
     private boolean playSwingAnimation = true;
     private BlockHitResult blockHitResult;
     private float damageAmount;
-    Set<BlockPos> missedBlocks = new HashSet<>();
     private Player owner;
 
     public SpectralHammer(EntityType<? extends SpectralHammer> entityType, Level level) {
@@ -97,9 +98,6 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
         }
 
         if (ticksAlive >= doAnimateTick && !didAnimate) {
-            missedBlocks.forEach(pos -> {
-                FallingBlockEntity.fall(level, pos, level.getBlockState(pos));
-            });
             didAnimate = true;
         }
 
@@ -124,30 +122,36 @@ public class SpectralHammer extends LivingEntity implements IAnimatable {
                         var random = Utils.random;
                         AtomicInteger count = new AtomicInteger();
                         int maxPossibleStacks = (this.radius * 2) * (1 + this.radius * 2) * (this.depth + 1);
+                        //TODO: using a simple container of this size may be a memory hog, and adding 1-3 items per block is going spin countless iterations through #addItem
+                        // Could instead keep set of itemstacks, and update the count for each block broken, then add those to a simple container and drop them
                         SimpleContainer drops = new SimpleContainer(maxPossibleStacks);
                         blockCollector.blocksToRemove.forEach(pos -> {
                             var distance = blockCollector.origin.distManhattan(pos);
-                            var missChance = random.nextFloat() * 40;
+                            var missChance = random.nextFloat() * 20;
                             float pct = (distance * distance) / (100.0f * this.radius);
 
-                            if (missChance < pct) {
-                                //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: missed pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
-                                missedBlocks.add(pos);
-                            } else {
-                                var blockstate = level.getBlockState(pos);
-                                BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, blockstate, owner);
-                                MinecraftForge.EVENT_BUS.post(event);
+                            var blockstate = level.getBlockState(pos);
+                            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, blockstate, owner);
+                            MinecraftForge.EVENT_BUS.post(event);
 
-                                // Handle if the event is canceled
-                                if (!event.isCanceled()) {
-                                    if (count.incrementAndGet() % 5 == 0) {
-                                        level.destroyBlock(pos, false);
-                                    } else {
-                                        level.removeBlock(pos, false);
-                                    }
-                                    //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
-                                    dropResources(blockstate, level, pos).forEach(drops::addItem);
+                            // Handle if the event is canceled
+                            if (!event.isCanceled()) {
+                                boolean spawnFallingBlock = missChance < pct;
+                                if (spawnFallingBlock) {
+                                    var blockstateCopy = blockstate.getBlock().defaultBlockState();//withPropertiesOf(blockstate);
+                                    var fallingblockentity = new VisualFallingBlockEntity(level, pos.getX(), pos.getY(), pos.getZ(), blockstateCopy, 100, true);
+                                    IronsSpellbooks.LOGGER.debug("spectral hammer falling block {} {} {} {} {}", blockstateCopy, pos.getX(), pos.getZ(), pos.getZ(), fallingblockentity);
+                                    //fallingblockentity.setDeltaMovement(Utils.getRandomVec3(0.05).subtract(0, 0.05, 0));
+                                    level.addFreshEntity(fallingblockentity);
                                 }
+                                if (count.incrementAndGet() % 5 == 0 && !spawnFallingBlock) {
+                                    level.destroyBlock(pos, false);
+                                } else {
+                                    level.removeBlock(pos, false);
+                                }
+
+                                //IronsSpellbooks.LOGGER.debug("SpectralHammer.tick: remove.2 pos:{}, dist:{}, missChance:{}, pct:{}", pos, distance, missChance, pct);
+                                dropResources(blockstate, level, pos).forEach(drops::addItem);
                             }
                         });
                         Containers.dropContents(level, this.blockPosition(), drops);
