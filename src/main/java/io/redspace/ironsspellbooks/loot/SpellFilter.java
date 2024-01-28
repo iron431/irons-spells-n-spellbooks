@@ -42,12 +42,13 @@ public class SpellFilter {
 
     public List<AbstractSpell> getApplicableSpells() {
         try {
-            if (!spells.isEmpty())
+            if (!spells.isEmpty()) {
                 return spells;
-            else if (schoolType != null)
+            } else if (schoolType != null) {
                 return SPELLS_FOR_SCHOOL.resolve().get().get(schoolType);
-            else
+            } else {
                 return DEFAULT_SPELLS.resolve().get();
+            }
         } catch (Exception e) {
             IronsSpellbooks.LOGGER.error("SpellFilter failure: {}", e.getMessage());
             return List.of(SpellRegistry.none());

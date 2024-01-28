@@ -107,8 +107,9 @@ public class AscensionSpell extends AbstractSpell {
             if (distance < radius * radius) {
                 float finalDamage = (float) (getDamage(spellLevel, entity) * (1 - distance / (radius * radius)));
                 DamageSources.applyDamage(target, finalDamage, getDamageSource(lightningBolt, entity));
-                if (target instanceof Creeper creeper)
+                if (target instanceof Creeper creeper) {
                     creeper.thunderHit((ServerLevel) level, lightningBolt);
+                }
             }
         });
 
